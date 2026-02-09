@@ -155,9 +155,10 @@ resource "azurerm_linux_web_app" "main" {
       node_version = "20-lts"
     }
 
-    app_command_line  = "node server.js"
-    health_check_path = "/"
-    http2_enabled     = true
+    app_command_line                  = "node server.js"
+    health_check_path                 = "/"
+    health_check_eviction_time_in_min = 5
+    http2_enabled                     = true
   }
 
   app_settings = {
