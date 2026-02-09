@@ -1,0 +1,42 @@
+#!/bin/sh
+# NossoDireito — Pre-commit Hook (Quality Gate Local)
+# Bloqueia commits se o Quality Gate falhar (score < 75 ou CRITICAL).
+#
+# Instalação: copie para .git/hooks/pre-commit
+#   cp scripts/pre-commit .git/hooks/pre-commit
+#   chmod +x .git/hooks/pre-commit
+#
+# Para pular temporariamente: git commit --no-verify
+
+echo ""
+echo "🔎 Quality Gate (pre-commit) — verificando..."
+echo ""
+
+# Detectar Python
+if command -v python3 > /dev/null 2>&1; then
+    PYTHON=python3
+elif command -v python > /dev/null 2>&1; then
+    PYTHON=python
+else
+    echo "⚠️  Python não encontrado — pulando Quality Gate."
+    exit 0
+fi
+
+# Rodar Quality Gate em modo CI
+$PYTHON codereview/codereview.py --ci --min-score 75
+
+EXIT_CODE=$?
+
+if [ $EXIT_CODE -ne 0 ]; then
+    echo ""
+    echo "🚫 COMMIT BLOQUEADO — Quality Gate falhou."
+    echo "   Corrija os problemas acima e tente novamente."
+    echo "   Para pular: git commit --no-verify"
+    echo ""
+    exit 1
+fi
+
+echo ""
+echo "✅ Quality Gate OK — commit permitido."
+echo ""
+exit 0

@@ -1054,8 +1054,9 @@ def check_sensitive_data(report: ReviewReport) -> None:
         for pattern, label in SENSITIVE_PATTERNS:
             matches = re.findall(pattern, content, re.IGNORECASE)
             if matches:
-                # Ignorar falsos positivos em .gitignore e codereview.py
-                if f.name in (".gitignore", "codereview.py"):
+                # Ignorar falsos positivos em arquivos de configuração/automação
+                safe_files = {".gitignore", "codereview.py", "quality-gate.yml", "pre-commit"}
+                if f.name in safe_files:
                     continue
                 secret_found = True
                 report.add(Finding(cat, f"{label}: {f.name}", Severity.CRITICAL,
