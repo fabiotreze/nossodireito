@@ -7,7 +7,8 @@
 #   ARM_CLIENT_SECRET    — Service Principal password
 #   ARM_TENANT_ID        — Azure AD Tenant ID
 #   ARM_SUBSCRIPTION_ID  — Azure Subscription ID
-#   TF_VAR_pfx_password  — Senha do PFX (se usar cert proprio)
+#   TF_VAR_pfx_password  — Senha do PFX
+#   PFX_BASE64           — Certificado PFX codificado em base64
 
 name: Terraform
 
@@ -35,8 +36,7 @@ env:
   ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
   # Terraform le TF_VAR_* automaticamente — sem necessidade de -var flags
   TF_VAR_subscription_id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
-  TF_VAR_pfx_password: ${{ secrets.TF_VAR_pfx_password }}
-  TF_VAR_pfx_file_path: ""
+  TF_VAR_pfx_password: ${{ secrets.TF_VAR_PFX_PASSWORD }}
 
 jobs:
   terraform:
@@ -49,6 +49,21 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      # ── Decodificar certificado PFX ──
+      - name: Decode PFX certificate
+        if: github.event.inputs.action != 'destroy'
+        run: |
+          PFX="${{ secrets.PFX_BASE64 }}"
+          if [ -n "$PFX" ]; then
+            echo "$PFX" | base64 -d > "${GITHUB_WORKSPACE}/cert.pfx"
+            echo "TF_VAR_pfx_file_path=${GITHUB_WORKSPACE}/cert.pfx" >> $GITHUB_ENV
+            SIZE=$(wc -c < "${GITHUB_WORKSPACE}/cert.pfx")
+            echo "PFX decoded (${SIZE} bytes)"
+          else
+            echo "TF_VAR_pfx_file_path=" >> $GITHUB_ENV
+            echo "No PFX_BASE64 — managed cert will be used."
+          fi
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
@@ -162,6 +177,32 @@ jobs:
           app_location: /
           output_location: ""
           skip_app_build: true
+
+      # ── Vincular certificado PFX ao dominio custom ──
+      - name: Bind custom certificate
+        if: github.event.inputs.action == 'apply' && env.TF_VAR_pfx_file_path != ''
+        run: |
+          az login --service-principal \
+            -u "${ARM_CLIENT_ID}" -p "${ARM_CLIENT_SECRET}" \
+            --tenant "${ARM_TENANT_ID}" --output none
+
+          SUB="${ARM_SUBSCRIPTION_ID}"
+          RG="rg-nossodireito"
+          SWA="stapp-nossodireito"
+          DOMAIN="nossodireito.fabiotreze.com"
+          KV_RID="/subscriptions/${SUB}/resourceGroups/${RG}/providers/Microsoft.KeyVault/vaults/kv-nossodireito"
+
+          CERT_NAME=$(terraform output -raw certificate_name 2>/dev/null || true)
+          if [ -n "$CERT_NAME" ] && [ "$CERT_NAME" != "(não importado)" ]; then
+            echo "Vinculando cert ${CERT_NAME} do Key Vault ao dominio..."
+            az rest --method PUT \
+              --url "https://management.azure.com/subscriptions/${SUB}/resourceGroups/${RG}/providers/Microsoft.Web/staticSites/${SWA}/customDomains/${DOMAIN}?api-version=2024-04-01" \
+              --body "{\"properties\":{\"validationMethod\":\"cname-delegation\",\"sslState\":\"SniEnabled\",\"certificateResourceId\":\"${KV_RID}/certificates/${CERT_NAME}\"}}" \
+              2>&1 || true
+            echo "Certificado custom vinculado."
+          else
+            echo "Certificado nao encontrado no state — usando managed cert."
+          fi
 
       # ── Destroy (manual) ──
       - name: Terraform Destroy
