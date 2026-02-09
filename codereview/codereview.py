@@ -1,28 +1,38 @@
 #!/usr/bin/env python3
 """
-codereview.py — Rotina de Auto-avaliação do NossoDireito
-========================================================
+codereview.py — Quality Gate do NossoDireito
+============================================
 
-Verifica automaticamente a qualidade, segurança, conformidade regulatória,
-acessibilidade e confiabilidade do projeto NossoDireito.
+Pipeline de qualidade pré-deploy com verificações em 17 categorias:
 
-Categorias de verificação:
-1. Conformidade regulatória (LGPD, legislação brasileira)
-2. Segurança (XSS, CSP, transmissão de dados)
-3. Qualidade de software (HTML, CSS, JS patterns)
-4. Confiabilidade (error handling, graceful degradation)
-5. Performance (file sizes, otimizações)
-6. Transparência (fontes oficiais, links válidos)
-7. Versionamento (semver, changelog)
-8. Modularidade (estrutura de arquivos)
-9. Acessibilidade (ARIA, contraste, semântica)
-10. Instituições de apoio (completude, URLs válidas)
+  CHECKS CORE:
+  1.  Conformidade regulatória (LGPD, legislação brasileira)
+  2.  Segurança (XSS, CSP, SRI, criptografia, TTL)
+  3.  Qualidade de software (HTML, CSS, JS patterns)
+  4.  Confiabilidade (error handling, graceful degradation)
+  5.  Performance (file sizes, otimizações)
+  6.  Transparência (fontes oficiais, links válidos)
+  7.  Versionamento (semver, changelog)
+  8.  Modularidade (estrutura de arquivos)
+  9.  Acessibilidade (ARIA, contraste, semântica)
+  10. Instituições de apoio (completude, URLs válidas)
+  11. Schema / Governança (integridade de dados)
+
+  CHECKS QUALITY GATE (v2.0):
+  12. Links / URLs (opcional, rede)
+  13. Dados Sensíveis — detecção de segredos, chaves, tokens, senhas
+  14. Higiene de Arquivos — arquivos órfãos, duplicados, ausentes
+  15. Documentação — README, CHANGELOG, GOVERNANCE, SECURITY_AUDIT
+  16. Disclaimer / Regulatório — aviso legal, transparência, LGPD
+  17. WAF 5 Pilares — Well-Architected Framework assessment
 
 Uso:
     python codereview.py                    # Roda todas as verificações
     python codereview.py --categoria lgpd   # Roda só uma categoria
     python codereview.py --json             # Saída em JSON
-    python codereview.py --fix              # Sugere correções automáticas
+    python codereview.py --ci               # Modo CI (exit code 1 se falhar)
+    python codereview.py --min-score 80     # Score mínimo para CI
+    python codereview.py --check-links      # Verifica URLs (mais lento)
 
 Autor: NossoDireito — Projeto sem fins lucrativos
 Licença: MIT
@@ -33,6 +43,7 @@ from __future__ import annotations
 import json
 import re
 import ssl
+import subprocess
 import urllib.error
 import urllib.request
 from dataclasses import asdict, dataclass, field
@@ -50,6 +61,11 @@ INDEX_HTML = PROJECT_ROOT / "index.html"
 STYLES_CSS = PROJECT_ROOT / "css" / "styles.css"
 APP_JS = PROJECT_ROOT / "js" / "app.js"
 README_MD = PROJECT_ROOT / "README.md"
+CHANGELOG_MD = PROJECT_ROOT / "CHANGELOG.md"
+GOVERNANCE_MD = PROJECT_ROOT / "GOVERNANCE.md"
+SECURITY_AUDIT_MD = PROJECT_ROOT / "SECURITY_AUDIT.md"
+TERRAFORM_DIR = PROJECT_ROOT / "terraform"
+GITIGNORE = PROJECT_ROOT / ".gitignore"
 
 # Domínios oficiais aceitos como fontes
 OFFICIAL_DOMAINS = [
@@ -79,6 +95,26 @@ MAX_HTML_SIZE = 30_000
 MAX_CSS_SIZE = 60_000
 MAX_JS_SIZE = 80_000
 MAX_JSON_SIZE = 100_000
+
+# Padrões de dados sensíveis (regex)
+SENSITIVE_PATTERNS = [
+    (r"-----BEGIN\s+(RSA\s+)?PRIVATE\s+KEY-----", "Chave privada detectada"),
+    (r"-----BEGIN\s+CERTIFICATE-----", "Certificado PEM detectado"),
+    (r"AKIA[0-9A-Z]{16}", "AWS Access Key detectada"),
+    (r"(?:password|senha|secret|token)\s*[:=]\s*['\"][^'\"]{4,}", "Segredo hardcoded"),
+    (r"(?:api[_-]?key|apikey)\s*[:=]\s*['\"][^'\"]{8,}", "API Key hardcoded"),
+    (r"ghp_[a-zA-Z0-9]{36}", "GitHub Personal Access Token"),
+    (r"sk-[a-zA-Z0-9]{20,}", "OpenAI API Key"),
+    (r"(?:mongodb|postgres|mysql)://[^\s]+", "Connection string de banco"),
+    (r"(?:Bearer|Basic)\s+[a-zA-Z0-9+/=]{20,}", "Token de autenticação"),
+    (r"""['"]\S+\.pfx['"]|['"]\S+\.p12['"]|['"]\S+\.pem['"]""", "Referência a arquivo de certificado"),
+]
+
+# Extensões de arquivo sensíveis
+SENSITIVE_EXTENSIONS = {".pfx", ".p12", ".pem", ".key", ".env", ".credentials"}
+
+# Versão do Quality Gate
+QUALITY_GATE_VERSION = "2.0.0"
 
 
 class Severity(Enum):
@@ -111,7 +147,7 @@ class Finding:
 class ReviewReport:
     """Relatório completo da revisão."""
     timestamp: str = field(default_factory=lambda: datetime.now().isoformat())
-    versao_codereview: str = "1.0.0"
+    versao_codereview: str = QUALITY_GATE_VERSION
     achados: list[Finding] = field(default_factory=list)
     score_total: float = 0.0
     categorias_scores: dict[str, float] = field(default_factory=dict)
@@ -958,6 +994,501 @@ def check_links_reachable(report: ReviewReport, json_data: dict, max_checks: int
 
 
 # ========================
+# Quality Gate — Novos Checks (v2.0)
+# ========================
+
+def _get_tracked_files() -> list[Path]:
+    """Retorna lista de arquivos rastreados pelo git."""
+    try:
+        result = subprocess.run(
+            ["git", "ls-files"],
+            capture_output=True, text=True, cwd=PROJECT_ROOT, timeout=10,
+        )
+        if result.returncode == 0:
+            return [PROJECT_ROOT / f for f in result.stdout.strip().splitlines() if f.strip()]
+    except (subprocess.TimeoutExpired, FileNotFoundError):
+        pass
+    # Fallback: listar arquivos manualmente (excluindo .git, __pycache__, .terraform)
+    excluded_dirs = {".git", "__pycache__", ".terraform", "node_modules", ".venv"}
+    files = []
+    for p in PROJECT_ROOT.rglob("*"):
+        if p.is_file() and not any(ex in p.parts for ex in excluded_dirs):
+            files.append(p)
+    return files
+
+
+def check_sensitive_data(report: ReviewReport) -> None:
+    """Verifica ausência de dados sensíveis em arquivos rastreados."""
+    cat = "Dados Sensíveis"
+
+    tracked = _get_tracked_files()
+    if not tracked:
+        report.add(Finding(cat, "Não foi possível listar arquivos", Severity.WARNING,
+                           "git ls-files falhou e fallback retornou vazio."))
+        return
+
+    report.add(Finding(cat, f"Analisando {len(tracked)} arquivos rastreados", Severity.INFO,
+                       "Escaneando por segredos, chaves, tokens e senhas."))
+
+    # 1. Verificar extensões sensíveis em arquivos rastreados
+    for f in tracked:
+        if f.suffix.lower() in SENSITIVE_EXTENSIONS:
+            report.add(Finding(cat, f"Arquivo sensível rastreado: {f.name}", Severity.CRITICAL,
+                               f"Arquivo {f.relative_to(PROJECT_ROOT)} com extensão sensível está no git.",
+                               arquivo=str(f.relative_to(PROJECT_ROOT)),
+                               sugestao=f"Remova {f.name} do git: git rm --cached {f.relative_to(PROJECT_ROOT)}"))
+
+    # 2. Verificar padrões de segredos no conteúdo dos arquivos
+    text_extensions = {".py", ".js", ".html", ".css", ".json", ".yml", ".yaml",
+                       ".md", ".tf", ".tfvars", ".sh", ".txt", ".cfg", ".ini", ".toml"}
+    secret_found = False
+
+    for f in tracked:
+        if f.suffix.lower() not in text_extensions:
+            continue
+        try:
+            content = f.read_text(encoding="utf-8", errors="ignore")
+        except (OSError, PermissionError):
+            continue
+
+        for pattern, label in SENSITIVE_PATTERNS:
+            matches = re.findall(pattern, content, re.IGNORECASE)
+            if matches:
+                # Ignorar falsos positivos em .gitignore e codereview.py
+                if f.name in (".gitignore", "codereview.py"):
+                    continue
+                secret_found = True
+                report.add(Finding(cat, f"{label}: {f.name}", Severity.CRITICAL,
+                                   f"Padrão suspeito em {f.relative_to(PROJECT_ROOT)}.",
+                                   arquivo=str(f.relative_to(PROJECT_ROOT)),
+                                   sugestao="Remova o segredo e rotacione a credencial."))
+
+    if not secret_found:
+        report.add(Finding(cat, "Nenhum segredo detectado nos arquivos", Severity.PASS,
+                           "Escaneamento de padrões de segredos concluído — OK."))
+
+    # 3. Verificar .gitignore cobre padrões essenciais
+    if GITIGNORE.exists():
+        gitignore_content = read_text(GITIGNORE)
+        essential_patterns = ["*.pfx", "*.pem", "*.key", "*.env", "*.tfvars", "*.tfstate"]
+        for pattern in essential_patterns:
+            if pattern in gitignore_content:
+                report.add(Finding(cat, f".gitignore cobre {pattern}", Severity.PASS,
+                                   f"Padrão {pattern} presente no .gitignore."))
+            else:
+                report.add(Finding(cat, f".gitignore sem {pattern}", Severity.ERROR,
+                                   f"Padrão {pattern} NÃO está no .gitignore.",
+                                   arquivo=".gitignore",
+                                   sugestao=f"Adicione {pattern} ao .gitignore."))
+    else:
+        report.add(Finding(cat, ".gitignore ausente", Severity.CRITICAL,
+                           "Nenhum .gitignore encontrado — alto risco de commitar segredos.",
+                           sugestao="Crie .gitignore com padrões para certificados, env, terraform state."))
+
+
+def check_file_hygiene(report: ReviewReport) -> None:
+    """Verifica higiene de arquivos: órfãos, desnecessários, backup, lixo."""
+    cat = "Higiene de Arquivos"
+
+    # 1. Arquivos que NÃO deveriam estar no projeto
+    junk_patterns = [
+        ("*.bak", "Arquivo de backup"),
+        ("*.tmp", "Arquivo temporário"),
+        ("*.log", "Arquivo de log"),
+        ("*.orig", "Arquivo de merge"),
+        ("*.swp", "Swap do vim"),
+        ("*.swo", "Swap do vim"),
+        ("Thumbs.db", "Cache do Windows"),
+        (".DS_Store", "Cache do macOS"),
+        ("desktop.ini", "Config do Windows"),
+    ]
+
+    tracked = _get_tracked_files()
+    junk_found = False
+    for f in tracked:
+        for pattern, desc in junk_patterns:
+            if pattern.startswith("*"):
+                if f.suffix == pattern[1:]:
+                    junk_found = True
+                    report.add(Finding(cat, f"Arquivo desnecessário: {f.name}", Severity.WARNING,
+                                       f"{desc} rastreado no git.",
+                                       arquivo=str(f.relative_to(PROJECT_ROOT)),
+                                       sugestao=f"Remova: git rm --cached {f.relative_to(PROJECT_ROOT)}"))
+            elif f.name == pattern:
+                junk_found = True
+                report.add(Finding(cat, f"Arquivo desnecessário: {f.name}", Severity.WARNING,
+                                   f"{desc} rastreado no git.",
+                                   arquivo=str(f.relative_to(PROJECT_ROOT)),
+                                   sugestao=f"Remova: git rm --cached {f.relative_to(PROJECT_ROOT)}"))
+
+    if not junk_found:
+        report.add(Finding(cat, "Sem arquivos desnecessários no git", Severity.PASS,
+                           "Nenhum .bak, .tmp, .log, .orig ou lixo de SO detectado."))
+
+    # 2. Verificar diretórios vazios (excluindo .git)
+    for d in PROJECT_ROOT.iterdir():
+        if d.is_dir() and d.name not in (".git", "__pycache__", ".terraform", "node_modules"):
+            if not any(d.iterdir()):
+                report.add(Finding(cat, f"Diretório vazio: {d.name}/", Severity.INFO,
+                                   f"Diretório {d.name} está vazio.",
+                                   sugestao="Remova o diretório ou adicione conteúdo."))
+
+    # 3. Verificar que __pycache__ não está rastreado
+    pycache_tracked = [f for f in tracked if "__pycache__" in str(f)]
+    if pycache_tracked:
+        report.add(Finding(cat, f"__pycache__ rastreado ({len(pycache_tracked)} arquivos)", Severity.WARNING,
+                           "Cache Python não deve ser versionado.",
+                           sugestao="Adicione __pycache__/ ao .gitignore e limpe: git rm -r --cached __pycache__/"))
+    else:
+        report.add(Finding(cat, "__pycache__ não rastreado", Severity.PASS,
+                           "Cache Python corretamente excluído do git."))
+
+    # 4. Verificar CHANGELOG existe
+    if CHANGELOG_MD.exists():
+        report.add(Finding(cat, "CHANGELOG.md presente", Severity.PASS,
+                           "Histórico de versões documentado."))
+    else:
+        report.add(Finding(cat, "CHANGELOG.md ausente", Severity.ERROR,
+                           "Sem histórico de mudanças documentado.",
+                           sugestao="Crie CHANGELOG.md com histórico de todas as versões."))
+
+
+def check_documentation(report: ReviewReport) -> None:
+    """Verifica completude e frescor da documentação."""
+    cat = "Documentação"
+
+    # 1. README.md
+    if README_MD.exists():
+        readme = read_text(README_MD)
+        readme_lower = readme.lower()
+
+        required_sections = {
+            "instalação": ["instalação", "install", "como usar", "getting started"],
+            "licença": ["licença", "license", "mit"],
+            "descrição": ["nossodireito", "sobre", "about"],
+        }
+
+        for section, keywords in required_sections.items():
+            if any(kw in readme_lower for kw in keywords):
+                report.add(Finding(cat, f"README: seção '{section}' presente", Severity.PASS,
+                                   f"README contém informação sobre {section}."))
+            else:
+                report.add(Finding(cat, f"README: seção '{section}' ausente", Severity.WARNING,
+                                   f"README não contém seção sobre {section}.",
+                                   sugestao=f"Adicione seção sobre {section} ao README.md."))
+
+        # Verificar tamanho mínimo
+        if len(readme) < 200:
+            report.add(Finding(cat, "README muito curto", Severity.WARNING,
+                               f"README tem apenas {len(readme)} caracteres — insuficiente.",
+                               sugestao="Expanda o README com descrição, uso, arquitetura."))
+        else:
+            report.add(Finding(cat, f"README: {len(readme):,} caracteres", Severity.PASS,
+                               "README com tamanho adequado."))
+    else:
+        report.add(Finding(cat, "README.md ausente", Severity.CRITICAL,
+                           "Documento principal de documentação não encontrado.",
+                           sugestao="Crie README.md com descrição, uso e contribuição."))
+
+    # 2. GOVERNANCE.md
+    if GOVERNANCE_MD.exists():
+        gov = read_text(GOVERNANCE_MD)
+        report.add(Finding(cat, f"GOVERNANCE.md: {len(gov):,} chars", Severity.PASS,
+                           "Documento de governança presente."))
+    else:
+        report.add(Finding(cat, "GOVERNANCE.md ausente", Severity.WARNING,
+                           "Sem documento de governança.",
+                           sugestao="Crie GOVERNANCE.md com critérios para fontes."))
+
+    # 3. SECURITY_AUDIT.md
+    if SECURITY_AUDIT_MD.exists():
+        report.add(Finding(cat, "SECURITY_AUDIT.md presente", Severity.PASS,
+                           "Auditoria de segurança documentada."))
+    else:
+        report.add(Finding(cat, "SECURITY_AUDIT.md ausente", Severity.WARNING,
+                           "Sem documentação de auditoria de segurança.",
+                           sugestao="Crie SECURITY_AUDIT.md documentando decisões de segurança."))
+
+    # 4. CHANGELOG.md — verificar conteúdo
+    if CHANGELOG_MD.exists():
+        changelog = read_text(CHANGELOG_MD)
+        # Verificar se tem entradas de versão
+        version_entries = re.findall(r"##\s*\[?\d+\.\d+\.\d+", changelog)
+        if version_entries:
+            report.add(Finding(cat, f"CHANGELOG: {len(version_entries)} versão(ões)", Severity.PASS,
+                               f"CHANGELOG documenta {len(version_entries)} versões."))
+        else:
+            report.add(Finding(cat, "CHANGELOG sem entradas de versão", Severity.WARNING,
+                               "CHANGELOG existe mas não documenta versões.",
+                               sugestao="Adicione entradas no formato ## [X.Y.Z] - YYYY-MM-DD."))
+
+    # 5. Verificar data da última modificação do JSON
+    json_data = read_json(DATA_JSON)
+    ultima = json_data.get("ultima_atualizacao", "")
+    if ultima:
+        try:
+            dt = date.fromisoformat(ultima)
+            age_days = (date.today() - dt).days
+            if age_days <= 30:
+                report.add(Finding(cat, f"Dados atualizados há {age_days} dia(s)", Severity.PASS,
+                                   f"Última atualização: {ultima} — recente."))
+            elif age_days <= 90:
+                report.add(Finding(cat, f"Dados com {age_days} dias", Severity.WARNING,
+                                   f"Última atualização: {ultima} — considere revisar.",
+                                   sugestao="Execute revisão semanal conforme GOVERNANCE.md."))
+            else:
+                report.add(Finding(cat, f"Dados desatualizados ({age_days} dias)", Severity.ERROR,
+                                   f"Última atualização: {ultima} — dados possivelmente obsoletos.",
+                                   sugestao="URGENTE: Revise todas as fontes e atualize."))
+        except ValueError:
+            report.add(Finding(cat, f"Data inválida: {ultima}", Severity.WARNING,
+                               "Campo 'ultima_atualizacao' com formato inválido."))
+
+
+def check_disclaimer(report: ReviewReport, html: str, js: str) -> None:
+    """Verifica disclaimers legais, avisos regulatórios e transparência."""
+    cat = "Disclaimer / Regulatório"
+
+    html_lower = html.lower()
+    js_lower = js.lower()
+
+    # 1. Aviso de que não é aconselhamento jurídico
+    legal_warnings = [
+        "não constitui aconselhamento",
+        "não é aconselhamento jurídico",
+        "caráter meramente informativo",
+        "informativo e educacional",
+        "consulte um advogado",
+        "consulte um profissional",
+        "não substitui orientação",
+        "não constitui",
+        "consultoria jurídica",
+        "guia informacional",
+        "assessoria ou consultoria",
+    ]
+    has_legal_warning = any(w in html_lower or w in js_lower for w in legal_warnings)
+    if has_legal_warning:
+        report.add(Finding(cat, "Aviso legal presente", Severity.PASS,
+                           "Disclaimer informando que não é aconselhamento jurídico."))
+    else:
+        report.add(Finding(cat, "Aviso legal ausente", Severity.CRITICAL,
+                           "Nenhum disclaimer informando que o conteúdo não é aconselhamento jurídico.",
+                           sugestao="URGENTE: Adicione disclaimer claro no modal de abertura."))
+
+    # 2. Modal de disclaimer na abertura
+    if "modal" in html_lower and ("disclaimer" in html_lower or "aviso" in html_lower):
+        report.add(Finding(cat, "Modal de disclaimer presente", Severity.PASS,
+                           "Existe modal de aviso/disclaimer no HTML."))
+    elif "modal" in js_lower and ("disclaimer" in js_lower or "aviso" in js_lower):
+        report.add(Finding(cat, "Modal de disclaimer no JS", Severity.PASS,
+                           "Modal de aviso/disclaimer gerenciado via JavaScript."))
+    else:
+        report.add(Finding(cat, "Sem modal de disclaimer", Severity.WARNING,
+                           "Não detectado modal de disclaimer/aviso ao abrir o site.",
+                           sugestao="Adicione modal que exige aceite do disclaimer antes do uso."))
+
+    # 3. Transparência sobre fontes
+    if "transparência" in html_lower or "fontes" in html_lower:
+        report.add(Finding(cat, "Seção de transparência presente", Severity.PASS,
+                           "HTML contém menção a transparência/fontes."))
+    else:
+        report.add(Finding(cat, "Sem seção de transparência", Severity.WARNING,
+                           "HTML não menciona transparência das fontes.",
+                           sugestao="Adicione seção visível com fontes consultadas."))
+
+    # 4. Aviso sobre dados PcD serem sensíveis
+    sensitive_warnings = [
+        "dado sensível", "dados sensíveis", "dado pessoal", "dados pessoais",
+        "saúde", "deficiência", "pcd",
+    ]
+    has_sensitive_notice = any(w in html_lower for w in sensitive_warnings)
+    if has_sensitive_notice:
+        report.add(Finding(cat, "Menção a dados sensíveis presente", Severity.PASS,
+                           "HTML menciona natureza sensível dos dados (PcD/saúde)."))
+
+    # 5. Licença do projeto
+    license_file = PROJECT_ROOT / "LICENSE"
+    license_md = PROJECT_ROOT / "LICENSE.md"
+    if license_file.exists() or license_md.exists():
+        report.add(Finding(cat, "Arquivo LICENSE presente", Severity.PASS,
+                           "Licença do projeto documentada."))
+    elif "mit" in html_lower or "licença" in html_lower:
+        report.add(Finding(cat, "Menção a licença no HTML", Severity.INFO,
+                           "Licença mencionada no HTML mas sem arquivo dedicado."))
+    else:
+        report.add(Finding(cat, "Sem licença definida", Severity.WARNING,
+                           "Nenhum arquivo LICENSE ou menção a licença.",
+                           sugestao="Adicione arquivo LICENSE (MIT recomendado para projeto sem fins lucrativos)."))
+
+    # 6. Ano do copyright
+    current_year = str(date.today().year)
+    if current_year in html or current_year in js:
+        report.add(Finding(cat, f"Copyright {current_year} atualizado", Severity.PASS,
+                           f"Referência ao ano {current_year} encontrada."))
+
+
+def check_waf(report: ReviewReport, html: str, js: str) -> None:
+    """Well-Architected Framework — avalia 5 pilares do Azure WAF."""
+    cat = "WAF 5 Pilares"
+
+    # ── Pilar 1: Segurança ──
+    security_score = 0
+    security_checks = 0
+
+    # CSP
+    security_checks += 1
+    if "Content-Security-Policy" in html:
+        security_score += 1
+
+    # HTTPS only (staticwebapp.config.json)
+    swa_config = PROJECT_ROOT / "staticwebapp.config.json"
+    security_checks += 1
+    if swa_config.exists():
+        config = read_json(swa_config)
+        headers = config.get("globalHeaders", {})
+        if "Content-Security-Policy" in headers or "X-Content-Type-Options" in headers:
+            security_score += 1
+
+    # Encryption at rest
+    security_checks += 1
+    if "AES-GCM" in js:
+        security_score += 1
+
+    # .gitignore secrets
+    security_checks += 1
+    if GITIGNORE.exists() and "*.pfx" in read_text(GITIGNORE):
+        security_score += 1
+
+    sec_pct = round(security_score / max(security_checks, 1) * 100)
+    sev = Severity.PASS if sec_pct >= 75 else Severity.WARNING if sec_pct >= 50 else Severity.ERROR
+    report.add(Finding(cat, f"Segurança: {sec_pct}% ({security_score}/{security_checks})", sev,
+                       "Pilar 1 — Proteção de dados, identidade, infraestrutura."))
+
+    # ── Pilar 2: Confiabilidade ──
+    rel_score = 0
+    rel_checks = 0
+
+    # Error handling
+    rel_checks += 1
+    if js.count("try {") + js.count("try{") >= 3:
+        rel_score += 1
+
+    # Fallback messages
+    rel_checks += 1
+    if "Não foi possível" in js or "erro" in js.lower():
+        rel_score += 1
+
+    # IaC (terraform)
+    rel_checks += 1
+    if TERRAFORM_DIR.exists() and (TERRAFORM_DIR / "main.tf").exists():
+        rel_score += 1
+
+    # CI/CD
+    rel_checks += 1
+    ci_yml = PROJECT_ROOT / ".github" / "workflows" / "quality-gate.yml"
+    deploy_yml = PROJECT_ROOT / ".github" / "workflows" / "deploy.yml"
+    if ci_yml.exists() or deploy_yml.exists():
+        rel_score += 1
+
+    rel_pct = round(rel_score / max(rel_checks, 1) * 100)
+    sev = Severity.PASS if rel_pct >= 75 else Severity.WARNING if rel_pct >= 50 else Severity.ERROR
+    report.add(Finding(cat, f"Confiabilidade: {rel_pct}% ({rel_score}/{rel_checks})", sev,
+                       "Pilar 2 — Resiliência, recuperação, operações consistentes."))
+
+    # ── Pilar 3: Performance / Eficiência ──
+    perf_score = 0
+    perf_checks = 0
+
+    # File sizes within limits
+    for path, max_size in [(INDEX_HTML, MAX_HTML_SIZE), (STYLES_CSS, MAX_CSS_SIZE),
+                            (APP_JS, MAX_JS_SIZE), (DATA_JSON, MAX_JSON_SIZE)]:
+        perf_checks += 1
+        if path.exists() and path.stat().st_size <= max_size:
+            perf_score += 1
+
+    # Caching headers in SWA config
+    perf_checks += 1
+    if swa_config.exists():
+        config_text = read_text(swa_config)
+        if "Cache-Control" in config_text or "max-age" in config_text:
+            perf_score += 1
+
+    perf_pct = round(perf_score / max(perf_checks, 1) * 100)
+    sev = Severity.PASS if perf_pct >= 75 else Severity.WARNING if perf_pct >= 50 else Severity.ERROR
+    report.add(Finding(cat, f"Performance: {perf_pct}% ({perf_score}/{perf_checks})", sev,
+                       "Pilar 3 — Otimização de recursos, latência, throughput."))
+
+    # ── Pilar 4: Otimização de Custos ──
+    cost_score = 0
+    cost_checks = 0
+
+    # Static Web App (Free tier possible)
+    cost_checks += 1
+    if swa_config.exists():
+        cost_score += 1  # SWA is serverless = pay-per-use
+
+    # No server-side compute needed
+    cost_checks += 1
+    if "skip_app_build" in read_text(deploy_yml) if deploy_yml.exists() else False:
+        cost_score += 1
+
+    # Terraform variables support multi-env (dev=Free, prod=Standard)
+    cost_checks += 1
+    tf_vars = TERRAFORM_DIR / "variables.tf"
+    if tf_vars.exists() and "sku_tier" in read_text(tf_vars):
+        cost_score += 1
+
+    cost_pct = round(cost_score / max(cost_checks, 1) * 100)
+    sev = Severity.PASS if cost_pct >= 75 else Severity.WARNING if cost_pct >= 50 else Severity.ERROR
+    report.add(Finding(cat, f"Custo: {cost_pct}% ({cost_score}/{cost_checks})", sev,
+                       "Pilar 4 — Eliminar desperdício, maximizar valor de negócio."))
+
+    # ── Pilar 5: Excelência Operacional ──
+    ops_score = 0
+    ops_checks = 0
+
+    # IaC
+    ops_checks += 1
+    if TERRAFORM_DIR.exists():
+        ops_score += 1
+
+    # CI/CD pipeline
+    ops_checks += 1
+    if deploy_yml.exists():
+        ops_score += 1
+
+    # Quality Gate automated
+    ops_checks += 1
+    codereview_py = PROJECT_ROOT / "codereview" / "codereview.py"
+    if codereview_py.exists():
+        ops_score += 1
+
+    # Weekly review workflow
+    ops_checks += 1
+    weekly = PROJECT_ROOT / ".github" / "workflows" / "weekly-review.yml"
+    if weekly.exists():
+        ops_score += 1
+
+    # Documentation (README + GOVERNANCE + CHANGELOG)
+    ops_checks += 1
+    doc_count = sum(1 for p in [README_MD, GOVERNANCE_MD, CHANGELOG_MD] if p.exists())
+    if doc_count >= 2:
+        ops_score += 1
+
+    ops_pct = round(ops_score / max(ops_checks, 1) * 100)
+    sev = Severity.PASS if ops_pct >= 75 else Severity.WARNING if ops_pct >= 50 else Severity.ERROR
+    report.add(Finding(cat, f"Excelência Operacional: {ops_pct}% ({ops_score}/{ops_checks})", sev,
+                       "Pilar 5 — Automação, monitoramento, melhoria contínua."))
+
+    # Score geral WAF
+    overall = round((sec_pct + rel_pct + perf_pct + cost_pct + ops_pct) / 5)
+    sev = Severity.PASS if overall >= 75 else Severity.WARNING if overall >= 50 else Severity.ERROR
+    report.add(Finding(cat, f"WAF Score Geral: {overall}%", sev,
+                       f"Média dos 5 pilares: Seg={sec_pct}% Conf={rel_pct}% Perf={perf_pct}% "
+                       f"Custo={cost_pct}% Ops={ops_pct}%"))
+
+
+# ========================
 # Runner Principal
 # ========================
 
@@ -980,8 +1511,9 @@ def run_review(
                            sugestao=f"Verifique se PROJECT_ROOT está correto: {PROJECT_ROOT}"))
         return report
 
-    # Mapa de verificações
+    # Mapa de verificações — Core + Quality Gate
     checks = {
+        # Core (v1.0)
         "lgpd": lambda: check_lgpd(report, html, js, json_data),
         "seguranca": lambda: check_security(report, html, js),
         "qualidade": lambda: check_quality(report, html, css, js),
@@ -993,6 +1525,12 @@ def run_review(
         "acessibilidade": lambda: check_accessibility(report, html, css),
         "instituicoes": lambda: check_institutions(report, json_data),
         "schema": lambda: check_category_schema(report, json_data),
+        # Quality Gate (v2.0)
+        "dados_sensiveis": lambda: check_sensitive_data(report),
+        "higiene": lambda: check_file_hygiene(report),
+        "documentacao": lambda: check_documentation(report),
+        "disclaimer": lambda: check_disclaimer(report, html, js),
+        "waf": lambda: check_waf(report, html, js),
     }
 
     if check_links:
@@ -1016,9 +1554,10 @@ def format_report_text(report: ReviewReport) -> str:
     """Formata relatório como texto legível."""
     lines = []
     lines.append("=" * 70)
-    lines.append("  NossoDireito — CodeReview — Auto-avaliação")
+    lines.append("  NossoDireito — Quality Gate — Relatório de Qualidade")
     lines.append("=" * 70)
     lines.append(f"  Data: {report.timestamp}")
+    lines.append(f"  Versão Quality Gate: {report.versao_codereview}")
     lines.append(f"  Score Total: {report.score_total}/100")
     lines.append("=" * 70)
     lines.append("")
@@ -1070,34 +1609,44 @@ def format_report_text(report: ReviewReport) -> str:
 
 
 def main() -> None:
-    """Entry point CLI."""
+    """Entry point CLI — suporta modo CI com score mínimo."""
     import argparse
+    import sys
+
+    ALL_CATEGORIES = [
+        "lgpd", "seguranca", "qualidade", "confiabilidade",
+        "performance", "transparencia", "versionamento",
+        "modularidade", "acessibilidade", "instituicoes", "schema",
+        "dados_sensiveis", "higiene", "documentacao", "disclaimer", "waf",
+    ]
 
     parser = argparse.ArgumentParser(
-        description="NossoDireito CodeReview — Auto-avaliação do projeto",
+        description="NossoDireito Quality Gate — Pipeline de qualidade pré-deploy",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Exemplos:
-  python codereview.py                     # Revisão completa
+  python codereview.py                     # Revisão completa (17 categorias)
   python codereview.py --categoria lgpd    # Só LGPD
   python codereview.py --json              # Saída JSON
+  python codereview.py --ci                # Modo CI (exit code 1 se falhar)
+  python codereview.py --min-score 80      # Score mínimo para CI
   python codereview.py --check-links       # Verifica URLs (mais lento)
         """,
     )
     parser.add_argument(
         "--categoria", "-c",
         action="append",
-        choices=[
-            "lgpd", "seguranca", "qualidade", "confiabilidade",
-            "performance", "transparencia", "versionamento",
-            "modularidade", "acessibilidade", "instituicoes", "schema",
-        ],
+        choices=ALL_CATEGORIES,
         help="Categoria específica para verificar (pode repetir)",
     )
     parser.add_argument("--json", "-j", action="store_true",
                         help="Saída em formato JSON")
     parser.add_argument("--check-links", "-l", action="store_true",
                         help="Verificar se URLs estão acessíveis (mais lento)")
+    parser.add_argument("--ci", action="store_true",
+                        help="Modo CI — exit code 1 se score < min-score ou CRITICAL encontrado")
+    parser.add_argument("--min-score", type=float, default=75.0,
+                        help="Score mínimo para o modo CI (padrão: 75.0)")
 
     args = parser.parse_args()
 
@@ -1113,10 +1662,23 @@ Exemplos:
             "score_total": report.score_total,
             "categorias_scores": report.categorias_scores,
             "achados": [f.to_dict() for f in report.achados],
+            "ci_passed": report.score_total >= args.min_score,
         }
         print(json.dumps(output, ensure_ascii=False, indent=2))
     else:
         print(format_report_text(report))
+
+    # Modo CI: verificar resultado
+    if args.ci:
+        criticals = sum(1 for f in report.achados if f.severidade == Severity.CRITICAL)
+        if criticals > 0:
+            print(f"\n🚫 QUALITY GATE FALHOU: {criticals} achado(s) CRITICAL encontrado(s).")
+            sys.exit(1)
+        if report.score_total < args.min_score:
+            print(f"\n🚫 QUALITY GATE FALHOU: Score {report.score_total} < mínimo {args.min_score}")
+            sys.exit(1)
+        print(f"\n✅ QUALITY GATE PASSOU: Score {report.score_total} >= {args.min_score} (0 CRITICAL)")
+        sys.exit(0)
 
 
 if __name__ == "__main__":

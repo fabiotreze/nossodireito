@@ -1,0 +1,42 @@
+# ============================================================
+# NossoDireito — Terraform Variables
+# ============================================================
+# Copie para terraform.tfvars e preencha.
+# NÃO commite terraform.tfvars no repositório!
+#
+# Para criar outro ambiente (ex: staging), copie para staging.tfvars:
+#   terraform apply -var-file="staging.tfvars"
+# ============================================================
+
+subscription_id = "YOUR_AZURE_SUBSCRIPTION_ID"
+
+# --- Ambiente ---
+# environment = "prod"     # prod | staging | dev
+
+# --- SKU ---
+# sku_tier = "Free"        # Free ($0) | Standard ($9/mês, para SSL próprio)
+
+# --- Domínio customizado (2 etapas) ---
+# Etapa 1: Deploy sem domínio → copie o default_hostname → configure CNAME no DNS
+# Etapa 2: Habilite as linhas abaixo e faça terraform apply novamente
+#
+# custom_domain        = "nossodireito.fabiotreze.com"
+# enable_custom_domain = true
+
+# --- Key Vault + Certificado SSL ---
+# Habilite para armazenar seu certificado PFX no Azure Key Vault.
+# A senha do PFX NUNCA é gravada em disco — informe via:
+#   terraform apply -var="pfx_password=MINHA_SENHA"
+#   ou: export TF_VAR_pfx_password="MINHA_SENHA"
+#
+# enable_keyvault = true
+# pfx_file_path   = "../fabiotreze-wildcard.pfx"
+# sku_tier        = "Standard"   # Necessário para SSL próprio ($9/mês)
+
+# --- Região ---
+# location = "eastus2"
+
+# --- Tags extras ---
+# extra_tags = {
+#   owner = "fabio"
+# }

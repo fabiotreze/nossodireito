@@ -16,6 +16,22 @@ venv/
 *.swp
 *.swo
 
+# Certificates / Secrets
+*.pfx
+*.pem
+*.key
+*.p12
+*.env
+.env*
+
+# Terraform
+terraform/.terraform/
+terraform/*.tfstate
+terraform/*.tfstate.backup
+terraform/*.tfvars
+terraform/.terraform.lock.hcl
+terraform/crash.log
+
 # Temporary
 *.tmp
 *.log

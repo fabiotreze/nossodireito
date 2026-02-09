@@ -1,0 +1,119 @@
+# NossoDireito — Quality Gate Pipeline
+# Executa verificações de qualidade antes de qualquer deploy.
+# Bloqueia push/PR se score < 75 ou se houver achado CRITICAL.
+
+name: Quality Gate
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch: # Permite execução manual
+
+jobs:
+  quality-gate:
+    runs-on: ubuntu-latest
+    name: Quality Gate (17 categorias)
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      # ── Sensitive Data Scan (pre-check rápido) ──
+      - name: Scan para dados sensíveis
+        run: |
+          echo "🔍 Escaneando arquivos rastreados por segredos..."
+          FOUND=0
+
+          # Padrões de segredos
+          PATTERNS=(
+            "-----BEGIN.*PRIVATE KEY-----"
+            "-----BEGIN CERTIFICATE-----"
+            "AKIA[0-9A-Z]{16}"
+            "ghp_[a-zA-Z0-9]{36}"
+            "sk-[a-zA-Z0-9]{20,}"
+          )
+
+          for pattern in "${PATTERNS[@]}"; do
+            MATCHES=$(git grep -l -E "$pattern" -- ':!codereview/' ':!.github/' 2>/dev/null || true)
+            if [ -n "$MATCHES" ]; then
+              echo "❌ Padrão suspeito encontrado: $pattern"
+              echo "$MATCHES"
+              FOUND=$((FOUND + 1))
+            fi
+          done
+
+          # Verificar extensões sensíveis
+          for ext in pfx pem key p12 env; do
+            FILES=$(git ls-files "*.${ext}" 2>/dev/null || true)
+            if [ -n "$FILES" ]; then
+              echo "❌ Arquivo sensível rastreado: $FILES"
+              FOUND=$((FOUND + 1))
+            fi
+          done
+
+          if [ "$FOUND" -gt 0 ]; then
+            echo ""
+            echo "🚫 FALHOU: $FOUND padrão(ões) de dados sensíveis encontrado(s)!"
+            exit 1
+          fi
+
+          echo "✅ Nenhum dado sensível detectado nos arquivos rastreados."
+
+      # ── Quality Gate Principal ──
+      - name: Executar Quality Gate (codereview.py)
+        run: |
+          echo "🔎 Executando Quality Gate v2.0 (17 categorias)..."
+          python codereview/codereview.py --ci --min-score 75
+
+      # ── Salvar relatório como artefato ──
+      - name: Gerar relatório JSON
+        if: always()
+        run: |
+          python codereview/codereview.py --json > quality-gate-report.json 2>&1 || true
+
+      - name: Upload relatório
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: quality-gate-report
+          path: quality-gate-report.json
+          retention-days: 30
+
+      # ── Resumo no GitHub Actions ──
+      - name: Resumo do Quality Gate
+        if: always()
+        run: |
+          echo "## 🔎 Quality Gate Report" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          SCORE=$(python -c "
+          import json, sys
+          try:
+              with open('quality-gate-report.json') as f:
+                  data = json.load(f)
+              print(f\"Score: **{data['score_total']}/100**\")
+              print()
+              print('| Categoria | Score |')
+              print('|-----------|-------|')
+              for cat, score in sorted(data['categorias_scores'].items(), key=lambda x: -x[1]):
+                  emoji = '✅' if score >= 80 else '⚠️' if score >= 50 else '❌'
+                  print(f'| {emoji} {cat} | {score} |')
+              print()
+              criticals = sum(1 for a in data['achados'] if 'CRITICAL' in a.get('severidade', ''))
+              errors = sum(1 for a in data['achados'] if 'ERROR' in a.get('severidade', ''))
+              warnings = sum(1 for a in data['achados'] if 'WARNING' in a.get('severidade', ''))
+              print(f'**CRITICAL:** {criticals} | **ERROR:** {errors} | **WARNING:** {warnings}')
+          except Exception as e:
+              print(f'Erro ao ler relatório: {e}')
+          " 2>&1)
+
+          echo "$SCORE" >> $GITHUB_STEP_SUMMARY

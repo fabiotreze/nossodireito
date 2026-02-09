@@ -1,5 +1,6 @@
 # NossoDireito — Deploy para Azure Static Web Apps
 # Dispara em push na branch main e em pull requests.
+# ⚠️ Deploy SÓ executa se Quality Gate passar (quality-gate.yml).
 
 name: Deploy Azure Static Web Apps
 
@@ -13,7 +14,39 @@ on:
       - main
 
 jobs:
+  # ── Quality Gate (obrigatório antes do deploy) ──
+  quality-gate:
+    if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action != 'closed')
+    runs-on: ubuntu-latest
+    name: Quality Gate
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Scan dados sensíveis
+        run: |
+          FOUND=0
+          for ext in pfx pem key p12 env; do
+            FILES=$(git ls-files "*.${ext}" 2>/dev/null || true)
+            if [ -n "$FILES" ]; then
+              echo "❌ Arquivo sensível: $FILES"
+              FOUND=$((FOUND + 1))
+            fi
+          done
+          if [ "$FOUND" -gt 0 ]; then exit 1; fi
+          echo "✅ Sem dados sensíveis."
+
+      - name: Quality Gate (score >= 75)
+        run: python codereview/codereview.py --ci --min-score 75
+
+  # ── Deploy (só executa se quality-gate passar) ──
   build_and_deploy:
+    needs: quality-gate
     if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action != 'closed')
     runs-on: ubuntu-latest
     name: Build and Deploy
