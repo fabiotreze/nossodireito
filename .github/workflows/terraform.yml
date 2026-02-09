@@ -1,0 +1,135 @@
+# NossoDireito — Terraform via GitHub Actions
+# Provisiona e gerencia infraestrutura Azure.
+# State armazenado no HCP Terraform (gratuito, sem Storage Account).
+#
+# Secrets necessários no GitHub (Settings → Secrets → Actions):
+#   TF_API_TOKEN         — HCP Terraform API token
+#   ARM_CLIENT_ID        — Service Principal (App ID)
+#   ARM_CLIENT_SECRET    — Service Principal password
+#   ARM_TENANT_ID        — Azure AD Tenant ID
+#   ARM_SUBSCRIPTION_ID  — Azure Subscription ID
+#   TF_VAR_pfx_password  — Senha do PFX (se usar cert próprio)
+
+name: Terraform
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "terraform/**"
+  pull_request:
+    branches: [main]
+    paths:
+      - "terraform/**"
+  workflow_dispatch:
+    inputs:
+      action:
+        description: "Terraform action"
+        required: true
+        default: "plan"
+        type: choice
+        options:
+          - plan
+          - apply
+          - destroy
+
+permissions:
+  contents: read
+  pull-requests: write
+
+env:
+  TF_CLOUD_ORGANIZATION: "fabiotreze"
+  TF_WORKSPACE: "nossodireito"
+  TF_API_TOKEN: ${{ secrets.TF_API_TOKEN }}
+  # Azure Service Principal para autenticação
+  ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+  ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
+  ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+  ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+    name: Terraform
+    defaults:
+      run:
+        working-directory: terraform
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
+
+      - name: Terraform Init
+        run: terraform init
+
+      - name: Terraform Format Check
+        run: terraform fmt -check -recursive
+
+      - name: Terraform Validate
+        run: terraform validate
+
+      # ── Plan (sempre roda) ──
+      - name: Terraform Plan
+        id: plan
+        run: |
+          terraform plan \
+            -var="subscription_id=${{ secrets.ARM_SUBSCRIPTION_ID }}" \
+            -var="pfx_password=${{ secrets.TF_VAR_pfx_password }}" \
+            -no-color \
+            -out=tfplan
+        continue-on-error: true
+
+      # ── Comentar plan no PR ──
+      - name: Comentar plan no PR
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        env:
+          PLAN: ${{ steps.plan.outputs.stdout }}
+        with:
+          script: |
+            const output = `#### Terraform Plan 📋
+            \`\`\`
+            ${process.env.PLAN}
+            \`\`\`
+            *Push by @${{ github.actor }}*`;
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: output
+            });
+
+      - name: Plan Status
+        if: steps.plan.outcome == 'failure'
+        run: exit 1
+
+      # ── Apply (só em push na main ou manual) ──
+      - name: Terraform Apply
+        if: |
+          (github.ref == 'refs/heads/main' && github.event_name == 'push') ||
+          (github.event_name == 'workflow_dispatch' && github.event.inputs.action == 'apply')
+        run: terraform apply -auto-approve tfplan
+
+      # ── Destroy (só manual) ──
+      - name: Terraform Destroy
+        if: github.event_name == 'workflow_dispatch' && github.event.inputs.action == 'destroy'
+        run: |
+          terraform destroy \
+            -var="subscription_id=${{ secrets.ARM_SUBSCRIPTION_ID }}" \
+            -var="pfx_password=${{ secrets.TF_VAR_pfx_password }}" \
+            -auto-approve
+
+      # ── Outputs ──
+      - name: Terraform Outputs
+        if: steps.plan.outcome == 'success'
+        run: |
+          echo "## 🏗️ Terraform Outputs" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          terraform output -no-color 2>/dev/null >> $GITHUB_STEP_SUMMARY || echo "No outputs yet" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY

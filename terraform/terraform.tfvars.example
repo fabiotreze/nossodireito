@@ -1,11 +1,18 @@
 # ============================================================
 # NossoDireito — Terraform Variables
 # ============================================================
-# Copie para terraform.tfvars e preencha.
-# NÃO commite terraform.tfvars no repositório!
+# USO LOCAL:
+#   Copie para terraform.tfvars e preencha.
+#   NÃO commite terraform.tfvars no repositório!
+#   Para outro ambiente: terraform apply -var-file="staging.tfvars"
 #
-# Para criar outro ambiente (ex: staging), copie para staging.tfvars:
-#   terraform apply -var-file="staging.tfvars"
+# USO VIA GITHUB ACTIONS (CI/CD):
+#   As variáveis são injetadas via GitHub Secrets:
+#     subscription_id  → secrets.ARM_SUBSCRIPTION_ID
+#     pfx_password     → secrets.TF_VAR_pfx_password
+#   Demais variáveis usam os defaults definidos em variables.tf.
+#   Para alterar defaults no CI, edite variables.tf ou adicione
+#   mais -var flags em .github/workflows/terraform.yml.
 # ============================================================
 
 subscription_id = "YOUR_AZURE_SUBSCRIPTION_ID"

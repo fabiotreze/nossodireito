@@ -1,5 +1,5 @@
 # ============================================================
-# NossoDireito — Terraform — Azure Static Web App (Free)
+# NossoDireito — Terraform — Azure Static Web App
 # ============================================================
 # Well-Architected Framework alignment:
 #   - Cost Optimization: Free tier, zero compute cost
@@ -19,14 +19,21 @@ terraform {
     }
   }
 
-  # Local state. For team use, configure remote backend:
-  # backend "azurerm" {
-  #   resource_group_name  = "terraform-state-rg"
-  #   storage_account_name = "nossodireitotfstate"
-  #   container_name       = "tfstate"
-  #   key                  = "nossodireito.tfstate"
-  #   use_azuread_auth     = true
-  # }
+  # HCP Terraform (free) — armazena tfstate remotamente sem Storage Account.
+  # Setup:
+  #   1. Crie conta grátis: https://app.terraform.io/signup
+  #   2. Crie organização "fabiotreze" e workspace "nossodireito"
+  #   3. No workspace: Settings → General → Execution Mode = "Local"
+  #      (GitHub Actions roda o plan/apply, HCP só guarda o state)
+  #   4. Gere API token: User Settings → Tokens → Create API token
+  #   5. GitHub repo → Settings → Secrets → TF_API_TOKEN
+  cloud {
+    organization = "fabiotreze"
+
+    workspaces {
+      name = "nossodireito"
+    }
+  }
 }
 
 provider "azurerm" {

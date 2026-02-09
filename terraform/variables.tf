@@ -95,7 +95,7 @@ locals {
 
   # prod usa nomes limpos, outros ambientes ganham sufixo
   resource_group_name = var.environment == "prod" ? "rg-nossodireito" : "rg-nossodireito-${var.environment}"
-  static_web_app_name = var.environment == "prod" ? "nossodireito" : "nossodireito-${var.environment}"
+  static_web_app_name = var.environment == "prod" ? "stapp-nossodireito" : "stapp-nossodireito-${var.environment}"
   key_vault_name      = var.environment == "prod" ? "kv-nossodireito" : "kv-nossodireito-${var.environment}"
 
   tags = merge(
