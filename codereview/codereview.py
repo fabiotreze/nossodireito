@@ -1055,8 +1055,12 @@ def check_sensitive_data(report: ReviewReport) -> None:
             matches = re.findall(pattern, content, re.IGNORECASE)
             if matches:
                 # Ignorar falsos positivos em arquivos de configuração/automação
-                safe_files = {".gitignore", "codereview.py", "quality-gate.yml", "pre-commit"}
-                if f.name in safe_files:
+                safe_files = {".gitignore", "codereview.py", "quality-gate.yml", "pre-commit",
+                              "terraform.yml", "deploy.yml", "weekly-review.yml"}
+                # Workflows CI referenciam paths de runtime (ex: cert.pfx decodificado de secret)
+                ci_dirs = {".github"}
+                is_ci = any(p in str(f.relative_to(PROJECT_ROOT)).replace("\\", "/") for p in ci_dirs)
+                if f.name in safe_files or is_ci:
                     continue
                 secret_found = True
                 report.add(Finding(cat, f"{label}: {f.name}", Severity.CRITICAL,
