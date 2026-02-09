@@ -84,6 +84,21 @@ resource "azurerm_key_vault_access_policy" "app_service" {
   secret_permissions      = ["Get"]
 }
 
+# --- Access Policy: Microsoft.Web RP (necessário para App Service Certificate) ---
+# O Azure App Service usa o RP Microsoft.Web (App ID: abfa0a7c-a6b6-4736-8310-5855508787cd)
+# para ler o certificado do Key Vault. Sem esta policy, o SSL binding falha com 403.
+# O Object ID é descoberto automaticamente pelo workflow via az ad sp show.
+resource "azurerm_key_vault_access_policy" "web_rp" {
+  count = var.enable_keyvault && var.web_rp_object_id != "" ? 1 : 0
+
+  key_vault_id = azurerm_key_vault.main[0].id
+  tenant_id    = data.azurerm_client_config.current.tenant_id
+  object_id    = var.web_rp_object_id
+
+  certificate_permissions = ["Get"]
+  secret_permissions      = ["Get"]
+}
+
 # --- Import PFX Certificate ---
 resource "azurerm_key_vault_certificate" "wildcard" {
   count = var.enable_keyvault && var.pfx_file_path != "" ? 1 : 0
@@ -196,6 +211,7 @@ resource "azurerm_app_service_certificate" "main" {
 
   depends_on = [
     azurerm_key_vault_access_policy.app_service,
+    azurerm_key_vault_access_policy.web_rp,
     azurerm_key_vault_certificate.wildcard,
   ]
 

@@ -89,6 +89,12 @@ variable "enable_keyvault" {
   default     = true
 }
 
+variable "web_rp_object_id" {
+  description = "Object ID do Service Principal Microsoft.Web RP (abfa0a7c-a6b6-4736-8310-5855508787cd). Descoberto via az ad sp show."
+  type        = string
+  default     = ""
+}
+
 # --- Locals: nomes derivados do ambiente ---
 locals {
   name_prefix = "nossodireito-${var.environment}"
