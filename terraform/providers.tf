@@ -19,21 +19,9 @@ terraform {
     }
   }
 
-  # HCP Terraform (free) — armazena tfstate remotamente sem Storage Account.
-  # Setup:
-  #   1. Crie conta grátis: https://app.terraform.io/signup
-  #   2. Crie organização "fabiotreze" e workspace "nossodireito"
-  #   3. No workspace: Settings → General → Execution Mode = "Local"
-  #      (GitHub Actions roda o plan/apply, HCP só guarda o state)
-  #   4. Gere API token: User Settings → Tokens → Create API token
-  #   5. GitHub repo → Settings → Secrets → TF_API_TOKEN
-  cloud {
-    organization = "fabiotreze"
-
-    workspaces {
-      name = "nossodireito"
-    }
-  }
+  # Backend local — sem remote state.
+  # O state é salvo como artifact no GitHub Actions para persistência.
+  # Para destroy, baixe o artifact antes de rodar.
 }
 
 provider "azurerm" {

@@ -1,9 +1,8 @@
 # NossoDireito — Terraform via GitHub Actions
 # Provisiona e gerencia infraestrutura Azure.
-# State armazenado no HCP Terraform (gratuito, sem Storage Account).
+# State local — salvo como GitHub Artifact para persistência entre runs.
 #
 # Secrets necessários no GitHub (Settings → Secrets → Actions):
-#   TF_API_TOKEN         — HCP Terraform API token
 #   ARM_CLIENT_ID        — Service Principal (App ID)
 #   ARM_CLIENT_SECRET    — Service Principal password
 #   ARM_TENANT_ID        — Azure AD Tenant ID
@@ -38,9 +37,6 @@ permissions:
   pull-requests: write
 
 env:
-  TF_CLOUD_ORGANIZATION: "fabiotreze"
-  TF_WORKSPACE: "nossodireito"
-  TF_API_TOKEN: ${{ secrets.TF_API_TOKEN }}
   # Azure Service Principal para autenticação
   ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
   ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
@@ -61,8 +57,16 @@ jobs:
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
+
+      # ── Restaurar state de run anterior (se existir) ──
+      - name: Baixar tfstate anterior
+        uses: dawidd6/action-download-artifact@v6
         with:
-          cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
+          name: terraform-state
+          path: terraform/
+          if_no_artifact_found: warn
+          search_artifacts: true
+          workflow: terraform.yml
 
       - name: Terraform Init
         run: terraform init
@@ -124,6 +128,18 @@ jobs:
             -var="subscription_id=${{ secrets.ARM_SUBSCRIPTION_ID }}" \
             -var="pfx_password=${{ secrets.TF_VAR_pfx_password }}" \
             -auto-approve
+
+      # ── Salvar state como artifact ──
+      - name: Upload tfstate
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: terraform-state
+          path: |
+            terraform/terraform.tfstate
+            terraform/terraform.tfstate.backup
+          retention-days: 90
+          overwrite: true
 
       # ── Outputs ──
       - name: Terraform Outputs
