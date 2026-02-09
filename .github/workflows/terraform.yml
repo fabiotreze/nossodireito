@@ -68,6 +68,7 @@ jobs:
           if_no_artifact_found: warn
           search_artifacts: true
           workflow: terraform.yml
+          workflow_conclusion: ""
 
       - name: Terraform Init
         run: terraform init
