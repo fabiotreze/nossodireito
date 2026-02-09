@@ -130,7 +130,14 @@ jobs:
             -var="subscription_id=${{ secrets.ARM_SUBSCRIPTION_ID }}" \
             -var="pfx_password=${{ secrets.TF_VAR_pfx_password }}" \
             -var="pfx_file_path=" \
-            -auto-approve
+            -auto-approve || true
+
+      # Fallback: az group delete (quando state está vazio/corrompido)
+      - name: Fallback - Delete Resource Group via az CLI
+        if: github.event_name == 'workflow_dispatch' && github.event.inputs.action == 'destroy'
+        run: |
+          az login --service-principal -u $ARM_CLIENT_ID -p $ARM_CLIENT_SECRET --tenant $ARM_TENANT_ID --output none
+          az group delete --name rg-nossodireito --yes 2>/dev/null || echo "RG já removido ou não existe"
 
       # ── Salvar state como artifact ──
       - name: Upload tfstate
