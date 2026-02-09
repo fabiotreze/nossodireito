@@ -24,6 +24,16 @@ on:
           - plan
           - apply
           - destroy
+      enable_custom_domain:
+        description: "Habilitar custom domain (requer CNAME configurado no DNS)"
+        required: false
+        type: boolean
+        default: true
+      enable_keyvault:
+        description: "Habilitar Key Vault + certificado SSL"
+        required: false
+        type: boolean
+        default: true
 
 permissions:
   contents: read
@@ -37,6 +47,8 @@ env:
   # Terraform le TF_VAR_* automaticamente — sem necessidade de -var flags
   TF_VAR_subscription_id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
   TF_VAR_pfx_password: ${{ secrets.TF_VAR_PFX_PASSWORD }}
+  TF_VAR_enable_custom_domain: ${{ github.event.inputs.enable_custom_domain }}
+  TF_VAR_enable_keyvault: ${{ github.event.inputs.enable_keyvault }}
 
 jobs:
   terraform:

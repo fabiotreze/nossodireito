@@ -94,7 +94,20 @@ jobs:
           SIZE=$(wc -c < site.zip)
           echo "📦 site.zip: ${SIZE} bytes"
 
+      - name: Verificar infraestrutura
+        id: infra_check
+        run: |
+          EXISTS=$(az group exists --name rg-nossodireito)
+          echo "rg_exists=${EXISTS}" >> $GITHUB_OUTPUT
+          if [ "$EXISTS" != "true" ]; then
+            echo "::warning::Resource group 'rg-nossodireito' não encontrado. Execute Terraform apply primeiro."
+            echo "ℹ️ Vá em Actions > Terraform > Run workflow > action=apply"
+          else
+            echo "✅ Resource group existe."
+          fi
+
       - name: Deploy to App Service
+        if: steps.infra_check.outputs.rg_exists == 'true'
         run: |
           az webapp deploy \
             --resource-group rg-nossodireito \
@@ -105,6 +118,7 @@ jobs:
           echo "✅ Deploy concluído."
 
       - name: Health check
+        if: steps.infra_check.outputs.rg_exists == 'true'
         run: |
           sleep 10
           URL="https://app-nossodireito.azurewebsites.net"
@@ -113,3 +127,9 @@ jobs:
           if [ "$STATUS" != "200" ]; then
             echo "::warning::Site retornou HTTP ${STATUS} — pode levar alguns segundos para estabilizar."
           fi
+
+      - name: Skip notice
+        if: steps.infra_check.outputs.rg_exists != 'true'
+        run: |
+          echo "::warning::Deploy ignorado — infraestrutura não provisionada."
+          echo "Execute: Actions → Terraform → Run workflow → action=apply"
