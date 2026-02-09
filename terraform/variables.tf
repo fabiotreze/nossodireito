@@ -31,7 +31,7 @@ variable "location" {
 variable "sku_tier" {
   description = "Tier do Static Web App: 'Free' ($0) ou 'Standard' ($9/mês, necessário para SSL próprio)"
   type        = string
-  default     = "Free"
+  default     = "Standard"
 
   validation {
     condition     = contains(["Free", "Standard"], var.sku_tier)
@@ -42,13 +42,13 @@ variable "sku_tier" {
 variable "custom_domain" {
   description = "Domínio customizado. Deixe vazio para usar apenas o domínio Azure."
   type        = string
-  default     = ""
+  default     = "nossodireito.fabiotreze.com"
 }
 
 variable "enable_custom_domain" {
   description = "Habilitar domínio customizado (requer CNAME configurado no DNS)"
   type        = bool
-  default     = false
+  default     = true
 }
 
 variable "github_repo_url" {
@@ -86,7 +86,7 @@ variable "pfx_password" {
 variable "enable_keyvault" {
   description = "Criar Key Vault dedicado para armazenar o certificado SSL"
   type        = bool
-  default     = false
+  default     = true
 }
 
 # --- Locals: nomes derivados do ambiente ---

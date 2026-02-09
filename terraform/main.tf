@@ -118,18 +118,12 @@ resource "azurerm_static_web_app" "main" {
 }
 
 # --- Custom Domain ---
-# PREREQUISITO: Configure o CNAME no DNS (GoDaddy) ANTES de habilitar.
+# PREREQUISITO: Configure o CNAME no GoDaddy ANTES de rodar terraform apply.
+#   GoDaddy → DNS → Add Record:
+#     Type: CNAME | Name: nossodireito | Value: <default_hostname>.azurestaticapps.net
 #
-# Fluxo:
-#   1. terraform apply (sem domínio) → copie default_hostname do output
-#   2. GoDaddy DNS → CNAME: nossodireito → <default_hostname>
-#   3. Aguarde ~5 min para propagação DNS
-#   4. Defina enable_custom_domain = true no tfvars
-#   5. terraform apply novamente
-#
-# O certificado é vinculado automaticamente após validação do CNAME:
-#   - Se Key Vault + PFX: usa seu certificado wildcard
-#   - Se sem Key Vault: SSL managed gratuito pelo Azure
+# O Azure valida o CNAME durante a criação do recurso.
+# SSL managed é provisionado automaticamente pelo Azure após validação.
 
 resource "azurerm_static_web_app_custom_domain" "main" {
   count             = var.enable_custom_domain && var.custom_domain != "" ? 1 : 0

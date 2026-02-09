@@ -85,6 +85,7 @@ jobs:
           terraform plan \
             -var="subscription_id=${{ secrets.ARM_SUBSCRIPTION_ID }}" \
             -var="pfx_password=${{ secrets.TF_VAR_pfx_password }}" \
+            -var="pfx_file_path=" \
             -no-color \
             -out=tfplan
         continue-on-error: true
@@ -128,6 +129,7 @@ jobs:
           terraform destroy \
             -var="subscription_id=${{ secrets.ARM_SUBSCRIPTION_ID }}" \
             -var="pfx_password=${{ secrets.TF_VAR_pfx_password }}" \
+            -var="pfx_file_path=" \
             -auto-approve
 
       # ── Salvar state como artifact ──
