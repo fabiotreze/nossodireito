@@ -12,14 +12,6 @@
 name: Terraform
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - "terraform/**"
-  pull_request:
-    branches: [main]
-    paths:
-      - "terraform/**"
   workflow_dispatch:
     inputs:
       action:
@@ -116,11 +108,9 @@ jobs:
         if: steps.plan.outcome == 'failure'
         run: exit 1
 
-      # ── Apply (só em push na main ou manual) ──
+      # ── Apply (só manual) ──
       - name: Terraform Apply
-        if: |
-          (github.ref == 'refs/heads/main' && github.event_name == 'push') ||
-          (github.event_name == 'workflow_dispatch' && github.event.inputs.action == 'apply')
+        if: github.event.inputs.action == 'apply'
         run: terraform apply -auto-approve tfplan
 
       # ── Destroy (só manual) ──
