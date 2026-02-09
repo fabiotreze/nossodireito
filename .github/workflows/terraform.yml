@@ -35,6 +35,7 @@ on:
 permissions:
   contents: read
   pull-requests: write
+  actions: read
 
 env:
   # Azure Service Principal para autenticação
