@@ -1,5 +1,12 @@
 # ⚖️ NossoDireito
 
+[![Quality Gate](https://img.shields.io/badge/Quality%20Gate-97.6%2F100-brightgreen?style=flat-square)](https://github.com/fabiotreze/nossodireito/actions)
+[![Deploy](https://img.shields.io/badge/Deploy-Azure%20App%20Service-0078D4?style=flat-square&logo=microsoft-azure)](https://nossodireito.fabiotreze.com)
+[![Security](https://img.shields.io/badge/Security-AES--GCM--256%20%7C%20CSP%20%7C%20SRI-green?style=flat-square&logo=letsencrypt)](SECURITY.md)
+[![LGPD](https://img.shields.io/badge/LGPD-Zero%20Data%20Collection-blue?style=flat-square)](SECURITY.md)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow?style=flat-square)](LICENSE)
+[![Version](https://img.shields.io/badge/Version-1.0.0-informational?style=flat-square)](CHANGELOG.md)
+
 **Recebeu um laudo? Vem que a gente te ajuda.**
 
 Guia gratuito, sem fins lucrativos, com direitos, benefícios e passo a passo para famílias de pessoas com deficiência (PcD) no Brasil.
@@ -35,11 +42,15 @@ O NossoDireito organiza, em linguagem simples, as informações oficiais do gove
 | Componente | Tecnologia |
 |---|---|
 | Frontend | HTML5 + CSS3 + Vanilla JavaScript |
+| Server | Node.js 20 LTS (`server.js`) |
 | Base de dados | JSON estático (`data/direitos.json`) |
-| Armazenamento | `localStorage` (apenas checklist e disclaimer) |
-| Hospedagem | GitHub Pages |
-| Backend | Nenhum |
-| Analytics | Nenhum |
+| Criptografia | AES-GCM-256 via Web Crypto API |
+| Hospedagem | Azure App Service B1 Linux |
+| SSL | PFX próprio via Azure Key Vault (SNI) |
+| IaC | Terraform (azurerm ~>4.0) |
+| CI/CD | GitHub Actions (Quality Gate + zip deploy) |
+| Monitoramento | Azure Application Insights |
+| Analytics de usuário | Nenhum (client-side) |
 | Cookies | Nenhum |
 
 ## 📁 Estrutura
@@ -47,29 +58,44 @@ O NossoDireito organiza, em linguagem simples, as informações oficiais do gove
 ```
 nossodireito/
 ├── index.html              # Página principal
+├── server.js               # Servidor Node.js (App Service)
+├── package.json            # Dependências (applicationinsights)
 ├── css/
 │   └── styles.css          # CSS responsivo + dark mode
 ├── js/
-│   └── app.js              # Busca, navegação, checklist
+│   └── app.js              # Busca, navegação, checklist, criptografia
 ├── data/
-│   └── direitos.json       # Base de conhecimento (8 categorias)
+│   └── direitos.json       # Base de conhecimento (9 categorias)
+├── images/                 # Favicons e imagens
+├── codereview/
+│   └── codereview.py       # Quality Gate (17 categorias)
+├── terraform/              # Infraestrutura como código
+│   ├── main.tf             # App Service + Key Vault + SSL
+│   ├── variables.tf        # Variáveis multi-ambiente
+│   ├── outputs.tf          # Outputs pós-apply
+│   └── providers.tf        # Provider azurerm ~>4.0
+├── .github/workflows/
+│   ├── deploy.yml          # CI/CD push → deploy
+│   ├── terraform.yml       # IaC manual dispatch
+│   └── weekly-review.yml   # Issue automática semanal
+├── CHANGELOG.md
+├── GOVERNANCE.md
+├── SECURITY.md
+├── SECURITY_AUDIT.md
+├── LICENSE
 └── README.md
 ```
 
-## 🚀 Como rodar localmente
-
-Basta abrir `index.html` no navegador, ou usar um servidor local:
+## 🚀 Instalação e uso local
 
 ```bash
-# Com Python
 cd nossodireito
+node server.js
+# ou simplesmente:
 python -m http.server 8000
-
-# Com Node.js
-npx serve .
 ```
 
-Acesse `http://localhost:8000`
+Acesse `http://localhost:8080` (Node) ou `http://localhost:8000` (Python)
 
 ## ⚠️ Aviso Legal
 

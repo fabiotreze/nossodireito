@@ -1,8 +1,8 @@
-# NossoDireito — Deploy para Azure Static Web Apps
-# Dispara em push na branch main e em pull requests.
-# ⚠️ Deploy SÓ executa se Quality Gate passar (quality-gate.yml).
+# NossoDireito — Deploy para Azure App Service
+# Dispara em push na branch main.
+# ⚠️ Deploy SÓ executa se Quality Gate passar.
 
-name: Deploy Azure Static Web Apps
+name: Deploy Azure App Service
 
 on:
   push:
@@ -10,25 +10,16 @@ on:
       - main
     paths:
       - "index.html"
+      - "server.js"
       - "css/**"
       - "js/**"
       - "data/**"
-      - "staticwebapp.config.json"
+      - "images/**"
       - "codereview/**"
-  pull_request:
-    types: [opened, synchronize, reopened, closed]
-    branches:
-      - main
-    paths:
-      - "index.html"
-      - "css/**"
-      - "js/**"
-      - "data/**"
 
 jobs:
   # ── Quality Gate (obrigatório antes do deploy) ──
   quality-gate:
-    if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action != 'closed')
     runs-on: ubuntu-latest
     name: Quality Gate
     steps:
@@ -57,44 +48,68 @@ jobs:
         run: python codereview/codereview.py --ci --min-score 75
 
   # ── Deploy (só executa se quality-gate passar) ──
-  build_and_deploy:
+  deploy:
     needs: quality-gate
-    if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action != 'closed')
     runs-on: ubuntu-latest
-    name: Build and Deploy
-    env:
-      DEPLOY_TOKEN: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}
+    name: Deploy to App Service
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Check deploy token
-        if: env.DEPLOY_TOKEN == ''
+      - name: Azure Login
+        uses: azure/login@v2
+        with:
+          creds: |
+            {
+              "clientId": "${{ secrets.ARM_CLIENT_ID }}",
+              "clientSecret": "${{ secrets.ARM_CLIENT_SECRET }}",
+              "subscriptionId": "${{ secrets.ARM_SUBSCRIPTION_ID }}",
+              "tenantId": "${{ secrets.ARM_TENANT_ID }}"
+            }
+
+      - name: Minificar JS e CSS
         run: |
-          echo "::warning::AZURE_STATIC_WEB_APPS_API_TOKEN nao configurado."
-          echo "Execute o workflow Terraform com action=apply para provisionar e deployar."
-          echo "Apos o apply, o token será setado automaticamente."
-          exit 0
+          npm install --no-save terser clean-css-cli
 
-      - name: Deploy
-        if: env.DEPLOY_TOKEN != ''
-        uses: Azure/static-web-apps-deploy@v1
-        with:
-          azure_static_web_apps_api_token: ${{ env.DEPLOY_TOKEN }}
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          action: "upload"
-          # Site estático puro — sem framework, sem build
-          app_location: "/"
-          output_location: ""
-          skip_app_build: true
+          npx terser js/app.js --compress --mangle --output js/app.min.js
+          ORIG=$(wc -c < js/app.js)
+          MINI=$(wc -c < js/app.min.js)
+          echo "✅ JS: ${ORIG}B → ${MINI}B ($(( (ORIG - MINI) * 100 / ORIG ))% redução)"
+          mv js/app.min.js js/app.js
 
-  close_pull_request:
-    if: github.event_name == 'pull_request' && github.event.action == 'closed'
-    runs-on: ubuntu-latest
-    name: Close PR Environment
-    steps:
-      - name: Close staging
-        uses: Azure/static-web-apps-deploy@v1
-        with:
-          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}
-          action: "close"
+          npx cleancss -o css/styles.min.css css/styles.css
+          ORIG_CSS=$(wc -c < css/styles.css)
+          MINI_CSS=$(wc -c < css/styles.min.css)
+          echo "✅ CSS: ${ORIG_CSS}B → ${MINI_CSS}B ($(( (ORIG_CSS - MINI_CSS) * 100 / ORIG_CSS ))% redução)"
+          mv css/styles.min.css css/styles.css
+
+      - name: Criar pacote de deploy
+        run: |
+          zip -r site.zip \
+            index.html server.js package.json \
+            css/ js/ data/ images/ \
+            -x "*.bak" "*.swa.bak" "__pycache__/*" \
+            "terraform/*" "codereview/*" ".github/*" "tests/*" "docs/*"
+
+          SIZE=$(wc -c < site.zip)
+          echo "📦 site.zip: ${SIZE} bytes"
+
+      - name: Deploy to App Service
+        run: |
+          az webapp deploy \
+            --resource-group rg-nossodireito \
+            --name app-nossodireito \
+            --src-path site.zip \
+            --type zip
+
+          echo "✅ Deploy concluído."
+
+      - name: Health check
+        run: |
+          sleep 10
+          URL="https://app-nossodireito.azurewebsites.net"
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" "$URL" || true)
+          echo "Health check: ${URL} → HTTP ${STATUS}"
+          if [ "$STATUS" != "200" ]; then
+            echo "::warning::Site retornou HTTP ${STATUS} — pode levar alguns segundos para estabilizar."
+          fi

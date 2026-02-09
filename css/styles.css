@@ -1228,10 +1228,11 @@ input,
     display: inline-block;
     padding: 2px 8px;
     font-size: 0.72rem;
+    font-weight: 600;
     background: var(--surface-alt);
     border: 1px solid var(--border);
     border-radius: 10px;
-    color: var(--text-muted);
+    color: var(--text);
 }
 
 .analysis-match-actions {

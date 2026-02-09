@@ -1,26 +1,26 @@
 # ============================================================
-# Main — Azure Static Web App + Key Vault
+# Main — Azure App Service + Key Vault + Custom SSL (BYOC)
 # ============================================================
 # Well-Architected Framework — 5 Pillars:
 #
 # 1. COST OPTIMIZATION
-#    - Standard SKU com cert próprio: $9/mês
-#    - Free SKU com cert managed: $0/mês
+#    - App Service B1 Linux: ~$13/mês
 #    - Key Vault Standard: ~$0.03/10k operations
-#    - No compute, no App Service Plan
+#    - Cert PFX próprio: $0 (já pago)
+#    - Total estimado: ~$13/mês
 #
 # 2. SECURITY
-#    - Certificado PFX armazenado no Key Vault (não no repo)
-#    - Senha do PFX via variável sensitive (nunca em disco)
+#    - Certificado PFX próprio via Key Vault (BYOC)
+#    - SNI SSL binding no custom domain
 #    - Managed Identity para acesso ao Key Vault (sem credenciais)
-#    - Security headers via staticwebapp.config.json
-#    - HTTPS enforced por padrão
-#    - Key Vault com soft-delete + purge protection
+#    - Security headers via server.js middleware
+#    - HTTPS Only enforced
+#    - FTPS Disabled, SCM basic auth disabled
 #
 # 3. RELIABILITY
-#    - Azure global CDN com edge PoPs mundiais
-#    - Static content = zero falhas de runtime
-#    - Key Vault 99.99% SLA
+#    - App Service 99.95% SLA (Basic+)
+#    - Health check habilitado
+#    - always_on = true (sem cold starts)
 #
 # 4. OPERATIONAL EXCELLENCE
 #    - Infrastructure as Code (Terraform)
@@ -29,9 +29,10 @@
 #    - Multi-ambiente via tfvars
 #
 # 5. PERFORMANCE EFFICIENCY
-#    - Conteúdo servido do edge mais próximo
-#    - Sem cold starts, sem scaling
-#    - ~178KB payload total
+#    - Node.js 20 LTS servindo static files com Express
+#    - Gzip compression habilitado
+#    - Cache headers configurados por tipo de asset
+#    - HTTP/2 habilitado
 # ============================================================
 
 # --- Data Sources ---
@@ -54,7 +55,7 @@ resource "azurerm_key_vault" "main" {
   tenant_id                  = data.azurerm_client_config.current.tenant_id
   sku_name                   = "standard"
   soft_delete_retention_days = 7
-  purge_protection_enabled   = false # true em produção real; false para dev/teste
+  purge_protection_enabled   = false
 
   tags = local.tags
 }
@@ -71,13 +72,13 @@ resource "azurerm_key_vault_access_policy" "deployer" {
   secret_permissions      = ["Get", "List", "Set", "Delete", "Purge"]
 }
 
-# --- Access Policy: Static Web App Managed Identity ---
-resource "azurerm_key_vault_access_policy" "swa" {
+# --- Access Policy: App Service Managed Identity ---
+resource "azurerm_key_vault_access_policy" "app_service" {
   count = var.enable_keyvault ? 1 : 0
 
   key_vault_id = azurerm_key_vault.main[0].id
   tenant_id    = data.azurerm_client_config.current.tenant_id
-  object_id    = azurerm_static_web_app.main.identity[0].principal_id
+  object_id    = azurerm_linux_web_app.main.identity[0].principal_id
 
   certificate_permissions = ["Get"]
   secret_permissions      = ["Get"]
@@ -98,33 +99,113 @@ resource "azurerm_key_vault_certificate" "wildcard" {
   depends_on = [azurerm_key_vault_access_policy.deployer]
 }
 
-# --- Static Web App ---
-resource "azurerm_static_web_app" "main" {
-  name                = local.static_web_app_name
-  resource_group_name = azurerm_resource_group.main.name
+# --- Log Analytics Workspace (required by App Insights) ---
+resource "azurerm_log_analytics_workspace" "main" {
+  name                = local.log_analytics_name
   location            = azurerm_resource_group.main.location
-  sku_tier            = var.sku_tier
-  sku_size            = var.sku_tier
+  resource_group_name = azurerm_resource_group.main.name
+  sku                 = "PerGB2018"
+  retention_in_days   = 30
 
-  # Managed Identity sempre ativa (gratuito) — necessária para Key Vault
+  tags = local.tags
+}
+
+# --- Application Insights ---
+# Rastreia: page views, IPs de origem, geolocalização, tempos de resposta,
+# erros, e métricas de performance. Portal: portal.azure.com > App Insights.
+resource "azurerm_application_insights" "main" {
+  name                = local.app_insights_name
+  location            = azurerm_resource_group.main.location
+  resource_group_name = azurerm_resource_group.main.name
+  workspace_id        = azurerm_log_analytics_workspace.main.id
+  application_type    = "Node.JS"
+
+  tags = local.tags
+}
+
+# --- App Service Plan (Linux) ---
+resource "azurerm_service_plan" "main" {
+  name                = local.app_service_plan_name
+  location            = azurerm_resource_group.main.location
+  resource_group_name = azurerm_resource_group.main.name
+  os_type             = "Linux"
+  sku_name            = var.app_service_sku
+
+  tags = local.tags
+}
+
+# --- Linux Web App ---
+resource "azurerm_linux_web_app" "main" {
+  name                = local.web_app_name
+  location            = azurerm_resource_group.main.location
+  resource_group_name = azurerm_resource_group.main.name
+  service_plan_id     = azurerm_service_plan.main.id
+
+  https_only = true
+
   identity {
     type = "SystemAssigned"
+  }
+
+  site_config {
+    always_on  = true
+    ftps_state = "Disabled"
+
+    application_stack {
+      node_version = "20-lts"
+    }
+
+    app_command_line  = "node server.js"
+    health_check_path = "/"
+    http2_enabled     = true
+  }
+
+  app_settings = {
+    WEBSITE_REDIRECT_ALL_TRAFFIC_TO_HTTPS      = "1"
+    NODE_ENV                                   = "production"
+    SCM_DO_BUILD_DURING_DEPLOYMENT             = "true"
+    APPLICATIONINSIGHTS_CONNECTION_STRING      = azurerm_application_insights.main.connection_string
+    ApplicationInsightsAgent_EXTENSION_VERSION = "~3"
   }
 
   tags = local.tags
 }
 
 # --- Custom Domain ---
-# PREREQUISITO: Configure o CNAME no GoDaddy ANTES de rodar terraform apply.
-#   GoDaddy → DNS → Add Record:
-#     Type: CNAME | Name: nossodireito | Value: <default_hostname>.azurestaticapps.net
-#
-# O Azure valida o CNAME durante a criação do recurso.
-# SSL managed é provisionado automaticamente pelo Azure após validação.
+# PREREQUISITO: Atualize o CNAME no GoDaddy para apontar para <web_app_name>.azurewebsites.net
+resource "azurerm_app_service_custom_hostname_binding" "main" {
+  count               = var.enable_custom_domain && var.custom_domain != "" ? 1 : 0
+  hostname            = var.custom_domain
+  app_service_name    = azurerm_linux_web_app.main.name
+  resource_group_name = azurerm_resource_group.main.name
 
-resource "azurerm_static_web_app_custom_domain" "main" {
-  count             = var.enable_custom_domain && var.custom_domain != "" ? 1 : 0
-  static_web_app_id = azurerm_static_web_app.main.id
-  domain_name       = var.custom_domain
-  validation_type   = "cname-delegation"
+  lifecycle {
+    ignore_changes = [ssl_state, thumbprint]
+  }
+}
+
+# --- App Service Certificate (from Key Vault) ---
+resource "azurerm_app_service_certificate" "main" {
+  count = var.enable_keyvault && var.pfx_file_path != "" && var.enable_custom_domain ? 1 : 0
+
+  name                = "cert-${local.web_app_name}"
+  resource_group_name = azurerm_resource_group.main.name
+  location            = azurerm_resource_group.main.location
+  key_vault_secret_id = azurerm_key_vault_certificate.wildcard[0].secret_id
+
+  depends_on = [
+    azurerm_key_vault_access_policy.app_service,
+    azurerm_key_vault_certificate.wildcard,
+  ]
+
+  tags = local.tags
+}
+
+# --- SSL Binding (SNI) ---
+resource "azurerm_app_service_certificate_binding" "main" {
+  count = var.enable_keyvault && var.pfx_file_path != "" && var.enable_custom_domain ? 1 : 0
+
+  hostname_binding_id = azurerm_app_service_custom_hostname_binding.main[0].id
+  certificate_id      = azurerm_app_service_certificate.main[0].id
+  ssl_state           = "SniEnabled"
 }

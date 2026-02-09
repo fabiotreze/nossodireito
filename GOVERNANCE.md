@@ -233,11 +233,11 @@ Categorias que podem ser adicionadas após pesquisa e validação:
 
 | Tipo de mudança | Incremento | Exemplo |
 |----------------|------------|---------|
-| Correção de texto/link | PATCH | 1.3.0 → 1.3.1 |
-| Nova categoria | MINOR | 1.3.0 → 1.4.0 |
-| Reestruturação do JSON/app | MAJOR | 1.3.0 → 2.0.0 |
-| Atualização de valor (BPC) | PATCH | 1.3.0 → 1.3.1 |
-| Nova instituição | PATCH | 1.3.0 → 1.3.1 |
+| Correção de texto/link | PATCH | 1.0.0 → 1.0.1 |
+| Nova categoria | MINOR | 1.0.0 → 1.1.0 |
+| Reestruturação do JSON/app | MAJOR | 1.0.0 → 2.0.0 |
+| Atualização de valor (BPC) | PATCH | 1.0.0 → 1.0.1 |
+| Nova instituição | PATCH | 1.0.0 → 1.0.1 |
 
 ---
 

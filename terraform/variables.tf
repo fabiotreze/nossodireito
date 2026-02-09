@@ -28,14 +28,14 @@ variable "location" {
   default     = "eastus2"
 }
 
-variable "sku_tier" {
-  description = "Tier do Static Web App: 'Free' ($0) ou 'Standard' ($9/mês, necessário para SSL próprio)"
+variable "app_service_sku" {
+  description = "SKU do App Service Plan: 'B1' ($13/mês, suporta custom SSL) ou 'F1' (Free, sem custom SSL)"
   type        = string
-  default     = "Standard"
+  default     = "B1"
 
   validation {
-    condition     = contains(["Free", "Standard"], var.sku_tier)
-    error_message = "SKU deve ser 'Free' ou 'Standard'."
+    condition     = contains(["F1", "B1", "B2", "B3", "S1", "S2", "S3", "P1v3", "P2v3"], var.app_service_sku)
+    error_message = "SKU deve ser F1, B1, B2, B3, S1, S2, S3, P1v3 ou P2v3."
   }
 }
 
@@ -94,9 +94,12 @@ locals {
   name_prefix = "nossodireito-${var.environment}"
 
   # prod usa nomes limpos, outros ambientes ganham sufixo
-  resource_group_name = var.environment == "prod" ? "rg-nossodireito" : "rg-nossodireito-${var.environment}"
-  static_web_app_name = var.environment == "prod" ? "stapp-nossodireito" : "stapp-nossodireito-${var.environment}"
-  key_vault_name      = var.environment == "prod" ? "kv-nossodireito" : "kv-nossodireito-${var.environment}"
+  resource_group_name   = var.environment == "prod" ? "rg-nossodireito" : "rg-nossodireito-${var.environment}"
+  app_service_plan_name = var.environment == "prod" ? "plan-nossodireito" : "plan-nossodireito-${var.environment}"
+  web_app_name          = var.environment == "prod" ? "app-nossodireito" : "app-nossodireito-${var.environment}"
+  key_vault_name        = var.environment == "prod" ? "kv-nossodireito" : "kv-nossodireito-${var.environment}"
+  app_insights_name     = var.environment == "prod" ? "appi-nossodireito" : "appi-nossodireito-${var.environment}"
+  log_analytics_name    = var.environment == "prod" ? "log-nossodireito" : "log-nossodireito-${var.environment}"
 
   tags = merge(
     {

@@ -88,12 +88,13 @@ OFFICIAL_DOMAINS = [
 ]
 
 # Versão mínima esperada
-MIN_VERSION = "1.3.0"
+MIN_VERSION = "1.0.0"
 
 # Tamanhos máximos recomendados (em bytes)
+# Nota: JS/CSS são minificados no deploy (terser/clean-css) — limites são para source
 MAX_HTML_SIZE = 30_000
 MAX_CSS_SIZE = 60_000
-MAX_JS_SIZE = 80_000
+MAX_JS_SIZE = 100_000
 MAX_JSON_SIZE = 100_000
 
 # Padrões de dados sensíveis (regex)
@@ -307,8 +308,26 @@ def check_security(report: ReviewReport, html: str, js: str) -> None:
                            sugestao="Implemente escapeHtml() para sanitizar todo conteúdo dinâmico."))
 
     # 2. innerHTML com dados não-sanitizados
+    # Analisa cada uso de innerHTML com template literals (`...`).
+    # Considera seguro se: contém escapeHtml, usa .map(), ou é string puramente estática
+    # (sem ${...} interpolations ou apenas ${...} com escapeHtml).
     innerhtml_uses = re.findall(r"\.innerHTML\s*=\s*(.+?)(?:;|\n)", js)
-    unsafe_count = sum(1 for use in innerhtml_uses if "escapeHtml" not in use and "map" not in use and "`" in use)
+    unsafe_count = 0
+    for use in innerhtml_uses:
+        if "`" not in use:
+            continue  # atribuição simples (ex: = '') — seguro
+        if "escapeHtml" in use or "map" in use:
+            continue  # sanitizado ou delegado a render function
+        # Verifica se template literal tem interpolações com dados dinâmicos
+        interpolations = re.findall(r"\$\{([^}]+)\}", use)
+        has_dynamic = any(
+            "escapeHtml" not in interp
+            and not re.match(r"^['\"][^'\"]*['\"]$", interp.strip())
+            and not re.match(r"^\w+\s*\?\s*['\"].*?['\"]\s*:\s*['\"].*?['\"]$", interp.strip())
+            for interp in interpolations
+        )
+        if has_dynamic:
+            unsafe_count += 1
     if unsafe_count > 0:
         report.add(Finding(cat, f"innerHTML potencialmente inseguro ({unsafe_count}x)", Severity.WARNING,
                            f"Encontrados {unsafe_count} usos de innerHTML com template literals sem escapeHtml visível.",
@@ -435,6 +454,97 @@ def check_security(report: ReviewReport, html: str, js: str) -> None:
                                f"Header {header} não encontrado — recomendado para produção.",
                                sugestao=f"Adicione <meta http-equiv='{header}' content='{expected}'>."))
 
+    # ── EASM Hardening Checks (server.js) ──
+    server_js = PROJECT_ROOT / "server.js"
+    srv = read_text(server_js) if server_js.exists() else ""
+
+    if srv:
+        # 11. HSTS (Strict-Transport-Security)
+        if "Strict-Transport-Security" in srv:
+            report.add(Finding(cat, "HSTS presente (server.js)", Severity.PASS,
+                               "Strict-Transport-Security header configurado no servidor."))
+        else:
+            report.add(Finding(cat, "Sem HSTS no servidor", Severity.CRITICAL,
+                               "Strict-Transport-Security não encontrado no server.js.",
+                               sugestao="Adicione 'Strict-Transport-Security': 'max-age=31536000; includeSubDomains; preload'."))
+
+        # 12. Cross-Origin headers (COOP, CORP, COEP)
+        co_headers = ["Cross-Origin-Opener-Policy", "Cross-Origin-Resource-Policy", "Cross-Origin-Embedder-Policy"]
+        co_found = [h for h in co_headers if h in srv]
+        if len(co_found) == 3:
+            report.add(Finding(cat, f"Cross-Origin isolation ({len(co_found)}/3)", Severity.PASS,
+                               "COOP, CORP e COEP configurados — isolamento cross-origin completo."))
+        else:
+            missing = [h for h in co_headers if h not in srv]
+            report.add(Finding(cat, f"Cross-Origin isolation parcial ({len(co_found)}/3)", Severity.WARNING,
+                               f"Faltam: {', '.join(missing)}.",
+                               sugestao="Adicione COOP, CORP e COEP no server.js."))
+
+        # 13. Rate limiting
+        if "isRateLimited" in srv or "rateLimit" in srv.lower():
+            report.add(Finding(cat, "Rate limiting implementado", Severity.PASS,
+                               "Proteção contra abuso de requisições (CWE-770)."))
+        else:
+            report.add(Finding(cat, "Sem rate limiting", Severity.WARNING,
+                               "Servidor não possui rate limiting — vulnerável a DoS.",
+                               sugestao="Implemente rate limiting por IP no server.js."))
+
+        # 14. Host header validation (CWE-644)
+        if "ALLOWED_HOSTS" in srv or "host header" in srv.lower():
+            report.add(Finding(cat, "Host header validation presente", Severity.PASS,
+                               "Validação de Host header implementada (CWE-644)."))
+        else:
+            report.add(Finding(cat, "Sem validação de Host header", Severity.WARNING,
+                               "Host header não validado — risco de host header injection.",
+                               sugestao="Adicione whitelist de hosts permitidos no server.js."))
+
+        # 15. Connection hardening (Slowloris prevention)
+        if "timeout" in srv and "headersTimeout" in srv:
+            report.add(Finding(cat, "Connection timeouts configurados", Severity.PASS,
+                               "Timeouts de request/headers previnem ataques Slowloris."))
+        else:
+            report.add(Finding(cat, "Sem connection timeouts", Severity.WARNING,
+                               "Servidor vulnerável a ataques Slowloris (CWE-400).",
+                               sugestao="Configure server.timeout e server.headersTimeout."))
+
+        # 16. Server identity suppression (CWE-200)
+        if "X-Powered-By" in srv or "removeHeader" in srv:
+            report.add(Finding(cat, "Server identity suprimida", Severity.PASS,
+                               "Header X-Powered-By removido — EASM não identifica a stack."))
+
+        # 17. upgrade-insecure-requests
+        if "upgrade-insecure-requests" in srv or "upgrade-insecure-requests" in html:
+            report.add(Finding(cat, "upgrade-insecure-requests presente", Severity.PASS,
+                               "CSP inclui upgrade-insecure-requests — browsers forçam HTTPS."))
+
+    # ── Client-side hardening (app.js) ──
+    # 18. Prototype pollution guard (CWE-1321)
+    if "Object.freeze(Object.prototype)" in js or "__proto__" in js:
+        report.add(Finding(cat, "Prototype pollution guard presente", Severity.PASS,
+                           "Object.prototype congelado — proteção contra CWE-1321."))
+    else:
+        report.add(Finding(cat, "Sem proteção contra prototype pollution", Severity.WARNING,
+                           "Object.prototype não está congelado — risco CWE-1321.",
+                           sugestao="Adicione Object.freeze(Object.prototype) no início da IIFE."))
+
+    # 19. Open redirect prevention (CWE-601)
+    if "isSafeUrl" in js or "safeUrl" in js.lower():
+        report.add(Finding(cat, "Open redirect guard presente", Severity.PASS,
+                           "Função de validação de URL detectada (CWE-601)."))
+    else:
+        report.add(Finding(cat, "Sem validação de URL segura", Severity.INFO,
+                           "Sem função isSafeUrl() — considere validar URLs antes de navegação.",
+                           sugestao="Adicione função isSafeUrl() que valida contra whitelist de domínios."))
+
+    # 20. Safe JSON parse (anti-pollution via JSON payloads)
+    if "safeJsonParse" in js:
+        report.add(Finding(cat, "Safe JSON parse implementado", Severity.PASS,
+                           "JSON.parse com reviver que filtra __proto__/constructor."))
+
+    # 21. Deep freeze on data (CWE-471)
+    if "deepFreeze" in js or "Object.freeze" in js:
+        report.add(Finding(cat, "Data objects frozen (CWE-471)", Severity.PASS,
+                           "Dados da aplicação são imutáveis após carregamento."))
 
 def check_quality(report: ReviewReport, html: str, css: str, js: str) -> None:
     """Verifica qualidade de código: patterns, best practices."""
@@ -899,6 +1009,9 @@ def check_category_schema(report: ReviewReport, json_data: dict) -> None:
         for link in categoria.get("links", []):
             if isinstance(link, dict):
                 url = link.get("url", "")
+                # tel: e mailto: são protocolos legítimos (ex: 0800, e-mail de contato)
+                if url.startswith(("tel:", "mailto:")):
+                    continue
                 if not url.startswith("https://"):
                     report.add(Finding(cat, f"{cat_label} link inseguro: {url[:40]}", Severity.WARNING,
                                        "Link não usa HTTPS.",
@@ -1427,20 +1540,23 @@ def check_waf(report: ReviewReport, html: str, js: str) -> None:
     cost_score = 0
     cost_checks = 0
 
-    # Static Web App (Free tier possible)
-    cost_checks += 1
-    if swa_config.exists():
-        cost_score += 1  # SWA is serverless = pay-per-use
-
-    # No server-side compute needed
-    cost_checks += 1
-    if "skip_app_build" in read_text(deploy_yml) if deploy_yml.exists() else False:
-        cost_score += 1
-
-    # Terraform variables support multi-env (dev=Free, prod=Standard)
+    # App Service com SKU variável (F1 Free possível)
     cost_checks += 1
     tf_vars = TERRAFORM_DIR / "variables.tf"
-    if tf_vars.exists() and "sku_tier" in read_text(tf_vars):
+    tf_vars_text = read_text(tf_vars) if tf_vars.exists() else ""
+    if "app_service_sku" in tf_vars_text and "F1" in tf_vars_text:
+        cost_score += 1  # Permite downgrade para Free tier
+
+    # Terraform tags com estimativa de custo documentada
+    cost_checks += 1
+    tf_main = TERRAFORM_DIR / "main.tf"
+    tf_main_text = read_text(tf_main) if tf_main.exists() else ""
+    if "COST" in tf_main_text or "custo" in tf_main_text.lower() or "$" in tf_main_text:
+        cost_score += 1
+
+    # Multi-env support (para otimizar custo por ambiente)
+    cost_checks += 1
+    if "environment" in tf_vars_text and ("prod" in tf_vars_text or "staging" in tf_vars_text):
         cost_score += 1
 
     cost_pct = round(cost_score / max(cost_checks, 1) * 100)

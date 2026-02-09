@@ -12,30 +12,24 @@ output "resource_group_name" {
   value       = azurerm_resource_group.main.name
 }
 
-output "static_web_app_name" {
-  description = "Nome do Static Web App"
-  value       = azurerm_static_web_app.main.name
+output "app_service_name" {
+  description = "Nome do App Service"
+  value       = azurerm_linux_web_app.main.name
 }
 
-output "sku" {
-  description = "Tier do Static Web App"
-  value       = var.sku_tier
+output "app_service_plan" {
+  description = "SKU do App Service Plan"
+  value       = var.app_service_sku
 }
 
 output "default_hostname" {
   description = "Hostname padrão do Azure (usar como valor do CNAME no DNS)"
-  value       = azurerm_static_web_app.main.default_host_name
-}
-
-output "api_key" {
-  description = "API key para deploy (usar como AZURE_STATIC_WEB_APPS_API_TOKEN no GitHub Secrets)"
-  value       = azurerm_static_web_app.main.api_key
-  sensitive   = true
+  value       = azurerm_linux_web_app.main.default_hostname
 }
 
 output "site_url" {
   description = "URL do site (Azure)"
-  value       = "https://${azurerm_static_web_app.main.default_host_name}"
+  value       = "https://${azurerm_linux_web_app.main.default_hostname}"
 }
 
 output "custom_domain_url" {
@@ -52,14 +46,12 @@ output "dns_config" {
     ├──────────────────────────────────────────────────────────┤
     │  Type:  CNAME                                            │
     │  Name:  ${var.custom_domain != "" ? split(".", var.custom_domain)[0] : "<subdominio>"}
-    │  Value: ${azurerm_static_web_app.main.default_host_name}
+    │  Value: ${azurerm_linux_web_app.main.default_hostname}
     │  TTL:   600                                              │
     └──────────────────────────────────────────────────────────┘
 
-    Após configurar o CNAME, defina:
-      enable_custom_domain = true
-      custom_domain        = "${var.custom_domain}"
-    E execute: terraform apply
+    ⚠️  IMPORTANTE: O CNAME agora aponta para .azurewebsites.net
+    (antes era .azurestaticapps.net). Atualize no GoDaddy!
 
   EOT
 }
@@ -80,6 +72,34 @@ output "certificate_name" {
   value       = var.enable_keyvault && var.pfx_file_path != "" ? azurerm_key_vault_certificate.wildcard[0].name : "(não importado)"
 }
 
+output "ssl_state" {
+  description = "Estado do SSL binding"
+  value       = var.enable_keyvault && var.pfx_file_path != "" && var.enable_custom_domain ? "SNI Enabled (PFX do Key Vault)" : "Sem custom SSL"
+}
+
+# --- Application Insights ---
+output "app_insights_name" {
+  description = "Nome do Application Insights"
+  value       = azurerm_application_insights.main.name
+}
+
+output "app_insights_instrumentation_key" {
+  description = "Instrumentation Key (usar no SDK client-side se necessário)"
+  value       = azurerm_application_insights.main.instrumentation_key
+  sensitive   = true
+}
+
+output "app_insights_connection_string" {
+  description = "Connection string do App Insights (injetada automaticamente no App Service)"
+  value       = azurerm_application_insights.main.connection_string
+  sensitive   = true
+}
+
+output "app_insights_portal_url" {
+  description = "URL direta para o dashboard do App Insights no portal Azure"
+  value       = "https://portal.azure.com/#@/resource${azurerm_application_insights.main.id}/overview"
+}
+
 output "next_steps" {
   description = "Próximos passos após terraform apply"
   value       = <<-EOT
@@ -87,18 +107,14 @@ output "next_steps" {
     ┌──────────────────────────────────────────────────────────┐
     │  Próximos Passos                                         │
     ├──────────────────────────────────────────────────────────┤
-    │  1. Copie api_key → GitHub Secrets:                      │
-    │     terraform output -raw api_key                        │
-    │     Secret name: AZURE_STATIC_WEB_APPS_API_TOKEN         │
+    │  1. Atualize o CNAME no GoDaddy:                         │
+    │     nossodireito → ${azurerm_linux_web_app.main.default_hostname}
     │                                                          │
-    │  2. Configure CNAME no GoDaddy:                          │
-    │     terraform output dns_config                          │
+    │  2. Dispare o deploy via GitHub Actions:                 │
+    │     git push (auto-deploy no push para main)             │
     │                                                          │
-    │  3. Habilite domínio custom no tfvars:                   │
-    │     enable_custom_domain = true                          │
-    │     terraform apply                                      │
-    │                                                          │
-    │  4. git push → deploy automático via GitHub Actions      │
+    │  3. Verifique o SSL:                                     │
+    │     curl -vI https://${var.custom_domain}                │
     └──────────────────────────────────────────────────────────┘
 
   EOT

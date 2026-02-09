@@ -1,12 +1,12 @@
 # ============================================================
-# NossoDireito — Terraform — Azure Static Web App
+# NossoDireito — Terraform — Azure App Service + Key Vault
 # ============================================================
 # Well-Architected Framework alignment:
-#   - Cost Optimization: Free tier, zero compute cost
-#   - Security: Managed SSL, security headers via config
-#   - Reliability: Azure global CDN with auto-failover
+#   - Cost Optimization: B1 Linux ~$13/mês
+#   - Security: BYOC (PFX via Key Vault), SNI SSL, HTTPS Only
+#   - Reliability: 99.95% SLA, always_on, health check
 #   - Operational Excellence: IaC + CI/CD auto-deploy
-#   - Performance: Edge-distributed static content
+#   - Performance: Node.js 20 LTS, HTTP/2, gzip
 # ============================================================
 
 terraform {

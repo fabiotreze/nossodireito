@@ -12,6 +12,45 @@
     'use strict';
 
     // ========================
+    // Security: Prototype Pollution Guard (CWE-1321)
+    // ========================
+    // Freeze Object.prototype to prevent __proto__ / constructor.prototype attacks
+    // via JSON payloads, localStorage, or URL parameters.
+    Object.freeze(Object.prototype);
+    Object.freeze(Array.prototype);
+
+    /**
+     * Safe JSON parse — strips __proto__ and constructor keys (CWE-1321).
+     * @param {string} str - JSON string to parse
+     * @returns {*} Parsed value with prototype-polluting keys removed
+     */
+    function safeJsonParse(str) {
+        return JSON.parse(str, (key, value) => {
+            if (key === '__proto__' || key === 'constructor' || key === 'prototype') {
+                return undefined;
+            }
+            return value;
+        });
+    }
+
+    /**
+     * Deep freeze an object tree — prevent runtime mutation (CWE-471).
+     * @param {Object} obj - Object to freeze recursively
+     * @returns {Object} Frozen object
+     */
+    function deepFreeze(obj) {
+        if (obj === null || typeof obj !== 'object') return obj;
+        Object.freeze(obj);
+        Object.getOwnPropertyNames(obj).forEach(prop => {
+            const val = obj[prop];
+            if (val !== null && typeof val === 'object' && !Object.isFrozen(val)) {
+                deepFreeze(val);
+            }
+        });
+        return obj;
+    }
+
+    // ========================
     // State
     // ========================
     let direitosData = null;
@@ -201,15 +240,17 @@
             const res = await fetch('data/direitos.json');
             if (!res.ok) throw new Error(`HTTP ${res.status}`);
             const json = await res.json();
-            direitosData = json.categorias;
-            fontesData = json.fontes || [];
-            docsMestreData = json.documentos_mestre || [];
-            instituicoesData = json.instituicoes_apoio || [];
-            jsonMeta = {
+
+            // Deep-freeze all data arrays — prevent runtime mutation (CWE-471)
+            direitosData = deepFreeze(json.categorias);
+            fontesData = deepFreeze(json.fontes || []);
+            docsMestreData = deepFreeze(json.documentos_mestre || []);
+            instituicoesData = deepFreeze(json.instituicoes_apoio || []);
+            jsonMeta = Object.freeze({
                 versao: json.versao,
                 ultima_atualizacao: json.ultima_atualizacao,
                 proxima_revisao: json.proxima_revisao,
-            };
+            });
 
             if (json.ultima_atualizacao && dom.lastUpdate) {
                 dom.lastUpdate.textContent = formatDate(json.ultima_atualizacao);
@@ -1141,6 +1182,212 @@
         psiquiatra: { cats: ['sus_terapias'], weight: 2 },
         impedimento: { cats: ['bpc'], weight: 2 },
         'longo prazo': { cats: ['bpc'], weight: 2 },
+
+        // ==============================================================
+        // BASE DE CONHECIMENTO PcD — Fontes Oficiais do Governo Federal
+        // Decreto 3.298/1999 (art. 4º), LBI 13.146/2015,
+        // DATASUS/SIGTAP (CIDs), gov.br/pcd, ANS, RENAME
+        // ==============================================================
+
+        // --- Paralisia Cerebral (CID G80) ---
+        'g80': { cats: ['bpc', 'educacao', 'transporte', 'trabalho', 'fgts', 'moradia', 'sus_terapias'], weight: 4 },
+        'paralisia cerebral': { cats: ['bpc', 'educacao', 'transporte', 'trabalho', 'fgts', 'moradia', 'sus_terapias'], weight: 5 },
+        hemiplegia: { cats: ['bpc', 'transporte', 'trabalho', 'sus_terapias'], weight: 4 },
+        diplegia: { cats: ['bpc', 'transporte', 'trabalho', 'sus_terapias'], weight: 4 },
+        tetraplegia: { cats: ['bpc', 'transporte', 'trabalho', 'fgts', 'sus_terapias'], weight: 5 },
+        quadriplegia: { cats: ['bpc', 'transporte', 'trabalho', 'fgts', 'sus_terapias'], weight: 5 },
+        paraplegia: { cats: ['bpc', 'transporte', 'trabalho', 'fgts', 'sus_terapias'], weight: 5 },
+        'g81': { cats: ['bpc', 'transporte', 'trabalho', 'sus_terapias'], weight: 4 },
+        'g82': { cats: ['bpc', 'transporte', 'trabalho', 'fgts', 'sus_terapias'], weight: 4 },
+        'g83': { cats: ['bpc', 'transporte', 'trabalho', 'sus_terapias'], weight: 4 },
+        espasticidade: { cats: ['bpc', 'sus_terapias'], weight: 3 },
+        monoplegia: { cats: ['bpc', 'transporte', 'trabalho', 'sus_terapias'], weight: 4 },
+
+        // --- Deficiência Intelectual (CID F70-F79) ---
+        'f70': { cats: ['bpc', 'educacao', 'trabalho'], weight: 4 },
+        'f71': { cats: ['bpc', 'educacao', 'trabalho'], weight: 4 },
+        'f72': { cats: ['bpc', 'educacao'], weight: 4 },
+        'f73': { cats: ['bpc', 'educacao'], weight: 4 },
+        'deficiência intelectual': { cats: ['bpc', 'educacao', 'trabalho', 'fgts'], weight: 4 },
+        'deficiencia intelectual': { cats: ['bpc', 'educacao', 'trabalho', 'fgts'], weight: 4 },
+        'deficiência mental': { cats: ['bpc', 'educacao', 'trabalho', 'fgts'], weight: 3 },
+        'deficiencia mental': { cats: ['bpc', 'educacao', 'trabalho', 'fgts'], weight: 3 },
+
+        // --- Síndrome de Down (CID Q90) ---
+        'q90': { cats: ['bpc', 'educacao', 'trabalho', 'sus_terapias'], weight: 5 },
+        'síndrome de down': { cats: ['bpc', 'educacao', 'trabalho', 'sus_terapias'], weight: 5 },
+        'sindrome de down': { cats: ['bpc', 'educacao', 'trabalho', 'sus_terapias'], weight: 5 },
+        trissomia: { cats: ['bpc', 'educacao', 'sus_terapias'], weight: 4 },
+
+        // --- Deficiência Visual (CID H54) ---
+        'h54': { cats: ['bpc', 'educacao', 'transporte', 'trabalho', 'fgts'], weight: 4 },
+        cegueira: { cats: ['bpc', 'educacao', 'transporte', 'trabalho', 'fgts'], weight: 5 },
+        'baixa visão': { cats: ['bpc', 'educacao', 'transporte', 'trabalho'], weight: 4 },
+        'baixa visao': { cats: ['bpc', 'educacao', 'transporte', 'trabalho'], weight: 4 },
+        'deficiência visual': { cats: ['bpc', 'educacao', 'transporte', 'trabalho', 'fgts'], weight: 4 },
+        'deficiencia visual': { cats: ['bpc', 'educacao', 'transporte', 'trabalho', 'fgts'], weight: 4 },
+        'visão monocular': { cats: ['bpc', 'transporte', 'trabalho'], weight: 4 },
+        'visao monocular': { cats: ['bpc', 'transporte', 'trabalho'], weight: 4 },
+
+        // --- Deficiência Auditiva (CID H90-H91) ---
+        'h90': { cats: ['bpc', 'educacao', 'transporte', 'trabalho', 'fgts'], weight: 4 },
+        'h91': { cats: ['bpc', 'educacao', 'transporte', 'trabalho', 'fgts'], weight: 4 },
+        surdez: { cats: ['bpc', 'educacao', 'transporte', 'trabalho', 'fgts'], weight: 5 },
+        surdo: { cats: ['bpc', 'educacao', 'transporte', 'trabalho', 'fgts'], weight: 4 },
+        'deficiência auditiva': { cats: ['bpc', 'educacao', 'transporte', 'trabalho', 'fgts'], weight: 4 },
+        'deficiencia auditiva': { cats: ['bpc', 'educacao', 'transporte', 'trabalho', 'fgts'], weight: 4 },
+        surdocegueira: { cats: ['bpc', 'educacao', 'transporte', 'trabalho', 'fgts'], weight: 5 },
+        libras: { cats: ['educacao', 'trabalho'], weight: 3 },
+        'aparelho auditivo': { cats: ['fgts', 'sus_terapias', 'plano_saude'], weight: 4 },
+        'implante coclear': { cats: ['sus_terapias', 'plano_saude', 'fgts'], weight: 4 },
+
+        // --- Amputação / Ausência de membros (CID Z89, Q71-Q73) ---
+        'z89': { cats: ['bpc', 'transporte', 'trabalho', 'fgts', 'sus_terapias'], weight: 4 },
+        'q71': { cats: ['bpc', 'transporte', 'trabalho', 'sus_terapias'], weight: 4 },
+        'q72': { cats: ['bpc', 'transporte', 'trabalho', 'sus_terapias'], weight: 4 },
+        'q73': { cats: ['bpc', 'transporte', 'trabalho', 'sus_terapias'], weight: 4 },
+        amputação: { cats: ['bpc', 'transporte', 'trabalho', 'fgts', 'sus_terapias'], weight: 5 },
+        amputacao: { cats: ['bpc', 'transporte', 'trabalho', 'fgts', 'sus_terapias'], weight: 5 },
+        'ausência de membro': { cats: ['bpc', 'transporte', 'trabalho', 'fgts'], weight: 5 },
+        'ausencia de membro': { cats: ['bpc', 'transporte', 'trabalho', 'fgts'], weight: 5 },
+        prótese: { cats: ['fgts', 'sus_terapias'], weight: 3 },
+        protese: { cats: ['fgts', 'sus_terapias'], weight: 3 },
+        órtese: { cats: ['fgts', 'sus_terapias'], weight: 3 },
+        ortese: { cats: ['fgts', 'sus_terapias'], weight: 3 },
+
+        // --- Alzheimer / Demência (CID G30, F00-F03) ---
+        'g30': { cats: ['bpc', 'fgts', 'sus_terapias'], weight: 5 },
+        'f00': { cats: ['bpc', 'fgts', 'sus_terapias'], weight: 4 },
+        'f01': { cats: ['bpc', 'fgts', 'sus_terapias'], weight: 4 },
+        'f02': { cats: ['bpc', 'fgts', 'sus_terapias'], weight: 4 },
+        'f03': { cats: ['bpc', 'fgts', 'sus_terapias'], weight: 4 },
+        alzheimer: { cats: ['bpc', 'fgts', 'sus_terapias'], weight: 5 },
+        demência: { cats: ['bpc', 'fgts', 'sus_terapias'], weight: 4 },
+        demencia: { cats: ['bpc', 'fgts', 'sus_terapias'], weight: 4 },
+        neurodegenerativa: { cats: ['bpc', 'fgts', 'sus_terapias'], weight: 3 },
+
+        // --- Esclerose Múltipla / ELA (CID G35, G12.2) ---
+        'g35': { cats: ['bpc', 'transporte', 'trabalho', 'fgts', 'sus_terapias'], weight: 5 },
+        'g12': { cats: ['bpc', 'transporte', 'fgts', 'sus_terapias'], weight: 4 },
+        'esclerose múltipla': { cats: ['bpc', 'transporte', 'trabalho', 'fgts', 'sus_terapias'], weight: 5 },
+        'esclerose multipla': { cats: ['bpc', 'transporte', 'trabalho', 'fgts', 'sus_terapias'], weight: 5 },
+        'esclerose lateral amiotrófica': { cats: ['bpc', 'transporte', 'fgts', 'sus_terapias'], weight: 5 },
+        'esclerose lateral amiotrofica': { cats: ['bpc', 'transporte', 'fgts', 'sus_terapias'], weight: 5 },
+
+        // --- Parkinson (CID G20) ---
+        'g20': { cats: ['bpc', 'transporte', 'fgts', 'sus_terapias'], weight: 5 },
+        parkinson: { cats: ['bpc', 'transporte', 'fgts', 'sus_terapias'], weight: 5 },
+
+        // --- Epilepsia (CID G40) ---
+        'g40': { cats: ['bpc', 'sus_terapias'], weight: 4 },
+        epilepsia: { cats: ['bpc', 'sus_terapias'], weight: 4 },
+        convulsão: { cats: ['bpc', 'sus_terapias'], weight: 3 },
+        convulsao: { cats: ['bpc', 'sus_terapias'], weight: 3 },
+
+        // --- AVC / Sequelas (CID I69) ---
+        'i69': { cats: ['bpc', 'transporte', 'fgts', 'sus_terapias'], weight: 4 },
+        avc: { cats: ['bpc', 'transporte', 'fgts', 'sus_terapias'], weight: 4 },
+        'acidente vascular': { cats: ['bpc', 'transporte', 'fgts', 'sus_terapias'], weight: 4 },
+
+        // --- Doença Renal Crônica (CID N18) ---
+        'n18': { cats: ['bpc', 'transporte', 'fgts', 'sus_terapias'], weight: 4 },
+        'doença renal': { cats: ['bpc', 'transporte', 'fgts', 'sus_terapias'], weight: 4 },
+        'doenca renal': { cats: ['bpc', 'transporte', 'fgts', 'sus_terapias'], weight: 4 },
+        hemodiálise: { cats: ['bpc', 'transporte', 'sus_terapias'], weight: 4 },
+        hemodialise: { cats: ['bpc', 'transporte', 'sus_terapias'], weight: 4 },
+
+        // --- Fibrose Cística (CID E84) ---
+        'e84': { cats: ['bpc', 'sus_terapias', 'plano_saude'], weight: 4 },
+        'fibrose cística': { cats: ['bpc', 'sus_terapias', 'plano_saude'], weight: 5 },
+        'fibrose cistica': { cats: ['bpc', 'sus_terapias', 'plano_saude'], weight: 5 },
+
+        // --- Mielomeningocele / Espinha Bífida (CID Q05) ---
+        'q05': { cats: ['bpc', 'transporte', 'sus_terapias'], weight: 4 },
+        mielomeningocele: { cats: ['bpc', 'transporte', 'sus_terapias'], weight: 5 },
+        'espinha bífida': { cats: ['bpc', 'transporte', 'sus_terapias'], weight: 5 },
+        'espinha bifida': { cats: ['bpc', 'transporte', 'sus_terapias'], weight: 5 },
+
+        // --- Distrofia Muscular (CID G71) ---
+        'g71': { cats: ['bpc', 'transporte', 'fgts', 'sus_terapias'], weight: 4 },
+        'distrofia muscular': { cats: ['bpc', 'transporte', 'fgts', 'sus_terapias'], weight: 5 },
+        duchenne: { cats: ['bpc', 'transporte', 'fgts', 'sus_terapias'], weight: 5 },
+
+        // --- Microcefalia (CID Q02) ---
+        'q02': { cats: ['bpc', 'educacao', 'sus_terapias'], weight: 4 },
+        microcefalia: { cats: ['bpc', 'educacao', 'sus_terapias'], weight: 5 },
+
+        // --- Equipamentos de acessibilidade / Tecnologia Assistiva ---
+        'cadeira de rodas': { cats: ['bpc', 'transporte', 'moradia', 'fgts', 'sus_terapias'], weight: 3 },
+        muleta: { cats: ['transporte', 'moradia', 'sus_terapias'], weight: 3 },
+        andador: { cats: ['transporte', 'moradia', 'sus_terapias'], weight: 3 },
+        'tecnologia assistiva': { cats: ['educacao', 'trabalho', 'fgts', 'sus_terapias'], weight: 4 },
+
+        // --- Legislação por número (Leis Federais) ---
+        'lei 13.146': { cats: ['bpc', 'educacao', 'transporte', 'trabalho', 'moradia', 'plano_saude', 'sus_terapias', 'fgts'], weight: 5 },
+        'lei 12.764': { cats: ['ciptea', 'educacao', 'plano_saude', 'sus_terapias'], weight: 5 },
+        'lei 13.977': { cats: ['ciptea'], weight: 5 },
+        'lei 8.899': { cats: ['transporte'], weight: 5 },
+        'lei 8.989': { cats: ['transporte'], weight: 5 },
+        'lei 8.213': { cats: ['trabalho'], weight: 5 },
+        'lei 8.036': { cats: ['fgts'], weight: 5 },
+        'lei 10.048': { cats: ['transporte', 'moradia'], weight: 4 },
+        'lei 9.656': { cats: ['plano_saude'], weight: 4 },
+        'lei 8.069': { cats: ['educacao'], weight: 3 },
+        'lei 14.176': { cats: ['bpc'], weight: 4 },
+        'lei 15.131': { cats: ['ciptea', 'educacao', 'sus_terapias'], weight: 4 },
+        'decreto 3.298': { cats: ['bpc', 'transporte', 'trabalho'], weight: 4 },
+        'decreto 6.214': { cats: ['bpc'], weight: 4 },
+        lbi: { cats: ['bpc', 'educacao', 'transporte', 'trabalho', 'moradia'], weight: 4 },
+        'estatuto da pessoa com deficiência': { cats: ['bpc', 'educacao', 'transporte', 'trabalho', 'moradia'], weight: 4 },
+        'estatuto da pessoa com deficiencia': { cats: ['bpc', 'educacao', 'transporte', 'trabalho', 'moradia'], weight: 4 },
+
+        // --- Termos administrativos / Serviços ---
+        saúde: { cats: ['sus_terapias', 'plano_saude'], weight: 2 },
+        saude: { cats: ['sus_terapias', 'plano_saude'], weight: 2 },
+        educação: { cats: ['educacao'], weight: 2 },
+        educacao: { cats: ['educacao'], weight: 2 },
+        nutrição: { cats: ['sus_terapias', 'plano_saude'], weight: 3 },
+        nutricao: { cats: ['sus_terapias', 'plano_saude'], weight: 3 },
+        'terapia nutricional': { cats: ['sus_terapias', 'plano_saude'], weight: 4 },
+        'previdência social': { cats: ['bpc'], weight: 3 },
+        'previdencia social': { cats: ['bpc'], weight: 3 },
+        'assistência social': { cats: ['bpc'], weight: 3 },
+        'assistencia social': { cats: ['bpc'], weight: 3 },
+        internação: { cats: ['sus_terapias', 'plano_saude'], weight: 3 },
+        internacao: { cats: ['sus_terapias', 'plano_saude'], weight: 3 },
+        acessibilidade: { cats: ['moradia', 'transporte', 'educacao'], weight: 3 },
+        'atendimento prioritário': { cats: ['ciptea', 'transporte'], weight: 3 },
+        'atendimento prioritario': { cats: ['ciptea', 'transporte'], weight: 3 },
+        prioridade: { cats: ['ciptea', 'transporte'], weight: 2 },
+        curatela: { cats: ['bpc'], weight: 3 },
+        interdição: { cats: ['bpc'], weight: 3 },
+        interdicao: { cats: ['bpc'], weight: 3 },
+        'aposentadoria por invalidez': { cats: ['bpc', 'fgts'], weight: 4 },
+
+        // --- TEA: Termos clínicos complementares ---
+        'interação social': { cats: ['ciptea', 'educacao'], weight: 3 },
+        'interacao social': { cats: ['ciptea', 'educacao'], weight: 3 },
+        'comportamento restritivo': { cats: ['ciptea'], weight: 3 },
+        'comportamento repetitivo': { cats: ['ciptea'], weight: 3 },
+        neurodivergente: { cats: ['ciptea', 'educacao', 'plano_saude'], weight: 3 },
+        'nível de suporte': { cats: ['ciptea'], weight: 3 },
+        'nivel de suporte': { cats: ['ciptea'], weight: 3 },
+        'acompanhante terapêutico': { cats: ['educacao', 'plano_saude', 'sus_terapias'], weight: 4 },
+        'acompanhante terapeutico': { cats: ['educacao', 'plano_saude', 'sus_terapias'], weight: 4 },
+
+        // --- Farmacêutica / Medicamentos ---
+        'alto custo': { cats: ['sus_terapias', 'plano_saude'], weight: 3 },
+        'uso contínuo': { cats: ['sus_terapias', 'plano_saude'], weight: 2 },
+        'uso continuo': { cats: ['sus_terapias', 'plano_saude'], weight: 2 },
+        rename: { cats: ['sus_terapias'], weight: 3 },
+        'componente especializado': { cats: ['sus_terapias'], weight: 4 },
+
+        // --- Deficiência Física geral (Decreto 3.298/1999, art.4º) ---
+        'deficiência física': { cats: ['bpc', 'transporte', 'trabalho', 'fgts', 'moradia'], weight: 4 },
+        'deficiencia fisica': { cats: ['bpc', 'transporte', 'trabalho', 'fgts', 'moradia'], weight: 4 },
+        nanismo: { cats: ['bpc', 'transporte', 'trabalho'], weight: 4 },
+        ostomia: { cats: ['bpc', 'transporte', 'trabalho', 'sus_terapias'], weight: 4 },
+        ostomizado: { cats: ['bpc', 'transporte', 'trabalho', 'sus_terapias'], weight: 4 },
     };
 
     /**
@@ -1557,7 +1804,7 @@
     function localGet(key) {
         try {
             const val = localStorage.getItem(STORAGE_PREFIX + key);
-            return val ? JSON.parse(val) : null;
+            return val ? safeJsonParse(val) : null;
         } catch {
             return null;
         }
@@ -1574,6 +1821,38 @@
     // ========================
     // Utility Functions
     // ========================
+
+    /**
+     * Validates a URL is safe to navigate to (CWE-601 — Open Redirect prevention).
+     * Allows: same-origin, gov.br domains, blob:, tel:, mailto:, and anchor links.
+     * Rejects: javascript:, data: (non-image), and unknown external destinations.
+     * @param {string} url - URL to validate
+     * @returns {boolean} true if safe
+     */
+    function isSafeUrl(url) {
+        if (!url || typeof url !== 'string') return false;
+        const trimmed = url.trim().toLowerCase();
+
+        // Block dangerous protocols
+        if (trimmed.startsWith('javascript:') || trimmed.startsWith('vbscript:')) return false;
+
+        // Allow: anchor links, relative paths, blob:, tel:, mailto:
+        if (trimmed.startsWith('#') || trimmed.startsWith('/') || trimmed.startsWith('./')) return true;
+        if (trimmed.startsWith('blob:') || trimmed.startsWith('tel:') || trimmed.startsWith('mailto:')) return true;
+
+        // Allow: same-origin and trusted domains
+        try {
+            const parsed = new URL(url, window.location.origin);
+            if (parsed.origin === window.location.origin) return true;
+            const host = parsed.hostname;
+            const TRUSTED = ['.gov.br', '.planalto.gov.br', '.inss.gov.br', '.mds.gov.br',
+                '.apaebrasil.org.br', '.ama.org.br', 'cdnjs.cloudflare.com'];
+            return TRUSTED.some(t => host === t.slice(1) || host.endsWith(t));
+        } catch {
+            return false;
+        }
+    }
+
     function escapeHtml(str) {
         if (!str) return '';
         const div = document.createElement('div');

@@ -1,5 +1,5 @@
 {
-    "versao": "1.3.0",
+    "versao": "1.0.1",
     "ultima_atualizacao": "2026-02-09",
     "proxima_revisao": "2026-02-16",
     "aviso": "Informações compiladas de fontes oficiais do governo brasileiro (gov.br). Podem estar desatualizadas. Verifique sempre as fontes originais.",
@@ -638,7 +638,13 @@
                 "INSS",
                 "CadÚnico",
                 "baixa renda",
-                "deficiência"
+                "deficiência",
+                "assistência social",
+                "previdência social",
+                "impedimento longo prazo",
+                "curatela",
+                "renda per capita",
+                "perícia biopsicossocial"
             ]
         },
         {
@@ -700,7 +706,17 @@
                 "prioridade",
                 "Romeo Mion",
                 "Berenice Piana",
-                "identificação"
+                "identificação",
+                "espectro autista",
+                "F84",
+                "6A02",
+                "neurodivergente",
+                "interação social",
+                "comportamento repetitivo",
+                "nível de suporte",
+                "diagnóstico precoce",
+                "Lei 12.764",
+                "Lei 13.977"
             ]
         },
         {
@@ -765,7 +781,13 @@
                 "acompanhante",
                 "AEE",
                 "recusa",
-                "multa"
+                "multa",
+                "educação especial",
+                "acompanhante especializado",
+                "Libras",
+                "tecnologia assistiva",
+                "ensino regular",
+                "Lei 13.146"
             ]
         },
         {
@@ -833,7 +855,14 @@
                 "fonoaudiologia",
                 "negar",
                 "cobertura",
-                "sessões"
+                "sessões",
+                "operadora",
+                "Rol de Procedimentos",
+                "terapia ocupacional",
+                "psicologia",
+                "nutrição",
+                "alto custo",
+                "Lei 9.656"
             ]
         },
         {
@@ -894,7 +923,15 @@
                 "CAPS",
                 "CER",
                 "Farmácia Popular",
-                "reabilitação"
+                "reabilitação",
+                "fisioterapia",
+                "prótese",
+                "órtese",
+                "cadeira de rodas",
+                "aparelho auditivo",
+                "RENAME",
+                "componente especializado",
+                "hemodiálise"
             ]
         },
         {
@@ -954,7 +991,15 @@
                 "IPVA",
                 "isenção",
                 "carro",
-                "IPI"
+                "IPI",
+                "ICMS",
+                "IOF",
+                "deficiência física",
+                "deficiência visual",
+                "deficiência auditiva",
+                "Lei 8.899",
+                "Lei 8.989",
+                "atendimento prioritário"
             ]
         },
         {
@@ -1012,7 +1057,12 @@
                 "vaga",
                 "demissão",
                 "CLT",
-                "discriminação"
+                "discriminação",
+                "Lei 8.213",
+                "reabilitação profissional",
+                "aprendiz",
+                "emprego apoiado",
+                "deficiência intelectual"
             ]
         },
         {
@@ -1063,7 +1113,12 @@
                 "deficiência",
                 "dependente",
                 "prótese",
-                "equipamento"
+                "equipamento",
+                "Lei 8.036",
+                "aparelho auditivo",
+                "cadeira de rodas",
+                "tecnologia assistiva",
+                "órtese"
             ]
         },
         {

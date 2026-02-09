@@ -1,5 +1,5 @@
 # NossoDireito — Terraform via GitHub Actions
-# Provisiona e gerencia infraestrutura Azure.
+# Provisiona e gerencia infraestrutura Azure (App Service + Key Vault + SSL).
 # State local — salvo como GitHub Artifact para persistencia entre runs.
 #
 # Secrets necessarios no GitHub (Settings > Secrets > Actions):
@@ -59,10 +59,10 @@ jobs:
             echo "$PFX" | base64 -d > "${GITHUB_WORKSPACE}/cert.pfx"
             echo "TF_VAR_pfx_file_path=${GITHUB_WORKSPACE}/cert.pfx" >> $GITHUB_ENV
             SIZE=$(wc -c < "${GITHUB_WORKSPACE}/cert.pfx")
-            echo "PFX decoded (${SIZE} bytes)"
+            echo "✅ PFX decoded (${SIZE} bytes)"
           else
             echo "TF_VAR_pfx_file_path=" >> $GITHUB_ENV
-            echo "No PFX_BASE64 — managed cert will be used."
+            echo "⚠️ No PFX_BASE64 — SSL binding will be skipped."
           fi
 
       - name: Setup Terraform
@@ -93,10 +93,10 @@ jobs:
             local id="$2"
             if ! terraform state show "$addr" > /dev/null 2>&1; then
               terraform import "$addr" "$id" 2>&1 \
-                && echo "imported ${addr}" \
-                || echo "skip ${addr} — not found in Azure"
+                && echo "✅ imported ${addr}" \
+                || echo "⏭️ skip ${addr} — not found in Azure"
             else
-              echo "ok ${addr} already in state"
+              echo "✓ ${addr} already in state"
             fi
           }
 
@@ -105,8 +105,19 @@ jobs:
 
           echo "── Verificando state ──"
           import_if_missing "azurerm_resource_group.main" "${BASE}"
-          import_if_missing "azurerm_static_web_app.main" \
-            "${BASE}/providers/Microsoft.Web/staticSites/stapp-nossodireito"
+
+          import_if_missing "azurerm_service_plan.main" \
+            "${BASE}/providers/Microsoft.Web/serverFarms/plan-nossodireito"
+
+          import_if_missing "azurerm_linux_web_app.main" \
+            "${BASE}/providers/Microsoft.Web/sites/app-nossodireito"
+
+          import_if_missing "azurerm_log_analytics_workspace.main" \
+            "${BASE}/providers/Microsoft.OperationalInsights/workspaces/log-nossodireito"
+
+          import_if_missing "azurerm_application_insights.main" \
+            "${BASE}/providers/Microsoft.Insights/components/appi-nossodireito"
+
           import_if_missing "azurerm_key_vault.main[0]" \
             "${BASE}/providers/Microsoft.KeyVault/vaults/kv-nossodireito"
 
@@ -122,12 +133,12 @@ jobs:
               "${BASE}/providers/Microsoft.KeyVault/vaults/kv-nossodireito/objectId/${DEPLOYER_OID}"
           fi
 
-          SWA_PID=$(az staticwebapp show -n stapp-nossodireito \
-            -g rg-nossodireito --query "identity.principalId" \
+          APP_PID=$(az webapp identity show -n app-nossodireito \
+            -g rg-nossodireito --query "principalId" \
             -o tsv 2>/dev/null || true)
-          if [ -n "$SWA_PID" ]; then
-            import_if_missing "azurerm_key_vault_access_policy.swa[0]" \
-              "${BASE}/providers/Microsoft.KeyVault/vaults/kv-nossodireito/objectId/${SWA_PID}"
+          if [ -n "$APP_PID" ]; then
+            import_if_missing "azurerm_key_vault_access_policy.app_service[0]" \
+              "${BASE}/providers/Microsoft.KeyVault/vaults/kv-nossodireito/objectId/${APP_PID}"
           fi
 
           echo "── State atual ──"
@@ -154,69 +165,57 @@ jobs:
         if: github.event.inputs.action == 'apply'
         run: terraform apply -auto-approve tfplan
 
-      # ── Exportar SWA API Key apos apply ──
-      - name: Exportar SWA Deploy Token
+      # ── Deploy site para App Service apos apply ──
+      # O binding de certificado SSL é gerenciado nativamente pelo Terraform
+      # via azurerm_app_service_certificate_binding — não precisa de az rest.
+      - name: Deploy site to App Service
         if: github.event.inputs.action == 'apply'
-        id: swa_token
-        run: |
-          API_KEY=$(terraform output -raw api_key 2>/dev/null || true)
-          if [ -n "$API_KEY" ]; then
-            echo "::add-mask::${API_KEY}"
-            echo "api_key=${API_KEY}" >> $GITHUB_OUTPUT
-            echo "SWA API Key extraido com sucesso."
-          fi
-
-      # ── Deploy site para SWA apos apply bem-sucedido ──
-      - name: Deploy site to SWA
-        if: github.event.inputs.action == 'apply' && steps.swa_token.outputs.api_key != ''
-        uses: Azure/static-web-apps-deploy@v1
-        with:
-          azure_static_web_apps_api_token: ${{ steps.swa_token.outputs.api_key }}
-          repo_token: ${{ secrets.GITHUB_TOKEN }}
-          action: upload
-          app_location: /
-          output_location: ""
-          skip_app_build: true
-
-      # ── Vincular certificado PFX ao dominio custom ──
-      - name: Bind custom certificate
-        if: github.event.inputs.action == 'apply' && env.TF_VAR_pfx_file_path != ''
         run: |
           az login --service-principal \
             -u "${ARM_CLIENT_ID}" -p "${ARM_CLIENT_SECRET}" \
             --tenant "${ARM_TENANT_ID}" --output none
 
-          SUB="${ARM_SUBSCRIPTION_ID}"
-          RG="rg-nossodireito"
-          SWA="stapp-nossodireito"
-          DOMAIN="nossodireito.fabiotreze.com"
-          KV_RID="/subscriptions/${SUB}/resourceGroups/${RG}/providers/Microsoft.KeyVault/vaults/kv-nossodireito"
+          APP_NAME=$(terraform output -raw app_service_name 2>/dev/null || true)
+          if [ -z "$APP_NAME" ]; then
+            echo "⚠️ App Service name not found — skipping deploy."
+            exit 0
+          fi
 
-          CERT_NAME=$(terraform output -raw certificate_name 2>/dev/null || true)
-          if [ -n "$CERT_NAME" ] && [ "$CERT_NAME" != "(não importado)" ]; then
-            echo "Vinculando cert ${CERT_NAME} do Key Vault ao dominio..."
-            az rest --method PUT \
-              --url "https://management.azure.com/subscriptions/${SUB}/resourceGroups/${RG}/providers/Microsoft.Web/staticSites/${SWA}/customDomains/${DOMAIN}?api-version=2024-04-01" \
-              --body "{\"properties\":{\"validationMethod\":\"cname-delegation\",\"sslState\":\"SniEnabled\",\"certificateResourceId\":\"${KV_RID}/certificates/${CERT_NAME}\"}}" \
-              2>&1 || true
-            echo "Certificado custom vinculado."
-          else
-            echo "Certificado nao encontrado no state — usando managed cert."
+          echo "═══ Deploying site to ${APP_NAME} ═══"
+
+          # Criar zip com conteudo do site (inclui server.js)
+          cd "${GITHUB_WORKSPACE}"
+          zip -r site.zip \
+            index.html server.js package.json \
+            css/ js/ data/ images/ \
+            -x "*.bak" "*.swa.bak" "__pycache__/*" \
+            "terraform/*" "codereview/*" ".github/*" "tests/*" "docs/*"
+
+          SIZE=$(wc -c < site.zip)
+          echo "📦 site.zip: ${SIZE} bytes"
+
+          # Deploy via zip deploy
+          az webapp deploy \
+            --resource-group rg-nossodireito \
+            --name "$APP_NAME" \
+            --src-path site.zip \
+            --type zip \
+            --async true
+
+          echo "✅ Deploy iniciado."
+
+          # Health check
+          sleep 15
+          URL=$(terraform output -raw site_url 2>/dev/null || true)
+          if [ -n "$URL" ]; then
+            STATUS=$(curl -s -o /dev/null -w "%{http_code}" "$URL" || true)
+            echo "Health check: ${URL} → HTTP ${STATUS}"
           fi
 
       # ── Destroy (manual) ──
       - name: Terraform Destroy
         if: github.event.inputs.action == 'destroy'
-        run: terraform destroy -auto-approve || true
-
-      - name: Fallback - Delete RG via az CLI
-        if: github.event.inputs.action == 'destroy'
-        run: |
-          az login --service-principal \
-            -u $ARM_CLIENT_ID -p $ARM_CLIENT_SECRET \
-            --tenant $ARM_TENANT_ID --output none
-          az group delete --name rg-nossodireito --yes 2>/dev/null \
-            || echo "RG ja removido"
+        run: terraform destroy -auto-approve
 
       # ── Salvar state (so se tem conteudo real) ──
       - name: Verificar state

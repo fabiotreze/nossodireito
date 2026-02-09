@@ -1,0 +1,16 @@
+{
+    "name": "nossodireito",
+    "version": "1.0.0",
+    "description": "NossoDireito — Portal de direitos PcD (server)",
+    "main": "server.js",
+    "scripts": {
+        "start": "node server.js"
+    },
+    "dependencies": {
+        "applicationinsights": "^3.4.0"
+    },
+    "engines": {
+        "node": ">=20"
+    },
+    "private": true
+}
