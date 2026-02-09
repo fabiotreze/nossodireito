@@ -8,10 +8,22 @@ on:
   push:
     branches:
       - main
+    paths:
+      - "index.html"
+      - "css/**"
+      - "js/**"
+      - "data/**"
+      - "staticwebapp.config.json"
+      - "codereview/**"
   pull_request:
     types: [opened, synchronize, reopened, closed]
     branches:
       - main
+    paths:
+      - "index.html"
+      - "css/**"
+      - "js/**"
+      - "data/**"
 
 jobs:
   # ── Quality Gate (obrigatório antes do deploy) ──
@@ -50,14 +62,25 @@ jobs:
     if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action != 'closed')
     runs-on: ubuntu-latest
     name: Build and Deploy
+    env:
+      DEPLOY_TOKEN: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Check deploy token
+        if: env.DEPLOY_TOKEN == ''
+        run: |
+          echo "::warning::AZURE_STATIC_WEB_APPS_API_TOKEN nao configurado."
+          echo "Execute o workflow Terraform com action=apply para provisionar e deployar."
+          echo "Apos o apply, o token será setado automaticamente."
+          exit 0
+
       - name: Deploy
+        if: env.DEPLOY_TOKEN != ''
         uses: Azure/static-web-apps-deploy@v1
         with:
-          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}
+          azure_static_web_apps_api_token: ${{ env.DEPLOY_TOKEN }}
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           action: "upload"
           # Site estático puro — sem framework, sem build

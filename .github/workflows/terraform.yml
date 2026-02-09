@@ -1,13 +1,13 @@
 # NossoDireito — Terraform via GitHub Actions
 # Provisiona e gerencia infraestrutura Azure.
-# State local — salvo como GitHub Artifact para persistência entre runs.
+# State local — salvo como GitHub Artifact para persistencia entre runs.
 #
-# Secrets necessários no GitHub (Settings → Secrets → Actions):
+# Secrets necessarios no GitHub (Settings > Secrets > Actions):
 #   ARM_CLIENT_ID        — Service Principal (App ID)
 #   ARM_CLIENT_SECRET    — Service Principal password
 #   ARM_TENANT_ID        — Azure AD Tenant ID
 #   ARM_SUBSCRIPTION_ID  — Azure Subscription ID
-#   TF_VAR_pfx_password  — Senha do PFX (se usar cert próprio)
+#   TF_VAR_pfx_password  — Senha do PFX (se usar cert proprio)
 
 name: Terraform
 
@@ -26,15 +26,17 @@ on:
 
 permissions:
   contents: read
-  pull-requests: write
   actions: read
 
 env:
-  # Azure Service Principal para autenticação
   ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
   ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
   ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
   ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+  # Terraform le TF_VAR_* automaticamente — sem necessidade de -var flags
+  TF_VAR_subscription_id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+  TF_VAR_pfx_password: ${{ secrets.TF_VAR_pfx_password }}
+  TF_VAR_pfx_file_path: ""
 
 jobs:
   terraform:
@@ -50,6 +52,8 @@ jobs:
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_wrapper: false
 
       # ── Restaurar state de run anterior (se existir) ──
       - name: Baixar tfstate anterior
@@ -65,74 +69,127 @@ jobs:
       - name: Terraform Init
         run: terraform init
 
+      # ── Auto-import: importa recursos que existem no Azure mas nao no state ──
+      - name: Auto-import recursos existentes
+        if: github.event.inputs.action != 'destroy'
+        run: |
+          import_if_missing() {
+            local addr="$1"
+            local id="$2"
+            if ! terraform state show "$addr" > /dev/null 2>&1; then
+              terraform import "$addr" "$id" 2>&1 \
+                && echo "imported ${addr}" \
+                || echo "skip ${addr} — not found in Azure"
+            else
+              echo "ok ${addr} already in state"
+            fi
+          }
+
+          SUB="${ARM_SUBSCRIPTION_ID}"
+          BASE="/subscriptions/${SUB}/resourceGroups/rg-nossodireito"
+
+          echo "── Verificando state ──"
+          import_if_missing "azurerm_resource_group.main" "${BASE}"
+          import_if_missing "azurerm_static_web_app.main" \
+            "${BASE}/providers/Microsoft.Web/staticSites/stapp-nossodireito"
+          import_if_missing "azurerm_key_vault.main[0]" \
+            "${BASE}/providers/Microsoft.KeyVault/vaults/kv-nossodireito"
+
+          # Access Policies precisam dos object_id via az CLI
+          az login --service-principal \
+            -u "${ARM_CLIENT_ID}" -p "${ARM_CLIENT_SECRET}" \
+            --tenant "${ARM_TENANT_ID}" --output none 2>/dev/null || true
+
+          DEPLOYER_OID=$(az ad sp show --id "${ARM_CLIENT_ID}" \
+            --query "id" -o tsv 2>/dev/null || true)
+          if [ -n "$DEPLOYER_OID" ]; then
+            import_if_missing "azurerm_key_vault_access_policy.deployer[0]" \
+              "${BASE}/providers/Microsoft.KeyVault/vaults/kv-nossodireito/objectId/${DEPLOYER_OID}"
+          fi
+
+          SWA_PID=$(az staticwebapp show -n stapp-nossodireito \
+            -g rg-nossodireito --query "identity.principalId" \
+            -o tsv 2>/dev/null || true)
+          if [ -n "$SWA_PID" ]; then
+            import_if_missing "azurerm_key_vault_access_policy.swa[0]" \
+              "${BASE}/providers/Microsoft.KeyVault/vaults/kv-nossodireito/objectId/${SWA_PID}"
+          fi
+
+          echo "── State atual ──"
+          terraform state list 2>/dev/null || echo "(vazio)"
+
       - name: Terraform Format Check
         run: terraform fmt -check -recursive
 
       - name: Terraform Validate
         run: terraform validate
 
-      # ── Plan (sempre roda) ──
+      # ── Plan ──
       - name: Terraform Plan
         id: plan
-        run: |
-          terraform plan \
-            -var="subscription_id=${{ secrets.ARM_SUBSCRIPTION_ID }}" \
-            -var="pfx_password=${{ secrets.TF_VAR_pfx_password }}" \
-            -var="pfx_file_path=" \
-            -no-color \
-            -out=tfplan
+        run: terraform plan -no-color -out=tfplan
         continue-on-error: true
-
-      # ── Comentar plan no PR ──
-      - name: Comentar plan no PR
-        if: github.event_name == 'pull_request'
-        uses: actions/github-script@v7
-        env:
-          PLAN: ${{ steps.plan.outputs.stdout }}
-        with:
-          script: |
-            const output = `#### Terraform Plan 📋
-            \`\`\`
-            ${process.env.PLAN}
-            \`\`\`
-            *Push by @${{ github.actor }}*`;
-
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: output
-            });
 
       - name: Plan Status
         if: steps.plan.outcome == 'failure'
         run: exit 1
 
-      # ── Apply (só manual) ──
+      # ── Apply (manual) ──
       - name: Terraform Apply
         if: github.event.inputs.action == 'apply'
         run: terraform apply -auto-approve tfplan
 
-      # ── Destroy (só manual) ──
+      # ── Exportar SWA API Key apos apply ──
+      - name: Exportar SWA Deploy Token
+        if: github.event.inputs.action == 'apply'
+        id: swa_token
+        run: |
+          API_KEY=$(terraform output -raw api_key 2>/dev/null || true)
+          if [ -n "$API_KEY" ]; then
+            echo "::add-mask::${API_KEY}"
+            echo "api_key=${API_KEY}" >> $GITHUB_OUTPUT
+            echo "SWA API Key extraido com sucesso."
+          fi
+
+      # ── Deploy site para SWA apos apply bem-sucedido ──
+      - name: Deploy site to SWA
+        if: github.event.inputs.action == 'apply' && steps.swa_token.outputs.api_key != ''
+        uses: Azure/static-web-apps-deploy@v1
+        with:
+          azure_static_web_apps_api_token: ${{ steps.swa_token.outputs.api_key }}
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          action: upload
+          app_location: /
+          output_location: ""
+          skip_app_build: true
+
+      # ── Destroy (manual) ──
       - name: Terraform Destroy
-        if: github.event_name == 'workflow_dispatch' && github.event.inputs.action == 'destroy'
-        run: |
-          terraform destroy \
-            -var="subscription_id=${{ secrets.ARM_SUBSCRIPTION_ID }}" \
-            -var="pfx_password=${{ secrets.TF_VAR_pfx_password }}" \
-            -var="pfx_file_path=" \
-            -auto-approve || true
+        if: github.event.inputs.action == 'destroy'
+        run: terraform destroy -auto-approve || true
 
-      # Fallback: az group delete (quando state está vazio/corrompido)
-      - name: Fallback - Delete Resource Group via az CLI
-        if: github.event_name == 'workflow_dispatch' && github.event.inputs.action == 'destroy'
+      - name: Fallback - Delete RG via az CLI
+        if: github.event.inputs.action == 'destroy'
         run: |
-          az login --service-principal -u $ARM_CLIENT_ID -p $ARM_CLIENT_SECRET --tenant $ARM_TENANT_ID --output none
-          az group delete --name rg-nossodireito --yes 2>/dev/null || echo "RG já removido ou não existe"
+          az login --service-principal \
+            -u $ARM_CLIENT_ID -p $ARM_CLIENT_SECRET \
+            --tenant $ARM_TENANT_ID --output none
+          az group delete --name rg-nossodireito --yes 2>/dev/null \
+            || echo "RG ja removido"
 
-      # ── Salvar state como artifact ──
-      - name: Upload tfstate
+      # ── Salvar state (so se tem conteudo real) ──
+      - name: Verificar state
         if: always()
+        id: state_check
+        run: |
+          if terraform state list 2>/dev/null | grep -q '.'; then
+            echo "has_state=true" >> $GITHUB_OUTPUT
+          else
+            echo "has_state=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Upload tfstate
+        if: always() && steps.state_check.outputs.has_state == 'true'
         uses: actions/upload-artifact@v4
         with:
           name: terraform-state
@@ -144,9 +201,10 @@ jobs:
 
       # ── Outputs ──
       - name: Terraform Outputs
-        if: steps.plan.outcome == 'success'
+        if: always() && steps.state_check.outputs.has_state == 'true'
         run: |
-          echo "## 🏗️ Terraform Outputs" >> $GITHUB_STEP_SUMMARY
+          echo "## Terraform Outputs" >> $GITHUB_STEP_SUMMARY
           echo '```' >> $GITHUB_STEP_SUMMARY
-          terraform output -no-color 2>/dev/null >> $GITHUB_STEP_SUMMARY || echo "No outputs yet" >> $GITHUB_STEP_SUMMARY
+          terraform output -no-color 2>/dev/null >> $GITHUB_STEP_SUMMARY \
+            || echo "No outputs yet" >> $GITHUB_STEP_SUMMARY
           echo '```' >> $GITHUB_STEP_SUMMARY
