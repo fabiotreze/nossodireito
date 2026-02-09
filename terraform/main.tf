@@ -106,12 +106,9 @@ resource "azurerm_static_web_app" "main" {
   sku_tier            = var.sku_tier
   sku_size            = var.sku_tier
 
-  # Managed Identity para acesso ao Key Vault (sem credenciais hardcoded)
-  dynamic "identity" {
-    for_each = var.enable_keyvault ? [1] : []
-    content {
-      type = "SystemAssigned"
-    }
+  # Managed Identity sempre ativa (gratuito) — necessária para Key Vault
+  identity {
+    type = "SystemAssigned"
   }
 
   tags = local.tags
