@@ -1,0 +1,1169 @@
+{
+    "versao": "1.3.0",
+    "ultima_atualizacao": "2026-02-09",
+    "proxima_revisao": "2026-02-16",
+    "aviso": "Informações compiladas de fontes oficiais do governo brasileiro (gov.br). Podem estar desatualizadas. Verifique sempre as fontes originais.",
+    "fontes": [
+        {
+            "nome": "Constituição Federal de 1988",
+            "tipo": "legislacao",
+            "url": "https://www.planalto.gov.br/ccivil_03/constituicao/constituicao.htm",
+            "orgao": "Presidência da República",
+            "consultado_em": "2026-02-09",
+            "artigos_referenciados": [
+                "Art. 203, V",
+                "Art. 208, III"
+            ]
+        },
+        {
+            "nome": "Lei 8.036/1990 — FGTS",
+            "tipo": "legislacao",
+            "url": "https://www.planalto.gov.br/ccivil_03/leis/l8036consol.htm",
+            "orgao": "Presidência da República",
+            "consultado_em": "2026-02-09",
+            "artigos_referenciados": [
+                "Art. 20, XVII"
+            ]
+        },
+        {
+            "nome": "Lei 8.213/1991 — Planos de Benefícios da Previdência Social",
+            "tipo": "legislacao",
+            "url": "https://www.planalto.gov.br/ccivil_03/leis/l8213cons.htm",
+            "orgao": "Presidência da República",
+            "consultado_em": "2026-02-09",
+            "artigos_referenciados": [
+                "Art. 93"
+            ]
+        },
+        {
+            "nome": "Lei 8.742/1993 — LOAS (Lei Orgânica da Assistência Social)",
+            "tipo": "legislacao",
+            "url": "https://www.planalto.gov.br/ccivil_03/leis/l8742.htm",
+            "orgao": "Presidência da República",
+            "consultado_em": "2026-02-09",
+            "artigos_referenciados": [
+                "Art. 20"
+            ]
+        },
+        {
+            "nome": "Lei 8.899/1994 — Passe Livre Interestadual",
+            "tipo": "legislacao",
+            "url": "https://www.planalto.gov.br/ccivil_03/leis/l8899.htm",
+            "orgao": "Presidência da República",
+            "consultado_em": "2026-02-09",
+            "artigos_referenciados": [
+                "Art. 1º"
+            ]
+        },
+        {
+            "nome": "Lei 9.656/1998 — Planos de Saúde",
+            "tipo": "legislacao",
+            "url": "https://www.planalto.gov.br/ccivil_03/leis/l9656.htm",
+            "orgao": "Presidência da República",
+            "consultado_em": "2026-02-09",
+            "artigos_referenciados": [
+                "Art. 14"
+            ]
+        },
+        {
+            "nome": "Lei 12.764/2012 — Lei Berenice Piana (Política Nacional de Proteção dos Direitos da Pessoa com TEA)",
+            "tipo": "legislacao",
+            "url": "https://www.planalto.gov.br/ccivil_03/_ato2011-2014/2012/lei/l12764.htm",
+            "orgao": "Presidência da República",
+            "consultado_em": "2026-02-09",
+            "artigos_referenciados": [
+                "Art. 3º, III",
+                "Art. 3º-A",
+                "Art. 5º",
+                "Art. 7º"
+            ]
+        },
+        {
+            "nome": "Lei 13.146/2015 — Estatuto da Pessoa com Deficiência (LBI)",
+            "tipo": "legislacao",
+            "url": "https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2015/lei/l13146.htm",
+            "orgao": "Presidência da República",
+            "consultado_em": "2026-02-09",
+            "artigos_referenciados": [
+                "Art. 18",
+                "Art. 28",
+                "Art. 31–34",
+                "Art. 34–38",
+                "Art. 46",
+                "Art. 56–58"
+            ]
+        },
+        {
+            "nome": "Lei 13.709/2018 — LGPD (Lei Geral de Proteção de Dados)",
+            "tipo": "legislacao",
+            "url": "https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2018/lei/l13709.htm",
+            "orgao": "Presidência da República",
+            "consultado_em": "2026-02-09",
+            "artigos_referenciados": [
+                "Art. 4º, I"
+            ]
+        },
+        {
+            "nome": "Lei 13.977/2020 — Lei Romeo Mion (CIPTEA)",
+            "tipo": "legislacao",
+            "url": "https://www.planalto.gov.br/ccivil_03/_ato2019-2022/2020/lei/l13977.htm",
+            "orgao": "Presidência da República",
+            "consultado_em": "2026-02-09",
+            "artigos_referenciados": [
+                "Art. 2º"
+            ]
+        },
+        {
+            "nome": "Portal de Serviços — Solicitar BPC",
+            "tipo": "servico",
+            "url": "https://www.gov.br/pt-br/servicos/solicitar-beneficio-assistencial-a-pessoa-com-deficiencia",
+            "orgao": "Ministério do Desenvolvimento e Assistência Social",
+            "consultado_em": "2026-02-09"
+        },
+        {
+            "nome": "Meu INSS",
+            "tipo": "servico",
+            "url": "https://meu.inss.gov.br/",
+            "orgao": "INSS",
+            "consultado_em": "2026-02-09"
+        },
+        {
+            "nome": "Secretaria Nacional dos Direitos da Pessoa com Deficiência",
+            "tipo": "servico",
+            "url": "https://www.gov.br/mdh/pt-br/navegue-por-temas/pessoa-com-deficiencia",
+            "orgao": "Ministério dos Direitos Humanos e Cidadania",
+            "consultado_em": "2026-02-09"
+        },
+        {
+            "nome": "ANS — Agência Nacional de Saúde Suplementar",
+            "tipo": "servico",
+            "url": "https://www.gov.br/ans/pt-br",
+            "orgao": "Ministério da Saúde",
+            "consultado_em": "2026-02-09"
+        },
+        {
+            "nome": "Mapa de Oportunidades e de Serviços Públicos (CRAS)",
+            "tipo": "servico",
+            "url": "https://aplicacoes.mds.gov.br/sagi/mops/",
+            "orgao": "Ministério do Desenvolvimento Social",
+            "consultado_em": "2026-02-09"
+        },
+        {
+            "nome": "Passe Livre Federal",
+            "tipo": "servico",
+            "url": "https://www.gov.br/pt-br/servicos/obter-passe-livre-para-pessoas-com-deficiencia",
+            "orgao": "Ministério dos Transportes",
+            "consultado_em": "2026-02-09"
+        },
+        {
+            "nome": "Resolução ANS nº 539/2022 — Rol de Procedimentos",
+            "tipo": "normativa",
+            "url": "https://www.gov.br/ans/pt-br",
+            "orgao": "ANS",
+            "consultado_em": "2026-02-09"
+        },
+        {
+            "nome": "Lei 10.098/2000 — Normas Gerais de Acessibilidade",
+            "tipo": "legislacao",
+            "url": "https://www.planalto.gov.br/ccivil_03/leis/l10098.htm",
+            "orgao": "Presidência da República",
+            "consultado_em": "2026-02-09",
+            "artigos_referenciados": [
+                "Art. 11–18"
+            ]
+        },
+        {
+            "nome": "Decreto 5.296/2004 — Regulamentação da Acessibilidade",
+            "tipo": "legislacao",
+            "url": "https://www.planalto.gov.br/ccivil_03/_ato2004-2006/2004/decreto/d5296.htm",
+            "orgao": "Presidência da República",
+            "consultado_em": "2026-02-09",
+            "artigos_referenciados": [
+                "Art. 10–22"
+            ]
+        },
+        {
+            "nome": "Lei 14.620/2023 — Minha Casa, Minha Vida",
+            "tipo": "legislacao",
+            "url": "https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2023/lei/l14620.htm",
+            "orgao": "Presidência da República",
+            "consultado_em": "2026-02-09",
+            "artigos_referenciados": [
+                "Art. 3º, § 1º"
+            ]
+        }
+    ],
+    "documentos_mestre": [
+        {
+            "id": "rg",
+            "nome": "RG ou Certidão de Nascimento",
+            "descricao": "Documento de identidade do beneficiário (original e cópia)",
+            "categorias": [
+                "bpc",
+                "ciptea",
+                "educacao",
+                "sus_terapias",
+                "transporte",
+                "trabalho",
+                "fgts",
+                "moradia"
+            ],
+            "dica": "Certidão de Nascimento vale como RG para menores de idade"
+        },
+        {
+            "id": "cpf",
+            "nome": "CPF",
+            "descricao": "Cadastro de Pessoa Física do beneficiário e do responsável legal",
+            "categorias": [
+                "bpc",
+                "ciptea",
+                "transporte",
+                "trabalho",
+                "fgts"
+            ],
+            "dica": "CPF de menor pode ser obtido nas agências do Banco do Brasil, Caixa ou Correios"
+        },
+        {
+            "id": "comprovante_residencia",
+            "nome": "Comprovante de Residência",
+            "descricao": "Conta de luz, água, telefone ou correspondência bancária (últimos 3 meses)",
+            "categorias": [
+                "bpc",
+                "ciptea",
+                "educacao",
+                "sus_terapias",
+                "moradia"
+            ],
+            "dica": "Se mora de aluguel sem conta no nome, peça declaração do proprietário com firma reconhecida"
+        },
+        {
+            "id": "laudo_medico",
+            "nome": "Laudo Médico com CID",
+            "descricao": "Laudo ou relatório médico indicando o diagnóstico, CID-10 ou CID-11, e impedimentos. Pode ser de médico particular ou do SUS.",
+            "categorias": [
+                "bpc",
+                "ciptea",
+                "educacao",
+                "plano_saude",
+                "sus_terapias",
+                "transporte",
+                "trabalho",
+                "fgts",
+                "moradia"
+            ],
+            "dica": "Guarde SEMPRE o original. Faça várias cópias autenticadas. O laudo é seu documento mais importante."
+        },
+        {
+            "id": "nis",
+            "nome": "NIS (Número de Identificação Social)",
+            "descricao": "Obtido ao se cadastrar no CadÚnico, no CRAS da sua cidade",
+            "categorias": [
+                "bpc"
+            ],
+            "dica": "Se não tiver, o primeiro passo é ir ao CRAS fazer o CadÚnico"
+        },
+        {
+            "id": "comprovante_renda",
+            "nome": "Comprovante de Renda da Família",
+            "descricao": "Holerite, extrato bancário, declaração de IR ou declaração de renda informal",
+            "categorias": [
+                "bpc",
+                "transporte"
+            ],
+            "dica": "Quem não tem renda formal pode fazer declaração de próprio punho"
+        },
+        {
+            "id": "foto_3x4",
+            "nome": "Foto 3x4",
+            "descricao": "Foto recente, fundo branco, para documentos de identificação",
+            "categorias": [
+                "ciptea"
+            ],
+            "dica": "Algumas prefeituras aceitam foto digital tirada pelo celular"
+        },
+        {
+            "id": "cartao_sus",
+            "nome": "Cartão SUS",
+            "descricao": "Cartão Nacional de Saúde — pode ser feito gratuitamente em qualquer UBS",
+            "categorias": [
+                "sus_terapias"
+            ],
+            "dica": "Se não tiver, faça na UBS mais próxima levando RG e comprovante de residência"
+        },
+        {
+            "id": "carteirinha_plano",
+            "nome": "Carteirinha do Plano de Saúde",
+            "descricao": "Documento que comprova vínculo com a operadora de saúde",
+            "categorias": [
+                "plano_saude"
+            ],
+            "dica": "Tenha sempre uma foto no celular para emergências"
+        },
+        {
+            "id": "prescricao_medica",
+            "nome": "Prescrição/Receita Médica Detalhada",
+            "descricao": "Receita com tipo de terapia, frequência semanal e justificativa clínica",
+            "categorias": [
+                "plano_saude",
+                "sus_terapias"
+            ],
+            "dica": "Peça ao médico que detalhe: tipo de terapia, quantidade de sessões por semana e justificativa"
+        },
+        {
+            "id": "ctps",
+            "nome": "Carteira de Trabalho (CTPS)",
+            "descricao": "Carteira de Trabalho e Previdência Social — pode ser digital (app Gov.br)",
+            "categorias": [
+                "trabalho",
+                "fgts"
+            ],
+            "dica": "A CTPS digital está disponível no app Gov.br"
+        },
+        {
+            "id": "certidao_dependencia",
+            "nome": "Comprovante de Dependência",
+            "descricao": "Certidão de Nascimento, termo de guarda ou curatela comprovando vínculo",
+            "categorias": [
+                "bpc",
+                "ciptea",
+                "fgts"
+            ],
+            "dica": "Necessário quando o beneficiário é dependente (filho, tutelado)"
+        },
+        {
+            "id": "convencao_condominio",
+            "nome": "Convenção do Condomínio",
+            "descricao": "Documento que rege as regras do condomínio. Importante para verificar cláusulas sobre vagas, áreas comuns e adaptações.",
+            "categorias": [
+                "moradia"
+            ],
+            "dica": "Solicite uma cópia ao síndico ou à administradora. Se a convenção proibir adaptações de acessibilidade, ela é NULA nesse ponto (Art. 58 da LBI)."
+        }
+    ],
+    "instituicoes_apoio": [
+        {
+            "id": "defensoria",
+            "nome": "Defensoria Pública",
+            "tipo": "governamental",
+            "descricao": "Assistência jurídica gratuita para pessoas de baixa renda. Orienta sobre todos os direitos de PcD e representa judicialmente quando necessário.",
+            "servicos": [
+                "Orientação jurídica gratuita",
+                "Ação judicial contra negativa de BPC",
+                "Ação contra plano de saúde",
+                "Defesa contra discriminação",
+                "Ação contra condomínio que nega acessibilidade"
+            ],
+            "url": "https://www.anadep.org.br/",
+            "como_acessar": "Procure a Defensoria Pública do seu estado. Não precisa de advogado — é gratuito.",
+            "categorias": [
+                "bpc",
+                "ciptea",
+                "educacao",
+                "plano_saude",
+                "sus_terapias",
+                "transporte",
+                "trabalho",
+                "fgts",
+                "moradia"
+            ]
+        },
+        {
+            "id": "cras",
+            "nome": "CRAS — Centro de Referência de Assistência Social",
+            "tipo": "governamental",
+            "descricao": "Porta de entrada para serviços sociais. Faz o CadÚnico, orienta sobre benefícios e encaminha para outros serviços.",
+            "servicos": [
+                "CadÚnico",
+                "Orientação sobre BPC",
+                "Encaminhamento para CREAS",
+                "Programas sociais municipais"
+            ],
+            "url": "https://aplicacoes.mds.gov.br/sagi/mops/",
+            "como_acessar": "Procure o CRAS mais próximo da sua residência. Basta ir com documentos pessoais.",
+            "categorias": [
+                "bpc"
+            ]
+        },
+        {
+            "id": "creas",
+            "nome": "CREAS — Centro de Referência Especializado de Assistência Social",
+            "tipo": "governamental",
+            "descricao": "Atende famílias em situação de risco social ou violação de direitos. Oferece acompanhamento especializado.",
+            "servicos": [
+                "Acompanhamento de PcD em situação de risco",
+                "Proteção contra violação de direitos",
+                "Encaminhamento para abrigos e serviços"
+            ],
+            "url": "https://aplicacoes.mds.gov.br/sagi/mops/",
+            "como_acessar": "Geralmente o encaminhamento é feito pelo CRAS, mas pode procurar diretamente.",
+            "categorias": [
+                "bpc",
+                "educacao"
+            ]
+        },
+        {
+            "id": "mp",
+            "nome": "Ministério Público",
+            "tipo": "governamental",
+            "descricao": "Fiscaliza o cumprimento das leis. Pode atuar quando há violação de direitos de PcD (escola que recusa matrícula, empresa que descumpre cota, condomínio que nega acessibilidade etc.).",
+            "servicos": [
+                "Denúncia de violação de direitos",
+                "Ação civil pública",
+                "Fiscalização de acessibilidade",
+                "Proteção contra discriminação",
+                "Fiscalização de acessibilidade em condomínios e espaços coletivos"
+            ],
+            "url": "https://www.cnmp.mp.br/",
+            "como_acessar": "Procure o Ministério Público do seu estado. Denúncias podem ser feitas presencialmente ou pelo site.",
+            "categorias": [
+                "educacao",
+                "trabalho",
+                "transporte",
+                "moradia"
+            ]
+        },
+        {
+            "id": "conselho_tutelar",
+            "nome": "Conselho Tutelar",
+            "tipo": "governamental",
+            "descricao": "Protege os direitos de crianças e adolescentes. Atua quando escola recusa matrícula ou quando há negligência.",
+            "servicos": [
+                "Proteção de crianças e adolescentes com deficiência",
+                "Fiscalização de escolas",
+                "Encaminhamento para serviços de saúde"
+            ],
+            "url": "https://www.gov.br/mdh/pt-br/navegue-por-temas/crianca-e-adolescente",
+            "como_acessar": "Procure o Conselho Tutelar do seu bairro ou município. Funciona inclusive aos finais de semana.",
+            "categorias": [
+                "educacao",
+                "sus_terapias"
+            ]
+        },
+        {
+            "id": "oab_probono",
+            "nome": "OAB — Comissão de Direitos da Pessoa com Deficiência",
+            "tipo": "profissional",
+            "descricao": "Muitas seccionais da OAB possuem comissões especializadas em direitos de PcD e programas pro bono (gratuitos).",
+            "servicos": [
+                "Orientação jurídica",
+                "Encaminhamento para advogados pro bono",
+                "Palestras e capacitação"
+            ],
+            "url": "https://www.oab.org.br/",
+            "como_acessar": "Procure a OAB do seu estado e pergunte sobre a Comissão de Direitos da Pessoa com Deficiência.",
+            "categorias": [
+                "bpc",
+                "plano_saude",
+                "trabalho"
+            ]
+        },
+        {
+            "id": "apae",
+            "nome": "APAE — Associação de Pais e Amigos dos Excepcionais",
+            "tipo": "ong",
+            "descricao": "Maior rede de atenção à pessoa com deficiência intelectual do Brasil. Oferece atendimento clínico, educacional e de assistência social.",
+            "servicos": [
+                "Atendimento clínico e terapêutico",
+                "Educação especial",
+                "Oficinas de trabalho protegido",
+                "Orientação às famílias"
+            ],
+            "url": "https://apaebrasil.org.br/",
+            "como_acessar": "Procure a APAE mais próxima. Presente em mais de 2.000 municípios brasileiros.",
+            "categorias": [
+                "educacao",
+                "sus_terapias",
+                "trabalho"
+            ]
+        },
+        {
+            "id": "ama",
+            "nome": "AMA — Associação de Amigos do Autista",
+            "tipo": "ong",
+            "descricao": "Pioneira no atendimento ao autismo no Brasil. Oferece terapias, orientação familiar e luta pelos direitos das pessoas com TEA.",
+            "servicos": [
+                "Terapias especializadas para TEA",
+                "Orientação para famílias",
+                "Advocacia por direitos"
+            ],
+            "url": "https://www.ama.org.br/",
+            "como_acessar": "Sediada em São Paulo, com parcerias em outros estados. Consulte o site para atendimento.",
+            "categorias": [
+                "ciptea",
+                "educacao",
+                "plano_saude",
+                "sus_terapias"
+            ]
+        },
+        {
+            "id": "instituto_jc",
+            "nome": "Instituto Jô Clemente (antiga APAE-SP)",
+            "tipo": "ong",
+            "descricao": "Referência em deficiência intelectual e TEA. Oferece diagnóstico, terapias, emprego apoiado e capacitação profissional.",
+            "servicos": [
+                "Diagnóstico e avaliação",
+                "Terapias multidisciplinares",
+                "Emprego apoiado",
+                "Capacitação profissional"
+            ],
+            "url": "https://www.ijc.org.br/",
+            "como_acessar": "Atendimento em São Paulo. Para outros estados, consulte parcerias no site.",
+            "categorias": [
+                "ciptea",
+                "sus_terapias",
+                "trabalho"
+            ]
+        },
+        {
+            "id": "mpt",
+            "nome": "MPT — Ministério Público do Trabalho",
+            "tipo": "governamental",
+            "descricao": "Fiscaliza o cumprimento das cotas de PcD nas empresas e combate discriminação no trabalho.",
+            "servicos": [
+                "Denúncia de descumprimento de cotas",
+                "Combate à discriminação laboral",
+                "Fiscalização de acessibilidade no trabalho"
+            ],
+            "url": "https://mpt.mp.br/",
+            "como_acessar": "Denúncias podem ser feitas pelo site, app MPT Digital ou presencialmente.",
+            "categorias": [
+                "trabalho"
+            ]
+        },
+        {
+            "id": "procon",
+            "nome": "Procon",
+            "tipo": "governamental",
+            "descricao": "Defesa do consumidor. Atua contra planos de saúde que negam cobertura, empresas que discriminam PcD e cobranças indevidas de condomínio.",
+            "servicos": [
+                "Reclamação contra plano de saúde",
+                "Defesa contra cobranças indevidas",
+                "Mediação de conflitos",
+                "Reclamação contra condomínio por cobranças discriminatórias"
+            ],
+            "url": "https://www.procon.sp.gov.br/",
+            "como_acessar": "Procure o Procon do seu estado ou município. Muitos aceitam reclamações online.",
+            "categorias": [
+                "plano_saude",
+                "moradia"
+            ]
+        },
+        {
+            "id": "abraci",
+            "nome": "ABRACI — Associação Brasileira de Autismo",
+            "tipo": "ong",
+            "descricao": "Trabalha pela inclusão e garantia de direitos de pessoas no espectro autista em nível nacional.",
+            "servicos": [
+                "Orientação sobre direitos",
+                "Articulação política",
+                "Rede de apoio entre famílias"
+            ],
+            "url": "https://www.autismbrasil.org/",
+            "como_acessar": "Acesse o site para informações e contato com representantes regionais.",
+            "categorias": [
+                "ciptea",
+                "educacao",
+                "plano_saude",
+                "sus_terapias"
+            ]
+        }
+    ],
+    "categorias": [
+        {
+            "id": "bpc",
+            "titulo": "BPC/LOAS — Benefício de Prestação Continuada",
+            "icone": "🏦",
+            "resumo": "Benefício de 1 salário mínimo por mês para pessoa com deficiência de baixa renda. Não precisa ter contribuído ao INSS.",
+            "base_legal": [
+                {
+                    "lei": "Lei 8.742/1993 (LOAS)",
+                    "artigo": "Art. 20",
+                    "link": "https://www.planalto.gov.br/ccivil_03/leis/l8742.htm"
+                },
+                {
+                    "lei": "Constituição Federal",
+                    "artigo": "Art. 203, V",
+                    "link": "https://www.planalto.gov.br/ccivil_03/constituicao/constituicao.htm"
+                }
+            ],
+            "requisitos": [
+                "Renda per capita familiar igual ou inferior a 1/4 do salário mínimo",
+                "Inscrição no CadÚnico (Cadastro Único) atualizada",
+                "Avaliação médica e social pelo INSS (perícia biopsicossocial)",
+                "Impedimento de longo prazo (mínimo 2 anos) — físico, mental, intelectual ou sensorial",
+                "Não receber outro benefício da Seguridade Social (exceto assistência médica e pensão especial de natureza indenizatória)"
+            ],
+            "documentos": [
+                "Documento de identidade (RG ou Certidão de Nascimento)",
+                "CPF do requerente e do responsável legal (se menor)",
+                "Comprovante de residência atualizado",
+                "Laudo médico com CID (não precisa ser do SUS)",
+                "Número do NIS (Número de Identificação Social — obtido no CadÚnico)",
+                "Comprovante de renda de todos da família"
+            ],
+            "passo_a_passo": [
+                "Inscreva-se ou atualize o CadÚnico no CRAS da sua cidade (leve documentos de toda a família)",
+                "Agende o pedido pelo Meu INSS (meu.inss.gov.br) ou pelo telefone 135",
+                "Compareça à perícia médica e à avaliação social no INSS na data agendada",
+                "Acompanhe o resultado pelo Meu INSS ou pelo 135",
+                "Se aprovado, o benefício é pago mensalmente pelo banco indicado"
+            ],
+            "dicas": [
+                "Mesmo que a renda familiar ultrapasse 1/4 do SM, peça — o INSS analisa caso a caso considerando gastos com saúde e medicamentos",
+                "Se negado, você pode recorrer administrativamente ou judicialmente (Defensoria Pública ajuda gratuitamente)",
+                "O BPC é revisado a cada 2 anos — mantenha o CadÚnico sempre atualizado",
+                "O beneficiário de BPC pode trabalhar e receber o Auxílio-Inclusão (50% do BPC) ao mesmo tempo"
+            ],
+            "valor": "1 salário mínimo por mês (R$ 1.518,00 em 2025)",
+            "onde": "CRAS (CadÚnico) → INSS (agendamento pelo 135 ou meu.inss.gov.br)",
+            "links": [
+                {
+                    "titulo": "Solicitar BPC (gov.br)",
+                    "url": "https://www.gov.br/pt-br/servicos/solicitar-beneficio-assistencial-a-pessoa-com-deficiencia"
+                },
+                {
+                    "titulo": "Meu INSS",
+                    "url": "https://meu.inss.gov.br/"
+                },
+                {
+                    "titulo": "Encontrar CRAS mais próximo",
+                    "url": "https://aplicacoes.mds.gov.br/sagi/mops/"
+                }
+            ],
+            "tags": [
+                "BPC",
+                "LOAS",
+                "benefício",
+                "salário mínimo",
+                "INSS",
+                "CadÚnico",
+                "baixa renda",
+                "deficiência"
+            ]
+        },
+        {
+            "id": "ciptea",
+            "titulo": "CIPTEA — Carteira de Identificação da Pessoa com TEA",
+            "icone": "🪪",
+            "resumo": "Carteira gratuita que garante prioridade no atendimento em serviços públicos e privados de saúde, educação e assistência social.",
+            "base_legal": [
+                {
+                    "lei": "Lei 13.977/2020 (Lei Romeo Mion)",
+                    "artigo": "Art. 2º",
+                    "link": "https://www.planalto.gov.br/ccivil_03/_ato2019-2022/2020/lei/l13977.htm"
+                },
+                {
+                    "lei": "Lei 12.764/2012 (Lei Berenice Piana)",
+                    "artigo": "Art. 3º-A",
+                    "link": "https://www.planalto.gov.br/ccivil_03/_ato2011-2014/2012/lei/l12764.htm"
+                }
+            ],
+            "requisitos": [
+                "Diagnóstico de Transtorno do Espectro Autista (TEA)",
+                "Relatório médico com indicação do CID (CID-10: F84 ou CID-11: 6A02)",
+                "Documentos pessoais do identificado e do responsável legal"
+            ],
+            "documentos": [
+                "Relatório médico com CID",
+                "Documento de identidade do identificado",
+                "CPF do identificado",
+                "Comprovante de residência",
+                "Foto 3x4",
+                "Documento do responsável legal (se menor ou dependente)"
+            ],
+            "passo_a_passo": [
+                "Obtenha relatório médico com CID de TEA (pode ser médico particular ou SUS)",
+                "Procure o órgão emissor da sua cidade (geralmente Secretaria de Assistência Social ou de Saúde)",
+                "Preencha o requerimento e entregue os documentos",
+                "Aguarde a emissão (prazo varia por município)",
+                "A carteira tem validade de 5 anos"
+            ],
+            "dicas": [
+                "A emissão é GRATUITA por lei (Lei 9.265/1996, Art. 1º, VII)",
+                "O órgão emissor varia por cidade — ligue para a prefeitura e pergunte",
+                "Em alguns estados, pode ser solicitada online (verifique o site da prefeitura)",
+                "A CIPTEA garante prioridade em filas de bancos, supermercados, hospitais e escolas"
+            ],
+            "valor": "Gratuito",
+            "onde": "Prefeitura do seu município (Secretaria de Assistência Social ou de Saúde)",
+            "links": [
+                {
+                    "titulo": "Lei Romeo Mion (texto completo)",
+                    "url": "https://www.planalto.gov.br/ccivil_03/_ato2019-2022/2020/lei/l13977.htm"
+                }
+            ],
+            "tags": [
+                "CIPTEA",
+                "carteira",
+                "autismo",
+                "TEA",
+                "prioridade",
+                "Romeo Mion",
+                "Berenice Piana",
+                "identificação"
+            ]
+        },
+        {
+            "id": "educacao",
+            "titulo": "Educação Inclusiva — Matrícula e Acompanhante",
+            "icone": "🎓",
+            "resumo": "Toda pessoa com deficiência tem direito à matrícula em escola regular. Recusa é crime com multa de 3 a 20 salários mínimos.",
+            "base_legal": [
+                {
+                    "lei": "Lei 12.764/2012 (Lei Berenice Piana)",
+                    "artigo": "Art. 7º",
+                    "link": "https://www.planalto.gov.br/ccivil_03/_ato2011-2014/2012/lei/l12764.htm"
+                },
+                {
+                    "lei": "Lei 13.146/2015 (Estatuto da Pessoa com Deficiência)",
+                    "artigo": "Art. 28",
+                    "link": "https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2015/lei/l13146.htm"
+                },
+                {
+                    "lei": "Constituição Federal",
+                    "artigo": "Art. 208, III",
+                    "link": "https://www.planalto.gov.br/ccivil_03/constituicao/constituicao.htm"
+                }
+            ],
+            "requisitos": [
+                "Laudo ou relatório médico indicando a deficiência",
+                "Documentos de matrícula normais (identidade, comprovante de residência etc.)"
+            ],
+            "documentos": [
+                "Documento de identidade da criança",
+                "Comprovante de residência",
+                "Laudo médico (recomendado, mas NÃO pode ser exigido como condição para matrícula)",
+                "Relatório da escola anterior (se houver)"
+            ],
+            "passo_a_passo": [
+                "Procure a escola de sua preferência (pública ou particular)",
+                "Solicite a matrícula normalmente — a escola NÃO pode recusar",
+                "Informe sobre a necessidade de apoio especializado (se houver)",
+                "Solicite acompanhante especializado se houver comprovada necessidade (laudo)",
+                "Se a escola recusar, denuncie à Secretaria de Educação, ao Ministério Público ou ao Conselho Tutelar"
+            ],
+            "dicas": [
+                "A escola NÃO pode cobrar taxa extra por inclusão",
+                "A escola particular tem as mesmas obrigações da pública quanto à inclusão",
+                "O gestor que recusar matrícula pode pagar multa de 3 a 20 salários mínimos",
+                "O AEE (Atendimento Educacional Especializado) é oferecido no contraturno, gratuitamente nas escolas públicas",
+                "A escola deve adaptar provas, materiais e métodos — não é o aluno que tem que se adaptar à escola"
+            ],
+            "valor": "Gratuito (educação pública) / Sem cobrança extra (educação particular)",
+            "onde": "Escola + Secretaria de Educação do seu município",
+            "links": [
+                {
+                    "titulo": "Estatuto da Pessoa com Deficiência (texto completo)",
+                    "url": "https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2015/lei/l13146.htm"
+                }
+            ],
+            "tags": [
+                "escola",
+                "matrícula",
+                "educação",
+                "inclusão",
+                "acompanhante",
+                "AEE",
+                "recusa",
+                "multa"
+            ]
+        },
+        {
+            "id": "plano_saude",
+            "titulo": "Plano de Saúde — Cobertura Obrigatória",
+            "icone": "🏥",
+            "resumo": "Planos de saúde não podem negar cobertura ou limitar sessões de terapia para pessoa com deficiência. Negar é ilegal.",
+            "base_legal": [
+                {
+                    "lei": "Lei 12.764/2012 (Lei Berenice Piana)",
+                    "artigo": "Art. 5º",
+                    "link": "https://www.planalto.gov.br/ccivil_03/_ato2011-2014/2012/lei/l12764.htm"
+                },
+                {
+                    "lei": "Lei 9.656/1998",
+                    "artigo": "Art. 14",
+                    "link": "https://www.planalto.gov.br/ccivil_03/leis/l9656.htm"
+                },
+                {
+                    "lei": "Resolução ANS nº 539/2022",
+                    "artigo": "Rol de procedimentos",
+                    "link": "https://www.gov.br/ans/pt-br"
+                }
+            ],
+            "requisitos": [
+                "Ser beneficiário de plano de saúde",
+                "Ter indicação médica ou prescritiva para o tratamento solicitado"
+            ],
+            "documentos": [
+                "Carteirinha do plano de saúde",
+                "Laudo/relatório médico solicitando o tratamento",
+                "Prescrição médica detalhada (tipo de terapia, frequência, justificativa)"
+            ],
+            "passo_a_passo": [
+                "O médico prescreve o tratamento necessário (ABA, fono, TO, psicologia etc.)",
+                "Solicite autorização ao plano de saúde (geralmente pelo app ou site do plano)",
+                "Se negado, peça a negativa POR ESCRITO",
+                "Com a negativa em mãos, reclame na ANS (ans.gov.br ou 0800 701 9656)",
+                "Se não resolver, procure a Defensoria Pública ou o Procon"
+            ],
+            "dicas": [
+                "O plano NÃO pode limitar número de sessões de terapia quando há indicação médica",
+                "Negar tratamento prescrito por médico é infração à Lei 9.656/1998",
+                "Sempre peça a negativa POR ESCRITO — é sua prova para reclamação",
+                "A ANS tem prazo de 5 dias úteis para resolver reclamações urgentes",
+                "Muitas vezes, apenas registrar reclamação na ANS faz o plano liberar o tratamento"
+            ],
+            "valor": "Coberto pelo plano de saúde",
+            "onde": "Operadora do plano → ANS → Defensoria Pública",
+            "links": [
+                {
+                    "titulo": "Reclamação na ANS",
+                    "url": "https://www.gov.br/ans/pt-br"
+                },
+                {
+                    "titulo": "Disque ANS",
+                    "url": "tel:0800-701-9656"
+                }
+            ],
+            "tags": [
+                "plano de saúde",
+                "ANS",
+                "terapia",
+                "ABA",
+                "fonoaudiologia",
+                "negar",
+                "cobertura",
+                "sessões"
+            ]
+        },
+        {
+            "id": "sus_terapias",
+            "titulo": "SUS — Terapias e Medicamentos Gratuitos",
+            "icone": "💊",
+            "resumo": "O SUS oferece atendimento multiprofissional, terapias e medicamentos gratuitos para pessoas com deficiência.",
+            "base_legal": [
+                {
+                    "lei": "Lei 12.764/2012 (Lei Berenice Piana)",
+                    "artigo": "Art. 3º, III",
+                    "link": "https://www.planalto.gov.br/ccivil_03/_ato2011-2014/2012/lei/l12764.htm"
+                },
+                {
+                    "lei": "Lei 13.146/2015 (Estatuto da Pessoa com Deficiência)",
+                    "artigo": "Art. 18",
+                    "link": "https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2015/lei/l13146.htm"
+                }
+            ],
+            "requisitos": [
+                "Cartão SUS (pode ser feito gratuitamente na UBS mais próxima)",
+                "Encaminhamento médico para o serviço especializado"
+            ],
+            "documentos": [
+                "Cartão SUS",
+                "Documento de identidade",
+                "Comprovante de residência",
+                "Laudo médico com CID"
+            ],
+            "passo_a_passo": [
+                "Procure a UBS (Unidade Básica de Saúde) mais próxima de casa",
+                "Faça o Cartão SUS (se ainda não tiver)",
+                "Peça encaminhamento para o CER (Centro Especializado em Reabilitação) ou CAPS (Centro de Atenção Psicossocial)",
+                "Aguarde agendamento para avaliação multiprofissional",
+                "Para medicamentos, apresente a receita médica na Farmácia Popular ou na farmácia da UBS"
+            ],
+            "dicas": [
+                "O Programa Farmácia Popular oferece medicamentos gratuitos ou com desconto — pergunte na UBS",
+                "O CAPS (Centro de Atenção Psicossocial) oferece atendimento de saúde mental gratuito",
+                "Se a fila de espera for muito longa, procure a Defensoria Pública para garantir o atendimento",
+                "Alguns municípios têm CER (Centro Especializado em Reabilitação) com equipe completa: fono, TO, psicólogo, fisioterapeuta",
+                "Medicamentos não disponíveis no SUS podem ser solicitados judicialmente — a Defensoria Pública ajuda gratuitamente"
+            ],
+            "valor": "Gratuito",
+            "onde": "UBS → CER ou CAPS → Farmácia Popular",
+            "links": [
+                {
+                    "titulo": "Encontrar UBS mais próxima",
+                    "url": "https://www.gov.br/saude/pt-br"
+                }
+            ],
+            "tags": [
+                "SUS",
+                "terapia",
+                "medicamento",
+                "gratuito",
+                "UBS",
+                "CAPS",
+                "CER",
+                "Farmácia Popular",
+                "reabilitação"
+            ]
+        },
+        {
+            "id": "transporte",
+            "titulo": "Transporte — Passe Livre e Isenções",
+            "icone": "🚌",
+            "resumo": "Pessoa com deficiência tem direito a passe livre interestadual e, em muitas cidades, transporte municipal gratuito.",
+            "base_legal": [
+                {
+                    "lei": "Lei 8.899/1994",
+                    "artigo": "Art. 1º",
+                    "link": "https://www.planalto.gov.br/ccivil_03/leis/l8899.htm"
+                },
+                {
+                    "lei": "Lei 13.146/2015 (Estatuto da Pessoa com Deficiência)",
+                    "artigo": "Art. 46",
+                    "link": "https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2015/lei/l13146.htm"
+                }
+            ],
+            "requisitos": [
+                "Renda familiar per capita de até 1 salário mínimo (para Passe Livre Federal)",
+                "Laudo médico comprovando a deficiência"
+            ],
+            "documentos": [
+                "Requerimento preenchido (disponível no site do Ministério dos Transportes)",
+                "Laudo médico atestando deficiência (modelo específico disponível no site)",
+                "Documento de identidade",
+                "CPF",
+                "Comprovante de renda"
+            ],
+            "passo_a_passo": [
+                "Acesse o site do Passe Livre (gov.br) e preencha o requerimento",
+                "Obtenha o laudo médico no modelo exigido",
+                "Envie a documentação pelos Correios ou presencialmente",
+                "Aguarde a carteirinha do Passe Livre (enviada pelos Correios)",
+                "Para transporte municipal, procure a empresa de transporte local ou a prefeitura"
+            ],
+            "dicas": [
+                "O Passe Livre Federal vale para ônibus, trem e barco INTERESTADUAL — não vale para avião",
+                "Cada cidade tem regras próprias para transporte municipal — consulte a prefeitura",
+                "Muitos estados oferecem isenção de IPVA para veículo de PcD — consulte o Detran do seu estado",
+                "PcD tem direito a isenção de IPI e IOF na compra de carro (com CNH especial ou como passageiro)"
+            ],
+            "valor": "Gratuito",
+            "onde": "gov.br (federal) / Prefeitura (municipal) / Detran (estadual)",
+            "links": [
+                {
+                    "titulo": "Passe Livre Federal",
+                    "url": "https://www.gov.br/pt-br/servicos/obter-passe-livre-para-pessoas-com-deficiencia"
+                }
+            ],
+            "tags": [
+                "transporte",
+                "passe livre",
+                "ônibus",
+                "gratuito",
+                "IPVA",
+                "isenção",
+                "carro",
+                "IPI"
+            ]
+        },
+        {
+            "id": "trabalho",
+            "titulo": "Trabalho — Cotas e Proteções",
+            "icone": "💼",
+            "resumo": "Empresas com 100+ funcionários devem reservar de 2% a 5% das vagas para PcD. Há proteções contra demissão arbitrária.",
+            "base_legal": [
+                {
+                    "lei": "Lei 8.213/1991",
+                    "artigo": "Art. 93",
+                    "link": "https://www.planalto.gov.br/ccivil_03/leis/l8213cons.htm"
+                },
+                {
+                    "lei": "Lei 13.146/2015 (Estatuto da Pessoa com Deficiência)",
+                    "artigo": "Art. 34–38",
+                    "link": "https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2015/lei/l13146.htm"
+                }
+            ],
+            "requisitos": [
+                "Laudo médico comprovando a deficiência",
+                "Inscrição em programas de emprego apoiado (quando disponível)"
+            ],
+            "documentos": [
+                "Laudo médico com CID",
+                "Currículo",
+                "Documento de identidade e CPF",
+                "CTPS (Carteira de Trabalho)"
+            ],
+            "passo_a_passo": [
+                "Procure vagas PcD em sites de emprego (filtre por 'PcD' ou 'pessoa com deficiência')",
+                "Cadastre-se na SRTE (Superintendência Regional do Trabalho) ou no SINE da sua cidade",
+                "Apresente o laudo médico no processo de admissão",
+                "Você tem os mesmos direitos trabalhistas de qualquer empregado + proteções adicionais"
+            ],
+            "dicas": [
+                "A empresa NÃO pode demitir PcD de cota sem contratar outro PcD no lugar",
+                "Quem recebe BPC pode trabalhar e receber o Auxílio-Inclusão (50% do BPC)",
+                "Pessoa com TEA tem direito a trabalho em condições que respeitem suas particularidades",
+                "Se sofrer discriminação no trabalho, denuncie ao MPT (Ministério Público do Trabalho)"
+            ],
+            "valor": "Salário conforme a vaga + proteções legais",
+            "onde": "SINE / Sites de emprego / SRTE",
+            "links": [
+                {
+                    "titulo": "Buscar vagas PcD (gov.br)",
+                    "url": "https://www.gov.br/trabalho-e-emprego/pt-br"
+                }
+            ],
+            "tags": [
+                "trabalho",
+                "emprego",
+                "cota",
+                "PcD",
+                "vaga",
+                "demissão",
+                "CLT",
+                "discriminação"
+            ]
+        },
+        {
+            "id": "fgts",
+            "titulo": "FGTS — Saque para PcD",
+            "icone": "💰",
+            "resumo": "Trabalhador pode sacar FGTS se ele ou dependente for pessoa com deficiência (inclusive para compra de próteses e equipamentos).",
+            "base_legal": [
+                {
+                    "lei": "Lei 8.036/1990",
+                    "artigo": "Art. 20, XVII",
+                    "link": "https://www.planalto.gov.br/ccivil_03/leis/l8036consol.htm"
+                }
+            ],
+            "requisitos": [
+                "Ser titular de conta FGTS com saldo",
+                "Laudo médico comprovando deficiência do titular ou dependente"
+            ],
+            "documentos": [
+                "Documento de identidade e CPF",
+                "Carteira de Trabalho",
+                "Laudo médico com CID",
+                "Comprovante de dependência (Certidão de Nascimento, por exemplo)"
+            ],
+            "passo_a_passo": [
+                "Reúna os documentos listados acima",
+                "Vá a uma agência da Caixa Econômica Federal",
+                "Solicite o saque do FGTS por motivo de deficiência",
+                "O saque é liberado após análise dos documentos"
+            ],
+            "dicas": [
+                "Pode sacar para o trabalhador OU para dependente com deficiência (filho, por exemplo)",
+                "Também pode ser usado para compra de próteses, equipamentos de acessibilidade e adaptações",
+                "O saque é do valor total da conta FGTS"
+            ],
+            "valor": "Valor integral da conta FGTS",
+            "onde": "Caixa Econômica Federal (agência)",
+            "links": [
+                {
+                    "titulo": "FGTS — Caixa",
+                    "url": "https://www.caixa.gov.br/beneficios-trabalhador/fgts/"
+                }
+            ],
+            "tags": [
+                "FGTS",
+                "saque",
+                "Caixa",
+                "deficiência",
+                "dependente",
+                "prótese",
+                "equipamento"
+            ]
+        },
+        {
+            "id": "moradia",
+            "titulo": "Moradia — Acessibilidade em Condomínios e Habitação",
+            "icone": "🏠",
+            "resumo": "Pessoa com deficiência tem direito a acessibilidade no condomínio (vagas reservadas, rampas, adaptações) e prioridade em programas habitacionais como Minha Casa Minha Vida.",
+            "base_legal": [
+                {
+                    "lei": "Lei 13.146/2015 (Estatuto da Pessoa com Deficiência)",
+                    "artigo": "Art. 31–34",
+                    "link": "https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2015/lei/l13146.htm"
+                },
+                {
+                    "lei": "Lei 13.146/2015 (Estatuto da Pessoa com Deficiência)",
+                    "artigo": "Art. 56–58",
+                    "link": "https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2015/lei/l13146.htm"
+                },
+                {
+                    "lei": "Lei 10.098/2000 (Acessibilidade)",
+                    "artigo": "Art. 11–18",
+                    "link": "https://www.planalto.gov.br/ccivil_03/leis/l10098.htm"
+                },
+                {
+                    "lei": "Decreto 5.296/2004",
+                    "artigo": "Art. 10–22",
+                    "link": "https://www.planalto.gov.br/ccivil_03/_ato2004-2006/2004/decreto/d5296.htm"
+                },
+                {
+                    "lei": "NBR 9050/2020 (ABNT)",
+                    "artigo": "Norma técnica completa",
+                    "link": "https://www.abntcatalogo.com.br/"
+                },
+                {
+                    "lei": "Lei 14.620/2023 (Minha Casa, Minha Vida)",
+                    "artigo": "Art. 3º, § 1º",
+                    "link": "https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2023/lei/l14620.htm"
+                }
+            ],
+            "requisitos": [
+                "Ser pessoa com deficiência ou morar com familiar PcD no mesmo domicílio",
+                "Laudo médico com CID comprovando a deficiência (para solicitar adaptações)",
+                "Para programas habitacionais: inscrição no CadÚnico e renda dentro do limite do programa"
+            ],
+            "documentos": [
+                "Documento de identidade (RG) e CPF",
+                "Comprovante de residência ou contrato de locação",
+                "Laudo médico com CID",
+                "Convenção do condomínio (se aplicável)",
+                "Ata de assembleia (se o condomínio negou a adaptação)",
+                "Fotos ou laudos técnicos demonstrando barreiras de acessibilidade"
+            ],
+            "passo_a_passo": [
+                "Identifique as barreiras (falta de rampa, vaga sem reserva, portas estreitas, etc.)",
+                "Solicite a adaptação por ESCRITO ao síndico ou administradora do condomínio",
+                "Cite a Lei 13.146/2015, Art. 58, §1º (o condomínio não pode impedir adaptações de acessibilidade)",
+                "Se o condomínio negar, registre a recusa por escrito e denuncie à Defensoria Pública ou ao Ministério Público",
+                "Para vagas reservadas: solicite em assembleia ou diretamente ao síndico, com base na NBR 9050 (mínimo 2% das vagas)",
+                "Para programas habitacionais (Minha Casa Minha Vida): inscreva-se no CadÚnico e procure a prefeitura"
+            ],
+            "dicas": [
+                "O condomínio NÃO pode impedir adaptações de acessibilidade, mesmo em áreas comuns (Art. 58, §1º da LBI)",
+                "Vagas de estacionamento PcD: mínimo 2% do total, em local mais próximo à entrada acessível (NBR 9050)",
+                "A adaptação pode ser custeada pelo morador PcD — o condomínio não pode cobrar taxa extra por isso",
+                "Se o condomínio negar, a multa pode chegar a R$ 50.000,00 (Art. 8º da Lei 7.853/1989)",
+                "Minha Casa Minha Vida reserva no mínimo 3% das unidades para PcD",
+                "Síndico pode ser responsabilizado pessoalmente se descumprir a lei de acessibilidade",
+                "Inquilino (locatário) PcD também tem direito a adaptações — o proprietário não pode recusar"
+            ],
+            "valor": "Sem custo para solicitar adaptações (custo da obra pode ser do morador PcD). Programas habitacionais: subsídio do governo.",
+            "onde": "Síndico/Administradora → Defensoria Pública ou MP (se negado) / Prefeitura (programas habitacionais)",
+            "links": [
+                {
+                    "titulo": "Estatuto da Pessoa com Deficiência (LBI)",
+                    "url": "https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2015/lei/l13146.htm"
+                },
+                {
+                    "titulo": "Lei de Acessibilidade (10.098/2000)",
+                    "url": "https://www.planalto.gov.br/ccivil_03/leis/l10098.htm"
+                },
+                {
+                    "titulo": "Minha Casa Minha Vida (gov.br)",
+                    "url": "https://www.gov.br/cidades/pt-br/acesso-a-informacao/acoes-e-programas/habitacao/programa-minha-casa-minha-vida"
+                }
+            ],
+            "tags": [
+                "moradia",
+                "condomínio",
+                "acessibilidade",
+                "vaga especial",
+                "estacionamento",
+                "rampa",
+                "elevador",
+                "adaptação",
+                "síndico",
+                "NBR 9050",
+                "Minha Casa Minha Vida",
+                "habitação",
+                "LBI"
+            ]
+        }
+    ]
+}

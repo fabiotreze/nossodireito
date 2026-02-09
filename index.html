@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>NossoDireito — Direitos e Benefícios para Pessoas com Deficiência</title>
+    <meta name="description"
+        content="Recebeu um laudo? Descubra seus direitos. Guia gratuito com BPC, CIPTEA, escola inclusiva, plano de saúde, SUS, transporte e trabalho para pessoas com deficiência. Informações oficiais do governo brasileiro.">
+    <meta name="keywords"
+        content="direitos pessoa com deficiência, BPC autismo, CIPTEA, laudo TEA, escola inclusiva, benefício deficiência, direitos autismo, PcD direitos">
+    <meta name="author" content="NossoDireito — Projeto sem fins lucrativos">
+    <meta name="robots" content="index, follow">
+
+    <!-- Content Security Policy -->
+    <meta http-equiv="Content-Security-Policy"
+        content="default-src 'none'; script-src 'self' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'self'; worker-src blob: https://cdnjs.cloudflare.com; child-src blob:; font-src 'self'; form-action 'none'; base-uri 'self'; frame-ancestors 'none';">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta http-equiv="Referrer-Policy" content="no-referrer">
+    <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=(), payment=()">
+
+    <!-- Open Graph -->
+    <meta property="og:title" content="NossoDireito — Recebeu um laudo? Descubra seus direitos.">
+    <meta property="og:description"
+        content="Guia gratuito com direitos, benefícios e passo a passo para famílias de pessoas com deficiência no Brasil.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://nossodireito.fabiotreze.com">
+    <meta property="og:locale" content="pt_BR">
+
+    <!-- Favicon simples com emoji -->
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚖️</text></svg>">
+
+    <!-- Mobile / PWA -->
+    <meta name="theme-color" content="#1e3a8a">
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0f172a">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="NossoDireito">
+    <meta name="mobile-web-app-capable" content="yes">
+
+    <link rel="stylesheet" href="css/styles.css">
+
+    <!-- pdf.js para extração de texto de documentos PDF (SRI verified) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"
+        integrity="sha384-/1qUCSGwTur9vjf/z9lmu/eCUYbpOTgSjmpbMQZ1/CtX2v/WcAIKqRv+U1DUCG6e"
+        crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <!-- ========== AVISO LEGAL (Modal) ========== -->
+    <div id="disclaimerModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="disclaimerTitle">
+        <div class="modal-content">
+            <h2 id="disclaimerTitle">⚠️ Aviso Legal Importante</h2>
+            <div class="disclaimer-text">
+                <p>Este site é um <strong>guia informacional gratuito e sem fins lucrativos</strong>.</p>
+
+                <h3>NÃO constitui:</h3>
+                <ul>
+                    <li>Assessoria ou consultoria jurídica</li>
+                    <li>Orientação médica ou de saúde</li>
+                    <li>Substituição a profissionais qualificados</li>
+                </ul>
+
+                <h3>As informações aqui:</h3>
+                <ul>
+                    <li>São compiladas de <strong>fontes oficiais</strong> do governo brasileiro (gov.br)</li>
+                    <li>Podem estar desatualizadas — verifique sempre as fontes originais</li>
+                    <li>Variam por estado e município — confirme com os órgãos locais</li>
+                </ul>
+
+                <h3>Seus dados:</h3>
+                <ul>
+                    <li>Nenhum dado pessoal é coletado, armazenado ou enviado a servidores</li>
+                    <li>Todo processamento ocorre no seu navegador</li>
+                    <li>Este site não usa cookies de rastreamento</li>
+                </ul>
+
+                <p class="disclaimer-advice">
+                    <strong>Para orientação profissional:</strong> procure a <strong>Defensoria Pública</strong>,
+                    um advogado, o <strong>CRAS</strong> da sua cidade, ou os profissionais de saúde
+                    que acompanham seu familiar.
+                </p>
+            </div>
+            <button id="acceptDisclaimer" class="btn btn-primary btn-lg">
+                Li e compreendi — Continuar
+            </button>
+        </div>
+    </div>
+
+    <!-- ========== NAVEGAÇÃO ========== -->
+    <nav class="navbar" role="navigation" aria-label="Menu principal">
+        <div class="container">
+            <a href="#" class="navbar-brand" aria-label="NossoDireito - Início">
+                ⚖️ <span>NossoDireito</span>
+            </a>
+            <button class="menu-toggle" id="menuToggle" aria-label="Abrir menu" aria-expanded="false">
+                <span></span><span></span><span></span>
+            </button>
+            <ul class="nav-links" id="navLinks" role="menubar">
+                <li role="none"><a href="#inicio" role="menuitem" class="active">Início</a></li>
+                <li role="none"><a href="#busca" role="menuitem">Buscar</a></li>
+                <li role="none"><a href="#categorias" role="menuitem">Categorias</a></li>
+                <li role="none"><a href="#checklist" role="menuitem">Checklist</a></li>
+                <li role="none"><a href="#documentos" role="menuitem">📎 Documentos</a></li>
+                <li role="none"><a href="#instituicoes" role="menuitem">🤝 Apoio</a></li>
+                <li role="none"><a href="#transparencia" role="menuitem">Transparência</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- ========== STALENESS BANNER ========== -->
+    <div id="stalenessBanner" class="staleness-banner" style="display:none;" role="alert">
+        <div class="container">
+            <p>⚠️ <strong>Atenção:</strong> As informações deste site podem estar desatualizadas.
+                Última verificação: <span id="staleDays"></span>.
+                Consulte sempre as <a href="#transparencia">fontes oficiais</a> para informações atualizadas.</p>
+        </div>
+    </div>
+
+    <!-- ========== HERO ========== -->
+    <section class="hero" id="inicio">
+        <div class="container">
+            <h1>Recebeu um laudo?<br><span class="hero-highlight">Vem que a gente te ajuda.</span></h1>
+            <p class="hero-sub">
+                Descubra os direitos e benefícios da sua família, passo a passo,
+                com informações de fontes oficiais do governo brasileiro.
+            </p>
+            <div class="hero-actions">
+                <a href="#busca" class="btn btn-lg btn-white">
+                    🔍 Buscar meus direitos
+                </a>
+                <a href="#categorias" class="btn btn-lg btn-outline-white">
+                    📋 Ver todas as categorias
+                </a>
+            </div>
+            <div class="hero-stats">
+                <div class="stat">
+                    <span class="stat-number">18,6M</span>
+                    <span class="stat-label">Pessoas com deficiência no Brasil</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-number" id="heroCatCount">9</span>
+                    <span class="stat-label">Categorias de direitos mapeadas</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-number" id="heroFontesCount">20</span>
+                    <span class="stat-label">Fontes oficiais verificadas</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== BUSCA ========== -->
+    <section class="section" id="busca">
+        <div class="container">
+            <h2>🔍 O que você precisa saber?</h2>
+            <p class="section-desc">
+                Digite palavras como: <em>BPC</em>, <em>escola</em>, <em>plano de saúde</em>,
+                <em>autismo</em>, <em>transporte</em>, <em>medicamento</em>...
+            </p>
+            <div class="search-box">
+                <input type="search" id="searchInput" placeholder="Ex: meu filho tem laudo, quais os direitos?"
+                    aria-label="Buscar direitos e benefícios" autocomplete="off">
+                <button id="searchBtn" class="btn btn-primary" aria-label="Buscar">Buscar</button>
+            </div>
+            <div id="searchResults" class="search-results" aria-live="polite"></div>
+        </div>
+    </section>
+
+    <!-- ========== CATEGORIAS ========== -->
+    <section class="section section-alt" id="categorias">
+        <div class="container">
+            <h2>📋 Categorias de Direitos</h2>
+            <p class="section-desc">
+                Selecione a área que você precisa. Cada categoria tem o passo a passo completo
+                com base na legislação brasileira.
+            </p>
+            <div id="categoryGrid" class="card-grid">
+                <!-- Preenchido pelo JavaScript a partir do JSON -->
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== DETALHE DO DIREITO ========== -->
+    <section class="section" id="detalhe" style="display:none;">
+        <div class="container">
+            <button id="voltarBtn" class="btn btn-outline btn-sm">← Voltar às categorias</button>
+            <div id="detalheContent">
+                <!-- Preenchido pelo JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== CHECKLIST ========== -->
+    <section class="section section-alt" id="checklist">
+        <div class="container">
+            <h2>✅ Checklist — Primeiros Passos</h2>
+            <p class="section-desc">
+                Acabou de receber o laudo e não sabe por onde começar? Siga esta lista:
+            </p>
+            <div class="checklist-card">
+                <label class="checklist-item">
+                    <input type="checkbox" data-step="1">
+                    <span><strong>1.</strong> Tire cópias do laudo médico (guarde o original em local seguro)</span>
+                </label>
+                <label class="checklist-item">
+                    <input type="checkbox" data-step="2">
+                    <span><strong>2.</strong> Vá ao <strong>CRAS</strong> da sua cidade e inscreva-se no
+                        <strong>CadÚnico</strong></span>
+                </label>
+                <label class="checklist-item">
+                    <input type="checkbox" data-step="3">
+                    <span><strong>3.</strong> Solicite a <strong>CIPTEA</strong> (carteira de identificação) na
+                        prefeitura</span>
+                </label>
+                <label class="checklist-item">
+                    <input type="checkbox" data-step="4">
+                    <span><strong>4.</strong> Agende o <strong>BPC/LOAS</strong> no INSS (pelo 135 ou
+                        meu.inss.gov.br)</span>
+                </label>
+                <label class="checklist-item">
+                    <input type="checkbox" data-step="5">
+                    <span><strong>5.</strong> Procure a <strong>UBS</strong> mais próxima para encaminhamento ao
+                        <strong>CER</strong> ou <strong>CAPS</strong></span>
+                </label>
+                <label class="checklist-item">
+                    <input type="checkbox" data-step="6">
+                    <span><strong>6.</strong> Garanta a <strong>matrícula na escola</strong> — recusa é ilegal (multa de
+                        3 a 20 salários mínimos)</span>
+                </label>
+                <label class="checklist-item">
+                    <input type="checkbox" data-step="7">
+                    <span><strong>7.</strong> Se tiver plano de saúde, solicite as <strong>terapias
+                            prescritas</strong> — negativa por escrito se recusarem</span>
+                </label>
+                <label class="checklist-item">
+                    <input type="checkbox" data-step="8">
+                    <span><strong>8.</strong> Consulte o <strong>Passe Livre</strong> federal e o transporte gratuito
+                        municipal</span>
+                </label>
+            </div>
+            <p class="checklist-note">
+                💡 Seu progresso é salvo apenas no seu navegador. Nenhum dado é enviado para servidores.
+            </p>
+        </div>
+    </section>
+
+    <!-- ========== MEUS DOCUMENTOS ========== -->
+    <section class="section" id="documentos">
+        <div class="container">
+            <h2>📎 Meus Documentos</h2>
+            <p class="section-desc">
+                Faça upload do seu laudo ou documento para identificar seus direitos.
+                A análise é 100% local — o arquivo é <strong>criptografado, analisado e descartado
+                    automaticamente</strong>.
+            </p>
+
+            <!-- Upload Area -->
+            <div class="upload-zone" id="uploadZone" role="button" tabindex="0"
+                aria-label="Clique ou arraste arquivos para enviar">
+                <div class="upload-icon">📄</div>
+                <p class="upload-text">Arraste arquivos aqui ou <strong>clique para selecionar</strong></p>
+                <p class="upload-hint">PDF, JPG ou PNG · Máx. 5MB por arquivo · Até 5 arquivos</p>
+                <input type="file" id="fileInput" multiple accept=".pdf,.jpg,.jpeg,.png" class="sr-only"
+                    aria-hidden="true">
+            </div>
+
+            <!-- File List -->
+            <div id="fileList" class="file-list" aria-live="polite"></div>
+
+            <!-- Análise de Documentos — Resultados -->
+            <div id="analysisResults" class="analysis-results" style="display:none;" aria-live="polite">
+                <div class="analysis-header">
+                    <h3>🔍 Análise do Documento</h3>
+                    <div class="analysis-header-actions">
+                        <button id="exportPdf" class="btn btn-sm btn-outline" aria-label="Salvar como PDF">📥
+                            Salvar PDF</button>
+                        <button id="closeAnalysis" class="btn btn-sm btn-outline" aria-label="Fechar análise">✕
+                            Fechar</button>
+                    </div>
+                </div>
+                <div id="analysisLoading" class="analysis-loading" style="display:none;">
+                    <div class="spinner"></div>
+                    <p>Analisando documento... (100% local, nada é enviado)</p>
+                </div>
+                <div id="analysisContent"></div>
+            </div>
+
+            <div class="upload-privacy">
+                <p>🔒 <strong>Consulta pontual:</strong> seus arquivos são criptografados (AES-256), analisados
+                    localmente e <strong>descartados automaticamente após a análise</strong>.
+                    Nenhum arquivo é enviado para servidores. Arquivos não analisados expiram em 15 minutos.</p>
+                <button id="deleteAllFiles" class="btn btn-sm btn-danger" style="display:none;">
+                    🗑️ Apagar todos os arquivos
+                </button>
+            </div>
+
+            <!-- Document Checklist -->
+            <h3 class="docs-checklist-title">📋 Documentos Necessários por Direito</h3>
+            <p class="section-desc" style="margin-bottom:16px;">
+                Com base nas categorias de direitos, estes são os documentos que você pode precisar.
+                Marque os que já tem em mãos.
+            </p>
+            <div id="docsChecklist" class="docs-checklist"></div>
+        </div>
+    </section>
+
+    <!-- ========== LINKS ÚTEIS ========== -->
+    <section class="section section-alt" id="links">
+        <div class="container">
+            <h2>🔗 Links Úteis — Sites Oficiais</h2>
+            <p class="section-desc">
+                Todos os links abaixo são de sites oficiais do governo brasileiro.
+                Gerados automaticamente a partir da base de dados.
+            </p>
+            <div id="linksGrid" class="links-grid">
+                <!-- Preenchido pelo JavaScript a partir do JSON -->
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== INSTITUIÇÕES DE APOIO ========== -->
+    <section class="section" id="instituicoes">
+        <div class="container">
+            <h2>🤝 Instituições de Apoio</h2>
+            <p class="section-desc">
+                Organizações governamentais e ONGs que oferecem suporte gratuito ou de baixo custo
+                para famílias de pessoas com deficiência.
+            </p>
+            <div class="inst-filter">
+                <button class="inst-filter-btn active" data-filter="todos">Todos</button>
+                <button class="inst-filter-btn" data-filter="governamental">🏛️ Governamental</button>
+                <button class="inst-filter-btn" data-filter="ong">💚 ONGs</button>
+                <button class="inst-filter-btn" data-filter="profissional">⚖️ Profissional</button>
+            </div>
+            <div id="instituicoesGrid" class="instituicoes-grid">
+                <!-- Preenchido pelo JavaScript a partir do JSON -->
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== TRANSPARÊNCIA ========== -->
+    <section class="section" id="transparencia">
+        <div class="container">
+            <h2>🔍 Transparência — Nossas Fontes</h2>
+            <p class="section-desc">
+                Todas as informações deste site são compiladas de <strong>fontes oficiais</strong>
+                do governo brasileiro. Abaixo, a lista completa das bases consultadas.
+            </p>
+
+            <div class="transparency-meta">
+                <div class="tmeta-item">
+                    <span class="tmeta-label">Última atualização</span>
+                    <span class="tmeta-value" id="transLastUpdate"></span>
+                </div>
+                <div class="tmeta-item">
+                    <span class="tmeta-label">Próxima revisão prevista</span>
+                    <span class="tmeta-value" id="transNextReview"></span>
+                </div>
+                <div class="tmeta-item">
+                    <span class="tmeta-label">Versão dos dados</span>
+                    <span class="tmeta-value" id="transVersion"></span>
+                </div>
+            </div>
+
+            <h3 class="trans-subtitle">📜 Legislação Consultada</h3>
+            <div id="fontesLegislacao" class="fontes-list"></div>
+
+            <h3 class="trans-subtitle">🏛️ Serviços e Portais Oficiais</h3>
+            <div id="fontesServicos" class="fontes-list"></div>
+
+            <h3 class="trans-subtitle">📋 Normativas</h3>
+            <div id="fontesNormativas" class="fontes-list"></div>
+
+            <div class="transparency-note">
+                <p><strong>Compromisso com a atualização:</strong> Este projeto se compromete a revisar
+                    semanalmente todas as fontes acima, verificando alterações legislativas, novos
+                    serviços e atualizações de procedimentos. A data da última verificação consta
+                    acima. Se você encontrar alguma informação desatualizada,
+                    <a href="https://github.com/fabiorodrigues" target="_blank" rel="noopener">avise-nos pelo
+                        GitHub</a>.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== FOOTER ========== -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <h3>⚖️ NossoDireito</h3>
+                    <p>Projeto sem fins lucrativos. Informação pública acessível para todos.</p>
+                </div>
+                <div class="footer-disclaimer">
+                    <p>
+                        <strong>⚠️ Aviso:</strong> Este site compila informações públicas do governo brasileiro
+                        e <strong>não substitui</strong> orientação profissional de advogados, médicos ou
+                        assistentes sociais. Para ajuda profissional gratuita, procure a
+                        <strong>Defensoria Pública</strong> ou o <strong>CRAS</strong> da sua cidade.
+                    </p>
+                </div>
+                <div class="footer-meta">
+                    <p>Última atualização: <span id="lastUpdate"></span></p>
+                    <p>
+                        <a href="#" id="showDisclaimer">Aviso Legal</a> ·
+                        <a href="https://github.com/fabiorodrigues" target="_blank" rel="noopener">GitHub</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/app.js"></script>
+</body>
+
+</html>

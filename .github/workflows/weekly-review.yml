@@ -1,0 +1,153 @@
+# NossoDireito — Revisão Semanal de Fontes
+# Abre uma issue toda segunda-feira lembrando de revisar as fontes oficiais.
+# Para automação completa de verificação de links, descomente a seção "link-check".
+
+name: Revisão Semanal de Fontes
+
+on:
+  schedule:
+    # Toda segunda-feira às 09:00 UTC (06:00 BRT)
+    - cron: "0 9 * * 1"
+  workflow_dispatch: # Permite execução manual
+
+jobs:
+  create-review-issue:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Extrair fontes do JSON
+        id: fontes
+        run: |
+          VERSAO=$(jq -r '.versao' data/direitos.json)
+          ULTIMA=$(jq -r '.ultima_atualizacao' data/direitos.json)
+          NUM_FONTES=$(jq '.fontes | length' data/direitos.json)
+          NUM_CATEGORIAS=$(jq '.categorias | length' data/direitos.json)
+          echo "versao=$VERSAO" >> "$GITHUB_OUTPUT"
+          echo "ultima=$ULTIMA" >> "$GITHUB_OUTPUT"
+          echo "num_fontes=$NUM_FONTES" >> "$GITHUB_OUTPUT"
+          echo "num_categorias=$NUM_CATEGORIAS" >> "$GITHUB_OUTPUT"
+
+      - name: Verificar links das fontes
+        id: linkcheck
+        continue-on-error: true
+        run: |
+          echo "## Verificação de Links" > link-report.md
+          echo "" >> link-report.md
+          BROKEN=0
+          while IFS= read -r url; do
+            STATUS=$(curl -o /dev/null -s -w "%{http_code}" --max-time 10 -L "$url" 2>/dev/null || echo "ERRO")
+            if [ "$STATUS" = "200" ] || [ "$STATUS" = "301" ] || [ "$STATUS" = "302" ]; then
+              echo "- ✅ \`$STATUS\` — $url" >> link-report.md
+            else
+              echo "- ❌ \`$STATUS\` — $url" >> link-report.md
+              BROKEN=$((BROKEN + 1))
+            fi
+          done < <(jq -r '.fontes[].url' data/direitos.json)
+          echo "" >> link-report.md
+          echo "broken=$BROKEN" >> "$GITHUB_OUTPUT"
+
+      - name: Verificar fontes legislativas por mudanças recentes
+        id: legcheck
+        continue-on-error: true
+        run: |
+          echo "## Verificação de Mudanças Legislativas" > leg-report.md
+          echo "" >> leg-report.md
+          echo "### Sites oficiais para revisar manualmente:" >> leg-report.md
+          echo "" >> leg-report.md
+          echo "| Fonte | URL | O que verificar |" >> leg-report.md
+          echo "|-------|-----|-----------------|" >> leg-report.md
+          echo "| Planalto | https://www.planalto.gov.br/ccivil_03/ | Novas leis PcD |" >> leg-report.md
+          echo "| DOU | https://www.in.gov.br/servicos/diario-oficial-da-uniao | Decretos e portarias |" >> leg-report.md
+          echo "| gov.br INSS | https://www.gov.br/inss/pt-br/noticias | Mudanças BPC/benefícios |" >> leg-report.md
+          echo "| ANS | https://www.gov.br/ans/pt-br/assuntos/noticias | Rol de procedimentos |" >> leg-report.md
+          echo "| Min. Cidades | https://www.gov.br/cidades/pt-br | Minha Casa Minha Vida |" >> leg-report.md
+          echo "| ABNT | https://www.abntcatalogo.com.br/ | NBR 9050 atualizações |" >> leg-report.md
+          echo "" >> leg-report.md
+
+          # Check key pages for PcD content updates
+          CHANGES=0
+          echo "### Detecção automática de páginas com conteúdo PcD:" >> leg-report.md
+          echo "" >> leg-report.md
+
+          # Check LBI page
+          LBI_STATUS=$(curl -s -o /dev/null -w "%{http_code}" --max-time 10 -L "https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2015/lei/l13146.htm" 2>/dev/null || echo "ERRO")
+          LBI_SIZE=$(curl -s --max-time 10 -L "https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2015/lei/l13146.htm" 2>/dev/null | wc -c)
+          echo "- LBI (Lei 13.146/2015): HTTP $LBI_STATUS, $LBI_SIZE bytes" >> leg-report.md
+
+          echo "" >> leg-report.md
+          echo "changes=$CHANGES" >> "$GITHUB_OUTPUT"
+
+      - name: Criar issue de revisão
+        uses: actions/github-script@v7
+        env:
+          VERSAO: ${{ steps.fontes.outputs.versao }}
+          ULTIMA: ${{ steps.fontes.outputs.ultima }}
+          NUM_FONTES: ${{ steps.fontes.outputs.num_fontes }}
+          NUM_CATEGORIAS: ${{ steps.fontes.outputs.num_categorias }}
+          BROKEN: ${{ steps.linkcheck.outputs.broken }}
+        with:
+          script: |
+            const fs = require('fs');
+            const linkReport = fs.readFileSync('link-report.md', 'utf8');
+            const legReport = fs.readFileSync('leg-report.md', 'utf8');
+            const today = new Date().toISOString().split('T')[0];
+            const broken = parseInt(process.env.BROKEN) || 0;
+            const brokenAlert = broken > 0
+              ? `\n⚠️ **${broken} link(s) com problema detectado(s)!** Verifique a seção de links abaixo.\n`
+              : '\n✅ Todos os links responderam com sucesso.\n';
+
+            const body = `# 📋 Revisão Semanal — ${today}
+
+            **Versão atual:** v${process.env.VERSAO}
+            **Última atualização:** ${process.env.ULTIMA}
+            **Fontes cadastradas:** ${process.env.NUM_FONTES}
+            **Categorias:** ${process.env.NUM_CATEGORIAS}
+            ${brokenAlert}
+
+            ## Checklist de Revisão
+
+            ### 📜 Legislação
+            - [ ] Verificar se houve alterações legislativas (planalto.gov.br)
+            - [ ] Conferir valores atualizados (salário mínimo, BPC)
+            - [ ] Checar novas leis ou decretos relevantes para PcD
+            - [ ] Verificar Diário Oficial da União (in.gov.br) para portarias e decretos
+            - [ ] Checar se houve mudanças no Minha Casa Minha Vida (gov.br/cidades)
+
+            ### 🏛️ Serviços
+            - [ ] Testar links de serviços (gov.br, INSS, ANS)
+            - [ ] Verificar se os procedimentos/passos continuam os mesmos
+            - [ ] Checar se há novos serviços digitais disponíveis
+
+            ### 📋 Conteúdo
+            - [ ] Revisar dicas e orientações por categoria
+            - [ ] Verificar se documentos necessários mudaram
+            - [ ] Atualizar data de "ultima_atualizacao" e "proxima_revisao" no JSON
+
+            ### 🏠 Categorias
+            - [ ] Verificar se algum direito PcD novo surgiu (ver backlog no GOVERNANCE.md)
+            - [ ] Checar se alguma categoria existente precisa de atualização de valores
+            - [ ] Verificar cobertura de instituições para todas as categorias
+            - [ ] Rodar \`python codereview/codereview.py --categoria schema\` para validar
+
+            ### 🔗 Verificação Automática de Links
+            ${linkReport}
+
+            ### 📜 Verificação Legislativa
+            ${legReport}
+
+            ---
+            *Issue criada automaticamente pelo workflow de revisão semanal.*
+            *Consulte GOVERNANCE.md para critérios de adição de fontes e categorias.*
+            *Após a revisão, atualize \`ultima_atualizacao\` e \`proxima_revisao\` em \`data/direitos.json\`.*`;
+
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `📋 Revisão semanal de fontes — ${today}`,
+              body: body,
+              labels: ['revisão-semanal', 'fontes']
+            });
