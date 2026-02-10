@@ -545,7 +545,7 @@
                 <div>${cat.base_legal
                     .map(
                         (l) =>
-                            `<a class="legal-link" href="${escapeHtml(l.link)}" target="_blank" rel="noopener">
+                            `<a class="legal-link" href="${escapeHtml(l.link)}" target="_blank" rel="noopener noreferrer">
                             📄 ${escapeHtml(l.lei)}${l.artigo ? ' — ' + escapeHtml(l.artigo) : ''}
                         </a>`
                     )
@@ -1743,6 +1743,12 @@
                 <p class="analysis-privacy">🔒 Análise 100% local — nenhum dado foi enviado para servidores.</p>
                 ${errors.length ? `<p class="analysis-errors-inline">⚠️ ${errors.length} arquivo(s) com erro: ${errors.map((e) => escapeHtml(e.name)).join(', ')}</p>` : ''}
             </div>
+            <div class="analysis-legend" aria-label="Legenda da precisão">
+                <span class="legend-badge high">Alta relevância</span>
+                <span class="legend-badge medium">Média relevância</span>
+                <span class="legend-badge low">Possível relação</span>
+                <span class="legend-bar">Barra indica grau de correspondência</span>
+            </div>
             <div class="analysis-match-list">`;
 
         results.forEach(({ category, score, matches }) => {
@@ -1751,22 +1757,34 @@
             const levelLabel = pct >= 80 ? 'Alta relevância' : pct >= 40 ? 'Média relevância' : 'Possível relação';
 
             html += `
-                <div class="analysis-match ${level}" data-cat-id="${category.id}">
+                <div class="analysis-match ${level}" data-cat-id="${category.id}" aria-label="${levelLabel}">
                     <div class="analysis-match-header">
                         <span class="analysis-match-icon">${category.icone}</span>
                         <div class="analysis-match-title">
                             <h4>${escapeHtml(category.titulo)}</h4>
-                            <span class="analysis-badge ${level}">${levelLabel}</span>
+                            <span class="analysis-badge ${level}" aria-label="${levelLabel}">${levelLabel}</span>
                         </div>
-                        <div class="analysis-match-bar">
-                            <div class="analysis-match-fill" style="width:${pct}%"></div>
+                        <div class="analysis-match-bar" aria-label="Barra de precisão: ${levelLabel}">
+                            <div class="analysis-match-fill ${level}" style="width:${pct}%"></div>
                         </div>
                     </div>
                     <p class="analysis-match-resumo">${escapeHtml(category.resumo)}</p>
                     ${matches.length ? `
                     <div class="analysis-match-keywords">
                         <span class="kw-label"><strong>Termos encontrados:</strong></span>
-                        ${matches.slice(0, 8).map((m) => `<span class="kw-tag">${escapeHtml(m)}</span>`).join('')}
+                        ${matches.slice(0, 8).map((m) => {
+                // CID: só exibe se houver número
+                if (m.startsWith('CID')) {
+                    const cidNum = m.match(/CID\s+([A-Z0-9.]+)/);
+                    return cidNum ? `<span class="kw-tag ${level}">${escapeHtml(m)}</span>` : `<span class="kw-tag low">CID não identificado</span>`;
+                }
+                // CRM: só exibe se houver número
+                if (m.startsWith('CRM')) {
+                    const crmNum = m.match(/CRM\/?[A-Z]{0,2}\s*\d{4,7}/);
+                    return crmNum ? `<span class="kw-tag ${level}">${escapeHtml(m)}</span>` : `<span class="kw-tag low">CRM não identificado</span>`;
+                }
+                return `<span class="kw-tag ${level}">${escapeHtml(m)}</span>`;
+            }).join('')}
                     </div>` : ''}
                     <div class="analysis-match-actions">
                         <button class="btn btn-sm btn-primary analysis-see-more" data-id="${category.id}">

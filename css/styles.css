@@ -1,3 +1,16 @@
+/* Acessibilidade: foco visível reforçado para todos elementos interativos */
+button:focus,
+a:focus,
+[tabindex]:focus,
+input:focus,
+select:focus,
+textarea:focus {
+    outline: 3px solid #1e3a8a !important;
+    outline-offset: 2px;
+    box-shadow: 0 0 0 2px #fff, 0 0 0 4px #1e3a8a;
+    z-index: 2;
+}
+
 /* ============================================
    NossoDireito — CSS
    Projeto sem fins lucrativos
