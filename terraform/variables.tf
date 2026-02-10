@@ -101,6 +101,12 @@ variable "user_object_id" {
   default     = ""
 }
 
+variable "alert_email" {
+  description = "E-mail para receber alertas de monitoramento do Azure Monitor"
+  type        = string
+  default     = "fabiotreze@hotmail.com"
+}
+
 # --- Locals: nomes derivados do ambiente ---
 locals {
   name_prefix = "nossodireito-${var.environment}"

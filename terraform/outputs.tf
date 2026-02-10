@@ -119,3 +119,19 @@ output "next_steps" {
 
   EOT
 }
+
+# --- Monitoring Outputs ---
+output "alert_email" {
+  description = "E-mail que recebe alertas de monitoramento"
+  value       = var.alert_email
+}
+
+output "monitoring_alerts" {
+  description = "Alertas configurados"
+  value = {
+    http_5xx      = "Sev1 — Qualquer erro 5xx (imediato)"
+    health_check  = "Sev0 — Health check < 100% (crítico)"
+    response_time = "Sev2 — Latência média > 5s (15min)"
+    http_4xx      = "Sev3 — Mais de 50 erros 4xx/5min (scan)"
+  }
+}

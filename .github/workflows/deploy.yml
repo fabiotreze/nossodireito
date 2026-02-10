@@ -137,12 +137,39 @@ jobs:
       - name: Health check
         if: steps.infra_check.outputs.rg_exists == 'true'
         run: |
-          sleep 10
-          URL="https://app-nossodireito.azurewebsites.net"
-          STATUS=$(curl -s -o /dev/null -w "%{http_code}" "$URL" || true)
-          echo "Health check: ${URL} → HTTP ${STATUS}"
-          if [ "$STATUS" != "200" ]; then
-            echo "::warning::Site retornou HTTP ${STATUS} — pode levar alguns segundos para estabilizar."
+          echo "⏳ Aguardando estabilização do deploy..."
+          sleep 15
+
+          FAIL=0
+
+          # 1. Health probe (deve responder 200 em qualquer host)
+          HZ_STATUS=$(curl -s -o /dev/null -w "%{http_code}" "https://app-nossodireito.azurewebsites.net/healthz" || true)
+          echo "🏥 /healthz → HTTP ${HZ_STATUS}"
+          if [ "$HZ_STATUS" != "200" ]; then
+            echo "::warning::/healthz retornou ${HZ_STATUS}"
+            FAIL=$((FAIL + 1))
+          fi
+
+          # 2. Custom domain (deve servir conteúdo)
+          CD_STATUS=$(curl -s -o /dev/null -w "%{http_code}" "https://nossodireito.fabiotreze.com/" || true)
+          echo "🌐 Custom domain → HTTP ${CD_STATUS}"
+          if [ "$CD_STATUS" != "200" ]; then
+            echo "::warning::Custom domain retornou ${CD_STATUS}"
+            FAIL=$((FAIL + 1))
+          fi
+
+          # 3. Redirect do domínio Azure (deve dar 301)
+          AZ_STATUS=$(curl -s -o /dev/null -w "%{http_code}" --max-redirs 0 "https://app-nossodireito.azurewebsites.net/" || true)
+          echo "🔀 Azure domain redirect → HTTP ${AZ_STATUS}"
+          if [ "$AZ_STATUS" != "301" ]; then
+            echo "::warning::Azure domain não está redirecionando (esperado 301, recebeu ${AZ_STATUS})"
+            FAIL=$((FAIL + 1))
+          fi
+
+          if [ "$FAIL" -eq 0 ]; then
+            echo "✅ Todas as verificações passaram."
+          else
+            echo "::warning::${FAIL} verificação(ões) com problema — pode estabilizar em alguns segundos."
           fi
 
       - name: Skip notice

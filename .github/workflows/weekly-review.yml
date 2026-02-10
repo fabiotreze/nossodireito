@@ -20,6 +20,42 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Quality Gate (validar código atual)
+        id: qg
+        continue-on-error: true
+        run: |
+          RESULT=$(python codereview/codereview.py --ci --min-score 75 2>&1) || true
+          SCORE=$(echo "$RESULT" | grep -oP 'Score Total: \K[0-9.]+' || echo "N/A")
+          echo "score=$SCORE" >> "$GITHUB_OUTPUT"
+          if echo "$RESULT" | grep -q "QUALITY GATE PASSOU"; then
+            echo "status=✅ PASSOU ($SCORE/100)" >> "$GITHUB_OUTPUT"
+          else
+            echo "status=❌ FALHOU ($SCORE/100)" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Health check do site
+        id: health
+        continue-on-error: true
+        run: |
+          HZ=$(curl -s -o /dev/null -w "%{http_code}" --max-time 10 "https://app-nossodireito.azurewebsites.net/healthz" 2>/dev/null || echo "ERRO")
+          CD=$(curl -s -o /dev/null -w "%{http_code}" --max-time 10 "https://nossodireito.fabiotreze.com/" 2>/dev/null || echo "ERRO")
+          RD=$(curl -s -o /dev/null -w "%{http_code}" --max-time 10 --max-redirs 0 "https://app-nossodireito.azurewebsites.net/" 2>/dev/null || echo "ERRO")
+
+          echo "healthz=$HZ" >> "$GITHUB_OUTPUT"
+          echo "custom_domain=$CD" >> "$GITHUB_OUTPUT"
+          echo "redirect=$RD" >> "$GITHUB_OUTPUT"
+
+          STATUS="✅"
+          if [ "$HZ" != "200" ] || [ "$CD" != "200" ] || [ "$RD" != "301" ]; then
+            STATUS="⚠️"
+          fi
+          echo "overall=$STATUS" >> "$GITHUB_OUTPUT"
+
       - name: Extrair fontes do JSON
         id: fontes
         run: |
@@ -90,6 +126,11 @@ jobs:
           NUM_FONTES: ${{ steps.fontes.outputs.num_fontes }}
           NUM_CATEGORIAS: ${{ steps.fontes.outputs.num_categorias }}
           BROKEN: ${{ steps.linkcheck.outputs.broken }}
+          QG_STATUS: ${{ steps.qg.outputs.status }}
+          HEALTH_OVERALL: ${{ steps.health.outputs.overall }}
+          HEALTH_HZ: ${{ steps.health.outputs.healthz }}
+          HEALTH_CD: ${{ steps.health.outputs.custom_domain }}
+          HEALTH_RD: ${{ steps.health.outputs.redirect }}
         with:
           script: |
             const fs = require('fs');
@@ -108,6 +149,16 @@ jobs:
             **Fontes cadastradas:** ${process.env.NUM_FONTES}
             **Categorias:** ${process.env.NUM_CATEGORIAS}
             ${brokenAlert}
+
+            ## 🏥 Status do Site
+
+            | Verificação | Resultado |
+            |-------------|-----------|
+            | Quality Gate | ${process.env.QG_STATUS} |
+            | Health Probe (/healthz) | HTTP ${process.env.HEALTH_HZ} |
+            | Custom Domain | HTTP ${process.env.HEALTH_CD} |
+            | Redirect Azure | HTTP ${process.env.HEALTH_RD} |
+            | **Status Geral** | **${process.env.HEALTH_OVERALL}** |
 
             ## Checklist de Revisão
 

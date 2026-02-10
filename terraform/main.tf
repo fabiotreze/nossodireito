@@ -242,3 +242,128 @@ resource "azurerm_app_service_certificate_binding" "main" {
   certificate_id      = azurerm_app_service_certificate.main[0].id
   ssl_state           = "SniEnabled"
 }
+
+# ============================================================
+# Monitoring — Azure Monitor Alerts (custo: $0)
+# ============================================================
+# Alertas mínimos para garantir saúde do portal PcD.
+# Notificações via e-mail para resposta rápida a incidentes.
+
+# --- Action Group (destinatário dos alertas) ---
+resource "azurerm_monitor_action_group" "email" {
+  name                = "ag-nossodireito-email"
+  resource_group_name = azurerm_resource_group.main.name
+  short_name          = "nd-email"
+
+  email_receiver {
+    name                    = "admin"
+    email_address           = var.alert_email
+    use_common_alert_schema = true
+  }
+
+  tags = local.tags
+}
+
+# --- Alerta: HTTP 5xx (erros de servidor) ---
+resource "azurerm_monitor_metric_alert" "http_5xx" {
+  name                = "alert-${local.web_app_name}-5xx"
+  resource_group_name = azurerm_resource_group.main.name
+  scopes              = [azurerm_linux_web_app.main.id]
+  description         = "Alerta quando há erros HTTP 5xx no App Service"
+  severity            = 1
+  frequency           = "PT5M"
+  window_size         = "PT5M"
+  auto_mitigate       = true
+
+  criteria {
+    metric_namespace = "Microsoft.Web/sites"
+    metric_name      = "Http5xx"
+    aggregation      = "Total"
+    operator         = "GreaterThan"
+    threshold        = 0
+  }
+
+  action {
+    action_group_id = azurerm_monitor_action_group.email.id
+  }
+
+  tags = local.tags
+}
+
+# --- Alerta: Health Check Failures (disponibilidade) ---
+resource "azurerm_monitor_metric_alert" "health_check" {
+  name                = "alert-${local.web_app_name}-health"
+  resource_group_name = azurerm_resource_group.main.name
+  scopes              = [azurerm_linux_web_app.main.id]
+  description         = "Alerta quando health check falha (site indisponível)"
+  severity            = 0
+  frequency           = "PT1M"
+  window_size         = "PT5M"
+  auto_mitigate       = true
+
+  criteria {
+    metric_namespace = "Microsoft.Web/sites"
+    metric_name      = "HealthCheckStatus"
+    aggregation      = "Average"
+    operator         = "LessThan"
+    threshold        = 100
+  }
+
+  action {
+    action_group_id = azurerm_monitor_action_group.email.id
+  }
+
+  tags = local.tags
+}
+
+# --- Alerta: Response Time > 5s (performance degradada) ---
+resource "azurerm_monitor_metric_alert" "response_time" {
+  name                = "alert-${local.web_app_name}-latency"
+  resource_group_name = azurerm_resource_group.main.name
+  scopes              = [azurerm_linux_web_app.main.id]
+  description         = "Alerta quando tempo de resposta médio excede 5 segundos"
+  severity            = 2
+  frequency           = "PT5M"
+  window_size         = "PT15M"
+  auto_mitigate       = true
+
+  criteria {
+    metric_namespace = "Microsoft.Web/sites"
+    metric_name      = "HttpResponseTime"
+    aggregation      = "Average"
+    operator         = "GreaterThan"
+    threshold        = 5
+  }
+
+  action {
+    action_group_id = azurerm_monitor_action_group.email.id
+  }
+
+  tags = local.tags
+}
+
+# --- Alerta: HTTP 4xx excessivos (possível ataque/scan) ---
+resource "azurerm_monitor_metric_alert" "http_4xx_spike" {
+  name                = "alert-${local.web_app_name}-4xx"
+  resource_group_name = azurerm_resource_group.main.name
+  scopes              = [azurerm_linux_web_app.main.id]
+  description         = "Alerta quando há mais de 50 erros 4xx em 5 minutos (possível scan/ataque)"
+  severity            = 3
+  frequency           = "PT5M"
+  window_size         = "PT5M"
+  auto_mitigate       = true
+
+  criteria {
+    metric_namespace = "Microsoft.Web/sites"
+    metric_name      = "Http4xx"
+    aggregation      = "Total"
+    operator         = "GreaterThan"
+    threshold        = 50
+  }
+
+  action {
+    action_group_id = azurerm_monitor_action_group.email.id
+  }
+
+  tags = local.tags
+}
