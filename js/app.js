@@ -1448,17 +1448,44 @@
                 dom.analysisContent.innerHTML = `
                     <div class="analysis-error">
                         <p>⚠️ Não foi possível analisar nenhum dos arquivos selecionados.</p>
-                        ${errors.map((e) => `<p style="font-size:0.85rem;color:var(--text-muted);">· ${escapeHtml(e.name)}: ${escapeHtml(e.reason)}</p>`).join('')}
+                        ${errors.map((e) => `<p style=\"font-size:0.85rem;color:var(--text-muted);\">· ${escapeHtml(e.name)}: ${escapeHtml(e.reason)}</p>`).join('')}
                         <p style="font-size:0.85rem;margin-top:8px;">
-                            💡 <strong>Dica:</strong> Navegue pelas <a href="#categorias">categorias</a>
+                            💡 <strong>Dica:</strong> Navegue pelas <a href=\"#categorias\">categorias</a>
                             para encontrar seus direitos manualmente.
                         </p>
                     </div>`;
                 return;
             }
 
+            // Filtro: só analisar se houver termos médicos/saúde
+            const medicalTerms = [
+                'laudo', 'atestado', 'receita médica', 'receita', 'diagnóstico', 'cid', 'crm', 'médico', 'exame',
+                'prescrição', 'relatório médico', 'doença', 'deficiência', 'autismo', 'tea', 'psiquiatra',
+                'neurologista', 'fisioterapeuta', 'terapeuta', 'psicólogo', 'fonoaudiólogo', 'terapia ocupacional',
+                'transtorno', 'síndrome', 'especialista', 'consulta médica', 'encaminhamento', 'habilitação', 'reabilitação'
+            ];
+            const combinedText = allText.join('\n').toLowerCase();
+            const foundMedical = medicalTerms.some(term => combinedText.includes(term));
+            if (!foundMedical) {
+                dom.analysisContent.innerHTML = `
+                    <div class="analysis-error">
+                        <p>⚠️ O documento enviado não parece ser um laudo, atestado ou documento médico.</p>
+                        <p>Por favor, envie um documento relacionado à saúde (laudo, atestado, receita, diagnóstico, etc.) para análise dos direitos.</p>
+                        <p style="font-size:0.85rem;margin-top:8px;">
+                            💡 <strong>Dica:</strong> Navegue pelas <a href=\"#categorias\">categorias</a> para encontrar seus direitos manualmente.
+                        </p>
+                    </div>`;
+                // Auto-delete arquivos analisados
+                for (const id of successIds) {
+                    try { await deleteFile(id); } catch (delErr) { console.warn('Erro ao descartar arquivo após análise:', delErr); }
+                }
+                await renderFileList();
+                if (analyzeBtn) updateAnalyzeButton();
+                dom.analysisLoading.style.display = 'none';
+                return;
+            }
+
             // Concatenate all text and file names for unified matching
-            const combinedText = allText.join('\n');
             const combinedNames = fileNames.join(' ');
             const results = matchRights(combinedText, combinedNames);
             const anyPdf = hasPdf.some(Boolean);
@@ -1482,7 +1509,7 @@
                 <div class="analysis-error">
                     <p>⚠️ Ocorreu um erro durante a análise.</p>
                     <p style="font-size:0.85rem;margin-top:8px;">
-                        💡 <strong>Dica:</strong> Navegue pelas <a href="#categorias">categorias</a>
+                        💡 <strong>Dica:</strong> Navegue pelas <a href=\"#categorias\">categorias</a>
                         para encontrar seus direitos manualmente.
                     </p>
                 </div>`;
