@@ -98,7 +98,8 @@ const SECURITY_HEADERS = Object.freeze({
     // ── Anti-XSS / Injection ──
     'Content-Security-Policy': [
         "default-src 'none'",
-        "script-src 'self' https://cdnjs.cloudflare.com https://vlibras.gov.br https://*.vlibras.gov.br https://cdn.jsdelivr.net 'wasm-unsafe-eval'",
+        "script-src 'self' blob: https://cdnjs.cloudflare.com https://vlibras.gov.br https://*.vlibras.gov.br https://cdn.jsdelivr.net 'wasm-unsafe-eval'",
+        "script-src-elem 'self' blob: https://cdnjs.cloudflare.com https://vlibras.gov.br https://*.vlibras.gov.br https://cdn.jsdelivr.net",
         "style-src 'self' 'unsafe-inline' https://*.vlibras.gov.br https://cdn.jsdelivr.net",
         "img-src 'self' data: blob: https://vlibras.gov.br https://*.vlibras.gov.br https://cdn.jsdelivr.net",
         "connect-src 'self' https://vlibras.gov.br https://*.vlibras.gov.br https://cdn.jsdelivr.net https://cdnjs.cloudflare.com",
@@ -106,7 +107,7 @@ const SECURITY_HEADERS = Object.freeze({
         "child-src blob:",
         "frame-src 'self' https://*.vlibras.gov.br blob:",
         "media-src 'self' https://*.vlibras.gov.br",
-        "font-src 'self' https://*.vlibras.gov.br",
+        "font-src 'self' https://vlibras.gov.br https://*.vlibras.gov.br https://cdn.jsdelivr.net",
         "form-action 'none'",
         "base-uri 'self'",
         "frame-ancestors 'none'",
