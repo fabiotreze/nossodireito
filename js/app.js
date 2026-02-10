@@ -160,34 +160,77 @@
 
         // --- VLibras toggle (lazy-loaded on first click) ---
         let vLibrasLoaded = false;
+        let vLibrasLoading = false;
+
+        /**
+         * Aguarda o botão do VLibras aparecer no DOM (polling com timeout).
+         * Mais robusto que setTimeout fixo — funciona em conexões lentas.
+         */
+        function waitForVLibrasButton(maxWait = 5000) {
+            return new Promise((resolve) => {
+                const start = Date.now();
+                const poll = setInterval(() => {
+                    const vwBtn = document.querySelector('[vw-access-button]');
+                    if (vwBtn) {
+                        clearInterval(poll);
+                        resolve(vwBtn);
+                    } else if (Date.now() - start > maxWait) {
+                        clearInterval(poll);
+                        resolve(null);
+                    }
+                }, 200);
+            });
+        }
+
         function loadVLibras() {
             if (vLibrasLoaded) return Promise.resolve();
+            if (vLibrasLoading) return new Promise((resolve) => {
+                // Espera o carregamento em andamento
+                const check = setInterval(() => {
+                    if (vLibrasLoaded) { clearInterval(check); resolve(); }
+                }, 200);
+            });
+            vLibrasLoading = true;
             return new Promise((resolve, reject) => {
                 const s = document.createElement('script');
                 s.src = 'https://vlibras.gov.br/app/vlibras-plugin.js';
                 s.onload = () => {
-                    vLibrasLoaded = true;
                     try {
                         if (typeof VLibras !== 'undefined') {
                             new VLibras.Widget('https://vlibras.gov.br/app');
+                        } else {
+                            console.warn('[VLibras] VLibras global não encontrado após carregar script.');
                         }
-                    } catch (_) { }
+                    } catch (err) {
+                        console.error('[VLibras] Erro ao inicializar widget:', err);
+                    }
+                    vLibrasLoaded = true;
+                    vLibrasLoading = false;
                     resolve();
                 };
-                s.onerror = () => reject(new Error('VLibras failed to load'));
+                s.onerror = () => {
+                    vLibrasLoading = false;
+                    reject(new Error('VLibras failed to load'));
+                };
                 document.body.appendChild(s);
             });
         }
 
         if (btnLibras) btnLibras.addEventListener('click', () => {
-            loadVLibras().then(() => {
-                // VLibras creates a [vw-access-button] element — click it to open
-                setTimeout(() => {
-                    const vwBtn = document.querySelector('[vw-access-button]');
-                    if (vwBtn) vwBtn.click();
-                }, 500);
+            btnLibras.disabled = true;
+            btnLibras.textContent = '⏳ Carregando...';
+            loadVLibras().then(async () => {
+                const vwBtn = await waitForVLibrasButton(5000);
+                if (vwBtn) {
+                    vwBtn.click();
+                } else {
+                    showToast('VLibras carregou mas o painel não apareceu. Tente novamente.', 'warning');
+                }
             }).catch(() => {
-                showToast('Não foi possível carregar o VLibras. Tente novamente.', 'error');
+                showToast('Não foi possível carregar o VLibras. Verifique sua conexão e tente novamente.', 'error');
+            }).finally(() => {
+                btnLibras.disabled = false;
+                btnLibras.textContent = '🤟 Libras';
             });
         });
     }
@@ -1458,14 +1501,23 @@
             }
 
             // Filtro: só analisar se houver termos médicos/saúde
+            // Inclui variantes sem acento para PDFs que perdem acentuação na extração
             const medicalTerms = [
-                'laudo', 'atestado', 'receita médica', 'receita', 'diagnóstico', 'cid', 'crm', 'médico', 'exame',
-                'prescrição', 'relatório médico', 'doença', 'deficiência', 'autismo', 'tea', 'psiquiatra',
-                'neurologista', 'fisioterapeuta', 'terapeuta', 'psicólogo', 'fonoaudiólogo', 'terapia ocupacional',
-                'transtorno', 'síndrome', 'especialista', 'consulta médica', 'encaminhamento', 'habilitação', 'reabilitação'
+                'laudo', 'atestado', 'receita médica', 'receita medica', 'diagnóstico', 'diagnostico',
+                'cid', 'crm', 'médico', 'medico', 'exame', 'prescrição', 'prescricao',
+                'relatório médico', 'relatorio medico', 'doença', 'doenca', 'deficiência', 'deficiencia',
+                'autismo', 'tea', 'psiquiatra', 'neurologista', 'fisioterapeuta', 'terapeuta',
+                'psicólogo', 'psicologo', 'fonoaudiólogo', 'fonoaudiologo', 'terapia ocupacional',
+                'transtorno', 'síndrome', 'sindrome', 'especialista', 'consulta médica', 'consulta medica',
+                'encaminhamento', 'habilitação', 'habilitacao', 'reabilitação', 'reabilitacao',
+                'paciente', 'prontuário', 'prontuario', 'anamnese', 'prognóstico', 'prognostico',
+                'comorbidade', 'terapêutico', 'terapeutico', 'clínico', 'clinico', 'neuropediatra'
             ];
-            const combinedText = allText.join('\n').toLowerCase();
-            const foundMedical = medicalTerms.some(term => combinedText.includes(term));
+            // Texto original (preserva maiúsculas para matchRights)
+            const originalText = allText.join('\n');
+            // Texto lowercase para filtro médico
+            const combinedTextLower = originalText.toLowerCase();
+            const foundMedical = medicalTerms.some(term => combinedTextLower.includes(term));
             if (!foundMedical) {
                 dom.analysisContent.innerHTML = `
                     <div class="analysis-error">
@@ -1486,8 +1538,11 @@
             }
 
             // Concatenate all text and file names for unified matching
+            // IMPORTANTE: passar texto ORIGINAL (com maiúsculas) para matchRights,
+            // pois a detecção de CID (F84, G80, 6A02) e siglas (TEA, BPC, SUS)
+            // depende de case-sensitive matching no rawText.
             const combinedNames = fileNames.join(' ');
-            const results = matchRights(combinedText, combinedNames);
+            const results = matchRights(originalText, combinedNames);
             const anyPdf = hasPdf.some(Boolean);
 
             renderAnalysisResults(results, fileNames, anyPdf, errors);
