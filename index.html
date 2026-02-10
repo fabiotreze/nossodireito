@@ -15,7 +15,7 @@
     <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
     <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
     <meta http-equiv="Content-Security-Policy"
-        content="default-src 'none'; script-src 'self' https://cdnjs.cloudflare.com https://vlibras.gov.br https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://vlibras.gov.br; img-src 'self' data: blob: https://vlibras.gov.br; connect-src 'self' https://vlibras.gov.br; worker-src 'self' blob: https://cdnjs.cloudflare.com; child-src blob:; frame-src 'self' https://vlibras.gov.br blob:; media-src 'self' https://vlibras.gov.br; font-src 'self' https://vlibras.gov.br; form-action 'none'; base-uri 'self'; manifest-src 'self'; upgrade-insecure-requests;">
+        content="default-src 'none'; script-src 'self' https://cdnjs.cloudflare.com https://vlibras.gov.br https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://vlibras.gov.br; img-src 'self' data: blob: https://vlibras.gov.br; connect-src 'self' https://vlibras.gov.br https://*.vlibras.gov.br https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; worker-src 'self' blob: https://cdnjs.cloudflare.com; child-src blob:; frame-src 'self' https://vlibras.gov.br blob:; media-src 'self' https://vlibras.gov.br; font-src 'self' https://vlibras.gov.br; form-action 'none'; base-uri 'self'; manifest-src 'self'; upgrade-insecure-requests;">
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
     <meta http-equiv="Referrer-Policy" content="no-referrer">
     <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=(), payment=()">
@@ -100,7 +100,7 @@
                 "name": "Quais os direitos da pessoa com autismo (TEA) no Brasil?",
                 "acceptedAnswer": {
                     "@type": "Answer",
-                    "text": "Pessoa com TEA tem direitos a: BPC/LOAS (1 salário mínimo), CIPTEA (carteira de identificação), escola inclusiva com AEE, terapias pelo SUS e plano de saúde (ABA, fono, TO), Passe Livre em transportes, FGTS, isenção de impostos em veículos, medicamentos gratuitos pelo SUS, e prioridade em atendimentos públicos."
+                    "text": "Pessoa com TEA tem direito a BPC/LOAS, CIPTEA, escola inclusiva, terapias pelo SUS e plano de saúde, Passe Livre, FGTS, isenção de impostos em veículos e prioridade em atendimentos."
                 }
             },
             {
@@ -157,21 +157,21 @@
         <div class="a11y-toolbar" role="toolbar" aria-label="Ferramentas de acessibilidade">
             <div class="container a11y-toolbar-inner">
                 <span class="a11y-toolbar-label">♿ Acessibilidade:</span>
-                <button type="button" id="a11yFontDecrease" class="a11y-btn" aria-label="Diminuir tamanho da fonte"
-                    title="Diminuir fonte">A−</button>
-                <button type="button" id="a11yFontReset" class="a11y-btn" aria-label="Tamanho de fonte padrão"
-                    title="Fonte padrão">A</button>
-                <button type="button" id="a11yFontIncrease" class="a11y-btn" aria-label="Aumentar tamanho da fonte"
-                    title="Aumentar fonte">A+</button>
+                <button type="button" id="a11yFontDecrease" class="a11y-btn"
+                    aria-label="Diminuir tamanho da fonte">A−</button>
+                <button type="button" id="a11yFontReset" class="a11y-btn"
+                    aria-label="Tamanho de fonte padrão">A</button>
+                <button type="button" id="a11yFontIncrease" class="a11y-btn"
+                    aria-label="Aumentar tamanho da fonte">A+</button>
                 <span class="a11y-separator" aria-hidden="true">|</span>
                 <button type="button" id="a11yContrast" class="a11y-btn" aria-label="Alternar alto contraste"
-                    aria-pressed="false" title="Alto Contraste">🔲 Contraste</button>
+                    aria-pressed="false">🔲 Contraste</button>
                 <span class="a11y-separator" aria-hidden="true">|</span>
                 <button type="button" id="a11yLibras" class="a11y-btn a11y-btn-libras"
-                    aria-label="Ativar tradução em Libras (VLibras)" title="Libras (VLibras)">🤟 Libras</button>
+                    aria-label="Ativar tradução em Libras (VLibras)">🤟 Libras</button>
                 <span class="a11y-separator" aria-hidden="true">|</span>
                 <button type="button" id="a11yReadAloud" class="a11y-btn" aria-label="Ler conteúdo em voz alta"
-                    aria-pressed="false" title="Ouvir conteúdo">🔊 Ouvir</button>
+                    aria-pressed="false">🔊 Ouvir</button>
             </div>
         </div>
         <nav class="navbar" role="navigation" aria-label="Menu principal">

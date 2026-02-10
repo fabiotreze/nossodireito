@@ -101,7 +101,7 @@ const SECURITY_HEADERS = Object.freeze({
         "script-src 'self' https://cdnjs.cloudflare.com https://vlibras.gov.br https://cdn.jsdelivr.net",
         "style-src 'self' 'unsafe-inline' https://vlibras.gov.br",
         "img-src 'self' data: blob: https://vlibras.gov.br",
-        "connect-src 'self' https://vlibras.gov.br",
+        "connect-src 'self' https://vlibras.gov.br https://*.vlibras.gov.br https://cdn.jsdelivr.net https://cdnjs.cloudflare.com",
         "worker-src 'self' blob: https://cdnjs.cloudflare.com",
         "child-src blob:",
         "frame-src 'self' https://vlibras.gov.br blob:",
