@@ -215,15 +215,6 @@ resource "azurerm_key_vault_access_policy" "user" {
   key_permissions         = ["Get", "List", "Create", "Delete", "Update", "Purge", "Recover"]
 }
 
-# --- Role Assignment: Usuário como Contributor no RG ---
-resource "azurerm_role_assignment" "user_contributor" {
-  count = var.user_object_id != "" ? 1 : 0
-
-  scope                = azurerm_resource_group.main.id
-  role_definition_name = "Contributor"
-  principal_id         = var.user_object_id
-}
-
 # --- App Service Certificate (from Key Vault) ---
 # O certificado PFX é importado pelo Terraform no Key Vault (azurerm_key_vault_certificate.wildcard)
 # e referenciado aqui via key_vault_secret_id. Requer web_rp access policy no KV.
