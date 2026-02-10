@@ -1,0 +1,2451 @@
+{
+    "uppercase_only_terms": [
+        "aba",
+        "tea",
+        "cid",
+        "sus",
+        "ans",
+        "cer",
+        "caps",
+        "aee",
+        "ubs",
+        "ipi",
+        "avc",
+        "lbi",
+        "clt",
+        "pcd",
+        "bpc",
+        "loas",
+        "fgts",
+        "inss",
+        "ipva",
+        "ctps",
+        "tdah",
+        "tag",
+        "f84",
+        "6a02",
+        "g80",
+        "g81",
+        "g82",
+        "g83",
+        "f70",
+        "f71",
+        "f72",
+        "f73",
+        "q90",
+        "h54",
+        "h90",
+        "h91",
+        "z89",
+        "q71",
+        "q72",
+        "q73",
+        "g30",
+        "f00",
+        "f01",
+        "f02",
+        "f03",
+        "g35",
+        "g12",
+        "g20",
+        "g40",
+        "i69",
+        "n18",
+        "e84",
+        "q05",
+        "g71",
+        "q02",
+        "f20",
+        "f31",
+        "s78",
+        "s88",
+        "q77",
+        "m21",
+        "q65",
+        "f90",
+        "f41",
+        "g43",
+        "6a00",
+        "9b50",
+        "8d20",
+        "5b51",
+        "6a20",
+        "6a60",
+        "ma10",
+        "ab00",
+        "ab0z",
+        "6a05",
+        "6b00"
+    ],
+    "cid_range_map": {
+        "F": [
+            "bpc",
+            "educacao",
+            "sus_terapias"
+        ],
+        "G": [
+            "bpc",
+            "transporte",
+            "sus_terapias"
+        ],
+        "H": [
+            "bpc",
+            "educacao",
+            "transporte",
+            "trabalho"
+        ],
+        "Q": [
+            "bpc",
+            "educacao",
+            "sus_terapias"
+        ],
+        "E": [
+            "bpc",
+            "sus_terapias"
+        ],
+        "I": [
+            "bpc",
+            "transporte",
+            "fgts",
+            "sus_terapias"
+        ],
+        "N": [
+            "bpc",
+            "sus_terapias"
+        ],
+        "Z": [
+            "bpc",
+            "sus_terapias"
+        ],
+        "S": [
+            "bpc",
+            "transporte",
+            "trabalho",
+            "fgts",
+            "sus_terapias"
+        ],
+        "M": [
+            "bpc",
+            "transporte",
+            "trabalho",
+            "sus_terapias"
+        ]
+    },
+    "keyword_map": {
+        "bpc": {
+            "cats": [
+                "bpc"
+            ],
+            "weight": 5
+        },
+        "loas": {
+            "cats": [
+                "bpc"
+            ],
+            "weight": 5
+        },
+        "benefício assistencial": {
+            "cats": [
+                "bpc"
+            ],
+            "weight": 4
+        },
+        "beneficio assistencial": {
+            "cats": [
+                "bpc"
+            ],
+            "weight": 4
+        },
+        "cadúnico": {
+            "cats": [
+                "bpc"
+            ],
+            "weight": 3
+        },
+        "cadunico": {
+            "cats": [
+                "bpc"
+            ],
+            "weight": 3
+        },
+        "cadastro único": {
+            "cats": [
+                "bpc"
+            ],
+            "weight": 3
+        },
+        "inss": {
+            "cats": [
+                "bpc",
+                "fgts"
+            ],
+            "weight": 3
+        },
+        "perícia": {
+            "cats": [
+                "bpc"
+            ],
+            "weight": 2
+        },
+        "pericia": {
+            "cats": [
+                "bpc"
+            ],
+            "weight": 2
+        },
+        "ciptea": {
+            "cats": [
+                "ciptea"
+            ],
+            "weight": 5
+        },
+        "carteira de identificação": {
+            "cats": [
+                "ciptea"
+            ],
+            "weight": 4
+        },
+        "romeo mion": {
+            "cats": [
+                "ciptea"
+            ],
+            "weight": 5
+        },
+        "autismo": {
+            "cats": [
+                "ciptea",
+                "educacao",
+                "plano_saude",
+                "sus_terapias"
+            ],
+            "weight": 3
+        },
+        "tea": {
+            "cats": [
+                "ciptea",
+                "educacao",
+                "plano_saude",
+                "sus_terapias"
+            ],
+            "weight": 3
+        },
+        "f84": {
+            "cats": [
+                "ciptea",
+                "educacao",
+                "plano_saude",
+                "sus_terapias"
+            ],
+            "weight": 4
+        },
+        "6a02": {
+            "cats": [
+                "ciptea",
+                "educacao",
+                "plano_saude",
+                "sus_terapias"
+            ],
+            "weight": 4
+        },
+        "espectro autista": {
+            "cats": [
+                "ciptea",
+                "educacao",
+                "plano_saude",
+                "sus_terapias"
+            ],
+            "weight": 4
+        },
+        "berenice piana": {
+            "cats": [
+                "ciptea",
+                "educacao",
+                "plano_saude",
+                "sus_terapias"
+            ],
+            "weight": 3
+        },
+        "deficiência": {
+            "cats": [
+                "bpc",
+                "educacao",
+                "transporte",
+                "trabalho",
+                "fgts",
+                "moradia"
+            ],
+            "weight": 2
+        },
+        "deficiencia": {
+            "cats": [
+                "bpc",
+                "educacao",
+                "transporte",
+                "trabalho",
+                "fgts",
+                "moradia"
+            ],
+            "weight": 2
+        },
+        "pessoa com deficiência": {
+            "cats": [
+                "bpc",
+                "educacao",
+                "transporte",
+                "trabalho",
+                "moradia"
+            ],
+            "weight": 3
+        },
+        "pcd": {
+            "cats": [
+                "bpc",
+                "educacao",
+                "transporte",
+                "trabalho",
+                "fgts",
+                "moradia"
+            ],
+            "weight": 3
+        },
+        "laudo": {
+            "cats": [
+                "bpc",
+                "ciptea",
+                "educacao",
+                "plano_saude",
+                "sus_terapias",
+                "transporte",
+                "trabalho",
+                "fgts"
+            ],
+            "weight": 2
+        },
+        "cid": {
+            "cats": [
+                "bpc",
+                "ciptea",
+                "plano_saude",
+                "sus_terapias"
+            ],
+            "weight": 3
+        },
+        "cid-10": {
+            "cats": [
+                "bpc",
+                "ciptea",
+                "plano_saude",
+                "sus_terapias"
+            ],
+            "weight": 3
+        },
+        "cid-11": {
+            "cats": [
+                "bpc",
+                "ciptea",
+                "plano_saude",
+                "sus_terapias"
+            ],
+            "weight": 3
+        },
+        "diagnóstico": {
+            "cats": [
+                "bpc",
+                "ciptea",
+                "plano_saude",
+                "sus_terapias"
+            ],
+            "weight": 2
+        },
+        "diagnostico": {
+            "cats": [
+                "bpc",
+                "ciptea",
+                "plano_saude",
+                "sus_terapias"
+            ],
+            "weight": 2
+        },
+        "escola": {
+            "cats": [
+                "educacao"
+            ],
+            "weight": 4
+        },
+        "matrícula": {
+            "cats": [
+                "educacao"
+            ],
+            "weight": 4
+        },
+        "matricula": {
+            "cats": [
+                "educacao"
+            ],
+            "weight": 4
+        },
+        "inclusão": {
+            "cats": [
+                "educacao"
+            ],
+            "weight": 3
+        },
+        "inclusao": {
+            "cats": [
+                "educacao"
+            ],
+            "weight": 3
+        },
+        "aee": {
+            "cats": [
+                "educacao"
+            ],
+            "weight": 5
+        },
+        "atendimento educacional": {
+            "cats": [
+                "educacao"
+            ],
+            "weight": 4
+        },
+        "acompanhante": {
+            "cats": [
+                "educacao"
+            ],
+            "weight": 3
+        },
+        "educação especial": {
+            "cats": [
+                "educacao"
+            ],
+            "weight": 4
+        },
+        "plano de saúde": {
+            "cats": [
+                "plano_saude"
+            ],
+            "weight": 5
+        },
+        "plano de saude": {
+            "cats": [
+                "plano_saude"
+            ],
+            "weight": 5
+        },
+        "ans": {
+            "cats": [
+                "plano_saude"
+            ],
+            "weight": 4
+        },
+        "operadora": {
+            "cats": [
+                "plano_saude"
+            ],
+            "weight": 3
+        },
+        "cobertura": {
+            "cats": [
+                "plano_saude"
+            ],
+            "weight": 3
+        },
+        "negativa": {
+            "cats": [
+                "plano_saude"
+            ],
+            "weight": 3
+        },
+        "terapia": {
+            "cats": [
+                "plano_saude",
+                "sus_terapias"
+            ],
+            "weight": 3
+        },
+        "aba": {
+            "cats": [
+                "plano_saude",
+                "sus_terapias"
+            ],
+            "weight": 4
+        },
+        "fonoaudiologia": {
+            "cats": [
+                "plano_saude",
+                "sus_terapias"
+            ],
+            "weight": 3
+        },
+        "fono": {
+            "cats": [
+                "plano_saude",
+                "sus_terapias"
+            ],
+            "weight": 3
+        },
+        "terapia ocupacional": {
+            "cats": [
+                "plano_saude",
+                "sus_terapias"
+            ],
+            "weight": 3
+        },
+        "psicologia": {
+            "cats": [
+                "plano_saude",
+                "sus_terapias"
+            ],
+            "weight": 2
+        },
+        "fisioterapia": {
+            "cats": [
+                "sus_terapias"
+            ],
+            "weight": 3
+        },
+        "reabilitação": {
+            "cats": [
+                "sus_terapias"
+            ],
+            "weight": 3
+        },
+        "reabilitacao": {
+            "cats": [
+                "sus_terapias"
+            ],
+            "weight": 3
+        },
+        "sus": {
+            "cats": [
+                "sus_terapias"
+            ],
+            "weight": 4
+        },
+        "ubs": {
+            "cats": [
+                "sus_terapias"
+            ],
+            "weight": 3
+        },
+        "caps": {
+            "cats": [
+                "sus_terapias"
+            ],
+            "weight": 4
+        },
+        "cer": {
+            "cats": [
+                "sus_terapias"
+            ],
+            "weight": 4
+        },
+        "medicamento": {
+            "cats": [
+                "sus_terapias"
+            ],
+            "weight": 3
+        },
+        "farmácia popular": {
+            "cats": [
+                "sus_terapias"
+            ],
+            "weight": 4
+        },
+        "transporte": {
+            "cats": [
+                "transporte"
+            ],
+            "weight": 4
+        },
+        "passe livre": {
+            "cats": [
+                "transporte"
+            ],
+            "weight": 5
+        },
+        "ônibus": {
+            "cats": [
+                "transporte"
+            ],
+            "weight": 3
+        },
+        "onibus": {
+            "cats": [
+                "transporte"
+            ],
+            "weight": 3
+        },
+        "ipva": {
+            "cats": [
+                "transporte"
+            ],
+            "weight": 4
+        },
+        "ipi": {
+            "cats": [
+                "transporte"
+            ],
+            "weight": 3
+        },
+        "isenção": {
+            "cats": [
+                "transporte"
+            ],
+            "weight": 3
+        },
+        "isencao": {
+            "cats": [
+                "transporte"
+            ],
+            "weight": 3
+        },
+        "trabalho": {
+            "cats": [
+                "trabalho"
+            ],
+            "weight": 4
+        },
+        "emprego": {
+            "cats": [
+                "trabalho"
+            ],
+            "weight": 3
+        },
+        "cota": {
+            "cats": [
+                "trabalho"
+            ],
+            "weight": 4
+        },
+        "cotas": {
+            "cats": [
+                "trabalho"
+            ],
+            "weight": 4
+        },
+        "clt": {
+            "cats": [
+                "trabalho"
+            ],
+            "weight": 3
+        },
+        "carteira de trabalho": {
+            "cats": [
+                "trabalho",
+                "fgts"
+            ],
+            "weight": 3
+        },
+        "ctps": {
+            "cats": [
+                "trabalho",
+                "fgts"
+            ],
+            "weight": 3
+        },
+        "fgts": {
+            "cats": [
+                "fgts"
+            ],
+            "weight": 5
+        },
+        "saque": {
+            "cats": [
+                "fgts"
+            ],
+            "weight": 3
+        },
+        "caixa": {
+            "cats": [
+                "fgts"
+            ],
+            "weight": 2
+        },
+        "caixa econômica": {
+            "cats": [
+                "fgts"
+            ],
+            "weight": 3
+        },
+        "certidão de nascimento": {
+            "cats": [
+                "bpc",
+                "ciptea"
+            ],
+            "weight": 1
+        },
+        "comprovante de residência": {
+            "cats": [
+                "bpc",
+                "ciptea",
+                "educacao",
+                "moradia"
+            ],
+            "weight": 1
+        },
+        "cpf": {
+            "cats": [
+                "bpc",
+                "ciptea",
+                "transporte"
+            ],
+            "weight": 1
+        },
+        "moradia": {
+            "cats": [
+                "moradia"
+            ],
+            "weight": 5
+        },
+        "condomínio": {
+            "cats": [
+                "moradia"
+            ],
+            "weight": 5
+        },
+        "condominio": {
+            "cats": [
+                "moradia"
+            ],
+            "weight": 5
+        },
+        "vaga especial": {
+            "cats": [
+                "moradia"
+            ],
+            "weight": 5
+        },
+        "vaga reservada": {
+            "cats": [
+                "moradia"
+            ],
+            "weight": 5
+        },
+        "vaga pcd": {
+            "cats": [
+                "moradia"
+            ],
+            "weight": 5
+        },
+        "estacionamento": {
+            "cats": [
+                "moradia"
+            ],
+            "weight": 3
+        },
+        "rampa": {
+            "cats": [
+                "moradia"
+            ],
+            "weight": 4
+        },
+        "elevador": {
+            "cats": [
+                "moradia"
+            ],
+            "weight": 3
+        },
+        "área comum": {
+            "cats": [
+                "moradia"
+            ],
+            "weight": 3
+        },
+        "area comum": {
+            "cats": [
+                "moradia"
+            ],
+            "weight": 3
+        },
+        "síndico": {
+            "cats": [
+                "moradia"
+            ],
+            "weight": 4
+        },
+        "sindico": {
+            "cats": [
+                "moradia"
+            ],
+            "weight": 4
+        },
+        "nbr 9050": {
+            "cats": [
+                "moradia"
+            ],
+            "weight": 5
+        },
+        "lei 10.098": {
+            "cats": [
+                "moradia"
+            ],
+            "weight": 4
+        },
+        "minha casa minha vida": {
+            "cats": [
+                "moradia"
+            ],
+            "weight": 5
+        },
+        "programa habitacional": {
+            "cats": [
+                "moradia"
+            ],
+            "weight": 4
+        },
+        "habitação": {
+            "cats": [
+                "moradia"
+            ],
+            "weight": 4
+        },
+        "habitacao": {
+            "cats": [
+                "moradia"
+            ],
+            "weight": 4
+        },
+        "adaptação": {
+            "cats": [
+                "moradia"
+            ],
+            "weight": 3
+        },
+        "adaptacao": {
+            "cats": [
+                "moradia"
+            ],
+            "weight": 3
+        },
+        "barreira arquitetônica": {
+            "cats": [
+                "moradia"
+            ],
+            "weight": 4
+        },
+        "barreira arquitetonica": {
+            "cats": [
+                "moradia"
+            ],
+            "weight": 4
+        },
+        "assembleia": {
+            "cats": [
+                "moradia"
+            ],
+            "weight": 3
+        },
+        "convenção do condomínio": {
+            "cats": [
+                "moradia"
+            ],
+            "weight": 4
+        },
+        "neuropediatra": {
+            "cats": [
+                "ciptea",
+                "sus_terapias"
+            ],
+            "weight": 2
+        },
+        "neurologista": {
+            "cats": [
+                "sus_terapias"
+            ],
+            "weight": 2
+        },
+        "psiquiatra": {
+            "cats": [
+                "sus_terapias"
+            ],
+            "weight": 2
+        },
+        "impedimento": {
+            "cats": [
+                "bpc"
+            ],
+            "weight": 2
+        },
+        "longo prazo": {
+            "cats": [
+                "bpc"
+            ],
+            "weight": 2
+        },
+        "g80": {
+            "cats": [
+                "bpc",
+                "educacao",
+                "transporte",
+                "trabalho",
+                "fgts",
+                "moradia",
+                "sus_terapias"
+            ],
+            "weight": 4
+        },
+        "paralisia cerebral": {
+            "cats": [
+                "bpc",
+                "educacao",
+                "transporte",
+                "trabalho",
+                "fgts",
+                "moradia",
+                "sus_terapias"
+            ],
+            "weight": 5
+        },
+        "hemiplegia": {
+            "cats": [
+                "bpc",
+                "transporte",
+                "trabalho",
+                "sus_terapias"
+            ],
+            "weight": 4
+        },
+        "diplegia": {
+            "cats": [
+                "bpc",
+                "transporte",
+                "trabalho",
+                "sus_terapias"
+            ],
+            "weight": 4
+        },
+        "tetraplegia": {
+            "cats": [
+                "bpc",
+                "transporte",
+                "trabalho",
+                "fgts",
+                "sus_terapias"
+            ],
+            "weight": 5
+        },
+        "quadriplegia": {
+            "cats": [
+                "bpc",
+                "transporte",
+                "trabalho",
+                "fgts",
+                "sus_terapias"
+            ],
+            "weight": 5
+        },
+        "paraplegia": {
+            "cats": [
+                "bpc",
+                "transporte",
+                "trabalho",
+                "fgts",
+                "sus_terapias"
+            ],
+            "weight": 5
+        },
+        "g81": {
+            "cats": [
+                "bpc",
+                "transporte",
+                "trabalho",
+                "sus_terapias"
+            ],
+            "weight": 4
+        },
+        "g82": {
+            "cats": [
+                "bpc",
+                "transporte",
+                "trabalho",
+                "fgts",
+                "sus_terapias"
+            ],
+            "weight": 4
+        },
+        "g83": {
+            "cats": [
+                "bpc",
+                "transporte",
+                "trabalho",
+                "sus_terapias"
+            ],
+            "weight": 4
+        },
+        "espasticidade": {
+            "cats": [
+                "bpc",
+                "sus_terapias"
+            ],
+            "weight": 3
+        },
+        "monoplegia": {
+            "cats": [
+                "bpc",
+                "transporte",
+                "trabalho",
+                "sus_terapias"
+            ],
+            "weight": 4
+        },
+        "f70": {
+            "cats": [
+                "bpc",
+                "educacao",
+                "trabalho"
+            ],
+            "weight": 4
+        },
+        "f71": {
+            "cats": [
+                "bpc",
+                "educacao",
+                "trabalho"
+            ],
+            "weight": 4
+        },
+        "f72": {
+            "cats": [
+                "bpc",
+                "educacao"
+            ],
+            "weight": 4
+        },
+        "f73": {
+            "cats": [
+                "bpc",
+                "educacao"
+            ],
+            "weight": 4
+        },
+        "deficiência intelectual": {
+            "cats": [
+                "bpc",
+                "educacao",
+                "trabalho",
+                "fgts"
+            ],
+            "weight": 4
+        },
+        "deficiencia intelectual": {
+            "cats": [
+                "bpc",
+                "educacao",
+                "trabalho",
+                "fgts"
+            ],
+            "weight": 4
+        },
+        "deficiência mental": {
+            "cats": [
+                "bpc",
+                "educacao",
+                "trabalho",
+                "fgts"
+            ],
+            "weight": 3
+        },
+        "deficiencia mental": {
+            "cats": [
+                "bpc",
+                "educacao",
+                "trabalho",
+                "fgts"
+            ],
+            "weight": 3
+        },
+        "q90": {
+            "cats": [
+                "bpc",
+                "educacao",
+                "trabalho",
+                "sus_terapias"
+            ],
+            "weight": 5
+        },
+        "síndrome de down": {
+            "cats": [
+                "bpc",
+                "educacao",
+                "trabalho",
+                "sus_terapias"
+            ],
+            "weight": 5
+        },
+        "sindrome de down": {
+            "cats": [
+                "bpc",
+                "educacao",
+                "trabalho",
+                "sus_terapias"
+            ],
+            "weight": 5
+        },
+        "trissomia": {
+            "cats": [
+                "bpc",
+                "educacao",
+                "sus_terapias"
+            ],
+            "weight": 4
+        },
+        "h54": {
+            "cats": [
+                "bpc",
+                "educacao",
+                "transporte",
+                "trabalho",
+                "fgts"
+            ],
+            "weight": 4
+        },
+        "cegueira": {
+            "cats": [
+                "bpc",
+                "educacao",
+                "transporte",
+                "trabalho",
+                "fgts"
+            ],
+            "weight": 5
+        },
+        "baixa visão": {
+            "cats": [
+                "bpc",
+                "educacao",
+                "transporte",
+                "trabalho"
+            ],
+            "weight": 4
+        },
+        "baixa visao": {
+            "cats": [
+                "bpc",
+                "educacao",
+                "transporte",
+                "trabalho"
+            ],
+            "weight": 4
+        },
+        "deficiência visual": {
+            "cats": [
+                "bpc",
+                "educacao",
+                "transporte",
+                "trabalho",
+                "fgts"
+            ],
+            "weight": 4
+        },
+        "deficiencia visual": {
+            "cats": [
+                "bpc",
+                "educacao",
+                "transporte",
+                "trabalho",
+                "fgts"
+            ],
+            "weight": 4
+        },
+        "visão monocular": {
+            "cats": [
+                "bpc",
+                "transporte",
+                "trabalho"
+            ],
+            "weight": 4
+        },
+        "visao monocular": {
+            "cats": [
+                "bpc",
+                "transporte",
+                "trabalho"
+            ],
+            "weight": 4
+        },
+        "h90": {
+            "cats": [
+                "bpc",
+                "educacao",
+                "transporte",
+                "trabalho",
+                "fgts"
+            ],
+            "weight": 4
+        },
+        "h91": {
+            "cats": [
+                "bpc",
+                "educacao",
+                "transporte",
+                "trabalho",
+                "fgts"
+            ],
+            "weight": 4
+        },
+        "surdez": {
+            "cats": [
+                "bpc",
+                "educacao",
+                "transporte",
+                "trabalho",
+                "fgts"
+            ],
+            "weight": 5
+        },
+        "surdo": {
+            "cats": [
+                "bpc",
+                "educacao",
+                "transporte",
+                "trabalho",
+                "fgts"
+            ],
+            "weight": 4
+        },
+        "deficiência auditiva": {
+            "cats": [
+                "bpc",
+                "educacao",
+                "transporte",
+                "trabalho",
+                "fgts"
+            ],
+            "weight": 4
+        },
+        "deficiencia auditiva": {
+            "cats": [
+                "bpc",
+                "educacao",
+                "transporte",
+                "trabalho",
+                "fgts"
+            ],
+            "weight": 4
+        },
+        "surdocegueira": {
+            "cats": [
+                "bpc",
+                "educacao",
+                "transporte",
+                "trabalho",
+                "fgts"
+            ],
+            "weight": 5
+        },
+        "libras": {
+            "cats": [
+                "educacao",
+                "trabalho"
+            ],
+            "weight": 3
+        },
+        "aparelho auditivo": {
+            "cats": [
+                "fgts",
+                "sus_terapias",
+                "plano_saude"
+            ],
+            "weight": 4
+        },
+        "implante coclear": {
+            "cats": [
+                "sus_terapias",
+                "plano_saude",
+                "fgts"
+            ],
+            "weight": 4
+        },
+        "z89": {
+            "cats": [
+                "bpc",
+                "transporte",
+                "trabalho",
+                "fgts",
+                "sus_terapias"
+            ],
+            "weight": 4
+        },
+        "q71": {
+            "cats": [
+                "bpc",
+                "transporte",
+                "trabalho",
+                "sus_terapias"
+            ],
+            "weight": 4
+        },
+        "q72": {
+            "cats": [
+                "bpc",
+                "transporte",
+                "trabalho",
+                "sus_terapias"
+            ],
+            "weight": 4
+        },
+        "q73": {
+            "cats": [
+                "bpc",
+                "transporte",
+                "trabalho",
+                "sus_terapias"
+            ],
+            "weight": 4
+        },
+        "amputação": {
+            "cats": [
+                "bpc",
+                "transporte",
+                "trabalho",
+                "fgts",
+                "sus_terapias"
+            ],
+            "weight": 5
+        },
+        "amputacao": {
+            "cats": [
+                "bpc",
+                "transporte",
+                "trabalho",
+                "fgts",
+                "sus_terapias"
+            ],
+            "weight": 5
+        },
+        "ausência de membro": {
+            "cats": [
+                "bpc",
+                "transporte",
+                "trabalho",
+                "fgts"
+            ],
+            "weight": 5
+        },
+        "ausencia de membro": {
+            "cats": [
+                "bpc",
+                "transporte",
+                "trabalho",
+                "fgts"
+            ],
+            "weight": 5
+        },
+        "prótese": {
+            "cats": [
+                "fgts",
+                "sus_terapias"
+            ],
+            "weight": 3
+        },
+        "protese": {
+            "cats": [
+                "fgts",
+                "sus_terapias"
+            ],
+            "weight": 3
+        },
+        "órtese": {
+            "cats": [
+                "fgts",
+                "sus_terapias"
+            ],
+            "weight": 3
+        },
+        "ortese": {
+            "cats": [
+                "fgts",
+                "sus_terapias"
+            ],
+            "weight": 3
+        },
+        "g30": {
+            "cats": [
+                "bpc",
+                "fgts",
+                "sus_terapias"
+            ],
+            "weight": 5
+        },
+        "f00": {
+            "cats": [
+                "bpc",
+                "fgts",
+                "sus_terapias"
+            ],
+            "weight": 4
+        },
+        "f01": {
+            "cats": [
+                "bpc",
+                "fgts",
+                "sus_terapias"
+            ],
+            "weight": 4
+        },
+        "f02": {
+            "cats": [
+                "bpc",
+                "fgts",
+                "sus_terapias"
+            ],
+            "weight": 4
+        },
+        "f03": {
+            "cats": [
+                "bpc",
+                "fgts",
+                "sus_terapias"
+            ],
+            "weight": 4
+        },
+        "alzheimer": {
+            "cats": [
+                "bpc",
+                "fgts",
+                "sus_terapias"
+            ],
+            "weight": 5
+        },
+        "demência": {
+            "cats": [
+                "bpc",
+                "fgts",
+                "sus_terapias"
+            ],
+            "weight": 4
+        },
+        "demencia": {
+            "cats": [
+                "bpc",
+                "fgts",
+                "sus_terapias"
+            ],
+            "weight": 4
+        },
+        "neurodegenerativa": {
+            "cats": [
+                "bpc",
+                "fgts",
+                "sus_terapias"
+            ],
+            "weight": 3
+        },
+        "g35": {
+            "cats": [
+                "bpc",
+                "transporte",
+                "trabalho",
+                "fgts",
+                "sus_terapias"
+            ],
+            "weight": 5
+        },
+        "g12": {
+            "cats": [
+                "bpc",
+                "transporte",
+                "fgts",
+                "sus_terapias"
+            ],
+            "weight": 4
+        },
+        "esclerose múltipla": {
+            "cats": [
+                "bpc",
+                "transporte",
+                "trabalho",
+                "fgts",
+                "sus_terapias"
+            ],
+            "weight": 5
+        },
+        "esclerose multipla": {
+            "cats": [
+                "bpc",
+                "transporte",
+                "trabalho",
+                "fgts",
+                "sus_terapias"
+            ],
+            "weight": 5
+        },
+        "esclerose lateral amiotrófica": {
+            "cats": [
+                "bpc",
+                "transporte",
+                "fgts",
+                "sus_terapias"
+            ],
+            "weight": 5
+        },
+        "esclerose lateral amiotrofica": {
+            "cats": [
+                "bpc",
+                "transporte",
+                "fgts",
+                "sus_terapias"
+            ],
+            "weight": 5
+        },
+        "g20": {
+            "cats": [
+                "bpc",
+                "transporte",
+                "fgts",
+                "sus_terapias"
+            ],
+            "weight": 5
+        },
+        "parkinson": {
+            "cats": [
+                "bpc",
+                "transporte",
+                "fgts",
+                "sus_terapias"
+            ],
+            "weight": 5
+        },
+        "g40": {
+            "cats": [
+                "bpc",
+                "sus_terapias"
+            ],
+            "weight": 4
+        },
+        "epilepsia": {
+            "cats": [
+                "bpc",
+                "sus_terapias"
+            ],
+            "weight": 4
+        },
+        "convulsão": {
+            "cats": [
+                "bpc",
+                "sus_terapias"
+            ],
+            "weight": 3
+        },
+        "convulsao": {
+            "cats": [
+                "bpc",
+                "sus_terapias"
+            ],
+            "weight": 3
+        },
+        "i69": {
+            "cats": [
+                "bpc",
+                "transporte",
+                "fgts",
+                "sus_terapias"
+            ],
+            "weight": 4
+        },
+        "avc": {
+            "cats": [
+                "bpc",
+                "transporte",
+                "fgts",
+                "sus_terapias"
+            ],
+            "weight": 4
+        },
+        "acidente vascular": {
+            "cats": [
+                "bpc",
+                "transporte",
+                "fgts",
+                "sus_terapias"
+            ],
+            "weight": 4
+        },
+        "n18": {
+            "cats": [
+                "bpc",
+                "transporte",
+                "fgts",
+                "sus_terapias"
+            ],
+            "weight": 4
+        },
+        "doença renal": {
+            "cats": [
+                "bpc",
+                "transporte",
+                "fgts",
+                "sus_terapias"
+            ],
+            "weight": 4
+        },
+        "doenca renal": {
+            "cats": [
+                "bpc",
+                "transporte",
+                "fgts",
+                "sus_terapias"
+            ],
+            "weight": 4
+        },
+        "hemodiálise": {
+            "cats": [
+                "bpc",
+                "transporte",
+                "sus_terapias"
+            ],
+            "weight": 4
+        },
+        "hemodialise": {
+            "cats": [
+                "bpc",
+                "transporte",
+                "sus_terapias"
+            ],
+            "weight": 4
+        },
+        "e84": {
+            "cats": [
+                "bpc",
+                "sus_terapias",
+                "plano_saude"
+            ],
+            "weight": 4
+        },
+        "fibrose cística": {
+            "cats": [
+                "bpc",
+                "sus_terapias",
+                "plano_saude"
+            ],
+            "weight": 5
+        },
+        "fibrose cistica": {
+            "cats": [
+                "bpc",
+                "sus_terapias",
+                "plano_saude"
+            ],
+            "weight": 5
+        },
+        "q05": {
+            "cats": [
+                "bpc",
+                "transporte",
+                "sus_terapias"
+            ],
+            "weight": 4
+        },
+        "mielomeningocele": {
+            "cats": [
+                "bpc",
+                "transporte",
+                "sus_terapias"
+            ],
+            "weight": 5
+        },
+        "espinha bífida": {
+            "cats": [
+                "bpc",
+                "transporte",
+                "sus_terapias"
+            ],
+            "weight": 5
+        },
+        "espinha bifida": {
+            "cats": [
+                "bpc",
+                "transporte",
+                "sus_terapias"
+            ],
+            "weight": 5
+        },
+        "g71": {
+            "cats": [
+                "bpc",
+                "transporte",
+                "fgts",
+                "sus_terapias"
+            ],
+            "weight": 4
+        },
+        "distrofia muscular": {
+            "cats": [
+                "bpc",
+                "transporte",
+                "fgts",
+                "sus_terapias"
+            ],
+            "weight": 5
+        },
+        "duchenne": {
+            "cats": [
+                "bpc",
+                "transporte",
+                "fgts",
+                "sus_terapias"
+            ],
+            "weight": 5
+        },
+        "q02": {
+            "cats": [
+                "bpc",
+                "educacao",
+                "sus_terapias"
+            ],
+            "weight": 4
+        },
+        "microcefalia": {
+            "cats": [
+                "bpc",
+                "educacao",
+                "sus_terapias"
+            ],
+            "weight": 5
+        },
+        "cadeira de rodas": {
+            "cats": [
+                "bpc",
+                "transporte",
+                "moradia",
+                "fgts",
+                "sus_terapias"
+            ],
+            "weight": 3
+        },
+        "muleta": {
+            "cats": [
+                "transporte",
+                "moradia",
+                "sus_terapias"
+            ],
+            "weight": 3
+        },
+        "andador": {
+            "cats": [
+                "transporte",
+                "moradia",
+                "sus_terapias"
+            ],
+            "weight": 3
+        },
+        "tecnologia assistiva": {
+            "cats": [
+                "educacao",
+                "trabalho",
+                "fgts",
+                "sus_terapias"
+            ],
+            "weight": 4
+        },
+        "lei 13.146": {
+            "cats": [
+                "bpc",
+                "educacao",
+                "transporte",
+                "trabalho",
+                "moradia",
+                "plano_saude",
+                "sus_terapias",
+                "fgts"
+            ],
+            "weight": 5
+        },
+        "lei 12.764": {
+            "cats": [
+                "ciptea",
+                "educacao",
+                "plano_saude",
+                "sus_terapias"
+            ],
+            "weight": 5
+        },
+        "lei 13.977": {
+            "cats": [
+                "ciptea"
+            ],
+            "weight": 5
+        },
+        "lei 8.899": {
+            "cats": [
+                "transporte"
+            ],
+            "weight": 5
+        },
+        "lei 8.989": {
+            "cats": [
+                "transporte"
+            ],
+            "weight": 5
+        },
+        "lei 8.213": {
+            "cats": [
+                "trabalho"
+            ],
+            "weight": 5
+        },
+        "lei 8.036": {
+            "cats": [
+                "fgts"
+            ],
+            "weight": 5
+        },
+        "lei 10.048": {
+            "cats": [
+                "transporte",
+                "moradia"
+            ],
+            "weight": 4
+        },
+        "lei 9.656": {
+            "cats": [
+                "plano_saude"
+            ],
+            "weight": 4
+        },
+        "lei 8.069": {
+            "cats": [
+                "educacao"
+            ],
+            "weight": 3
+        },
+        "lei 14.176": {
+            "cats": [
+                "bpc"
+            ],
+            "weight": 4
+        },
+        "lei 15.131": {
+            "cats": [
+                "ciptea",
+                "educacao",
+                "sus_terapias"
+            ],
+            "weight": 4
+        },
+        "decreto 3.298": {
+            "cats": [
+                "bpc",
+                "transporte",
+                "trabalho"
+            ],
+            "weight": 4
+        },
+        "decreto 6.214": {
+            "cats": [
+                "bpc"
+            ],
+            "weight": 4
+        },
+        "lbi": {
+            "cats": [
+                "bpc",
+                "educacao",
+                "transporte",
+                "trabalho",
+                "moradia"
+            ],
+            "weight": 4
+        },
+        "estatuto da pessoa com deficiência": {
+            "cats": [
+                "bpc",
+                "educacao",
+                "transporte",
+                "trabalho",
+                "moradia"
+            ],
+            "weight": 4
+        },
+        "estatuto da pessoa com deficiencia": {
+            "cats": [
+                "bpc",
+                "educacao",
+                "transporte",
+                "trabalho",
+                "moradia"
+            ],
+            "weight": 4
+        },
+        "saúde": {
+            "cats": [
+                "sus_terapias",
+                "plano_saude"
+            ],
+            "weight": 2
+        },
+        "saude": {
+            "cats": [
+                "sus_terapias",
+                "plano_saude"
+            ],
+            "weight": 2
+        },
+        "educação": {
+            "cats": [
+                "educacao"
+            ],
+            "weight": 2
+        },
+        "educacao": {
+            "cats": [
+                "educacao"
+            ],
+            "weight": 2
+        },
+        "nutrição": {
+            "cats": [
+                "sus_terapias",
+                "plano_saude"
+            ],
+            "weight": 3
+        },
+        "nutricao": {
+            "cats": [
+                "sus_terapias",
+                "plano_saude"
+            ],
+            "weight": 3
+        },
+        "terapia nutricional": {
+            "cats": [
+                "sus_terapias",
+                "plano_saude"
+            ],
+            "weight": 4
+        },
+        "previdência social": {
+            "cats": [
+                "bpc"
+            ],
+            "weight": 3
+        },
+        "previdencia social": {
+            "cats": [
+                "bpc"
+            ],
+            "weight": 3
+        },
+        "assistência social": {
+            "cats": [
+                "bpc"
+            ],
+            "weight": 3
+        },
+        "assistencia social": {
+            "cats": [
+                "bpc"
+            ],
+            "weight": 3
+        },
+        "internação": {
+            "cats": [
+                "sus_terapias",
+                "plano_saude"
+            ],
+            "weight": 3
+        },
+        "internacao": {
+            "cats": [
+                "sus_terapias",
+                "plano_saude"
+            ],
+            "weight": 3
+        },
+        "acessibilidade": {
+            "cats": [
+                "moradia",
+                "transporte",
+                "educacao"
+            ],
+            "weight": 3
+        },
+        "atendimento prioritário": {
+            "cats": [
+                "ciptea",
+                "transporte"
+            ],
+            "weight": 3
+        },
+        "atendimento prioritario": {
+            "cats": [
+                "ciptea",
+                "transporte"
+            ],
+            "weight": 3
+        },
+        "prioridade": {
+            "cats": [
+                "ciptea",
+                "transporte"
+            ],
+            "weight": 2
+        },
+        "curatela": {
+            "cats": [
+                "bpc"
+            ],
+            "weight": 3
+        },
+        "interdição": {
+            "cats": [
+                "bpc"
+            ],
+            "weight": 3
+        },
+        "interdicao": {
+            "cats": [
+                "bpc"
+            ],
+            "weight": 3
+        },
+        "aposentadoria por invalidez": {
+            "cats": [
+                "bpc",
+                "fgts"
+            ],
+            "weight": 4
+        },
+        "interação social": {
+            "cats": [
+                "ciptea",
+                "educacao"
+            ],
+            "weight": 3
+        },
+        "interacao social": {
+            "cats": [
+                "ciptea",
+                "educacao"
+            ],
+            "weight": 3
+        },
+        "comportamento restritivo": {
+            "cats": [
+                "ciptea"
+            ],
+            "weight": 3
+        },
+        "comportamento repetitivo": {
+            "cats": [
+                "ciptea"
+            ],
+            "weight": 3
+        },
+        "neurodivergente": {
+            "cats": [
+                "ciptea",
+                "educacao",
+                "plano_saude"
+            ],
+            "weight": 3
+        },
+        "nível de suporte": {
+            "cats": [
+                "ciptea"
+            ],
+            "weight": 3
+        },
+        "nivel de suporte": {
+            "cats": [
+                "ciptea"
+            ],
+            "weight": 3
+        },
+        "acompanhante terapêutico": {
+            "cats": [
+                "educacao",
+                "plano_saude",
+                "sus_terapias"
+            ],
+            "weight": 4
+        },
+        "acompanhante terapeutico": {
+            "cats": [
+                "educacao",
+                "plano_saude",
+                "sus_terapias"
+            ],
+            "weight": 4
+        },
+        "alto custo": {
+            "cats": [
+                "sus_terapias",
+                "plano_saude"
+            ],
+            "weight": 3
+        },
+        "uso contínuo": {
+            "cats": [
+                "sus_terapias",
+                "plano_saude"
+            ],
+            "weight": 2
+        },
+        "uso continuo": {
+            "cats": [
+                "sus_terapias",
+                "plano_saude"
+            ],
+            "weight": 2
+        },
+        "rename": {
+            "cats": [
+                "sus_terapias"
+            ],
+            "weight": 3
+        },
+        "componente especializado": {
+            "cats": [
+                "sus_terapias"
+            ],
+            "weight": 4
+        },
+        "deficiência física": {
+            "cats": [
+                "bpc",
+                "transporte",
+                "trabalho",
+                "fgts",
+                "moradia"
+            ],
+            "weight": 4
+        },
+        "deficiencia fisica": {
+            "cats": [
+                "bpc",
+                "transporte",
+                "trabalho",
+                "fgts",
+                "moradia"
+            ],
+            "weight": 4
+        },
+        "nanismo": {
+            "cats": [
+                "bpc",
+                "transporte",
+                "trabalho"
+            ],
+            "weight": 4
+        },
+        "acondroplasia": {
+            "cats": [
+                "bpc",
+                "transporte",
+                "trabalho"
+            ],
+            "weight": 5
+        },
+        "ostomia": {
+            "cats": [
+                "bpc",
+                "transporte",
+                "trabalho",
+                "sus_terapias"
+            ],
+            "weight": 4
+        },
+        "ostomizado": {
+            "cats": [
+                "bpc",
+                "transporte",
+                "trabalho",
+                "sus_terapias"
+            ],
+            "weight": 4
+        },
+        "f20": {
+            "cats": [
+                "bpc",
+                "fgts",
+                "sus_terapias"
+            ],
+            "weight": 4
+        },
+        "6a20": {
+            "cats": [
+                "bpc",
+                "fgts",
+                "sus_terapias"
+            ],
+            "weight": 4
+        },
+        "esquizofrenia": {
+            "cats": [
+                "bpc",
+                "fgts",
+                "sus_terapias"
+            ],
+            "weight": 5
+        },
+        "f31": {
+            "cats": [
+                "bpc",
+                "fgts",
+                "sus_terapias"
+            ],
+            "weight": 4
+        },
+        "6a60": {
+            "cats": [
+                "bpc",
+                "fgts",
+                "sus_terapias"
+            ],
+            "weight": 4
+        },
+        "transtorno bipolar": {
+            "cats": [
+                "bpc",
+                "fgts",
+                "sus_terapias"
+            ],
+            "weight": 5
+        },
+        "bipolaridade": {
+            "cats": [
+                "bpc",
+                "fgts",
+                "sus_terapias"
+            ],
+            "weight": 4
+        },
+        "f90": {
+            "cats": [
+                "educacao",
+                "plano_saude",
+                "sus_terapias"
+            ],
+            "weight": 4
+        },
+        "6a05": {
+            "cats": [
+                "educacao",
+                "plano_saude",
+                "sus_terapias"
+            ],
+            "weight": 4
+        },
+        "tdah": {
+            "cats": [
+                "educacao",
+                "plano_saude",
+                "sus_terapias"
+            ],
+            "weight": 5
+        },
+        "déficit de atenção": {
+            "cats": [
+                "educacao",
+                "plano_saude",
+                "sus_terapias"
+            ],
+            "weight": 5
+        },
+        "deficit de atencao": {
+            "cats": [
+                "educacao",
+                "plano_saude",
+                "sus_terapias"
+            ],
+            "weight": 5
+        },
+        "hiperatividade": {
+            "cats": [
+                "educacao",
+                "plano_saude",
+                "sus_terapias"
+            ],
+            "weight": 4
+        },
+        "f41": {
+            "cats": [
+                "bpc",
+                "sus_terapias",
+                "plano_saude"
+            ],
+            "weight": 4
+        },
+        "6b00": {
+            "cats": [
+                "bpc",
+                "sus_terapias",
+                "plano_saude"
+            ],
+            "weight": 4
+        },
+        "ansiedade generalizada": {
+            "cats": [
+                "bpc",
+                "sus_terapias",
+                "plano_saude"
+            ],
+            "weight": 5
+        },
+        "transtorno de ansiedade": {
+            "cats": [
+                "bpc",
+                "sus_terapias",
+                "plano_saude"
+            ],
+            "weight": 5
+        },
+        "g43": {
+            "cats": [
+                "sus_terapias",
+                "plano_saude"
+            ],
+            "weight": 3
+        },
+        "enxaqueca": {
+            "cats": [
+                "sus_terapias",
+                "plano_saude"
+            ],
+            "weight": 4
+        },
+        "cefaleia crônica": {
+            "cats": [
+                "sus_terapias",
+                "plano_saude"
+            ],
+            "weight": 4
+        },
+        "cefaleia cronica": {
+            "cats": [
+                "sus_terapias",
+                "plano_saude"
+            ],
+            "weight": 4
+        },
+        "s78": {
+            "cats": [
+                "bpc",
+                "transporte",
+                "trabalho",
+                "fgts",
+                "sus_terapias"
+            ],
+            "weight": 4
+        },
+        "s88": {
+            "cats": [
+                "bpc",
+                "transporte",
+                "trabalho",
+                "fgts",
+                "sus_terapias"
+            ],
+            "weight": 4
+        },
+        "q77": {
+            "cats": [
+                "bpc",
+                "transporte",
+                "trabalho"
+            ],
+            "weight": 4
+        },
+        "5b51": {
+            "cats": [
+                "bpc",
+                "transporte",
+                "trabalho"
+            ],
+            "weight": 4
+        },
+        "e34": {
+            "cats": [
+                "bpc",
+                "transporte",
+                "trabalho"
+            ],
+            "weight": 4
+        },
+        "m21": {
+            "cats": [
+                "bpc",
+                "transporte",
+                "trabalho",
+                "sus_terapias"
+            ],
+            "weight": 3
+        },
+        "deformidade": {
+            "cats": [
+                "bpc",
+                "transporte",
+                "trabalho",
+                "sus_terapias"
+            ],
+            "weight": 3
+        },
+        "q65": {
+            "cats": [
+                "bpc",
+                "sus_terapias"
+            ],
+            "weight": 3
+        },
+        "displasia": {
+            "cats": [
+                "bpc",
+                "sus_terapias"
+            ],
+            "weight": 3
+        },
+        "6a00": {
+            "cats": [
+                "bpc",
+                "educacao",
+                "trabalho",
+                "fgts"
+            ],
+            "weight": 4
+        },
+        "9b50": {
+            "cats": [
+                "bpc",
+                "educacao",
+                "transporte",
+                "trabalho",
+                "fgts"
+            ],
+            "weight": 4
+        },
+        "ab00": {
+            "cats": [
+                "bpc",
+                "educacao",
+                "transporte",
+                "trabalho",
+                "fgts"
+            ],
+            "weight": 4
+        },
+        "8d20": {
+            "cats": [
+                "bpc",
+                "educacao",
+                "transporte",
+                "trabalho",
+                "fgts",
+                "moradia",
+                "sus_terapias"
+            ],
+            "weight": 4
+        },
+        "ma10": {
+            "cats": [
+                "bpc",
+                "transporte",
+                "trabalho",
+                "fgts",
+                "sus_terapias"
+            ],
+            "weight": 4
+        }
+    }
+}

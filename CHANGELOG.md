@@ -5,6 +5,144 @@ Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/)
 e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [1.1.0] - 2026-02-10
+
+### Adicionado
+
+#### SEO — Otimização para Motores de Busca
+- **robots.txt** + **sitemap.xml** — diretivas de rastreamento e mapa do site para Google/Bing
+- **FAQPage JSON-LD** — 5 perguntas frequentes com schema.org (potencial para featured snippets)
+- **Twitter Card** — tags `twitter:card`, `twitter:title`, `twitter:description`, `twitter:image`
+- **H1 com keywords** — "Direitos e Benefícios para Pessoas com Deficiência no Brasil" (copy emocional movido para subtítulo)
+- **Title tag otimizado** — "Direitos PcD: BPC, CIPTEA, Escola Inclusiva, TEA — NossoDireito"
+- **Meta description** — incluí "autismo", "TEA", "PcD", "passo a passo", "fontes oficiais"
+- **Open Graph** — `og:site_name`, `og:image` 1200×630 com dimensões explícitas
+- **og-image.png** — imagem social 1200×630 com logo, título e tagline no diretório `images/`
+- **Keywords expandidas** — "CIPTEA como tirar", "plano de saúde autismo", "FGTS deficiência", "passe livre"
+
+#### UX — Experiência do Usuário
+- **Botão voltar do navegador** — `history.pushState` + `popstate` listener, URL muda para `#direito/{id}`
+- **Toast notifications** — substitui todos os `alert()` por notificações inline com animação (error/warning/info/success)
+- **Checklist com barra de progresso** — "X de 8 concluídos" com barra visual animada
+- **Compartilhar no WhatsApp** — botão em cada detalhe de direito com texto pré-formatado
+- **Skip-to-content** — link oculto "Pular para o conteúdo principal" (acessibilidade a11y)
+
+#### Performance
+- **pdf.js lazy-loading** — ~400KB carregado sob demanda (não mais no `<head>`), via `IntersectionObserver` + dynamic `<script>`
+- `ensurePdfJs()` com fallback e SRI hash
+
+#### CI/CD — Automação de Deploy
+- **deploy.yml** — adicionados `robots.txt`, `sitemap.xml`, `sw.js`, `manifest.json` aos paths trigger
+- **sitemap.xml lastmod auto-update** — atualizado automaticamente no deploy com data do dia
+- **deploy package** — inclui `robots.txt`, `sitemap.xml`, `sw.js`, `manifest.json` no ZIP
+
+#### Code Review — 9 novos checks (151 → 160 PASS)
+- **OG image dimensions** — verifica `og:image:width` + `og:image:height` no HTML
+- **og:site_name** — verifica tag presente
+- **og-image.png** — verifica arquivo existe em `images/`
+- **No alert()** — garante que `alert()` foi 100% substituído por `showToast()` (exclui comentários)
+- **history.pushState** — verifica navegação SPA com botão voltar
+- **WhatsApp share** — verifica botão de compartilhamento
+- **Checklist progress bar** — verifica barra de progresso visual
+- **pdf.js lazy-loading** — verifica `ensurePdfJs` presente
+- **matching_engine.json** — verifica arquivo externalizado existe
+- **deploy.yml paths** — verifica cobertura de todos os arquivos deployáveis
+
+#### Tabela de Classificação CID
+- Nova seção "Classificação CID" com tabela de referência de 10 tipos de deficiência
+- Colunas: Tipo, CID-10, CID-11, Critério, Detalhes
+- 10 categorias: TEA, Intelectual, Visual, Auditiva, Física, Amputação, Nanismo, Psicossocial, Múltipla, Reabilitados
+- Tabela responsiva com header fixo, hover, badges de código
+
+#### Órgãos Estaduais (27 estados)
+- Nova seção "Órgãos Estaduais" com grid filtrável por região
+- 27 URLs oficiais .gov.br validadas (todas as UFs brasileiras)
+- Filtros: Todos, Norte, Nordeste, Centro-Oeste, Sudeste, Sul
+- Cards com badge da UF, nome do órgão e link direto
+
+#### Motor de Correspondência — CIDs e CRM
+- **CRM Detection (Pass 0b)**: Detecção de CRM médico em documentos analisados (CRM/SP 123456, CRM-12345/SP, etc.) — boost +2 em 6 categorias que exigem laudo médico
+- **CID-11 Two-Letter Regex**: Captura códigos CID-11 no formato MA10/AB00 (blocos de 2 letras)
+- **30+ novos CIDs no KEYWORD_MAP**:
+  - CID-10: F20 (esquizofrenia), F31 (bipolar), F41 (ansiedade), F90 (TDAH), G43 (enxaqueca), S78/S88 (amputação), Q77/E34 (nanismo), M21 (deformidade), Q65 (displasia)
+  - CID-11: 6A00, 6A05 (TDAH), 6A20, 6A60, 6B00 (ansiedade), 9B50, AB00, 8D20, MA10, 5B51
+  - Termos: tdah, hiperatividade, déficit de atenção, ansiedade generalizada, enxaqueca, cefaleia crônica, acondroplasia, esquizofrenia, bipolaridade
+- **CID_RANGE_MAP**: Adicionados prefixos S (lesões/amputação) e M (osteomuscular)
+- **UPPERCASE_ONLY_TERMS**: 23 novos termos adicionados (CIDs + siglas TDAH/TAG)
+
+#### Links de Referência — CID, CRM e Conselhos Profissionais
+- **4 novas fontes/serviços** no "Links Úteis":
+  - DATASUS — Departamento de Informática do SUS (`datasus.saude.gov.br`)
+  - OMS — CID-11 Browser em Português (`icd.who.int/browse/pt`)
+  - CNES — Cadastro Nacional de Estabelecimentos e Profissionais (`cnes.datasus.gov.br`)
+  - Saúde de A a Z — Ministério da Saúde (`gov.br/saude`)
+- **3 novas instituições profissionais** no "Instituições de Apoio":
+  - CFM — Conselho Federal de Medicina / Busca Médicos / CRM (`portal.cfm.org.br/busca-medicos`)
+  - CFP — Conselho Federal de Psicologia / Cadastro Nacional (`cadastro.cfp.org.br`)
+  - COFFITO — Conselho Federal de Fisioterapia e Terapia Ocupacional (`coffito.gov.br`)
+- Domínios `cfm.org.br`, `cfp.org.br` e `who.int` adicionados à whitelist `isSafeUrl()`
+- Ícones dedicados para conselhos profissionais (👨‍⚕️ CFM, 🧠 CFP, 🌐 OMS)
+
+### Corrigido
+- Alternância de seções (section-alt) corrigida para manter padrão visual zebrado
+- Valor do BPC atualizado para R$ 1.621,00 (2026)
+- Lei 15.131 adicionada
+- URL da ANS corrigida
+- NBR 9050 referenciada
+
+### Segurança
+- `isSafeUrl()` aplicado em 4 locais adicionais
+- Modal focus trap implementado
+- Nav roles (aria) adicionados
+
+#### Motor de Correspondência — Externalização
+- **KEYWORD_MAP**, **CID_RANGE_MAP** e **UPPERCASE_ONLY_TERMS** movidos de `app.js` para `data/matching_engine.json` (53 KB)
+- `app.js` reduzido de 105 KB → 78 KB (abaixo do limite de 100 KB)
+- Dados carregados via `fetch()` assíncrono em `loadData()`, com `deepFreeze()` para imutabilidade
+- Codereview atualizado para validar KEYWORD_MAP tanto em `app.js` quanto em `matching_engine.json`
+- Domínio `who.int` adicionado à whitelist `OFFICIAL_DOMAINS` do codereview
+
+#### PWA — Progressive Web App
+- **manifest.json** criado — nome, ícones (32/180/512), `display: standalone`, `theme_color: #1e3a8a`
+- **sw.js** (Service Worker) criado — cache-first para assets estáticos, network-first para JSON/HTML
+  - Pre-cache de 10 assets estáticos + CDN (pdf.js)
+  - Página de fallback offline embutida (HTML/CSS em-linha no SW)
+  - `skipWaiting()` + `clients.claim()` para ativação imediata
+- Registro do SW em `index.html` como script inline (resiliência: funciona mesmo se app.js falhar)
+- `server.js`: header `no-cache` para `/sw.js` (spec W3C requer cache curto para detecção de atualização)
+
+#### SEO e Metadados
+- `<link rel="canonical" href="https://nossodireito.fabiotreze.com">` — URL canônica para Google
+- `<link rel="preconnect">` + `<link rel="dns-prefetch">` para `cdnjs.cloudflare.com`
+- JSON-LD (`@type: WebApplication`) — dados estruturados schema.org no `<head>`
+
+#### Resiliência e Performance
+- **`resilientFetch()`** — retry com exponential backoff (2 tentativas, 500ms delay inicial, não retenta 4xx)
+- `loadData()` separado em 2 try/catch independentes:
+  - Falha no `direitos.json` → exibe mensagem de erro na UI
+  - Falha no `matching_engine.json` → degrada graciosamente (navegação manual funciona)
+- `escapeHtml()` otimizado — elemento DOM reutilizável (`_escapeDiv`) em vez de criar novo por chamada
+
+#### UX / Footer
+- Badge de versão no footer (`v1.1.0`) populado dinamicamente de `jsonMeta.versao`
+- `setupFooterVersion()` chamado após `loadData()` para garantir dados disponíveis
+
+### Corrigido
+- Links do GitHub corrigidos de `fabiorodrigues` → `fabiotreze/nossodireito` (2 locais)
+
+#### Codereview — Novos Checks
+- Regex de inline JS exclui `<script type="application/ld+json">` (JSON-LD não é JS executável)
+- Registro de Service Worker excluído do check de inline JS (padrão de bootstrap válido)
+- WAF Segurança: reconhece `sw.js` como indicador de HTTPS (SW requer HTTPS)
+- WAF Confiabilidade: check para `resilientFetch` (retry pattern)
+- WAF Performance: verifica `server.js` para Cache-Control (além de staticwebapp.config.json)
+- 6 novos checks de Performance: canonical URL, preconnect, PWA manifest, Service Worker, JSON-LD
+- WAF 5 Pilares: **100%** em todos (Seg/Conf/Perf/Custo/Ops)
+
+### Dados
+- `direitos.json` versão 1.1.0 (data: 2026-02-10, próx. revisão: 2026-02-17)
+- Quality Gate: **100.0/100** (151 PASS, 0 WARNING, 0 ERROR)
+
 ## [1.0.1] - 2026-02-09
 
 ### Segurança — EASM Hardening

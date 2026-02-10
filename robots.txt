@@ -1,0 +1,11 @@
+# NossoDireito — Guia de Direitos para Pessoas com Deficiência
+# https://nossodireito.fabiotreze.com
+
+User-agent: *
+Allow: /
+Disallow: /codereview/
+Disallow: /terraform/
+Disallow: /scripts/
+
+# Sitemap
+Sitemap: https://nossodireito.fabiotreze.com/sitemap.xml

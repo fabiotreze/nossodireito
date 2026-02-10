@@ -75,6 +75,7 @@ const MIME = Object.freeze({
     '.svg': 'image/svg+xml',
     '.webp': 'image/webp',
     '.txt': 'text/plain; charset=utf-8',
+    '.xml': 'application/xml; charset=utf-8',
 });
 
 // Cache policies (seconds)
@@ -87,6 +88,8 @@ const CACHE = Object.freeze({
     '.ico': 'public, max-age=604800',
     '.svg': 'public, max-age=604800',
     '.webp': 'public, max-age=604800',
+    '.xml': 'public, max-age=3600',     // 1 hour
+    '.txt': 'public, max-age=86400',     // 1 day
 });
 
 // ── Security Headers (EASM-hardened) ──
@@ -135,7 +138,7 @@ const SECURITY_HEADERS = Object.freeze({
 const ALLOWED_EXT = new Set(Object.keys(MIME));
 
 // Compressible types
-const COMPRESSIBLE = new Set(['.html', '.css', '.js', '.json', '.svg', '.txt']);
+const COMPRESSIBLE = new Set(['.html', '.css', '.js', '.json', '.svg', '.txt', '.xml']);
 
 // Blocked directories
 const BLOCKED_DIRS = new Set(['terraform', 'codereview', 'node_modules', 'tests', '.github', 'docs', '__pycache__']);
@@ -289,7 +292,9 @@ const server = http.createServer((req, res) => {
 
     const ext = path.extname(fullPath).toLowerCase();
     const contentType = MIME[ext] || 'application/octet-stream';
-    const cacheControl = CACHE[ext] || 'no-cache';
+    // Service Worker must have short cache for update detection (browser spec)
+    const isSW = urlPath === '/sw.js';
+    const cacheControl = isSW ? 'no-cache' : (CACHE[ext] || 'no-cache');
 
     // Build response headers
     const headers = {

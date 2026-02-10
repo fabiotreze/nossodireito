@@ -50,6 +50,26 @@
         return obj;
     }
 
+    /**
+     * Resilient fetch with retry — handles spotty connections in rural areas.
+     * @param {string} url - URL to fetch
+     * @param {number} retries - Max retry attempts (default 2)
+     * @param {number} delay - Initial delay in ms (doubles each retry)
+     * @returns {Promise<Response>}
+     */
+    async function resilientFetch(url, retries = 2, delay = 500) {
+        for (let attempt = 0; attempt <= retries; attempt++) {
+            try {
+                const res = await fetch(url);
+                if (res.ok) return res;
+                if (res.status >= 400 && res.status < 500) throw new Error(`HTTP ${res.status}`); // Don't retry 4xx
+            } catch (err) {
+                if (attempt === retries) throw err;
+                await new Promise(r => setTimeout(r, delay * Math.pow(2, attempt)));
+            }
+        }
+    }
+
     // ========================
     // State
     // ========================
@@ -57,7 +77,12 @@
     let fontesData = null;
     let docsMestreData = null;
     let instituicoesData = null;
+    let orgaosEstaduaisData = null;
+    let classificacaoData = null;
     let jsonMeta = null;
+    let UPPERCASE_ONLY_TERMS = new Set();
+    let CID_RANGE_MAP = {};
+    let KEYWORD_MAP = {};
     const STORAGE_PREFIX = 'nossodireito_';
     const DB_NAME = 'NossoDireitoDB';
     const DB_VERSION = 2; // v2: added crypto_keys store + encrypted file data
@@ -75,10 +100,40 @@
     const ALLOWED_EXTENSIONS = ['.pdf', '.jpg', '.jpeg', '.png'];
     const CRYPTO_AVAILABLE = typeof crypto !== 'undefined' && typeof crypto.subtle !== 'undefined';
 
-    // pdf.js worker
-    if (typeof pdfjsLib !== 'undefined') {
+    // pdf.js worker — setup when available (may be lazy-loaded)
+    let _pdfJsReady = typeof pdfjsLib !== 'undefined';
+    function ensurePdfJs() {
+        if (_pdfJsReady) return Promise.resolve();
+        return new Promise((resolve, reject) => {
+            const s = document.createElement('script');
+            s.src = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js';
+            s.integrity = 'sha384-/1qUCSGwTur9vjf/z9lmu/eCUYbpOTgSjmpbMQZ1/CtX2v/WcAIKqRv+U1DUCG6e';
+            s.crossOrigin = 'anonymous';
+            s.onload = () => {
+                pdfjsLib.GlobalWorkerOptions.workerSrc =
+                    'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+                _pdfJsReady = true;
+                resolve();
+            };
+            s.onerror = () => reject(new Error('Não foi possível carregar o leitor de PDF.'));
+            document.head.appendChild(s);
+        });
+    }
+    if (_pdfJsReady) {
         pdfjsLib.GlobalWorkerOptions.workerSrc =
             'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    }
+
+    // ========================
+    // Toast Notifications (replaces alert())
+    // ========================
+    function showToast(message, type = 'info') {
+        const toast = document.createElement('div');
+        toast.className = `toast toast-${type}`;
+        toast.textContent = message;
+        toast.setAttribute('role', 'alert');
+        document.body.appendChild(toast);
+        setTimeout(() => { if (toast.parentNode) toast.remove(); }, 5000);
     }
 
     // ========================
@@ -120,10 +175,16 @@
         fontesNormativas: $('#fontesNormativas'),
         // Institucions
         instituicoesGrid: $('#instituicoesGrid'),
+        // Orgaos Estaduais
+        orgaosEstaduaisGrid: $('#orgaosEstaduaisGrid'),
+        // Classificacao CID
+        classificacaoGrid: $('#classificacaoGrid'),
         // Meta
         transLastUpdate: $('#transLastUpdate'),
         transNextReview: $('#transNextReview'),
         transVersion: $('#transVersion'),
+        // Footer version badge
+        footerVersion: $('#footerVersion'),
         // Dynamic links
         linksGrid: $('#linksGrid'),
         // Staleness banner
@@ -144,9 +205,12 @@
         setupChecklist();
         setupFooter();
         await loadData();
+        setupFooterVersion();
         renderCategories();
         renderTransparency();
         renderInstituicoes();
+        renderOrgaosEstaduais();
+        renderClassificacao();
         renderDocsChecklist();
         renderLinksUteis();
         renderHeroStats();
@@ -167,20 +231,45 @@
     // Disclaimer Modal
     // ========================
     function setupDisclaimer() {
-        const accepted = localGet('disclaimer_accepted');
-
-        if (accepted) {
+        function closeModal() {
             dom.disclaimerModal.classList.add('hidden');
+            dom.disclaimerModal.setAttribute('aria-hidden', 'true');
+            if (dom.showDisclaimer) dom.showDisclaimer.focus();
         }
 
-        dom.acceptBtn.addEventListener('click', () => {
-            localSet('disclaimer_accepted', 'true');
-            dom.disclaimerModal.classList.add('hidden');
+        function openModal() {
+            dom.disclaimerModal.classList.remove('hidden');
+            dom.disclaimerModal.setAttribute('aria-hidden', 'false');
+            const firstFocusable = dom.disclaimerModal.querySelector('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+            if (firstFocusable) firstFocusable.focus();
+        }
+
+        // Focus trap inside modal
+        dom.disclaimerModal.addEventListener('keydown', (e) => {
+            if (e.key === 'Tab') {
+                const focusable = dom.disclaimerModal.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+                if (focusable.length === 0) return;
+                const first = focusable[0];
+                const last = focusable[focusable.length - 1];
+                if (e.shiftKey) {
+                    if (document.activeElement === first) { e.preventDefault(); last.focus(); }
+                } else {
+                    if (document.activeElement === last) { e.preventDefault(); first.focus(); }
+                }
+            }
+            if (e.key === 'Escape') closeModal();
         });
+
+        // Close on backdrop click
+        dom.disclaimerModal.addEventListener('click', (e) => {
+            if (e.target === dom.disclaimerModal) closeModal();
+        });
+
+        dom.acceptBtn.addEventListener('click', closeModal);
 
         dom.showDisclaimer.addEventListener('click', (e) => {
             e.preventDefault();
-            dom.disclaimerModal.classList.remove('hidden');
+            openModal();
         });
     }
 
@@ -228,7 +317,18 @@
         dom.voltarBtn.addEventListener('click', () => {
             dom.detalheSection.style.display = 'none';
             dom.categoriasSection.style.display = '';
+            history.pushState({ view: 'categorias' }, '', '#categorias');
             dom.categoriasSection.scrollIntoView({ behavior: 'smooth' });
+        });
+
+        // Browser back/forward button support for detail view
+        window.addEventListener('popstate', (e) => {
+            if (e.state && e.state.view === 'detalhe' && e.state.id) {
+                showDetalhe(e.state.id, true);
+            } else {
+                dom.detalheSection.style.display = 'none';
+                dom.categoriasSection.style.display = '';
+            }
         });
     }
 
@@ -237,8 +337,7 @@
     // ========================
     async function loadData() {
         try {
-            const res = await fetch('data/direitos.json');
-            if (!res.ok) throw new Error(`HTTP ${res.status}`);
+            const res = await resilientFetch('data/direitos.json');
             const json = await res.json();
 
             // Deep-freeze all data arrays — prevent runtime mutation (CWE-471)
@@ -246,6 +345,8 @@
             fontesData = deepFreeze(json.fontes || []);
             docsMestreData = deepFreeze(json.documentos_mestre || []);
             instituicoesData = deepFreeze(json.instituicoes_apoio || []);
+            orgaosEstaduaisData = deepFreeze(json.orgaos_estaduais || []);
+            classificacaoData = deepFreeze(json.classificacao_deficiencia || []);
             jsonMeta = Object.freeze({
                 versao: json.versao,
                 ultima_atualizacao: json.ultima_atualizacao,
@@ -262,6 +363,18 @@
                     <p>⚠️ Não foi possível carregar os dados.</p>
                     <p style="font-size:0.9rem;">Verifique se o arquivo <code>data/direitos.json</code> está acessível.</p>
                 </div>`;
+        }
+
+        // Load matching engine separately — graceful degradation.
+        // If this fails, manual search/browse still works; only PDF analysis is impaired.
+        try {
+            const meRes = await resilientFetch('data/matching_engine.json');
+            const me = await meRes.json();
+            UPPERCASE_ONLY_TERMS = Object.freeze(new Set(me.uppercase_only_terms));
+            CID_RANGE_MAP = deepFreeze(me.cid_range_map);
+            KEYWORD_MAP = deepFreeze(me.keyword_map);
+        } catch (err) {
+            console.warn('Motor de correspondência não carregou — análise de documentos pode ser limitada:', err.message);
         }
     }
 
@@ -298,12 +411,17 @@
     // ========================
     // Detail View
     // ========================
-    function showDetalhe(id) {
+    function showDetalhe(id, skipHistory) {
         const cat = direitosData.find((c) => c.id === id);
         if (!cat) return;
 
         dom.categoriasSection.style.display = 'none';
         dom.detalheSection.style.display = '';
+
+        // Push browser history so back button returns to categories
+        if (!skipHistory) {
+            history.pushState({ view: 'detalhe', id }, '', `#direito/${id}`);
+        }
 
         let html = `
             <h2>${cat.icone} ${escapeHtml(cat.titulo)}</h2>
@@ -377,6 +495,7 @@
             html += `<div class="detalhe-section">
                 <h3>🔗 Links Úteis</h3>
                 <div>${cat.links
+                    .filter((l) => isSafeUrl(l.url))
                     .map(
                         (l) =>
                             `<a class="legal-link" href="${escapeHtml(l.url)}" target="_blank" rel="noopener">
@@ -393,6 +512,17 @@
                 ${cat.tags.map((t) => `<span class="tag">${escapeHtml(t)}</span>`).join('')}
             </div>`;
         }
+
+        // WhatsApp share button
+        const shareText = encodeURIComponent(
+            `${cat.icone} ${cat.titulo}\n${cat.resumo}\n\nVeja mais em: https://nossodireito.fabiotreze.com`
+        );
+        html += `<div class="detalhe-section" style="text-align:center;padding-top:8px;">
+            <a href="https://wa.me/?text=${shareText}" target="_blank" rel="noopener"
+               class="btn btn-whatsapp" aria-label="Compartilhar no WhatsApp">
+               📲 Compartilhar no WhatsApp
+            </a>
+        </div>`;
 
         dom.detalheContent.innerHTML = html;
         dom.detalheSection.scrollIntoView({ behavior: 'smooth' });
@@ -492,6 +622,15 @@
     function setupChecklist() {
         const checkboxes = $$('.checklist-item input[type="checkbox"]');
         const saved = localGet('checklist') || {};
+        const total = checkboxes.length;
+        const progressText = $('#checklistProgress');
+        const progressBar = $('#checklistProgressBar');
+
+        function updateProgress() {
+            const done = $$('.checklist-item input[type="checkbox"]:checked').length;
+            if (progressText) progressText.textContent = `${done} de ${total} concluídos`;
+            if (progressBar) progressBar.style.width = `${Math.round(done / total * 100)}%`;
+        }
 
         checkboxes.forEach((cb) => {
             const step = cb.dataset.step;
@@ -505,8 +644,11 @@
                     delete state[step];
                 }
                 localSet('checklist', state);
+                updateProgress();
             });
         });
+
+        updateProgress();
     }
 
     // ========================
@@ -546,7 +688,7 @@
                     </div>
                     <div class="fonte-data">Consultado<br>${formatDate(f.consultado_em)}</div>
                     <div class="fonte-link">
-                        <a href="${escapeHtml(f.url)}" target="_blank" rel="noopener">Abrir ↗</a>
+                        ${isSafeUrl(f.url) ? `<a href="${escapeHtml(f.url)}" target="_blank" rel="noopener">Abrir ↗</a>` : ''}
                     </div>
                 </div>`;
         };
@@ -657,9 +799,9 @@
                         ${servicos ? `<ul class="inst-servicos">${servicos}</ul>` : ''}
                         <div class="inst-como">${escapeHtml(inst.como_acessar)}</div>
                         <div class="inst-categories">${catTags}</div>
-                        <a href="${escapeHtml(inst.url)}" class="btn btn-sm btn-outline inst-link" target="_blank" rel="noopener">
+                        ${isSafeUrl(inst.url) ? `<a href="${escapeHtml(inst.url)}" class="btn btn-sm btn-outline inst-link" target="_blank" rel="noopener">
                             Acessar site ↗
-                        </a>
+                        </a>` : ''}
                     </div>`;
                 })
                 .join('');
@@ -708,15 +850,22 @@
         });
 
         dom.linksGrid.innerHTML = links
+            .filter((lk) => isSafeUrl(lk.url))
             .map((lk) => {
+                const isTel = lk.url.trim().toLowerCase().startsWith('tel:');
                 const domain = (() => {
+                    if (isTel) return lk.url.replace('tel:', '');
                     try { return new URL(lk.url).hostname.replace('www.', ''); }
                     catch { return ''; }
                 })();
-                const icon = domain.includes('gov.br') ? '🏛️'
-                    : domain.includes('inss') ? '📋'
-                        : domain.includes('mds.gov') ? '🏠'
-                            : '🔗';
+                const icon = isTel ? '📞'
+                    : domain.includes('cfm.org') ? '👨‍⚕️'
+                        : domain.includes('cfp.org') ? '🧠'
+                            : domain.includes('who.int') ? '🌐'
+                                : domain.includes('gov.br') ? '🏛️'
+                                    : domain.includes('inss') ? '📋'
+                                        : domain.includes('mds.gov') ? '🏠'
+                                            : '🔗';
                 return `
                 <a href="${escapeHtml(lk.url)}" class="link-card" target="_blank" rel="noopener">
                     <span class="link-icon">${icon}</span>
@@ -741,6 +890,98 @@
     }
 
     // ========================
+    // Órgãos Estaduais
+    // ========================
+    function renderOrgaosEstaduais() {
+        if (!orgaosEstaduaisData || !dom.orgaosEstaduaisGrid) return;
+
+        // Agrupamento por região
+        const regioes = {
+            'Norte': ['AC', 'AM', 'AP', 'PA', 'RO', 'RR', 'TO'],
+            'Nordeste': ['AL', 'BA', 'CE', 'MA', 'PB', 'PE', 'PI', 'RN', 'SE'],
+            'Centro-Oeste': ['DF', 'GO', 'MS', 'MT'],
+            'Sudeste': ['ES', 'MG', 'RJ', 'SP'],
+            'Sul': ['PR', 'RS', 'SC'],
+        };
+
+        let activeFilter = 'todos';
+
+        function renderGrid(filter) {
+            const filtered = filter === 'todos'
+                ? orgaosEstaduaisData
+                : orgaosEstaduaisData.filter((o) => {
+                    const states = regioes[filter] || [];
+                    return states.includes(o.uf);
+                });
+
+            if (filtered.length === 0) {
+                dom.orgaosEstaduaisGrid.innerHTML = '<p style="text-align:center;color:var(--text-muted);">Nenhum órgão nesta região.</p>';
+                return;
+            }
+
+            dom.orgaosEstaduaisGrid.innerHTML = filtered
+                .map((org) => {
+                    const urlSafe = isSafeUrl(org.url);
+                    return `
+                    <div class="orgao-card">
+                        <span class="orgao-uf-badge">${escapeHtml(org.uf)}</span>
+                        <span class="orgao-nome">${escapeHtml(org.nome)}</span>
+                        ${urlSafe ? `<a href="${escapeHtml(org.url)}" class="btn btn-sm btn-outline orgao-link" target="_blank" rel="noopener">
+                            Acessar ↗
+                        </a>` : ''}
+                    </div>`;
+                })
+                .join('');
+        }
+
+        renderGrid('todos');
+
+        // Filter buttons
+        document.querySelectorAll('.orgao-filter-btn').forEach((btn) => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.orgao-filter-btn').forEach((b) => b.classList.remove('active'));
+                btn.classList.add('active');
+                activeFilter = btn.dataset.filter;
+                renderGrid(activeFilter);
+            });
+        });
+    }
+
+    // ========================
+    // Classificação de Deficiência (CID-10 / CID-11)
+    // ========================
+    function renderClassificacao() {
+        if (!classificacaoData || !dom.classificacaoGrid) return;
+
+        dom.classificacaoGrid.innerHTML = `
+            <div class="classif-table-wrapper">
+                <table class="classif-table">
+                    <thead>
+                        <tr>
+                            <th>Tipo de Deficiência</th>
+                            <th>CID-10</th>
+                            <th>CID-11</th>
+                            <th>Critério Técnico</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${classificacaoData.map((c) => `
+                        <tr>
+                            <td class="classif-tipo"><strong>${escapeHtml(c.tipo)}</strong></td>
+                            <td class="classif-cid"><code>${escapeHtml(c.cid10)}</code></td>
+                            <td class="classif-cid"><code>${escapeHtml(c.cid11)}</code></td>
+                            <td class="classif-criterio">${escapeHtml(c.criterio)}</td>
+                        </tr>`).join('')}
+                    </tbody>
+                </table>
+            </div>
+            <p class="classif-note">
+                💡 <strong>Dica:</strong> A CID-11 (OMS 2022) está sendo adotada gradualmente.
+                No Brasil, a maioria dos laudos ainda usa CID-10. O sistema aceita ambas as codificações.
+            </p>`;
+    }
+
+    // ========================
     // Staleness Banner
     // ========================
     function checkStaleness() {
@@ -753,7 +994,7 @@
 
         if (diffDays > STALE_THRESHOLD) {
             if (dom.staleDays) {
-                dom.staleDays.textContent = diffDays;
+                dom.staleDays.textContent = `há ${diffDays} dias`;
             }
             dom.stalenessBanner.hidden = false;
         } else {
@@ -810,7 +1051,7 @@
         const filesToAdd = Array.from(fileList);
 
         if (currentCount + filesToAdd.length > MAX_FILES) {
-            alert(`Limite de ${MAX_FILES} arquivos. Você já tem ${currentCount}. Pode adicionar mais ${MAX_FILES - currentCount}.`);
+            showToast(`Limite de ${MAX_FILES} arquivos. Pode adicionar mais ${MAX_FILES - currentCount}.`, 'warning');
             return;
         }
 
@@ -820,14 +1061,14 @@
                 const parts = file.name.split('.');
                 const ext = parts.length > 1 ? parts.pop().toLowerCase() : '';
                 if (!ALLOWED_EXTENSIONS.includes('.' + ext)) {
-                    alert(`Formato não aceito: ${file.name}\nFormatos válidos: PDF, JPG, PNG`);
+                    showToast(`Formato não aceito: ${file.name}. Use PDF, JPG ou PNG.`, 'error');
                     continue;
                 }
             }
 
             // Validate size
             if (file.size > MAX_FILE_SIZE) {
-                alert(`Arquivo muito grande: ${file.name} (${formatBytes(file.size)})\nMáximo: 5MB por arquivo`);
+                showToast(`Arquivo muito grande: ${file.name} (${formatBytes(file.size)}). Máx: 5MB.`, 'error');
                 continue;
             }
 
@@ -850,7 +1091,7 @@
                 });
             } catch (err) {
                 console.error('Erro ao salvar arquivo:', err);
-                alert(`Erro ao salvar: ${file.name}`);
+                showToast(`Erro ao salvar: ${file.name}`, 'error');
             }
         }
 
@@ -992,12 +1233,19 @@
      * 100% local — nada é enviado para servidores.
      */
     async function analyzeSelectedDocuments() {
+        const analyzeBtn = document.getElementById('analyzeSelected');
         const checkboxes = dom.fileList.querySelectorAll('.file-select-cb:checked');
         const fileIds = Array.from(checkboxes).map((cb) => cb.dataset.id);
 
         if (fileIds.length === 0) {
-            alert('Selecione pelo menos um arquivo para analisar.');
+            showToast('Selecione pelo menos um arquivo para analisar.', 'warning');
             return;
+        }
+
+        // Desabilitar botão durante análise (evita duplo-clique)
+        if (analyzeBtn) {
+            analyzeBtn.disabled = true;
+            analyzeBtn.textContent = '⏳ Analisando...';
         }
 
         dom.analysisResults.style.display = '';
@@ -1012,11 +1260,32 @@
         const successIds = [];
 
         try {
+            // Carregar TODOS os arquivos do IndexedDB antes de processar
+            // (evita problemas de conexão DB entre iterações)
+            const filesToProcess = [];
             for (const fileId of fileIds) {
-                const file = await getFile(fileId);
-                if (!file) {
-                    errors.push({ name: `ID ${fileId}`, reason: 'Arquivo não encontrado' });
-                    continue;
+                try {
+                    const file = await getFile(fileId);
+                    if (!file) {
+                        errors.push({ name: `ID ${fileId}`, reason: 'Arquivo não encontrado' });
+                    } else {
+                        filesToProcess.push({ fileId, file });
+                    }
+                } catch (dbErr) {
+                    console.error(`Erro ao recuperar arquivo ${fileId}:`, dbErr);
+                    errors.push({ name: `ID ${fileId}`, reason: 'Erro ao acessar arquivo' });
+                }
+            }
+
+            // Processar cada arquivo (extração de texto)
+            for (let i = 0; i < filesToProcess.length; i++) {
+                const { fileId, file } = filesToProcess[i];
+                // Atualizar progresso no loading
+                if (filesToProcess.length > 1) {
+                    const loadingText = dom.analysisLoading.querySelector('p');
+                    if (loadingText) {
+                        loadingText.textContent = `Analisando ${i + 1} de ${filesToProcess.length}: ${file.name}`;
+                    }
                 }
                 try {
                     const plainData = await decryptFileData(file);
@@ -1086,6 +1355,15 @@
                 </div>`;
         } finally {
             dom.analysisLoading.style.display = 'none';
+            // Restaurar loading text original
+            const loadingText = dom.analysisLoading.querySelector('p');
+            if (loadingText) {
+                loadingText.textContent = 'Analisando documentos... (100% local, nada é enviado)';
+            }
+            // Reabilitar botão
+            if (analyzeBtn) {
+                updateAnalyzeButton();
+            }
         }
     }
 
@@ -1093,6 +1371,7 @@
      * Extrai texto de um ArrayBuffer contendo um PDF usando pdf.js
      */
     async function extractPdfText(arrayBuffer) {
+        await ensurePdfJs();
         if (typeof pdfjsLib === 'undefined') {
             throw new Error('pdf.js não disponível');
         }
@@ -1111,365 +1390,45 @@
     }
 
     /**
-     * Dicionário de palavras-chave → categorias para matching inteligente.
-     * Inclui termos médicos, jurídicos e coloquiais que famílias usam.
+     * UPPERCASE_ONLY_TERMS, CID_RANGE_MAP and KEYWORD_MAP are now loaded
+     * from data/matching_engine.json in loadData() — see state variables above.
      */
-    const KEYWORD_MAP = {
-        // BPC / LOAS
-        bpc: { cats: ['bpc'], weight: 5 },
-        loas: { cats: ['bpc'], weight: 5 },
-        'benefício assistencial': { cats: ['bpc'], weight: 4 },
-        'beneficio assistencial': { cats: ['bpc'], weight: 4 },
-        cadúnico: { cats: ['bpc'], weight: 3 },
-        cadunico: { cats: ['bpc'], weight: 3 },
-        'cadastro único': { cats: ['bpc'], weight: 3 },
-        inss: { cats: ['bpc', 'fgts'], weight: 3 },
-        perícia: { cats: ['bpc'], weight: 2 },
-        pericia: { cats: ['bpc'], weight: 2 },
 
-        // CIPTEA
-        ciptea: { cats: ['ciptea'], weight: 5 },
-        'carteira de identificação': { cats: ['ciptea'], weight: 4 },
-        'romeo mion': { cats: ['ciptea'], weight: 5 },
+    /**
+     * Regex para detectar qualquer código CID-10 (ex: F84, G80.1, Q90.0)
+     * ou CID-11 (ex: 6A02, 6A02.0) que não esteja explicitamente no KEYWORD_MAP.
+     * Captura apenas em MAIÚSCULAS no texto original.
+     * Retornam regex NOVO a cada chamada para evitar problemas de lastIndex compartilhado.
+     */
+    function cidGenericRegex() { return /\b([A-Z]\d{2}(?:\.\d{1,2})?)\b/g; }
+    function cid11GenericRegex() { return /\b(\d[A-Z]\d{2}(?:\.\d{1,2})?)\b/g; }
+    function cid11TwoLetterRegex() { return /\b([A-Z]{2}\d{2}(?:\.\d{1,2})?)\b/g; }
 
-        // TEA / Autismo (trans-category)
-        autismo: { cats: ['ciptea', 'educacao', 'plano_saude', 'sus_terapias'], weight: 3 },
-        tea: { cats: ['ciptea', 'educacao', 'plano_saude', 'sus_terapias'], weight: 3 },
-        'f84': { cats: ['ciptea', 'educacao', 'plano_saude', 'sus_terapias'], weight: 4 },
-        '6a02': { cats: ['ciptea', 'educacao', 'plano_saude', 'sus_terapias'], weight: 4 },
-        'espectro autista': { cats: ['ciptea', 'educacao', 'plano_saude', 'sus_terapias'], weight: 4 },
-        'berenice piana': { cats: ['ciptea', 'educacao', 'plano_saude', 'sus_terapias'], weight: 3 },
-
-        // Deficiência geral
-        deficiência: { cats: ['bpc', 'educacao', 'transporte', 'trabalho', 'fgts', 'moradia'], weight: 2 },
-        deficiencia: { cats: ['bpc', 'educacao', 'transporte', 'trabalho', 'fgts', 'moradia'], weight: 2 },
-        'pessoa com deficiência': { cats: ['bpc', 'educacao', 'transporte', 'trabalho', 'moradia'], weight: 3 },
-        pcd: { cats: ['bpc', 'educacao', 'transporte', 'trabalho', 'fgts', 'moradia'], weight: 3 },
-        laudo: { cats: ['bpc', 'ciptea', 'educacao', 'plano_saude', 'sus_terapias', 'transporte', 'trabalho', 'fgts'], weight: 2 },
-        cid: { cats: ['bpc', 'ciptea', 'plano_saude', 'sus_terapias'], weight: 3 },
-        'cid-10': { cats: ['bpc', 'ciptea', 'plano_saude', 'sus_terapias'], weight: 3 },
-        'cid-11': { cats: ['bpc', 'ciptea', 'plano_saude', 'sus_terapias'], weight: 3 },
-        diagnóstico: { cats: ['bpc', 'ciptea', 'plano_saude', 'sus_terapias'], weight: 2 },
-        diagnostico: { cats: ['bpc', 'ciptea', 'plano_saude', 'sus_terapias'], weight: 2 },
-
-        // Educação
-        escola: { cats: ['educacao'], weight: 4 },
-        matrícula: { cats: ['educacao'], weight: 4 },
-        matricula: { cats: ['educacao'], weight: 4 },
-        inclusão: { cats: ['educacao'], weight: 3 },
-        inclusao: { cats: ['educacao'], weight: 3 },
-        aee: { cats: ['educacao'], weight: 5 },
-        'atendimento educacional': { cats: ['educacao'], weight: 4 },
-        acompanhante: { cats: ['educacao'], weight: 3 },
-        'educação especial': { cats: ['educacao'], weight: 4 },
-
-        // Plano de saúde
-        'plano de saúde': { cats: ['plano_saude'], weight: 5 },
-        'plano de saude': { cats: ['plano_saude'], weight: 5 },
-        ans: { cats: ['plano_saude'], weight: 4 },
-        operadora: { cats: ['plano_saude'], weight: 3 },
-        cobertura: { cats: ['plano_saude'], weight: 3 },
-        negativa: { cats: ['plano_saude'], weight: 3 },
-
-        // Terapias
-        terapia: { cats: ['plano_saude', 'sus_terapias'], weight: 3 },
-        aba: { cats: ['plano_saude', 'sus_terapias'], weight: 4 },
-        fonoaudiologia: { cats: ['plano_saude', 'sus_terapias'], weight: 3 },
-        fono: { cats: ['plano_saude', 'sus_terapias'], weight: 3 },
-        'terapia ocupacional': { cats: ['plano_saude', 'sus_terapias'], weight: 3 },
-        psicologia: { cats: ['plano_saude', 'sus_terapias'], weight: 2 },
-        fisioterapia: { cats: ['sus_terapias'], weight: 3 },
-        reabilitação: { cats: ['sus_terapias'], weight: 3 },
-        reabilitacao: { cats: ['sus_terapias'], weight: 3 },
-
-        // SUS
-        sus: { cats: ['sus_terapias'], weight: 4 },
-        ubs: { cats: ['sus_terapias'], weight: 3 },
-        caps: { cats: ['sus_terapias'], weight: 4 },
-        cer: { cats: ['sus_terapias'], weight: 4 },
-        medicamento: { cats: ['sus_terapias'], weight: 3 },
-        'farmácia popular': { cats: ['sus_terapias'], weight: 4 },
-
-        // Transporte
-        transporte: { cats: ['transporte'], weight: 4 },
-        'passe livre': { cats: ['transporte'], weight: 5 },
-        ônibus: { cats: ['transporte'], weight: 3 },
-        onibus: { cats: ['transporte'], weight: 3 },
-        ipva: { cats: ['transporte'], weight: 4 },
-        ipi: { cats: ['transporte'], weight: 3 },
-        isenção: { cats: ['transporte'], weight: 3 },
-        isencao: { cats: ['transporte'], weight: 3 },
-
-        // Trabalho
-        trabalho: { cats: ['trabalho'], weight: 4 },
-        emprego: { cats: ['trabalho'], weight: 3 },
-        cota: { cats: ['trabalho'], weight: 4 },
-        cotas: { cats: ['trabalho'], weight: 4 },
-        clt: { cats: ['trabalho'], weight: 3 },
-        'carteira de trabalho': { cats: ['trabalho', 'fgts'], weight: 3 },
-        ctps: { cats: ['trabalho', 'fgts'], weight: 3 },
-
-        // FGTS
-        fgts: { cats: ['fgts'], weight: 5 },
-        saque: { cats: ['fgts'], weight: 3 },
-        caixa: { cats: ['fgts'], weight: 2 },
-        'caixa econômica': { cats: ['fgts'], weight: 3 },
-
-        // Documentos comuns (indicadores)
-        'certidão de nascimento': { cats: ['bpc', 'ciptea'], weight: 1 },
-        'comprovante de residência': { cats: ['bpc', 'ciptea', 'educacao', 'moradia'], weight: 1 },
-        cpf: { cats: ['bpc', 'ciptea', 'transporte'], weight: 1 },
-
-        // Moradia / Condomínio
-        moradia: { cats: ['moradia'], weight: 5 },
-        'condomínio': { cats: ['moradia'], weight: 5 },
-        condominio: { cats: ['moradia'], weight: 5 },
-        'vaga especial': { cats: ['moradia'], weight: 5 },
-        'vaga reservada': { cats: ['moradia'], weight: 5 },
-        'vaga pcd': { cats: ['moradia'], weight: 5 },
-        estacionamento: { cats: ['moradia'], weight: 3 },
-        rampa: { cats: ['moradia'], weight: 4 },
-        elevador: { cats: ['moradia'], weight: 3 },
-        'área comum': { cats: ['moradia'], weight: 3 },
-        'area comum': { cats: ['moradia'], weight: 3 },
-        síndico: { cats: ['moradia'], weight: 4 },
-        sindico: { cats: ['moradia'], weight: 4 },
-        'nbr 9050': { cats: ['moradia'], weight: 5 },
-        'lei 10.098': { cats: ['moradia'], weight: 4 },
-        'minha casa minha vida': { cats: ['moradia'], weight: 5 },
-        'programa habitacional': { cats: ['moradia'], weight: 4 },
-        habitação: { cats: ['moradia'], weight: 4 },
-        habitacao: { cats: ['moradia'], weight: 4 },
-        'adaptação': { cats: ['moradia'], weight: 3 },
-        adaptacao: { cats: ['moradia'], weight: 3 },
-        'barreira arquitetônica': { cats: ['moradia'], weight: 4 },
-        'barreira arquitetonica': { cats: ['moradia'], weight: 4 },
-        assembleia: { cats: ['moradia'], weight: 3 },
-        'convenção do condomínio': { cats: ['moradia'], weight: 4 },
-
-        // Termos médicos adicionais
-        neuropediatra: { cats: ['ciptea', 'sus_terapias'], weight: 2 },
-        neurologista: { cats: ['sus_terapias'], weight: 2 },
-        psiquiatra: { cats: ['sus_terapias'], weight: 2 },
-        impedimento: { cats: ['bpc'], weight: 2 },
-        'longo prazo': { cats: ['bpc'], weight: 2 },
-
-        // ==============================================================
-        // BASE DE CONHECIMENTO PcD — Fontes Oficiais do Governo Federal
-        // Decreto 3.298/1999 (art. 4º), LBI 13.146/2015,
-        // DATASUS/SIGTAP (CIDs), gov.br/pcd, ANS, RENAME
-        // ==============================================================
-
-        // --- Paralisia Cerebral (CID G80) ---
-        'g80': { cats: ['bpc', 'educacao', 'transporte', 'trabalho', 'fgts', 'moradia', 'sus_terapias'], weight: 4 },
-        'paralisia cerebral': { cats: ['bpc', 'educacao', 'transporte', 'trabalho', 'fgts', 'moradia', 'sus_terapias'], weight: 5 },
-        hemiplegia: { cats: ['bpc', 'transporte', 'trabalho', 'sus_terapias'], weight: 4 },
-        diplegia: { cats: ['bpc', 'transporte', 'trabalho', 'sus_terapias'], weight: 4 },
-        tetraplegia: { cats: ['bpc', 'transporte', 'trabalho', 'fgts', 'sus_terapias'], weight: 5 },
-        quadriplegia: { cats: ['bpc', 'transporte', 'trabalho', 'fgts', 'sus_terapias'], weight: 5 },
-        paraplegia: { cats: ['bpc', 'transporte', 'trabalho', 'fgts', 'sus_terapias'], weight: 5 },
-        'g81': { cats: ['bpc', 'transporte', 'trabalho', 'sus_terapias'], weight: 4 },
-        'g82': { cats: ['bpc', 'transporte', 'trabalho', 'fgts', 'sus_terapias'], weight: 4 },
-        'g83': { cats: ['bpc', 'transporte', 'trabalho', 'sus_terapias'], weight: 4 },
-        espasticidade: { cats: ['bpc', 'sus_terapias'], weight: 3 },
-        monoplegia: { cats: ['bpc', 'transporte', 'trabalho', 'sus_terapias'], weight: 4 },
-
-        // --- Deficiência Intelectual (CID F70-F79) ---
-        'f70': { cats: ['bpc', 'educacao', 'trabalho'], weight: 4 },
-        'f71': { cats: ['bpc', 'educacao', 'trabalho'], weight: 4 },
-        'f72': { cats: ['bpc', 'educacao'], weight: 4 },
-        'f73': { cats: ['bpc', 'educacao'], weight: 4 },
-        'deficiência intelectual': { cats: ['bpc', 'educacao', 'trabalho', 'fgts'], weight: 4 },
-        'deficiencia intelectual': { cats: ['bpc', 'educacao', 'trabalho', 'fgts'], weight: 4 },
-        'deficiência mental': { cats: ['bpc', 'educacao', 'trabalho', 'fgts'], weight: 3 },
-        'deficiencia mental': { cats: ['bpc', 'educacao', 'trabalho', 'fgts'], weight: 3 },
-
-        // --- Síndrome de Down (CID Q90) ---
-        'q90': { cats: ['bpc', 'educacao', 'trabalho', 'sus_terapias'], weight: 5 },
-        'síndrome de down': { cats: ['bpc', 'educacao', 'trabalho', 'sus_terapias'], weight: 5 },
-        'sindrome de down': { cats: ['bpc', 'educacao', 'trabalho', 'sus_terapias'], weight: 5 },
-        trissomia: { cats: ['bpc', 'educacao', 'sus_terapias'], weight: 4 },
-
-        // --- Deficiência Visual (CID H54) ---
-        'h54': { cats: ['bpc', 'educacao', 'transporte', 'trabalho', 'fgts'], weight: 4 },
-        cegueira: { cats: ['bpc', 'educacao', 'transporte', 'trabalho', 'fgts'], weight: 5 },
-        'baixa visão': { cats: ['bpc', 'educacao', 'transporte', 'trabalho'], weight: 4 },
-        'baixa visao': { cats: ['bpc', 'educacao', 'transporte', 'trabalho'], weight: 4 },
-        'deficiência visual': { cats: ['bpc', 'educacao', 'transporte', 'trabalho', 'fgts'], weight: 4 },
-        'deficiencia visual': { cats: ['bpc', 'educacao', 'transporte', 'trabalho', 'fgts'], weight: 4 },
-        'visão monocular': { cats: ['bpc', 'transporte', 'trabalho'], weight: 4 },
-        'visao monocular': { cats: ['bpc', 'transporte', 'trabalho'], weight: 4 },
-
-        // --- Deficiência Auditiva (CID H90-H91) ---
-        'h90': { cats: ['bpc', 'educacao', 'transporte', 'trabalho', 'fgts'], weight: 4 },
-        'h91': { cats: ['bpc', 'educacao', 'transporte', 'trabalho', 'fgts'], weight: 4 },
-        surdez: { cats: ['bpc', 'educacao', 'transporte', 'trabalho', 'fgts'], weight: 5 },
-        surdo: { cats: ['bpc', 'educacao', 'transporte', 'trabalho', 'fgts'], weight: 4 },
-        'deficiência auditiva': { cats: ['bpc', 'educacao', 'transporte', 'trabalho', 'fgts'], weight: 4 },
-        'deficiencia auditiva': { cats: ['bpc', 'educacao', 'transporte', 'trabalho', 'fgts'], weight: 4 },
-        surdocegueira: { cats: ['bpc', 'educacao', 'transporte', 'trabalho', 'fgts'], weight: 5 },
-        libras: { cats: ['educacao', 'trabalho'], weight: 3 },
-        'aparelho auditivo': { cats: ['fgts', 'sus_terapias', 'plano_saude'], weight: 4 },
-        'implante coclear': { cats: ['sus_terapias', 'plano_saude', 'fgts'], weight: 4 },
-
-        // --- Amputação / Ausência de membros (CID Z89, Q71-Q73) ---
-        'z89': { cats: ['bpc', 'transporte', 'trabalho', 'fgts', 'sus_terapias'], weight: 4 },
-        'q71': { cats: ['bpc', 'transporte', 'trabalho', 'sus_terapias'], weight: 4 },
-        'q72': { cats: ['bpc', 'transporte', 'trabalho', 'sus_terapias'], weight: 4 },
-        'q73': { cats: ['bpc', 'transporte', 'trabalho', 'sus_terapias'], weight: 4 },
-        amputação: { cats: ['bpc', 'transporte', 'trabalho', 'fgts', 'sus_terapias'], weight: 5 },
-        amputacao: { cats: ['bpc', 'transporte', 'trabalho', 'fgts', 'sus_terapias'], weight: 5 },
-        'ausência de membro': { cats: ['bpc', 'transporte', 'trabalho', 'fgts'], weight: 5 },
-        'ausencia de membro': { cats: ['bpc', 'transporte', 'trabalho', 'fgts'], weight: 5 },
-        prótese: { cats: ['fgts', 'sus_terapias'], weight: 3 },
-        protese: { cats: ['fgts', 'sus_terapias'], weight: 3 },
-        órtese: { cats: ['fgts', 'sus_terapias'], weight: 3 },
-        ortese: { cats: ['fgts', 'sus_terapias'], weight: 3 },
-
-        // --- Alzheimer / Demência (CID G30, F00-F03) ---
-        'g30': { cats: ['bpc', 'fgts', 'sus_terapias'], weight: 5 },
-        'f00': { cats: ['bpc', 'fgts', 'sus_terapias'], weight: 4 },
-        'f01': { cats: ['bpc', 'fgts', 'sus_terapias'], weight: 4 },
-        'f02': { cats: ['bpc', 'fgts', 'sus_terapias'], weight: 4 },
-        'f03': { cats: ['bpc', 'fgts', 'sus_terapias'], weight: 4 },
-        alzheimer: { cats: ['bpc', 'fgts', 'sus_terapias'], weight: 5 },
-        demência: { cats: ['bpc', 'fgts', 'sus_terapias'], weight: 4 },
-        demencia: { cats: ['bpc', 'fgts', 'sus_terapias'], weight: 4 },
-        neurodegenerativa: { cats: ['bpc', 'fgts', 'sus_terapias'], weight: 3 },
-
-        // --- Esclerose Múltipla / ELA (CID G35, G12.2) ---
-        'g35': { cats: ['bpc', 'transporte', 'trabalho', 'fgts', 'sus_terapias'], weight: 5 },
-        'g12': { cats: ['bpc', 'transporte', 'fgts', 'sus_terapias'], weight: 4 },
-        'esclerose múltipla': { cats: ['bpc', 'transporte', 'trabalho', 'fgts', 'sus_terapias'], weight: 5 },
-        'esclerose multipla': { cats: ['bpc', 'transporte', 'trabalho', 'fgts', 'sus_terapias'], weight: 5 },
-        'esclerose lateral amiotrófica': { cats: ['bpc', 'transporte', 'fgts', 'sus_terapias'], weight: 5 },
-        'esclerose lateral amiotrofica': { cats: ['bpc', 'transporte', 'fgts', 'sus_terapias'], weight: 5 },
-
-        // --- Parkinson (CID G20) ---
-        'g20': { cats: ['bpc', 'transporte', 'fgts', 'sus_terapias'], weight: 5 },
-        parkinson: { cats: ['bpc', 'transporte', 'fgts', 'sus_terapias'], weight: 5 },
-
-        // --- Epilepsia (CID G40) ---
-        'g40': { cats: ['bpc', 'sus_terapias'], weight: 4 },
-        epilepsia: { cats: ['bpc', 'sus_terapias'], weight: 4 },
-        convulsão: { cats: ['bpc', 'sus_terapias'], weight: 3 },
-        convulsao: { cats: ['bpc', 'sus_terapias'], weight: 3 },
-
-        // --- AVC / Sequelas (CID I69) ---
-        'i69': { cats: ['bpc', 'transporte', 'fgts', 'sus_terapias'], weight: 4 },
-        avc: { cats: ['bpc', 'transporte', 'fgts', 'sus_terapias'], weight: 4 },
-        'acidente vascular': { cats: ['bpc', 'transporte', 'fgts', 'sus_terapias'], weight: 4 },
-
-        // --- Doença Renal Crônica (CID N18) ---
-        'n18': { cats: ['bpc', 'transporte', 'fgts', 'sus_terapias'], weight: 4 },
-        'doença renal': { cats: ['bpc', 'transporte', 'fgts', 'sus_terapias'], weight: 4 },
-        'doenca renal': { cats: ['bpc', 'transporte', 'fgts', 'sus_terapias'], weight: 4 },
-        hemodiálise: { cats: ['bpc', 'transporte', 'sus_terapias'], weight: 4 },
-        hemodialise: { cats: ['bpc', 'transporte', 'sus_terapias'], weight: 4 },
-
-        // --- Fibrose Cística (CID E84) ---
-        'e84': { cats: ['bpc', 'sus_terapias', 'plano_saude'], weight: 4 },
-        'fibrose cística': { cats: ['bpc', 'sus_terapias', 'plano_saude'], weight: 5 },
-        'fibrose cistica': { cats: ['bpc', 'sus_terapias', 'plano_saude'], weight: 5 },
-
-        // --- Mielomeningocele / Espinha Bífida (CID Q05) ---
-        'q05': { cats: ['bpc', 'transporte', 'sus_terapias'], weight: 4 },
-        mielomeningocele: { cats: ['bpc', 'transporte', 'sus_terapias'], weight: 5 },
-        'espinha bífida': { cats: ['bpc', 'transporte', 'sus_terapias'], weight: 5 },
-        'espinha bifida': { cats: ['bpc', 'transporte', 'sus_terapias'], weight: 5 },
-
-        // --- Distrofia Muscular (CID G71) ---
-        'g71': { cats: ['bpc', 'transporte', 'fgts', 'sus_terapias'], weight: 4 },
-        'distrofia muscular': { cats: ['bpc', 'transporte', 'fgts', 'sus_terapias'], weight: 5 },
-        duchenne: { cats: ['bpc', 'transporte', 'fgts', 'sus_terapias'], weight: 5 },
-
-        // --- Microcefalia (CID Q02) ---
-        'q02': { cats: ['bpc', 'educacao', 'sus_terapias'], weight: 4 },
-        microcefalia: { cats: ['bpc', 'educacao', 'sus_terapias'], weight: 5 },
-
-        // --- Equipamentos de acessibilidade / Tecnologia Assistiva ---
-        'cadeira de rodas': { cats: ['bpc', 'transporte', 'moradia', 'fgts', 'sus_terapias'], weight: 3 },
-        muleta: { cats: ['transporte', 'moradia', 'sus_terapias'], weight: 3 },
-        andador: { cats: ['transporte', 'moradia', 'sus_terapias'], weight: 3 },
-        'tecnologia assistiva': { cats: ['educacao', 'trabalho', 'fgts', 'sus_terapias'], weight: 4 },
-
-        // --- Legislação por número (Leis Federais) ---
-        'lei 13.146': { cats: ['bpc', 'educacao', 'transporte', 'trabalho', 'moradia', 'plano_saude', 'sus_terapias', 'fgts'], weight: 5 },
-        'lei 12.764': { cats: ['ciptea', 'educacao', 'plano_saude', 'sus_terapias'], weight: 5 },
-        'lei 13.977': { cats: ['ciptea'], weight: 5 },
-        'lei 8.899': { cats: ['transporte'], weight: 5 },
-        'lei 8.989': { cats: ['transporte'], weight: 5 },
-        'lei 8.213': { cats: ['trabalho'], weight: 5 },
-        'lei 8.036': { cats: ['fgts'], weight: 5 },
-        'lei 10.048': { cats: ['transporte', 'moradia'], weight: 4 },
-        'lei 9.656': { cats: ['plano_saude'], weight: 4 },
-        'lei 8.069': { cats: ['educacao'], weight: 3 },
-        'lei 14.176': { cats: ['bpc'], weight: 4 },
-        'lei 15.131': { cats: ['ciptea', 'educacao', 'sus_terapias'], weight: 4 },
-        'decreto 3.298': { cats: ['bpc', 'transporte', 'trabalho'], weight: 4 },
-        'decreto 6.214': { cats: ['bpc'], weight: 4 },
-        lbi: { cats: ['bpc', 'educacao', 'transporte', 'trabalho', 'moradia'], weight: 4 },
-        'estatuto da pessoa com deficiência': { cats: ['bpc', 'educacao', 'transporte', 'trabalho', 'moradia'], weight: 4 },
-        'estatuto da pessoa com deficiencia': { cats: ['bpc', 'educacao', 'transporte', 'trabalho', 'moradia'], weight: 4 },
-
-        // --- Termos administrativos / Serviços ---
-        saúde: { cats: ['sus_terapias', 'plano_saude'], weight: 2 },
-        saude: { cats: ['sus_terapias', 'plano_saude'], weight: 2 },
-        educação: { cats: ['educacao'], weight: 2 },
-        educacao: { cats: ['educacao'], weight: 2 },
-        nutrição: { cats: ['sus_terapias', 'plano_saude'], weight: 3 },
-        nutricao: { cats: ['sus_terapias', 'plano_saude'], weight: 3 },
-        'terapia nutricional': { cats: ['sus_terapias', 'plano_saude'], weight: 4 },
-        'previdência social': { cats: ['bpc'], weight: 3 },
-        'previdencia social': { cats: ['bpc'], weight: 3 },
-        'assistência social': { cats: ['bpc'], weight: 3 },
-        'assistencia social': { cats: ['bpc'], weight: 3 },
-        internação: { cats: ['sus_terapias', 'plano_saude'], weight: 3 },
-        internacao: { cats: ['sus_terapias', 'plano_saude'], weight: 3 },
-        acessibilidade: { cats: ['moradia', 'transporte', 'educacao'], weight: 3 },
-        'atendimento prioritário': { cats: ['ciptea', 'transporte'], weight: 3 },
-        'atendimento prioritario': { cats: ['ciptea', 'transporte'], weight: 3 },
-        prioridade: { cats: ['ciptea', 'transporte'], weight: 2 },
-        curatela: { cats: ['bpc'], weight: 3 },
-        interdição: { cats: ['bpc'], weight: 3 },
-        interdicao: { cats: ['bpc'], weight: 3 },
-        'aposentadoria por invalidez': { cats: ['bpc', 'fgts'], weight: 4 },
-
-        // --- TEA: Termos clínicos complementares ---
-        'interação social': { cats: ['ciptea', 'educacao'], weight: 3 },
-        'interacao social': { cats: ['ciptea', 'educacao'], weight: 3 },
-        'comportamento restritivo': { cats: ['ciptea'], weight: 3 },
-        'comportamento repetitivo': { cats: ['ciptea'], weight: 3 },
-        neurodivergente: { cats: ['ciptea', 'educacao', 'plano_saude'], weight: 3 },
-        'nível de suporte': { cats: ['ciptea'], weight: 3 },
-        'nivel de suporte': { cats: ['ciptea'], weight: 3 },
-        'acompanhante terapêutico': { cats: ['educacao', 'plano_saude', 'sus_terapias'], weight: 4 },
-        'acompanhante terapeutico': { cats: ['educacao', 'plano_saude', 'sus_terapias'], weight: 4 },
-
-        // --- Farmacêutica / Medicamentos ---
-        'alto custo': { cats: ['sus_terapias', 'plano_saude'], weight: 3 },
-        'uso contínuo': { cats: ['sus_terapias', 'plano_saude'], weight: 2 },
-        'uso continuo': { cats: ['sus_terapias', 'plano_saude'], weight: 2 },
-        rename: { cats: ['sus_terapias'], weight: 3 },
-        'componente especializado': { cats: ['sus_terapias'], weight: 4 },
-
-        // --- Deficiência Física geral (Decreto 3.298/1999, art.4º) ---
-        'deficiência física': { cats: ['bpc', 'transporte', 'trabalho', 'fgts', 'moradia'], weight: 4 },
-        'deficiencia fisica': { cats: ['bpc', 'transporte', 'trabalho', 'fgts', 'moradia'], weight: 4 },
-        nanismo: { cats: ['bpc', 'transporte', 'trabalho'], weight: 4 },
-        ostomia: { cats: ['bpc', 'transporte', 'trabalho', 'sus_terapias'], weight: 4 },
-        ostomizado: { cats: ['bpc', 'transporte', 'trabalho', 'sus_terapias'], weight: 4 },
-    };
+    /**
+     * Regex para detectar número de CRM em laudos médicos.
+     * Formatos: CRM/SP 123456, CRM-12345/SP, CRM 12345 SP, CRM-SP 12345
+     */
+    function crmRegex() { return /\bCRM[\s/\-]*([A-Z]{2})?[\s/\-]*(\d{4,7})[\s/\-]*([A-Z]{2})?\b/gi; }
 
     /**
      * Faz matching do texto extraído contra as categorias do JSON.
-     * Combina: (1) KEYWORD_MAP, (2) category tags, (3) category requisitos/docs.
-     * Retorna array ordenado por score.
+     * Combina: (0) CID genérico, (1) KEYWORD_MAP, (2) category tags, (3) requisitos.
+     *
+     * Matching inteligente:
+     * - Siglas curtas (ABA, TEA, CID, SUS…) só casam em MAIÚSCULAS no texto original,
+     *   evitando falsos positivos com palavras comuns em português.
+     * - Códigos CID-10/CID-11 são reconhecidos genericamente mesmo fora do KEYWORD_MAP.
+     * - Termos longos e frases usam word-boundary case-insensitive (normalizado).
+     *
+     * @param {string} text — texto extraído dos PDFs
+     * @param {string} fileName — nome(s) do(s) arquivo(s)
+     * @returns {Array} resultados ordenados por score
      */
     function matchRights(text, fileName) {
         if (!direitosData) return [];
 
-        const normalizedText = normalizeText(text + ' ' + fileName);
+        const rawText = text + ' ' + fileName;           // preserva maiúsculas/minúsculas
+        const normalizedText = normalizeText(rawText);    // minúsculo sem acentos
         const scores = {};
 
         // Initialize scores
@@ -1477,16 +1436,76 @@
             scores[cat.id] = { score: 0, matches: new Set() };
         });
 
-        // Pass 1: KEYWORD_MAP (highest signal)
+        // ── Pass 0: Reconhecimento genérico de códigos CID ──
+        // Captura QUALQUER código CID-10 (F84, G80.1…) ou CID-11 (6A02…)
+        // que não esteja explicitamente no KEYWORD_MAP.
+        // Regex criado fresh a cada chamada para evitar lastIndex compartilhado.
+        const cidMatched = new Set();
+        for (const cidRegex of [cidGenericRegex(), cid11GenericRegex(), cid11TwoLetterRegex()]) {
+            let m;
+            while ((m = cidRegex.exec(rawText)) !== null) {
+                const code = m[1];
+                const prefix = code.substring(0, 3).toLowerCase();
+                // Se já coberto pelo KEYWORD_MAP, pular (Pass 1 cuida)
+                if (KEYWORD_MAP[prefix] || KEYWORD_MAP[code.toLowerCase()]) continue;
+                if (cidMatched.has(code)) continue;
+                cidMatched.add(code);
+
+                // Mapear pela letra inicial do CID
+                const letter = code.charAt(0);
+                const cats = CID_RANGE_MAP[letter] || ['bpc', 'sus_terapias'];
+                cats.forEach((catId) => {
+                    if (scores[catId]) {
+                        scores[catId].score += 3;
+                        scores[catId].matches.add(`CID ${code}`);
+                    }
+                });
+            }
+        }
+
+        // ── Pass 0b: Detecção de CRM (Conselho Regional de Medicina) ──
+        // Detecta números CRM em laudos médicos, indicando documento médico válido.
+        const crmMatch = crmRegex().exec(rawText);
+        if (crmMatch) {
+            const uf = crmMatch[1] || crmMatch[3] || '';
+            const num = crmMatch[2];
+            const crmLabel = uf ? `CRM/${uf} ${num}` : `CRM ${num}`;
+            // CRM presente indica laudo médico — boost leve em categorias que exigem laudo
+            ['bpc', 'ciptea', 'plano_saude', 'sus_terapias', 'transporte', 'trabalho', 'fgts'].forEach((catId) => {
+                if (scores[catId]) {
+                    scores[catId].score += 2;
+                    scores[catId].matches.add(crmLabel);
+                }
+            });
+        }
+
+        // ── Pass 1: KEYWORD_MAP (highest signal) ──
+        // Dedup: se variantes acentuadas normalizam à mesma chave, só contar uma vez
+        const seenNormalized = new Set();
         for (const [keyword, { cats, weight }] of Object.entries(KEYWORD_MAP)) {
             const normalizedKey = normalizeText(keyword);
-            const regex = new RegExp('\\b' + escapeRegex(normalizedKey) + '\\b', 'g');
-            const matchCount = (normalizedText.match(regex) || []).length;
+            if (seenNormalized.has(normalizedKey)) continue;
+            seenNormalized.add(normalizedKey);
+            let matchCount;
+
+            if (UPPERCASE_ONLY_TERMS.has(normalizedKey)) {
+                // Sigla/código: só casa em MAIÚSCULAS no texto original.
+                // Usa (?:^|[\s,.;:()\[\]/\-]) em vez de \b para suportar
+                // texto com acentos (\b é ASCII-only) — cross-browser safe.
+                const upperKey = keyword.toUpperCase();
+                const safeB = '(?:^|[\\s,.;:()\\[\\]/\\-])';
+                const safeA = '(?=$|[\\s,.;:()\\[\\]/\\-])';
+                const regex = new RegExp(safeB + escapeRegex(upperKey) + safeA, 'g');
+                matchCount = (rawText.match(regex) || []).length;
+            } else {
+                // Termo regular: word-boundary no texto normalizado
+                const regex = new RegExp('\\b' + escapeRegex(normalizedKey) + '\\b', 'g');
+                matchCount = (normalizedText.match(regex) || []).length;
+            }
 
             if (matchCount > 0) {
                 cats.forEach((catId) => {
                     if (scores[catId]) {
-                        // Diminishing returns: first occurrence counts most
                         scores[catId].score += weight * Math.min(matchCount, 3);
                         scores[catId].matches.add(keyword);
                     }
@@ -1494,22 +1513,46 @@
             }
         }
 
-        // Pass 2: Match against category tags
+        // ── Pass 2: Match against category tags ──
         direitosData.forEach((cat) => {
             (cat.tags || []).forEach((tag) => {
                 const normalizedTag = normalizeText(tag);
-                if (normalizedText.includes(normalizedTag)) {
+
+                // Respeitar UPPERCASE_ONLY_TERMS também em tags
+                if (UPPERCASE_ONLY_TERMS.has(normalizedTag)) {
+                    const upperTag = tag.toUpperCase();
+                    const safeB = '(?:^|[\\s,.;:()\\[\\]/\\-])';
+                    const safeA = '(?=$|[\\s,.;:()\\[\\]/\\-])';
+                    const regex = new RegExp(safeB + escapeRegex(upperTag) + safeA);
+                    if (regex.test(rawText)) {
+                        scores[cat.id].score += 2;
+                        scores[cat.id].matches.add(tag);
+                    }
+                    return;
+                }
+
+                // Usar word boundary para tags curtas, includes para longas
+                if (normalizedTag.length <= 5) {
+                    const tagRegex = new RegExp('\\b' + escapeRegex(normalizedTag) + '\\b');
+                    if (tagRegex.test(normalizedText)) {
+                        scores[cat.id].score += 2;
+                        scores[cat.id].matches.add(tag);
+                    }
+                } else if (normalizedText.includes(normalizedTag)) {
                     scores[cat.id].score += 2;
                     scores[cat.id].matches.add(tag);
                 }
             });
         });
 
-        // Pass 3: Match against category requisitos
+        // ── Pass 3: Match against category requisitos ──
         direitosData.forEach((cat) => {
             (cat.requisitos || []).forEach((req) => {
                 const words = normalizeText(req).split(/\s+/).filter((w) => w.length > 4);
-                const matchedWords = words.filter((w) => normalizedText.includes(w));
+                const matchedWords = words.filter((w) => {
+                    const wRegex = new RegExp('\\b' + escapeRegex(w) + '\\b');
+                    return wRegex.test(normalizedText);
+                });
                 if (matchedWords.length >= 2) {
                     scores[cat.id].score += 1;
                 }
@@ -1589,7 +1632,7 @@
                     <p class="analysis-match-resumo">${escapeHtml(category.resumo)}</p>
                     ${matches.length ? `
                     <div class="analysis-match-keywords">
-                        <span class="kw-label">Termos encontrados:</span>
+                        <span class="kw-label"><strong>Termos encontrados:</strong></span>
                         ${matches.slice(0, 8).map((m) => `<span class="kw-tag">${escapeHtml(m)}</span>`).join('')}
                     </div>` : ''}
                     <div class="analysis-match-actions">
@@ -1885,6 +1928,16 @@
         }
     }
 
+    /**
+     * Called after loadData() so jsonMeta is available.
+     */
+    function setupFooterVersion() {
+        if (dom.footerVersion && jsonMeta && jsonMeta.versao) {
+            dom.footerVersion.textContent = `v${jsonMeta.versao}`;
+            dom.footerVersion.title = `Versão dos dados: ${jsonMeta.versao}`;
+        }
+    }
+
     // ========================
     // Local Storage Helpers
     // ========================
@@ -1932,19 +1985,27 @@
             const parsed = new URL(url, window.location.origin);
             if (parsed.origin === window.location.origin) return true;
             const host = parsed.hostname;
-            const TRUSTED = ['.gov.br', '.planalto.gov.br', '.inss.gov.br', '.mds.gov.br',
-                '.apaebrasil.org.br', '.ama.org.br', 'cdnjs.cloudflare.com'];
+            const TRUSTED = [
+                '.gov.br', '.planalto.gov.br', '.inss.gov.br', '.mds.gov.br',
+                '.apaebrasil.org.br', '.ama.org.br', 'cdnjs.cloudflare.com',
+                '.oab.org.br', '.cnmp.mp.br', '.anadep.org.br', '.mp.br',
+                '.ijc.org.br', '.procon.sp.gov.br', '.autismbrasil.org',
+                '.abntcatalogo.com.br', '.caixa.gov.br',
+                '.cfm.org.br', '.cfp.org.br', '.who.int',
+            ];
             return TRUSTED.some(t => host === t.slice(1) || host.endsWith(t));
         } catch {
             return false;
         }
     }
 
+    // Reusable element for escapeHtml — avoids creating a new DOM node per call
+    const _escapeDiv = document.createElement('div');
+
     function escapeHtml(str) {
         if (!str) return '';
-        const div = document.createElement('div');
-        div.textContent = str;
-        return div.innerHTML;
+        _escapeDiv.textContent = str;
+        return _escapeDiv.innerHTML;
     }
 
     function escapeRegex(str) {

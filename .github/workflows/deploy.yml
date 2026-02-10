@@ -16,6 +16,10 @@ on:
       - "js/**"
       - "data/**"
       - "images/**"
+      - "robots.txt"
+      - "sitemap.xml"
+      - "sw.js"
+      - "manifest.json"
       - "codereview/**"
       - ".github/workflows/deploy.yml"
 
@@ -78,6 +82,12 @@ jobs:
               "tenantId": "${{ secrets.ARM_TENANT_ID }}"
             }
 
+      - name: Atualizar sitemap.xml lastmod (SEO)
+        run: |
+          TODAY=$(date -u +%Y-%m-%d)
+          sed -i "s|<lastmod>[0-9]\{4\}-[0-9]\{2\}-[0-9]\{2\}</lastmod>|<lastmod>${TODAY}</lastmod>|" sitemap.xml
+          echo "✅ sitemap.xml lastmod → ${TODAY}"
+
       - name: Minificar JS e CSS
         run: |
           npm install --no-save terser clean-css-cli
@@ -103,6 +113,7 @@ jobs:
         run: |
           zip -r site.zip \
             index.html server.js package.json package-lock.json \
+            robots.txt sitemap.xml sw.js manifest.json \
             node_modules/ css/ js/ data/ images/ \
             -x "*.bak" "*.swa.bak" "__pycache__/*" \
             "terraform/*" "codereview/*" ".github/*" "tests/*" "docs/*" \

@@ -1,7 +1,7 @@
 {
-    "versao": "1.0.1",
-    "ultima_atualizacao": "2026-02-09",
-    "proxima_revisao": "2026-02-16",
+    "versao": "1.1.0",
+    "ultima_atualizacao": "2026-02-10",
+    "proxima_revisao": "2026-02-17",
     "aviso": "Informações compiladas de fontes oficiais do governo brasileiro (gov.br). Podem estar desatualizadas. Verifique sempre as fontes originais.",
     "fontes": [
         {
@@ -158,7 +158,7 @@
         {
             "nome": "Resolução ANS nº 539/2022 — Rol de Procedimentos",
             "tipo": "normativa",
-            "url": "https://www.gov.br/ans/pt-br",
+            "url": "https://www.gov.br/ans/pt-br/assuntos/consumidor/o-que-o-seu-plano-de-saude-deve-cobrir-1",
             "orgao": "ANS",
             "consultado_em": "2026-02-09"
         },
@@ -191,6 +191,44 @@
             "artigos_referenciados": [
                 "Art. 3º, § 1º"
             ]
+        },
+        {
+            "nome": "Lei 15.131/2025 — Terapia Nutricional para TEA",
+            "tipo": "legislacao",
+            "url": "https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2025/lei/L15131.htm",
+            "orgao": "Presidência da República",
+            "consultado_em": "2026-02-10",
+            "artigos_referenciados": [
+                "Art. 1º–3º"
+            ]
+        },
+        {
+            "nome": "DATASUS — Departamento de Informática do SUS",
+            "tipo": "servico",
+            "url": "https://datasus.saude.gov.br/",
+            "orgao": "Ministério da Saúde",
+            "consultado_em": "2026-02-10"
+        },
+        {
+            "nome": "OMS — Classificação Internacional de Doenças CID-11 (Português)",
+            "tipo": "servico",
+            "url": "https://icd.who.int/browse/2024-01/mms/pt",
+            "orgao": "Organização Mundial da Saúde (OMS/WHO)",
+            "consultado_em": "2026-02-10"
+        },
+        {
+            "nome": "CNES — Cadastro Nacional de Estabelecimentos de Saúde e Profissionais",
+            "tipo": "servico",
+            "url": "https://cnes.datasus.gov.br/",
+            "orgao": "Ministério da Saúde / DATASUS",
+            "consultado_em": "2026-02-10"
+        },
+        {
+            "nome": "Saúde de A a Z — Ministério da Saúde",
+            "tipo": "servico",
+            "url": "https://www.gov.br/saude/pt-br/assuntos/saude-de-a-a-z",
+            "orgao": "Ministério da Saúde",
+            "consultado_em": "2026-02-10"
         }
     ],
     "documentos_mestre": [
@@ -566,6 +604,273 @@
                 "plano_saude",
                 "sus_terapias"
             ]
+        },
+        {
+            "id": "cfm",
+            "nome": "CFM — Conselho Federal de Medicina (Busca Médicos / CRM)",
+            "tipo": "profissional",
+            "descricao": "Autarquia federal responsável pela fiscalização do exercício médico no Brasil. Permite verificar se um médico está com CRM ativo, consultar especialidades registradas (RQE) e buscar profissionais por nome, UF ou número de CRM. Exemplo: para validar 'CRM 116481 SP', busque no site pelo número.",
+            "servicos": [
+                "Verificação de CRM (ativo/inativo/suspenso)",
+                "Busca por médicos (nome, UF, CRM, especialidade)",
+                "Consulta de especialidades e RQE (Registro de Qualificação de Especialista)",
+                "Validação de prescrição eletrônica"
+            ],
+            "url": "https://portal.cfm.org.br/busca-medicos/",
+            "como_acessar": "Acesse o site e busque pelo número de CRM, nome do médico ou UF. Serviço gratuito e aberto ao público. Ex.: buscar CRM 116481 em SP para verificar psiquiatra.",
+            "categorias": [
+                "bpc",
+                "ciptea",
+                "plano_saude",
+                "sus_terapias"
+            ]
+        },
+        {
+            "id": "cfp",
+            "nome": "CFP — Conselho Federal de Psicologia (Cadastro Nacional de Psicólogos)",
+            "tipo": "profissional",
+            "descricao": "Autarquia federal que regulamenta a profissão de psicólogo no Brasil. Mantém o cadastro nacional para verificar se um profissional está registrado e habilitado a exercer a profissão (CRP). Fundamental para validar laudos psicológicos.",
+            "servicos": [
+                "Verificação de registro de psicólogo (CRP)",
+                "Busca por nome e estado",
+                "Consulta de pessoa jurídica (clínicas de psicologia)",
+                "Verificação de habilitação profissional"
+            ],
+            "url": "https://cadastro.cfp.org.br/",
+            "como_acessar": "Acesse o cadastro nacional e busque pelo nome do psicólogo ou informe o estado. Serviço gratuito e aberto ao público.",
+            "categorias": [
+                "sus_terapias",
+                "plano_saude",
+                "educacao",
+                "ciptea"
+            ]
+        },
+        {
+            "id": "coffito",
+            "nome": "COFFITO — Conselho Federal de Fisioterapia e Terapia Ocupacional",
+            "tipo": "profissional",
+            "descricao": "Autarquia federal que regulamenta as profissões de fisioterapeuta e terapeuta ocupacional. Permite verificar se o profissional está registrado (CREFITO) — essencial para laudos de reabilitação, terapia ocupacional e fisioterapia.",
+            "servicos": [
+                "Verificação de registro de fisioterapeuta (CREFITO)",
+                "Verificação de registro de terapeuta ocupacional",
+                "Consulta de habilitação profissional",
+                "Informações sobre direitos do paciente"
+            ],
+            "url": "https://www.coffito.gov.br/nsite/",
+            "como_acessar": "Acesse o site do COFFITO ou o CREFITO da sua região para consultar profissionais registrados.",
+            "categorias": [
+                "sus_terapias",
+                "plano_saude"
+            ]
+        }
+    ],
+    "classificacao_deficiencia": [
+        {
+            "tipo": "Autismo (TEA)",
+            "cid10": "F84.0 a F84.9",
+            "cid11": "6A02",
+            "criterio": "Considerado pessoa com deficiência para todos os efeitos legais, conforme a Lei 12.764/2012.",
+            "detalhes": "Na CID-11, o código 6A02 unifica todos (Asperger, Autismo Atípico, etc.)."
+        },
+        {
+            "tipo": "Deficiência Intelectual",
+            "cid10": "F70 a F79",
+            "cid11": "6A00",
+            "criterio": "Funcionamento intelectual significativamente inferior à média, com manifestação antes dos 18 anos e limitações em duas ou mais áreas de habilidades adaptativas.",
+            "detalhes": "Retardo mental (CID-10) passou a ser Transtorno do Desenv. Intelectual (CID-11)."
+        },
+        {
+            "tipo": "Deficiência Visual",
+            "cid10": "H54",
+            "cid11": "9B50",
+            "criterio": "Cegueira; Baixa Visão (entre 0,3 e 0,05 no melhor olho com correção); Campo visual igual ou menor que 20º; ou Visão Monocular.",
+            "detalhes": "Inclui cegueira (H54.0) e baixa visão. Visão Monocular é lei (Lei 14.126/21)."
+        },
+        {
+            "tipo": "Deficiência Auditiva",
+            "cid10": "H90 a H91",
+            "cid11": "AB00 a AB0Z",
+            "criterio": "Perda bilateral, parcial ou total, de 41 decibéis (dB) ou mais, aferida por audiograma nas frequências de 500Hz, 1.000Hz, 2.000Hz e 3.000Hz.",
+            "detalhes": "Surdez unilateral ainda tem restrições em algumas leis."
+        },
+        {
+            "tipo": "Deficiência Física (Paralisias)",
+            "cid10": "G80 a G83",
+            "cid11": "8D20",
+            "criterio": "Alteração completa ou parcial de um ou mais segmentos do corpo humano, acarretando o comprometimento da função física.",
+            "detalhes": "Paraplegia (G82.2), Tetraplegia (G82.5), Hemiplegia (G81)."
+        },
+        {
+            "tipo": "Deficiência Física (Amputação)",
+            "cid10": "S78, S88, Z89, Q71-Q73",
+            "cid11": "MA10",
+            "criterio": "Amputação de membros ou ausência congênita (malformação).",
+            "detalhes": "Inclui amputação traumática e agenesia congênita de membros."
+        },
+        {
+            "tipo": "Deficiência Física (Nanismo)",
+            "cid10": "E34.3 / Q77",
+            "cid11": "5B51",
+            "criterio": "Baixa estatura acentuada (geralmente abaixo de 1,45m para homens e 1,40m para mulheres).",
+            "detalhes": "Acondroplasia é a causa mais comum. Reconhecido como deficiência física pelo Decreto 3.298/1999."
+        },
+        {
+            "tipo": "Deficiência Mental / Psicossocial",
+            "cid10": "F20, F31",
+            "cid11": "6A20, 6A60",
+            "criterio": "Conforme a Convenção da ONU: impedimentos de longo prazo de natureza mental que impossibilitem a participação plena e efetiva na sociedade.",
+            "detalhes": "Esquizofrenia (F20/6A20), Transtorno Bipolar grave (F31/6A60) — quando geram barreiras sociais permanentes."
+        },
+        {
+            "tipo": "Deficiência Múltipla",
+            "cid10": "Combinação",
+            "cid11": "Combinação",
+            "criterio": "Associação de duas ou mais deficiências mencionadas acima.",
+            "detalhes": "Combinação dos CIDs correspondentes a cada tipo."
+        },
+        {
+            "tipo": "Reabilitados (INSS)",
+            "cid10": "Variados",
+            "cid11": "Variados",
+            "criterio": "Pessoas que passaram por programa de reabilitação profissional do INSS e possuem o Certificado de Reabilitação Profissional.",
+            "detalhes": "CID conforme o certificado. Contam para a cota de PcD nas empresas (Lei 8.213/1991, art. 93)."
+        }
+    ],
+    "orgaos_estaduais": [
+        {
+            "uf": "AC",
+            "nome": "Secretaria de Estado de Saúde (SESACRE)",
+            "url": "https://saude.ac.gov.br"
+        },
+        {
+            "uf": "AL",
+            "nome": "Sec. de Estado da Cidadania e Pessoa com Deficiência (SECDEF)",
+            "url": "https://secdef.al.gov.br"
+        },
+        {
+            "uf": "AM",
+            "nome": "Sec. de Estado de Justiça, Direitos Humanos e Cidadania (SEJUSC)",
+            "url": "https://sejusc.am.gov.br"
+        },
+        {
+            "uf": "AP",
+            "nome": "Sec. de Estado de Assistência Social (SEAS)",
+            "url": "https://seas.portal.ap.gov.br"
+        },
+        {
+            "uf": "BA",
+            "nome": "Sec. de Justiça e Direitos Humanos (SJDH)",
+            "url": "https://www.ba.gov.br/justica/"
+        },
+        {
+            "uf": "CE",
+            "nome": "Secretaria da Proteção Social (SPS)",
+            "url": "https://www.sps.ce.gov.br"
+        },
+        {
+            "uf": "DF",
+            "nome": "Secretaria de Pessoa com Deficiência (SEPD)",
+            "url": "https://sepd.df.gov.br"
+        },
+        {
+            "uf": "ES",
+            "nome": "Secretaria de Direitos Humanos (SEDH)",
+            "url": "https://sedh.es.gov.br"
+        },
+        {
+            "uf": "GO",
+            "nome": "Secretaria de Desenvolvimento Social (SEDS)",
+            "url": "https://social.go.gov.br"
+        },
+        {
+            "uf": "MA",
+            "nome": "Sec. de Estado de Direitos Humanos e Participação Popular (SEDIHPOP)",
+            "url": "https://sedihpop.ma.gov.br"
+        },
+        {
+            "uf": "MG",
+            "nome": "Secretaria de Desenvolvimento Social (SEDESE)",
+            "url": "https://social.mg.gov.br"
+        },
+        {
+            "uf": "MS",
+            "nome": "Subsecretaria de Políticas Públicas para PcD (SETESC)",
+            "url": "https://www.setesc.ms.gov.br"
+        },
+        {
+            "uf": "MT",
+            "nome": "Secretaria de Assistência Social e Cidadania (SETASC)",
+            "url": "https://www.setasc.mt.gov.br"
+        },
+        {
+            "uf": "PA",
+            "nome": "Secretaria de Estado de Saúde Pública (SESPA)",
+            "url": "https://www.saude.pa.gov.br"
+        },
+        {
+            "uf": "PB",
+            "nome": "Secretaria de Estado do Desenvolvimento Humano (SEDH)",
+            "url": "https://paraiba.pb.gov.br"
+        },
+        {
+            "uf": "PE",
+            "nome": "Sec. de Desenvolvimento Social, Criança, Juventude e PcD (SDSCJ)",
+            "url": "https://www.sdscj.pe.gov.br"
+        },
+        {
+            "uf": "PI",
+            "nome": "Secretaria de Estado para Inclusão da Pessoa com Deficiência (SEID)",
+            "url": "https://www.seid.pi.gov.br"
+        },
+        {
+            "uf": "PR",
+            "nome": "Secretaria de Desenvolvimento Social e Família (SEDEF)",
+            "url": "https://sedef.pr.gov.br"
+        },
+        {
+            "uf": "RJ",
+            "nome": "Secretaria de Estado de Desenvolvimento Social e Direitos Humanos",
+            "url": "https://www.rj.gov.br/secretaria/SecretariaDeDireitosHumanos"
+        },
+        {
+            "uf": "RN",
+            "nome": "Secretaria de Mulheres, Juventude e Direitos Humanos (SEMJIDH)",
+            "url": "https://semjidh.rn.gov.br"
+        },
+        {
+            "uf": "RO",
+            "nome": "Sec. de Estado da Assistência e do Desenvolvimento Social (SEAS)",
+            "url": "https://rondonia.ro.gov.br/seas"
+        },
+        {
+            "uf": "RR",
+            "nome": "Secretaria de Trabalho e Bem-Estar Social (SETRABES)",
+            "url": "https://setrabes.rr.gov.br"
+        },
+        {
+            "uf": "RS",
+            "nome": "FADERS — Fundação de Articulação e Des. de Políticas Públicas",
+            "url": "https://faders.rs.gov.br"
+        },
+        {
+            "uf": "SC",
+            "nome": "Secretaria de Estado da Assistência Social, Mulher e Família",
+            "url": "https://www.sas.sc.gov.br"
+        },
+        {
+            "uf": "SE",
+            "nome": "Sec. de Estado da Assistência Social e Direitos Humanos",
+            "url": "https://assistenciasocial.se.gov.br"
+        },
+        {
+            "uf": "SP",
+            "nome": "Secretaria de Estado dos Direitos da Pessoa com Deficiência",
+            "url": "https://pessoacomdeficiencia.sp.gov.br"
+        },
+        {
+            "uf": "TO",
+            "nome": "Secretaria da Cidadania e Justiça (SECIJU)",
+            "url": "https://seciju.to.gov.br"
         }
     ],
     "categorias": [
@@ -614,7 +919,7 @@
                 "O BPC é revisado a cada 2 anos — mantenha o CadÚnico sempre atualizado",
                 "O beneficiário de BPC pode trabalhar e receber o Auxílio-Inclusão (50% do BPC) ao mesmo tempo"
             ],
-            "valor": "1 salário mínimo por mês (R$ 1.518,00 em 2025)",
+            "valor": "1 salário mínimo por mês (R$ 1.621,00 em 2026)",
             "onde": "CRAS (CadÚnico) → INSS (agendamento pelo 135 ou meu.inss.gov.br)",
             "links": [
                 {
@@ -1150,7 +1455,8 @@
                 {
                     "lei": "NBR 9050/2020 (ABNT)",
                     "artigo": "Norma técnica completa",
-                    "link": "https://www.abntcatalogo.com.br/"
+                    "link": "https://www.abntcatalogo.com.br/pnm.aspx?Q=Q05SOTA1MA==",
+                    "nota": "Norma técnica ABNT (acesso pago)"
                 },
                 {
                     "lei": "Lei 14.620/2023 (Minha Casa, Minha Vida)",

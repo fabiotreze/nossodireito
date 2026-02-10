@@ -4,13 +4,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>NossoDireito — Direitos e Benefícios para Pessoas com Deficiência</title>
+    <title>Direitos PcD: BPC, CIPTEA, Escola Inclusiva, TEA — NossoDireito</title>
     <meta name="description"
-        content="Recebeu um laudo? Descubra seus direitos. Guia gratuito com BPC, CIPTEA, escola inclusiva, plano de saúde, SUS, transporte e trabalho para pessoas com deficiência. Informações oficiais do governo brasileiro.">
+        content="Recebeu um laudo de autismo (TEA) ou deficiência? Descubra seus direitos como PcD: BPC, CIPTEA, escola inclusiva, plano de saúde, SUS, transporte. Guia gratuito com passo a passo e fontes oficiais do governo brasileiro.">
     <meta name="keywords"
-        content="direitos pessoa com deficiência, BPC autismo, CIPTEA, laudo TEA, escola inclusiva, benefício deficiência, direitos autismo, PcD direitos">
+        content="direitos pessoa com deficiência, BPC autismo, CIPTEA como tirar, laudo TEA direitos, escola inclusiva matrícula, benefício deficiência PcD, direitos autismo TEA, passe livre deficiência, plano de saúde autismo, FGTS deficiência">
     <meta name="author" content="NossoDireito — Projeto sem fins lucrativos">
     <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://nossodireito.fabiotreze.com">
+
+    <!-- Preconnect for faster CDN loading -->
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+    <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
 
     <!-- Content Security Policy -->
     <meta http-equiv="Content-Security-Policy"
@@ -20,12 +25,13 @@
     <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=(), payment=()">
 
     <!-- Open Graph -->
-    <meta property="og:title" content="NossoDireito — Recebeu um laudo? Descubra seus direitos.">
+    <meta property="og:title" content="Direitos PcD: BPC, CIPTEA, Escola Inclusiva, TEA — NossoDireito">
     <meta property="og:description"
-        content="Guia gratuito com direitos, benefícios e passo a passo para famílias de pessoas com deficiência no Brasil.">
+        content="Recebeu um laudo de autismo ou deficiência? Guia gratuito com direitos, benefícios e passo a passo para famílias de PcD no Brasil.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://nossodireito.fabiotreze.com">
     <meta property="og:locale" content="pt_BR">
+    <meta property="og:site_name" content="NossoDireito">
 
     <!-- Favicons -->
     <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
@@ -33,7 +39,18 @@
     <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
 
     <!-- Open Graph image -->
-    <meta property="og:image" content="https://nossodireito.fabiotreze.com/images/apple-touch-icon.png">
+    <meta property="og:image" content="https://nossodireito.fabiotreze.com/images/og-image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt"
+        content="NossoDireito — Guia gratuito de direitos para pessoas com deficiência no Brasil">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Direitos PcD: BPC, CIPTEA, Escola Inclusiva, TEA — NossoDireito">
+    <meta name="twitter:description"
+        content="Recebeu um laudo? Guia gratuito com BPC, CIPTEA, escola inclusiva e mais para PcD.">
+    <meta name="twitter:image" content="https://nossodireito.fabiotreze.com/images/og-image.png">
 
     <!-- Mobile / PWA -->
     <meta name="theme-color" content="#1e3a8a">
@@ -42,18 +59,91 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="NossoDireito">
     <meta name="mobile-web-app-capable" content="yes">
+    <link rel="manifest" href="/manifest.json">
 
     <link rel="stylesheet" href="css/styles.css">
 
-    <!-- pdf.js para extração de texto de documentos PDF (SRI verified) -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"
-        integrity="sha384-/1qUCSGwTur9vjf/z9lmu/eCUYbpOTgSjmpbMQZ1/CtX2v/WcAIKqRv+U1DUCG6e"
-        crossorigin="anonymous"></script>
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "NossoDireito",
+        "url": "https://nossodireito.fabiotreze.com",
+        "description": "Guia gratuito de direitos e benefícios para pessoas com deficiência no Brasil.",
+        "applicationCategory": "GovernmentService",
+        "operatingSystem": "Web",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "BRL" },
+        "inLanguage": "pt-BR",
+        "isAccessibleForFree": true,
+        "publisher": {
+            "@type": "Organization",
+            "name": "NossoDireito",
+            "url": "https://github.com/fabiotreze/nossodireito"
+        }
+    }
+    </script>
+
+    <!-- JSON-LD FAQPage (SEO: featured snippets) -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+            {
+                "@type": "Question",
+                "name": "O que é o BPC/LOAS e como solicitar para pessoa com deficiência?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "O BPC (Benefício de Prestação Continuada) é um benefício de 1 salário mínimo por mês para pessoa com deficiência de baixa renda. Para solicitar, agende no INSS pelo telefone 135 ou pelo site meu.inss.gov.br. É necessário ter inscrição no CadÚnico e laudo médico comprovando a deficiência. Previsto na Lei 8.742/1993 (LOAS)."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Como tirar a CIPTEA (Carteira de Identificação da Pessoa com TEA)?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "A CIPTEA é a Carteira de Identificação da Pessoa com Transtorno do Espectro Autista, prevista na Lei 13.977/2020 (Lei Romeo Mion). Para solicitar, procure a prefeitura ou secretaria de assistência social da sua cidade com laudo médico com CID, documento de identidade e foto 3x4. É gratuita e garante prioridade em atendimentos."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Escola pode recusar matrícula de aluno com deficiência?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Não. A recusa de matrícula de pessoa com deficiência é crime, com multa de 3 a 20 salários mínimos. A escola deve garantir atendimento educacional especializado (AEE) e profissional de apoio quando necessário. Previsto na Lei 13.146/2015 (LBI) e no Decreto 6.949/2009."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Quais os direitos da pessoa com autismo (TEA) no Brasil?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Pessoa com TEA tem direitos a: BPC/LOAS (1 salário mínimo), CIPTEA (carteira de identificação), escola inclusiva com AEE, terapias pelo SUS e plano de saúde (ABA, fono, TO), Passe Livre em transportes, FGTS, isenção de impostos em veículos, medicamentos gratuitos pelo SUS, e prioridade em atendimentos públicos."
+                }
+            },
+            {
+                "@type": "Question",
+                "name": "Plano de saúde pode negar terapias para pessoa com deficiência?",
+                "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": "Não. Planos de saúde são obrigados a cobrir terapias prescritas por médico, incluindo ABA, fonoaudiologia, terapia ocupacional e psicologia. A negativa deve ser feita por escrito. Em caso de recusa, registre reclamação na ANS (0800 701 9656) ou busque a Defensoria Pública."
+                }
+            }
+        ]
+    }
+    </script>
+
+    <!-- pdf.js — lazy-loaded by app.js when user reaches the Documents section -->
 </head>
 
 <body>
+    <!-- Skip to main content (accessibility) -->
+    <a href="#mainContent" class="skip-link">Pular para o conteúdo principal</a>
+
     <!-- ========== AVISO LEGAL (Modal) ========== -->
-    <div id="disclaimerModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="disclaimerTitle">
+    <div id="disclaimerModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="disclaimerTitle"
+        aria-hidden="true">
         <div class="modal-content">
             <h2 id="disclaimerTitle">⚠️ Aviso Legal Importante</h2>
             <div class="disclaimer-text">
@@ -87,7 +177,7 @@
                 </p>
             </div>
             <button id="acceptDisclaimer" class="btn btn-primary btn-lg">
-                Li e compreendi — Continuar
+                Entendi — Fechar
             </button>
         </div>
     </div>
@@ -102,14 +192,17 @@
             <button class="menu-toggle" id="menuToggle" aria-label="Abrir menu" aria-expanded="false">
                 <span></span><span></span><span></span>
             </button>
-            <ul class="nav-links" id="navLinks" role="menubar">
-                <li role="none"><a href="#inicio" role="menuitem" class="active">Início</a></li>
-                <li role="none"><a href="#busca" role="menuitem">Buscar</a></li>
-                <li role="none"><a href="#categorias" role="menuitem">Categorias</a></li>
-                <li role="none"><a href="#checklist" role="menuitem">Checklist</a></li>
-                <li role="none"><a href="#documentos" role="menuitem">📎 Documentos</a></li>
-                <li role="none"><a href="#instituicoes" role="menuitem">🤝 Apoio</a></li>
-                <li role="none"><a href="#transparencia" role="menuitem">Transparência</a></li>
+            <ul class="nav-links" id="navLinks" role="list">
+                <li><a href="#inicio" class="active">Início</a></li>
+                <li><a href="#busca">Buscar</a></li>
+                <li><a href="#categorias">Categorias</a></li>
+                <li><a href="#checklist">Checklist</a></li>
+                <li><a href="#documentos">📎 Documentos</a></li>
+                <li><a href="#links">🔗 Links Úteis</a></li>
+                <li><a href="#classificacao">🦠 CID</a></li>
+                <li><a href="#orgaos-estaduais">🏢 Estados</a></li>
+                <li><a href="#instituicoes">🤝 Apoio</a></li>
+                <li><a href="#transparencia">Transparência</a></li>
             </ul>
         </div>
     </nav>
@@ -126,7 +219,7 @@
     <main id="mainContent" role="main">
 
         <!-- ========== STALENESS BANNER ========== -->
-        <div id="stalenessBanner" class="staleness-banner" style="display:none;" role="alert">
+        <div id="stalenessBanner" class="staleness-banner" hidden role="alert">
             <div class="container">
                 <p>⚠️ <strong>Atenção:</strong> As informações deste site podem estar desatualizadas.
                     Última verificação: <span id="staleDays"></span>.
@@ -137,7 +230,10 @@
         <!-- ========== HERO ========== -->
         <section class="hero" id="inicio">
             <div class="container">
-                <h1>Recebeu um laudo?<br><span class="hero-highlight">Vem que a gente te ajuda.</span></h1>
+                <img src="/images/nossodireito.png" alt="NossoDireito" class="hero-logo" width="140" height="140">
+                <h1>Direitos e Benefícios para Pessoas com Deficiência no Brasil</h1>
+                <p class="hero-tagline">Recebeu um laudo?<br><span class="hero-highlight">Vem que a gente te
+                        ajuda.</span></p>
                 <p class="hero-sub">
                     Descubra os direitos e benefícios da sua família, passo a passo,
                     com informações de fontes oficiais do governo brasileiro.
@@ -216,6 +312,12 @@
                     Acabou de receber o laudo e não sabe por onde começar? Siga esta lista:
                 </p>
                 <div class="checklist-card">
+                    <div class="checklist-progress">
+                        <span class="checklist-progress-text" id="checklistProgress">0 de 8 concluídos</span>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="checklistProgressBar" style="width:0%"></div>
+                        </div>
+                    </div>
                     <label class="checklist-item">
                         <input type="checkbox" data-step="1">
                         <span><strong>1.</strong> Tire cópias do laudo médico (guarde o original em local seguro)</span>
@@ -293,7 +395,8 @@
                 </button>
 
                 <!-- Análise de Documentos — Resultados -->
-                <div id="analysisResults" class="analysis-results" style="display:none;" aria-live="polite">
+                <div id="analysisResults" class="analysis-results" style="display:none;" aria-live="polite"
+                    role="region" aria-label="Resultados da análise de documentos">
                     <div class="analysis-header">
                         <h3>🔍 Análise do Documento</h3>
                         <div class="analysis-header-actions">
@@ -303,7 +406,8 @@
                                 Fechar</button>
                         </div>
                     </div>
-                    <div id="analysisLoading" class="analysis-loading" style="display:none;">
+                    <div id="analysisLoading" class="analysis-loading" style="display:none;" role="status"
+                        aria-live="polite">
                         <div class="spinner"></div>
                         <p>Analisando documentos... (100% local, nada é enviado)</p>
                     </div>
@@ -343,6 +447,42 @@
             </div>
         </section>
 
+        <!-- ========== CLASSIFICAÇÃO DE DEFICIÊNCIA (CID) ========== -->
+        <section class="section" id="classificacao">
+            <div class="container">
+                <h2>🦠 Classificação de Deficiência — CID-10 / CID-11</h2>
+                <p class="section-desc">
+                    Tabela de referência com os códigos CID usados em laudos médicos para cada tipo de deficiência.
+                    O sistema identifica automaticamente estes códigos ao analisar seus documentos.
+                </p>
+                <div id="classificacaoGrid">
+                    <!-- Preenchido pelo JavaScript a partir do JSON -->
+                </div>
+            </div>
+        </section>
+
+        <!-- ========== ÓRGÃOS ESTADUAIS ========== -->
+        <section class="section section-alt" id="orgaos-estaduais">
+            <div class="container">
+                <h2>🏢 Órgãos Estaduais de Apoio à Pessoa com Deficiência</h2>
+                <p class="section-desc">
+                    Secretarias e órgãos de cada estado brasileiro responsáveis por políticas públicas
+                    para pessoas com deficiência. Todos os links são de domínios oficiais <code>.gov.br</code>.
+                </p>
+                <div class="orgao-filter-bar">
+                    <button class="orgao-filter-btn active" data-filter="todos">Todos</button>
+                    <button class="orgao-filter-btn" data-filter="Norte">Norte</button>
+                    <button class="orgao-filter-btn" data-filter="Nordeste">Nordeste</button>
+                    <button class="orgao-filter-btn" data-filter="Centro-Oeste">Centro-Oeste</button>
+                    <button class="orgao-filter-btn" data-filter="Sudeste">Sudeste</button>
+                    <button class="orgao-filter-btn" data-filter="Sul">Sul</button>
+                </div>
+                <div id="orgaosEstaduaisGrid" class="orgaos-grid">
+                    <!-- Preenchido pelo JavaScript a partir do JSON -->
+                </div>
+            </div>
+        </section>
+
         <!-- ========== INSTITUIÇÕES DE APOIO ========== -->
         <section class="section" id="instituicoes">
             <div class="container">
@@ -364,7 +504,7 @@
         </section>
 
         <!-- ========== TRANSPARÊNCIA ========== -->
-        <section class="section" id="transparencia">
+        <section class="section section-alt" id="transparencia">
             <div class="container">
                 <h2>🔍 Transparência — Nossas Fontes</h2>
                 <p class="section-desc">
@@ -401,7 +541,8 @@
                         semanalmente todas as fontes acima, verificando alterações legislativas, novos
                         serviços e atualizações de procedimentos. A data da última verificação consta
                         acima. Se você encontrar alguma informação desatualizada,
-                        <a href="https://github.com/fabiorodrigues" target="_blank" rel="noopener">avise-nos pelo
+                        <a href="https://github.com/fabiotreze/nossodireito" target="_blank" rel="noopener">avise-nos
+                            pelo
                             GitHub</a>.
                     </p>
                 </div>
@@ -428,10 +569,11 @@
                     </p>
                 </div>
                 <div class="footer-meta">
-                    <p>Última atualização: <span id="lastUpdate"></span></p>
+                    <p>Última atualização: <span id="lastUpdate"></span> · <span id="footerVersion"
+                            class="footer-version"></span></p>
                     <p>
                         <a href="#" id="showDisclaimer">Aviso Legal</a> ·
-                        <a href="https://github.com/fabiorodrigues" target="_blank" rel="noopener">GitHub</a>
+                        <a href="https://github.com/fabiotreze/nossodireito" target="_blank" rel="noopener">GitHub</a>
                     </p>
                 </div>
             </div>
@@ -439,6 +581,12 @@
     </footer>
 
     <script src="js/app.js"></script>
+    <script>
+        // Register Service Worker for offline support
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/sw.js').catch(function () { });
+        }
+    </script>
 </body>
 
 </html>

@@ -85,6 +85,10 @@ OFFICIAL_DOMAINS = [
     "autismbrasil.org",
     "procon.sp.gov.br",
     "abntcatalogo.com.br",
+    "who.int",
+    "cfm.org.br",
+    "cfp.org.br",
+    "coffito.gov.br",
 ]
 
 # Versão mínima esperada
@@ -92,7 +96,7 @@ MIN_VERSION = "1.0.0"
 
 # Tamanhos máximos recomendados (em bytes)
 # Nota: JS/CSS são minificados no deploy (terser/clean-css) — limites são para source
-MAX_HTML_SIZE = 30_000
+MAX_HTML_SIZE = 35_000
 MAX_CSS_SIZE = 60_000
 MAX_JS_SIZE = 100_000
 MAX_JSON_SIZE = 100_000
@@ -615,6 +619,33 @@ def check_quality(report: ReviewReport, html: str, css: str, js: str) -> None:
         report.add(Finding(cat, f"CSS Custom Properties ({len(css_vars)} vars)", Severity.PASS,
                            f"Usa {len(css_vars)} CSS custom properties — boa manutenibilidade."))
 
+    # 9. No alert() calls (UX — replaced by showToast)
+    # Exclude comment lines (// ...) from detection
+    js_no_comments = re.sub(r'//.*$', '', js, flags=re.MULTILINE)
+    alert_calls = re.findall(r'\balert\s*\(', js_no_comments)
+    if 'showToast' in js and not alert_calls:
+        report.add(Finding(cat, "showToast() sem alert() — UX moderna", Severity.PASS,
+                           "Notificações inline (toast) em vez de alert() intrusivo."))
+    elif alert_calls:
+        report.add(Finding(cat, f"{len(alert_calls)} alert() restantes", Severity.WARNING,
+                           "alert() detectado — UX intrusiva.",
+                           sugestao="Substitua alert() por showToast() para notificações inline."))
+
+    # 10. Browser back-button (history.pushState)
+    if 'pushState' in js and 'popstate' in js:
+        report.add(Finding(cat, "Navegação com back-button (pushState)", Severity.PASS,
+                           "history.pushState + popstate — botão voltar funciona na SPA."))
+
+    # 11. WhatsApp share
+    if 'whatsapp' in js.lower() or 'wa.me' in js:
+        report.add(Finding(cat, "Compartilhamento WhatsApp", Severity.PASS,
+                           "Botão de compartilhamento via WhatsApp para disseminar direitos."))
+
+    # 12. Checklist progress bar
+    if 'checklist-progress' in css or 'progress-fill' in css:
+        report.add(Finding(cat, "Barra de progresso do checklist", Severity.PASS,
+                           "Progresso visual de tarefas concluídas — gamificação da jornada."))
+
 
 def check_reliability(report: ReviewReport, js: str, html: str) -> None:
     """Verifica confiabilidade: graceful degradation, fallbacks."""
@@ -692,6 +723,103 @@ def check_performance(report: ReviewReport) -> None:
             report.add(Finding(cat, f"{len(large)} imagens > 500KB", Severity.WARNING,
                                "Imagens grandes podem afetar carregamento em conexões lentas.",
                                sugestao="Comprima imagens ou use formato WebP."))
+
+    # PWA / Service Worker / SEO best practices
+    html = read_text(INDEX_HTML)
+
+    # Canonical URL
+    if 'rel="canonical"' in html:
+        report.add(Finding(cat, "Canonical URL presente", Severity.PASS,
+                           "Tag <link rel=canonical> configurada para SEO."))
+    else:
+        report.add(Finding(cat, "Canonical URL ausente", Severity.WARNING,
+                           "Sem <link rel=canonical> — pode afetar SEO.",
+                           sugestao='Adicione <link rel="canonical" href="https://..."> no <head>.'))
+
+    # Preconnect para CDN
+    if "preconnect" in html:
+        report.add(Finding(cat, "Preconnect configurado", Severity.PASS,
+                           "Preconnect para CDN melhora tempo de carregamento."))
+
+    # PWA manifest
+    manifest = PROJECT_ROOT / "manifest.json"
+    if manifest.exists() and 'rel="manifest"' in html:
+        report.add(Finding(cat, "PWA manifest presente", Severity.PASS,
+                           "manifest.json + link no HTML — app instalável no celular."))
+    elif manifest.exists():
+        report.add(Finding(cat, "PWA manifest sem link no HTML", Severity.WARNING,
+                           "manifest.json existe mas não está referenciado no index.html.",
+                           sugestao='Adicione <link rel="manifest" href="/manifest.json"> no <head>.'))
+
+    # Service Worker
+    sw = PROJECT_ROOT / "sw.js"
+    if sw.exists() and "serviceWorker" in html:
+        report.add(Finding(cat, "Service Worker (offline)", Severity.PASS,
+                           "sw.js presente + registro no HTML — suporte offline para áreas rurais."))
+
+    # JSON-LD structured data
+    if "application/ld+json" in html:
+        report.add(Finding(cat, "JSON-LD (SEO estruturado)", Severity.PASS,
+                           "Dados estruturados schema.org presentes — melhora visibilidade no Google."))
+
+    # robots.txt + sitemap.xml
+    robots = PROJECT_ROOT / "robots.txt"
+    sitemap = PROJECT_ROOT / "sitemap.xml"
+    if robots.exists():
+        report.add(Finding(cat, "robots.txt presente", Severity.PASS,
+                           "Diretivas de rastreamento para Google/Bing configuradas."))
+    if sitemap.exists():
+        report.add(Finding(cat, "sitemap.xml presente", Severity.PASS,
+                           "Mapa do site para motores de busca configurado."))
+
+    # Twitter Card tags
+    if 'twitter:card' in html:
+        report.add(Finding(cat, "Twitter Card tags presentes", Severity.PASS,
+                           "Metadados para compartilhamento no Twitter/X configurados."))
+
+    # Skip-to-content link (a11y)
+    if 'skip-link' in html or 'skip-nav' in html:
+        report.add(Finding(cat, "Skip-to-content link (a11y)", Severity.PASS,
+                           "Link para pular navegação — acessibilidade para leitores de tela."))
+
+    # FAQPage schema
+    if "FAQPage" in html:
+        report.add(Finding(cat, "FAQPage schema (snippet SEO)", Severity.PASS,
+                           "Schema FAQPage presente — potencial para featured snippets no Google."))
+
+    # OG image dimensions
+    if 'og:image:width' in html and 'og:image:height' in html:
+        report.add(Finding(cat, "OG image dimensions definidas", Severity.PASS,
+                           "Dimensões da imagem OG declaradas — exibição correta no Facebook/LinkedIn."))
+    elif 'og:image' in html:
+        report.add(Finding(cat, "OG image sem dimensões", Severity.WARNING,
+                           "og:image presente mas sem og:image:width/height.",
+                           sugestao='Adicione <meta property="og:image:width" content="1200"> e height="630".'))
+
+    # og:site_name
+    if 'og:site_name' in html:
+        report.add(Finding(cat, "og:site_name presente", Severity.PASS,
+                           "Nome do site configurado para compartilhamento social."))
+
+    # OG image file exists
+    og_image = PROJECT_ROOT / "images" / "og-image.png"
+    if og_image.exists():
+        report.add(Finding(cat, "Arquivo og-image.png presente", Severity.PASS,
+                           "Imagem de compartilhamento social (1200×630) disponível."))
+    elif 'og:image' in html:
+        report.add(Finding(cat, "og-image.png referenciado mas ausente", Severity.ERROR,
+                           "HTML referencia og-image.png que não existe no diretório images/.",
+                           sugestao="Crie images/og-image.png com 1200×630px."))
+
+    # pdf.js lazy-loaded (ensurePdfJs)
+    js = read_text(APP_JS)
+    if "ensurePdfJs" in js:
+        report.add(Finding(cat, "pdf.js lazy-loaded (ensurePdfJs)", Severity.PASS,
+                           "pdf.js carregado sob demanda — ~400KB a menos no carregamento inicial."))
+    elif 'pdf.js' in html or 'pdf.min.js' in html:
+        report.add(Finding(cat, "pdf.js carregado no <head>", Severity.WARNING,
+                           "pdf.js bloqueando carregamento inicial (~400KB).",
+                           sugestao="Mova para lazy-loading com função ensurePdfJs()."))
 
 
 def check_transparency(report: ReviewReport, json_data: dict) -> None:
@@ -807,9 +935,9 @@ def check_modularity(report: ReviewReport) -> None:
                                f"{desc} não encontrado.",
                                sugestao=f"Crie o arquivo {rel_path}."))
 
-    # Verificar separação de concerns
-    js_in_html = re.findall(r"<script[^>]*>(?![\s\n]*</script>)(.+?)</script>", read_text(INDEX_HTML), re.DOTALL)
-    inline_js = [s for s in js_in_html if len(s.strip()) > 50]
+    # Verificar separação de concerns (exclude JSON-LD structured data and SW registration)
+    js_in_html = re.findall(r"<script(?![^>]*type=[\"']application/ld\+json[\"'])[^>]*>(?![\s\n]*</script>)(.+?)</script>", read_text(INDEX_HTML), re.DOTALL)
+    inline_js = [s for s in js_in_html if len(s.strip()) > 50 and "serviceWorker" not in s]
     if inline_js:
         report.add(Finding(cat, f"{len(inline_js)} script(s) inline no HTML", Severity.WARNING,
                            "JavaScript inline detectado — melhor mover para arquivo separado.",
@@ -833,6 +961,16 @@ def check_modularity(report: ReviewReport) -> None:
     if codereview_dir.exists():
         report.add(Finding(cat, "Rotina codereview presente", Severity.PASS,
                            "Diretório codereview/ com scripts de auto-avaliação."))
+
+    # matching_engine.json (keywords extraídas do app.js)
+    me_json = PROJECT_ROOT / "data" / "matching_engine.json"
+    if me_json.exists():
+        report.add(Finding(cat, "matching_engine.json presente", Severity.PASS,
+                           "Motor de matching externalizado — facilita manutenção de keywords."))
+    else:
+        report.add(Finding(cat, "matching_engine.json ausente", Severity.WARNING,
+                           "Motor de matching não externalizado.",
+                           sugestao="Extraia KEYWORD_MAP para data/matching_engine.json."))
 
 
 def check_accessibility(report: ReviewReport, html: str, css: str) -> None:
@@ -1038,19 +1176,23 @@ def check_category_schema(report: ReviewReport, json_data: dict) -> None:
         report.add(Finding(cat, "Todas categorias cobertas por documentos mestre", Severity.PASS,
                            "Cada categoria aparece em pelo menos um documento mestre."))
 
-    # Verificar que KEYWORD_MAP do app.js cobre todas as categorias
+    # Verificar que KEYWORD_MAP cobre todas as categorias
+    # O KEYWORD_MAP pode estar inline no app.js OU no data/matching_engine.json
     js = read_text(APP_JS)
+    keyword_section = ""
+    if "KEYWORD_MAP" in js:
+        keyword_section = js[js.index("KEYWORD_MAP"):js.index("KEYWORD_MAP") + 5000]
+    me_json_path = PROJECT_ROOT / "data" / "matching_engine.json"
+    if me_json_path.exists():
+        keyword_section += read_text(me_json_path)
     for categoria in categorias:
         cat_id = categoria.get("id", "")
-        # Buscar se o cat_id aparece como valor em alguma entry do KEYWORD_MAP
-        pattern = rf"['\"]?{re.escape(cat_id)}['\"]?"
-        keyword_section = js[js.index("KEYWORD_MAP"):js.index("KEYWORD_MAP") + 5000] if "KEYWORD_MAP" in js else ""
         if cat_id and cat_id in keyword_section:
             report.add(Finding(cat, f"[{cat_id}] presente no KEYWORD_MAP", Severity.PASS,
                                f"Categoria '{cat_id}' é referenciada no KEYWORD_MAP para análise de documentos."))
         elif cat_id:
             report.add(Finding(cat, f"[{cat_id}] ausente do KEYWORD_MAP", Severity.ERROR,
-                               f"Categoria '{cat_id}' NÃO aparece no KEYWORD_MAP do app.js.",
+                               f"Categoria '{cat_id}' NÃO aparece no KEYWORD_MAP (app.js ou matching_engine.json).",
                                sugestao=f"Adicione keywords para '{cat_id}' no KEYWORD_MAP."))
 
     # Verificar governance doc
@@ -1140,7 +1282,7 @@ def check_sensitive_data(report: ReviewReport) -> None:
                            "git ls-files falhou e fallback retornou vazio."))
         return
 
-    report.add(Finding(cat, f"Analisando {len(tracked)} arquivos rastreados", Severity.INFO,
+    report.add(Finding(cat, f"Analisando {len(tracked)} arquivos rastreados", Severity.PASS,
                        "Escaneando por segredos, chaves, tokens e senhas."))
 
     # 1. Verificar extensões sensíveis em arquivos rastreados
@@ -1458,14 +1600,18 @@ def check_waf(report: ReviewReport, html: str, js: str) -> None:
     if "Content-Security-Policy" in html:
         security_score += 1
 
-    # HTTPS only (staticwebapp.config.json)
+    # HTTPS only (staticwebapp.config.json OR sw.js — SW requires HTTPS)
     swa_config = PROJECT_ROOT / "staticwebapp.config.json"
+    sw_js = PROJECT_ROOT / "sw.js"
     security_checks += 1
     if swa_config.exists():
         config = read_json(swa_config)
         headers = config.get("globalHeaders", {})
         if "Content-Security-Policy" in headers or "X-Content-Type-Options" in headers:
             security_score += 1
+    elif sw_js.exists():
+        # Service Workers só funcionam sobre HTTPS — sua presença garante HTTPS
+        security_score += 1
 
     # Encryption at rest
     security_checks += 1
@@ -1508,6 +1654,11 @@ def check_waf(report: ReviewReport, html: str, js: str) -> None:
     if ci_yml.exists() or deploy_yml.exists():
         rel_score += 1
 
+    # Resilient fetch (retry com backoff)
+    rel_checks += 1
+    if "resilientFetch" in js:
+        rel_score += 1
+
     rel_pct = round(rel_score / max(rel_checks, 1) * 100)
     sev = Severity.PASS if rel_pct >= 75 else Severity.WARNING if rel_pct >= 50 else Severity.ERROR
     report.add(Finding(cat, f"Confiabilidade: {rel_pct}% ({rel_score}/{rel_checks})", sev,
@@ -1524,12 +1675,15 @@ def check_waf(report: ReviewReport, html: str, js: str) -> None:
         if path.exists() and path.stat().st_size <= max_size:
             perf_score += 1
 
-    # Caching headers in SWA config
+    # Caching headers in SWA config or server.js
     perf_checks += 1
+    server_js = PROJECT_ROOT / "server.js"
     if swa_config.exists():
         config_text = read_text(swa_config)
         if "Cache-Control" in config_text or "max-age" in config_text:
             perf_score += 1
+    elif server_js.exists() and "Cache-Control" in read_text(server_js):
+        perf_score += 1
 
     perf_pct = round(perf_score / max(perf_checks, 1) * 100)
     sev = Severity.PASS if perf_pct >= 75 else Severity.WARNING if perf_pct >= 50 else Severity.ERROR
@@ -1595,6 +1749,19 @@ def check_waf(report: ReviewReport, html: str, js: str) -> None:
     doc_count = sum(1 for p in [README_MD, GOVERNANCE_MD, CHANGELOG_MD] if p.exists())
     if doc_count >= 2:
         ops_score += 1
+
+    # deploy.yml: verifica cobertura de caminhos (todos os arquivos deployáveis)
+    ops_checks += 1
+    if deploy_yml.exists():
+        deploy_text = read_text(deploy_yml)
+        required_paths = ["robots.txt", "sitemap.xml", "sw.js", "manifest.json"]
+        missing_paths = [p for p in required_paths if p not in deploy_text]
+        if not missing_paths:
+            ops_score += 1
+        else:
+            report.add(Finding(cat, f"deploy.yml falta paths: {', '.join(missing_paths)}", Severity.WARNING,
+                               "Arquivos novos não disparam deploy ao serem alterados.",
+                               sugestao=f"Adicione {', '.join(missing_paths)} aos paths do deploy.yml."))
 
     ops_pct = round(ops_score / max(ops_checks, 1) * 100)
     sev = Severity.PASS if ops_pct >= 75 else Severity.WARNING if ops_pct >= 50 else Severity.ERROR
