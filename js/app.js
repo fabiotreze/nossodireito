@@ -317,15 +317,13 @@
             const voice = getBestPtBrVoice();
             if (voice) utterance.voice = voice;
 
-            utterance.onend = () => stopReading();
-            utterance.onerror = () => {
-                stopReading();
-                showToast('Erro na leitura. Seu navegador pode não suportar voz em português.', 'warning');
-            };
-
-            speechSynthesis.cancel(); // Cancelar qualquer leitura anterior
+            speechSynthesis.cancel();
             speechSynthesis.speak(utterance);
             ttsActive = true;
+            // Chrome 15s TTS bug workaround
+            const ka = setInterval(() => { if (!ttsActive) { clearInterval(ka); return; } speechSynthesis.pause(); speechSynthesis.resume(); }, 10000);
+            utterance.onend = () => { clearInterval(ka); stopReading(); };
+            utterance.onerror = () => { clearInterval(ka); stopReading(); showToast('Erro na leitura. Seu navegador pode não suportar voz em português.', 'warning'); };
 
             if (btnReadAloud) {
                 btnReadAloud.textContent = '⏹️ Parar';
@@ -398,6 +396,18 @@
         toast.setAttribute('role', 'alert');
         document.body.appendChild(toast);
         setTimeout(() => { if (toast.parentNode) toast.remove(); }, 5000);
+    }
+
+    // Accessible confirm dialog (replaces confirm())
+    function confirmAction(msg, cb) {
+        const d = document.createElement('dialog');
+        d.className = 'confirm-dialog';
+        d.setAttribute('role', 'alertdialog');
+        d.setAttribute('aria-label', msg);
+        d.innerHTML = '<p>' + msg + '</p><div class="confirm-actions"><button>Cancelar</button><button class="btn-confirm">Confirmar</button></div>';
+        document.body.appendChild(d);
+        d.showModal();
+        d.onclick = e => { if (e.target.tagName === 'BUTTON') { const ok = e.target.classList.contains('btn-confirm'); d.close(); d.remove(); if (ok) cb(); } };
     }
 
     // ========================
@@ -548,6 +558,16 @@
             dom.menuToggle.setAttribute('aria-label', open ? 'Fechar menu' : 'Abrir menu');
         });
 
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && dom.navLinks.classList.contains('open')) {
+                dom.navLinks.classList.remove('open');
+                dom.menuToggle.classList.remove('open');
+                dom.menuToggle.setAttribute('aria-expanded', 'false');
+                dom.menuToggle.setAttribute('aria-label', 'Abrir menu');
+                dom.menuToggle.focus();
+            }
+        });
+
         dom.navLinks.querySelectorAll('a').forEach((link) => {
             link.addEventListener('click', () => {
                 dom.navLinks.classList.remove('open');
@@ -587,6 +607,8 @@
             dom.categoriasSection.style.display = '';
             history.pushState({ view: 'categorias' }, '', '#categorias');
             dom.categoriasSection.scrollIntoView({ behavior: 'smooth' });
+            const h2 = dom.categoriasSection.querySelector('h2');
+            if (h2) { h2.setAttribute('tabindex', '-1'); h2.focus({ preventScroll: true }); }
         });
 
         // Browser back/forward button support for detail view
@@ -794,6 +816,8 @@
 
         dom.detalheContent.innerHTML = html;
         dom.detalheSection.scrollIntoView({ behavior: 'smooth' });
+        const h2 = dom.detalheSection.querySelector('h2');
+        if (h2) { h2.setAttribute('tabindex', '-1'); h2.focus({ preventScroll: true }); }
     }
 
     // ========================
@@ -897,7 +921,10 @@
         function updateProgress() {
             const done = $$('.checklist-item input[type="checkbox"]:checked').length;
             if (progressText) progressText.textContent = `${done} de ${total} concluídos`;
-            if (progressBar) progressBar.style.width = `${Math.round(done / total * 100)}%`;
+            if (progressBar) {
+                progressBar.style.width = `${Math.round(done / total * 100)}%`;
+                progressBar.closest('.progress-bar')?.setAttribute('aria-valuenow', done);
+            }
         }
 
         checkboxes.forEach((cb) => {
@@ -1336,11 +1363,11 @@
         });
 
         // Delete all
-        dom.deleteAllFiles.addEventListener('click', async () => {
-            if (confirm('Tem certeza? Todos os arquivos serão removidos permanentemente do seu navegador.')) {
+        dom.deleteAllFiles.addEventListener('click', () => {
+            confirmAction('Tem certeza? Todos os arquivos serão removidos permanentemente do seu navegador.', async () => {
                 await clearAllFiles();
                 await renderFileList();
-            }
+            });
         });
     }
 
@@ -1464,11 +1491,11 @@
             });
 
             dom.fileList.querySelectorAll('.btn-delete').forEach((btn) => {
-                btn.addEventListener('click', async () => {
-                    if (confirm('Excluir este arquivo?')) {
+                btn.addEventListener('click', () => {
+                    confirmAction('Excluir este arquivo?', async () => {
                         await deleteFile(btn.dataset.id);
                         await renderFileList();
-                    }
+                    });
                 });
             });
         } catch (err) {
@@ -1951,7 +1978,7 @@
                 <span class="legend-badge high">Alta relevância</span>
                 <span class="legend-badge medium">Média relevância</span>
                 <span class="legend-badge low">Possível relação</span>
-                <span class="legend-bar">Barra indica grau de correspondência</span>
+                <span class="legend-bar"><span class="legend-bar-sample high" aria-hidden="true"></span><span class="legend-bar-sample medium" aria-hidden="true"></span><span class="legend-bar-sample low" aria-hidden="true"></span> Barra indica grau de correspondência</span>
             </div>
             <div class="analysis-match-list">`;
 
@@ -1959,6 +1986,8 @@
             const pct = Math.round((score / maxScore) * 100);
             const level = pct >= 80 ? 'high' : pct >= 40 ? 'medium' : 'low';
             const levelLabel = pct >= 80 ? 'Alta relevância' : pct >= 40 ? 'Média relevância' : 'Possível relação';
+            // Barra visual: alta=85-100%, média=45-70%, baixa=15-35%
+            const barPct = level === 'high' ? Math.max(85, pct) : level === 'medium' ? Math.round(45 + (pct - 40) * 0.625) : Math.round(15 + pct * 0.5);
 
             html += `
                 <div class="analysis-match ${level}" data-cat-id="${category.id}" aria-label="${levelLabel}">
@@ -1968,8 +1997,8 @@
                             <h4>${escapeHtml(category.titulo)}</h4>
                             <span class="analysis-badge ${level}" aria-label="${levelLabel}">${levelLabel}</span>
                         </div>
-                        <div class="analysis-match-bar" aria-label="Barra de precisão: ${levelLabel}">
-                            <div class="analysis-match-fill ${level}" style="width:${pct}%"></div>
+                        <div class="analysis-match-bar" role="img" aria-label="${levelLabel}: ${barPct}%">
+                            <div class="analysis-match-fill ${level}" style="width:${barPct}%"></div>
                         </div>
                     </div>
                     <p class="analysis-match-resumo">${escapeHtml(category.resumo)}</p>
@@ -2214,65 +2243,22 @@
         });
     }
 
-    async function storeFile(fileObj) {
+    async function dbOp(mode, fn) {
         const db = await openDB();
-        return new Promise((resolve, reject) => {
-            const tx = db.transaction(STORE_NAME, 'readwrite');
-            tx.objectStore(STORE_NAME).put(fileObj);
-            tx.oncomplete = () => { db.close(); resolve(); };
-            tx.onerror = () => { db.close(); reject(tx.error); };
+        return new Promise((ok, no) => {
+            const tx = db.transaction(STORE_NAME, mode);
+            const r = fn(tx.objectStore(STORE_NAME));
+            tx.oncomplete = () => { db.close(); ok(r.result); };
+            tx.onerror = () => { db.close(); no(tx.error); };
         });
     }
 
-    async function getAllFiles() {
-        const db = await openDB();
-        return new Promise((resolve, reject) => {
-            const tx = db.transaction(STORE_NAME, 'readonly');
-            const req = tx.objectStore(STORE_NAME).getAll();
-            req.onsuccess = () => { db.close(); resolve(req.result); };
-            req.onerror = () => { db.close(); reject(req.error); };
-        });
-    }
-
-    async function getFile(id) {
-        const db = await openDB();
-        return new Promise((resolve, reject) => {
-            const tx = db.transaction(STORE_NAME, 'readonly');
-            const req = tx.objectStore(STORE_NAME).get(id);
-            req.onsuccess = () => { db.close(); resolve(req.result); };
-            req.onerror = () => { db.close(); reject(req.error); };
-        });
-    }
-
-    async function deleteFile(id) {
-        const db = await openDB();
-        return new Promise((resolve, reject) => {
-            const tx = db.transaction(STORE_NAME, 'readwrite');
-            tx.objectStore(STORE_NAME).delete(id);
-            tx.oncomplete = () => { db.close(); resolve(); };
-            tx.onerror = () => { db.close(); reject(tx.error); };
-        });
-    }
-
-    async function clearAllFiles() {
-        const db = await openDB();
-        return new Promise((resolve, reject) => {
-            const tx = db.transaction(STORE_NAME, 'readwrite');
-            tx.objectStore(STORE_NAME).clear();
-            tx.oncomplete = () => { db.close(); resolve(); };
-            tx.onerror = () => { db.close(); reject(tx.error); };
-        });
-    }
-
-    async function getFileCount() {
-        const db = await openDB();
-        return new Promise((resolve, reject) => {
-            const tx = db.transaction(STORE_NAME, 'readonly');
-            const req = tx.objectStore(STORE_NAME).count();
-            req.onsuccess = () => { db.close(); resolve(req.result); };
-            req.onerror = () => { db.close(); reject(req.error); };
-        });
-    }
+    function storeFile(f) { return dbOp('readwrite', s => s.put(f)); }
+    function getAllFiles() { return dbOp('readonly', s => s.getAll()); }
+    function getFile(id) { return dbOp('readonly', s => s.get(id)); }
+    function deleteFile(id) { return dbOp('readwrite', s => s.delete(id)); }
+    function clearAllFiles() { return dbOp('readwrite', s => s.clear()); }
+    function getFileCount() { return dbOp('readonly', s => s.count()); }
 
     // ========================
     // Footer

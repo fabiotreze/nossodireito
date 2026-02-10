@@ -98,7 +98,7 @@ const SECURITY_HEADERS = Object.freeze({
     // ── Anti-XSS / Injection ──
     'Content-Security-Policy': [
         "default-src 'none'",
-        "script-src 'self' https://cdnjs.cloudflare.com https://vlibras.gov.br",
+        "script-src 'self' https://cdnjs.cloudflare.com https://vlibras.gov.br https://cdn.jsdelivr.net",
         "style-src 'self' 'unsafe-inline' https://vlibras.gov.br",
         "img-src 'self' data: blob: https://vlibras.gov.br",
         "connect-src 'self' https://vlibras.gov.br",
@@ -123,7 +123,7 @@ const SECURITY_HEADERS = Object.freeze({
     'Referrer-Policy': 'no-referrer',
 
     // ── Feature Restrictions ──
-    'Permissions-Policy': 'camera=(), microphone=(), geolocation=(), payment=(), usb=(), bluetooth=(), serial=(), hid=(), ambient-light-sensor=(), accelerometer=(), gyroscope=(), magnetometer=(), screen-wake-lock=()',
+    'Permissions-Policy': 'camera=(), microphone=(), geolocation=(), payment=(), usb=(), bluetooth=(), serial=(), hid=(), accelerometer=(), gyroscope=(), magnetometer=(), screen-wake-lock=()',
 
     // ── Cross-Origin Isolation ──
     'Cross-Origin-Opener-Policy': 'same-origin',
