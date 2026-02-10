@@ -100,6 +100,105 @@
     const ALLOWED_EXTENSIONS = ['.pdf', '.jpg', '.jpeg', '.png'];
     const CRYPTO_AVAILABLE = typeof crypto !== 'undefined' && typeof crypto.subtle !== 'undefined';
 
+    // ========================
+    // Accessibility Toolbar
+    // ========================
+    const A11Y_FONT_KEY = STORAGE_PREFIX + 'font_size';
+    const A11Y_CONTRAST_KEY = STORAGE_PREFIX + 'high_contrast';
+    const FONT_STEPS = [14, 15, 16, 18, 20, 22]; // px
+    const FONT_DEFAULT = 16;
+
+    function setupAccessibilityToolbar() {
+        const btnDecrease = document.getElementById('a11yFontDecrease');
+        const btnReset = document.getElementById('a11yFontReset');
+        const btnIncrease = document.getElementById('a11yFontIncrease');
+        const btnContrast = document.getElementById('a11yContrast');
+        const btnLibras = document.getElementById('a11yLibras');
+
+        // --- Font size ---
+        let currentSize = FONT_DEFAULT;
+        try {
+            const saved = localStorage.getItem(A11Y_FONT_KEY);
+            if (saved && FONT_STEPS.includes(Number(saved))) currentSize = Number(saved);
+        } catch (_) { /* private browsing */ }
+        applyFontSize(currentSize);
+
+        if (btnDecrease) btnDecrease.addEventListener('click', () => {
+            const idx = FONT_STEPS.indexOf(currentSize);
+            if (idx > 0) { currentSize = FONT_STEPS[idx - 1]; applyFontSize(currentSize); }
+        });
+        if (btnReset) btnReset.addEventListener('click', () => {
+            currentSize = FONT_DEFAULT; applyFontSize(currentSize);
+        });
+        if (btnIncrease) btnIncrease.addEventListener('click', () => {
+            const idx = FONT_STEPS.indexOf(currentSize);
+            if (idx < FONT_STEPS.length - 1) { currentSize = FONT_STEPS[idx + 1]; applyFontSize(currentSize); }
+        });
+
+        function applyFontSize(size) {
+            document.documentElement.style.fontSize = size + 'px';
+            try { localStorage.setItem(A11Y_FONT_KEY, String(size)); } catch (_) { }
+        }
+
+        // --- High Contrast ---
+        let contrastOn = false;
+        try {
+            contrastOn = localStorage.getItem(A11Y_CONTRAST_KEY) === 'true';
+        } catch (_) { }
+        if (contrastOn) toggleContrast(true);
+
+        if (btnContrast) btnContrast.addEventListener('click', () => {
+            contrastOn = !contrastOn;
+            toggleContrast(contrastOn);
+        });
+
+        function toggleContrast(on) {
+            document.documentElement.classList.toggle('high-contrast', on);
+            if (btnContrast) btnContrast.setAttribute('aria-pressed', String(on));
+            try { localStorage.setItem(A11Y_CONTRAST_KEY, String(on)); } catch (_) { }
+        }
+
+        // --- VLibras toggle (lazy-loaded on first click) ---
+        let vLibrasLoaded = false;
+        function loadVLibras() {
+            if (vLibrasLoaded) return Promise.resolve();
+            return new Promise((resolve, reject) => {
+                const s = document.createElement('script');
+                s.src = 'https://vlibras.gov.br/app/vlibras-plugin.js';
+                s.onload = () => {
+                    vLibrasLoaded = true;
+                    try {
+                        if (typeof VLibras !== 'undefined') {
+                            new VLibras.Widget('https://vlibras.gov.br/app');
+                        }
+                    } catch (_) { }
+                    resolve();
+                };
+                s.onerror = () => reject(new Error('VLibras failed to load'));
+                document.body.appendChild(s);
+            });
+        }
+
+        if (btnLibras) btnLibras.addEventListener('click', () => {
+            loadVLibras().then(() => {
+                // VLibras creates a [vw-access-button] element — click it to open
+                setTimeout(() => {
+                    const vwBtn = document.querySelector('[vw-access-button]');
+                    if (vwBtn) vwBtn.click();
+                }, 500);
+            }).catch(() => {
+                showToast('Não foi possível carregar o VLibras. Tente novamente.', 'error');
+            });
+        });
+    }
+
+    // Run toolbar setup immediately (before DOMContentLoaded, toolbar is in static HTML)
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', setupAccessibilityToolbar);
+    } else {
+        setupAccessibilityToolbar();
+    }
+
     // pdf.js worker — setup when available (may be lazy-loaded)
     let _pdfJsReady = typeof pdfjsLib !== 'undefined';
     function ensurePdfJs() {
@@ -279,13 +378,17 @@
     function setupNavigation() {
         dom.menuToggle.addEventListener('click', () => {
             const open = dom.navLinks.classList.toggle('open');
+            dom.menuToggle.classList.toggle('open', open);
             dom.menuToggle.setAttribute('aria-expanded', String(open));
+            dom.menuToggle.setAttribute('aria-label', open ? 'Fechar menu' : 'Abrir menu');
         });
 
         dom.navLinks.querySelectorAll('a').forEach((link) => {
             link.addEventListener('click', () => {
                 dom.navLinks.classList.remove('open');
+                dom.menuToggle.classList.remove('open');
                 dom.menuToggle.setAttribute('aria-expanded', 'false');
+                dom.menuToggle.setAttribute('aria-label', 'Abrir menu');
             });
         });
 
@@ -812,8 +915,12 @@
         // Filter buttons
         document.querySelectorAll('.inst-filter-btn').forEach((btn) => {
             btn.addEventListener('click', () => {
-                document.querySelectorAll('.inst-filter-btn').forEach((b) => b.classList.remove('active'));
+                document.querySelectorAll('.inst-filter-btn').forEach((b) => {
+                    b.classList.remove('active');
+                    b.setAttribute('aria-pressed', 'false');
+                });
                 btn.classList.add('active');
+                btn.setAttribute('aria-pressed', 'true');
                 renderInstitutions(btn.dataset.filter);
             });
         });
@@ -939,8 +1046,12 @@
         // Filter buttons
         document.querySelectorAll('.orgao-filter-btn').forEach((btn) => {
             btn.addEventListener('click', () => {
-                document.querySelectorAll('.orgao-filter-btn').forEach((b) => b.classList.remove('active'));
+                document.querySelectorAll('.orgao-filter-btn').forEach((b) => {
+                    b.classList.remove('active');
+                    b.setAttribute('aria-pressed', 'false');
+                });
                 btn.classList.add('active');
+                btn.setAttribute('aria-pressed', 'true');
                 activeFilter = btn.dataset.filter;
                 renderGrid(activeFilter);
             });
@@ -1005,6 +1116,28 @@
     // ========================
     // File Upload (IndexedDB)
     // ========================
+
+    /**
+     * Revela a área de upload de documentos (hidden by default).
+     * Chamado pelo botão hero "Meus Documentos" e pelo nav link.
+     */
+    function revealDocsUpload() {
+        const area = document.getElementById('docsUploadArea');
+        if (area) area.style.display = '';
+    }
+
+    // Wire hero button + nav link to reveal docs upload on click
+    (function setupDocsReveal() {
+        const heroBtn = document.getElementById('heroDocsBtn');
+        if (heroBtn) {
+            heroBtn.addEventListener('click', revealDocsUpload);
+        }
+        // Also reveal when navigating via nav menu
+        document.querySelectorAll('a[href="#documentos"]').forEach(link => {
+            link.addEventListener('click', revealDocsUpload);
+        });
+    })();
+
     function setupUpload() {
         // Click to upload
         dom.uploadZone.addEventListener('click', () => dom.fileInput.click());
@@ -1192,7 +1325,7 @@
         const count = checked.length;
         btn.disabled = count === 0;
         btn.textContent = count === 0
-            ? '🔍 Selecione arquivos para analisar'
+            ? '🔍 Enviar para análise local'
             : count === 1
                 ? '🔍 Analisar 1 arquivo'
                 : `🔍 Analisar ${count} arquivos`;

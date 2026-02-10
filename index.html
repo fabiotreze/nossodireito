@@ -19,7 +19,7 @@
 
     <!-- Content Security Policy -->
     <meta http-equiv="Content-Security-Policy"
-        content="default-src 'none'; script-src 'self' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'self'; worker-src blob: https://cdnjs.cloudflare.com; child-src blob:; font-src 'self'; form-action 'none'; base-uri 'self'; frame-ancestors 'none'; upgrade-insecure-requests;">
+        content="default-src 'none'; script-src 'self' https://cdnjs.cloudflare.com https://vlibras.gov.br; style-src 'self' 'unsafe-inline' https://vlibras.gov.br; img-src 'self' data: blob: https://vlibras.gov.br; connect-src 'self' https://vlibras.gov.br; worker-src blob: https://cdnjs.cloudflare.com; child-src blob:; font-src 'self' https://vlibras.gov.br; form-action 'none'; base-uri 'self'; frame-ancestors 'none'; upgrade-insecure-requests;">
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
     <meta http-equiv="Referrer-Policy" content="no-referrer">
     <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=(), payment=()">
@@ -176,9 +176,28 @@
                     que acompanham seu familiar.
                 </p>
             </div>
-            <button id="acceptDisclaimer" class="btn btn-primary btn-lg">
+            <button id="acceptDisclaimer" class="btn btn-primary btn-lg" type="button">
                 Entendi — Fechar
             </button>
+        </div>
+    </div>
+
+    <!-- ========== BARRA DE ACESSIBILIDADE ========== -->
+    <div class="a11y-toolbar" role="toolbar" aria-label="Ferramentas de acessibilidade">
+        <div class="container a11y-toolbar-inner">
+            <span class="a11y-toolbar-label">♿ Acessibilidade:</span>
+            <button type="button" id="a11yFontDecrease" class="a11y-btn" aria-label="Diminuir tamanho da fonte"
+                title="Diminuir fonte">A−</button>
+            <button type="button" id="a11yFontReset" class="a11y-btn" aria-label="Tamanho de fonte padrão"
+                title="Fonte padrão">A</button>
+            <button type="button" id="a11yFontIncrease" class="a11y-btn" aria-label="Aumentar tamanho da fonte"
+                title="Aumentar fonte">A+</button>
+            <span class="a11y-separator" aria-hidden="true">|</span>
+            <button type="button" id="a11yContrast" class="a11y-btn" aria-label="Alternar alto contraste"
+                aria-pressed="false" title="Alto Contraste">🔲 Contraste</button>
+            <span class="a11y-separator" aria-hidden="true">|</span>
+            <button type="button" id="a11yLibras" class="a11y-btn a11y-btn-libras"
+                aria-label="Ativar tradução em Libras (VLibras)" title="Libras (VLibras)">🤟 Libras</button>
         </div>
     </div>
 
@@ -186,23 +205,23 @@
     <nav class="navbar" role="navigation" aria-label="Menu principal">
         <div class="container">
             <a href="#" class="navbar-brand" aria-label="NossoDireito - Início">
-                <img src="/images/nossodireito.png" alt="" class="navbar-logo" width="36" height="36">
                 <span>NossoDireito</span>
             </a>
-            <button class="menu-toggle" id="menuToggle" aria-label="Abrir menu" aria-expanded="false">
+            <button class="menu-toggle" id="menuToggle" type="button" aria-label="Abrir menu" aria-expanded="false"
+                aria-controls="navLinks">
                 <span></span><span></span><span></span>
             </button>
             <ul class="nav-links" id="navLinks" role="list">
                 <li><a href="#inicio" class="active">Início</a></li>
                 <li><a href="#busca">Buscar</a></li>
                 <li><a href="#categorias">Categorias</a></li>
-                <li><a href="#checklist">Checklist</a></li>
-                <li><a href="#documentos">📎 Documentos</a></li>
-                <li><a href="#links">🔗 Links Úteis</a></li>
-                <li><a href="#classificacao">🦠 CID</a></li>
-                <li><a href="#orgaos-estaduais">🏢 Estados</a></li>
-                <li><a href="#instituicoes">🤝 Apoio</a></li>
-                <li><a href="#transparencia">Transparência</a></li>
+                <li><a href="#checklist">Primeiros Passos</a></li>
+                <li><a href="#documentos">Documentos</a></li>
+                <li><a href="#links">Sites Oficiais</a></li>
+                <li><a href="#classificacao">CID-10/11</a></li>
+                <li><a href="#orgaos-estaduais">Estados</a></li>
+                <li><a href="#instituicoes">Instituições</a></li>
+                <li><a href="#transparencia">Fontes</a></li>
             </ul>
         </div>
     </nav>
@@ -229,23 +248,32 @@
 
         <!-- ========== HERO ========== -->
         <section class="hero" id="inicio">
-            <div class="container">
-                <img src="/images/nossodireito.png" alt="NossoDireito" class="hero-logo" width="140" height="140">
-                <h1>Direitos e Benefícios para Pessoas com Deficiência no Brasil</h1>
-                <p class="hero-tagline">Recebeu um laudo?<br><span class="hero-highlight">Vem que a gente te
-                        ajuda.</span></p>
-                <p class="hero-sub">
-                    Descubra os direitos e benefícios da sua família, passo a passo,
-                    com informações de fontes oficiais do governo brasileiro.
-                </p>
-                <div class="hero-actions">
-                    <a href="#busca" class="btn btn-lg btn-white">
-                        🔍 Buscar meus direitos
-                    </a>
-                    <a href="#categorias" class="btn btn-lg btn-outline-white">
-                        📋 Ver todas as categorias
-                    </a>
+            <div class="container hero-grid">
+                <div class="hero-visual">
+                    <img src="/images/nossodireito.png" alt="NossoDireito" class="hero-logo" width="200" height="200">
                 </div>
+                <div class="hero-content">
+                    <h1>Direitos e Benefícios para Pessoas com Deficiência no Brasil</h1>
+                    <p class="hero-tagline">Recebeu um laudo?<br><span class="hero-highlight">Vem que a gente te
+                            ajuda.</span></p>
+                    <p class="hero-sub">
+                        Descubra os direitos e benefícios da sua família, passo a passo,
+                        com informações de fontes oficiais do governo brasileiro.
+                    </p>
+                    <div class="hero-actions">
+                        <a href="#busca" class="btn btn-lg btn-white">
+                            🔍 Buscar meus direitos
+                        </a>
+                        <a href="#categorias" class="btn btn-lg btn-outline-white">
+                            📋 Ver categorias
+                        </a>
+                        <a href="#documentos" class="btn btn-lg btn-outline-white" id="heroDocsBtn">
+                            📄 Meus documentos
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="container">
                 <div class="hero-stats">
                     <div class="stat">
                         <span class="stat-number">18,6M</span>
@@ -274,7 +302,7 @@
                 <div class="search-box">
                     <input type="search" id="searchInput" placeholder="Ex: meu filho tem laudo, quais os direitos?"
                         aria-label="Buscar direitos e benefícios" autocomplete="off">
-                    <button id="searchBtn" class="btn btn-primary" aria-label="Buscar">Buscar</button>
+                    <button id="searchBtn" class="btn btn-primary" type="button" aria-label="Buscar">Buscar</button>
                 </div>
                 <div id="searchResults" class="search-results" aria-live="polite"></div>
             </div>
@@ -297,7 +325,7 @@
         <!-- ========== DETALHE DO DIREITO ========== -->
         <section class="section" id="detalhe" style="display:none;">
             <div class="container">
-                <button id="voltarBtn" class="btn btn-outline btn-sm">← Voltar às categorias</button>
+                <button id="voltarBtn" class="btn btn-outline btn-sm" type="button">← Voltar às categorias</button>
                 <div id="detalheContent">
                     <!-- Preenchido pelo JavaScript -->
                 </div>
@@ -307,9 +335,10 @@
         <!-- ========== CHECKLIST ========== -->
         <section class="section section-alt" id="checklist">
             <div class="container">
-                <h2>✅ Checklist — Primeiros Passos</h2>
+                <h2>✅ Primeiros Passos Após o Laudo</h2>
                 <p class="section-desc">
-                    Acabou de receber o laudo e não sabe por onde começar? Siga esta lista:
+                    Acabou de receber o laudo do seu familiar e não sabe por onde começar?
+                    Siga esta lista passo a passo:
                 </p>
                 <div class="checklist-card">
                     <div class="checklist-progress">
@@ -361,7 +390,8 @@
                     </label>
                 </div>
                 <p class="checklist-note">
-                    💡 Seu progresso é salvo apenas no seu navegador. Nenhum dado é enviado para servidores.
+                    💡 Seu progresso é salvo automaticamente no seu navegador. Nenhum dado pessoal é enviado para
+                    servidores.
                 </p>
             </div>
         </section>
@@ -369,30 +399,41 @@
         <!-- ========== MEUS DOCUMENTOS ========== -->
         <section class="section" id="documentos">
             <div class="container">
-                <h2>📎 Meus Documentos</h2>
+                <h2>📎 Análise de Documentos</h2>
                 <p class="section-desc">
-                    Faça upload do seu laudo ou documento para identificar seus direitos.
+                    Faça upload do seu laudo ou documento para identificar automaticamente seus direitos.
                     A análise é 100% local — o arquivo é <strong>criptografado, analisado e descartado
                         automaticamente</strong>.
                 </p>
 
-                <!-- Upload Area -->
-                <div class="upload-zone" id="uploadZone" role="button" tabindex="0"
-                    aria-label="Clique ou arraste arquivos para enviar">
-                    <div class="upload-icon">📄</div>
-                    <p class="upload-text">Arraste arquivos aqui ou <strong>clique para selecionar</strong></p>
-                    <p class="upload-hint">PDF, JPG ou PNG · Máx. 5MB por arquivo · Até 5 arquivos</p>
-                    <input type="file" id="fileInput" multiple accept=".pdf,.jpg,.jpeg,.png" class="sr-only"
-                        aria-hidden="true">
+                <!-- Upload Area (collapsed by default) -->
+                <div id="docsUploadArea" class="docs-upload-area" style="display:none;">
+                    <div class="upload-zone" id="uploadZone" role="button" tabindex="0"
+                        aria-label="Clique ou arraste arquivos para enviar">
+                        <div class="upload-icon">📄</div>
+                        <p class="upload-text">Arraste arquivos aqui ou <strong>clique para selecionar</strong></p>
+                        <p class="upload-hint">PDF, JPG ou PNG · Máx. 5MB por arquivo · Até 5 arquivos</p>
+                        <input type="file" id="fileInput" multiple accept=".pdf,.jpg,.jpeg,.png" class="sr-only"
+                            aria-hidden="true">
+                    </div>
+
+                    <!-- File List -->
+                    <div id="fileList" class="file-list" aria-live="polite"></div>
+
+                    <!-- Botão global de análise -->
+                    <button id="analyzeSelected" class="btn btn-primary btn-analyze-global" type="button" disabled>
+                        🔍 Enviar para análise local
+                    </button>
+
+                    <div class="upload-privacy">
+                        <p>🔒 <strong>Consulta pontual:</strong> seus arquivos são criptografados (AES-256), analisados
+                            localmente e <strong>descartados automaticamente após a análise</strong>.
+                            Nenhum arquivo é enviado para servidores. Arquivos não analisados expiram em 15 minutos.</p>
+                        <button id="deleteAllFiles" class="btn btn-sm btn-danger" type="button" style="display:none;">
+                            🗑️ Apagar todos os arquivos
+                        </button>
+                    </div>
                 </div>
-
-                <!-- File List -->
-                <div id="fileList" class="file-list" aria-live="polite"></div>
-
-                <!-- Botão global de análise -->
-                <button id="analyzeSelected" class="btn btn-primary btn-analyze-global" disabled>
-                    🔍 Selecione arquivos para analisar
-                </button>
 
                 <!-- Análise de Documentos — Resultados -->
                 <div id="analysisResults" class="analysis-results" style="display:none;" aria-live="polite"
@@ -400,9 +441,11 @@
                     <div class="analysis-header">
                         <h3>🔍 Análise do Documento</h3>
                         <div class="analysis-header-actions">
-                            <button id="exportPdf" class="btn btn-sm btn-outline" aria-label="Salvar como PDF">📥
+                            <button id="exportPdf" class="btn btn-sm btn-outline" type="button"
+                                aria-label="Salvar como PDF">📥
                                 Salvar PDF</button>
-                            <button id="closeAnalysis" class="btn btn-sm btn-outline" aria-label="Fechar análise">✕
+                            <button id="closeAnalysis" class="btn btn-sm btn-outline" type="button"
+                                aria-label="Fechar análise">✕
                                 Fechar</button>
                         </div>
                     </div>
@@ -412,15 +455,6 @@
                         <p>Analisando documentos... (100% local, nada é enviado)</p>
                     </div>
                     <div id="analysisContent"></div>
-                </div>
-
-                <div class="upload-privacy">
-                    <p>🔒 <strong>Consulta pontual:</strong> seus arquivos são criptografados (AES-256), analisados
-                        localmente e <strong>descartados automaticamente após a análise</strong>.
-                        Nenhum arquivo é enviado para servidores. Arquivos não analisados expiram em 15 minutos.</p>
-                    <button id="deleteAllFiles" class="btn btn-sm btn-danger" style="display:none;">
-                        🗑️ Apagar todos os arquivos
-                    </button>
                 </div>
 
                 <!-- Document Checklist -->
@@ -436,7 +470,7 @@
         <!-- ========== LINKS ÚTEIS ========== -->
         <section class="section section-alt" id="links">
             <div class="container">
-                <h2>🔗 Links Úteis — Sites Oficiais</h2>
+                <h2>🔗 Sites Oficiais do Governo</h2>
                 <p class="section-desc">
                     Todos os links abaixo são de sites oficiais do governo brasileiro.
                     Gerados automaticamente a partir da base de dados.
@@ -450,7 +484,7 @@
         <!-- ========== CLASSIFICAÇÃO DE DEFICIÊNCIA (CID) ========== -->
         <section class="section" id="classificacao">
             <div class="container">
-                <h2>🦠 Classificação de Deficiência — CID-10 / CID-11</h2>
+                <h2>🏥 Classificação de Deficiência — CID-10 / CID-11</h2>
                 <p class="section-desc">
                     Tabela de referência com os códigos CID usados em laudos médicos para cada tipo de deficiência.
                     O sistema identifica automaticamente estes códigos ao analisar seus documentos.
@@ -469,13 +503,18 @@
                     Secretarias e órgãos de cada estado brasileiro responsáveis por políticas públicas
                     para pessoas com deficiência. Todos os links são de domínios oficiais <code>.gov.br</code>.
                 </p>
-                <div class="orgao-filter-bar">
-                    <button class="orgao-filter-btn active" data-filter="todos">Todos</button>
-                    <button class="orgao-filter-btn" data-filter="Norte">Norte</button>
-                    <button class="orgao-filter-btn" data-filter="Nordeste">Nordeste</button>
-                    <button class="orgao-filter-btn" data-filter="Centro-Oeste">Centro-Oeste</button>
-                    <button class="orgao-filter-btn" data-filter="Sudeste">Sudeste</button>
-                    <button class="orgao-filter-btn" data-filter="Sul">Sul</button>
+                <div class="orgao-filter-bar" role="group" aria-label="Filtrar por região">
+                    <button type="button" class="orgao-filter-btn active" data-filter="todos"
+                        aria-pressed="true">Todos</button>
+                    <button type="button" class="orgao-filter-btn" data-filter="Norte"
+                        aria-pressed="false">Norte</button>
+                    <button type="button" class="orgao-filter-btn" data-filter="Nordeste"
+                        aria-pressed="false">Nordeste</button>
+                    <button type="button" class="orgao-filter-btn" data-filter="Centro-Oeste"
+                        aria-pressed="false">Centro-Oeste</button>
+                    <button type="button" class="orgao-filter-btn" data-filter="Sudeste"
+                        aria-pressed="false">Sudeste</button>
+                    <button type="button" class="orgao-filter-btn" data-filter="Sul" aria-pressed="false">Sul</button>
                 </div>
                 <div id="orgaosEstaduaisGrid" class="orgaos-grid">
                     <!-- Preenchido pelo JavaScript a partir do JSON -->
@@ -491,11 +530,15 @@
                     Organizações governamentais e ONGs que oferecem suporte gratuito ou de baixo custo
                     para famílias de pessoas com deficiência.
                 </p>
-                <div class="inst-filter">
-                    <button class="inst-filter-btn active" data-filter="todos">Todos</button>
-                    <button class="inst-filter-btn" data-filter="governamental">🏛️ Governamental</button>
-                    <button class="inst-filter-btn" data-filter="ong">💚 ONGs</button>
-                    <button class="inst-filter-btn" data-filter="profissional">⚖️ Profissional</button>
+                <div class="inst-filter" role="group" aria-label="Filtrar por tipo de instituição">
+                    <button type="button" class="inst-filter-btn active" data-filter="todos"
+                        aria-pressed="true">Todos</button>
+                    <button type="button" class="inst-filter-btn" data-filter="governamental" aria-pressed="false">🏛️
+                        Governamental</button>
+                    <button type="button" class="inst-filter-btn" data-filter="ong" aria-pressed="false">💚
+                        ONGs</button>
+                    <button type="button" class="inst-filter-btn" data-filter="profissional" aria-pressed="false">⚖️
+                        Profissional</button>
                 </div>
                 <div id="instituicoesGrid" class="instituicoes-grid">
                     <!-- Preenchido pelo JavaScript a partir do JSON -->
@@ -506,7 +549,7 @@
         <!-- ========== TRANSPARÊNCIA ========== -->
         <section class="section section-alt" id="transparencia">
             <div class="container">
-                <h2>🔍 Transparência — Nossas Fontes</h2>
+                <h2>🔍 Transparência e Fontes Oficiais</h2>
                 <p class="section-desc">
                     Todas as informações deste site são compiladas de <strong>fontes oficiais</strong>
                     do governo brasileiro. Abaixo, a lista completa das bases consultadas.
@@ -580,6 +623,13 @@
         </div>
     </footer>
 
+    <!-- VLibras — Tradução oficial em Libras pelo Governo Federal -->
+    <div vw class="enabled">
+        <div vw-access-button class="active"></div>
+        <div vw-plugin-wrapper>
+            <div class="vw-plugin-top-wrapper"></div>
+        </div>
+    </div>
     <script src="js/app.js"></script>
     <script>
         // Register Service Worker for offline support

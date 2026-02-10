@@ -21,6 +21,7 @@ on:
       - "sw.js"
       - "manifest.json"
       - "codereview/**"
+      - "scripts/**"
       - ".github/workflows/deploy.yml"
 
 concurrency:

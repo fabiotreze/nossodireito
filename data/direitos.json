@@ -9,7 +9,7 @@
             "tipo": "legislacao",
             "url": "https://www.planalto.gov.br/ccivil_03/constituicao/constituicao.htm",
             "orgao": "Presidência da República",
-            "consultado_em": "2026-02-09",
+            "consultado_em": "2026-02-10",
             "artigos_referenciados": [
                 "Art. 203, V",
                 "Art. 208, III"
@@ -20,7 +20,7 @@
             "tipo": "legislacao",
             "url": "https://www.planalto.gov.br/ccivil_03/leis/l8036consol.htm",
             "orgao": "Presidência da República",
-            "consultado_em": "2026-02-09",
+            "consultado_em": "2026-02-10",
             "artigos_referenciados": [
                 "Art. 20, XVII"
             ]
@@ -30,7 +30,7 @@
             "tipo": "legislacao",
             "url": "https://www.planalto.gov.br/ccivil_03/leis/l8213cons.htm",
             "orgao": "Presidência da República",
-            "consultado_em": "2026-02-09",
+            "consultado_em": "2026-02-10",
             "artigos_referenciados": [
                 "Art. 93"
             ]
@@ -40,7 +40,7 @@
             "tipo": "legislacao",
             "url": "https://www.planalto.gov.br/ccivil_03/leis/l8742.htm",
             "orgao": "Presidência da República",
-            "consultado_em": "2026-02-09",
+            "consultado_em": "2026-02-10",
             "artigos_referenciados": [
                 "Art. 20"
             ]
@@ -50,7 +50,7 @@
             "tipo": "legislacao",
             "url": "https://www.planalto.gov.br/ccivil_03/leis/l8899.htm",
             "orgao": "Presidência da República",
-            "consultado_em": "2026-02-09",
+            "consultado_em": "2026-02-10",
             "artigos_referenciados": [
                 "Art. 1º"
             ]
@@ -60,7 +60,7 @@
             "tipo": "legislacao",
             "url": "https://www.planalto.gov.br/ccivil_03/leis/l9656.htm",
             "orgao": "Presidência da República",
-            "consultado_em": "2026-02-09",
+            "consultado_em": "2026-02-10",
             "artigos_referenciados": [
                 "Art. 14"
             ]
@@ -70,7 +70,7 @@
             "tipo": "legislacao",
             "url": "https://www.planalto.gov.br/ccivil_03/_ato2011-2014/2012/lei/l12764.htm",
             "orgao": "Presidência da República",
-            "consultado_em": "2026-02-09",
+            "consultado_em": "2026-02-10",
             "artigos_referenciados": [
                 "Art. 3º, III",
                 "Art. 3º-A",
@@ -83,7 +83,7 @@
             "tipo": "legislacao",
             "url": "https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2015/lei/l13146.htm",
             "orgao": "Presidência da República",
-            "consultado_em": "2026-02-09",
+            "consultado_em": "2026-02-10",
             "artigos_referenciados": [
                 "Art. 18",
                 "Art. 28",
@@ -98,7 +98,7 @@
             "tipo": "legislacao",
             "url": "https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2018/lei/l13709.htm",
             "orgao": "Presidência da República",
-            "consultado_em": "2026-02-09",
+            "consultado_em": "2026-02-10",
             "artigos_referenciados": [
                 "Art. 4º, I"
             ]
@@ -108,7 +108,7 @@
             "tipo": "legislacao",
             "url": "https://www.planalto.gov.br/ccivil_03/_ato2019-2022/2020/lei/l13977.htm",
             "orgao": "Presidência da República",
-            "consultado_em": "2026-02-09",
+            "consultado_em": "2026-02-10",
             "artigos_referenciados": [
                 "Art. 2º"
             ]
@@ -118,56 +118,56 @@
             "tipo": "servico",
             "url": "https://www.gov.br/pt-br/servicos/solicitar-beneficio-assistencial-a-pessoa-com-deficiencia",
             "orgao": "Ministério do Desenvolvimento e Assistência Social",
-            "consultado_em": "2026-02-09"
+            "consultado_em": "2026-02-10"
         },
         {
             "nome": "Meu INSS",
             "tipo": "servico",
             "url": "https://meu.inss.gov.br/",
             "orgao": "INSS",
-            "consultado_em": "2026-02-09"
+            "consultado_em": "2026-02-10"
         },
         {
             "nome": "Secretaria Nacional dos Direitos da Pessoa com Deficiência",
             "tipo": "servico",
             "url": "https://www.gov.br/mdh/pt-br/navegue-por-temas/pessoa-com-deficiencia",
             "orgao": "Ministério dos Direitos Humanos e Cidadania",
-            "consultado_em": "2026-02-09"
+            "consultado_em": "2026-02-10"
         },
         {
             "nome": "ANS — Agência Nacional de Saúde Suplementar",
             "tipo": "servico",
             "url": "https://www.gov.br/ans/pt-br",
             "orgao": "Ministério da Saúde",
-            "consultado_em": "2026-02-09"
+            "consultado_em": "2026-02-10"
         },
         {
             "nome": "Mapa de Oportunidades e de Serviços Públicos (CRAS)",
             "tipo": "servico",
             "url": "https://aplicacoes.mds.gov.br/sagi/mops/",
             "orgao": "Ministério do Desenvolvimento Social",
-            "consultado_em": "2026-02-09"
+            "consultado_em": "2026-02-10"
         },
         {
-            "nome": "Passe Livre Federal",
+            "nome": "Passe Livre Interestadual Digital",
             "tipo": "servico",
-            "url": "https://www.gov.br/pt-br/servicos/obter-passe-livre-para-pessoas-com-deficiencia",
-            "orgao": "Ministério dos Transportes",
-            "consultado_em": "2026-02-09"
+            "url": "https://www.gov.br/pt-br/servicos/obter-passe-livre-interestadual-digital",
+            "orgao": "ANTT / Ministério dos Transportes",
+            "consultado_em": "2026-02-10"
         },
         {
             "nome": "Resolução ANS nº 539/2022 — Rol de Procedimentos",
             "tipo": "normativa",
             "url": "https://www.gov.br/ans/pt-br/assuntos/consumidor/o-que-o-seu-plano-de-saude-deve-cobrir-1",
             "orgao": "ANS",
-            "consultado_em": "2026-02-09"
+            "consultado_em": "2026-02-10"
         },
         {
             "nome": "Lei 10.098/2000 — Normas Gerais de Acessibilidade",
             "tipo": "legislacao",
             "url": "https://www.planalto.gov.br/ccivil_03/leis/l10098.htm",
             "orgao": "Presidência da República",
-            "consultado_em": "2026-02-09",
+            "consultado_em": "2026-02-10",
             "artigos_referenciados": [
                 "Art. 11–18"
             ]
@@ -177,7 +177,7 @@
             "tipo": "legislacao",
             "url": "https://www.planalto.gov.br/ccivil_03/_ato2004-2006/2004/decreto/d5296.htm",
             "orgao": "Presidência da República",
-            "consultado_em": "2026-02-09",
+            "consultado_em": "2026-02-10",
             "artigos_referenciados": [
                 "Art. 10–22"
             ]
@@ -187,7 +187,7 @@
             "tipo": "legislacao",
             "url": "https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2023/lei/l14620.htm",
             "orgao": "Presidência da República",
-            "consultado_em": "2026-02-09",
+            "consultado_em": "2026-02-10",
             "artigos_referenciados": [
                 "Art. 3º, § 1º"
             ]
@@ -814,8 +814,8 @@
         },
         {
             "uf": "PE",
-            "nome": "Sec. de Desenvolvimento Social, Criança, Juventude e PcD (SDSCJ)",
-            "url": "https://www.sdscj.pe.gov.br"
+            "nome": "Secretaria de Assistência Social (SAS)",
+            "url": "https://www.sas.pe.gov.br"
         },
         {
             "uf": "PI",
@@ -834,8 +834,8 @@
         },
         {
             "uf": "RN",
-            "nome": "Secretaria de Mulheres, Juventude e Direitos Humanos (SEMJIDH)",
-            "url": "https://semjidh.rn.gov.br"
+            "nome": "Administração Direta do Governo do RN",
+            "url": "http://adcon.rn.gov.br/"
         },
         {
             "uf": "RO",
@@ -1284,8 +1284,8 @@
             "onde": "gov.br (federal) / Prefeitura (municipal) / Detran (estadual)",
             "links": [
                 {
-                    "titulo": "Passe Livre Federal",
-                    "url": "https://www.gov.br/pt-br/servicos/obter-passe-livre-para-pessoas-com-deficiencia"
+                    "titulo": "Passe Livre Interestadual Digital (gov.br)",
+                    "url": "https://www.gov.br/pt-br/servicos/obter-passe-livre-interestadual-digital"
                 }
             ],
             "tags": [

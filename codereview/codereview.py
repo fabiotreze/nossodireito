@@ -972,6 +972,25 @@ def check_modularity(report: ReviewReport) -> None:
                            "Motor de matching não externalizado.",
                            sugestao="Extraia KEYWORD_MAP para data/matching_engine.json."))
 
+    # validate_sources.py (validação automática de fontes oficiais)
+    vs_script = PROJECT_ROOT / "scripts" / "validate_sources.py"
+    if vs_script.exists():
+        vs_content = read_text(vs_script)
+        has_urls = "validate_urls" in vs_content
+        has_leg = "validate_legislacao" in vs_content
+        has_cid = "validate_cid" in vs_content
+        if has_urls and has_leg and has_cid:
+            report.add(Finding(cat, "validate_sources.py completo (URLs + Legislação + CID)", Severity.PASS,
+                               "Script de validação automática com 3 módulos: URLs, Senado API, ICD API."))
+        else:
+            report.add(Finding(cat, "validate_sources.py incompleto", Severity.WARNING,
+                               "Script de validação existe mas faltam módulos.",
+                               sugestao="Adicione validate_urls, validate_legislacao e validate_cid."))
+    else:
+        report.add(Finding(cat, "validate_sources.py ausente", Severity.INFO,
+                           "Sem script de validação automática de fontes.",
+                           sugestao="Crie scripts/validate_sources.py para validar URLs, leis e CIDs."))
+
 
 def check_accessibility(report: ReviewReport, html: str, css: str) -> None:
     """Verifica acessibilidade: ARIA, semântica, constraste."""
@@ -1311,7 +1330,8 @@ def check_sensitive_data(report: ReviewReport) -> None:
             if matches:
                 # Ignorar falsos positivos em arquivos de configuração/automação
                 safe_files = {".gitignore", "codereview.py", "quality-gate.yml", "pre-commit",
-                              "terraform.yml", "deploy.yml", "weekly-review.yml"}
+                              "terraform.yml", "deploy.yml", "weekly-review.yml",
+                              "validate_sources.py"}
                 # Workflows CI referenciam paths de runtime (ex: cert.pfx decodificado de secret)
                 ci_dirs = {".github"}
                 is_ci = any(p in str(f.relative_to(PROJECT_ROOT)).replace("\\", "/") for p in ci_dirs)
