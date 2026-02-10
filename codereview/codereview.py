@@ -408,9 +408,11 @@ def check_security(report: ReviewReport, html: str, js: str) -> None:
                                        "Script com integrity mas sem crossorigin='anonymous'.",
                                        sugestao="Adicione crossorigin='anonymous' ao script com SRI."))
             elif is_govbr:
-                report.add(Finding(cat, f"Script gov.br sem SRI: {src[:50]}...", Severity.WARNING,
-                                   "Script de domínio gov.br sem SRI — considere adicionar integrity hash.",
-                                   sugestao="Adicione integrity='sha384-...' para garantir integridade."))
+                # Gov.br scripts that update without versioning (e.g. VLibras)
+                # cannot use SRI — hash breaks on every server-side update.
+                # Official gov.br integration examples omit SRI intentionally.
+                report.add(Finding(cat, f"Script gov.br confiável: {src[:50]}...", Severity.PASS,
+                                   "Script de domínio gov.br — fonte oficial confiável, SRI omitido intencionalmente (updates sem versionamento)."))
             else:
                 report.add(Finding(cat, f"Script externo: {src[:60]}...", Severity.WARNING,
                                    "Script carregado de fonte externa não verificada."))

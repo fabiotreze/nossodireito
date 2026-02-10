@@ -158,8 +158,10 @@
             try { localStorage.setItem(A11Y_CONTRAST_KEY, String(on)); } catch (_) { }
         }
 
-        // --- VLibras init + toggle ---
-        if (typeof window.VLibras !== 'undefined') { try { new window.VLibras.Widget('https://vlibras.gov.br/app'); } catch (_) { /* already init */ } }
+        // --- VLibras init + CDN fallback ---
+        function initVL() { try { new window.VLibras.Widget('https://vlibras.gov.br/app'); } catch (_) { } }
+        if (window.VLibras) initVL();
+        else { const s = document.createElement('script'); s.src = 'https://cdn.jsdelivr.net/gh/spbgovbr-vlibras/vlibras-portal@dev/app/vlibras-plugin.js'; s.onload = () => { if (window.VLibras) initVL(); }; document.head.appendChild(s); }
         if (btnLibras) btnLibras.addEventListener('click', () => {
             const vwBtn = document.querySelector('[vw-access-button]');
             if (vwBtn) {
