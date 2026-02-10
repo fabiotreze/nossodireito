@@ -274,51 +274,6 @@ const server = http.createServer(async (req, res) => {
         return;
     }
 
-    let urlPath;
-    try {
-        urlPath = new URL(req.url, `http://${host || 'localhost'}`).pathname;
-    } catch {
-        res.writeHead(400, { 'Content-Type': 'text/plain' });
-        res.end('Bad Request');
-        return;
-    }
-
-    const fullPath = resolveFile(urlPath);
-
-    if (!fullPath) {
-        res.writeHead(404, {
-            'Content-Type': 'text/plain',
-            ...SECURITY_HEADERS,
-        });
-        res.end('Not Found');
-        return;
-    }
-
-    const ext = path.extname(fullPath).toLowerCase();
-    const contentType = MIME[ext] || 'application/octet-stream';
-    // Service Worker must have short cache for update detection (browser spec)
-    const isSW = urlPath === '/sw.js';
-    const cacheControl = isSW ? 'no-cache' : (CACHE[ext] || 'no-cache');
-
-    // Build response headers
-    const headers = {
-        'Content-Type': contentType,
-        'Cache-Control': cacheControl,
-        ...SECURITY_HEADERS,
-    };
-
-    // Compression for text-based content
-    const acceptEncoding = req.headers['accept-encoding'] || '';
-    const useGzip = COMPRESSIBLE.has(ext) && acceptEncoding.includes('gzip');
-
-    if (useGzip) {
-        headers['Content-Encoding'] = 'gzip';
-        headers['Vary'] = 'Accept-Encoding';
-    }
-
-    res.writeHead(200, headers);
-
-    if (req.method === 'HEAD') {
     // ── Gov.br API proxy (CORS bypass for servicos.gov.br) ──
     // Must come AFTER Host validation for security hardening
     const govbrMatch = req.url.match(/^\/api\/govbr-servico\/(\d+)$/);
@@ -365,6 +320,51 @@ const server = http.createServer(async (req, res) => {
         return;
     }
 
+    let urlPath;
+    try {
+        urlPath = new URL(req.url, `http://${host || 'localhost'}`).pathname;
+    } catch {
+        res.writeHead(400, { 'Content-Type': 'text/plain' });
+        res.end('Bad Request');
+        return;
+    }
+
+    const fullPath = resolveFile(urlPath);
+
+    if (!fullPath) {
+        res.writeHead(404, {
+            'Content-Type': 'text/plain',
+            ...SECURITY_HEADERS,
+        });
+        res.end('Not Found');
+        return;
+    }
+
+    const ext = path.extname(fullPath).toLowerCase();
+    const contentType = MIME[ext] || 'application/octet-stream';
+    // Service Worker must have short cache for update detection (browser spec)
+    const isSW = urlPath === '/sw.js';
+    const cacheControl = isSW ? 'no-cache' : (CACHE[ext] || 'no-cache');
+
+    // Build response headers
+    const headers = {
+        'Content-Type': contentType,
+        'Cache-Control': cacheControl,
+        ...SECURITY_HEADERS,
+    };
+
+    // Compression for text-based content
+    const acceptEncoding = req.headers['accept-encoding'] || '';
+    const useGzip = COMPRESSIBLE.has(ext) && acceptEncoding.includes('gzip');
+
+    if (useGzip) {
+        headers['Content-Encoding'] = 'gzip';
+        headers['Vary'] = 'Accept-Encoding';
+    }
+
+    res.writeHead(200, headers);
+
+    if (req.method === 'HEAD') {
         res.end();
         return;
     }
