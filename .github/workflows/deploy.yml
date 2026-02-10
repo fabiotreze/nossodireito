@@ -10,6 +10,7 @@ on:
       - main
     paths:
       - "index.html"
+      - "index.min.html"
       - "server.js"
       - "package.json"
       - "css/**"

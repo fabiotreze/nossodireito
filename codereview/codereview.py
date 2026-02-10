@@ -398,16 +398,21 @@ def check_security(report: ReviewReport, html: str, js: str) -> None:
             report.add(Finding(cat, f"Script externo: {src[:60]}...", Severity.WARNING,
                                "Script carregado de fonte externa não verificada."))
 
-    # 6. Verifica target="_blank" com noopener
+    # 6. Verifica target="_blank" com noopener (aceita noopener e noopener noreferrer)
     blank_links = re.findall(r'target="_blank"', html)
-    noopener_links = re.findall(r'rel="noopener"', html)
-    if len(blank_links) > 0:
-        if len(noopener_links) >= len(blank_links):
+    noopener_links = re.findall(r'rel="noopener(?:\s+noreferrer)?"', html)
+    # Also check JS for dynamically generated links
+    blank_links_js = re.findall(r'target="_blank"', js)
+    noopener_links_js = re.findall(r'rel="noopener(?:\s+noreferrer)?"', js)
+    total_blank = len(blank_links) + len(blank_links_js)
+    total_noopener = len(noopener_links) + len(noopener_links_js)
+    if total_blank > 0:
+        if total_noopener >= total_blank:
             report.add(Finding(cat, "Links externos com rel='noopener'", Severity.PASS,
-                               f"Todos os {len(blank_links)} links target='_blank' possuem rel='noopener'."))
+                               f"Todos os {total_blank} links target='_blank' possuem rel='noopener'."))
         else:
             report.add(Finding(cat, "Links sem rel='noopener'", Severity.WARNING,
-                               f"{len(blank_links)} links com target='_blank' mas apenas {len(noopener_links)} com rel='noopener'.",
+                               f"{total_blank} links com target='_blank' mas apenas {total_noopener} com rel='noopener'.",
                                sugestao="Adicione rel='noopener' em todos os links target='_blank'."))
 
     # 7. Criptografia em repouso (IndexedDB)

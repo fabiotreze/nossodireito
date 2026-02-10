@@ -13,18 +13,15 @@
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://nossodireito.fabiotreze.com">
 
-    <!-- Preconnect for faster CDN loading -->
     <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
     <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
 
-    <!-- Content Security Policy -->
     <meta http-equiv="Content-Security-Policy"
-        content="default-src 'none'; script-src 'self' https://cdnjs.cloudflare.com https://vlibras.gov.br; style-src 'self' 'unsafe-inline' https://vlibras.gov.br; img-src 'self' data: blob: https://vlibras.gov.br; connect-src 'self' https://vlibras.gov.br; worker-src 'self' blob: https://cdnjs.cloudflare.com; child-src blob:; frame-src 'self' https://vlibras.gov.br blob:; media-src https://vlibras.gov.br; font-src 'self' https://vlibras.gov.br; form-action 'none'; base-uri 'self'; upgrade-insecure-requests;">
+        content="default-src 'none'; script-src 'self' https://cdnjs.cloudflare.com https://vlibras.gov.br; style-src 'self' 'unsafe-inline' https://vlibras.gov.br; img-src 'self' data: blob: https://vlibras.gov.br; connect-src 'self' https://vlibras.gov.br; worker-src 'self' blob: https://cdnjs.cloudflare.com; child-src blob:; frame-src 'self' https://vlibras.gov.br blob:; media-src 'self' https://vlibras.gov.br; font-src 'self' https://vlibras.gov.br; form-action 'none'; base-uri 'self'; frame-ancestors 'none'; manifest-src 'self'; upgrade-insecure-requests;">
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
     <meta http-equiv="Referrer-Policy" content="no-referrer">
     <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=(), payment=()">
 
-    <!-- Open Graph -->
     <meta property="og:title" content="Direitos PcD: BPC, CIPTEA, Escola Inclusiva, TEA — NossoDireito">
     <meta property="og:description"
         content="Recebeu um laudo de autismo ou deficiência? Guia gratuito com direitos, benefícios e passo a passo para famílias de PcD no Brasil.">
@@ -33,26 +30,22 @@
     <meta property="og:locale" content="pt_BR">
     <meta property="og:site_name" content="NossoDireito">
 
-    <!-- Favicons -->
     <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
     <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
     <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
 
-    <!-- Open Graph image -->
     <meta property="og:image" content="https://nossodireito.fabiotreze.com/images/og-image.png">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     <meta property="og:image:alt"
         content="NossoDireito — Guia gratuito de direitos para pessoas com deficiência no Brasil">
 
-    <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Direitos PcD: BPC, CIPTEA, Escola Inclusiva, TEA — NossoDireito">
     <meta name="twitter:description"
         content="Recebeu um laudo? Guia gratuito com BPC, CIPTEA, escola inclusiva e mais para PcD.">
     <meta name="twitter:image" content="https://nossodireito.fabiotreze.com/images/og-image.png">
 
-    <!-- Mobile / PWA -->
     <meta name="theme-color" content="#1e3a8a">
     <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0f172a">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -63,7 +56,6 @@
 
     <link rel="stylesheet" href="css/styles.css">
 
-    <!-- JSON-LD Structured Data -->
     <script type="application/ld+json">
     {
         "@context": "https://schema.org",
@@ -79,12 +71,11 @@
         "publisher": {
             "@type": "Organization",
             "name": "NossoDireito",
-            "url": "https://github.com/fabiotreze/nossodireito"
+            "url": "https://nossodireito.fabiotreze.com"
         }
     }
     </script>
 
-    <!-- JSON-LD FAQPage (SEO: featured snippets) -->
     <script type="application/ld+json">
     {
         "@context": "https://schema.org",
@@ -134,14 +125,11 @@
     }
     </script>
 
-    <!-- pdf.js — lazy-loaded by app.js when user reaches the Documents section -->
 </head>
 
 <body>
-    <!-- Skip to main content (accessibility) -->
     <a href="#mainContent" class="skip-link">Pular para o conteúdo principal</a>
 
-    <!-- ========== AVISO LEGAL (Modal) ========== -->
     <div id="disclaimerModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="disclaimerTitle"
         aria-hidden="true">
         <div class="modal-content">
@@ -182,7 +170,6 @@
         </div>
     </div>
 
-    <!-- ========== BARRA DE ACESSIBILIDADE ========== -->
     <div class="a11y-toolbar" role="toolbar" aria-label="Ferramentas de acessibilidade">
         <div class="container a11y-toolbar-inner">
             <span class="a11y-toolbar-label">♿ Acessibilidade:</span>
@@ -198,10 +185,12 @@
             <span class="a11y-separator" aria-hidden="true">|</span>
             <button type="button" id="a11yLibras" class="a11y-btn a11y-btn-libras"
                 aria-label="Ativar tradução em Libras (VLibras)" title="Libras (VLibras)">🤟 Libras</button>
+            <span class="a11y-separator" aria-hidden="true">|</span>
+            <button type="button" id="a11yReadAloud" class="a11y-btn" aria-label="Ler conteúdo em voz alta"
+                aria-pressed="false" title="Ouvir conteúdo">🔊 Ouvir</button>
         </div>
     </div>
 
-    <!-- ========== NAVEGAÇÃO ========== -->
     <nav class="navbar" role="navigation" aria-label="Menu principal">
         <div class="container">
             <a href="#" class="navbar-brand" aria-label="NossoDireito - Início">
@@ -226,7 +215,6 @@
         </div>
     </nav>
 
-    <!-- ========== NOSCRIPT FALLBACK ========== -->
     <noscript>
         <div
             style="background:#fef3cd;color:#856404;padding:24px;text-align:center;font-size:1.1rem;border-bottom:2px solid #ffc107;">
@@ -237,7 +225,6 @@
 
     <main id="mainContent" role="main">
 
-        <!-- ========== STALENESS BANNER ========== -->
         <div id="stalenessBanner" class="staleness-banner" hidden role="alert">
             <div class="container">
                 <p>⚠️ <strong>Atenção:</strong> As informações deste site podem estar desatualizadas.
@@ -246,7 +233,6 @@
             </div>
         </div>
 
-        <!-- ========== HERO ========== -->
         <section class="hero" id="inicio">
             <div class="container hero-grid">
                 <div class="hero-visual">
@@ -291,7 +277,6 @@
             </div>
         </section>
 
-        <!-- ========== BUSCA ========== -->
         <section class="section" id="busca">
             <div class="container">
                 <h2>🔍 O que você precisa saber?</h2>
@@ -308,7 +293,6 @@
             </div>
         </section>
 
-        <!-- ========== CATEGORIAS ========== -->
         <section class="section section-alt" id="categorias">
             <div class="container">
                 <h2>📋 Categorias de Direitos</h2>
@@ -316,23 +300,17 @@
                     Selecione a área que você precisa. Cada categoria tem o passo a passo completo
                     com base na legislação brasileira.
                 </p>
-                <div id="categoryGrid" class="card-grid">
-                    <!-- Preenchido pelo JavaScript a partir do JSON -->
-                </div>
+                <div id="categoryGrid" class="card-grid"></div>
             </div>
         </section>
 
-        <!-- ========== DETALHE DO DIREITO ========== -->
         <section class="section" id="detalhe" style="display:none;">
             <div class="container">
                 <button id="voltarBtn" class="btn btn-outline btn-sm" type="button">← Voltar às categorias</button>
-                <div id="detalheContent">
-                    <!-- Preenchido pelo JavaScript -->
-                </div>
+                <div id="detalheContent"></div>
             </div>
         </section>
 
-        <!-- ========== CHECKLIST ========== -->
         <section class="section section-alt" id="checklist">
             <div class="container">
                 <h2>✅ Primeiros Passos Após o Laudo</h2>
@@ -396,7 +374,6 @@
             </div>
         </section>
 
-        <!-- ========== MEUS DOCUMENTOS ========== -->
         <section class="section" id="documentos">
             <div class="container">
                 <h2>📎 Análise de Documentos</h2>
@@ -406,7 +383,6 @@
                         automaticamente</strong>.
                 </p>
 
-                <!-- Upload Area (collapsed by default) -->
                 <div id="docsUploadArea" class="docs-upload-area">
                     <div class="upload-zone" id="uploadZone" role="button" tabindex="0"
                         aria-label="Clique ou arraste arquivos para enviar">
@@ -417,10 +393,8 @@
                             aria-hidden="true">
                     </div>
 
-                    <!-- File List -->
                     <div id="fileList" class="file-list" aria-live="polite"></div>
 
-                    <!-- Botão global de análise -->
                     <button id="analyzeSelected" class="btn btn-primary btn-analyze-global" type="button" disabled>
                         🔍 Enviar para análise local
                     </button>
@@ -435,7 +409,6 @@
                     </div>
                 </div>
 
-                <!-- Análise de Documentos — Resultados -->
                 <div id="analysisResults" class="analysis-results" style="display:none;" aria-live="polite"
                     role="region" aria-label="Resultados da análise de documentos">
                     <div class="analysis-header">
@@ -457,7 +430,6 @@
                     <div id="analysisContent"></div>
                 </div>
 
-                <!-- Document Checklist -->
                 <h3 class="docs-checklist-title">📋 Documentos Necessários por Direito</h3>
                 <p class="section-desc" style="margin-bottom:16px;">
                     Com base nas categorias de direitos, estes são os documentos que você pode precisar.
@@ -467,7 +439,6 @@
             </div>
         </section>
 
-        <!-- ========== LINKS ÚTEIS ========== -->
         <section class="section section-alt" id="links">
             <div class="container">
                 <h2>🔗 Sites Oficiais do Governo</h2>
@@ -475,13 +446,10 @@
                     Todos os links abaixo são de sites oficiais do governo brasileiro.
                     Gerados automaticamente a partir da base de dados.
                 </p>
-                <div id="linksGrid" class="links-grid">
-                    <!-- Preenchido pelo JavaScript a partir do JSON -->
-                </div>
+                <div id="linksGrid" class="links-grid"></div>
             </div>
         </section>
 
-        <!-- ========== CLASSIFICAÇÃO DE DEFICIÊNCIA (CID) ========== -->
         <section class="section" id="classificacao">
             <div class="container">
                 <h2>🏥 Classificação de Deficiência — CID-10 / CID-11</h2>
@@ -489,9 +457,7 @@
                     Tabela de referência com os códigos CID usados em laudos médicos para cada tipo de deficiência.
                     O sistema identifica automaticamente estes códigos ao analisar seus documentos.
                 </p>
-                <div id="classificacaoGrid">
-                    <!-- Preenchido pelo JavaScript a partir do JSON -->
-                </div>
+                <div id="classificacaoGrid"></div>
                 <div class="table-note" role="note" aria-label="Nota sobre a tabela de classificação de deficiência">
                     ℹ️ Esta tabela utiliza códigos CID-10 e CID-11 oficiais da OMS e critérios técnicos baseados na
                     legislação brasileira. Consulte sempre as fontes oficiais para informações atualizadas: <a
@@ -500,10 +466,8 @@
                         Saúde</a>.
                 </div>
             </div>
-            </div>
         </section>
 
-        <!-- ========== ÓRGÃOS ESTADUAIS ========== -->
         <section class="section section-alt" id="orgaos-estaduais">
             <div class="container">
                 <h2>🏢 Órgãos Estaduais de Apoio à Pessoa com Deficiência</h2>
@@ -524,13 +488,10 @@
                         aria-pressed="false">Sudeste</button>
                     <button type="button" class="orgao-filter-btn" data-filter="Sul" aria-pressed="false">Sul</button>
                 </div>
-                <div id="orgaosEstaduaisGrid" class="orgaos-grid">
-                    <!-- Preenchido pelo JavaScript a partir do JSON -->
-                </div>
+                <div id="orgaosEstaduaisGrid" class="orgaos-grid"></div>
             </div>
         </section>
 
-        <!-- ========== INSTITUIÇÕES DE APOIO ========== -->
         <section class="section" id="instituicoes">
             <div class="container">
                 <h2>🤝 Instituições de Apoio</h2>
@@ -548,13 +509,10 @@
                     <button type="button" class="inst-filter-btn" data-filter="profissional" aria-pressed="false">⚖️
                         Profissional</button>
                 </div>
-                <div id="instituicoesGrid" class="instituicoes-grid">
-                    <!-- Preenchido pelo JavaScript a partir do JSON -->
-                </div>
+                <div id="instituicoesGrid" class="instituicoes-grid"></div>
             </div>
         </section>
 
-        <!-- ========== TRANSPARÊNCIA ========== -->
         <section class="section section-alt" id="transparencia">
             <div class="container">
                 <h2>🔍 Transparência e Fontes Oficiais</h2>
@@ -606,7 +564,7 @@
                         semanalmente todas as fontes acima, verificando alterações legislativas, novos
                         serviços e atualizações de procedimentos. A data da última verificação consta
                         acima. Se você encontrar alguma informação desatualizada,
-                        Avise-nos pelo e-mail <a href="mailto:fabiotreze@hotmail.com">fabiotreze@hotmail.com</a> que
+                        avise-nos pelo e-mail <a href="mailto:fabiotreze@hotmail.com">fabiotreze@hotmail.com</a> que
                         vamos corrigir assim que possível.
                     </p>
                 </div>
@@ -615,7 +573,6 @@
 
     </main>
 
-    <!-- ========== FOOTER ========== -->
     <footer class="footer">
         <div class="container">
             <div class="footer-content">
@@ -644,7 +601,6 @@
         </div>
     </footer>
 
-    <!-- VLibras — Tradução oficial em Libras pelo Governo Federal -->
     <div vw class="enabled">
         <div vw-access-button class="active"></div>
         <div vw-plugin-wrapper>

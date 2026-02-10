@@ -3,15 +3,14 @@
 ## Versões Suportadas
 
 | Versão | Suportada |
-|--------|-----------|
-| 1.0.x  | ✅        |
+|--------|-----------|| 1.1.x  | ✅        || 1.0.x  | ✅        |
 
 ## Reportando Vulnerabilidades
 
 Se você encontrar uma vulnerabilidade de segurança neste projeto, por favor reporte de forma **responsável**:
 
 1. **NÃO** abra uma issue pública
-2. Envie um email para **security@fabiotreze.com** com:
+2. Envie um email para **fabiotreze@hotmail.com** com:
    - Descrição da vulnerabilidade
    - Passos para reproduzir
    - Impacto potencial

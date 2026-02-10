@@ -233,6 +233,128 @@
                 btnLibras.textContent = '🤟 Libras';
             });
         });
+
+        // --- Leitura em voz alta (Web Speech API — 100% nativo, sem dependência externa) ---
+        const btnReadAloud = document.getElementById('a11yReadAloud');
+        const TTS_AVAILABLE = typeof speechSynthesis !== 'undefined';
+        let ttsActive = false;
+
+        /**
+         * Obtém o texto visível da seção atualmente mais próxima do viewport.
+         * Prioriza seções com conteúdo real (ignora seções ocultas e vazias).
+         */
+        function getVisibleSectionText() {
+            const sections = document.querySelectorAll('main section:not([style*="display:none"])');
+            let bestSection = null;
+            let bestDistance = Infinity;
+
+            for (const section of sections) {
+                if (section.hidden) continue;
+                const rect = section.getBoundingClientRect();
+                // Seção visível ou próxima do topo
+                const distance = Math.abs(rect.top - 80); // 80px offset for navbar
+                if (distance < bestDistance) {
+                    bestDistance = distance;
+                    bestSection = section;
+                }
+            }
+
+            if (!bestSection) return '';
+
+            // Extrair apenas texto útil (ignora scripts, styles, inputs)
+            const clone = bestSection.cloneNode(true);
+            clone.querySelectorAll('script, style, input, button, [aria-hidden="true"]').forEach(el => el.remove());
+            const text = clone.textContent
+                .replace(/\s+/g, ' ')
+                .replace(/[📋🔍✅📎📄🔗🏥🏢🤝📜🏛️⚖️💚♿💡⚠️📲📥🗑️🔲🤟🔊⏳]/g, '') // Remove emojis
+                .trim();
+
+            return text;
+        }
+
+        /**
+         * Encontra a melhor voz pt-BR disponível no dispositivo.
+         * Prioriza vozes do Google e Microsoft por qualidade superior.
+         */
+        function getBestPtBrVoice() {
+            const voices = speechSynthesis.getVoices();
+            const ptVoices = voices.filter(v => v.lang.startsWith('pt'));
+            if (ptVoices.length === 0) return null;
+
+            // Prioridade: pt-BR > pt-PT, Google/Microsoft > outros
+            const ranked = ptVoices.sort((a, b) => {
+                const aScore = (a.lang === 'pt-BR' ? 10 : 0) + (a.name.includes('Google') ? 5 : 0) + (a.name.includes('Microsoft') ? 4 : 0);
+                const bScore = (b.lang === 'pt-BR' ? 10 : 0) + (b.name.includes('Google') ? 5 : 0) + (b.name.includes('Microsoft') ? 4 : 0);
+                return bScore - aScore;
+            });
+            return ranked[0];
+        }
+
+        function stopReading() {
+            speechSynthesis.cancel();
+            ttsActive = false;
+            if (btnReadAloud) {
+                btnReadAloud.textContent = '🔊 Ouvir';
+                btnReadAloud.setAttribute('aria-pressed', 'false');
+            }
+        }
+
+        function startReading() {
+            const text = getVisibleSectionText();
+            if (!text) {
+                showToast('Não há conteúdo para ler nesta seção.', 'info');
+                return;
+            }
+
+            // Limitar a ~2000 caracteres para não travar o navegador
+            const truncated = text.length > 2000 ? text.substring(0, 2000) + '...' : text;
+
+            const utterance = new SpeechSynthesisUtterance(truncated);
+            utterance.lang = 'pt-BR';
+            utterance.rate = 0.9;  // Velocidade levemente reduzida para clareza
+            utterance.pitch = 1.0;
+
+            const voice = getBestPtBrVoice();
+            if (voice) utterance.voice = voice;
+
+            utterance.onend = () => stopReading();
+            utterance.onerror = () => {
+                stopReading();
+                showToast('Erro na leitura. Seu navegador pode não suportar voz em português.', 'warning');
+            };
+
+            speechSynthesis.cancel(); // Cancelar qualquer leitura anterior
+            speechSynthesis.speak(utterance);
+            ttsActive = true;
+
+            if (btnReadAloud) {
+                btnReadAloud.textContent = '⏹️ Parar';
+                btnReadAloud.setAttribute('aria-pressed', 'true');
+            }
+        }
+
+        if (btnReadAloud && TTS_AVAILABLE) {
+            btnReadAloud.addEventListener('click', () => {
+                if (ttsActive) {
+                    stopReading();
+                } else {
+                    startReading();
+                }
+            });
+
+            // Garantir que vozes estejam carregadas (Chrome carrega async)
+            if (speechSynthesis.getVoices().length === 0) {
+                speechSynthesis.addEventListener('voiceschanged', () => { }, { once: true });
+            }
+        } else if (btnReadAloud && !TTS_AVAILABLE) {
+            // Navegador sem suporte a TTS — esconder botão
+            btnReadAloud.style.display = 'none';
+        }
+
+        // Parar leitura ao navegar para outra seção
+        window.addEventListener('hashchange', () => {
+            if (ttsActive) stopReading();
+        });
     }
 
     // Run toolbar setup immediately (before DOMContentLoaded, toolbar is in static HTML)
@@ -644,7 +766,7 @@
                     .filter((l) => isSafeUrl(l.url))
                     .map(
                         (l) =>
-                            `<a class="legal-link" href="${escapeHtml(l.url)}" target="_blank" rel="noopener">
+                            `<a class="legal-link" href="${escapeHtml(l.url)}" target="_blank" rel="noopener noreferrer">
                             🌐 ${escapeHtml(l.titulo)}
                         </a>`
                     )
@@ -664,7 +786,7 @@
             `${cat.icone} ${cat.titulo}\n${cat.resumo}\n\nVeja mais em: https://nossodireito.fabiotreze.com`
         );
         html += `<div class="detalhe-section" style="text-align:center;padding-top:8px;">
-            <a href="https://wa.me/?text=${shareText}" target="_blank" rel="noopener"
+            <a href="https://wa.me/?text=${shareText}" target="_blank" rel="noopener noreferrer"
                class="btn btn-whatsapp" aria-label="Compartilhar no WhatsApp">
                📲 Compartilhar no WhatsApp
             </a>
@@ -834,7 +956,7 @@
                     </div>
                     <div class="fonte-data">Consultado<br>${formatDate(f.consultado_em)}</div>
                     <div class="fonte-link">
-                        ${isSafeUrl(f.url) ? `<a href="${escapeHtml(f.url)}" target="_blank" rel="noopener">Abrir ↗</a>` : ''}
+                        ${isSafeUrl(f.url) ? `<a href="${escapeHtml(f.url)}" target="_blank" rel="noopener noreferrer">Abrir ↗</a>` : ''}
                     </div>
                 </div>`;
         };
@@ -945,7 +1067,7 @@
                         ${servicos ? `<ul class="inst-servicos">${servicos}</ul>` : ''}
                         <div class="inst-como">${escapeHtml(inst.como_acessar)}</div>
                         <div class="inst-categories">${catTags}</div>
-                        ${isSafeUrl(inst.url) ? `<a href="${escapeHtml(inst.url)}" class="btn btn-sm btn-outline inst-link" target="_blank" rel="noopener">
+                        ${isSafeUrl(inst.url) ? `<a href="${escapeHtml(inst.url)}" class="btn btn-sm btn-outline inst-link" target="_blank" rel="noopener noreferrer">
                             Acessar site ↗
                         </a>` : ''}
                     </div>`;
@@ -1017,7 +1139,7 @@
                                         : domain.includes('mds.gov') ? '🏠'
                                             : '🔗';
                 return `
-                <a href="${escapeHtml(lk.url)}" class="link-card" target="_blank" rel="noopener">
+                <a href="${escapeHtml(lk.url)}" class="link-card" target="_blank" rel="noopener noreferrer">
                     <span class="link-icon">${icon}</span>
                     <span class="link-title">${escapeHtml(lk.titulo)}</span>
                     <span class="link-domain">${escapeHtml(domain)}</span>
@@ -1076,7 +1198,7 @@
                     <div class="orgao-card">
                         <span class="orgao-uf-badge">${escapeHtml(org.uf)}</span>
                         <span class="orgao-nome">${escapeHtml(org.nome)}</span>
-                        ${urlSafe ? `<a href="${escapeHtml(org.url)}" class="btn btn-sm btn-outline orgao-link" target="_blank" rel="noopener">
+                        ${urlSafe ? `<a href="${escapeHtml(org.url)}" class="btn btn-sm btn-outline orgao-link" target="_blank" rel="noopener noreferrer">
                             Acessar ↗
                         </a>` : ''}
                     </div>`;

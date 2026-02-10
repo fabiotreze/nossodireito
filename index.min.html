@@ -13,7 +13,7 @@
 <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
 <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
 <meta http-equiv="Content-Security-Policy"
-    content="default-src 'none'; script-src 'self' https://cdnjs.cloudflare.com https://vlibras.gov.br; style-src 'self' 'unsafe-inline' https://vlibras.gov.br; img-src 'self' data: blob: https://vlibras.gov.br; connect-src 'self' https://vlibras.gov.br; worker-src 'self' blob: https://cdnjs.cloudflare.com; child-src blob:; frame-src 'self' https://vlibras.gov.br blob:; media-src https://vlibras.gov.br; font-src 'self' https://vlibras.gov.br; form-action 'none'; base-uri 'self'; frame-ancestors 'none'; manifest-src 'self'; upgrade-insecure-requests;">
+    content="default-src 'none'; script-src 'self' https://cdnjs.cloudflare.com https://vlibras.gov.br; style-src 'self' 'unsafe-inline' https://vlibras.gov.br; img-src 'self' data: blob: https://vlibras.gov.br; connect-src 'self' https://vlibras.gov.br; worker-src 'self' blob: https://cdnjs.cloudflare.com; child-src blob:; frame-src 'self' https://vlibras.gov.br blob:; media-src 'self' https://vlibras.gov.br; font-src 'self' https://vlibras.gov.br; form-action 'none'; base-uri 'self'; frame-ancestors 'none'; manifest-src 'self'; upgrade-insecure-requests;">
 <meta http-equiv="X-Content-Type-Options" content="nosniff">
 <meta http-equiv="Referrer-Policy" content="no-referrer">
 <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=(), payment=()">
@@ -58,7 +58,7 @@
         "publisher": {
             "@type": "Organization",
             "name": "NossoDireito",
-            "url": "https://github.com/fabiotreze/nossodireito"
+            "url": "https://nossodireito.fabiotreze.com"
         }
     }</script>
 <script type="application/ld+json">{
@@ -147,7 +147,11 @@
             type="button" id="a11yContrast" class="a11y-btn" aria-label="Alternar alto contraste" aria-pressed="false"
             title="Alto Contraste">🔲 Contraste</button> <span class="a11y-separator" aria-hidden="true">|</span>
         <button type="button" id="a11yLibras" class="a11y-btn a11y-btn-libras"
-            aria-label="Ativar tradução em Libras (VLibras)" title="Libras (VLibras)">🤟 Libras</button></div>
+            aria-label="Ativar tradução em Libras (VLibras)" title="Libras (VLibras)">🤟 Libras</button>
+        <span class="a11y-separator" aria-hidden="true">|</span>
+        <button type="button" id="a11yReadAloud" class="a11y-btn" aria-label="Ler conteúdo em voz alta"
+            aria-pressed="false" title="Ouvir conteúdo">🔊 Ouvir</button>
+    </div>
 </div>
 <nav class="navbar" role="navigation" aria-label="Menu principal">
     <div class="container"><a href="#" class="navbar-brand" aria-label="NossoDireito - Início"><span>NossoDireito</span>
@@ -170,7 +174,8 @@
     <div
         style="background:#fef3cd;color:#856404;padding:24px;text-align:center;font-size:1.1rem;border-bottom:2px solid #ffc107">
         <strong>⚠️ JavaScript necessário:</strong> Este site precisa de JavaScript para funcionar. Por favor, habilite o
-        JavaScript no seu navegador e recarregue a página.</div>
+        JavaScript no seu navegador e recarregue a página.
+    </div>
 </noscript>
 <main id="mainContent" role="main">
     <div id="stalenessBanner" class="staleness-banner" hidden role="alert">
@@ -348,7 +353,8 @@
                     aria-pressed="false">Nordeste</button> <button type="button" class="orgao-filter-btn"
                     data-filter="Centro-Oeste" aria-pressed="false">Centro-Oeste</button> <button type="button"
                     class="orgao-filter-btn" data-filter="Sudeste" aria-pressed="false">Sudeste</button> <button
-                    type="button" class="orgao-filter-btn" data-filter="Sul" aria-pressed="false">Sul</button></div>
+                    type="button" class="orgao-filter-btn" data-filter="Sul" aria-pressed="false">Sul</button>
+            </div>
             <div id="orgaosEstaduaisGrid" class="orgaos-grid"></div>
         </div>
     </section>
@@ -378,9 +384,9 @@
                 <li>Frequência de atualização: semanal/manual a cada nova legislação ou atualização de base oficial
                 <li>Compromisso: revisão constante para garantir precisão, clareza e acessibilidade
             </ul>
-            <p class="section-desc"><strong>Encontrou alguma informação desatualizada ou imprecisa?</strong> <a
-                    href="https://github.com/fabiotreze/nossodireito" target="_blank"
-                    rel="noopener noreferrer">Avise-nos pelo GitHub</a> para que possamos corrigir rapidamente.
+            <p class="section-desc"><strong>Encontrou alguma informação desatualizada ou imprecisa?</strong> Avise-nos
+                pelo e-mail <a href="mailto:fabiotreze@hotmail.com">fabiotreze@hotmail.com</a> que vamos corrigir assim
+                que possível.
             <div class="transparency-meta">
                 <div class="tmeta-item"><span class="tmeta-label">Última atualização</span> <span class="tmeta-value"
                         id="transLastUpdate"></span></div>
@@ -399,8 +405,9 @@
                 <p><strong>Compromisso com a atualização:</strong> Este projeto se compromete a revisar semanalmente
                     todas as fontes acima, verificando alterações legislativas, novos serviços e atualizações de
                     procedimentos. A data da última verificação consta acima. Se você encontrar alguma informação
-                    desatualizada, <a href="https://github.com/fabiotreze/nossodireito" target="_blank"
-                        rel="noopener noreferrer">avise-nos pelo GitHub</a>.
+                    desatualizada, avise-nos pelo e-mail <a
+                        href="mailto:fabiotreze@hotmail.com">fabiotreze@hotmail.com</a> que vamos corrigir assim que
+                    possível.
             </div>
         </div>
     </section>
@@ -422,9 +429,8 @@
             <div class="footer-meta">
                 <p>Última atualização: <span id="lastUpdate"></span> · <span id="footerVersion"
                         class="footer-version"></span>
-                <p><a href="#" id="showDisclaimer">Aviso Legal</a> · <a
-                        href="https://github.com/fabiotreze/nossodireito" target="_blank"
-                        rel="noopener noreferrer">GitHub</a>
+                <p><a href="#" id="showDisclaimer">Aviso Legal</a> ·
+                    <span style="color:#64748b">Repositório privado</span>
             </div>
         </div>
     </div>

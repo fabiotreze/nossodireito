@@ -90,6 +90,37 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 - URL da ANS corrigida
 - NBR 9050 referenciada
 
+#### Acessibilidade — Leitura em Voz Alta (TTS)
+- **🔊 Ouvir** — botão nativo na barra de acessibilidade usando Web Speech API (`speechSynthesis`)
+- Lê a seção visível em pt-BR, sem dependência externa (100% browser nativo)
+- Seleção inteligente de voz: prioriza Google/Microsoft pt-BR por qualidade
+- Limite de 2000 caracteres, velocidade 0.9x para clareza
+- Auto-stop ao navegar para outra seção; toggle play/stop
+- Graceful degradation: botão escondido se navegador não suporta TTS
+
+#### Acessibilidade — VLibras (Libras)
+- **🤟 Libras** — integração com VLibras (governo federal) para tradução em Libras
+- Carregamento lazy com polling robusto (`waitForVLibrasButton`) em vez de `setTimeout`
+- CSP atualizado: `frame-src`, `media-src`, `font-src` para domínios `vlibras.gov.br`
+
+#### Segurança — CSP e Headers
+- CSP sincronizado entre `index.html`, `index.min.html` e `server.js`
+- Adicionados: `frame-ancestors 'none'`, `manifest-src 'self'`
+- `media-src 'self'` adicionado para suporte a áudio nativo (Web Speech API)
+- `rel="noopener noreferrer"` em todos os 9 links `target="_blank"` (HTML + JS)
+- Remoção de todas as referências ao GitHub nos arquivos públicos (privacidade)
+
+#### Bug Fixes — Motor de Análise
+- **CRÍTICO**: `matchRights()` recebia texto em lowercase, destruindo detecção de CID (F84, G80, 6A02) e siglas (TEA, BPC, SUS). Corrigido com `originalText` preservando case
+- Falso positivo "receita" removido — mantido apenas "receita médica"/"receita medica"
+- Termos médicos expandidos com variantes sem acento para PDFs
+- Correção ortográfica: "Avise-nos" → "avise-nos" (minúscula em meio de frase)
+
+#### Quality Gate — codereview.py
+- Regex de `rel="noopener"` atualizado para aceitar `rel="noopener noreferrer"`
+- Contagem de links `target="_blank"` agora inclui links gerados por JS
+- Comentários HTML removidos para reduzir tamanho (36.390 → 34.156 bytes, limite 35.000)
+
 ### Segurança
 - `isSafeUrl()` aplicado em 4 locais adicionais
 - Modal focus trap implementado

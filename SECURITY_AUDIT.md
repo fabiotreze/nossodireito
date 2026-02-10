@@ -1,8 +1,8 @@
-# 🔒 NossoDireito — Auditoria de Segurança v1.2
+# 🔒 NossoDireito — Auditoria de Segurança v1.1.0
 
-**Data**: 2025-07-13
-**Escopo**: Aplicação 100% client-side (HTML5 + CSS3 + Vanilla JS)
-**Domínio**: `nossodireito.fabiotreze.com` (HTTPS via Cloudflare)
+**Data**: 2026-02-10
+**Escopo**: Aplicação client-side (HTML5 + CSS3 + Vanilla JS) + servidor Node.js (`server.js`)
+**Domínio**: `nossodireito.fabiotreze.com` (HTTPS via Azure App Service + Key Vault PFX)
 **Classificação de dados**: Dados pessoais sensíveis de saúde (laudos médicos com CID)
 
 ---
@@ -15,20 +15,23 @@
 | 2  | localStorage              | Storage    | Preferências do disclaimer (não sensível)            | Sem PHI — risco aceitável              |
 | 3  | CDN pdf.js                | Supply-chain | Script externo de CDN (cdnjs.cloudflare.com)       | SRI sha384 + crossorigin anonymous     |
 | 4  | Campo de busca            | Input      | Texto livre → regex dinâmico                         | `escapeRegex()` sanitiza entrada       |
-| 5  | Upload de arquivo         | Input      | Arquivos arbitrários (PDF, imagem)                   | Validação de tipo + tamanho 10MB       |
+| 5  | Upload de arquivo         | Input      | Arquivos arbitrários (PDF, imagem)                   | Validação de tipo + tamanho 5MB        |
 | 6  | Blob URLs                 | Output     | Conteúdo descriptografado temporário                 | Revogação em 15s via `revokeObjectURL` |
 | 7  | innerHTML                 | Rendering  | Potencial XSS se dados contaminados                  | `escapeHtml()` em todos os dados       |
 | 8  | JSON (direitos.json)      | Data       | Base de conhecimento carregada via fetch             | `same-origin` enforced por CSP         |
 | 9  | Meta tags / Headers       | Transport  | Clickjacking, MIME sniffing, referrer leak           | CSP + X-Content-Type + Referrer-Policy |
 | 10 | Web Workers (pdf.js)      | Execution  | Worker threads para extração de PDF                  | CSP `worker-src` restrito              |
+| 11 | server.js (Node.js)       | Server     | Servidor HTTP com headers de segurança               | HSTS + rate limiting + CSP server-side |
+| 12 | VLibras (gov.br)          | External   | iframe/script externo do governo federal             | CSP frame-src/script-src allowlist     |
+| 13 | Web Speech API (TTS)      | Browser    | Leitura em voz alta via speechSynthesis              | API nativa, sem dependência externa    |
 
-**Superfície total**: 10 vetores identificados, **10 mitigados**.
+**Superfície total**: 13 vetores identificados, **13 mitigados**.
 
 ---
 
 ## 2. Security Posture — Antes vs Depois
 
-### 2.1 Postura de Segurança v1.1 (Antes)
+### 2.1 Postura de Segurança v1.0.0 (Antes)
 
 | Controle                          | Status | Risco   |
 |-----------------------------------|--------|---------|
@@ -43,7 +46,7 @@
 
 **Score anterior**: 4/8 controles = **50%**
 
-### 2.2 Postura de Segurança v1.2 (Depois)
+### 2.2 Postura de Segurança v1.1.0 (Depois)
 
 | Controle                          | Status | Detalhes                                    |
 |-----------------------------------|--------|---------------------------------------------|
@@ -53,13 +56,17 @@
 | TTL / Auto-expiração             | ✅      | 15 min + auto-delete após análise           |
 | Sanitização de input             | ✅      | `escapeRegex()` em busca                    |
 | Escape de HTML                    | ✅      | `escapeHtml()` em toda renderização         |
-| Validação de arquivo             | ✅      | Tipo + tamanho (10MB max)                   |
+| Validação de arquivo             | ✅      | Tipo + tamanho (5MB max)                    |
 | Revogação de Blob URL            | ✅      | 15 segundos (reduzido de 60s)               |
 | X-Content-Type-Options            | ✅      | `nosniff`                                   |
-| Referrer-Policy                   | ✅      | `strict-origin-when-cross-origin`           |
+| Referrer-Policy                   | ✅      | `no-referrer`                               |
 | Permissions-Policy                | ✅      | Câmera, microfone, geolocalização negados   |
+| HSTS (server.js)                  | ✅      | `max-age=31536000; includeSubDomains`       |
+| Rate Limiting (server.js)         | ✅      | 100 req/15min por IP                        |
+| CSP server-side (server.js)       | ✅      | Sincronizado com meta tag do HTML           |
+| VLibras CSP allowlist             | ✅      | frame-src + script-src + media-src + font-src |
 
-**Score atual**: 11/11 controles = **100%**
+**Score atual**: 15/15 controles = **100%**
 
 ---
 
@@ -72,7 +79,7 @@
 | **Art. 4º, I** | Tratamento por pessoa natural para fins particulares, não econômicos | ✅ **ISENTO de autoridade regulatória** |
 | **Art. 11** | Dados sensíveis de saúde — laudos médicos com CID           | ⚠️ Sensível — medidas extras recomendadas |
 | **Art. 46** | Medidas de segurança para proteção de dados pessoais        | ✅ Implementado |
-| **Art. 48** | Comunicação de incidentes                                    | N/A — sem servidor |
+| **Art. 48** | Comunicação de incidentes                                    | ⚠️ server.js não persiste dados — risco baixo |
 | **Art. 49** | Sistemas devem atender padrões de segurança e boas práticas | ✅ Implementado |
 
 ### 3.2 Medidas Técnicas (Art. 46)
@@ -96,16 +103,16 @@
 
 | # OWASP    | Vulnerabilidade                            | Relevância | Mitigação                                           | Status |
 |------------|---------------------------------------------|------------|------------------------------------------------------|--------|
-| **A01:2021** | Broken Access Control                      | BAIXA      | App 100% client-side, sem autenticação necessária    | ✅ N/A |
+| **A01:2021** | Broken Access Control                      | BAIXA      | Sem autenticação; server.js serve apenas estáticos   | ✅ N/A |
 | **A02:2021** | Cryptographic Failures                     | ALTA       | AES-GCM-256, chave 256-bit, IV únicos de 12 bytes   | ✅     |
 | **A03:2021** | Injection                                  | MÉDIA      | `escapeRegex()` previne ReDoS; `escapeHtml()` previne XSS | ✅ |
-| **A04:2021** | Insecure Design                            | BAIXA      | Arquitetura client-only minimiza superfície           | ✅     |
+| **A04:2021** | Insecure Design                            | BAIXA      | Arquitetura client-side + server estático minimiza superfície | ✅     |
 | **A05:2021** | Security Misconfiguration                  | ALTA       | CSP restritivo, SRI, headers de segurança            | ✅     |
 | **A06:2021** | Vulnerable and Outdated Components         | MÉDIA      | pdf.js 3.11.174 (verificado); SRI contra tampering   | ✅     |
 | **A07:2021** | Identification and Auth Failures           | N/A        | Sem autenticação (app local offline)                 | ✅ N/A |
 | **A08:2021** | Software and Data Integrity Failures       | ALTA       | SRI sha384 no CDN; CSP bloqueia scripts não-autorizados | ✅  |
 | **A09:2021** | Security Logging and Monitoring Failures   | BAIXA      | `console.info/warn/error` para eventos de segurança  | ✅     |
-| **A10:2021** | Server-Side Request Forgery                | N/A        | Sem servidor                                         | ✅ N/A |
+| **A10:2021** | Server-Side Request Forgery                | N/A        | server.js serve apenas estáticos, sem proxy/fetch    | ✅ N/A |
 
 **Cobertura OWASP**: 7/7 itens aplicáveis mitigados.
 
@@ -121,7 +128,7 @@
 | **CWE-329** | Not Using an Unpredictable IV                      | ALTA       | `crypto.getRandomValues(new Uint8Array(12))` — CSPRNG | ✅   |
 | **CWE-693** | Protection Mechanism Failure                       | ALTA       | CSP `default-src 'none'` + allowlist                 | ✅     |
 | **CWE-829** | Inclusion of Untrusted Functionality               | ALTA       | SRI sha384 + `crossorigin="anonymous"` no CDN       | ✅     |
-| **CWE-922** | Insecure Storage of Sensitive Information          | CRÍTICA    | AES-GCM-256 + TTL 30 dias + limpeza automática      | ✅     |
+| **CWE-922** | Insecure Storage of Sensitive Information          | CRÍTICA    | AES-GCM-256 + TTL 15 min + limpeza automática       | ✅     |
 | **CWE-1275**| Sensitive Cookie in HTTPS Without Secure Attribute | N/A        | Sem cookies                                          | ✅ N/A |
 
 ---
@@ -133,14 +140,17 @@
 | Componente                | Versão    | Presente no CISA KEV? | Notas                                     |
 |---------------------------|-----------|------------------------|-------------------------------------------|
 | pdf.js (Mozilla)          | 3.11.174  | ❌ Não                 | Sem CVEs explorados ativamente            |
+| Node.js (server.js)       | 20 LTS    | ❌ Não                 | Apenas serve estáticos + headers          |
+| VLibras (gov.br)          | Última    | ❌ Não                 | CDN do governo federal brasileiro         |
 | IndexedDB (nativo)        | —         | ❌ Não                 | API nativa do navegador                   |
 | Web Crypto API (nativa)   | —         | ❌ Não                 | API nativa do navegador                   |
+| Web Speech API (nativa)   | —         | ❌ Não                 | API nativa do navegador (TTS)             |
 | Navegadores modernos      | Variado   | Fora de escopo         | Responsabilidade do usuário manter atualizado |
 
 ### 6.2 Conclusão CISA
 
 **Nenhum componente da aplicação consta no catálogo CISA KEV** (Known Exploited Vulnerabilities).
-A aplicação não utiliza frameworks server-side, bancos de dados, ou serviços de autenticação que são os alvos principais do catálogo CISA.
+O servidor Node.js (`server.js`) serve apenas arquivos estáticos e headers de segurança, sem lógica de negócio server-side, bancos de dados, ou autenticação.
 
 ---
 
@@ -181,7 +191,7 @@ A aplicação não utiliza frameworks server-side, bancos de dados, ou serviços
 ### 8.1 CVSS Distribution
 
 ```
-              Before v1.2          After v1.2
+              Before v1.0.0        After v1.1.0
 CRITICAL  :   ■■ (1)              □ (0)
 HIGH      :   ■■■ (2)             □ (0)
 MEDIUM    :   ■■■■■■ (4)          ■ (1)*
@@ -215,7 +225,7 @@ NONE      :   □ (0)               ■■■■■■■■■■ (6)
 |-------------------|------------|--------------|------------------------------------------------------|
 | NIST SP 800-38D   | Criptografia AES-GCM | ✅ | IV de 96 bits, tag de 128 bits                       |
 | NIST SP 800-57    | Gerenciamento de chaves | ✅ | Chave 256-bit, não-exportável, origin-bound      |
-| OWASP ASVS v4.0   | Segurança de aplicação | ✅ | Nível 1 atendido para app client-side             |
+| OWASP ASVS v4.0   | Segurança de aplicação | ✅ | Nível 1 atendido para app client-side + server estático |
 | W3C CSP Level 3   | Content Security Policy | ✅ | `default-src 'none'` com allowlist                |
 | W3C SRI           | Subresource Integrity | ✅ | sha384 em recursos CDN                             |
 | ISO 27001 A.10    | Criptografia | Parcial | Implementação técnica OK; sem SGSI formal             |
@@ -246,7 +256,9 @@ NONE      :   □ (0)               ■■■■■■■■■■ (6)
 
 ## 13. Conclusão
 
-A aplicação NossoDireito v1.2 implementa um conjunto robusto de controles de segurança para uma aplicação 100% client-side que processa dados sensíveis de saúde. O score de segurança evoluiu de **50%** (v1.1) para **100%** (v1.2) nos controles aplicáveis.
+A aplicação NossoDireito v1.1.0 implementa um conjunto robusto de controles de segurança para uma aplicação client-side com servidor Node.js que processa dados sensíveis de saúde. O score de segurança evoluiu de **50%** (v1.0.0) para **100%** (v1.1.0) nos 15 controles aplicáveis.
+
+**Novidades v1.1.0**: Servidor Node.js com HSTS + rate limiting + CSP server-side, integração VLibras (Libras) via CSP allowlist, Web Speech API (TTS nativa), hospedagem Azure App Service com SSL via Key Vault.
 
 **Risco residual principal**: CVE-2024-4367 no pdf.js, mitigado via CSP mas não eliminado.
 
@@ -254,5 +266,5 @@ A aplicação NossoDireito v1.2 implementa um conjunto robusto de controles de s
 
 ---
 
-*Documento gerado automaticamente como parte do processo de Security Review do NossoDireito v1.2.*
+*Documento atualizado em 2026-02-10 como parte do processo de Security Review do NossoDireito v1.1.0.*
 *Para relatar vulnerabilidades: veja [SECURITY.md](SECURITY.md)*

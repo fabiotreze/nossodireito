@@ -118,6 +118,40 @@ jobs:
           echo "" >> leg-report.md
           echo "changes=$CHANGES" >> "$GITHUB_OUTPUT"
 
+      - name: Validar códigos CID (OMS ICD API)
+        id: cidcheck
+        continue-on-error: true
+        env:
+          ICD_CLIENT_ID: ${{ secrets.ICD_CLIENT_ID }}
+          ICD_CLIENT_SECRET: ${{ secrets.ICD_CLIENT_SECRET }}
+        run: |
+          pip install requests > /dev/null 2>&1
+          if [ -z "$ICD_CLIENT_ID" ] || [ -z "$ICD_CLIENT_SECRET" ]; then
+            echo "⚠️ ICD_CLIENT_ID / ICD_CLIENT_SECRET não configurados — pulando validação CID." > cid-report.md
+            echo "cid_ok=0" >> "$GITHUB_OUTPUT"
+            echo "cid_total=0" >> "$GITHUB_OUTPUT"
+            echo "cid_errors=0" >> "$GITHUB_OUTPUT"
+          else
+            RESULT=$(python scripts/validate_sources.py --cid --json 2>&1) || true
+            echo "$RESULT" > cid-raw.json
+
+            CID_OK=$(echo "$RESULT" | grep -oP '"ok":\s*\K[0-9]+' || echo "0")
+            CID_TOTAL=$(echo "$RESULT" | grep -oP '"total":\s*\K[0-9]+' || echo "0")
+            CID_ERRORS=$((CID_TOTAL - CID_OK))
+
+            echo "cid_ok=$CID_OK" >> "$GITHUB_OUTPUT"
+            echo "cid_total=$CID_TOTAL" >> "$GITHUB_OUTPUT"
+            echo "cid_errors=$CID_ERRORS" >> "$GITHUB_OUTPUT"
+
+            echo "## Validação CID (OMS ICD API)" > cid-report.md
+            echo "" >> cid-report.md
+            if [ "$CID_ERRORS" = "0" ]; then
+              echo "✅ **$CID_OK/$CID_TOTAL** códigos CID validados com sucesso." >> cid-report.md
+            else
+              echo "❌ **$CID_ERRORS/$CID_TOTAL** códigos CID com erro." >> cid-report.md
+            fi
+          fi
+
       - name: Criar issue de revisão
         uses: actions/github-script@v7
         env:
@@ -131,11 +165,15 @@ jobs:
           HEALTH_HZ: ${{ steps.health.outputs.healthz }}
           HEALTH_CD: ${{ steps.health.outputs.custom_domain }}
           HEALTH_RD: ${{ steps.health.outputs.redirect }}
+          CID_OK: ${{ steps.cidcheck.outputs.cid_ok }}
+          CID_TOTAL: ${{ steps.cidcheck.outputs.cid_total }}
+          CID_ERRORS: ${{ steps.cidcheck.outputs.cid_errors }}
         with:
           script: |
             const fs = require('fs');
             const linkReport = fs.readFileSync('link-report.md', 'utf8');
             const legReport = fs.readFileSync('leg-report.md', 'utf8');
+            const cidReport = fs.existsSync('cid-report.md') ? fs.readFileSync('cid-report.md', 'utf8') : '⚠️ Relatório CID não disponível.';
             const today = new Date().toISOString().split('T')[0];
             const broken = parseInt(process.env.BROKEN) || 0;
             const brokenAlert = broken > 0
@@ -158,6 +196,7 @@ jobs:
             | Health Probe (/healthz) | HTTP ${process.env.HEALTH_HZ} |
             | Custom Domain | HTTP ${process.env.HEALTH_CD} |
             | Redirect Azure | HTTP ${process.env.HEALTH_RD} |
+            | CID (OMS ICD API) | ${process.env.CID_OK}/${process.env.CID_TOTAL} ✅ |
             | **Status Geral** | **${process.env.HEALTH_OVERALL}** |
 
             ## Checklist de Revisão
@@ -190,6 +229,9 @@ jobs:
 
             ### 📜 Verificação Legislativa
             ${legReport}
+
+            ### 🏥 Validação CID
+            ${cidReport}
 
             ---
             *Issue criada automaticamente pelo workflow de revisão semanal.*

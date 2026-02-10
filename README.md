@@ -1,11 +1,11 @@
 # ⚖️ NossoDireito
 
-[![Quality Gate](https://img.shields.io/badge/Quality%20Gate-97.6%2F100-brightgreen?style=flat-square)](https://github.com/fabiotreze/nossodireito/actions)
+[![Quality Gate](https://img.shields.io/badge/Quality%20Gate-100.0%2F100-brightgreen?style=flat-square)](https://github.com/fabiotreze/nossodireito/actions)
 [![Deploy](https://img.shields.io/badge/Deploy-Azure%20App%20Service-0078D4?style=flat-square&logo=microsoft-azure)](https://nossodireito.fabiotreze.com)
 [![Security](https://img.shields.io/badge/Security-AES--GCM--256%20%7C%20CSP%20%7C%20SRI-green?style=flat-square&logo=letsencrypt)](SECURITY.md)
 [![LGPD](https://img.shields.io/badge/LGPD-Zero%20Data%20Collection-blue?style=flat-square)](SECURITY.md)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow?style=flat-square)](LICENSE)
-[![Version](https://img.shields.io/badge/Version-1.0.0-informational?style=flat-square)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/Version-1.1.0-informational?style=flat-square)](CHANGELOG.md)
 
 **Recebeu um laudo? Vem que a gente te ajuda.**
 
@@ -29,6 +29,15 @@ O NossoDireito organiza, em linguagem simples, as informações oficiais do gove
 - **Transporte** — Passe Livre federal, isenção de IPVA
 - **Trabalho** — Cotas PcD (2% a 5%), proteção contra demissão
 - **FGTS** — Saque para PcD ou dependente PcD
+- **Moradia** — Minha Casa Minha Vida com prioridade PcD
+
+## ♿ Acessibilidade
+
+- **🔊 Ouvir** — Leitura em voz alta (Web Speech API nativa, sem dependência)
+- **🤟 Libras** — Tradução em Libras via VLibras (governo federal)
+- **A± Fonte** — Ajuste de tamanho de fonte
+- **🔲 Contraste** — Modo alto contraste
+- **PWA** — Instalável no celular, funciona offline
 
 ## 🔒 Privacidade (LGPD)
 
@@ -42,6 +51,8 @@ O NossoDireito organiza, em linguagem simples, as informações oficiais do gove
 | Componente | Tecnologia |
 |---|---|
 | Frontend | HTML5 + CSS3 + Vanilla JavaScript |
+| Acessibilidade | Web Speech API (TTS) + VLibras (Libras) |
+| PWA | Service Worker + manifest.json (offline) |
 | Server | Node.js 20 LTS (`server.js`) |
 | Base de dados | JSON estático (`data/direitos.json`) |
 | Criptografia | AES-GCM-256 via Web Crypto API |
@@ -58,17 +69,25 @@ O NossoDireito organiza, em linguagem simples, as informações oficiais do gove
 ```
 nossodireito/
 ├── index.html              # Página principal
+├── index.min.html          # HTML minificado (produção)
 ├── server.js               # Servidor Node.js (App Service)
 ├── package.json            # Dependências (applicationinsights)
+├── sw.js                   # Service Worker (PWA offline)
+├── manifest.json           # PWA manifest
+├── robots.txt              # Diretivas de rastreamento
+├── sitemap.xml             # Mapa do site para SEO
 ├── css/
 │   └── styles.css          # CSS responsivo + dark mode
 ├── js/
-│   └── app.js              # Busca, navegação, checklist, criptografia
+│   └── app.js              # Busca, navegação, TTS, VLibras, criptografia
 ├── data/
-│   └── direitos.json       # Base de conhecimento (9 categorias)
-├── images/                 # Favicons e imagens
+│   ├── direitos.json       # Base de conhecimento (9 categorias)
+│   └── matching_engine.json # Keywords de análise de documentos
+├── images/                 # Favicons, OG image e logo
+├── scripts/
+│   └── validate_sources.py # Validação de URLs + legislação + CID
 ├── codereview/
-│   └── codereview.py       # Quality Gate (17 categorias)
+│   └── codereview.py       # Quality Gate (17 categorias, 160 checks)
 ├── terraform/              # Infraestrutura como código
 │   ├── main.tf             # App Service + Key Vault + SSL
 │   ├── variables.tf        # Variáveis multi-ambiente
@@ -76,6 +95,7 @@ nossodireito/
 │   └── providers.tf        # Provider azurerm ~>4.0
 ├── .github/workflows/
 │   ├── deploy.yml          # CI/CD push → deploy
+│   ├── quality-gate.yml    # Quality Gate PR check
 │   ├── terraform.yml       # IaC manual dispatch
 │   └── weekly-review.yml   # Issue automática semanal
 ├── CHANGELOG.md
