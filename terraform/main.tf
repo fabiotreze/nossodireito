@@ -29,7 +29,7 @@
 #    - Multi-ambiente via tfvars
 #
 # 5. PERFORMANCE EFFICIENCY
-#    - Node.js 20 LTS servindo static files com Express
+#    - Node.js 22 LTS servindo static files com Express
 #    - Gzip compression habilitado
 #    - Cache headers configurados por tipo de asset
 #    - HTTP/2 habilitado
@@ -167,11 +167,11 @@ resource "azurerm_linux_web_app" "main" {
     ftps_state = "Disabled"
 
     application_stack {
-      node_version = "20-lts"
+      node_version = "22-lts"
     }
 
     app_command_line                  = "node server.js"
-    health_check_path                 = "/"
+    health_check_path                 = "/healthz"
     health_check_eviction_time_in_min = 5
     http2_enabled                     = true
   }

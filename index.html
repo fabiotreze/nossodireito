@@ -287,6 +287,11 @@
                 <!-- File List -->
                 <div id="fileList" class="file-list" aria-live="polite"></div>
 
+                <!-- Botão global de análise -->
+                <button id="analyzeSelected" class="btn btn-primary btn-analyze-global" disabled>
+                    🔍 Selecione arquivos para analisar
+                </button>
+
                 <!-- Análise de Documentos — Resultados -->
                 <div id="analysisResults" class="analysis-results" style="display:none;" aria-live="polite">
                     <div class="analysis-header">
@@ -300,7 +305,7 @@
                     </div>
                     <div id="analysisLoading" class="analysis-loading" style="display:none;">
                         <div class="spinner"></div>
-                        <p>Analisando documento... (100% local, nada é enviado)</p>
+                        <p>Analisando documentos... (100% local, nada é enviado)</p>
                     </div>
                     <div id="analysisContent"></div>
                 </div>

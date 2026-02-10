@@ -214,6 +214,18 @@ const server = http.createServer((req, res) => {
         return;
     }
 
+    // ── Health check endpoint (Azure App Service probe) ──
+    // Must respond 200 on ALL hosts (including *.azurewebsites.net)
+    // before the domain redirect, otherwise probe marks app unhealthy.
+    if (req.url === '/healthz') {
+        res.writeHead(200, {
+            'Content-Type': 'text/plain',
+            'Cache-Control': 'no-cache, no-store',
+        });
+        res.end('OK');
+        return;
+    }
+
     // ── Rate limiting (CWE-770) ──
     const clientIp = req.headers['x-forwarded-for']?.split(',')[0]?.trim() || req.socket.remoteAddress || '';
     if (isRateLimited(clientIp)) {

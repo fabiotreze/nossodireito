@@ -879,13 +879,15 @@
                         : '';
                     return `
                     <div class="file-item" data-file-id="${f.id}">
+                        <label class="file-item-checkbox" title="Selecionar para análise">
+                            <input type="checkbox" class="file-select-cb" data-id="${f.id}" checked>
+                        </label>
                         <span class="file-item-icon">${icon}</span>
                         <div class="file-item-info">
                             <div class="file-item-name" title="${escapeHtml(f.name)}">${cryptoBadge}${escapeHtml(f.name)}</div>
                             <div class="file-item-meta">${formatBytes(f.size)} · Adicionado em ${date} ${expiresStr}</div>
                         </div>
                         <div class="file-item-actions">
-                            <button class="btn-analyze" title="Analisar direitos" data-id="${f.id}">🔍 Analisar</button>
                             <button class="btn-view" title="Visualizar" data-id="${f.id}">👁️ Ver</button>
                             <button class="btn-delete" title="Excluir" data-id="${f.id}">🗑️</button>
                         </div>
@@ -893,9 +895,12 @@
                 })
                 .join('');
 
-            // Bind events
-            dom.fileList.querySelectorAll('.btn-analyze').forEach((btn) => {
-                btn.addEventListener('click', () => analyzeDocument(btn.dataset.id));
+            // Update global analyze button state
+            updateAnalyzeButton();
+
+            // Bind checkbox changes to update button
+            dom.fileList.querySelectorAll('.file-select-cb').forEach((cb) => {
+                cb.addEventListener('change', updateAnalyzeButton);
             });
 
             dom.fileList.querySelectorAll('.btn-view').forEach((btn) => {
@@ -935,6 +940,23 @@
     // ========================
     // Document Analysis Engine
     // ========================
+
+    /**
+     * Atualiza o estado do botão global "Analisar Selecionados".
+     */
+    function updateAnalyzeButton() {
+        const btn = document.getElementById('analyzeSelected');
+        if (!btn) return;
+        const checked = dom.fileList.querySelectorAll('.file-select-cb:checked');
+        const count = checked.length;
+        btn.disabled = count === 0;
+        btn.textContent = count === 0
+            ? '🔍 Selecione arquivos para analisar'
+            : count === 1
+                ? '🔍 Analisar 1 arquivo'
+                : `🔍 Analisar ${count} arquivos`;
+    }
+
     function setupAnalysis() {
         dom.closeAnalysis.addEventListener('click', () => {
             dom.analysisResults.style.display = 'none';
@@ -955,18 +977,26 @@
             // Fallback: remove after 5s in case afterprint doesn't fire (iOS)
             setTimeout(cleanup, 5000);
         });
+
+        // Global analyze button
+        const analyzeBtn = document.getElementById('analyzeSelected');
+        if (analyzeBtn) {
+            analyzeBtn.addEventListener('click', analyzeSelectedDocuments);
+        }
     }
 
     /**
-     * Analisa um documento enviado e identifica direitos aplicáveis.
-     * Para PDFs: extrai texto com pdf.js e faz matching por keywords.
-     * Para imagens: usa nome do arquivo e metadados para inferir.
+     * Analisa todos os documentos selecionados (checkbox) de forma unificada.
+     * Concatena o texto extraído de todos os arquivos e faz matching único.
+     * Exibe resultado consolidado mostrando de qual arquivo veio cada termo.
      * 100% local — nada é enviado para servidores.
      */
-    async function analyzeDocument(fileId) {
-        const file = await getFile(fileId);
-        if (!file) {
-            alert('Arquivo não encontrado.');
+    async function analyzeSelectedDocuments() {
+        const checkboxes = dom.fileList.querySelectorAll('.file-select-cb:checked');
+        const fileIds = Array.from(checkboxes).map((cb) => cb.dataset.id);
+
+        if (fileIds.length === 0) {
+            alert('Selecione pelo menos um arquivo para analisar.');
             return;
         }
 
@@ -975,39 +1005,80 @@
         dom.analysisContent.innerHTML = '';
         dom.analysisResults.scrollIntoView({ behavior: 'smooth' });
 
+        const allText = [];
+        const fileNames = [];
+        const hasPdf = [];
+        const errors = [];
+        const successIds = [];
+
         try {
-            let extractedText = '';
-            const plainData = await decryptFileData(file);
-
-            if (file.type === 'application/pdf') {
-                extractedText = await extractPdfText(plainData);
-            } else {
-                // Para imagens, analisar apenas pelo nome do arquivo
-                extractedText = file.name;
+            for (const fileId of fileIds) {
+                const file = await getFile(fileId);
+                if (!file) {
+                    errors.push({ name: `ID ${fileId}`, reason: 'Arquivo não encontrado' });
+                    continue;
+                }
+                try {
+                    const plainData = await decryptFileData(file);
+                    let text = '';
+                    if (file.type === 'application/pdf') {
+                        text = await extractPdfText(plainData);
+                        hasPdf.push(true);
+                    } else {
+                        text = file.name;
+                        hasPdf.push(false);
+                    }
+                    allText.push(text);
+                    fileNames.push(file.name);
+                    successIds.push(fileId);
+                } catch (err) {
+                    console.error(`Erro ao processar ${file.name}:`, err);
+                    errors.push({
+                        name: file.name,
+                        reason: file.type === 'application/pdf'
+                            ? 'PDF protegido, escaneado ou formato incompatível'
+                            : 'Erro ao processar imagem',
+                    });
+                }
             }
 
-            const results = matchRights(extractedText, file.name);
-            renderAnalysisResults(results, file.name, file.type === 'application/pdf');
-
-            // Auto-delete file after successful analysis (consulta pontual)
-            try {
-                await deleteFile(fileId);
-                await renderFileList();
-                console.info(`[Security] Arquivo ${file.name} descartado automaticamente após análise.`);
-            } catch (delErr) {
-                console.warn('Erro ao descartar arquivo após análise:', delErr);
+            if (allText.length === 0) {
+                dom.analysisContent.innerHTML = `
+                    <div class="analysis-error">
+                        <p>⚠️ Não foi possível analisar nenhum dos arquivos selecionados.</p>
+                        ${errors.map((e) => `<p style="font-size:0.85rem;color:var(--text-muted);">· ${escapeHtml(e.name)}: ${escapeHtml(e.reason)}</p>`).join('')}
+                        <p style="font-size:0.85rem;margin-top:8px;">
+                            💡 <strong>Dica:</strong> Navegue pelas <a href="#categorias">categorias</a>
+                            para encontrar seus direitos manualmente.
+                        </p>
+                    </div>`;
+                return;
             }
+
+            // Concatenate all text and file names for unified matching
+            const combinedText = allText.join('\n');
+            const combinedNames = fileNames.join(' ');
+            const results = matchRights(combinedText, combinedNames);
+            const anyPdf = hasPdf.some(Boolean);
+
+            renderAnalysisResults(results, fileNames, anyPdf, errors);
+
+            // Auto-delete successfully analyzed files (consulta pontual)
+            for (const id of successIds) {
+                try {
+                    await deleteFile(id);
+                } catch (delErr) {
+                    console.warn('Erro ao descartar arquivo após análise:', delErr);
+                }
+            }
+            console.info(`[Security] ${successIds.length} arquivo(s) descartado(s) automaticamente após análise.`);
+            await renderFileList();
 
         } catch (err) {
-            console.error('Erro na análise:', err);
+            console.error('Erro na análise unificada:', err);
             dom.analysisContent.innerHTML = `
                 <div class="analysis-error">
-                    <p>⚠️ Não foi possível analisar este documento.</p>
-                    <p style="font-size:0.85rem;color:var(--text-muted);">
-                        ${file.type === 'application/pdf'
-                    ? 'O PDF pode estar protegido, escaneado (imagem) ou em formato não-textual.'
-                    : 'Para imagens, a análise é limitada ao nome do arquivo.'}
-                    </p>
+                    <p>⚠️ Ocorreu um erro durante a análise.</p>
                     <p style="font-size:0.85rem;margin-top:8px;">
                         💡 <strong>Dica:</strong> Navegue pelas <a href="#categorias">categorias</a>
                         para encontrar seus direitos manualmente.
@@ -1458,15 +1529,30 @@
 
     /**
      * Renderiza os resultados da análise no painel.
+     * @param {Array} results — resultado do matchRights
+     * @param {string|string[]} fileNames — nome(s) do(s) arquivo(s) analisado(s)
+     * @param {boolean} hasPdf — se ao menos um PDF foi analisado
+     * @param {Array} [errors=[]] — arquivos que falharam na extração
      */
-    function renderAnalysisResults(results, fileName, isPdf) {
+    function renderAnalysisResults(results, fileNames, hasPdf, errors = []) {
+        // Normalize to array for backward compat
+        const names = Array.isArray(fileNames) ? fileNames : [fileNames];
+        const fileCount = names.length;
+        const filesLabel = fileCount === 1
+            ? `📄 Arquivo analisado: <strong>${escapeHtml(names[0])}</strong>`
+            : `📄 ${fileCount} arquivos analisados: ${names.map((n) => `<strong>${escapeHtml(n)}</strong>`).join(', ')}`;
+
         if (results.length === 0) {
             dom.analysisContent.innerHTML = `
                 <div class="analysis-empty">
-                    <p>📄 Arquivo: <strong>${escapeHtml(fileName)}</strong></p>
+                    <p>${filesLabel}</p>
                     <p>Não foram encontradas correspondências claras com as categorias de direitos.</p>
-                    ${!isPdf ? `<p class="analysis-hint">💡 Para imagens, a análise é limitada ao nome do arquivo.
+                    ${!hasPdf ? `<p class="analysis-hint">💡 Para imagens, a análise é limitada ao nome do arquivo.
                         Faça upload do <strong>PDF do laudo</strong> para uma análise mais completa.</p>` : ''}
+                    ${errors.length ? `<div class="analysis-errors-summary">
+                        <p>⚠️ Alguns arquivos não puderam ser processados:</p>
+                        ${errors.map((e) => `<p class="analysis-hint">· ${escapeHtml(e.name)}: ${escapeHtml(e.reason)}</p>`).join('')}
+                    </div>` : ''}
                     <p class="analysis-hint">💡 Navegue pelas <a href="#categorias">categorias</a> para encontrar
                         seus direitos manualmente, ou use a <a href="#busca">busca</a>.</p>
                 </div>`;
@@ -1477,8 +1563,9 @@
 
         let html = `
             <div class="analysis-file-info">
-                <p>📄 Arquivo analisado: <strong>${escapeHtml(fileName)}</strong></p>
+                <p>${filesLabel}</p>
                 <p class="analysis-privacy">🔒 Análise 100% local — nenhum dado foi enviado para servidores.</p>
+                ${errors.length ? `<p class="analysis-errors-inline">⚠️ ${errors.length} arquivo(s) com erro: ${errors.map((e) => escapeHtml(e.name)).join(', ')}</p>` : ''}
             </div>
             <div class="analysis-match-list">`;
 
