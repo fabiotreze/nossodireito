@@ -177,11 +177,13 @@ resource "azurerm_linux_web_app" "main" {
   }
 
   app_settings = {
-    WEBSITE_REDIRECT_ALL_TRAFFIC_TO_HTTPS      = "1"
-    NODE_ENV                                   = "production"
-    SCM_DO_BUILD_DURING_DEPLOYMENT             = "true"
-    APPLICATIONINSIGHTS_CONNECTION_STRING      = azurerm_application_insights.main.connection_string
-    ApplicationInsightsAgent_EXTENSION_VERSION = "~3"
+    WEBSITE_REDIRECT_ALL_TRAFFIC_TO_HTTPS = "1"
+    NODE_ENV                              = "production"
+    SCM_DO_BUILD_DURING_DEPLOYMENT        = "false"
+    APPLICATIONINSIGHTS_CONNECTION_STRING = azurerm_application_insights.main.connection_string
+    # Codeless agent DESABILITADO — o server.js já usa o SDK applicationinsights manualmente.
+    # Ter ambos causa: "Attempted duplicate registration of API: propagation"
+    ApplicationInsightsAgent_EXTENSION_VERSION = "disabled"
   }
 
   tags = local.tags

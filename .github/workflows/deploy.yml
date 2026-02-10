@@ -85,16 +85,22 @@ jobs:
           echo "✅ CSS: ${ORIG_CSS}B → ${MINI_CSS}B ($(( (ORIG_CSS - MINI_CSS) * 100 / ORIG_CSS ))% redução)"
           mv css/styles.min.css css/styles.css
 
+      - name: Instalar dependências (production)
+        run: |
+          npm ci --production --ignore-scripts 2>/dev/null || npm install --production
+          echo "✅ node_modules: $(du -sh node_modules | cut -f1)"
+
       - name: Criar pacote de deploy
         run: |
           zip -r site.zip \
-            index.html server.js package.json \
-            css/ js/ data/ images/ \
+            index.html server.js package.json package-lock.json \
+            node_modules/ css/ js/ data/ images/ \
             -x "*.bak" "*.swa.bak" "__pycache__/*" \
-            "terraform/*" "codereview/*" ".github/*" "tests/*" "docs/*"
+            "terraform/*" "codereview/*" ".github/*" "tests/*" "docs/*" \
+            "node_modules/.package-lock.json" "node_modules/.cache/*"
 
           SIZE=$(wc -c < site.zip)
-          echo "📦 site.zip: ${SIZE} bytes"
+          echo "📦 site.zip: ${SIZE} bytes (inclui node_modules)"
 
       - name: Verificar infraestrutura
         id: infra_check
