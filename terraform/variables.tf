@@ -95,6 +95,12 @@ variable "web_rp_object_id" {
   default     = ""
 }
 
+variable "user_object_id" {
+  description = "Object ID da sua conta pessoal Azure AD (para acesso ao portal, KV, App Service etc.). Descoberto via Portal > Entra ID > Users."
+  type        = string
+  default     = ""
+}
+
 # --- Locals: nomes derivados do ambiente ---
 locals {
   name_prefix = "nossodireito-${var.environment}"

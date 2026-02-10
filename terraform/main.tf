@@ -200,22 +200,45 @@ resource "azurerm_app_service_custom_hostname_binding" "main" {
   }
 }
 
+# --- Access Policy: Usuário pessoal (acesso portal/dados) ---
+resource "azurerm_key_vault_access_policy" "user" {
+  count = var.enable_keyvault && var.user_object_id != "" ? 1 : 0
+
+  key_vault_id = azurerm_key_vault.main[0].id
+  tenant_id    = data.azurerm_client_config.current.tenant_id
+  object_id    = var.user_object_id
+
+  certificate_permissions = ["Create", "Delete", "Get", "Import", "List", "Update", "Purge", "Recover"]
+  secret_permissions      = ["Get", "List", "Set", "Delete", "Purge", "Recover"]
+  key_permissions         = ["Get", "List", "Create", "Delete", "Update", "Purge", "Recover"]
+}
+
+# --- Role Assignment: Usuário como Contributor no RG ---
+resource "azurerm_role_assignment" "user_contributor" {
+  count = var.user_object_id != "" ? 1 : 0
+
+  scope                = azurerm_resource_group.main.id
+  role_definition_name = "Contributor"
+  principal_id         = var.user_object_id
+}
+
 # --- App Service Certificate (from Key Vault) ---
+# O certificado PFX é importado pelo Terraform no Key Vault (azurerm_key_vault_certificate.wildcard)
+# e referenciado aqui via key_vault_secret_id. Requer web_rp access policy no KV.
 resource "azurerm_app_service_certificate" "main" {
   count = var.enable_keyvault && var.pfx_file_path != "" && var.enable_custom_domain ? 1 : 0
 
   name                = "cert-${local.web_app_name}"
   resource_group_name = azurerm_resource_group.main.name
   location            = azurerm_resource_group.main.location
-  key_vault_secret_id = azurerm_key_vault_certificate.wildcard[0].secret_id
-
-  depends_on = [
-    azurerm_key_vault_access_policy.app_service,
-    azurerm_key_vault_access_policy.web_rp,
-    azurerm_key_vault_certificate.wildcard,
-  ]
+  key_vault_secret_id = azurerm_key_vault_certificate.wildcard[0].versionless_secret_id
 
   tags = local.tags
+
+  depends_on = [
+    azurerm_key_vault_access_policy.web_rp,
+    azurerm_key_vault_access_policy.app_service,
+  ]
 }
 
 # --- SSL Binding (SNI) ---

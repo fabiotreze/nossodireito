@@ -74,7 +74,7 @@ output "certificate_name" {
 
 output "ssl_state" {
   description = "Estado do SSL binding"
-  value       = var.enable_keyvault && var.pfx_file_path != "" && var.enable_custom_domain ? "SNI Enabled (PFX do Key Vault)" : "Sem custom SSL"
+  value       = var.enable_keyvault && var.pfx_file_path != "" && var.enable_custom_domain ? "SNI Enabled (PFX via Key Vault)" : "Sem custom SSL"
 }
 
 # --- Application Insights ---

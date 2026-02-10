@@ -49,6 +49,7 @@ env:
   TF_VAR_pfx_password: ${{ secrets.TF_VAR_PFX_PASSWORD }}
   TF_VAR_enable_custom_domain: ${{ github.event.inputs.enable_custom_domain }}
   TF_VAR_enable_keyvault: ${{ github.event.inputs.enable_keyvault }}
+  TF_VAR_user_object_id: ${{ secrets.USER_OBJECT_ID }}
 
 jobs:
   terraform:
@@ -153,16 +154,22 @@ jobs:
               "${BASE}/providers/Microsoft.KeyVault/vaults/kv-nossodireito/objectId/${APP_PID}"
           fi
 
-          # Microsoft.Web RP — necessário para App Service Certificate ler do Key Vault
-          WEB_RP_OID=$(az ad sp show --id "abfa0a7c-a6b6-4736-8310-5855508787cd" \
-            --query "id" -o tsv 2>/dev/null || true)
+          # Microsoft.Web RP — import da policy (OID via secret ou discovery)
+          WEB_RP_OID="${{ secrets.WEB_RP_OBJECT_ID }}"
+          if [ -z "$WEB_RP_OID" ]; then
+            WEB_RP_OID=$(az ad sp show --id "abfa0a7c-a6b6-4736-8310-5855508787cd" \
+              --query "id" -o tsv 2>/dev/null || true)
+          fi
           if [ -n "$WEB_RP_OID" ]; then
-            echo "TF_VAR_web_rp_object_id=${WEB_RP_OID}" >> $GITHUB_ENV
-            echo "✅ Microsoft.Web RP Object ID: ${WEB_RP_OID}"
             import_if_missing "azurerm_key_vault_access_policy.web_rp[0]" \
               "${BASE}/providers/Microsoft.KeyVault/vaults/kv-nossodireito/objectId/${WEB_RP_OID}"
-          else
-            echo "⚠️ Microsoft.Web RP não encontrado — SSL binding pode falhar."
+          fi
+
+          # User access policy — import
+          USER_OID="${{ secrets.USER_OBJECT_ID }}"
+          if [ -n "$USER_OID" ]; then
+            import_if_missing "azurerm_key_vault_access_policy.user[0]" \
+              "${BASE}/providers/Microsoft.KeyVault/vaults/kv-nossodireito/objectId/${USER_OID}"
           fi
 
           echo "── State atual ──"
@@ -173,6 +180,69 @@ jobs:
 
       - name: Terraform Validate
         run: terraform validate
+
+      # ── Garantir acesso do Microsoft.Web RP ao Key Vault (via az CLI) ──
+      # O RP precisa de acesso para ler o certificado do KV.
+      # Usa az keyvault set-policy --spn que resolve o app ID internamente.
+      - name: Grant Microsoft.Web RP access to Key Vault
+        if: github.event.inputs.action != 'destroy' && github.event.inputs.enable_keyvault == 'true'
+        run: |
+          az login --service-principal \
+            -u "${ARM_CLIENT_ID}" -p "${ARM_CLIENT_SECRET}" \
+            --tenant "${ARM_TENANT_ID}" --output none 2>/dev/null || true
+
+          # Método 1: az ad sp show (requer Graph permissions)
+          WEB_RP_OID=$(az ad sp show --id "abfa0a7c-a6b6-4736-8310-5855508787cd" \
+            --query "id" -o tsv 2>/dev/null || true)
+
+          # Método 2: fallback do GitHub Secret
+          if [ -z "$WEB_RP_OID" ]; then
+            WEB_RP_OID="${{ secrets.WEB_RP_OBJECT_ID }}"
+          fi
+
+          # Exportar para Terraform
+          if [ -n "$WEB_RP_OID" ]; then
+            echo "TF_VAR_web_rp_object_id=${WEB_RP_OID}" >> $GITHUB_ENV
+            echo "✅ Microsoft.Web RP Object ID: ${WEB_RP_OID}"
+          else
+            echo "⚠️ Web RP OID não descoberto — tentando az keyvault set-policy --spn..."
+          fi
+
+          # Método 3: az keyvault set-policy --spn (resolve internamente)
+          # Idempotente: se já existe, apenas atualiza. Cobre o caso onde Graph falha.
+          KV_EXISTS=$(az keyvault show --name kv-nossodireito --query name -o tsv 2>/dev/null || true)
+          if [ -n "$KV_EXISTS" ]; then
+            az keyvault set-policy \
+              --name kv-nossodireito \
+              --spn "abfa0a7c-a6b6-4736-8310-5855508787cd" \
+              --certificate-permissions get \
+              --secret-permissions get \
+              --output none 2>&1 \
+              && echo "✅ Key Vault access policy set for Microsoft.Web RP via az CLI" \
+              || echo "⚠️ az keyvault set-policy falhou — precisa de WEB_RP_OBJECT_ID secret"
+          fi
+
+      # ── Garantir acesso do usu\u00e1rio ao Key Vault (se USER_OBJECT_ID fornecido) ──
+      - name: Grant user access to Key Vault
+        if: github.event.inputs.action != 'destroy' && github.event.inputs.enable_keyvault == 'true'
+        run: |
+          USER_OID="${{ secrets.USER_OBJECT_ID }}"
+          if [ -n "$USER_OID" ]; then
+            KV_EXISTS=$(az keyvault show --name kv-nossodireito --query name -o tsv 2>/dev/null || true)
+            if [ -n "$KV_EXISTS" ]; then
+              az keyvault set-policy \
+                --name kv-nossodireito \
+                --object-id "$USER_OID" \
+                --certificate-permissions get list create delete import update purge recover \
+                --secret-permissions get list set delete purge recover \
+                --key-permissions get list create delete update purge recover \
+                --output none 2>&1 \
+                && echo "✅ Key Vault access policy set for user ${USER_OID}" \
+                || echo "⚠️ Falha ao definir policy do usuário"
+            fi
+          else
+            echo "ℹ️ USER_OBJECT_ID não configurado — pule para Portal > Entra ID > Users > Object ID"
+          fi
 
       # ── Plan ──
       - name: Terraform Plan
