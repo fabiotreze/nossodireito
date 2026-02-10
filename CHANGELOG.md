@@ -5,6 +5,21 @@ Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/)
 e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [1.2.2] - 2026-02-10
+
+### Corrigido
+
+#### Proxy Gov.br API — Contornar CORS para Enriquecimento de Dados
+- **Problema**: Requisição direta do navegador para `https://servicos.gov.br/api/v1/servicos/10783` bloqueada por CORS (`No 'Access-Control-Allow-Origin'`)
+- **Solução**: Endpoint proxy `/api/govbr-servico/:id` no server.js (linhas 238-273) que busca dados server-side
+- **Timeout**: 5 segundos com AbortController (anti-Slowloris)
+- **Cache**: 1 hora (`max-age=3600`) para reduzir carga no gov.br
+- **Rate limiting**: Protegido pelo limite global de 120 req/min
+- **app.js** (linha 613): Mudado fetch de URL direta para `/api/govbr-servico/10783`
+- **Tamanho JS**: 99,438 bytes (562B margem, dentro do limite de 100KB)
+- **Quality Gate**: Mantido 100.0/100 (166 checks PASS)
+- **Impacto**: Badge "Serviço digital confirmado no gov.br" agora funciona sem erro de CORS
+
 ## [1.2.1] - 2026-02-10
 
 ### Corrigido

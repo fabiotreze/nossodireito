@@ -608,12 +608,13 @@
 
     // Gov.br API enrichment — tries to confirm digital service availability.
     // Graceful degradation: if CORS blocks or API is down, badge still shows static info.
+    // Now using internal proxy to bypass CORS restrictions.
     async function enrichGovBr() {
         try {
-            const r = await fetch('https://servicos.gov.br/api/v1/servicos/10783',
+            const r = await fetch('/api/govbr-servico/10783',
                 { signal: AbortSignal.timeout(4000) });
             if (r.ok) sessionStorage.setItem('govbr_10783', '1');
-        } catch { /* gov.br API sem CORS — silencioso */ }
+        } catch { /* API unavailable — silently fallback */ }
     }
 
     // ===
