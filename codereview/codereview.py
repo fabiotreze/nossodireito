@@ -395,8 +395,25 @@ def check_security(report: ReviewReport, html: str, js: str) -> None:
                                    "Script de CDN sem Subresource Integrity — risco de supply-chain attack.",
                                    sugestao="Adicione integrity='sha384-...' e crossorigin='anonymous'."))
         elif not src.startswith(("js/", "css/", "./", "../")):
-            report.add(Finding(cat, f"Script externo: {src[:60]}...", Severity.WARNING,
-                               "Script carregado de fonte externa não verificada."))
+            # Gov.br domains are trusted government sources (e.g. VLibras a11y)
+            is_govbr = ".gov.br" in src
+            if "integrity=" in attrs:
+                report.add(Finding(cat, f"SRI presente em script externo", Severity.PASS,
+                                   f"Subresource Integrity detectado para: {src[:50]}..."))
+                if 'crossorigin="anonymous"' in attrs or "crossorigin='anonymous'" in attrs:
+                    report.add(Finding(cat, "crossorigin=anonymous em script externo", Severity.PASS,
+                                       "Atributo crossorigin correctamente configurado para SRI."))
+                else:
+                    report.add(Finding(cat, "Falta crossorigin em script externo SRI", Severity.WARNING,
+                                       "Script com integrity mas sem crossorigin='anonymous'.",
+                                       sugestao="Adicione crossorigin='anonymous' ao script com SRI."))
+            elif is_govbr:
+                report.add(Finding(cat, f"Script gov.br sem SRI: {src[:50]}...", Severity.WARNING,
+                                   "Script de domínio gov.br sem SRI — considere adicionar integrity hash.",
+                                   sugestao="Adicione integrity='sha384-...' para garantir integridade."))
+            else:
+                report.add(Finding(cat, f"Script externo: {src[:60]}...", Severity.WARNING,
+                                   "Script carregado de fonte externa não verificada."))
 
     # 6. Verifica target="_blank" com noopener (aceita noopener e noopener noreferrer)
     blank_links = re.findall(r'target="_blank"', html)

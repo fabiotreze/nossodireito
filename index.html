@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -344,7 +345,7 @@
                     </label>
                 </div>
                 <p class="checklist-note">
-                    💡 Seu progresso é salvo automaticamente no seu navegador. Nenhum dado pessoal é enviado para
+                    💡 Progresso salvo no navegador. Nenhum dado pessoal é enviado para
                     servidores.
                 </p>
             </div>
@@ -353,11 +354,10 @@
             <div class="container">
                 <h2>📎 Análise de Documentos</h2>
                 <p class="section-desc">
-                    Faça upload do seu laudo ou documento para identificar automaticamente seus direitos.
+                    Faça upload do seu laudo ou documento para identificar seus direitos.
                     A análise é 100% local — o arquivo é <strong>criptografado, analisado e descartado
                         automaticamente</strong>.
                 </p>
-
                 <div id="docsUploadArea" class="docs-upload-area">
                     <div class="upload-zone" id="uploadZone" role="button" tabindex="0"
                         aria-label="Clique ou arraste arquivos para enviar">
@@ -367,13 +367,10 @@
                         <input type="file" id="fileInput" multiple accept=".pdf,.jpg,.jpeg,.png" class="sr-only"
                             aria-hidden="true">
                     </div>
-
                     <div id="fileList" class="file-list" aria-live="polite"></div>
-
                     <button id="analyzeSelected" class="btn btn-primary btn-analyze-global" type="button" disabled>
                         🔍 Enviar para análise local
                     </button>
-
                     <div class="upload-privacy">
                         <p>🔒 <strong>Consulta pontual:</strong> seus arquivos são criptografados (AES-256), analisados
                             localmente e <strong>descartados automaticamente após a análise</strong>.
@@ -383,7 +380,6 @@
                         </button>
                     </div>
                 </div>
-
                 <div id="analysisResults" class="analysis-results" style="display:none;" aria-live="polite"
                     role="region" aria-label="Resultados da análise de documentos">
                     <div class="analysis-header">
@@ -404,7 +400,6 @@
                     </div>
                     <div id="analysisContent"></div>
                 </div>
-
                 <h3 class="docs-checklist-title">📋 Documentos Necessários por Direito</h3>
                 <p class="section-desc" style="margin-bottom:16px;">
                     Com base nas categorias de direitos, estes são os documentos que você pode precisar.
@@ -413,7 +408,6 @@
                 <div id="docsChecklist" class="docs-checklist"></div>
             </div>
         </section>
-
         <section class="section section-alt" id="links">
             <div class="container">
                 <h2>🔗 Sites Oficiais do Governo</h2>
@@ -424,7 +418,6 @@
                 <div id="linksGrid" class="links-grid"></div>
             </div>
         </section>
-
         <section class="section" id="classificacao">
             <div class="container">
                 <h2>🏥 Classificação de Deficiência — CID-10 / CID-11</h2>
@@ -442,7 +435,6 @@
                 </div>
             </div>
         </section>
-
         <section class="section section-alt" id="orgaos-estaduais">
             <div class="container">
                 <h2>🏢 Órgãos Estaduais de Apoio à Pessoa com Deficiência</h2>
@@ -466,7 +458,6 @@
                 <div id="orgaosEstaduaisGrid" class="orgaos-grid"></div>
             </div>
         </section>
-
         <section class="section" id="instituicoes">
             <div class="container">
                 <h2>🤝 Instituições de Apoio</h2>
@@ -487,11 +478,9 @@
                 <div id="instituicoesGrid" class="instituicoes-grid"></div>
             </div>
         </section>
-
         <section class="section section-alt" id="transparencia">
             <div class="container">
                 <h2>🔍 Transparência e Fontes Oficiais</h2>
-
                 <p class="section-desc">
                     Todas as informações deste site são compiladas de <strong>fontes oficiais</strong> do governo
                     brasileiro e organismos internacionais (OMS, ONU, INSS, Ministério da Saúde, ANS, entre outros).
@@ -509,7 +498,6 @@
                         href="mailto:fabiotreze@hotmail.com">fabiotreze@hotmail.com</a> que vamos corrigir assim que
                     possível.
                 </p>
-
                 <div class="transparency-meta">
                     <div class="tmeta-item">
                         <span class="tmeta-label">Última atualização</span>
@@ -524,16 +512,12 @@
                         <span class="tmeta-value" id="transVersion"></span>
                     </div>
                 </div>
-
                 <h3 class="trans-subtitle">📜 Legislação Consultada</h3>
                 <div id="fontesLegislacao" class="fontes-list"></div>
-
                 <h3 class="trans-subtitle">🏛️ Serviços e Portais Oficiais</h3>
                 <div id="fontesServicos" class="fontes-list"></div>
-
                 <h3 class="trans-subtitle">📋 Normativas</h3>
                 <div id="fontesNormativas" class="fontes-list"></div>
-
                 <div class="transparency-note">
                     <p><strong>Compromisso com a atualização:</strong> Este projeto se compromete a revisar
                         semanalmente todas as fontes acima, verificando alterações legislativas, novos
@@ -545,9 +529,7 @@
                 </div>
             </div>
         </section>
-
     </main>
-
     <footer class="footer">
         <div class="container">
             <div class="footer-content">
@@ -576,15 +558,15 @@
             </div>
         </div>
     </footer>
-
     <div vw class="enabled" aria-hidden="true">
         <div vw-access-button class="active"></div>
         <div vw-plugin-wrapper>
             <div class="vw-plugin-top-wrapper"></div>
         </div>
     </div>
-    <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
-    <script>new window.VLibras.Widget('https://vlibras.gov.br/app');</script>
+    <script src="https://vlibras.gov.br/app/vlibras-plugin.js"
+        integrity="sha384-P+g9upWYCGbO2rB87dwrTJtCFqD63pUIT+w/qj5+K5Q1YnLAttGT+wBuoWqaXqXw"
+        crossorigin="anonymous"></script>
     <script src="js/app.js"></script>
     <script src="js/sw-register.js"></script>
 </body>

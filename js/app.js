@@ -158,7 +158,8 @@
             try { localStorage.setItem(A11Y_CONTRAST_KEY, String(on)); } catch (_) { }
         }
 
-        // --- VLibras toggle (widget loaded in HTML per official docs) ---
+        // --- VLibras init + toggle ---
+        if (typeof window.VLibras !== 'undefined') { try { new window.VLibras.Widget('https://vlibras.gov.br/app'); } catch (_) { /* already init */ } }
         if (btnLibras) btnLibras.addEventListener('click', () => {
             const vwBtn = document.querySelector('[vw-access-button]');
             if (vwBtn) {
