@@ -11,11 +11,13 @@ on:
     paths:
       - "index.html"
       - "server.js"
+      - "package.json"
       - "css/**"
       - "js/**"
       - "data/**"
       - "images/**"
       - "codereview/**"
+      - ".github/workflows/deploy.yml"
 
 jobs:
   # ── Quality Gate (obrigatório antes do deploy) ──
@@ -109,13 +111,44 @@ jobs:
       - name: Deploy to App Service
         if: steps.infra_check.outputs.rg_exists == 'true'
         run: |
+          # Reiniciar app antes do deploy — limpa Kudu e evita 504 GatewayTimeout
+          echo "♻️ Reiniciando App Service para aquecer Kudu..."
+          az webapp restart \
+            --resource-group rg-nossodireito \
+            --name app-nossodireito \
+            --output none 2>/dev/null || true
+          sleep 20
+
+          # Deploy async — não bloqueia esperando Kudu (evita 504)
+          echo "📦 Iniciando deploy..."
           az webapp deploy \
             --resource-group rg-nossodireito \
             --name app-nossodireito \
             --src-path site.zip \
-            --type zip
+            --type zip \
+            --async true \
+            --timeout 600
 
-          echo "✅ Deploy concluído."
+          echo "✅ Deploy iniciado (async)."
+
+          # Polling: aguarda deploy completar (max 5 min)
+          echo "⏳ Aguardando deploy finalizar..."
+          for i in $(seq 1 20); do
+            sleep 15
+            STATUS=$(az webapp show \
+              --resource-group rg-nossodireito \
+              --name app-nossodireito \
+              --query "state" -o tsv 2>/dev/null || echo "unknown")
+            echo "  [$i/20] App state: ${STATUS}"
+            if [ "$STATUS" = "Running" ]; then
+              HTTP=$(curl -s -o /dev/null -w "%{http_code}" \
+                "https://app-nossodireito.azurewebsites.net" || true)
+              if [ "$HTTP" = "200" ]; then
+                echo "✅ Deploy concluído — HTTP 200"
+                break
+              fi
+            fi
+          done
 
       - name: Health check
         if: steps.infra_check.outputs.rg_exists == 'true'
