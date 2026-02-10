@@ -547,9 +547,9 @@ def check_security(report: ReviewReport, html: str, js: str) -> None:
 
     # ── Client-side hardening (app.js) ──
     # 18. Prototype pollution guard (CWE-1321)
-    if "Object.freeze(Object.prototype)" in js or "__proto__" in js:
+    if "safeJsonParse" in js and "__proto__" in js:
         report.add(Finding(cat, "Prototype pollution guard presente", Severity.PASS,
-                           "Object.prototype congelado — proteção contra CWE-1321."))
+                           "safeJsonParse filtra __proto__/constructor + deepFreeze nos dados — proteção CWE-1321."))
     else:
         report.add(Finding(cat, "Sem proteção contra prototype pollution", Severity.WARNING,
                            "Object.prototype não está congelado — risco CWE-1321.",

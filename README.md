@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="images/nossodireito.png" alt="NossoDireito" width="120">
+</p>
+
 # ⚖️ NossoDireito
 
 [![Quality Gate](https://img.shields.io/badge/Quality%20Gate-100.0%2F100-brightgreen?style=flat-square)](https://github.com/fabiotreze/nossodireito/actions)

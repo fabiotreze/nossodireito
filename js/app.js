@@ -11,13 +11,11 @@
 (function () {
     'use strict';
 
-    // ========================
+    // ===
     // Security: Prototype Pollution Guard (CWE-1321)
-    // ========================
-    // Freeze Object.prototype to prevent __proto__ / constructor.prototype attacks
-    // via JSON payloads, localStorage, or URL parameters.
-    Object.freeze(Object.prototype);
-    Object.freeze(Array.prototype);
+    // ===
+    // Note: global Object.freeze(Object.prototype) removed — breaks VLibras
+    // webpack chunks/helpers. Protection via safeJsonParse + deepFreeze on data.
 
     /**
      * Safe JSON parse — strips __proto__ and constructor keys (CWE-1321).
@@ -70,9 +68,9 @@
         }
     }
 
-    // ========================
+    // ===
     // State
-    // ========================
+    // ===
     let direitosData = null;
     let fontesData = null;
     let docsMestreData = null;
@@ -100,9 +98,9 @@
     const ALLOWED_EXTENSIONS = ['.pdf', '.jpg', '.jpeg', '.png'];
     const CRYPTO_AVAILABLE = typeof crypto !== 'undefined' && typeof crypto.subtle !== 'undefined';
 
-    // ========================
+    // ===
     // Accessibility Toolbar
-    // ========================
+    // ===
     const A11Y_FONT_KEY = STORAGE_PREFIX + 'font_size';
     const A11Y_CONTRAST_KEY = STORAGE_PREFIX + 'high_contrast';
     const FONT_STEPS = [14, 15, 16, 18, 20, 22]; // px
@@ -159,16 +157,18 @@
         }
 
         // --- VLibras init + CDN fallback ---
-        function initVL() { try { new window.VLibras.Widget('https://vlibras.gov.br/app'); } catch (_) { } }
-        if (window.VLibras) initVL();
-        else { const s = document.createElement('script'); s.src = 'https://cdn.jsdelivr.net/gh/spbgovbr-vlibras/vlibras-portal@dev/app/vlibras-plugin.js'; s.onload = () => { if (window.VLibras) initVL(); }; document.head.appendChild(s); }
-        if (btnLibras) btnLibras.addEventListener('click', () => {
-            const vwBtn = document.querySelector('[vw-access-button]');
-            if (vwBtn) {
-                vwBtn.click();
-            } else {
-                showToast('VLibras não carregou. Verifique sua conexão e recarregue a página.', 'warning');
-            }
+        let vlOK = false, vlP = null;
+        function initVL() { try { new window.VLibras.Widget('https://vlibras.gov.br/app'); vlOK = true; } catch (_) { } }
+        function ldVL(u) { return new Promise((y, n) => { const s = document.createElement('script'); s.src = u; s.onload = () => window.VLibras ? (initVL(), y()) : n(); s.onerror = n; document.head.appendChild(s); }); }
+        const VLC = 'https://cdn.jsdelivr.net/gh/spbgovbr-vlibras/vlibras-portal@dev/app/vlibras-plugin.js';
+        function ensureVL() { if (vlOK) return Promise.resolve(!0); if (window.VLibras) { initVL(); return Promise.resolve(!0); } if (!vlP) vlP = ldVL('https://vlibras.gov.br/app/vlibras-plugin.js').catch(() => ldVL(VLC)).then(() => !0, () => { vlP = null; return !1; }); return vlP; }
+        if (window.VLibras) initVL(); else ensureVL();
+        if (btnLibras) btnLibras.addEventListener('click', async () => {
+            btnLibras.disabled = true; btnLibras.textContent = '⏳ Carregando...';
+            try {
+                if (!await ensureVL()) { showToast('VLibras indisponível. Tente novamente mais tarde.', 'error'); return; }
+                await new Promise(r => { let c = 0; const iv = setInterval(() => { const b = document.querySelector('[vw-access-button] img[src]'); if (b) { clearInterval(iv); b.closest('[vw-access-button]').click(); r(); } else if (++c > 25) { clearInterval(iv); showToast('VLibras carregou mas o painel não apareceu. Recarregue a página.', 'warning'); r(); } }, 200); });
+            } finally { btnLibras.disabled = false; btnLibras.textContent = '🤟 Libras'; }
         });
 
         // --- Leitura em voz alta (Web Speech API — 100% nativo, sem dependência externa) ---
@@ -323,9 +323,9 @@
             'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
     }
 
-    // ========================
+    // ===
     // Toast Notifications (replaces alert())
-    // ========================
+    // ===
     function showToast(message, type = 'info') {
         const toast = document.createElement('div');
         toast.className = `toast toast-${type}`;
@@ -347,9 +347,9 @@
         d.onclick = e => { if (e.target.tagName === 'BUTTON') { const ok = e.target.classList.contains('btn-confirm'); d.close(); d.remove(); if (ok) cb(); } };
     }
 
-    // ========================
+    // ===
     // DOM References
-    // ========================
+    // ===
     const $ = (sel) => document.querySelector(sel);
     const $$ = (sel) => document.querySelectorAll(sel);
 
@@ -406,9 +406,9 @@
         heroFontesCount: $('#heroFontesCount'),
     };
 
-    // ========================
+    // ===
     // Init
-    // ========================
+    // ===
     async function init() {
         setupDisclaimer();
         setupNavigation();
@@ -439,9 +439,9 @@
         }, 60000);
     }
 
-    // ========================
+    // ===
     // Disclaimer Modal
-    // ========================
+    // ===
     function setupDisclaimer() {
         function closeModal() {
             dom.disclaimerModal.classList.add('hidden');
@@ -485,9 +485,9 @@
         });
     }
 
-    // ========================
+    // ===
     // Navigation
-    // ========================
+    // ===
     function setupNavigation() {
         dom.menuToggle.addEventListener('click', () => {
             const open = dom.navLinks.classList.toggle('open');
@@ -560,9 +560,9 @@
         });
     }
 
-    // ========================
+    // ===
     // Data Loading
-    // ========================
+    // ===
     async function loadData() {
         try {
             const res = await resilientFetch('data/direitos.json');
@@ -616,9 +616,9 @@
         } catch { /* gov.br API sem CORS — silencioso */ }
     }
 
-    // ========================
+    // ===
     // Render Categories
-    // ========================
+    // ===
     function renderCategories() {
         if (!direitosData) return;
 
@@ -646,9 +646,9 @@
         });
     }
 
-    // ========================
+    // ===
     // Detail View
-    // ========================
+    // ===
     function showDetalhe(id, skipHistory) {
         const cat = direitosData.find((c) => c.id === id);
         if (!cat) return;
@@ -787,9 +787,9 @@
         if (h2) { h2.setAttribute('tabindex', '-1'); h2.focus({ preventScroll: true }); }
     }
 
-    // ========================
+    // ===
     // Search
-    // ========================
+    // ===
     function setupSearch() {
         const doSearch = () => {
             const query = dom.searchInput.value.trim().toLowerCase();
@@ -875,9 +875,9 @@
         });
     }
 
-    // ========================
+    // ===
     // Checklist (Local Storage)
-    // ========================
+    // ===
     function setupChecklist() {
         const checkboxes = $$('.checklist-item input[type="checkbox"]');
         const saved = localGet('checklist') || {};
@@ -913,9 +913,9 @@
         updateProgress();
     }
 
-    // ========================
+    // ===
     // Transparency Section
-    // ========================
+    // ===
     function renderTransparency() {
         if (!fontesData || !jsonMeta) return;
 
@@ -968,9 +968,9 @@
         }
     }
 
-    // ========================
+    // ===
     // Documents Checklist (Master)
-    // ========================
+    // ===
     function renderDocsChecklist() {
         if (!docsMestreData || !direitosData) return;
 
@@ -1018,9 +1018,9 @@
         });
     }
 
-    // ========================
+    // ===
     // Instituições de Apoio
-    // ========================
+    // ===
     function renderInstituicoes() {
         if (!instituicoesData || !direitosData) return;
 
@@ -1085,9 +1085,9 @@
         });
     }
 
-    // ========================
+    // ===
     // Dynamic Links Úteis
-    // ========================
+    // ===
     function renderLinksUteis() {
         if (!fontesData || !direitosData || !dom.linksGrid) return;
 
@@ -1142,9 +1142,9 @@
             .join('');
     }
 
-    // ========================
+    // ===
     // Hero Stats (dynamic)
-    // ========================
+    // ===
     function renderHeroStats() {
         if (!direitosData || !fontesData) return;
         if (dom.heroCatCount) {
@@ -1155,9 +1155,9 @@
         }
     }
 
-    // ========================
+    // ===
     // Órgãos Estaduais
-    // ========================
+    // ===
     function renderOrgaosEstaduais() {
         if (!orgaosEstaduaisData || !dom.orgaosEstaduaisGrid) return;
 
@@ -1217,9 +1217,9 @@
         });
     }
 
-    // ========================
+    // ===
     // Classificação de Deficiência (CID-10 / CID-11)
-    // ========================
+    // ===
     function renderClassificacao() {
         if (!classificacaoData || !dom.classificacaoGrid) return;
 
@@ -1251,9 +1251,9 @@
             </p>`;
     }
 
-    // ========================
+    // ===
     // Staleness Banner
-    // ========================
+    // ===
     function checkStaleness() {
         if (!jsonMeta || !dom.stalenessBanner) return;
 
@@ -1272,9 +1272,9 @@
         }
     }
 
-    // ========================
+    // ===
     // File Upload (IndexedDB)
-    // ========================
+    // ===
 
     /**
      * Revela a área de upload de documentos (hidden by default).
@@ -1470,9 +1470,9 @@
         }
     }
 
-    // ========================
+    // ===
     // Document Analysis Engine
-    // ========================
+    // ===
 
     /**
      * Atualiza o estado do botão global "Analisar Selecionados".
@@ -2016,9 +2016,9 @@
         });
     }
 
-    // ========================
+    // ===
     // Crypto — AES-GCM-256 (Web Crypto API)
-    // ========================
+    // ===
 
     /**
      * Retrieves or generates the AES-256-GCM master key.
@@ -2155,9 +2155,9 @@
         }
     }
 
-    // ========================
+    // ===
     // File TTL — Auto-expiration
-    // ========================
+    // ===
 
     /**
      * Removes files past their TTL. Runs on boot + every 60s.
@@ -2187,9 +2187,9 @@
         }
     }
 
-    // ========================
+    // ===
     // IndexedDB Operations
-    // ========================
+    // ===
     function openDB() {
         return new Promise((resolve, reject) => {
             const req = indexedDB.open(DB_NAME, DB_VERSION);
@@ -2230,9 +2230,9 @@
     function clearAllFiles() { return dbOp('readwrite', s => s.clear()); }
     function getFileCount() { return dbOp('readonly', s => s.count()); }
 
-    // ========================
+    // ===
     // Footer
-    // ========================
+    // ===
     function setupFooter() {
         if (dom.lastUpdate && !dom.lastUpdate.textContent) {
             dom.lastUpdate.textContent = new Date().toLocaleDateString('pt-BR');
@@ -2249,9 +2249,9 @@
         }
     }
 
-    // ========================
+    // ===
     // Local Storage Helpers
-    // ========================
+    // ===
     function localGet(key) {
         try {
             const val = localStorage.getItem(STORAGE_PREFIX + key);
@@ -2269,9 +2269,9 @@
         }
     }
 
-    // ========================
+    // ===
     // Utility Functions
-    // ========================
+    // ===
 
     /**
      * Validates a URL is safe to navigate to (CWE-601 — Open Redirect prevention).
@@ -2362,9 +2362,9 @@
         return `Expira em ${hours}h${remMins > 0 ? remMins + 'min' : ''}`;
     }
 
-    // ========================
+    // ===
     // Boot
-    // ========================
+    // ===
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', init);
     } else {

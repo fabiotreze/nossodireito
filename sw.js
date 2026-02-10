@@ -8,7 +8,7 @@
 
 'use strict';
 
-const CACHE_VERSION = 'nossodireito-v1.1.0';
+const CACHE_VERSION = 'nossodireito-v1.2.0';
 const STATIC_ASSETS = [
     '/',
     '/index.html',
@@ -74,6 +74,9 @@ self.addEventListener('fetch', (event) => {
 
     // Don't cache SEO files — crawlers must always get fresh versions
     if (url.pathname === '/robots.txt' || url.pathname === '/sitemap.xml') return;
+
+    // VLibras/CDN: let browser handle natively (avoid synthetic 503 from SW)
+    if (url.hostname.includes('vlibras.gov.br') || url.hostname.includes('jsdelivr.net')) return;
 
     // JSON data files: Network-first (always try to get fresh data)
     if (url.pathname.endsWith('.json') && url.origin === self.location.origin) {

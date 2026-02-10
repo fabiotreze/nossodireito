@@ -68,25 +68,6 @@ jobs:
           echo "num_fontes=$NUM_FONTES" >> "$GITHUB_OUTPUT"
           echo "num_categorias=$NUM_CATEGORIAS" >> "$GITHUB_OUTPUT"
 
-      - name: Verificar links das fontes
-        id: linkcheck
-        continue-on-error: true
-        run: |
-          echo "## Verificação de Links" > link-report.md
-          echo "" >> link-report.md
-          BROKEN=0
-          while IFS= read -r url; do
-            STATUS=$(curl -o /dev/null -s -w "%{http_code}" --max-time 10 -L "$url" 2>/dev/null || echo "ERRO")
-            if [ "$STATUS" = "200" ] || [ "$STATUS" = "301" ] || [ "$STATUS" = "302" ]; then
-              echo "- ✅ \`$STATUS\` — $url" >> link-report.md
-            else
-              echo "- ❌ \`$STATUS\` — $url" >> link-report.md
-              BROKEN=$((BROKEN + 1))
-            fi
-          done < <(jq -r '.fontes[].url' data/direitos.json)
-          echo "" >> link-report.md
-          echo "broken=$BROKEN" >> "$GITHUB_OUTPUT"
-
       - name: Verificar fontes legislativas por mudanças recentes
         id: legcheck
         continue-on-error: true
@@ -159,7 +140,6 @@ jobs:
           ULTIMA: ${{ steps.fontes.outputs.ultima }}
           NUM_FONTES: ${{ steps.fontes.outputs.num_fontes }}
           NUM_CATEGORIAS: ${{ steps.fontes.outputs.num_categorias }}
-          BROKEN: ${{ steps.linkcheck.outputs.broken }}
           QG_STATUS: ${{ steps.qg.outputs.status }}
           HEALTH_OVERALL: ${{ steps.health.outputs.overall }}
           HEALTH_HZ: ${{ steps.health.outputs.healthz }}
@@ -171,14 +151,9 @@ jobs:
         with:
           script: |
             const fs = require('fs');
-            const linkReport = fs.readFileSync('link-report.md', 'utf8');
             const legReport = fs.readFileSync('leg-report.md', 'utf8');
             const cidReport = fs.existsSync('cid-report.md') ? fs.readFileSync('cid-report.md', 'utf8') : '⚠️ Relatório CID não disponível.';
             const today = new Date().toISOString().split('T')[0];
-            const broken = parseInt(process.env.BROKEN) || 0;
-            const brokenAlert = broken > 0
-              ? `\n⚠️ **${broken} link(s) com problema detectado(s)!** Verifique a seção de links abaixo.\n`
-              : '\n✅ Todos os links responderam com sucesso.\n';
 
             const body = `# 📋 Revisão Semanal — ${today}
 
@@ -186,7 +161,6 @@ jobs:
             **Última atualização:** ${process.env.ULTIMA}
             **Fontes cadastradas:** ${process.env.NUM_FONTES}
             **Categorias:** ${process.env.NUM_CATEGORIAS}
-            ${brokenAlert}
 
             ## 🏥 Status do Site
 
@@ -224,8 +198,9 @@ jobs:
             - [ ] Verificar cobertura de instituições para todas as categorias
             - [ ] Rodar \`python codereview/codereview.py --categoria schema\` para validar
 
-            ### 🔗 Verificação Automática de Links
-            ${linkReport}
+            ### 🔗 Verificação de Links
+            > **Nota:** Link check automático foi removido devido a falsos positivos (sites gov.br bloqueiam CI runners).
+            > Teste os links manualmente ou use o script \`scripts/validate_sources.py\` localmente.
 
             ### 📜 Verificação Legislativa
             ${legReport}
