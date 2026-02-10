@@ -19,6 +19,10 @@ on:
       - "codereview/**"
       - ".github/workflows/deploy.yml"
 
+concurrency:
+  group: deploy-nossodireito
+  cancel-in-progress: false
+
 jobs:
   # ── Quality Gate (obrigatório antes do deploy) ──
   quality-gate:
