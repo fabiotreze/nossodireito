@@ -5,6 +5,18 @@ Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/)
 e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [1.2.1] - 2026-02-10
+
+### Corrigido
+
+#### Content Security Policy (CSP) — Suporte Completo ao CDN Fallback do VLibras
+- **`style-src`** — Adicionado `https://cdn.jsdelivr.net` para permitir estilos CSS do VLibras via CDN fallback (jsdelivr espelha repositório GitHub oficial)
+- **`img-src`** — Adicionado `https://cdn.jsdelivr.net` para permitir imagens do VLibras via CDN fallback
+- **`Cross-Origin-Resource-Policy`** — Mudado de `same-origin` para `cross-origin` no server.js (linha 132) para permitir que VLibras e outros serviços acessem recursos do site
+- **Arquivos atualizados** — index.html (linha 18), index.min.html (linha 16), server.js (linhas 103, 132)
+- **Impacto** — Garante funcionamento do VLibras mesmo quando vlibras.gov.br está indisponível (fallback automático para cdn.jsdelivr.net)
+- **Quality Gate** — Mantido 100.0/100 com 166 checks PASS
+
 ## [1.2.0] - 2026-02-10
 
 ### Adicionado

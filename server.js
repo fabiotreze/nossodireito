@@ -99,8 +99,8 @@ const SECURITY_HEADERS = Object.freeze({
     'Content-Security-Policy': [
         "default-src 'none'",
         "script-src 'self' https://cdnjs.cloudflare.com https://vlibras.gov.br https://*.vlibras.gov.br https://cdn.jsdelivr.net 'wasm-unsafe-eval'",
-        "style-src 'self' 'unsafe-inline' https://*.vlibras.gov.br",
-        "img-src 'self' data: blob: https://vlibras.gov.br https://*.vlibras.gov.br",
+        "style-src 'self' 'unsafe-inline' https://*.vlibras.gov.br https://cdn.jsdelivr.net",
+        "img-src 'self' data: blob: https://vlibras.gov.br https://*.vlibras.gov.br https://cdn.jsdelivr.net",
         "connect-src 'self' https://vlibras.gov.br https://*.vlibras.gov.br https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://servicos.gov.br",
         "worker-src 'self' blob: https://cdnjs.cloudflare.com",
         "child-src blob:",
@@ -127,7 +127,7 @@ const SECURITY_HEADERS = Object.freeze({
 
     // ── Cross-Origin Isolation ──
     'Cross-Origin-Opener-Policy': 'same-origin',
-    'Cross-Origin-Resource-Policy': 'same-origin',
+    'Cross-Origin-Resource-Policy': 'cross-origin',
     // Note: COEP require-corp breaks CDN scripts (pdf.js), so use credentialless
     'Cross-Origin-Embedder-Policy': 'credentialless',
 
