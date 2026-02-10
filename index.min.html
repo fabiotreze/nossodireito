@@ -137,40 +137,44 @@
         </div><button id="acceptDisclaimer" class="btn btn-primary btn-lg" type="button">Entendi — Fechar</button>
     </div>
 </div>
-<div class="a11y-toolbar" role="toolbar" aria-label="Ferramentas de acessibilidade">
-    <div class="container a11y-toolbar-inner"><span class="a11y-toolbar-label">♿ Acessibilidade:</span> <button
-            type="button" id="a11yFontDecrease" class="a11y-btn" aria-label="Diminuir tamanho da fonte"
-            title="Diminuir fonte">A−</button> <button type="button" id="a11yFontReset" class="a11y-btn"
-            aria-label="Tamanho de fonte padrão" title="Fonte padrão">A</button> <button type="button"
-            id="a11yFontIncrease" class="a11y-btn" aria-label="Aumentar tamanho da fonte"
-            title="Aumentar fonte">A+</button> <span class="a11y-separator" aria-hidden="true">|</span> <button
-            type="button" id="a11yContrast" class="a11y-btn" aria-label="Alternar alto contraste" aria-pressed="false"
-            title="Alto Contraste">🔲 Contraste</button> <span class="a11y-separator" aria-hidden="true">|</span>
-        <button type="button" id="a11yLibras" class="a11y-btn a11y-btn-libras"
-            aria-label="Ativar tradução em Libras (VLibras)" title="Libras (VLibras)">🤟 Libras</button>
-        <span class="a11y-separator" aria-hidden="true">|</span>
-        <button type="button" id="a11yReadAloud" class="a11y-btn" aria-label="Ler conteúdo em voz alta"
-            aria-pressed="false" title="Ouvir conteúdo">🔊 Ouvir</button>
+<header>
+    <div class="a11y-toolbar" role="toolbar" aria-label="Ferramentas de acessibilidade">
+        <div class="container a11y-toolbar-inner"><span class="a11y-toolbar-label">♿ Acessibilidade:</span> <button
+                type="button" id="a11yFontDecrease" class="a11y-btn" aria-label="Diminuir tamanho da fonte"
+                title="Diminuir fonte">A−</button> <button type="button" id="a11yFontReset" class="a11y-btn"
+                aria-label="Tamanho de fonte padrão" title="Fonte padrão">A</button> <button type="button"
+                id="a11yFontIncrease" class="a11y-btn" aria-label="Aumentar tamanho da fonte"
+                title="Aumentar fonte">A+</button> <span class="a11y-separator" aria-hidden="true">|</span> <button
+                type="button" id="a11yContrast" class="a11y-btn" aria-label="Alternar alto contraste"
+                aria-pressed="false" title="Alto Contraste">🔲 Contraste</button> <span class="a11y-separator"
+                aria-hidden="true">|</span>
+            <button type="button" id="a11yLibras" class="a11y-btn a11y-btn-libras"
+                aria-label="Ativar tradução em Libras (VLibras)" title="Libras (VLibras)">🤟 Libras</button>
+            <span class="a11y-separator" aria-hidden="true">|</span>
+            <button type="button" id="a11yReadAloud" class="a11y-btn" aria-label="Ler conteúdo em voz alta"
+                aria-pressed="false" title="Ouvir conteúdo">🔊 Ouvir</button>
+        </div>
     </div>
-</div>
-<nav class="navbar" role="navigation" aria-label="Menu principal">
-    <div class="container"><a href="#" class="navbar-brand" aria-label="NossoDireito - Início"><span>NossoDireito</span>
-        </a><button class="menu-toggle" id="menuToggle" type="button" aria-label="Abrir menu" aria-expanded="false"
-            aria-controls="navLinks"><span></span><span></span><span></span></button>
-        <ul class="nav-links" id="navLinks" role="list">
-            <li><a href="#inicio" class="active">Início</a>
-            <li><a href="#busca">Buscar</a>
-            <li><a href="#categorias">Categorias</a>
-            <li><a href="#checklist">Primeiros Passos</a>
-            <li><a href="#documentos">Documentos</a>
-            <li><a href="#links">Sites Oficiais</a>
-            <li><a href="#classificacao">CID-10/11</a>
-            <li><a href="#orgaos-estaduais">Estados</a>
-            <li><a href="#instituicoes">Instituições</a>
-            <li><a href="#transparencia">Fontes</a>
-        </ul>
-    </div>
-</nav><noscript>
+    <nav class="navbar" role="navigation" aria-label="Menu principal">
+        <div class="container"><a href="#" class="navbar-brand"
+                aria-label="NossoDireito - Início"><span>NossoDireito</span>
+            </a><button class="menu-toggle" id="menuToggle" type="button" aria-label="Abrir menu" aria-expanded="false"
+                aria-controls="navLinks"><span></span><span></span><span></span></button>
+            <ul class="nav-links" id="navLinks" role="list">
+                <li><a href="#inicio" class="active">Início</a>
+                <li><a href="#busca">Buscar</a>
+                <li><a href="#categorias">Categorias</a>
+                <li><a href="#checklist">Primeiros Passos</a>
+                <li><a href="#documentos">Documentos</a>
+                <li><a href="#links">Sites Oficiais</a>
+                <li><a href="#classificacao">CID-10/11</a>
+                <li><a href="#orgaos-estaduais">Estados</a>
+                <li><a href="#instituicoes">Instituições</a>
+                <li><a href="#transparencia">Fontes</a>
+            </ul>
+        </div>
+    </nav>
+</header><noscript>
     <div
         style="background:#fef3cd;color:#856404;padding:24px;text-align:center;font-size:1.1rem;border-bottom:2px solid #ffc107">
         <strong>⚠️ JavaScript necessário:</strong> Este site precisa de JavaScript para funcionar. Por favor, habilite o
@@ -432,7 +436,7 @@
                 <p>Última atualização: <span id="lastUpdate"></span> · <span id="footerVersion"
                         class="footer-version"></span>
                 <p><a href="#" id="showDisclaimer">Aviso Legal</a> ·
-                    <span style="color:#64748b">Repositório privado</span>
+                    <span>Projeto open source educacional — não presta serviços jurídicos</span>
             </div>
         </div>
     </div>
@@ -443,5 +447,7 @@
         <div class="vw-plugin-top-wrapper"></div>
     </div>
 </div>
+<script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+<script>new window.VLibras.Widget('https://vlibras.gov.br/app');</script>
 <script src="js/app.js"></script>
 <script src="js/sw-register.js"></script>

@@ -158,80 +158,14 @@
             try { localStorage.setItem(A11Y_CONTRAST_KEY, String(on)); } catch (_) { }
         }
 
-        // --- VLibras toggle (lazy-loaded on first click) ---
-        let vLibrasLoaded = false;
-        let vLibrasLoading = false;
-
-        /**
-         * Aguarda o botão do VLibras aparecer no DOM (polling com timeout).
-         * Mais robusto que setTimeout fixo — funciona em conexões lentas.
-         */
-        function waitForVLibrasButton(maxWait = 5000) {
-            return new Promise((resolve) => {
-                const start = Date.now();
-                const poll = setInterval(() => {
-                    const vwBtn = document.querySelector('[vw-access-button]');
-                    if (vwBtn) {
-                        clearInterval(poll);
-                        resolve(vwBtn);
-                    } else if (Date.now() - start > maxWait) {
-                        clearInterval(poll);
-                        resolve(null);
-                    }
-                }, 200);
-            });
-        }
-
-        function loadVLibras() {
-            if (vLibrasLoaded) return Promise.resolve();
-            if (vLibrasLoading) return new Promise((resolve) => {
-                // Espera o carregamento em andamento
-                const check = setInterval(() => {
-                    if (vLibrasLoaded) { clearInterval(check); resolve(); }
-                }, 200);
-            });
-            vLibrasLoading = true;
-            return new Promise((resolve, reject) => {
-                const s = document.createElement('script');
-                s.src = 'https://vlibras.gov.br/app/vlibras-plugin.js';
-                s.onload = () => {
-                    try {
-                        if (typeof VLibras !== 'undefined') {
-                            new VLibras.Widget('https://vlibras.gov.br/app');
-                        } else {
-                            console.warn('[VLibras] VLibras global não encontrado após carregar script.');
-                        }
-                    } catch (err) {
-                        console.error('[VLibras] Erro ao inicializar widget:', err);
-                    }
-                    vLibrasLoaded = true;
-                    vLibrasLoading = false;
-                    resolve();
-                };
-                s.onerror = () => {
-                    vLibrasLoading = false;
-                    reject(new Error('VLibras failed to load'));
-                };
-                document.body.appendChild(s);
-            });
-        }
-
+        // --- VLibras toggle (widget loaded in HTML per official docs) ---
         if (btnLibras) btnLibras.addEventListener('click', () => {
-            btnLibras.disabled = true;
-            btnLibras.textContent = '⏳ Carregando...';
-            loadVLibras().then(async () => {
-                const vwBtn = await waitForVLibrasButton(5000);
-                if (vwBtn) {
-                    vwBtn.click();
-                } else {
-                    showToast('VLibras carregou mas o painel não apareceu. Tente novamente.', 'warning');
-                }
-            }).catch(() => {
-                showToast('Não foi possível carregar o VLibras. Verifique sua conexão e tente novamente.', 'error');
-            }).finally(() => {
-                btnLibras.disabled = false;
-                btnLibras.textContent = '🤟 Libras';
-            });
+            const vwBtn = document.querySelector('[vw-access-button]');
+            if (vwBtn) {
+                vwBtn.click();
+            } else {
+                showToast('VLibras não carregou. Verifique sua conexão e recarregue a página.', 'warning');
+            }
         });
 
         // --- Leitura em voz alta (Web Speech API — 100% nativo, sem dependência externa) ---
@@ -479,6 +413,7 @@
         setupChecklist();
         setupFooter();
         await loadData();
+        enrichGovBr(); // fire-and-forget — non-blocking
         setupFooterVersion();
         renderCategories();
         renderTransparency();
@@ -668,6 +603,16 @@
         }
     }
 
+    // Gov.br API enrichment — tries to confirm digital service availability.
+    // Graceful degradation: if CORS blocks or API is down, badge still shows static info.
+    async function enrichGovBr() {
+        try {
+            const r = await fetch('https://servicos.gov.br/api/v1/servicos/10783',
+                { signal: AbortSignal.timeout(4000) });
+            if (r.ok) sessionStorage.setItem('govbr_10783', '1');
+        } catch { /* gov.br API sem CORS — silencioso */ }
+    }
+
     // ========================
     // Render Categories
     // ========================
@@ -780,6 +725,16 @@
             </div>`;
         }
 
+        // IPVA por Estado (tabela colapsável)
+        if (cat.ipva_estados && cat.ipva_estados.length) {
+            html += `<div class="detalhe-section"><h3>🚗 Isenção de IPVA por Estado</h3>
+                <details><summary>Ver legislação dos ${cat.ipva_estados.length} estados</summary>
+                <div class="table-wrapper"><table class="ipva-table">
+                <thead><tr><th>UF</th><th>Lei</th><th>Art.</th><th>SEFAZ</th></tr></thead>
+                <tbody>${cat.ipva_estados.map(e => `<tr><td>${escapeHtml(e.uf)}</td><td>${escapeHtml(e.lei)}</td><td>${escapeHtml(e.art)}</td><td><a href="${escapeHtml(e.sefaz)}" target="_blank" rel="noopener noreferrer">Consultar</a></td></tr>`).join('')}</tbody>
+                </table></div></details></div>`;
+        }
+
         // Links
         if (cat.links && cat.links.length) {
             html += `<div class="detalhe-section">
@@ -794,6 +749,15 @@
                     )
                     .join('')}</div>
             </div>`;
+        }
+
+        // Gov.br service badge
+        if (cat.govbr_servico_id) {
+            const live = sessionStorage.getItem('govbr_' + cat.govbr_servico_id);
+            html += `<div class="detalhe-section" style="text-align:center">
+                <a href="https://www.gov.br/pt-br/servicos/obter-isencao-de-impostos-para-comprar-carro" target="_blank" rel="noopener noreferrer" class="tag" style="display:inline-block;background:${live ? '#168821' : '#1351b4'};color:#fff;text-decoration:none;padding:6px 16px;border-radius:20px;font-size:0.95rem">
+                🇧🇷 ${live ? 'Serviço digital confirmado no gov.br' : 'Acessar serviço no gov.br'}
+                </a></div>`;
         }
 
         // Tags
@@ -1997,8 +1961,11 @@
                             <h4>${escapeHtml(category.titulo)}</h4>
                             <span class="analysis-badge ${level}" aria-label="${levelLabel}">${levelLabel}</span>
                         </div>
-                        <div class="analysis-match-bar" role="img" aria-label="${levelLabel}: ${barPct}%">
-                            <div class="analysis-match-fill ${level}" style="width:${barPct}%"></div>
+                        <div class="analysis-bar-group">
+                            <span class="analysis-bar-label ${level}">${level === 'high' ? 'Alta' : level === 'medium' ? 'Média' : 'Baixa'}</span>
+                            <div class="analysis-match-bar" role="img" aria-label="${levelLabel}: ${barPct}%">
+                                <div class="analysis-match-fill ${level}" style="width:${barPct}%"></div>
+                            </div>
                         </div>
                     </div>
                     <p class="analysis-match-resumo">${escapeHtml(category.resumo)}</p>

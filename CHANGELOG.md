@@ -5,6 +5,72 @@ Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/)
 e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [1.2.0] - 2026-02-10
+
+### Adicionado
+
+#### Nova Categoria: Isenções Tributárias (IPI, IOF, ICMS, IPVA, IPTU)
+- **10ª categoria** — “Isenções Tributárias” cobrindo todos os benefícios fiscais PcD para veículos e imóveis
+- **Base legal completa** — Lei 8.989/1995 (IPI), Lei 14.287/2021 (atualização IPI R\$ 200k), Lei 8.383/1991 Art. 72 (IOF), Convênio CONFAZ ICMS 38/2012, LBI Art. 46
+- **Tabela IPVA 27 UFs** — legislação específica de cada estado com link direto para SEFAZ (colapsável `<details>`)
+- **Passo a passo SISEN** — procedimento completo para solicitação 100% digital de IPI/IOF via Receita Federal
+- **Rodízio SP** — Lei Municipal 12.490/1997 (isenção com credencial DeFis)
+- **4 novas fontes** — Lei 8.989/1995, Lei 14.287/2021, Lei 8.383/1991, Convênio CONFAZ ICMS 38/2012 (total: 29 fontes)
+
+#### Integração Gov.br API
+- **Serviço 10783** (SISEN) — enriquecimento via `servicos.gov.br/api/v1/servicos/10783` com fallback gracioso
+- **Badge gov.br** — indicador visual "Serviço digital confirmado no gov.br" quando API responde
+- **sessionStorage cache** — evita requisições repetidas à API
+
+#### Motor de Correspondência
+- **15 novos keywords** mapeados para `isencoes_tributarias`: iof, icms, iptu, tributo, tributária, imposto, sisen, confaz, rodízio, etc.
+- Keywords existentes (ipva, ipi, isenção) agora mapeiam para ambas `transporte` + `isencoes_tributarias`
+
+#### Dados
+- `data/ipva_pcd_estados.json` — referência detalhada com 27 leis estaduais de isenção IPVA PcD
+- `documentos_mestre` atualizado — RG, CPF, comprovante de residência e laudo médico agora incluem `isencoes_tributarias`
+- Versão dos dados: 1.1.0 → 1.2.0
+
+#### CSS
+- Estilos para tabela IPVA (`.ipva-table`, `.table-wrapper`)
+- Estilos para `<details>/<summary>` colapsável
+
+### Qualidade
+- **QG 99.6/100** — 164 PASS, 2 warnings (pré-existentes: inline script + VLibras)
+- **Schema/Governança 100%** — todas as 10 categorias cobertas por documentos mestre e keyword map
+
+## [1.1.1] - 2026-02-10
+
+### Corrigido
+
+#### Acessibilidade — ABNT NBR 17225:2024
+- **54 font-sizes corrigidos** — todas as fontes abaixo de 0.875rem (14px) ajustadas para conformidade ABNT NBR 17225 / WCAG 2.1 AA / eMAG 3.1
+  - 8 críticos (0.65-0.72rem → 0.75rem): badges, tags, bar-labels
+  - 26 avisos (0.75-0.82rem → 0.8-0.875rem): botões, links, metadata
+  - 20 borderline (0.85rem → 0.875rem): footer, disclaimers, filtros
+- **`<header>` landmark adicionado** — toolbar de acessibilidade + nav encapsulados em `<header>` (WCAG 1.3.1)
+- **Contraste dark mode corrigido** — removido inline `style="color:#64748b"` no footer que falhava 4.5:1 em dark mode
+
+#### VLibras
+- **Integração VLibras reescrita** — removido lazy-loading via createElement (incompatível com VLibras); integração direta via HTML `<script>` conforme documentação oficial gov.br
+- **CSP atualizado** — adicionados `https://vlibras.gov.br` em script-src, style-src, img-src, connect-src, frame-src, media-src, font-src
+
+#### UI — Interface
+- **Badges de análise com cores sólidas** — `.analysis-badge.high/medium/low` agora usam background sólido `var(--bar-*)` com texto branco (legibilidade melhorada)
+- **Labels textuais nas barras** — adicionados "Alta", "Média", "Baixa" como texto acima das barras de análise
+
+#### Deploy
+- **Timeout de deploy aumentado** — `--timeout 900` (era 600) para acomodar cold start do B1
+- **Health check resiliente** — retry loop (12 tentativas × 15s) com `always()` condicional
+
+#### Segurança / Privacidade
+- **Email pessoal removido** — `alert_email` default vazio em terraform/variables.tf
+- **Git email anonimizado** — commits com `noreply@github.com`
+
+### Adicionado
+- **Disclaimer de marcas** — avisos em LICENSE, README.md e ambos HTML sobre marcas registradas de terceiros
+- **Pool Scout** e **Historical Analyzer** no CLI DeFi (projetos adjacentes)
+
 ## [1.1.0] - 2026-02-10
 
 ### Adicionado

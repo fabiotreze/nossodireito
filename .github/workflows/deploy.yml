@@ -137,9 +137,11 @@ jobs:
           fi
 
       - name: Deploy to App Service
+        id: deploy
         if: steps.infra_check.outputs.rg_exists == 'true'
         run: |
           # Deploy com --async — evita 504 GatewayTimeout em B1
+          # || true evita falha se o polling expirar (deploy continua no Azure)
           echo "📦 Iniciando deploy..."
           az webapp deploy \
             --resource-group rg-nossodireito \
@@ -147,28 +149,44 @@ jobs:
             --src-path site.zip \
             --type zip \
             --async true \
-            --timeout 600
+            --timeout 900 || {
+              echo "::warning::Polling expirou — verificando via health check"
+            }
+          echo "✅ Deploy enviado."
 
-          echo "✅ Deploy iniciado (async)."
-
-      - name: Health check
-        if: steps.infra_check.outputs.rg_exists == 'true'
+      - name: Health check (com retries)
+        if: always() && steps.infra_check.outputs.rg_exists == 'true'
         run: |
           echo "⏳ Aguardando estabilização do deploy..."
-          sleep 15
+          MAX_RETRIES=12
+          RETRY_DELAY=15
+          HEALTHZ_OK=false
+
+          # 1. Health probe com retry (B1 pode demorar até 3min para estabilizar)
+          for i in $(seq 1 $MAX_RETRIES); do
+            HZ_STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
+              --connect-timeout 10 --max-time 15 \
+              "https://app-nossodireito.azurewebsites.net/healthz" || true)
+            echo "🏥 Tentativa ${i}/${MAX_RETRIES}: /healthz → HTTP ${HZ_STATUS}"
+            if [ "$HZ_STATUS" = "200" ]; then
+              HEALTHZ_OK=true
+              break
+            fi
+            if [ "$i" -lt "$MAX_RETRIES" ]; then
+              sleep $RETRY_DELAY
+            fi
+          done
+
+          if [ "$HEALTHZ_OK" != "true" ]; then
+            echo "::error::/healthz não respondeu 200 após ${MAX_RETRIES} tentativas"
+            exit 1
+          fi
 
           FAIL=0
 
-          # 1. Health probe (deve responder 200 em qualquer host)
-          HZ_STATUS=$(curl -s -o /dev/null -w "%{http_code}" "https://app-nossodireito.azurewebsites.net/healthz" || true)
-          echo "🏥 /healthz → HTTP ${HZ_STATUS}"
-          if [ "$HZ_STATUS" != "200" ]; then
-            echo "::warning::/healthz retornou ${HZ_STATUS}"
-            FAIL=$((FAIL + 1))
-          fi
-
           # 2. Custom domain (deve servir conteúdo)
-          CD_STATUS=$(curl -s -o /dev/null -w "%{http_code}" "https://nossodireito.fabiotreze.com/" || true)
+          CD_STATUS=$(curl -s -o /dev/null -w "%{http_code}" --connect-timeout 10 \
+            "https://nossodireito.fabiotreze.com/" || true)
           echo "🌐 Custom domain → HTTP ${CD_STATUS}"
           if [ "$CD_STATUS" != "200" ]; then
             echo "::warning::Custom domain retornou ${CD_STATUS}"
@@ -176,7 +194,8 @@ jobs:
           fi
 
           # 3. Redirect do domínio Azure (deve dar 301)
-          AZ_STATUS=$(curl -s -o /dev/null -w "%{http_code}" --max-redirs 0 "https://app-nossodireito.azurewebsites.net/" || true)
+          AZ_STATUS=$(curl -s -o /dev/null -w "%{http_code}" --max-redirs 0 --connect-timeout 10 \
+            "https://app-nossodireito.azurewebsites.net/" || true)
           echo "🔀 Azure domain redirect → HTTP ${AZ_STATUS}"
           if [ "$AZ_STATUS" != "301" ]; then
             echo "::warning::Azure domain não está redirecionando (esperado 301, recebeu ${AZ_STATUS})"

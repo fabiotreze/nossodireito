@@ -17,6 +17,9 @@
 
 subscription_id = "YOUR_AZURE_SUBSCRIPTION_ID"
 
+# --- E-mail para alertas do Azure Monitor ---
+# alert_email = "seu-email@example.com"
+
 # --- Ambiente ---
 # environment = "prod"     # prod | staging | dev
 

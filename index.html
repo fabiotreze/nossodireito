@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -12,16 +11,13 @@
     <meta name="author" content="NossoDireito — Projeto sem fins lucrativos">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://nossodireito.fabiotreze.com">
-
     <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
     <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
-
     <meta http-equiv="Content-Security-Policy"
         content="default-src 'none'; script-src 'self' https://cdnjs.cloudflare.com https://vlibras.gov.br https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://vlibras.gov.br; img-src 'self' data: blob: https://vlibras.gov.br; connect-src 'self' https://vlibras.gov.br; worker-src 'self' blob: https://cdnjs.cloudflare.com; child-src blob:; frame-src 'self' https://vlibras.gov.br blob:; media-src 'self' https://vlibras.gov.br; font-src 'self' https://vlibras.gov.br; form-action 'none'; base-uri 'self'; manifest-src 'self'; upgrade-insecure-requests;">
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
     <meta http-equiv="Referrer-Policy" content="no-referrer">
     <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=(), payment=()">
-
     <meta property="og:title" content="Direitos PcD: BPC, CIPTEA, Escola Inclusiva, TEA — NossoDireito">
     <meta property="og:description"
         content="Recebeu um laudo de autismo ou deficiência? Guia gratuito com direitos, benefícios e passo a passo para famílias de PcD no Brasil.">
@@ -29,23 +25,19 @@
     <meta property="og:url" content="https://nossodireito.fabiotreze.com">
     <meta property="og:locale" content="pt_BR">
     <meta property="og:site_name" content="NossoDireito">
-
     <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
     <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
     <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
-
     <meta property="og:image" content="https://nossodireito.fabiotreze.com/images/og-image.png">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     <meta property="og:image:alt"
         content="NossoDireito — Guia gratuito de direitos para pessoas com deficiência no Brasil">
-
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Direitos PcD: BPC, CIPTEA, Escola Inclusiva, TEA — NossoDireito">
     <meta name="twitter:description"
         content="Recebeu um laudo? Guia gratuito com BPC, CIPTEA, escola inclusiva e mais para PcD.">
     <meta name="twitter:image" content="https://nossodireito.fabiotreze.com/images/og-image.png">
-
     <meta name="theme-color" content="#1e3a8a">
     <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0f172a">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -53,9 +45,7 @@
     <meta name="apple-mobile-web-app-title" content="NossoDireito">
     <meta name="mobile-web-app-capable" content="yes">
     <link rel="manifest" href="/manifest.json">
-
     <link rel="stylesheet" href="css/styles.css">
-
     <script type="application/ld+json">
     {
         "@context": "https://schema.org",
@@ -75,7 +65,6 @@
         }
     }
     </script>
-
     <script type="application/ld+json">
     {
         "@context": "https://schema.org",
@@ -124,40 +113,34 @@
         ]
     }
     </script>
-
 </head>
 
 <body>
     <a href="#mainContent" class="skip-link">Pular para o conteúdo principal</a>
-
     <div id="disclaimerModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="disclaimerTitle"
         aria-hidden="true">
         <div class="modal-content">
             <h2 id="disclaimerTitle">⚠️ Aviso Legal Importante</h2>
             <div class="disclaimer-text">
                 <p>Este site é um <strong>guia informacional gratuito e sem fins lucrativos</strong>.</p>
-
                 <h3>NÃO constitui:</h3>
                 <ul>
                     <li>Assessoria ou consultoria jurídica</li>
                     <li>Orientação médica ou de saúde</li>
                     <li>Substituição a profissionais qualificados</li>
                 </ul>
-
                 <h3>As informações aqui:</h3>
                 <ul>
                     <li>São compiladas de <strong>fontes oficiais</strong> do governo brasileiro (gov.br)</li>
                     <li>Podem estar desatualizadas — verifique sempre as fontes originais</li>
                     <li>Variam por estado e município — confirme com os órgãos locais</li>
                 </ul>
-
                 <h3>Seus dados:</h3>
                 <ul>
                     <li>Nenhum dado pessoal é coletado, armazenado ou enviado a servidores</li>
                     <li>Todo processamento ocorre no seu navegador</li>
                     <li>Este site não usa cookies de rastreamento</li>
                 </ul>
-
                 <p class="disclaimer-advice">
                     <strong>Para orientação profissional:</strong> procure a <strong>Defensoria Pública</strong>,
                     um advogado, o <strong>CRAS</strong> da sua cidade, ou os profissionais de saúde
@@ -169,52 +152,51 @@
             </button>
         </div>
     </div>
-
-    <div class="a11y-toolbar" role="toolbar" aria-label="Ferramentas de acessibilidade">
-        <div class="container a11y-toolbar-inner">
-            <span class="a11y-toolbar-label">♿ Acessibilidade:</span>
-            <button type="button" id="a11yFontDecrease" class="a11y-btn" aria-label="Diminuir tamanho da fonte"
-                title="Diminuir fonte">A−</button>
-            <button type="button" id="a11yFontReset" class="a11y-btn" aria-label="Tamanho de fonte padrão"
-                title="Fonte padrão">A</button>
-            <button type="button" id="a11yFontIncrease" class="a11y-btn" aria-label="Aumentar tamanho da fonte"
-                title="Aumentar fonte">A+</button>
-            <span class="a11y-separator" aria-hidden="true">|</span>
-            <button type="button" id="a11yContrast" class="a11y-btn" aria-label="Alternar alto contraste"
-                aria-pressed="false" title="Alto Contraste">🔲 Contraste</button>
-            <span class="a11y-separator" aria-hidden="true">|</span>
-            <button type="button" id="a11yLibras" class="a11y-btn a11y-btn-libras"
-                aria-label="Ativar tradução em Libras (VLibras)" title="Libras (VLibras)">🤟 Libras</button>
-            <span class="a11y-separator" aria-hidden="true">|</span>
-            <button type="button" id="a11yReadAloud" class="a11y-btn" aria-label="Ler conteúdo em voz alta"
-                aria-pressed="false" title="Ouvir conteúdo">🔊 Ouvir</button>
+    <header>
+        <div class="a11y-toolbar" role="toolbar" aria-label="Ferramentas de acessibilidade">
+            <div class="container a11y-toolbar-inner">
+                <span class="a11y-toolbar-label">♿ Acessibilidade:</span>
+                <button type="button" id="a11yFontDecrease" class="a11y-btn" aria-label="Diminuir tamanho da fonte"
+                    title="Diminuir fonte">A−</button>
+                <button type="button" id="a11yFontReset" class="a11y-btn" aria-label="Tamanho de fonte padrão"
+                    title="Fonte padrão">A</button>
+                <button type="button" id="a11yFontIncrease" class="a11y-btn" aria-label="Aumentar tamanho da fonte"
+                    title="Aumentar fonte">A+</button>
+                <span class="a11y-separator" aria-hidden="true">|</span>
+                <button type="button" id="a11yContrast" class="a11y-btn" aria-label="Alternar alto contraste"
+                    aria-pressed="false" title="Alto Contraste">🔲 Contraste</button>
+                <span class="a11y-separator" aria-hidden="true">|</span>
+                <button type="button" id="a11yLibras" class="a11y-btn a11y-btn-libras"
+                    aria-label="Ativar tradução em Libras (VLibras)" title="Libras (VLibras)">🤟 Libras</button>
+                <span class="a11y-separator" aria-hidden="true">|</span>
+                <button type="button" id="a11yReadAloud" class="a11y-btn" aria-label="Ler conteúdo em voz alta"
+                    aria-pressed="false" title="Ouvir conteúdo">🔊 Ouvir</button>
+            </div>
         </div>
-    </div>
-
-    <nav class="navbar" role="navigation" aria-label="Menu principal">
-        <div class="container">
-            <a href="#" class="navbar-brand" aria-label="NossoDireito - Início">
-                <span>NossoDireito</span>
-            </a>
-            <button class="menu-toggle" id="menuToggle" type="button" aria-label="Abrir menu" aria-expanded="false"
-                aria-controls="navLinks">
-                <span></span><span></span><span></span>
-            </button>
-            <ul class="nav-links" id="navLinks" role="list">
-                <li><a href="#inicio" class="active">Início</a></li>
-                <li><a href="#busca">Buscar</a></li>
-                <li><a href="#categorias">Categorias</a></li>
-                <li><a href="#checklist">Primeiros Passos</a></li>
-                <li><a href="#documentos">Documentos</a></li>
-                <li><a href="#links">Sites Oficiais</a></li>
-                <li><a href="#classificacao">CID-10/11</a></li>
-                <li><a href="#orgaos-estaduais">Estados</a></li>
-                <li><a href="#instituicoes">Instituições</a></li>
-                <li><a href="#transparencia">Fontes</a></li>
-            </ul>
-        </div>
-    </nav>
-
+        <nav class="navbar" role="navigation" aria-label="Menu principal">
+            <div class="container">
+                <a href="#" class="navbar-brand" aria-label="NossoDireito - Início">
+                    <span>NossoDireito</span>
+                </a>
+                <button class="menu-toggle" id="menuToggle" type="button" aria-label="Abrir menu" aria-expanded="false"
+                    aria-controls="navLinks">
+                    <span></span><span></span><span></span>
+                </button>
+                <ul class="nav-links" id="navLinks" role="list">
+                    <li><a href="#inicio" class="active">Início</a></li>
+                    <li><a href="#busca">Buscar</a></li>
+                    <li><a href="#categorias">Categorias</a></li>
+                    <li><a href="#checklist">Primeiros Passos</a></li>
+                    <li><a href="#documentos">Documentos</a></li>
+                    <li><a href="#links">Sites Oficiais</a></li>
+                    <li><a href="#classificacao">CID-10/11</a></li>
+                    <li><a href="#orgaos-estaduais">Estados</a></li>
+                    <li><a href="#instituicoes">Instituições</a></li>
+                    <li><a href="#transparencia">Fontes</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
     <noscript>
         <div
             style="background:#fef3cd;color:#856404;padding:24px;text-align:center;font-size:1.1rem;border-bottom:2px solid #ffc107;">
@@ -222,9 +204,7 @@
             Por favor, habilite o JavaScript no seu navegador e recarregue a página.
         </div>
     </noscript>
-
     <main id="mainContent">
-
         <div id="stalenessBanner" class="staleness-banner" hidden role="alert">
             <div class="container">
                 <p>⚠️ <strong>Atenção:</strong> As informações deste site podem estar desatualizadas.
@@ -232,7 +212,6 @@
                     Consulte sempre as <a href="#transparencia">fontes oficiais</a> para informações atualizadas.</p>
             </div>
         </div>
-
         <section class="hero" id="inicio">
             <div class="container hero-grid">
                 <div class="hero-visual">
@@ -276,7 +255,6 @@
                 </div>
             </div>
         </section>
-
         <section class="section" id="busca">
             <div class="container">
                 <h2>🔍 O que você precisa saber?</h2>
@@ -292,7 +270,6 @@
                 <div id="searchResults" class="search-results" aria-live="polite"></div>
             </div>
         </section>
-
         <section class="section section-alt" id="categorias">
             <div class="container">
                 <h2>📋 Categorias de Direitos</h2>
@@ -303,14 +280,12 @@
                 <div id="categoryGrid" class="card-grid"></div>
             </div>
         </section>
-
         <section class="section" id="detalhe" style="display:none;">
             <div class="container">
                 <button id="voltarBtn" class="btn btn-outline btn-sm" type="button">← Voltar às categorias</button>
                 <div id="detalheContent" aria-live="polite"></div>
             </div>
         </section>
-
         <section class="section section-alt" id="checklist">
             <div class="container">
                 <h2>✅ Primeiros Passos Após o Laudo</h2>
@@ -374,7 +349,6 @@
                 </p>
             </div>
         </section>
-
         <section class="section" id="documentos">
             <div class="container">
                 <h2>📎 Análise de Documentos</h2>
@@ -595,7 +569,8 @@
                             class="footer-version"></span></p>
                     <p>
                         <a href="#" id="showDisclaimer">Aviso Legal</a> ·
-                        <span style="color:#64748b">Repositório privado</span>
+                        <span>Projeto open source educacional — não presta serviços
+                            jurídicos</span>
                     </p>
                 </div>
             </div>
@@ -608,6 +583,8 @@
             <div class="vw-plugin-top-wrapper"></div>
         </div>
     </div>
+    <script src="https://vlibras.gov.br/app/vlibras-plugin.js"></script>
+    <script>new window.VLibras.Widget('https://vlibras.gov.br/app');</script>
     <script src="js/app.js"></script>
     <script src="js/sw-register.js"></script>
 </body>

@@ -75,7 +75,12 @@
         "ab00",
         "ab0z",
         "6a05",
-        "6b00"
+        "6b00",
+        "iof",
+        "icms",
+        "iptu",
+        "sisen",
+        "confaz"
     ],
     "cid_range_map": {
         "F": [
@@ -578,25 +583,97 @@
         },
         "ipva": {
             "cats": [
-                "transporte"
+                "transporte",
+                "isencoes_tributarias"
             ],
             "weight": 4
         },
         "ipi": {
             "cats": [
-                "transporte"
+                "transporte",
+                "isencoes_tributarias"
             ],
             "weight": 3
         },
         "isenção": {
             "cats": [
-                "transporte"
+                "transporte",
+                "isencoes_tributarias"
             ],
             "weight": 3
         },
         "isencao": {
             "cats": [
-                "transporte"
+                "transporte",
+                "isencoes_tributarias"
+            ],
+            "weight": 3
+        },
+        "iof": {
+            "cats": [
+                "isencoes_tributarias"
+            ],
+            "weight": 4
+        },
+        "icms": {
+            "cats": [
+                "isencoes_tributarias"
+            ],
+            "weight": 4
+        },
+        "iptu": {
+            "cats": [
+                "isencoes_tributarias"
+            ],
+            "weight": 3
+        },
+        "tributo": {
+            "cats": [
+                "isencoes_tributarias"
+            ],
+            "weight": 3
+        },
+        "tributária": {
+            "cats": [
+                "isencoes_tributarias"
+            ],
+            "weight": 3
+        },
+        "tributaria": {
+            "cats": [
+                "isencoes_tributarias"
+            ],
+            "weight": 3
+        },
+        "imposto": {
+            "cats": [
+                "isencoes_tributarias"
+            ],
+            "weight": 3
+        },
+        "sisen": {
+            "cats": [
+                "isencoes_tributarias"
+            ],
+            "weight": 5
+        },
+        "confaz": {
+            "cats": [
+                "isencoes_tributarias"
+            ],
+            "weight": 4
+        },
+        "rodizio": {
+            "cats": [
+                "transporte",
+                "isencoes_tributarias"
+            ],
+            "weight": 3
+        },
+        "rodízio": {
+            "cats": [
+                "transporte",
+                "isencoes_tributarias"
             ],
             "weight": 3
         },

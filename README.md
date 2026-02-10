@@ -140,6 +140,10 @@ As informações são compiladas de **fontes oficiais** do governo brasileiro (g
 
 MIT — Código livre para reutilização. As informações legais são de domínio público.
 
+## 🏷️ Aviso sobre Marcas
+
+Este é um projeto **open source, gratuito e sem fins lucrativos**, de caráter exclusivamente **educacional e informativo**. **NÃO presta, oferece ou comercializa serviços jurídicos** de qualquer natureza. Não possui vínculo com escritórios de advocacia, lawtechs ou entidades que prestem serviços jurídicos. O nome "NossoDireito" identifica exclusivamente este software de código aberto. Marcas registradas mencionadas pertencem aos seus respectivos titulares.
+
 ---
 
 *Feito com 💙 para as famílias que precisam de informação acessível.*

@@ -1,5 +1,5 @@
 {
-    "versao": "1.1.0",
+    "versao": "1.2.0",
     "ultima_atualizacao": "2026-02-10",
     "proxima_revisao": "2026-02-17",
     "aviso": "Informações compiladas de fontes oficiais do governo brasileiro (gov.br). Podem estar desatualizadas. Verifique sempre as fontes originais.",
@@ -229,6 +229,49 @@
             "url": "https://www.gov.br/saude/pt-br/assuntos/saude-de-a-a-z",
             "orgao": "Ministério da Saúde",
             "consultado_em": "2026-02-10"
+        },
+        {
+            "nome": "Lei 8.989/1995 — Isenção de IPI para PcD",
+            "tipo": "legislacao",
+            "url": "https://www.planalto.gov.br/ccivil_03/leis/l8989.htm",
+            "orgao": "Presidência da República",
+            "consultado_em": "2026-02-10",
+            "artigos_referenciados": [
+                "Art. 1º, IV",
+                "Art. 2º",
+                "Art. 3º"
+            ]
+        },
+        {
+            "nome": "Lei 14.287/2021 — Atualiza IPI PcD (limite R$ 200 mil, vigência até 2026)",
+            "tipo": "legislacao",
+            "url": "https://www.planalto.gov.br/ccivil_03/_ato2019-2022/2021/lei/l14287.htm",
+            "orgao": "Presidência da República",
+            "consultado_em": "2026-02-10",
+            "artigos_referenciados": [
+                "Art. 1º"
+            ]
+        },
+        {
+            "nome": "Lei 8.383/1991 — IOF (Isenção para PcD)",
+            "tipo": "legislacao",
+            "url": "https://www.planalto.gov.br/ccivil_03/leis/l8383.htm",
+            "orgao": "Presidência da República",
+            "consultado_em": "2026-02-10",
+            "artigos_referenciados": [
+                "Art. 72, IV"
+            ]
+        },
+        {
+            "nome": "Convênio CONFAZ ICMS 38/2012 — Isenção de ICMS para PcD",
+            "tipo": "normativa",
+            "url": "https://www.confaz.fazenda.gov.br/legislacao/convenios",
+            "orgao": "CONFAZ / Ministério da Fazenda",
+            "consultado_em": "2026-02-10",
+            "artigos_referenciados": [
+                "Cláusula primeira",
+                "Cláusula segunda"
+            ]
         }
     ],
     "documentos_mestre": [
@@ -244,7 +287,8 @@
                 "transporte",
                 "trabalho",
                 "fgts",
-                "moradia"
+                "moradia",
+                "isencoes_tributarias"
             ],
             "dica": "Certidão de Nascimento vale como RG para menores de idade"
         },
@@ -257,7 +301,8 @@
                 "ciptea",
                 "transporte",
                 "trabalho",
-                "fgts"
+                "fgts",
+                "isencoes_tributarias"
             ],
             "dica": "CPF de menor pode ser obtido nas agências do Banco do Brasil, Caixa ou Correios"
         },
@@ -270,7 +315,8 @@
                 "ciptea",
                 "educacao",
                 "sus_terapias",
-                "moradia"
+                "moradia",
+                "isencoes_tributarias"
             ],
             "dica": "Se mora de aluguel sem conta no nome, peça declaração do proprietário com firma reconhecida"
         },
@@ -287,7 +333,8 @@
                 "transporte",
                 "trabalho",
                 "fgts",
-                "moradia"
+                "moradia",
+                "isencoes_tributarias"
             ],
             "dica": "Guarde SEMPRE o original. Faça várias cópias autenticadas. O laudo é seu documento mais importante."
         },
@@ -1524,6 +1571,309 @@
                 "Minha Casa Minha Vida",
                 "habitação",
                 "LBI"
+            ]
+        },
+        {
+            "id": "isencoes_tributarias",
+            "titulo": "Isenções Tributárias — IPI, IOF, ICMS, IPVA e IPTU",
+            "icone": "🏛️",
+            "resumo": "Pessoas com deficiência têm direito a isenções fiscais na compra e manutenção de veículos (IPI, IOF, ICMS, IPVA) e, em muitos municípios, no IPTU. Os benefícios federais são solicitados pelo sistema SISEN (100% digital). IPVA e ICMS dependem de cada estado. IPTU depende da legislação municipal.",
+            "base_legal": [
+                {
+                    "lei": "Lei 8.989/1995 (Isenção de IPI para PcD)",
+                    "artigo": "Art. 1º, IV",
+                    "link": "https://www.planalto.gov.br/ccivil_03/leis/l8989.htm",
+                    "nota": "Vigência prorrogada até 31/12/2026 pela Lei 14.287/2021. Limite: R$ 200.000,00. Renovável a cada 3 anos."
+                },
+                {
+                    "lei": "Lei 14.287/2021 (Atualiza isenção de IPI)",
+                    "artigo": "Art. 1º",
+                    "link": "https://www.planalto.gov.br/ccivil_03/_ato2019-2022/2021/lei/l14287.htm",
+                    "nota": "Elevou limite do veículo para R$ 200.000,00 e prorrogou até 31/12/2026."
+                },
+                {
+                    "lei": "Lei 8.383/1991 (Isenção de IOF para PcD)",
+                    "artigo": "Art. 72, IV",
+                    "link": "https://www.planalto.gov.br/ccivil_03/leis/l8383.htm",
+                    "nota": "IOF para financiamento de veículo por PcD condutor. Uso único. Motor até 127 HP."
+                },
+                {
+                    "lei": "Convênio CONFAZ ICMS 38/2012",
+                    "artigo": "Cláusulas primeira e segunda",
+                    "link": "https://www.confaz.fazenda.gov.br/legislacao/convenios",
+                    "nota": "Atualizado pelo Convênio ICMS 50/2018. Limite de valor: ~R$ 120.000 (verificar atualizações). Todos os estados signatários."
+                },
+                {
+                    "lei": "Lei 13.146/2015 (Estatuto da Pessoa com Deficiência — LBI)",
+                    "artigo": "Art. 46",
+                    "link": "https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2015/lei/l13146.htm",
+                    "nota": "Garante direito à mobilidade pessoal com a maior autonomia possível."
+                }
+            ],
+            "requisitos": [
+                "Ser pessoa com deficiência física, visual, mental (severa ou profunda), intelectual ou TEA (autismo)",
+                "Laudo médico com CID e descrição detalhada da deficiência",
+                "CNH especial (categoria A/B com restrições) — quando PcD for o condutor",
+                "Para PcD NÃO condutor: representante legal ou terceiro autorizado pode dirigir",
+                "IPI: veículo novo de até R$ 200.000,00 (Lei 14.287/2021)",
+                "IOF: veículo até 127 HP, apenas PcD condutor, uso único",
+                "ICMS: veículo de até ~R$ 120.000,00 (Convênio CONFAZ — verificar atualização)",
+                "IPVA: varia por estado (todos os 27 UFs concedem isenção — veja tabela abaixo)",
+                "IPTU: varia por município — consultar prefeitura local"
+            ],
+            "documentos": [
+                "RG e CPF do beneficiário (e do responsável legal, se houver)",
+                "Laudo médico com CID, emitido nos últimos 12 meses",
+                "CNH especial válida (se condutor PcD) ou documento do condutor autorizado",
+                "Comprovante de residência atualizado (últimos 3 meses)",
+                "Declaração de inexistência de isenção vigente (modelo no SISEN)",
+                "Nota fiscal do veículo (para ICMS, IPVA — após a compra)",
+                "Procuração (se solicitação por representante legal)",
+                "Declaração de adaptação do veículo (quando aplicável)",
+                "Requerimento SISEN preenchido (para IPI e IOF — gerado automaticamente no sistema)"
+            ],
+            "passo_a_passo": [
+                "1. Obtenha laudo médico detalhado com CID e descrição funcional da deficiência",
+                "2. Se for conduzir o veículo: tire ou renove a CNH especial no DETRAN do seu estado",
+                "3. Acesse o sistema SISEN em sisen.receita.fazenda.gov.br (100% digital, serviço gratuito)",
+                "4. Preencha o requerimento online de isenção de IPI (e IOF, se aplicável)",
+                "5. Anexe todos os documentos digitalizados (laudo, CNH, RG/CPF)",
+                "6. Aguarde análise da Receita Federal (~3 dias úteis; acompanhe pelo SISEN)",
+                "7. Com a isenção de IPI aprovada, solicite a isenção de ICMS na SEFAZ do seu estado",
+                "8. Após comprar o veículo com as isenções, solicite a isenção de IPVA na SEFAZ do estado",
+                "9. Para IPTU: procure a Secretaria de Fazenda ou Finanças do seu município com laudo médico e comprovante de propriedade"
+            ],
+            "dicas": [
+                "SOLICITE AS ISENÇÕES ANTES DE COMPRAR O VEÍCULO (IPI e IOF precisam ser aprovadas antes da compra)",
+                "IPI: válida até 31/12/2026, renovável a cada 3 anos (Lei 14.287/2021)",
+                "IOF: uso ÚNICO na vida — vale apenas para PcD condutor, motor até 127 HP",
+                "ICMS: limite de valor ~R$ 120.000 (Convênio CONFAZ) — NÃO é o mesmo limite do IPI (R$ 200.000)",
+                "IPVA: TODOS os 27 estados concedem isenção, mas condições e limites variam — consulte a tabela abaixo",
+                "Tendência desde 2020: estados aceitam PcD NÃO condutor (veículo conduzido por terceiro autorizado)",
+                "Se já teve isenção de IPI nos últimos 3 anos, NÃO pode solicitar novamente",
+                "IPTU: não há lei federal — cada município define se concede e quais requisitos. Consulte sua prefeitura",
+                "Rodízio SP: PcD com credencial DeFis tem isenção do rodízio municipal (Lei Municipal 12.490/1997)",
+                "Guarde TODOS os comprovantes e protocolos — pode ser necessário para renovação ou fiscalização",
+                "O Ministério Público pode ser acionado se algum órgão negar isenção sem justificativa legal"
+            ],
+            "valor": "Gratuito para solicitar. Economia estimada: IPI 7–25% sobre valor do veículo, IOF ~1–3% sobre financiamento, ICMS 7–18% sobre valor do veículo, IPVA 1–4% ao ano (varia por estado).",
+            "onde": "SISEN (sisen.receita.fazenda.gov.br) para IPI/IOF → SEFAZ do estado para ICMS/IPVA → Prefeitura para IPTU",
+            "govbr_servico_id": 10783,
+            "ipva_estados": [
+                {
+                    "uf": "AC",
+                    "lei": "LC 114/2002",
+                    "art": "Art. 7º",
+                    "sefaz": "https://sefaznet.ac.gov.br/"
+                },
+                {
+                    "uf": "AL",
+                    "lei": "Lei 6.555/2004",
+                    "art": "Art. 6º",
+                    "sefaz": "https://www.sefaz.al.gov.br/"
+                },
+                {
+                    "uf": "AP",
+                    "lei": "Lei 0400/1997",
+                    "art": "Art. 5º",
+                    "sefaz": "https://www.sefaz.ap.gov.br/"
+                },
+                {
+                    "uf": "AM",
+                    "lei": "Lei 3.413/2009",
+                    "art": "Art. 4º",
+                    "sefaz": "https://www.sefaz.am.gov.br/"
+                },
+                {
+                    "uf": "BA",
+                    "lei": "Lei 4.826/1989",
+                    "art": "Art. 4º",
+                    "sefaz": "https://www.sefaz.ba.gov.br/"
+                },
+                {
+                    "uf": "CE",
+                    "lei": "Lei 12.023/1992",
+                    "art": "Art. 4º",
+                    "sefaz": "https://www.sefaz.ce.gov.br/"
+                },
+                {
+                    "uf": "DF",
+                    "lei": "Lei 7.431/1985",
+                    "art": "Art. 1º-A",
+                    "sefaz": "https://www.economia.df.gov.br/"
+                },
+                {
+                    "uf": "ES",
+                    "lei": "Lei 6.999/2001",
+                    "art": "Art. 3º",
+                    "sefaz": "https://internet.sefaz.es.gov.br/"
+                },
+                {
+                    "uf": "GO",
+                    "lei": "Lei 11.651/1991",
+                    "art": "Art. 94",
+                    "sefaz": "https://www.economia.go.gov.br/"
+                },
+                {
+                    "uf": "MA",
+                    "lei": "Lei 5.594/1992",
+                    "art": "Art. 5º",
+                    "sefaz": "https://www.sefaz.ma.gov.br/"
+                },
+                {
+                    "uf": "MT",
+                    "lei": "Lei 7.301/2000",
+                    "art": "Art. 7º",
+                    "sefaz": "https://www.sefaz.mt.gov.br/"
+                },
+                {
+                    "uf": "MS",
+                    "lei": "Lei 1.810/1997",
+                    "art": "Art. 157",
+                    "sefaz": "https://www.sefaz.ms.gov.br/"
+                },
+                {
+                    "uf": "MG",
+                    "lei": "Lei 14.937/2003",
+                    "art": "Art. 3º",
+                    "sefaz": "https://www.fazenda.mg.gov.br/"
+                },
+                {
+                    "uf": "PA",
+                    "lei": "Lei 6.017/1996",
+                    "art": "Art. 3º",
+                    "sefaz": "https://www.sefa.pa.gov.br/"
+                },
+                {
+                    "uf": "PB",
+                    "lei": "Lei 7.131/2002",
+                    "art": "Art. 4º",
+                    "sefaz": "https://www.sefaz.pb.gov.br/"
+                },
+                {
+                    "uf": "PR",
+                    "lei": "Lei 14.260/2003",
+                    "art": "Art. 12",
+                    "sefaz": "https://www.fazenda.pr.gov.br/"
+                },
+                {
+                    "uf": "PE",
+                    "lei": "Lei 10.849/1992",
+                    "art": "Art. 5º",
+                    "sefaz": "https://www.sefaz.pe.gov.br/"
+                },
+                {
+                    "uf": "PI",
+                    "lei": "Lei 4.548/1992",
+                    "art": "Art. 5º",
+                    "sefaz": "https://www.sefaz.pi.gov.br/"
+                },
+                {
+                    "uf": "RJ",
+                    "lei": "Lei 2.877/1997",
+                    "art": "Art. 5º",
+                    "sefaz": "https://portal.fazenda.rj.gov.br/ipva/"
+                },
+                {
+                    "uf": "RN",
+                    "lei": "Lei 6.967/1996",
+                    "art": "Art. 4º",
+                    "sefaz": "https://www.set.rn.gov.br/"
+                },
+                {
+                    "uf": "RS",
+                    "lei": "Lei 8.115/1985",
+                    "art": "Art. 4º",
+                    "sefaz": "https://www.sefaz.rs.gov.br/"
+                },
+                {
+                    "uf": "RO",
+                    "lei": "Lei 950/2000",
+                    "art": "Art. 4º",
+                    "sefaz": "https://www.sefin.ro.gov.br/"
+                },
+                {
+                    "uf": "RR",
+                    "lei": "Lei 59/1993",
+                    "art": "Art. 5º",
+                    "sefaz": "https://www.sefaz.rr.gov.br/"
+                },
+                {
+                    "uf": "SC",
+                    "lei": "Lei 7.543/1988",
+                    "art": "Art. 8º",
+                    "sefaz": "https://www.sef.sc.gov.br/"
+                },
+                {
+                    "uf": "SP",
+                    "lei": "Lei 13.296/2008",
+                    "art": "Art. 13-A",
+                    "sefaz": "https://portal.fazenda.sp.gov.br/servicos/ipva/"
+                },
+                {
+                    "uf": "SE",
+                    "lei": "Lei 7.655/2013",
+                    "art": "Art. 4º",
+                    "sefaz": "https://www.sefaz.se.gov.br/"
+                },
+                {
+                    "uf": "TO",
+                    "lei": "Lei 1.287/2001",
+                    "art": "Art. 90",
+                    "sefaz": "https://www.sefaz.to.gov.br/"
+                }
+            ],
+            "links": [
+                {
+                    "titulo": "SISEN — Sistema de Isenções (Receita Federal)",
+                    "url": "https://www.sisen.receita.fazenda.gov.br/"
+                },
+                {
+                    "titulo": "Lei 8.989/1995 — Isenção de IPI (planalto.gov.br)",
+                    "url": "https://www.planalto.gov.br/ccivil_03/leis/l8989.htm"
+                },
+                {
+                    "titulo": "Lei 14.287/2021 — Atualização IPI PcD (planalto.gov.br)",
+                    "url": "https://www.planalto.gov.br/ccivil_03/_ato2019-2022/2021/lei/l14287.htm"
+                },
+                {
+                    "titulo": "Lei 8.383/1991 — IOF Art. 72 (planalto.gov.br)",
+                    "url": "https://www.planalto.gov.br/ccivil_03/leis/l8383.htm"
+                },
+                {
+                    "titulo": "CONFAZ — Convênios ICMS (confaz.fazenda.gov.br)",
+                    "url": "https://www.confaz.fazenda.gov.br/legislacao/convenios"
+                },
+                {
+                    "titulo": "Gov.br — Obter isenção de impostos para comprar carro",
+                    "url": "https://www.gov.br/pt-br/servicos/obter-isencao-de-impostos-para-comprar-carro"
+                },
+                {
+                    "titulo": "Isenção de Rodízio SP (prefeitura.sp.gov.br)",
+                    "url": "https://prefeitura.sp.gov.br/web/mobilidade/w/autorizacoes_especiais/isencao_de_rodizio/3921"
+                }
+            ],
+            "tags": [
+                "IPI",
+                "IOF",
+                "ICMS",
+                "IPVA",
+                "IPTU",
+                "isenção",
+                "imposto",
+                "tributo",
+                "tributária",
+                "carro",
+                "veículo",
+                "automóvel",
+                "SISEN",
+                "Receita Federal",
+                "CONFAZ",
+                "SEFAZ",
+                "rodízio",
+                "deficiente",
+                "PcD",
+                "compra de veículo"
             ]
         }
     ]
