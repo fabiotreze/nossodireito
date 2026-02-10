@@ -254,10 +254,16 @@ const server = http.createServer(async (req, res) => {
     // ── Host header validation (CWE-644) ──
     const host = req.headers.host || '';
     const CANONICAL_HOST = 'nossodireito.fabiotreze.com';
-    const ALLOWED_HOSTS = [CANONICAL_HOST, `localhost:${PORT}`, `127.0.0.1:${PORT}`];
+    const ALLOWED_HOSTS = [
+        CANONICAL_HOST, 
+        'app-nossodireito.azurewebsites.net',  // Azure default domain
+        `localhost:${PORT}`, 
+        `127.0.0.1:${PORT}`
+    ];
 
     // Redirect default Azure domain → canonical custom domain (SEO + security)
-    if (host === 'app-nossodireito.azurewebsites.net') {
+    // Only redirect browser requests (with Accept: text/html), not health probes
+    if (host === 'app-nossodireito.azurewebsites.net' && req.headers.accept?.includes('text/html')) {
         const location = `https://${CANONICAL_HOST}${req.url}`;
         res.writeHead(301, {
             'Location': location,
