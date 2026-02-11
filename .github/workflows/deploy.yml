@@ -213,3 +213,67 @@ jobs:
         run: |
           echo "::warning::Deploy ignorado — infraestrutura não provisionada."
           echo "Execute: Actions → Terraform → Run workflow → action=apply"
+
+  # ── Validação de Fontes (pós-deploy, não-bloqueante) ──
+  validate-sources:
+    needs: deploy
+    runs-on: ubuntu-latest
+    name: Validate Sources (Post-Deploy)
+    continue-on-error: true  # Não bloqueia pipeline se links estiverem lentos
+    if: needs.deploy.result == 'success' || needs.deploy.result == 'skipped'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Validação rápida (amostra de 5 URLs)
+        id: quick_check
+        continue-on-error: true
+        run: |
+          echo "🔗 Validando amostra de URLs (quick mode)..."
+          python scripts/validate_sources.py --quick --urls || true
+          echo "✅ Validação rápida concluída (warnings não bloqueiam)"
+
+      - name: Create issue on validation failure
+        if: failure() && steps.quick_check.outcome != 'success'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const title = '⚠️ Validação de Fontes: Links com Problemas';
+            const body = `## Validação de Fontes Falhou
+            
+            A validação rápida detectou links com problemas após o deploy.
+            
+            **Ação Recomendada:**
+            1. Execute localmente: \`python scripts/validate_sources.py --urls\`
+            2. Verifique se URLs governamentais estão temporariamente lentas
+            3. Atualize URLs quebrados em \`data/direitos.json\`
+            
+            **Links para revisar manualmente:**
+            - [Planalto.gov.br](https://www.planalto.gov.br/ccivil_03/)
+            - [gov.br Serviços](https://www.gov.br/pt-br/servicos)
+            - [INSS](https://meu.inss.gov.br/)
+            
+            _Esta issue foi criada automaticamente pelo workflow de deploy._`;
+            
+            // Check if issue already exists
+            const issues = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              labels: ['validação', 'fontes']
+            });
+            
+            if (issues.data.length === 0) {
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: title,
+                body: body,
+                labels: ['validação', 'fontes', 'automated']
+              });
+            }

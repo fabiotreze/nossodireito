@@ -1,5 +1,5 @@
 {
-    "versao": "1.2.3",
+    "versao": "1.3.0",
     "ultima_atualizacao": "2026-02-10",
     "proxima_revisao": "2026-02-17",
     "aviso": "Informações compiladas de fontes oficiais do governo brasileiro (gov.br). Podem estar desatualizadas. Verifique sempre as fontes originais.",
@@ -288,7 +288,12 @@
                 "trabalho",
                 "fgts",
                 "moradia",
-                "isencoes_tributarias"
+                "isencoes_tributarias",
+                "atendimento_prioritario",
+                "estacionamento_especial",
+                "aposentadoria_especial_pcd",
+                "prioridade_judicial",
+                "tecnologia_assistiva"
             ],
             "dica": "Certidão de Nascimento vale como RG para menores de idade"
         },
@@ -302,7 +307,11 @@
                 "transporte",
                 "trabalho",
                 "fgts",
-                "isencoes_tributarias"
+                "isencoes_tributarias",
+                "estacionamento_especial",
+                "aposentadoria_especial_pcd",
+                "prioridade_judicial",
+                "tecnologia_assistiva"
             ],
             "dica": "CPF de menor pode ser obtido nas agências do Banco do Brasil, Caixa ou Correios"
         },
@@ -316,7 +325,9 @@
                 "educacao",
                 "sus_terapias",
                 "moradia",
-                "isencoes_tributarias"
+                "isencoes_tributarias",
+                "estacionamento_especial",
+                "tecnologia_assistiva"
             ],
             "dica": "Se mora de aluguel sem conta no nome, peça declaração do proprietário com firma reconhecida"
         },
@@ -334,7 +345,12 @@
                 "trabalho",
                 "fgts",
                 "moradia",
-                "isencoes_tributarias"
+                "isencoes_tributarias",
+                "atendimento_prioritario",
+                "estacionamento_especial",
+                "aposentadoria_especial_pcd",
+                "prioridade_judicial",
+                "tecnologia_assistiva"
             ],
             "dica": "Guarde SEMPRE o original. Faça várias cópias autenticadas. O laudo é seu documento mais importante."
         },
@@ -1874,6 +1890,402 @@
                 "deficiente",
                 "PcD",
                 "compra de veículo"
+            ]
+        },
+        {
+            "id": "atendimento_prioritario",
+            "titulo": "Atendimento Prioritário — Filas e Serviços",
+            "icone": "🚑",
+            "resumo": "Direito de atendimento prioritário em filas, bancos, repartições, hospitais e estabelecimentos públicos ou privados.",
+            "base_legal": [
+                {
+                    "lei": "Lei 10.048/2000",
+                    "artigo": "Art. 1º e 2º",
+                    "link": "https://www.planalto.gov.br/ccivil_03/leis/l10048.htm"
+                },
+                {
+                    "lei": "Lei 13.146/2015 (LBI)",
+                    "artigo": "Art. 9º",
+                    "link": "https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2015/lei/l13146.htm"
+                }
+            ],
+            "requisitos": [
+                "Pessoa com deficiência (física, visual, auditiva, intelectual ou autismo)",
+                "Apresentar documento comprobatório (laudo médico, CIPTEA ou carteira de transporte)",
+                "Direito aplicável em todos os estabelecimentos públicos e privados",
+                "Acompanhante também tem direito ao atendimento prioritário se necessário"
+            ],
+            "documentos": [
+                "Laudo médico com CID ou documento de identificação da deficiência",
+                "CIPTEA (para autistas)",
+                "Carteirinha de Passe Livre (válida como comprovante)",
+                "Documento de identidade (RG ou CPF)"
+            ],
+            "passo_a_passo": [
+                "Dirija-se ao local e identifique a fila prioritária (sinalização laranja ou azul)",
+                "Apresente documento comprobatório ao atendente se solicitado",
+                "Caso não exista fila preferencial, solicite atendimento prioritário ao responsável",
+                "Em caso de recusa, exija o livro de reclamações e denuncie ao Procon",
+                "Denúncias podem ser feitas pelo site/app Consumidor.gov.br"
+            ],
+            "dicas": [
+                "O estabelecimento DEVE ter assentos preferenciais em áreas de espera",
+                "Acompanhante de pessoa com deficiência também tem direito ao atendimento prioritário",
+                "Recusa de atendimento prioritário é discriminação (Lei 7.853/1989) — pode gerar multa e processo",
+                "Tire foto da fila e do local se houver discriminação (prova para denúncia)"
+            ],
+            "valor": "Gratuito — direito garantido por lei",
+            "onde": "Aplicável em todos os estabelecimentos: bancos, repartições, hospitais, supermercados, shoppings, etc.",
+            "links": [
+                {
+                    "titulo": "Lei 10.048/2000 — Atendimento Prioritário (planalto.gov.br)",
+                    "url": "https://www.planalto.gov.br/ccivil_03/leis/l10048.htm"
+                },
+                {
+                    "titulo": "Consumidor.gov.br — Denúncias",
+                    "url": "https://www.consumidor.gov.br/"
+                },
+                {
+                    "titulo": "Procon — Defesa do Consumidor",
+                    "url": "https://www.procon.sp.gov.br/"
+                }
+            ],
+            "tags": [
+                "atendimento prioritário",
+                "fila preferencial",
+                "discriminação",
+                "acessibilidade",
+                "banco",
+                "hospital",
+                "repartição",
+                "estabelecimento público",
+                "estabelecimento privado",
+                "Procon",
+                "denúncia",
+                "direito do consumidor",
+                "Lei 10.048",
+                "LBI"
+            ]
+        },
+        {
+            "id": "estacionamento_especial",
+            "titulo": "Estacionamento — Vaga Especial (Cartão Defis)",
+            "icone": "🅿️",
+            "resumo": "Direito a vaga especial de estacionamento em locais públicos e privados. Credencial de Estacionamento para Idosos e Pessoas com Deficiência (Cartão Defis).",
+            "base_legal": [
+                {
+                    "lei": "Lei 13.146/2015 (LBI)",
+                    "artigo": "Art. 47",
+                    "link": "https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2015/lei/l13146.htm"
+                },
+                {
+                    "lei": "NBR 9050:2020 (ABNT)",
+                    "artigo": "Seção 6.13",
+                    "link": "https://www.abntcatalogo.com.br/norma.aspx?ID=436958"
+                },
+                {
+                    "lei": "Código de Trânsito Brasileiro (Lei 9.503/1997)",
+                    "artigo": "Art. 181-A",
+                    "link": "https://www.planalto.gov.br/ccivil_03/leis/l9503compilado.htm"
+                }
+            ],
+            "requisitos": [
+                "Laudo médico atestando mobilidade reduzida ou deficiência física",
+                "Veículo próprio ou de terceiro (o credenciamento é pessoal, não do veículo)",
+                "Estabelecimentos devem reservar 2% das vagas para PcD (mínimo 1 vaga)",
+                "Vagas devem estar próximas à entrada e ser sinalizadas no piso e vertical"
+            ],
+            "documentos": [
+                "Laudo médico com CID (emitido nos últimos 12 meses)",
+                "CNH ou RG com CPF",
+                "Comprovante de residência",
+                "Documento do veículo (CRLV) se solicitar credencial específica",
+                "Formulário de solicitação (disponível no Detran ou Prefeitura)"
+            ],
+            "passo_a_passo": [
+                "Consulte o site do Detran ou Prefeitura do seu estado/município para procedimento local",
+                "Reúna documentos necessários (laudo, RG, CPF, comprovante de residência)",
+                "Agende atendimento presencial no Detran, Junta Médica ou órgão responsável",
+                "Entregue documentos e aguarde análise (geralmente 10-30 dias)",
+                "Receba credencial física (cartão Defis) para afixar no veículo durante uso da vaga"
+            ],
+            "dicas": [
+                "O cartão Defis é pessoal — você pode usar em qualquer veículo que estiver dirigindo ou sendo transportado",
+                "Uso indevido de vaga especial é infração gravíssima (7 pontos na CNH + multa R$ 293,47)",
+                "Em São Paulo, credencial também isenta de rodízio municipal",
+                "Estabelecimentos sem vagas PcD podem ser denunciados ao Ministério Público ou Procon",
+                "Validade do cartão varia por município (geralmente 2-5 anos) — renovar antes do vencimento"
+            ],
+            "valor": "Gratuito ou taxa administrativa reduzida (varia por município, geralmente R$ 0-50)",
+            "onde": "Detran estadual, Junta Médica do Detran ou órgão de trânsito municipal",
+            "links": [
+                {
+                    "titulo": "Lei 13.146/2015 Art. 47 (LBI) — Vagas Especiais",
+                    "url": "https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2015/lei/l13146.htm"
+                },
+                {
+                    "titulo": "Detran SP — Credencial de Estacionamento",
+                    "url": "https://www.detran.sp.gov.br/"
+                },
+                {
+                    "titulo": "NBR 9050 — Acessibilidade (ABNT)",
+                    "url": "https://www.abntcatalogo.com.br/norma.aspx?ID=436958"
+                }
+            ],
+            "tags": [
+                "estacionamento",
+                "vaga especial",
+                "vaga PcD",
+                "cartão Defis",
+                "credencial",
+                "mobilidade reduzida",
+                "Detran",
+                "rodízio",
+                "isenção rodízio",
+                "NBR 9050",
+                "acessibilidade",
+                "vaga reservada",
+                "multa",
+                "infração",
+                "CTB"
+            ]
+        },
+        {
+            "id": "aposentadoria_especial_pcd",
+            "titulo": "Aposentadoria Especial — Tempo Reduzido para PcD",
+            "icone": "👴",
+            "resumo": "Aposentadoria com tempo de contribuição reduzido para pessoas com deficiência. Quanto maior o grau de deficiência, menor o tempo exigido.",
+            "base_legal": [
+                {
+                    "lei": "Lei Complementar 142/2013",
+                    "artigo": "Art. 3º",
+                    "link": "https://www.planalto.gov.br/ccivil_03/leis/lcp/lcp142.htm"
+                },
+                {
+                    "lei": "Constituição Federal",
+                    "artigo": "Art. 201, §1º",
+                    "link": "https://www.planalto.gov.br/ccivil_03/constituicao/constituicao.htm"
+                }
+            ],
+            "requisitos": [
+                "Deficiência comprovada por perícia médica do INSS (deficiência leve, moderada ou grave)",
+                "Ter contribuído ao INSS durante o tempo mínimo exigido conforme grau de deficiência",
+                "Deficiência deve ter existido durante o período contributivo (perícia retroativa se necessário)",
+                "Tempo de contribuição: Grave: 25 anos (H) / 20 anos (M) | Moderada: 29 anos (H) / 24 anos (M) | Leve: 33 anos (H) / 28 anos (M)"
+            ],
+            "documentos": [
+                "Documento de identidade (RG) e CPF",
+                "Carteira de Trabalho (CTPS) ou Carnê de Contribuição",
+                "Laudo médico detalhado com CID e descrição funcional da deficiência",
+                "Exames médicos que comprovem a deficiência (raio-X, ressonância, laudos psiquiátricos, etc.)",
+                "Comprovante de vínculo empregatício ou autônomo durante período contributivo"
+            ],
+            "passo_a_passo": [
+                "Reúna toda documentação médica que comprove deficiência desde o início da contribuição",
+                "Agende perícia médica pelo Meu INSS (meu.inss.gov.br) ou telefone 135",
+                "Compareça à perícia com todos os laudos e exames",
+                "Perito avaliará grau de deficiência (leve, moderada ou grave)",
+                "INSS calculará tempo de contribuição necessário e concederá aposentadoria se atingido",
+                "Se negado, recorra administrativamente (dentro de 30 dias) ou judicialmente com advogado/Defensoria"
+            ],
+            "dicas": [
+                "Mesmo que sua deficiência seja recente, pode solicitar perícia retroativa — INSS analisa histórico",
+                "Guarde TODOS os laudos médicos antigos — quanto mais documentação, melhor",
+                "Perícia é biopsicossocial (médica + avaliação social) — explique como a deficiência impacta sua vida",
+                "Pode haver conversão de tempo especial em tempo de deficiência — consulte advogado previdenciário",
+                "Após aposentado, você pode continuar trabalhando sem perder o benefício"
+            ],
+            "valor": "Depende da média de contribuições — calculado pelo INSS (geralmente entre 1 e 10 salários mínimos)",
+            "onde": "INSS — agendamento pelo 135 ou meu.inss.gov.br",
+            "links": [
+                {
+                    "titulo": "LC 142/2013 — Aposentadoria PcD (planalto.gov.br)",
+                    "url": "https://www.planalto.gov.br/ccivil_03/leis/lcp/lcp142.htm"
+                },
+                {
+                    "titulo": "Meu INSS — Agendar Perícia",
+                    "url": "https://meu.inss.gov.br/"
+                },
+                {
+                    "titulo": "INSS — Aposentadoria da Pessoa com Deficiência",
+                    "url": "https://www.gov.br/inss/pt-br/saiba-mais/seus-direitos-e-deveres/aposentadoria-da-pessoa-com-deficiencia"
+                }
+            ],
+            "tags": [
+                "aposentadoria",
+                "aposentadoria especial",
+                "PcD",
+                "INSS",
+                "tempo reduzido",
+                "tempo de contribuição",
+                "perícia médica",
+                "deficiência leve",
+                "deficiência moderada",
+                "deficiência grave",
+                "LC 142",
+                "previdência social",
+                "seguridade social",
+                "benefício previdenciário"
+            ]
+        },
+        {
+            "id": "prioridade_judicial",
+            "titulo": "Prioridade Judicial — Tramitação Rápida de Processos",
+            "icone": "⚖️",
+            "resumo": "Tramitação prioritária de processos judiciais para pessoas com deficiência. Válido para qualquer tipo de ação (cível, criminal, trabalhista, previdenciária).",
+            "base_legal": [
+                {
+                    "lei": "Código de Processo Civil (Lei 13.105/2015)",
+                    "artigo": "Art. 1.048",
+                    "link": "https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2015/lei/l13105.htm"
+                },
+                {
+                    "lei": "Lei 13.146/2015 (LBI)",
+                    "artigo": "Art. 9º, §2º",
+                    "link": "https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2015/lei/l13146.htm"
+                }
+            ],
+            "requisitos": [
+                "Ser pessoa com deficiência comprovada por laudo médico",
+                "Ter processo judicial em andamento (qualquer fase processual)",
+                "Requerer prioridade por petição ao juiz responsável pelo processo",
+                "Anexar laudo médico atualizado (geralmente últimos 12 meses)"
+            ],
+            "documentos": [
+                "Laudo médico com CID atestando deficiência",
+                "Número do processo judicial",
+                "Petição de requerimento de prioridade (advogado redige)",
+                "Cópia de RG e CPF"
+            ],
+            "passo_a_passo": [
+                "Consulte seu advogado ou Defensoria Pública sobre possibilidade de prioridade",
+                "Obtenha laudo médico atualizado com CID e descrição da deficiência",
+                "Advogado ou Defensor protocola petição no processo requerendo prioridade",
+                "Juiz analisa pedido e defere prioridade (geralmente de plano, sem audiência)",
+                "Processo passa a tramitar em regime prioritário (prazos reduzidos, julgamento antecipado)"
+            ],
+            "dicas": [
+                "Prioridade se aplica a TODOS os atos processuais: audiências, perícias, julgamentos, recursos",
+                "Mesmo processos já em andamento podem ter prioridade solicitada a qualquer momento",
+                "Prioridade também vale para execução de sentença e cumprimento de decisão judicial",
+                "Se juiz negar prioridade indevidamente, cabe recurso — Defensoria/OAB podem ajudar",
+                "Prioridade não acelera processos de forma absurda, mas reduz espera significativamente"
+            ],
+            "valor": "Gratuito — direito processual garantido por lei",
+            "onde": "Tribunal ou Vara judicial onde tramita o processo — requerer via advogado ou Defensoria Pública",
+            "links": [
+                {
+                    "titulo": "CPC Art. 1.048 — Prioridade de Tramitação (planalto.gov.br)",
+                    "url": "https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2015/lei/l13105.htm"
+                },
+                {
+                    "titulo": "Defensoria Pública — Atendimento Gratuito",
+                    "url": "https://www.gov.br/mdh/pt-br/acesso-a-informacao/participacao-social/old/cndh/onde-denunciar"
+                },
+                {
+                    "titulo": "OAB — Assistência Jurídica Gratuita",
+                    "url": "https://www.oab.org.br/"
+                }
+            ],
+            "tags": [
+                "prioridade judicial",
+                "tramitação rápida",
+                "processo judicial",
+                "CPC",
+                "justiça",
+                "tribunal",
+                "vara",
+                "advogado",
+                "Defensoria Pública",
+                "recurso",
+                "sentença",
+                "execução",
+                "perícia",
+                "audiência",
+                "LBI"
+            ]
+        },
+        {
+            "id": "tecnologia_assistiva",
+            "titulo": "Tecnologia Assistiva — Financiamento BNDES e Recursos",
+            "icone": "💻",
+            "resumo": "Acesso a financiamento e recursos para aquisição de produtos de tecnologia assistiva: cadeiras motorizadas, leitores de tela, softwares, próteses, órteses.",
+            "base_legal": [
+                {
+                    "lei": "Lei 13.146/2015 (LBI)",
+                    "artigo": "Art. 74 e 75",
+                    "link": "https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2015/lei/l13146.htm"
+                },
+                {
+                    "lei": "Portaria BNDES — Linhas de Crédito PcD",
+                    "artigo": "Resolução específica",
+                    "link": "https://www.bndes.gov.br/"
+                }
+            ],
+            "requisitos": [
+                "Laudo médico indicando necessidade do produto assistivo",
+                "Renda compatível com financiamento (análise de crédito do BNDES)",
+                "Produto deve estar na lista de tecnologias assistivas reconhecidas",
+                "Pode ser financiado pessoa física ou instituição de apoio a PcD"
+            ],
+            "documentos": [
+                "Laudo médico com CID e prescrição/recomendação do produto assistivo",
+                "RG, CPF e comprovante de residência",
+                "Comprovante de renda (últimos 3 contracheques ou declaração IR)",
+                "Orçamento detalhado do produto a ser adquirido",
+                "Formulário de solicitação de crédito (banco credenciado BNDES)"
+            ],
+            "passo_a_passo": [
+                "Consulte médico especialista para prescrição do produto assistivo necessário",
+                "Pesquise bancos e instituições credenciadas ao BNDES para linha PcD",
+                "Reúna documentação (laudo, orçamento, comprovante de renda)",
+                "Solicite análise de crédito no banco escolhido",
+                "Aprovado o crédito, adquira o produto e apresente nota fiscal ao banco",
+                "Banco libera financiamento e você paga parcelas com juros reduzidos"
+            ],
+            "dicas": [
+                "Taxas de juros para PcD são geralmente 30-50% menores que linhas convencionais",
+                "SUS também fornece órteses, próteses e alguns equipamentos — consulte CRAS ou UBS",
+                "Instituições como APAE, AMA e Jô Clemente podem ajudar na aquisição de equipamentos",
+                "Alguns softwares assistivos são gratuitos: NVDA (leitor de tela), DOSVOX, BrailleFácil",
+                "Lei garante fornecimento gratuito de tecnologia assistiva pelo SUS — exija se necessário"
+            ],
+            "valor": "Varia conforme produto — cadeiras motorizadas: R$ 5.000-30.000 | Softwares: R$ 500-5.000 | Próteses: R$ 3.000-50.000",
+            "onde": "Bancos credenciados BNDES, CRAS, UBS, instituições especializadas (APAE, AMA, Jô Clemente)",
+            "links": [
+                {
+                    "titulo": "LBI Art. 74-75 — Tecnologia Assistiva (planalto.gov.br)",
+                    "url": "https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2015/lei/l13146.htm"
+                },
+                {
+                    "titulo": "BNDES — Linhas de Crédito",
+                    "url": "https://www.bndes.gov.br/"
+                },
+                {
+                    "titulo": "SUS — Órteses e Próteses",
+                    "url": "https://www.gov.br/saude/pt-br"
+                },
+                {
+                    "titulo": "NVDA — Leitor de Tela Gratuito",
+                    "url": "https://www.nvaccess.org/"
+                }
+            ],
+            "tags": [
+                "tecnologia assistiva",
+                "cadeira motorizada",
+                "leitor de tela",
+                "prótese",
+                "órtese",
+                "financiamento",
+                "BNDES",
+                "crédito PcD",
+                "software acessível",
+                "NVDA",
+                "DOSVOX",
+                "SUS",
+                "equipamento médico",
+                "acessibilidade digital",
+                "inclusão"
             ]
         }
     ]

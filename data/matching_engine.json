@@ -2523,6 +2523,193 @@
                 "sus_terapias"
             ],
             "weight": 4
+        },
+        "atendimento prioritário": {
+            "cats": [
+                "atendimento_prioritario"
+            ],
+            "weight": 5
+        },
+        "atendimento prioritario": {
+            "cats": [
+                "atendimento_prioritario"
+            ],
+            "weight": 5
+        },
+        "fila preferencial": {
+            "cats": [
+                "atendimento_prioritario"
+            ],
+            "weight": 5
+        },
+        "lei 10.048": {
+            "cats": [
+                "atendimento_prioritario"
+            ],
+            "weight": 4
+        },
+        "prioridade no atendimento": {
+            "cats": [
+                "atendimento_prioritario"
+            ],
+            "weight": 4
+        },
+        "vaga especial": {
+            "cats": [
+                "estacionamento_especial"
+            ],
+            "weight": 5
+        },
+        "estacionamento pcd": {
+            "cats": [
+                "estacionamento_especial"
+            ],
+            "weight": 5
+        },
+        "cartão defis": {
+            "cats": [
+                "estacionamento_especial"
+            ],
+            "weight": 5
+        },
+        "cartao defis": {
+            "cats": [
+                "estacionamento_especial"
+            ],
+            "weight": 5
+        },
+        "credencial de estacionamento": {
+            "cats": [
+                "estacionamento_especial"
+            ],
+            "weight": 4
+        },
+        "nbr 9050": {
+            "cats": [
+                "estacionamento_especial",
+                "educacao"
+            ],
+            "weight": 3
+        },
+        "aposentadoria especial": {
+            "cats": [
+                "aposentadoria_especial_pcd"
+            ],
+            "weight": 5
+        },
+        "lc 142": {
+            "cats": [
+                "aposentadoria_especial_pcd"
+            ],
+            "weight": 5
+        },
+        "lei complementar 142": {
+            "cats": [
+                "aposentadoria_especial_pcd"
+            ],
+            "weight": 5
+        },
+        "tempo reduzido": {
+            "cats": [
+                "aposentadoria_especial_pcd"
+            ],
+            "weight": 4
+        },
+        "aposentadoria pcd": {
+            "cats": [
+                "aposentadoria_especial_pcd"
+            ],
+            "weight": 4
+        },
+        "prioridade judicial": {
+            "cats": [
+                "prioridade_judicial"
+            ],
+            "weight": 5
+        },
+        "tramitação prioritária": {
+            "cats": [
+                "prioridade_judicial"
+            ],
+            "weight": 5
+        },
+        "tramitacao prioritaria": {
+            "cats": [
+                "prioridade_judicial"
+            ],
+            "weight": 5
+        },
+        "cpc art. 1.048": {
+            "cats": [
+                "prioridade_judicial"
+            ],
+            "weight": 4
+        },
+        "processo judicial": {
+            "cats": [
+                "prioridade_judicial"
+            ],
+            "weight": 3
+        },
+        "tecnologia assistiva": {
+            "cats": [
+                "tecnologia_assistiva"
+            ],
+            "weight": 5
+        },
+        "cadeira motorizada": {
+            "cats": [
+                "tecnologia_assistiva"
+            ],
+            "weight": 5
+        },
+        "leitor de tela": {
+            "cats": [
+                "tecnologia_assistiva"
+            ],
+            "weight": 4
+        },
+        "prótese": {
+            "cats": [
+                "tecnologia_assistiva",
+                "sus_terapias"
+            ],
+            "weight": 4
+        },
+        "protese": {
+            "cats": [
+                "tecnologia_assistiva",
+                "sus_terapias"
+            ],
+            "weight": 4
+        },
+        "órtese": {
+            "cats": [
+                "tecnologia_assistiva",
+                "sus_terapias"
+            ],
+            "weight": 4
+        },
+        "ortese": {
+            "cats": [
+                "tecnologia_assistiva",
+                "sus_terapias"
+            ],
+            "weight": 4
+        },
+        "bndes": {
+            "cats": [
+                "tecnologia_assistiva",
+                "moradia"
+            ],
+            "weight": 3
+        },
+        "financiamento pcd": {
+            "cats": [
+                "tecnologia_assistiva",
+                "isencoes_tributarias"
+            ],
+            "weight": 3
         }
     }
 }

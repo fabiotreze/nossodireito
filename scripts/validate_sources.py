@@ -76,8 +76,8 @@ SENADO_API = "https://legis.senado.leg.br/dadosabertos"
 ICD_TOKEN_URL = "https://icdaccessmanagement.who.int/connect/token"
 ICD_API_BASE = "https://id.who.int/icd"
 
-# Timeout padrão para HTTP
-HTTP_TIMEOUT = 15
+# Timeout padrão para HTTP (8s = balanceado: rápido mas confiável)
+HTTP_TIMEOUT = 8
 
 # Rate limiting
 RATE_LIMIT_DELAY = 0.3  # segundos entre requests
@@ -88,6 +88,14 @@ BROWSER_UA = (
     "AppleWebKit/537.36 (KHTML, like Gecko) "
     "Chrome/131.0.0.0 Safari/537.36"
 )
+
+# Domínios gov.br com problemas de certificado SSL conhecidos
+# Trade-off: Desabilitar verificação SSL apenas para esses domínios específicos
+# após primeira tentativa falhar (segurança > validação de link)
+SSL_EXCEPTION_DOMAINS = [
+    "confaz.fazenda.gov.br",
+    "www.confaz.fazenda.gov.br",  # Certificado auto-assinado/proxy issue
+]
 
 
 # ─── Modelos ────────────────────────────────────────────────────────
@@ -180,7 +188,31 @@ def _make_request(url: str, method: str = "GET", headers: dict | None = None,
             return resp.status, body
     except urllib.error.HTTPError as e:
         return e.code, ""
-    except (urllib.error.URLError, TimeoutError, OSError, http.client.IncompleteRead) as e:
+    except urllib.error.URLError as url_err:
+        # SSL certificate error: retry sem verificação SSL se domínio estiver na whitelist
+        if "CERTIFICATE_VERIFY_FAILED" in str(url_err):
+            parsed = urllib.parse.urlparse(url)
+            if parsed.hostname in SSL_EXCEPTION_DOMAINS:
+                # Retry com SSL verification desabilitado (apenas domínios whitelisted)
+                ctx_noverify = ssl.create_default_context()
+                ctx_noverify.check_hostname = False
+                ctx_noverify.verify_mode = ssl.CERT_NONE
+                try:
+                    req2 = urllib.request.Request(url, method=method, headers=headers or {}, data=data)
+                    if "User-Agent" not in (headers or {}):
+                        req2.add_header("User-Agent", BROWSER_UA)
+                    req2.add_header("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8")
+                    req2.add_header("Accept-Language", "pt-BR,pt;q=0.9,en;q=0.8")
+                    with urllib.request.urlopen(req2, timeout=timeout, context=ctx_noverify) as resp:
+                        try:
+                            body = resp.read().decode("utf-8", errors="replace")
+                        except http.client.IncompleteRead as ir:
+                            body = ir.partial.decode("utf-8", errors="replace")
+                        return resp.status, body
+                except Exception:
+                    pass  # Fallback para erro original
+        return 0, str(url_err)
+    except (TimeoutError, OSError, http.client.IncompleteRead) as e:
         return 0, str(e)
 
 
@@ -199,10 +231,15 @@ def _http_head(url: str, timeout: int = HTTP_TIMEOUT) -> tuple[int, str]:
         if e.code in (403, 405, 406):
             return _make_request(url, timeout=timeout)
         return e.code, ""
-    except (urllib.error.URLError, TimeoutError, OSError) as e:
-        # Connection reset — retry com GET (planalto.gov.br bloqueia HEAD)
-        if "Connection reset" in str(e) or "Errno 54" in str(e):
+    except urllib.error.URLError as url_err:
+        # SSL certificate error: retry com GET (que tem fallback SSL integrado)
+        if "CERTIFICATE_VERIFY_FAILED" in str(url_err):
             return _make_request(url, timeout=timeout)
+        # Connection reset — retry com GET (planalto.gov.br bloqueia HEAD)
+        if "Connection reset" in str(url_err) or "Errno 54" in str(url_err):
+            return _make_request(url, timeout=timeout)
+        return 0, str(url_err)
+    except (TimeoutError, OSError) as e:
         return 0, str(e)
 
 
@@ -273,10 +310,23 @@ def extract_all_urls(json_data: dict) -> list[dict]:
 
 
 # ─── 1. Validar URLs (HTTP HEAD) ───────────────────────────────────
-def validate_urls(report: ValidationReport, json_data: dict) -> None:
-    """Testa todas as URLs com HTTP HEAD/GET."""
+def validate_urls(report: ValidationReport, json_data: dict, quick: bool = False) -> None:
+    """Testa todas as URLs com HTTP HEAD/GET.
+    
+    Args:
+        quick: Se True, valida apenas amostra de 5 URLs (fast check)
+    """
     all_urls = extract_all_urls(json_data)
-    print(f"\n🔗 Validando {len(all_urls)} URLs...")
+    
+    if quick:
+        # Amostra: primeira e última de cada tipo
+        import random
+        random.seed(42)  # reproducible
+        sample_size = min(5, len(all_urls))
+        all_urls = random.sample(all_urls, sample_size)
+        print(f"\n🔗 Validação rápida: {len(all_urls)} URLs (amostra)...")
+    else:
+        print(f"\n🔗 Validando {len(all_urls)} URLs...")
     print("-" * 60)
 
     for i, item in enumerate(all_urls, 1):
@@ -702,6 +752,7 @@ Exemplos:
     parser.add_argument("--legislacao", action="store_true", help="Validar leis no Senado Dados Abertos")
     parser.add_argument("--cid", action="store_true", help="Validar CID na ICD API (requer credenciais)")
     parser.add_argument("--all", action="store_true", help="Executar todas as validações")
+    parser.add_argument("--quick", action="store_true", help="Validação rápida (amostra de 5 URLs)")
     parser.add_argument("--update-dates", action="store_true", help="Atualizar consultado_em das fontes válidas")
     parser.add_argument("--json", action="store_true", help="Saída em JSON")
 
@@ -720,7 +771,7 @@ Exemplos:
     print("=" * 70)
 
     if run_urls:
-        validate_urls(report, json_data)
+        validate_urls(report, json_data, quick=args.quick)
 
     if run_leg:
         validate_legislacao(report, json_data)

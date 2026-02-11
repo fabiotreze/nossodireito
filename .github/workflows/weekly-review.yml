@@ -68,6 +68,50 @@ jobs:
           echo "num_fontes=$NUM_FONTES" >> "$GITHUB_OUTPUT"
           echo "num_categorias=$NUM_CATEGORIAS" >> "$GITHUB_OUTPUT"
 
+      - name: Validação completa de fontes (URLs)
+        id: validate_urls
+        continue-on-error: true
+        run: |
+          echo "🔗 Validando todas as URLs das fontes oficiais..."
+          python scripts/validate_sources.py --urls --json > url-validation.json || true
+          
+          # Extract summary
+          TOTAL=$(jq '.total' url-validation.json)
+          OK=$(jq '.ok' url-validation.json)
+          WARNINGS=$(jq '.warnings' url-validation.json)
+          ERRORS=$(jq '.errors' url-validation.json)
+          SCORE=$(echo "scale=1; $OK * 100 / $TOTAL" | bc)
+          
+          echo "total=$TOTAL" >> "$GITHUB_OUTPUT"
+          echo "ok=$OK" >> "$GITHUB_OUTPUT"
+          echo "warnings=$WARNINGS" >> "$GITHUB_OUTPUT"
+          echo "errors=$ERRORS" >> "$GITHUB_OUTPUT"
+          echo "score=$SCORE" >> "$GITHUB_OUTPUT"
+          
+          # Generate markdown report
+          echo "## 🔗 Validação de URLs" > url-report.md
+          echo "" >> url-report.md
+          echo "**Total:** $TOTAL URLs | **✅ OK:** $OK | **⚠️ Warnings:** $WARNINGS | **❌ Erros:** $ERRORS" >> url-report.md
+          echo "" >> url-report.md
+          echo "**Score de Validação:** $SCORE%" >> url-report.md
+          echo "" >> url-report.md
+          
+          if [ "$ERRORS" -gt 0 ]; then
+            echo "### ❌ URLs com Erro:" >> url-report.md
+            echo "" >> url-report.md
+            jq -r '.results[] | select(.status == "error") | "- **\(.item)**: \(.message) ([link](\(.url)))"' url-validation.json >> url-report.md
+            echo "" >> url-report.md
+          fi
+          
+          if [ "$WARNINGS" -gt 0 ]; then
+            echo "### ⚠️ URLs com Avisos:" >> url-report.md
+            echo "" >> url-report.md
+            jq -r '.results[] | select(.status == "warning") | "- **\(.item)**: \(.message) ([link](\(.url)))"' url-validation.json >> url-report.md
+            echo "" >> url-report.md
+          fi
+          
+          echo "✅ Validação completa gerada em url-report.md"
+
       - name: Verificar fontes legislativas por mudanças recentes
         id: legcheck
         continue-on-error: true
@@ -148,11 +192,15 @@ jobs:
           CID_OK: ${{ steps.cidcheck.outputs.cid_ok }}
           CID_TOTAL: ${{ steps.cidcheck.outputs.cid_total }}
           CID_ERRORS: ${{ steps.cidcheck.outputs.cid_errors }}
+          URL_SCORE: ${{ steps.validate_urls.outputs.score }}
+          URL_ERRORS: ${{ steps.validate_urls.outputs.errors }}
+          URL_WARNINGS: ${{ steps.validate_urls.outputs.warnings }}
         with:
           script: |
             const fs = require('fs');
             const legReport = fs.readFileSync('leg-report.md', 'utf8');
             const cidReport = fs.existsSync('cid-report.md') ? fs.readFileSync('cid-report.md', 'utf8') : '⚠️ Relatório CID não disponível.';
+            const urlReport = fs.existsSync('url-report.md') ? fs.readFileSync('url-report.md', 'utf8') : '⚠️ Validação de URLs não executada.';
             const today = new Date().toISOString().split('T')[0];
 
             const body = `# 📋 Revisão Semanal — ${today}
@@ -170,6 +218,7 @@ jobs:
             | Health Probe (/healthz) | HTTP ${process.env.HEALTH_HZ} |
             | Custom Domain | HTTP ${process.env.HEALTH_CD} |
             | Redirect Azure | HTTP ${process.env.HEALTH_RD} |
+            | URL Validation | ${process.env.URL_SCORE}% (${process.env.URL_ERRORS} erros, ${process.env.URL_WARNINGS} avisos) |
             | CID (OMS ICD API) | ${process.env.CID_OK}/${process.env.CID_TOTAL} ✅ |
             | **Status Geral** | **${process.env.HEALTH_OVERALL}** |
 
@@ -199,8 +248,7 @@ jobs:
             - [ ] Rodar \`python codereview/codereview.py --categoria schema\` para validar
 
             ### 🔗 Verificação de Links
-            > **Nota:** Link check automático foi removido devido a falsos positivos (sites gov.br bloqueiam CI runners).
-            > Teste os links manualmente ou use o script \`scripts/validate_sources.py\` localmente.
+            ${urlReport}
 
             ### 📜 Verificação Legislativa
             ${legReport}

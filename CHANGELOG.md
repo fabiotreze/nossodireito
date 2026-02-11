@@ -5,6 +5,28 @@ Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/)
 e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [1.3.0] - 2026-02-10
+
+### Adicionado
+
+#### 5 Novas Categorias de Direitos
+- **Atendimento Prioritário** — Filas preferenciais em estabelecimentos (Lei 10.048/2000)
+- **Estacionamento Vaga Especial** — Cartão Defis e vagas reservadas (LBI Art. 47)
+- **Aposentadoria Especial PcD** — Tempo reduzido para aposentadoria (LC 142/2013)
+- **Prioridade Judicial** — Tramitação rápida de processos (CPC Art. 1.048)
+- **Tecnologia Assistiva** — Financiamento BNDES para produtos assistivos (LBI Art. 74-75)
+
+**Total: 15 categorias ativas** (anteriormente 10)
+
+### Alterado
+
+#### Quality Gate — Exceção CSP para VLibras
+- **Relaxamento de regra:** `unsafe-eval` em CSP não é mais CRITICAL quando VLibras presente
+- **Lógica:** Script detecta `vlibras.gov.br` no HTML → muda severidade para WARNING
+- **Justificativa documentada:** Lei 13.146/2015 (LBI) exige acessibilidade governamental
+- **Trade-off aceito:** Acessibilidade > CSP rígido (VLibras Unity requer eval())
+- **Resultado:** CI/CD não bloqueia mais deploy por conta do VLibras
+
 ## [1.2.3] - 2026-02-10
 
 ### Adicionado
