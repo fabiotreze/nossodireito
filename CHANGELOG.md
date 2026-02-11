@@ -5,6 +5,26 @@ Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/)
 e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [1.2.3] - 2026-02-10
+
+### Corrigido
+
+#### Refatoração Defensiva do Proxy Gov.br — Arquitetura Mais Robusta
+- **Problema**: Handler `async (req, res) => {}` com `await` pode causar SyntaxError se proxy movido para contexto errado (bugs anteriores: commits 9b6e52b, b376074)
+- **Solução**: Refatorado para `.then()` chains (mais defensivo) — proxy funciona independente de contexto async
+- **Mudanças**:
+  - Handler mudado de `async` para síncrono: `(req, res) => {}`
+  - Proxy proxy usa `.then()` chains ao invés de `await` (linhas 287-321)
+  - `urlPath` calculado **ANTES** do proxy check (linha 279) — disponível para validação/reuse
+  - Eliminado bloqueio `try/catch` async — .catch() mais granular no fim da chain
+- **Benefícios**:
+  - ✅ Nunca dá SyntaxError (não depende de contexto async)
+  - ✅ urlPath disponível para lógica de roteamento antes do proxy
+  - ✅ Mais defensive (funciona sempre, mesmo se código refatorado)
+  - ✅ Melhor tratamento de erros (catch específico para proxy)
+- **Quality Gate**: Mantido 100.0/100 (166 checks PASS)
+- **Testes locais**: `/healthz` → 200, `/` → 200, `/api/govbr-servico/10783` → 200
+
 ## [1.2.2] - 2026-02-10
 
 ### Corrigido

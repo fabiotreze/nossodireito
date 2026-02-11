@@ -9,7 +9,7 @@
 [![Security](https://img.shields.io/badge/Security-AES--GCM--256%20%7C%20CSP%20%7C%20SRI-green?style=flat-square&logo=letsencrypt)](SECURITY.md)
 [![LGPD](https://img.shields.io/badge/LGPD-Zero%20Data%20Collection-blue?style=flat-square)](SECURITY.md)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow?style=flat-square)](LICENSE)
-[![Version](https://img.shields.io/badge/Version-1.2.2-informational?style=flat-square)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/Version-1.2.3-informational?style=flat-square)](CHANGELOG.md)
 
 **Recebeu um laudo? Vem que a gente te ajuda.**
 

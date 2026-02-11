@@ -207,7 +207,7 @@ function resolveFile(urlPath) {
     return path.join(ROOT, 'index.html');
 }
 
-const server = http.createServer(async (req, res) => {
+const server = http.createServer((req, res) => {
     // ── Suppress server identification (CWE-200) ──
     res.removeHeader('X-Powered-By');
 
@@ -255,9 +255,9 @@ const server = http.createServer(async (req, res) => {
     const host = req.headers.host || '';
     const CANONICAL_HOST = 'nossodireito.fabiotreze.com';
     const ALLOWED_HOSTS = [
-        CANONICAL_HOST, 
+        CANONICAL_HOST,
         'app-nossodireito.azurewebsites.net',  // Azure default domain
-        `localhost:${PORT}`, 
+        `localhost:${PORT}`,
         `127.0.0.1:${PORT}`
     ];
 
@@ -280,58 +280,58 @@ const server = http.createServer(async (req, res) => {
         return;
     }
 
-    // ── Gov.br API proxy (CORS bypass for servicos.gov.br) ──
-    // Must come AFTER Host validation for security hardening
-    const govbrMatch = req.url.match(/^\/api\/govbr-servico\/(\d+)$/);
-    if (govbrMatch) {
-        const servicoId = govbrMatch[1];
-        const govbrUrl = `https://servicos.gov.br/api/v1/servicos/${servicoId}`;
-
-        try {
-            const controller = new AbortController();
-            const timeout = setTimeout(() => controller.abort(), 5000); // 5s timeout
-
-            const govbrRes = await fetch(govbrUrl, {
-                signal: controller.signal,
-                headers: {
-                    'User-Agent': 'NossoDireito-Proxy/1.0',
-                }
-            });
-
-            clearTimeout(timeout);
-
-            if (!govbrRes.ok) {
-                res.writeHead(govbrRes.status, {
-                    'Content-Type': 'application/json',
-                    'Cache-Control': 'no-cache',
-                });
-                res.end(JSON.stringify({ error: 'Gov.br API unavailable' }));
-                return;
-            }
-
-            const data = await govbrRes.text();
-            res.writeHead(200, {
-                'Content-Type': 'application/json',
-                'Cache-Control': 'public, max-age=3600', // Cache 1h
-                ...SECURITY_HEADERS,
-            });
-            res.end(data);
-        } catch (err) {
-            res.writeHead(503, {
-                'Content-Type': 'application/json',
-                'Cache-Control': 'no-cache',
-            });
-            res.end(JSON.stringify({ error: 'Service unavailable' }));
-        }
-        return;
-    }
-
+    // ── Parse urlPath BEFORE proxy (defensive architecture) ──
     let urlPath;
     try {
         urlPath = new URL(req.url, `http://${host || 'localhost'}`).pathname;
     } catch {
         res.writeHead(400, { 'Content-Type': 'text/plain' });
         res.end('Bad Request');
+        return;
+    }
+
+    // ── Gov.br API proxy (CORS bypass for servicos.gov.br) ──
+    // Proxy gov.br sem await (não dá SyntaxError nunca)
+    const govbrMatch = req.url.match(/^\/api\/govbr-servico\/(\d+)$/);
+    if (govbrMatch) {
+        const servicoId = govbrMatch[1];
+        const govbrUrl = `https://servicos.gov.br/api/v1/servicos/${servicoId}`;
+
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 5000); // 5s timeout
+
+        fetch(govbrUrl, {
+            signal: controller.signal,
+            headers: { 'User-Agent': 'NossoDireito-Proxy/1.0' }
+        })
+        .then(r => r.text().then(body => ({ r, body })))
+        .then(({ r, body }) => {
+            clearTimeout(timeout);
+            const status = r.ok ? r.status : r.status;
+            const cacheControl = r.ok ? 'public, max-age=3600' : 'no-cache';
+            res.writeHead(status, {
+                'Content-Type': 'application/json',
+                'Cache-Control': cacheControl,
+                ...SECURITY_HEADERS,
+            });
+            if (req.method === 'HEAD') {
+                res.end();
+                return;
+            }
+            if (r.ok) {
+                res.end(body);
+            } else {
+                res.end(JSON.stringify({ error: 'Gov.br API unavailable' }));
+            }
+        })
+        .catch(() => {
+            clearTimeout(timeout);
+            res.writeHead(503, {
+                'Content-Type': 'application/json',
+                'Cache-Control': 'no-cache',
+            });
+            res.end(JSON.stringify({ error: 'Service unavailable' }));
+        });
         return;
     }
 
