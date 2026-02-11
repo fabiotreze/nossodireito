@@ -530,9 +530,7 @@
             }
             speechSynthesis.speak(utterance);
 
-            if (btnReadAloud && currentChunkIndex === 0speak(utterance);
-
-            if (btnReadAloud) {
+            if (btnReadAloud && currentChunkIndex === 0) {
                 btnReadAloud.textContent = '⏹️ Parar';
                 btnReadAloud.setAttribute('aria-pressed', 'true');
             }
