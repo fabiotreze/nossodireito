@@ -103,7 +103,7 @@ const SECURITY_HEADERS = Object.freeze({
     'Content-Security-Policy': [
         "default-src 'none'",
         "script-src 'self' blob: https://cdnjs.cloudflare.com https://vlibras.gov.br https://*.vlibras.gov.br https://cdn.jsdelivr.net 'unsafe-eval' 'wasm-unsafe-eval'",
-        "script-src-elem 'self' https://vlibras.gov.br https://*.vlibras.gov.br https://cdnjs.cloudflare.com https://cdn.jsdelivr.net",
+        "script-src-elem 'self' blob: https://vlibras.gov.br https://*.vlibras.gov.br https://cdnjs.cloudflare.com https://cdn.jsdelivr.net",
         "style-src 'self' 'unsafe-inline' https://*.vlibras.gov.br https://cdn.jsdelivr.net",
         "img-src 'self' data: blob: https://vlibras.gov.br https://*.vlibras.gov.br https://cdn.jsdelivr.net",
         "connect-src 'self' https://vlibras.gov.br https://*.vlibras.gov.br https://cdn.jsdelivr.net https://cdnjs.cloudflare.com data:",
@@ -128,15 +128,17 @@ const SECURITY_HEADERS = Object.freeze({
     'Referrer-Policy': 'no-referrer',
 
     // ── Feature Restrictions ──
-    // Note: VLibras Unity WebAssembly requer accelerometer/gyroscope para funcionar.
-    // Relaxado para (self) mantendo bloqueio de third-party trackers.
-    'Permissions-Policy': 'camera=(), microphone=(), geolocation=(), payment=(), usb=(), bluetooth=(), serial=(), hid=(), accelerometer=(self), gyroscope=(self), magnetometer=(), screen-wake-lock=()',
+    // Note: accelerometer/gyroscope mantidos bloqueados — VLibras Unity WebGL
+    // usa WebGL/WASM para renderizar 3D, NÃO usa Generic Sensor API.
+    'Permissions-Policy': 'camera=(), microphone=(), geolocation=(), payment=(), usb=(), bluetooth=(), serial=(), hid=(), accelerometer=(), gyroscope=(), magnetometer=(), screen-wake-lock=()',
 
     // ── Cross-Origin Isolation ──
     'Cross-Origin-Opener-Policy': 'same-origin',
     'Cross-Origin-Resource-Policy': 'cross-origin',
-    // COEP require-corp para isolamento cross-origin mais restritivo
-    'Cross-Origin-Embedder-Policy': 'require-corp',
+    // COEP unsafe-none: VLibras (vlibras.gov.br) assets cross-origin não enviam
+    // CORP headers. Safari não suporta 'credentialless'. require-corp quebraria
+    // o carregamento do avatar Unity no Safari/iOS.
+    'Cross-Origin-Embedder-Policy': 'unsafe-none',
 
     // ── Miscellaneous OWASP ──
     'X-Permitted-Cross-Domain-Policies': 'none',
