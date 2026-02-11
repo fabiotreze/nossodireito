@@ -7,6 +7,17 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 
 ## [1.2.3] - 2026-02-10
 
+### Adicionado
+
+#### Botão Voltar ao Topo
+- **Botão flutuante** — ícone ↑ no canto inferior direito (posição fixa)
+- **Aparecimento automático** — torna-se visível após 300px de scroll
+- **Scroll suave** — animação suave ao retornar ao topo da página
+- **Responsivo** — ajusta posição no mobile (80px do bottom para evitar sobreposição com VLibras)
+- **Acessível** — `aria-label` e `title` para leitores de tela
+- **Styled** — círculo azul (#1e40af) com hover, sombra e transição suave
+- **Line height**: 1 para centralização vertical perfeita do caractere ↑
+
 ### Corrigido
 
 #### Refatoração Defensiva do Proxy Gov.br — Arquitetura Mais Robusta

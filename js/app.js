@@ -415,6 +415,7 @@
         setupSearch();
         setupChecklist();
         setupFooter();
+        setupBackToTop();
         await loadData();
         enrichGovBr(); // fire-and-forget — non-blocking
         setupFooterVersion();
@@ -2361,6 +2362,31 @@
         const hours = Math.floor(mins / 60);
         const remMins = mins % 60;
         return `Expira em ${hours}h${remMins > 0 ? remMins + 'min' : ''}`;
+    }
+
+    // ===
+    // Back to Top Button
+    // ===
+    function setupBackToTop() {
+        const btn = document.getElementById('backToTop');
+        if (!btn) return;
+
+        // Mostrar/ocultar botão baseado no scroll
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 300) {
+                btn.classList.add('visible');
+            } else {
+                btn.classList.remove('visible');
+            }
+        });
+
+        // Scroll suave ao topo ao clicar
+        btn.addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
     }
 
     // ===
