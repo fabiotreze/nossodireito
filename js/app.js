@@ -216,7 +216,11 @@
         function getBestPtBrVoice() {
             const voices = speechSynthesis.getVoices();
             const ptVoices = voices.filter(v => v.lang.startsWith('pt'));
-            if (ptVoices.length === 0) return null;
+            if (ptVoices.length === 0) {
+                // Fallback: tentar qualquer voz disponível (melhor que nada)
+                console.warn('[TTS] Nenhuma voz pt-BR encontrada. Vozes disponíveis:', voices.map(v => `${v.name} (${v.lang})`));
+                return voices.length > 0 ? voices[0] : null;
+            }
 
             // Prioridade: pt-BR > pt-PT, Google/Microsoft > outros
             const ranked = ptVoices.sort((a, b) => {
@@ -243,6 +247,21 @@
                 return;
             }
 
+            // Verificar se vozes estão carregadas
+            const voices = speechSynthesis.getVoices();
+            if (voices.length === 0) {
+                showToast('Aguarde... carregando vozes do sistema.', 'info');
+                // Tentar novamente após vozes carregarem
+                const retry = setTimeout(() => {
+                    if (speechSynthesis.getVoices().length > 0) {
+                        startReading();
+                    } else {
+                        showToast('Seu navegador não possui vozes de síntese instaladas. Tente atualizar o navegador.', 'warning');
+                    }
+                }, 500);
+                return;
+            }
+
             // Limitar a ~2000 caracteres para não travar o navegador
             const truncated = text.length > 2000 ? text.substring(0, 2000) + '...' : text;
 
@@ -252,7 +271,12 @@
             utterance.pitch = 1.0;
 
             const voice = getBestPtBrVoice();
-            if (voice) utterance.voice = voice;
+            if (voice) {
+                utterance.voice = voice;
+                console.log('[TTS] Usando voz:', voice.name, '|', voice.lang);
+            } else {
+                console.warn('[TTS] Nenhuma voz disponível! Tentando voz padrão do sistema.');
+            }
 
             speechSynthesis.cancel();
             speechSynthesis.speak(utterance);
@@ -260,7 +284,15 @@
             // Chrome 15s TTS bug workaround
             const ka = setInterval(() => { if (!ttsActive) { clearInterval(ka); return; } speechSynthesis.pause(); speechSynthesis.resume(); }, 10000);
             utterance.onend = () => { clearInterval(ka); stopReading(); };
-            utterance.onerror = () => { clearInterval(ka); stopReading(); showToast('Erro na leitura. Seu navegador pode não suportar voz em português.', 'warning'); };
+            utterance.onerror = (e) => { 
+                clearInterval(ka); 
+                stopReading(); 
+                console.error('[TTS] Erro na síntese de voz:', e);
+                const errorMsg = voice 
+                    ? `Erro ao reproduzir voz "${voice.name}". Tente novamente ou use outro navegador.`
+                    : 'Nenhuma voz instalada no sistema. Instale vozes pt-BR nas configurações do navegador.';
+                showToast(errorMsg, 'warning'); 
+            };
 
             if (btnReadAloud) {
                 btnReadAloud.textContent = '⏹️ Parar';
@@ -279,7 +311,13 @@
 
             // Garantir que vozes estejam carregadas (Chrome carrega async)
             if (speechSynthesis.getVoices().length === 0) {
-                speechSynthesis.addEventListener('voiceschanged', () => { }, { once: true });
+                speechSynthesis.addEventListener('voiceschanged', () => {
+                    const voices = speechSynthesis.getVoices();
+                    console.log(`[TTS] ${voices.length} vozes carregadas:`, voices.map(v => `${v.name} (${v.lang})`).join(', '));
+                }, { once: true });
+            } else {
+                const voices = speechSynthesis.getVoices();
+                console.log(`[TTS] ${voices.length} vozes disponíveis:`, voices.map(v => `${v.name} (${v.lang})`).join(', '));
             }
         } else if (btnReadAloud && !TTS_AVAILABLE) {
             // Navegador sem suporte a TTS — esconder botão
