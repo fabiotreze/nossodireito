@@ -287,9 +287,14 @@
             utterance.onerror = (e) => { 
                 clearInterval(ka); 
                 stopReading(); 
-                console.error('[TTS] Erro na síntese de voz:', e);
+                // "canceled" é esperado quando usuário para a leitura ou inicia nova leitura
+                if (e.error === 'canceled') {
+                    console.log('[TTS] Leitura cancelada pelo usuário');
+                    return;
+                }
+                console.error('[TTS] Erro na síntese de voz:', e.error, e);
                 const errorMsg = voice 
-                    ? `Erro ao reproduzir voz "${voice.name}". Tente novamente ou use outro navegador.`
+                    ? `Erro ao reproduzir voz "${voice.name}": ${e.error}. Tente novamente ou use outro navegador.`
                     : 'Nenhuma voz instalada no sistema. Instale vozes pt-BR nas configurações do navegador.';
                 showToast(errorMsg, 'warning'); 
             };
