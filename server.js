@@ -41,6 +41,9 @@ if (AI_CONN) {
 }
 
 // ── Rate Limiting (in-memory, per IP) ──
+// Note: In-memory map acceptable for small-scale (institutional site).
+// For high-traffic production: consider Redis + node-rate-limiter-flexible
+// Limitations: memory growth with many IPs, resets on restart, vulnerable to distributed attacks
 const RATE_LIMIT_WINDOW = 60_000;  // 1 minute
 const RATE_LIMIT_MAX = 120;        // max requests per window
 const rateLimitMap = new Map();
@@ -96,14 +99,15 @@ const CACHE = Object.freeze({
 // Covers: OWASP Secure Headers, Mozilla Observatory, Qualys SSL Labs
 const SECURITY_HEADERS = Object.freeze({
     // ── Anti-XSS / Injection ──
+    // Note: 'unsafe-eval' adicionado para VLibras Unity (trade-off: funcionalidade vs segurança)
     'Content-Security-Policy': [
         "default-src 'none'",
-        "script-src 'self' blob: https://cdnjs.cloudflare.com https://vlibras.gov.br https://*.vlibras.gov.br https://cdn.jsdelivr.net 'wasm-unsafe-eval'",
-        "script-src-elem 'self' blob: https://cdnjs.cloudflare.com https://vlibras.gov.br https://*.vlibras.gov.br https://cdn.jsdelivr.net",
+        "script-src 'self' blob: https://cdnjs.cloudflare.com https://vlibras.gov.br https://*.vlibras.gov.br https://cdn.jsdelivr.net 'unsafe-eval' 'wasm-unsafe-eval'",
+        "script-src-elem 'self' https://vlibras.gov.br https://*.vlibras.gov.br https://cdnjs.cloudflare.com https://cdn.jsdelivr.net",
         "style-src 'self' 'unsafe-inline' https://*.vlibras.gov.br https://cdn.jsdelivr.net",
         "img-src 'self' data: blob: https://vlibras.gov.br https://*.vlibras.gov.br https://cdn.jsdelivr.net",
-        "connect-src 'self' https://vlibras.gov.br https://*.vlibras.gov.br https://cdn.jsdelivr.net https://cdnjs.cloudflare.com",
-        "worker-src 'self' blob: https://cdnjs.cloudflare.com",
+        "connect-src 'self' https://vlibras.gov.br https://*.vlibras.gov.br https://cdn.jsdelivr.net https://cdnjs.cloudflare.com data:",
+        "worker-src 'self' blob: https://cdnjs.cloudflare.com https://vlibras.gov.br https://*.vlibras.gov.br",
         "child-src blob:",
         "frame-src 'self' https://*.vlibras.gov.br blob:",
         "media-src 'self' https://*.vlibras.gov.br",
@@ -124,13 +128,15 @@ const SECURITY_HEADERS = Object.freeze({
     'Referrer-Policy': 'no-referrer',
 
     // ── Feature Restrictions ──
-    'Permissions-Policy': 'camera=(), microphone=(), geolocation=(), payment=(), usb=(), bluetooth=(), serial=(), hid=(), accelerometer=(), gyroscope=(), magnetometer=(), screen-wake-lock=()',
+    // Note: VLibras Unity WebAssembly requer accelerometer/gyroscope para funcionar.
+    // Relaxado para (self) mantendo bloqueio de third-party trackers.
+    'Permissions-Policy': 'camera=(), microphone=(), geolocation=(), payment=(), usb=(), bluetooth=(), serial=(), hid=(), accelerometer=(self), gyroscope=(self), magnetometer=(), screen-wake-lock=()',
 
     // ── Cross-Origin Isolation ──
     'Cross-Origin-Opener-Policy': 'same-origin',
     'Cross-Origin-Resource-Policy': 'cross-origin',
-    // Note: COEP require-corp breaks CDN scripts (pdf.js), so use credentialless
-    'Cross-Origin-Embedder-Policy': 'credentialless',
+    // COEP require-corp para isolamento cross-origin mais restritivo
+    'Cross-Origin-Embedder-Policy': 'require-corp',
 
     // ── Miscellaneous OWASP ──
     'X-Permitted-Cross-Domain-Policies': 'none',
@@ -274,7 +280,9 @@ const server = http.createServer((req, res) => {
         return;
     }
 
-    if (host && !ALLOWED_HOSTS.some(h => host === h || host.endsWith('.' + h))) {
+    // Strict host validation — exact match only (no subdomains)
+    // Prevents attacks like malicious.nossodireito.fabiotreze.com
+    if (host && !ALLOWED_HOSTS.includes(host)) {
         res.writeHead(421, { 'Content-Type': 'text/plain' });
         res.end('Misdirected Request');
         return;
@@ -359,11 +367,15 @@ const server = http.createServer((req, res) => {
         ...SECURITY_HEADERS,
     };
 
-    // Compression for text-based content
+    // Compression for text-based content (Brotli > Gzip > None)
     const acceptEncoding = req.headers['accept-encoding'] || '';
-    const useGzip = COMPRESSIBLE.has(ext) && acceptEncoding.includes('gzip');
+    const useBrotli = COMPRESSIBLE.has(ext) && acceptEncoding.includes('br');
+    const useGzip = !useBrotli && COMPRESSIBLE.has(ext) && acceptEncoding.includes('gzip');
 
-    if (useGzip) {
+    if (useBrotli) {
+        headers['Content-Encoding'] = 'br';
+        headers['Vary'] = 'Accept-Encoding';
+    } else if (useGzip) {
         headers['Content-Encoding'] = 'gzip';
         headers['Vary'] = 'Accept-Encoding';
     }
@@ -376,7 +388,9 @@ const server = http.createServer((req, res) => {
     }
 
     const stream = fs.createReadStream(fullPath);
-    if (useGzip) {
+    if (useBrotli) {
+        stream.pipe(zlib.createBrotliCompress()).pipe(res);
+    } else if (useGzip) {
         stream.pipe(zlib.createGzip()).pipe(res);
     } else {
         stream.pipe(res);

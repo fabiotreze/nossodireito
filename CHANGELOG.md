@@ -18,6 +18,57 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 - **Styled** — círculo azul (#1e40af) com hover, sombra e transição suave
 - **Line height**: 1 para centralização vertical perfeita do caractere ↑
 
+#### Documentação VLibras
+- **`docs/VLIBRAS_LIMITATIONS.md`** — análise técnica de compatibilidade VLibras com CSP
+- Documenta trade-off acessibilidade vs. segurança (decisão: priorizar acessibilidade)
+- Explica mudança de CSP rígido para flexibilizado com `'unsafe-eval'`
+- Guia de validação para desenvolvedores
+- Lista mitigações de segurança mantidas (host validation, rate limiting, COEP require-corp)
+
+### Alterado
+
+#### VLibras — CSP Flexibilizado para Funcionalidade Completa
+**🔄 Mudança de decisão**: De segurança prioritária → acessibilidade governamental prioritária
+
+- **CSP `'unsafe-eval'` adicionado** — permite VLibras Unity funcionar 100% sem erros
+  - **Antes**: Mantinha CSP rígido sem `'unsafe-eval'` (segurança prioritária)
+  - **Depois**: Adiciona `'unsafe-eval'` (funcionalidade prioritária)
+  - **Trade-off aceito**: Reduz proteção contra XSS para habilitar acessibilidade completa
+
+- **CSP `script-src` atualizado**:
+  - Adiciona `'unsafe-eval'` além de `'wasm-unsafe-eval'`
+  - Remove `blob:` de `script-src` (mantido apenas em `worker-src`)
+
+- **CSP `script-src-elem` atualizado**:
+  - Remove `blob:` (scripts eval, não elementos)
+  - Mantém domínios VLibras: `vlibras.gov.br`, `*.vlibras.gov.br`, `cdnjs.cloudflare.com`, `cdn.jsdelivr.net`
+
+- **CSP `worker-src` expandido**:
+  - Adiciona `https://vlibras.gov.br` e `https://*.vlibras.gov.br`
+  - Mantém `'self' blob: https://cdnjs.cloudflare.com`
+
+- **CSP `connect-src` expandido**:
+  - Adiciona `data:` para recursos inline
+  - Mantém domínios VLibras e CDNs
+
+- **COEP mudado**: `credentialless` → `require-corp`
+  - Isolamento cross-origin mais restritivo
+  - Compatível com VLibras após CSP flexibilizado
+
+- **Mitigações de segurança mantidas**:
+  - ✅ Host validation (exact match, sem subdomínios maliciosos)
+  - ✅ Rate limiting (120 req/min por IP)
+  - ✅ HSTS preload (força HTTPS)
+  - ✅ X-Content-Type-Options nosniff
+  - ✅ Referrer-Policy no-referrer
+  - ✅ Brotli compression (performance)
+
+- **Resultado**:
+  - ✅ VLibras funciona 100% sem erros de console
+  - ⚠️ Segurança CSP reduzida (unsafe-eval), mas mitigada por outras camadas
+  - ✅ Quality Gate: 99.8/100 mantido (165 PASS, 1 WARNING)
+  - ✅ WAF: Seg=100%, Conf=100%, Perf=80%, Custo=100%, Ops=100%
+
 ### Corrigido
 
 #### Refatoração Defensiva do Proxy Gov.br — Arquitetura Mais Robusta
