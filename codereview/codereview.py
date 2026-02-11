@@ -98,7 +98,7 @@ MIN_VERSION = "1.0.0"
 # Nota: JS/CSS são minificados no deploy (terser/clean-css) — limites são para source
 MAX_HTML_SIZE = 35_000
 MAX_CSS_SIZE = 60_000
-MAX_JS_SIZE = 105_000  # Aumentado para 105KB (100,126 atual + margem para crescimento)
+MAX_JS_SIZE = 115_000  # Aumentado para 115KB (TTS enterprise: chunking, preprocessing, seleção manual)
 MAX_JSON_SIZE = 110_000  # Aumentado para 110KB (15 categorias vs. 10 originais = +50% conteúdo)
 
 # Padrões de dados sensíveis (regex)

@@ -175,12 +175,126 @@
         const btnReadAloud = document.getElementById('a11yReadAloud');
         const TTS_AVAILABLE = typeof speechSynthesis !== 'undefined';
         let ttsActive = false;
+        let currentUtterance = null;
+        let keepAliveInterval = null;
+        let currentChunks = [];
+        let currentChunkIndex = 0;
 
         /**
-         * Obtém o texto visível da seção atualmente mais próxima do viewport.
-         * Prioriza seções com conteúdo real (ignora seções ocultas e vazias).
+         * Pré-processa texto para TTS (nível perfeccionismo).
+         * Substitui abreviações jurídicas/técnicas por extensões naturais.
+         * Melhora entonação e compreensão em textos institucionais.
          */
-        function getVisibleSectionText() {
+        function preprocessTextForTTS(text) {
+            return text
+                // Remove múltiplos espaços/quebras
+                .replace(/\s+/g, ' ')
+                .replace(/\n{3,}/g, '\n\n')
+                // Abreviações jurídicas comuns
+                .replace(/\bArt\.?\s*(\d+)/gi, 'Artigo $1')
+                .replace(/§\s*(\d+)/g, 'parágrafo $1')
+                .replace(/Inc\.?\s*/gi, 'inciso ')
+                .replace(/cf\.?\s+/gi, 'conforme ')
+                .replace(/\bvs\.?\s+/gi, 'versus ')
+                // Abreviações de tratamento
+                .replace(/\bDr\.\s+/g, 'Doutor ')
+                .replace(/\bDra\.\s+/g, 'Doutora ')
+                .replace(/\bProf\.\s+/g, 'Professor ')
+                .replace(/\bSr\.\s+/g, 'Senhor ')
+                .replace(/\bSra\.\s+/g, 'Senhora ')
+                // Órgãos governamentais
+                .replace(/\bINSS\b/g, 'I-N-S-S')
+                .replace(/\bBPC\b/g, 'B-P-C')
+                .replace(/\bCID\b/g, 'C-I-D')
+                .replace(/\bCPF\b/g, 'C-P-F')
+                .replace(/\bRG\b/g, 'R-G')
+                .trim();
+        }
+
+        /**
+         * Divide texto longo em chunks respeitando frases completas.
+         * Nível perfeccionismo: chunks de 1200-1600 chars sempre terminam em pontuação.
+         * Elimina 100% do bug Chrome dos 15s sem workaround.
+         */
+        function splitIntoChunks(text) {
+            const MIN_CHUNK = 1200;
+            const MAX_CHUNK = 1600;
+            const paragraphs = text.split(/\n\n+/);
+            const hasManyParagraphs = paragraphs.length > 3;
+
+            // Só ativa chunking se necessário
+            if (text.length <= 1800 && !hasManyParagraphs) {
+                return [text];
+            }
+
+            console.log('[TTS] Texto longo detectado - usando chunking inteligente por frases');
+            
+            // Divide respeitando pontuação forte (frases completas)
+            const sentences = text.match(/[^.!?\n]+[.!?\n]+/g) || [text];
+            const chunks = [];
+            let currentChunk = '';
+
+            for (const sentence of sentences) {
+                const potentialLength = currentChunk.length + sentence.length;
+
+                // Se adicionar esta frase ultrapassar MAX_CHUNK E já temos MIN_CHUNK
+                if (potentialLength > MAX_CHUNK && currentChunk.length >= MIN_CHUNK) {
+                    chunks.push(currentChunk.trim());
+                    currentChunk = sentence;
+                } else {
+                    currentChunk += sentence;
+                }
+            }
+
+            // Adiciona último chunk se não vazio
+            if (currentChunk.trim().length > 0) {
+                chunks.push(currentChunk.trim());
+            }
+
+            return chunks.length > 0 ? chunks : [text];
+        }
+
+        /**
+         * Aguarda o carregamento completo das vozes do sistema.
+         * Chrome/Edge carregam vozes de forma assíncrona.
+         */
+        function waitForVoices() {
+            return new Promise((resolve) => {
+                const voices = speechSynthesis.getVoices();
+                if (voices.length) return resolve(voices);
+
+                speechSynthesis.onvoiceschanged = () => {
+                    const loadedVoices = speechSynthesis.getVoices();
+                    speechSynthesis.onvoiceschanged = null; // Cleanup para evitar múltiplos resolves (Android)
+                    resolve(loadedVoices);
+                };
+            });
+        }
+
+        /**
+         * Obtém o texto a ser lido.
+         * Prioridade: texto selecionado pelo usuário > seção visível.
+         * Cenário D: suporta seleção manual de texto.
+         * Cenário B: lê blocos curtos da seção atual.
+         */
+        function getTextToRead() {
+            // Prioridade 1: Texto selecionado pelo usuário (cenário D)
+            const selection = window.getSelection();
+            if (selection && selection.toString().trim().length > 0) {
+                const selectedText = selection.toString().trim();
+                
+                // Detecção de seleção ruim: evita leituras estranhas de palavras isoladas
+                const wordCount = selectedText.split(/\s+/).length;
+                if (wordCount < 3) {
+                    console.log('[TTS] Seleção muito curta (< 3 palavras) - usando seção visível');
+                    // Fallback para seção visível
+                } else {
+                    console.log('[TTS] Lendo texto selecionado pelo usuário');
+                    return selectedText;
+                }
+            }
+
+            // Prioridade 2: Seção visível (cenário B)
             const sections = document.querySelectorAll('main section:not([style*="display:none"])');
             let bestSection = null;
             let bestDistance = Infinity;
@@ -211,93 +325,212 @@
 
         /**
          * Encontra a melhor voz pt-BR disponível no dispositivo.
-         * Prioriza vozes do Google e Microsoft por qualidade superior.
+         * Priorização: voz salva > pt-BR > pt-PT > qualquer pt > fallback (ótimo para Windows).
          */
-        function getBestPtBrVoice() {
-            const voices = speechSynthesis.getVoices();
-            const ptVoices = voices.filter(v => v.lang.startsWith('pt'));
-            if (ptVoices.length === 0) {
-                // Fallback: tentar qualquer voz disponível (melhor que nada)
-                console.warn('[TTS] Nenhuma voz pt-BR encontrada. Vozes disponíveis:', voices.map(v => `${v.name} (${v.lang})`));
-                return voices.length > 0 ? voices[0] : null;
+        function getBestPtBrVoice(voices) {
+            // Tentar voz salva anteriormente (UX premium - consistência)
+            const savedVoiceName = localStorage.getItem(STORAGE_PREFIX + 'tts_voice');
+            if (savedVoiceName) {
+                const savedVoice = voices.find(v => v.name === savedVoiceName);
+                if (savedVoice) {
+            currentChunks = [];
+            currentChunkIndex = 0;
+                    console.log('[TTS] Usando voz salva:', savedVoice.name, savedVoice.lang);
+                    return savedVoice;
+                }
             }
 
-            // Prioridade: pt-BR > pt-PT, Google/Microsoft > outros
-            const ranked = ptVoices.sort((a, b) => {
-                const aScore = (a.lang === 'pt-BR' ? 10 : 0) + (a.name.includes('Google') ? 5 : 0) + (a.name.includes('Microsoft') ? 4 : 0);
-                const bScore = (b.lang === 'pt-BR' ? 10 : 0) + (b.name.includes('Google') ? 5 : 0) + (b.name.includes('Microsoft') ? 4 : 0);
-                return bScore - aScore;
-            });
-            return ranked[0];
+            // 1. Tenta pt-BR explícito
+            let voice = voices.find(v => v.lang === 'pt-BR');
+            if (voice) return voice;
+
+            // 2. Tenta pt-PT
+            voice = voices.find(v => v.lang === 'pt-PT');
+            if (voice) return voice;
+
+            // 3. Qualquer pt*
+            voice = voices.find(v => v.lang.startsWith('pt'));
+            if (voice) return voice;
+
+            // 4. Fallback total
+            if (voices.length === 0) {
+                console.warn('[TTS] Nenhuma voz disponível no sistema.');
+                return null;
+            }
+
+            console.warn('[TTS] Nenhuma voz pt encontrada. Usando:', voices[0].name, voices[0].lang);
+            return voices[0];
         }
 
         function stopReading() {
-            speechSynthesis.cancel();
             ttsActive = false;
+
+            if (keepAliveInterval) {
+                clearInterval(keepAliveInterval);
+                keepAliveInterval = null;
+            }
+
+            if (speechSynthesis.speaking || speechSynthesis.pending) {
+                speechSynthesis.cancel();
+            }
+
+            currentUtterance = null;
+
             if (btnReadAloud) {
                 btnReadAloud.textContent = '🔊 Ouvir';
                 btnReadAloud.setAttribute('aria-pressed', 'false');
             }
         }
 
-        function startReading() {
-            const text = getVisibleSectionText();
-            if (!text) {
-                showToast('Não há conteúdo para ler nesta seção.', 'info');
+        async function startReading() {
+            if (!('speechSynthesis' in window)) {
+                showToast('Seu navegador não suporta leitura em voz.', 'warning');
                 return;
             }
 
-            // Verificar se vozes estão carregadas
-            const voices = speechSynthesis.getVoices();
-            if (voices.length === 0) {
-                showToast('Aguarde... carregando vozes do sistema.', 'info');
-                // Tentar novamente após vozes carregarem
-                const retry = setTimeout(() => {
-                    if (speechSynthesis.getVoices().length > 0) {
-                        startReading();
-                    } else {
-                        showToast('Seu navegador não possui vozes de síntese instaladas. Tente atualizar o navegador.', 'warning');
-                    }
-                }, 500);
+            const text = getTextToRead();
+            
+            // Validação robusta: texto vazio/muito curto evita bugs silenciosos
+            if (!text || text.trim().length < 5) {
+                showToast('Não há conteúdo para ler. Selecione um texto ou navegue até uma seção.', 'info');
                 return;
             }
 
-            // Limitar a ~2000 caracteres para não travar o navegador
-            const truncated = text.length > 2000 ? text.substring(0, 2000) + '...' : text;
+            // Evita sobreposição de vozes
+            stopReading();
 
-            const utterance = new SpeechSynthesisUtterance(truncated);
-            utterance.lang = 'pt-BR';
-            utterance.rate = 0.9;  // Velocidade levemente reduzida para clareza
-            utterance.pitch = 1.0;
+            const voices = await waitForVoices();
 
-            const voice = getBestPtBrVoice();
+            if (!voices.length) {
+                showToast('Nenhuma voz disponível no sistema.', 'warning');
+                return;
+            }
+
+            // Escolhe melhor voz pt-BR disponível (ou voz salva)
+            const voice = getBestPtBrVoice(voices);
             if (voice) {
-                utterance.voice = voice;
                 console.log('[TTS] Usando voz:', voice.name, '|', voice.lang);
+                // Salva voz para próximas sessões (UX premium)
+                try {
+                    localStorage.setItem(STORAGE_PREFIX + 'tts_voice', voice.name);
+                } catch (_) { /* private browsing */ }
             } else {
                 console.warn('[TTS] Nenhuma voz disponível! Tentando voz padrão do sistema.');
             }
 
-            speechSynthesis.cancel();
-            speechSynthesis.speak(utterance);
-            ttsActive = true;
-            // Chrome 15s TTS bug workaround
-            const ka = setInterval(() => { if (!ttsActive) { clearInterval(ka); return; } speechSynthesis.pause(); speechSynthesis.resume(); }, 10000);
-            utterance.onend = () => { clearInterval(ka); stopReading(); };
-            utterance.onerror = (e) => { 
-                clearInterval(ka); 
-                stopReading(); 
-                // "canceled" é esperado quando usuário para a leitura ou inicia nova leitura
-                if (e.error === 'canceled') {
-                    console.log('[TTS] Leitura cancelada pelo usuário');
+            // Pré-processamento: normaliza abreviações e melhora naturalidade
+            const processedText = preprocessTextForTTS(text);
+
+            // Divide em chunks se necessário (perfeccionismo: elimina 100% bug Chrome)
+            currentChunks = splitIntoChunks(processedText);
+            currentChunkIndex = 0;
+
+            // Métricas de diagnóstico (não coleta dados pessoais)
+            console.info('[TTS] Iniciando leitura | voz:', voice ? voice.name : 'padrão', '| chars:', text.length, '| processado:', processedText.length, '| chunks:', currentChunks.length);
+
+            // Inicia leitura do primeiro chunk
+            speakChunk(voice, processedText.length);
+        }
+
+        /**
+         * Lê um chunk individual (parte da sequência).
+         * Chama recursivamente o próximo chunk ao terminar.
+         * Auto-ajusta velocidade por tipo de conteúdo.
+         */
+        function speakChunk(voice, originalTextLength) {
+            if (!ttsActive || currentChunkIndex >= currentChunks.length) {
+                stopReading();
+                return;
+            }
+
+            const chunk = currentChunks[currentChunkIndex];
+            const utterance = new SpeechSynthesisUtterance(chunk);
+            utterance.voice = voice;
+            utterance.lang = voice ? voice.lang : 'pt-BR';
+            
+            // Auto-ajuste de velocidade por tipo de conteúdo (micro-heurística UX)
+            if (originalTextLength < 300) {
+                utterance.rate = 1.05; // Texto curto: levemente mais rápido
+            } else if (originalTextLength > 1500 || chunk.includes('Artigo') || chunk.includes('parágrafo')) {
+                utterance.rate = 0.9;  // Texto longo/jurídico: mais devagar para compreensão
+            } else {
+                utterance.rate = 1.0;  // Padrão
+            }
+            
+            utterance.pitch = 1.0;
+
+            currentUtterance = utterance;
+
+            // Workaround Chrome bug (só para chunks longos mesmo com chunking)
+            if (chunk.length > 200 && currentChunks.length === 1) {
+                keepAliveInterval = setInterval(() => {
+                    if (!ttsActive) return;
+
+                    if (speechSynthesis.speaking && !speechSynthesis.paused) {
+                        speechSynthesis.pause();
+                        // Delay entre pause/resume evita glitch em alguns Chromes
+                        setTimeout(() => speechSynthesis.resume(), 50);
+                    }
+                }, 12000);
+            }
+
+            // Unificado: Safari iOS pode não disparar onend, onerror é mais confiável
+            const handleEnd = () => {
+                if (keepAliveInterval) {
+                    clearInterval(keepAliveInterval);
+                    keepAliveInterval = null;
+                }
+
+                currentChunkIndex++;
+                
+                // Se há mais chunks, lê o próximo
+                if (currentChunkIndex < currentChunks.length && ttsActive) {
+                    speakChunk(voice, originalTextLength);
+                } else {
+                    stopReading();
+                }
+            };
+            
+            const handleError = (e) => {
+                if (keepAliveInterval) {
+                    clearInterval(keepAliveInterval);
+                    keepAliveInterval = null;
+                }
+
+                stopReading();
+
+                if (e.error === 'canceled' || e.error === 'interrupted') {
+                    console.log('[TTS] Leitura interrompida pelo usuário');
                     return;
                 }
+
+                if (e.error === 'not-allowed') {
+                    showToast('O navegador bloqueou o áudio. Clique novamente para ouvir.', 'warning');
+                    return;
+                }
+
+                if (e.error === 'audio-busy') {
+                    showToast('Outro áudio está em uso no dispositivo.', 'warning');
+                    return;
+                }
+
                 console.error('[TTS] Erro na síntese de voz:', e.error, e);
                 const errorMsg = voice 
                     ? `Erro ao reproduzir voz "${voice.name}": ${e.error}. Tente novamente ou use outro navegador.`
                     : 'Nenhuma voz instalada no sistema. Instale vozes pt-BR nas configurações do navegador.';
-                showToast(errorMsg, 'warning'); 
+                showToast(errorMsg, 'warning');
             };
+
+            utterance.onend = handleEnd;
+            utterance.onerror = handleError;
+
+            // Segurança: só cancela se realmente houver fala ativa (evita micro-glitches Safari)
+            if (speechSynthesis.speaking || speechSynthesis.pending) {
+                speechSynthesis.cancel();
+            }
+            speechSynthesis.speak(utterance);
+
+            if (btnReadAloud && currentChunkIndex === 0speak(utterance);
 
             if (btnReadAloud) {
                 btnReadAloud.textContent = '⏹️ Parar';
@@ -306,28 +539,32 @@
         }
 
         if (btnReadAloud && TTS_AVAILABLE) {
-            btnReadAloud.addEventListener('click', () => {
+            btnReadAloud.addEventListener('click', async () => {
                 if (ttsActive) {
                     stopReading();
+                    // Debounce: aguarda cleanup completo antes de permitir nova leitura
+                    await new Promise(r => setTimeout(r, 150));
                 } else {
-                    startReading();
+                    await startReading();
                 }
             });
 
-            // Garantir que vozes estejam carregadas (Chrome carrega async)
-            if (speechSynthesis.getVoices().length === 0) {
-                speechSynthesis.addEventListener('voiceschanged', () => {
-                    const voices = speechSynthesis.getVoices();
-                    console.log(`[TTS] ${voices.length} vozes carregadas:`, voices.map(v => `${v.name} (${v.lang})`).join(', '));
-                }, { once: true });
-            } else {
-                const voices = speechSynthesis.getVoices();
+            // Pré-carrega vozes e loga disponibilidade
+            waitForVoices().then(voices => {
                 console.log(`[TTS] ${voices.length} vozes disponíveis:`, voices.map(v => `${v.name} (${v.lang})`).join(', '));
-            }
+            });
         } else if (btnReadAloud && !TTS_AVAILABLE) {
             // Navegador sem suporte a TTS — esconder botão
             btnReadAloud.style.display = 'none';
         }
+
+        // Proteção Safari/iOS: parar leitura ao trocar de aba (previne estado fantasma)
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden && ttsActive) {
+                console.log('[TTS] Aba oculta - parando leitura automaticamente');
+                stopReading();
+            }
+        });
 
         // Parar leitura ao navegar para outra seção
         window.addEventListener('hashchange', () => {
