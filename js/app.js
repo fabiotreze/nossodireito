@@ -428,6 +428,9 @@
             // Métricas de diagnóstico (não coleta dados pessoais)
             console.info('[TTS] Iniciando leitura | voz:', voice ? voice.name : 'padrão', '| chars:', text.length, '| processado:', processedText.length, '| chunks:', currentChunks.length);
 
+            // Ativa flag ANTES de speakChunk (sem isso, speakChunk retorna imediatamente)
+            ttsActive = true;
+
             // Inicia leitura do primeiro chunk
             speakChunk(voice, processedText.length);
         }
