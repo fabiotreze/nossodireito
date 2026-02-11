@@ -193,12 +193,13 @@ jobs:
             FAIL=$((FAIL + 1))
           fi
 
-          # 3. Redirect do domínio Azure (deve dar 301)
+          # 3. Redirect do domínio Azure (deve dar 301 para browsers)
           AZ_STATUS=$(curl -s -o /dev/null -w "%{http_code}" --max-redirs 0 --connect-timeout 10 \
+            -H "Accept: text/html" \
             "https://app-nossodireito.azurewebsites.net/" || true)
-          echo "🔀 Azure domain redirect → HTTP ${AZ_STATUS}"
+          echo "🔀 Azure domain redirect (browser) → HTTP ${AZ_STATUS}"
           if [ "$AZ_STATUS" != "301" ]; then
-            echo "::warning::Azure domain não está redirecionando (esperado 301, recebeu ${AZ_STATUS})"
+            echo "::warning::Azure domain não redirecionou browser (esperado 301, recebeu ${AZ_STATUS})"
             FAIL=$((FAIL + 1))
           fi
 
