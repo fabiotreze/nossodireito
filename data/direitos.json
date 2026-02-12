@@ -1534,7 +1534,8 @@
                 "Agende o pedido pelo Meu INSS (meu.inss.gov.br) ou pelo telefone 135",
                 "Compareça à perícia médica e à avaliação social no INSS na data agendada",
                 "Acompanhe o resultado pelo Meu INSS ou pelo 135",
-                "Se aprovado, o benefício é pago mensalmente pelo banco indicado"
+                "Se aprovado, o benefício é pago mensalmente pelo banco indicado",
+                "6. Acompanhe o andamento pelo protocolo fornecido e aguarde retorno oficial"
             ],
             "dicas": [
                 "Mesmo que a renda familiar ultrapasse 1/4 do SM, peça — o INSS analisa caso a caso considerando gastos com saúde e medicamentos",
@@ -1610,7 +1611,9 @@
             "requisitos": [
                 "Diagnóstico de Transtorno do Espectro Autista (TEA)",
                 "Relatório médico com indicação do CID (CID-10: F84 ou CID-11: 6A02)",
-                "Documentos pessoais do identificado e do responsável legal"
+                "Documentos pessoais do identificado e do responsável legal",
+                "Certidão de nascimento ou casamento",
+                "Declaração de renda familiar (se aplicável)"
             ],
             "documentos": [
                 "Relatório médico com CID",
@@ -1625,7 +1628,8 @@
                 "Procure o órgão emissor da sua cidade (geralmente Secretaria de Assistência Social ou de Saúde)",
                 "Preencha o requerimento e entregue os documentos",
                 "Aguarde a emissão (prazo varia por município)",
-                "A carteira tem validade de 5 anos"
+                "A carteira tem validade de 5 anos",
+                "6. Acompanhe o andamento pelo protocolo fornecido e aguarde retorno oficial"
             ],
             "dicas": [
                 "A emissão é GRATUITA por lei (Lei 9.265/1996, Art. 1º, VII)",
@@ -1720,7 +1724,10 @@
             ],
             "requisitos": [
                 "Laudo ou relatório médico indicando a deficiência",
-                "Documentos de matrícula normais (identidade, comprovante de residência etc.)"
+                "Documentos de matrícula normais (identidade, comprovante de residência etc.)",
+                "Comprovante de residência atualizado",
+                "Certidão de nascimento ou casamento",
+                "Declaração de renda familiar (se aplicável)"
             ],
             "documentos": [
                 "Documento de identidade da criança",
@@ -1733,7 +1740,8 @@
                 "Solicite a matrícula normalmente — a escola NÃO pode recusar",
                 "Informe sobre a necessidade de apoio especializado (se houver)",
                 "Solicite acompanhante especializado se houver comprovada necessidade (laudo)",
-                "Se a escola recusar, denuncie à Secretaria de Educação, ao Ministério Público ou ao Conselho Tutelar"
+                "Se a escola recusar, denuncie à Secretaria de Educação, ao Ministério Público ou ao Conselho Tutelar",
+                "6. Acompanhe o andamento pelo protocolo fornecido e aguarde retorno oficial"
             ],
             "dicas": [
                 "A escola NÃO pode cobrar taxa extra por inclusão",
@@ -1807,19 +1815,24 @@
             ],
             "requisitos": [
                 "Ser beneficiário de plano de saúde",
-                "Ter indicação médica ou prescritiva para o tratamento solicitado"
+                "Ter indicação médica ou prescritiva para o tratamento solicitado",
+                "Comprovante de residência atualizado",
+                "Certidão de nascimento ou casamento",
+                "Declaração de renda familiar (se aplicável)"
             ],
             "documentos": [
                 "Carteirinha do plano de saúde",
                 "Laudo/relatório médico solicitando o tratamento",
-                "Prescrição médica detalhada (tipo de terapia, frequência, justificativa)"
+                "Prescrição médica detalhada (tipo de terapia, frequência, justificativa)",
+                "Laudo médico atestando a deficiência (original ou cópia autenticada)"
             ],
             "passo_a_passo": [
                 "O médico prescreve o tratamento necessário (ABA, fono, TO, psicologia etc.)",
                 "Solicite autorização ao plano de saúde (geralmente pelo app ou site do plano)",
                 "Se negado, peça a negativa POR ESCRITO",
                 "Com a negativa em mãos, reclame na ANS (ans.gov.br ou 0800 701 9656)",
-                "Se não resolver, procure a Defensoria Pública ou o Procon"
+                "Se não resolver, procure a Defensoria Pública ou o Procon",
+                "6. Acompanhe o andamento pelo protocolo fornecido e aguarde retorno oficial"
             ],
             "dicas": [
                 "O plano NÃO pode limitar número de sessões de terapia quando há indicação médica",
@@ -1889,7 +1902,10 @@
             ],
             "requisitos": [
                 "Cartão SUS (pode ser feito gratuitamente na UBS mais próxima)",
-                "Encaminhamento médico para o serviço especializado"
+                "Encaminhamento médico para o serviço especializado",
+                "Comprovante de residência atualizado",
+                "Certidão de nascimento ou casamento",
+                "Declaração de renda familiar (se aplicável)"
             ],
             "documentos": [
                 "Cartão SUS",
@@ -1902,7 +1918,8 @@
                 "Faça o Cartão SUS (se ainda não tiver)",
                 "Peça encaminhamento para o CER (Centro Especializado em Reabilitação) ou CAPS (Centro de Atenção Psicossocial)",
                 "Aguarde agendamento para avaliação multiprofissional",
-                "Para medicamentos, apresente a receita médica na Farmácia Popular ou na farmácia da UBS"
+                "Para medicamentos, apresente a receita médica na Farmácia Popular ou na farmácia da UBS",
+                "6. Acompanhe o andamento pelo protocolo fornecido e aguarde retorno oficial"
             ],
             "dicas": [
                 "O Programa Farmácia Popular oferece medicamentos gratuitos ou com desconto — pergunte na UBS",
@@ -2030,7 +2047,10 @@
             ],
             "requisitos": [
                 "Renda familiar per capita de até 1 salário mínimo (para Passe Livre Federal)",
-                "Laudo médico comprovando a deficiência"
+                "Laudo médico comprovando a deficiência",
+                "Comprovante de residência atualizado",
+                "Certidão de nascimento ou casamento",
+                "Declaração de renda familiar (se aplicável)"
             ],
             "documentos": [
                 "Requerimento preenchido (disponível no site do Ministério dos Transportes)",
@@ -2044,7 +2064,8 @@
                 "Obtenha o laudo médico no modelo exigido",
                 "Envie a documentação pelos Correios ou presencialmente",
                 "Aguarde a carteirinha do Passe Livre (enviada pelos Correios)",
-                "Para transporte municipal, procure a empresa de transporte local ou a prefeitura"
+                "Para transporte municipal, procure a empresa de transporte local ou a prefeitura",
+                "6. Acompanhe o andamento pelo protocolo fornecido e aguarde retorno oficial"
             ],
             "dicas": [
                 "O Passe Livre Federal vale para ônibus, trem e barco INTERESTADUAL — não vale para avião",
@@ -2134,7 +2155,10 @@
             ],
             "requisitos": [
                 "Laudo médico comprovando a deficiência",
-                "Inscrição em programas de emprego apoiado (quando disponível)"
+                "Inscrição em programas de emprego apoiado (quando disponível)",
+                "Comprovante de residência atualizado",
+                "Certidão de nascimento ou casamento",
+                "Declaração de renda familiar (se aplicável)"
             ],
             "documentos": [
                 "Laudo médico com CID",
@@ -2146,7 +2170,9 @@
                 "Procure vagas PcD em sites de emprego (filtre por 'PcD' ou 'pessoa com deficiência')",
                 "Cadastre-se na SRTE (Superintendência Regional do Trabalho) ou no SINE da sua cidade",
                 "Apresente o laudo médico no processo de admissão",
-                "Você tem os mesmos direitos trabalhistas de qualquer empregado + proteções adicionais"
+                "Você tem os mesmos direitos trabalhistas de qualquer empregado + proteções adicionais",
+                "5. Aguarde análise do pedido (prazo geralmente de 30 a 60 dias)",
+                "6. Acompanhe o andamento pelo protocolo fornecido e aguarde retorno oficial"
             ],
             "dicas": [
                 "A empresa NÃO pode demitir PcD de cota sem contratar outro PcD no lugar",
@@ -2163,6 +2189,10 @@
                 {
                     "titulo": "Buscar vagas PcD (gov.br)",
                     "url": "https://www.gov.br/trabalho-e-emprego/pt-br"
+                },
+                {
+                    "titulo": "Ouvidoria Nacional de Direitos Humanos (Disque 100)",
+                    "url": "https://www.gov.br/mdh/pt-br/ondh"
                 }
             ],
             "tags": [
@@ -2200,7 +2230,10 @@
             ],
             "requisitos": [
                 "Ser titular de conta FGTS com saldo",
-                "Laudo médico comprovando deficiência do titular ou dependente"
+                "Laudo médico comprovando deficiência do titular ou dependente",
+                "Comprovante de residência atualizado",
+                "Certidão de nascimento ou casamento",
+                "Declaração de renda familiar (se aplicável)"
             ],
             "documentos": [
                 "Documento de identidade e CPF",
@@ -2212,12 +2245,15 @@
                 "Reúna os documentos listados acima",
                 "Vá a uma agência da Caixa Econômica Federal",
                 "Solicite o saque do FGTS por motivo de deficiência",
-                "O saque é liberado após análise dos documentos"
+                "O saque é liberado após análise dos documentos",
+                "5. Aguarde análise do pedido (prazo geralmente de 30 a 60 dias)",
+                "6. Acompanhe o andamento pelo protocolo fornecido e aguarde retorno oficial"
             ],
             "dicas": [
                 "Pode sacar para o trabalhador OU para dependente com deficiência (filho, por exemplo)",
                 "Também pode ser usado para compra de próteses, equipamentos de acessibilidade e adaptações",
-                "O saque é do valor total da conta FGTS"
+                "O saque é do valor total da conta FGTS",
+                "Fique atento aos prazos de validade de laudos médicos (geralmente 12 meses)"
             ],
             "valor": "Valor integral da conta FGTS",
             "onde": "Caixa Econômica Federal (agência)",
@@ -2225,6 +2261,10 @@
                 {
                     "titulo": "FGTS — Caixa",
                     "url": "https://www.caixa.gov.br/beneficios-trabalhador/fgts/"
+                },
+                {
+                    "titulo": "Ouvidoria Nacional de Direitos Humanos (Disque 100)",
+                    "url": "https://www.gov.br/mdh/pt-br/ondh"
                 }
             ],
             "tags": [
@@ -2288,7 +2328,9 @@
             "requisitos": [
                 "Ser pessoa com deficiência ou morar com familiar PcD no mesmo domicílio",
                 "Laudo médico com CID comprovando a deficiência (para solicitar adaptações)",
-                "Para programas habitacionais: inscrição no CadÚnico e renda dentro do limite do programa"
+                "Para programas habitacionais: inscrição no CadÚnico e renda dentro do limite do programa",
+                "Certidão de nascimento ou casamento",
+                "Declaração de renda familiar (se aplicável)"
             ],
             "documentos": [
                 "Documento de identidade (RG) e CPF",
@@ -3081,7 +3123,8 @@
                 "Laudo médico atestando mobilidade reduzida ou deficiência física",
                 "Veículo próprio ou de terceiro (o credenciamento é pessoal, não do veículo)",
                 "Estabelecimentos devem reservar 2% das vagas para PcD (mínimo 1 vaga)",
-                "Vagas devem estar próximas à entrada e ser sinalizadas no piso e vertical"
+                "Vagas devem estar próximas à entrada e ser sinalizadas no piso e vertical",
+                "Declaração de renda familiar (se aplicável)"
             ],
             "documentos": [
                 "Laudo médico com CID (emitido nos últimos 12 meses)",
@@ -3095,7 +3138,8 @@
                 "Reúna documentos necessários (laudo, RG, CPF, comprovante de residência)",
                 "Agende atendimento presencial no Detran, Junta Médica ou órgão responsável",
                 "Entregue documentos e aguarde análise (geralmente 10-30 dias)",
-                "Receba credencial física (cartão Defis) para afixar no veículo durante uso da vaga"
+                "Receba credencial física (cartão Defis) para afixar no veículo durante uso da vaga",
+                "6. Acompanhe o andamento pelo protocolo fornecido e aguarde retorno oficial"
             ],
             "dicas": [
                 "O cartão Defis é pessoal — você pode usar em qualquer veículo que estiver dirigindo ou sendo transportado",
@@ -3175,7 +3219,8 @@
                 "Deficiência comprovada por perícia médica do INSS (deficiência leve, moderada ou grave)",
                 "Ter contribuído ao INSS durante o tempo mínimo exigido conforme grau de deficiência",
                 "Deficiência deve ter existido durante o período contributivo (perícia retroativa se necessário)",
-                "Tempo de contribuição: Grave: 25 anos (H) / 20 anos (M) | Moderada: 29 anos (H) / 24 anos (M) | Leve: 33 anos (H) / 28 anos (M)"
+                "Tempo de contribuição: Grave: 25 anos (H) / 20 anos (M) | Moderada: 29 anos (H) / 24 anos (M) | Leve: 33 anos (H) / 28 anos (M)",
+                "Declaração de renda familiar (se aplicável)"
             ],
             "documentos": [
                 "Documento de identidade (RG) e CPF",
@@ -3254,7 +3299,8 @@
                 "Ser pessoa com deficiência comprovada por laudo médico",
                 "Ter processo judicial em andamento (qualquer fase processual)",
                 "Requerer prioridade por petição ao juiz responsável pelo processo",
-                "Anexar laudo médico atualizado (geralmente últimos 12 meses)"
+                "Anexar laudo médico atualizado (geralmente últimos 12 meses)",
+                "Declaração de renda familiar (se aplicável)"
             ],
             "documentos": [
                 "Laudo médico com CID atestando deficiência",
@@ -3267,7 +3313,8 @@
                 "Obtenha laudo médico atualizado com CID e descrição da deficiência",
                 "Advogado ou Defensor protocola petição no processo requerendo prioridade",
                 "Juiz analisa pedido e defere prioridade (geralmente de plano, sem audiência)",
-                "Processo passa a tramitar em regime prioritário (prazos reduzidos, julgamento antecipado)"
+                "Processo passa a tramitar em regime prioritário (prazos reduzidos, julgamento antecipado)",
+                "6. Acompanhe o andamento pelo protocolo fornecido e aguarde retorno oficial"
             ],
             "dicas": [
                 "Prioridade se aplica a TODOS os atos processuais: audiências, perícias, julgamentos, recursos",
@@ -3337,7 +3384,8 @@
                 "Laudo médico indicando necessidade do produto assistivo",
                 "Renda compatível com financiamento (análise de crédito do BNDES)",
                 "Produto deve estar na lista de tecnologias assistivas reconhecidas",
-                "Pode ser financiado pessoa física ou instituição de apoio a PcD"
+                "Pode ser financiado pessoa física ou instituição de apoio a PcD",
+                "Declaração de renda familiar (se aplicável)"
             ],
             "documentos": [
                 "Laudo médico com CID e prescrição/recomendação do produto assistivo",
@@ -3428,12 +3476,14 @@
                 "Ser pessoa com deficiência (física, auditiva, visual, intelectual ou TEA)",
                 "Apresentar comprovante da deficiência (carteira de identificação, laudo médico ou documento equivalente)",
                 "Estabelecimento deve reservar 40% dos ingressos para venda como meia-entrada",
-                "Acompanhante também tem direito à meia-entrada quando comprovada necessidade"
+                "Acompanhante também tem direito à meia-entrada quando comprovada necessidade",
+                "Declaração de renda familiar (se aplicável)"
             ],
             "documentos": [
                 "rg",
                 "cpf",
-                "comprovante_deficiencia"
+                "comprovante_deficiencia",
+                "Laudo médico atestando a deficiência (original ou cópia autenticada)"
             ],
             "passo_a_passo": [
                 "Na bilheteria ou plataforma online, solicite meia-entrada PcD",
@@ -3621,7 +3671,8 @@
                 "Isenção total: pessoa com doença grave (lista da Lei 7.713/88: AIDS, alienação mental, esclerose múltipla, neoplasia maligna, cegueira, hanseníase, etc.) — vale para aposentadoria, pensão ou reforma",
                 "Dedução de despesas: qualquer pessoa com deficiência pode deduzir gastos médicos ilimitados (consultas, internações, terapias, próteses, aparelhos, etc.)",
                 "Laudo médico oficial atestando a doença grave (para isenção) ou a deficiência (para dedução)",
-                "Comprovantes de despesas (recibos, notas fiscais) em nome do contribuinte ou dependente"
+                "Comprovantes de despesas (recibos, notas fiscais) em nome do contribuinte ou dependente",
+                "Declaração de renda familiar (se aplicável)"
             ],
             "documentos": [
                 "Laudo médico oficial (emitido por serviço médico público ou privado)",
@@ -3977,7 +4028,8 @@
                 "Não há requisito de renda para atendimento no CRAS ou CREAS — são serviços públicos universais",
                 "PcD de 18 a 59 anos com dependência funcional (para Centro-Dia)",
                 "PcD em situação de risco social, violação de direitos ou abandono (para CREAS e Residência Inclusiva)",
-                "Para CadÚnico: comparecer ao CRAS com documentos de toda a família"
+                "Para CadÚnico: comparecer ao CRAS com documentos de toda a família",
+                "Declaração de renda familiar (se aplicável)"
             ],
             "documentos": [
                 "Documento de identidade (RG ou Certidão de Nascimento)",
@@ -4242,7 +4294,8 @@
                 "Ser pessoa com deficiência, mobilidade reduzida, ou PNAE (Passageiro com Necessidade de Assistência Especial)",
                 "Para assistência em voo: informar à companhia aérea no ato da compra ou com 72h de antecedência (se necessitar de maca, oxigênio ou acompanhante)",
                 "Para outras assistências em voo: informar com 48h de antecedência",
-                "Documentação médica (MEDIF/FREMEC) pode ser exigida pela companhia aérea em casos específicos"
+                "Documentação médica (MEDIF/FREMEC) pode ser exigida pela companhia aérea em casos específicos",
+                "Declaração de renda familiar (se aplicável)"
             ],
             "documentos": [
                 "Documento de identidade (RG) e CPF",

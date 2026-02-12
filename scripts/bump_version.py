@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 """
 NossoDireito — Bump Version Script
 Atualiza a versão em TODOS os arquivos do projeto de uma só vez.

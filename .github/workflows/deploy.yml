@@ -21,9 +21,13 @@ on:
       - "sitemap.xml"
       - "sw.js"
       - "manifest.json"
-      - "codereview/**"
       - "scripts/**"
       - ".github/workflows/deploy.yml"
+
+permissions:
+  contents: read
+  actions: read
+  id-token: write
 
 concurrency:
   group: deploy-nossodireito
@@ -57,7 +61,7 @@ jobs:
           echo "✅ Sem dados sensíveis."
 
       - name: Quality Gate (score >= 75)
-        run: python codereview/codereview.py --ci --min-score 75
+        run: python scripts/quality_pipeline.py --ci
 
   # ── Deploy (só executa se quality-gate passar) ──
   deploy:
@@ -74,7 +78,7 @@ jobs:
           node-version: "22"
 
       - name: Azure Login
-        uses: azure/login@v2
+        uses: azure/login@6c251865b4e6290e7b78be643ea2d005bc51f69a # v2.1.1
         with:
           creds: |
             {
@@ -90,9 +94,9 @@ jobs:
           sed -i "s|<lastmod>[0-9]\{4\}-[0-9]\{2\}-[0-9]\{2\}</lastmod>|<lastmod>${TODAY}</lastmod>|" sitemap.xml
           echo "✅ sitemap.xml lastmod → ${TODAY}"
 
-      - name: Minificar JS e CSS
+      - name: Minificar HTML, JS e CSS
         run: |
-          npm install --no-save terser clean-css-cli
+          npm install --no-save terser clean-css-cli html-minifier-terser
 
           npx terser js/app.js --compress --mangle --output js/app.min.js
           ORIG=$(wc -c < js/app.js)
@@ -106,6 +110,12 @@ jobs:
           echo "✅ CSS: ${ORIG_CSS}B → ${MINI_CSS}B ($(( (ORIG_CSS - MINI_CSS) * 100 / ORIG_CSS ))% redução)"
           mv css/styles.min.css css/styles.css
 
+          npx html-minifier-terser --collapse-whitespace --remove-comments --minify-css true --minify-js true -o index.min.html index.html
+          ORIG_HTML=$(wc -c < index.html)
+          MINI_HTML=$(wc -c < index.min.html)
+          echo "✅ HTML: ${ORIG_HTML}B → ${MINI_HTML}B ($(( (ORIG_HTML - MINI_HTML) * 100 / ORIG_HTML ))% redução)"
+          mv index.min.html index.html
+
       - name: Instalar dependências (production)
         run: |
           npm ci --production --ignore-scripts 2>/dev/null || npm install --production
@@ -118,7 +128,7 @@ jobs:
             robots.txt sitemap.xml sw.js manifest.json \
             node_modules/ css/ js/ data/ images/ \
             -x "*.bak" "*.swa.bak" "__pycache__/*" \
-            "terraform/*" "codereview/*" ".github/*" "tests/*" "docs/*" \
+            "terraform/*" ".github/*" "tests/*" "docs/*" \
             "node_modules/.package-lock.json" "node_modules/.cache/*"
 
           SIZE=$(wc -c < site.zip)
@@ -220,7 +230,7 @@ jobs:
     needs: deploy
     runs-on: ubuntu-latest
     name: Validate Sources (Post-Deploy)
-    continue-on-error: true  # Não bloqueia pipeline se links estiverem lentos
+    continue-on-error: true # Não bloqueia pipeline se links estiverem lentos
     if: needs.deploy.result == 'success' || needs.deploy.result == 'skipped'
     steps:
       - name: Checkout
@@ -246,21 +256,21 @@ jobs:
           script: |
             const title = '⚠️ Validação de Fontes: Links com Problemas';
             const body = `## Validação de Fontes Falhou
-            
+
             A validação rápida detectou links com problemas após o deploy.
-            
+
             **Ação Recomendada:**
             1. Execute localmente: \`python scripts/validate_sources.py --urls\`
             2. Verifique se URLs governamentais estão temporariamente lentas
             3. Atualize URLs quebrados em \`data/direitos.json\`
-            
+
             **Links para revisar manualmente:**
             - [Planalto.gov.br](https://www.planalto.gov.br/ccivil_03/)
             - [gov.br Serviços](https://www.gov.br/pt-br/servicos)
             - [INSS](https://meu.inss.gov.br/)
-            
+
             _Esta issue foi criada automaticamente pelo workflow de deploy._`;
-            
+
             // Check if issue already exists
             const issues = await github.rest.issues.listForRepo({
               owner: context.repo.owner,
@@ -268,7 +278,7 @@ jobs:
               state: 'open',
               labels: ['validação', 'fontes']
             });
-            
+
             if (issues.data.length === 0) {
               await github.rest.issues.create({
                 owner: context.repo.owner,

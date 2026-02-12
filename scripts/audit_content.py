@@ -1,51 +1,56 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 """Audit direitos.json for off-topic URLs and inappropriate content."""
-import json, re
+import json
+import re
 from collections import Counter
 from urllib.parse import urlparse
 
-with open('data/direitos.json') as f:
-    data = json.load(f)
 
-text = json.dumps(data, ensure_ascii=False)
-urls = re.findall(r'https?://[^\s"<>\\]+', text)
+def main():
+    """Run content audit on direitos.json."""
+    with open('data/direitos.json') as f:
+        data = json.load(f)
 
-domains = Counter()
-for u in urls:
-    d = urlparse(u).netloc.lower()
-    domains[d] += 1
+    text = json.dumps(data, ensure_ascii=False)
+    urls = re.findall(r'https?://[^\s"<>\\]+', text)
 
-print("=" * 70)
-print("DOMINIOS ENCONTRADOS NO direitos.json")
-print("=" * 70)
+    domains = Counter()
+    for u in urls:
+        d = urlparse(u).netloc.lower()
+        domains[d] += 1
 
-gov_domains = {}
-non_gov_domains = {}
-for d, c in sorted(domains.items()):
-    if any(x in d for x in ['.gov.br', '.gov.', 'planalto', 'datasus']):
-        gov_domains[d] = c
-    else:
-        non_gov_domains[d] = c
+    print("=" * 70)
+    print("DOMINIOS ENCONTRADOS NO direitos.json")
+    print("=" * 70)
 
-print(f"\nGOVERNAMENTAIS ({len(gov_domains)}):")
-for d, c in sorted(gov_domains.items()):
-    print(f"  OK  {d} ({c}x)")
+    gov_domains = {}
+    non_gov_domains = {}
+    for d, c in sorted(domains.items()):
+        if any(x in d for x in ['.gov.br', '.gov.', 'planalto', 'datasus']):
+            gov_domains[d] = c
+        else:
+            non_gov_domains[d] = c
 
-print(f"\nNAO-GOVERNAMENTAIS ({len(non_gov_domains)}):")
-for d, c in sorted(non_gov_domains.items()):
-    suspicious = any(x in d for x in [
-        'google', 'whatsapp', 'facebook', 'twitter', 'instagram',
-        'tiktok', 'youtube', 'amazon.com', 'aliexpress', 'shopee',
-        'mercadolivre', 'bit.ly', 'tinyurl', 'goo.gl'
-    ])
-    flag = "ALERTA" if suspicious else "CHECK"
-    print(f"  {flag}  {d} ({c}x)")
+    print(f"\nGOVERNAMENTAIS ({len(gov_domains)}):")
+    for d, c in sorted(gov_domains.items()):
+        print(f"  OK  {d} ({c}x)")
 
-# Inappropriate content check
-print("\n" + "=" * 70)
-print("VERIFICACAO DE CONTEUDO INAPROPRIADO")
-print("=" * 70)
-bad_words = [
+    print(f"\nNAO-GOVERNAMENTAIS ({len(non_gov_domains)}):")
+    for d, c in sorted(non_gov_domains.items()):
+        suspicious = any(x in d for x in [
+            'google', 'whatsapp', 'facebook', 'twitter', 'instagram',
+            'tiktok', 'youtube', 'amazon.com', 'aliexpress', 'shopee',
+            'mercadolivre', 'bit.ly', 'tinyurl', 'goo.gl'
+        ])
+        flag = "ALERTA" if suspicious else "CHECK"
+        print(f"  {flag}  {d} ({c}x)")
+
+    # Inappropriate content check
+    print("\n" + "=" * 70)
+    print("VERIFICACAO DE CONTEUDO INAPROPRIADO")
+    print("=" * 70)
+    bad_words = [
     'homofob', 'racis', 'sexis', 'merda', 'porra', 'caralho',
     'foda', 'puta', 'viado', 'bicha', 'sapatao', 'traveco',
     'retardado', 'aleijado', 'mongoloide', 'demente'
@@ -131,3 +136,7 @@ for p in present:
 print(f"\n  POTENCIALMENTE FALTANDO ({len(missing)}):")
 for m in missing:
     print(f"    ??  {m}")
+
+
+if __name__ == '__main__':
+    main()

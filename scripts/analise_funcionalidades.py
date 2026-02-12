@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 """
 Análise Completa de Funcionalidades - NossoDireito
 Compara funcionalidades implementadas vs testadas

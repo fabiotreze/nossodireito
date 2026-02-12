@@ -43,7 +43,7 @@ jobs:
           )
 
           for pattern in "${PATTERNS[@]}"; do
-            MATCHES=$(git grep -l -E "$pattern" -- ':!codereview/' ':!.github/' 2>/dev/null || true)
+            MATCHES=$(git grep -l -E "$pattern" -- ':!.github/' 2>/dev/null || true)
             if [ -n "$MATCHES" ]; then
               echo "❌ Padrão suspeito encontrado: $pattern"
               echo "$MATCHES"
@@ -75,16 +75,16 @@ jobs:
           python3 scripts/validate_content.py
 
       # ── Quality Gate Principal ──
-      - name: Executar Quality Gate (codereview.py)
+      - name: Executar Quality Gate (quality_pipeline.py)
         run: |
-          echo "🔎 Executando Quality Gate v2.0 (17 categorias)..."
-          python codereview/codereview.py --ci --min-score 75
+          echo "🔎 Executando Quality Gate v2.0..."
+          python scripts/quality_pipeline.py --ci
 
       # ── Salvar relatório como artefato ──
-      - name: Gerar relatório JSON
+      - name: Copiar relatório JSON
         if: always()
         run: |
-          python codereview/codereview.py --json > quality-gate-report.json 2>&1 || true
+          cp quality_report.json quality-gate-report.json 2>&1 || true
 
       - name: Upload relatório
         if: always()

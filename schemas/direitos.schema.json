@@ -1,0 +1,315 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "https://nossodireito.com.br/schemas/direitos.schema.json",
+    "title": "NossoDireito - Direitos e Benefícios para PcD",
+    "description": "Schema de validação formal para data/direitos.json",
+    "type": "object",
+    "required": [
+        "versao",
+        "ultima_atualizacao",
+        "aviso",
+        "fontes",
+        "categorias"
+    ],
+    "properties": {
+        "versao": {
+            "type": "string",
+            "pattern": "^\\d+\\.\\d+\\.\\d+$",
+            "description": "Versão do schema (semantic versioning)"
+        },
+        "ultima_atualizacao": {
+            "type": "string",
+            "format": "date",
+            "description": "Data da última atualização (YYYY-MM-DD)"
+        },
+        "aviso": {
+            "type": "string",
+            "minLength": 10,
+            "description": "Aviso legal sobre fontes e atualização"
+        },
+        "fontes": {
+            "type": "array",
+            "minItems": 1,
+            "description": "Lista de fontes oficiais consultadas",
+            "items": {
+                "$ref": "#/definitions/fonte"
+            }
+        },
+        "documentos_mestre": {
+            "type": "array",
+            "description": "Lista de documentos comuns a múltiplos benefícios",
+            "items": {
+                "$ref": "#/definitions/documento_mestre"
+            }
+        },
+        "categorias": {
+            "type": "array",
+            "minItems": 1,
+            "description": "Lista de categorias/benefícios",
+            "items": {
+                "$ref": "#/definitions/categoria"
+            }
+        }
+    },
+    "definitions": {
+        "fonte": {
+            "type": "object",
+            "required": [
+                "nome",
+                "tipo",
+                "url",
+                "orgao",
+                "consultado_em"
+            ],
+            "properties": {
+                "nome": {
+                    "type": "string",
+                    "minLength": 5,
+                    "description": "Nome da fonte legal/oficial"
+                },
+                "tipo": {
+                    "type": "string",
+                    "enum": [
+                        "legislacao",
+                        "portal",
+                        "orgao_oficial",
+                        "relatorio",
+                        "noticia",
+                        "servico",
+                        "normativa",
+                        "programa"
+                    ],
+                    "description": "Tipo da fonte"
+                },
+                "url": {
+                    "type": "string",
+                    "format": "uri",
+                    "pattern": "^https?://",
+                    "description": "URL da fonte (deve começar com http:// ou https://)"
+                },
+                "orgao": {
+                    "type": "string",
+                    "minLength": 3,
+                    "description": "Órgão responsável pela fonte"
+                },
+                "consultado_em": {
+                    "type": "string",
+                    "format": "date",
+                    "description": "Data de consulta (YYYY-MM-DD)"
+                },
+                "artigos_referenciados": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "Artigos específicos referenciados"
+                }
+            }
+        },
+        "documento_mestre": {
+            "type": "object",
+            "required": [
+                "id",
+                "nome",
+                "descricao",
+                "categorias"
+            ],
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "pattern": "^[a-z0-9_]+$",
+                    "description": "ID único do documento (snake_case, aceita dígitos)"
+                },
+                "nome": {
+                    "type": "string",
+                    "minLength": 3,
+                    "description": "Nome do documento"
+                },
+                "descricao": {
+                    "type": "string",
+                    "minLength": 10,
+                    "description": "Descrição detalhada do documento"
+                },
+                "categorias": {
+                    "type": "array",
+                    "minItems": 1,
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "IDs das categorias que usam este documento"
+                },
+                "dica": {
+                    "type": "string",
+                    "description": "Dica opcional sobre o documento"
+                }
+            }
+        },
+        "categoria": {
+            "type": "object",
+            "required": [
+                "id",
+                "titulo",
+                "resumo",
+                "icone",
+                "base_legal",
+                "requisitos",
+                "documentos",
+                "passo_a_passo",
+                "dicas",
+                "valor",
+                "onde",
+                "links",
+                "tags"
+            ],
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "pattern": "^[a-z_]+$",
+                    "description": "ID único da categoria (snake_case)"
+                },
+                "titulo": {
+                    "type": "string",
+                    "minLength": 5,
+                    "maxLength": 100,
+                    "description": "Título do benefício"
+                },
+                "resumo": {
+                    "type": "string",
+                    "minLength": 20,
+                    "maxLength": 500,
+                    "description": "Resumo do benefício"
+                },
+                "icone": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 10,
+                    "description": "Emoji representando o benefício"
+                },
+                "base_legal": {
+                    "type": "array",
+                    "minItems": 1,
+                    "description": "Base legal do benefício",
+                    "items": {
+                        "$ref": "#/definitions/base_legal_item"
+                    }
+                },
+                "requisitos": {
+                    "type": "array",
+                    "minItems": 3,
+                    "items": {
+                        "type": "string",
+                        "minLength": 10
+                    },
+                    "description": "Requisitos para obter o benefício (mínimo 3)"
+                },
+                "documentos": {
+                    "type": "array",
+                    "minItems": 2,
+                    "items": {
+                        "type": "string",
+                        "minLength": 2
+                    },
+                    "description": "Documentos necessários (mínimo 2, aceita siglas como RG, CPF)"
+                },
+                "passo_a_passo": {
+                    "type": "array",
+                    "minItems": 3,
+                    "items": {
+                        "type": "string",
+                        "minLength": 10
+                    },
+                    "description": "Passo a passo para obter o benefício (mínimo 3)"
+                },
+                "dicas": {
+                    "type": "array",
+                    "minItems": 2,
+                    "items": {
+                        "type": "string",
+                        "minLength": 10
+                    },
+                    "description": "Dicas úteis (mínimo 2)"
+                },
+                "valor": {
+                    "type": "string",
+                    "minLength": 5,
+                    "description": "Valor do benefício ou 'Gratuito'"
+                },
+                "onde": {
+                    "type": "string",
+                    "minLength": 5,
+                    "description": "Onde solicitar o benefício"
+                },
+                "links": {
+                    "type": "array",
+                    "minItems": 1,
+                    "items": {
+                        "$ref": "#/definitions/link"
+                    },
+                    "description": "Links úteis (mínimo 1)"
+                },
+                "tags": {
+                    "type": "array",
+                    "minItems": 3,
+                    "items": {
+                        "type": "string",
+                        "minLength": 2
+                    },
+                    "description": "Tags para busca (mínimo 3)"
+                }
+            }
+        },
+        "base_legal_item": {
+            "type": "object",
+            "required": [
+                "lei"
+            ],
+            "properties": {
+                "lei": {
+                    "type": "string",
+                    "minLength": 5,
+                    "description": "Nome da lei/norma"
+                },
+                "artigo": {
+                    "type": "string",
+                    "description": "Artigo específico (ex: Art. 20)"
+                },
+                "link": {
+                    "type": "string",
+                    "format": "uri",
+                    "pattern": "^https?://",
+                    "description": "URL da lei no planalto.gov.br ou gov.br"
+                }
+            }
+        },
+        "link": {
+            "type": "object",
+            "required": [
+                "titulo",
+                "url"
+            ],
+            "properties": {
+                "titulo": {
+                    "type": "string",
+                    "minLength": 3,
+                    "description": "Título descritivo do link"
+                },
+                "url": {
+                    "type": "string",
+                    "format": "uri",
+                    "pattern": "^(https?|tel):",
+                    "description": "URL completa (http://, https://, ou tel:)"
+                },
+                "tipo": {
+                    "type": "string",
+                    "enum": [
+                        "oficial",
+                        "informativo",
+                        "formulario",
+                        "consulta"
+                    ],
+                    "description": "Tipo do link"
+                }
+            }
+        }
+    }
+}

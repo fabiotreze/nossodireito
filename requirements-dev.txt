@@ -1,0 +1,9 @@
+# NossoDireito - Development Dependencies
+# Python 3.8+
+
+# Browser automation for E2E testing (optional)
+playwright>=1.40.0
+
+# Security audit tools
+pip-audit>=2.6.0
+safety>=3.0.0
