@@ -5,6 +5,239 @@ Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/)
 e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [1.4.3] - 2026-02-11
+
+### Adicionado
+
+#### Documentos Mestres — Meia-Entrada e Tarifa Social Energia
+- **Novos documentos em `documentos_mestre[]`:**
+  - `comprovante_deficiencia`: Carteira PcD, CIPTEA, laudo médico ou carteira de transporte especial
+  - `comprovante_bpc`: Extrato INSS ou carta de concessão do BPC/LOAS
+  - `prescricao_equipamento_medico`: Receita médica para equipamentos elétricos domiciliares (respirador, concentrador de oxigênio, etc.)
+
+- **Vinculações documentais:**
+  - Benefício `meia_entrada` agora referencia: `rg`, `cpf`, `comprovante_deficiencia`
+  - Benefício `tarifa_social_energia` agora referencia: `rg`, `cpf`, `nis`, `comprovante_residencia`, `laudo_medico`, `prescricao_equipamento_medico`, `comprovante_bpc`
+
+### Atualizado
+
+#### Sincronização Bidirecional de Documentos
+- **Documentos existentes atualizados** com novas categorias:
+  - `rg.categorias[]` → adicionado `meia_entrada`, `tarifa_social_energia`
+  - `cpf.categorias[]` → adicionado `meia_entrada`, `tarifa_social_energia`
+  - `comprovante_residencia.categorias[]` → adicionado `tarifa_social_energia`
+  - `laudo_medico.categorias[]` → adicionado `meia_entrada`, `tarifa_social_energia`
+  - `nis.categorias[]` → adicionado `tarifa_social_energia`
+
+#### Padronização de Estrutura
+- Array `documentos[]` dos benefícios convertido de texto livre para IDs
+- Permite renderização automática na seção "Documentos Necessários por Direito"
+- Habilita persistência de checkboxes no localStorage
+
+### Documentado
+
+#### DEPENDENCY_CONTROL.md
+- Nova seção **7️⃣ ADICIONAR/ATUALIZAR DOCUMENTOS MESTRES**
+- Explica sincronização bidirecional entre `documentos_mestre[]` e `categorias[].documentos[]`
+- Checklist completo de 10 itens para adição de documentos
+- Alerta sobre inconsistências comuns (esquecimento de sincronização)
+- Estrutura JSON exemplo e validações recomendadas
+
+### Validado
+
+#### Controle de Qualidade
+- ✅ JSON sintaxe validada (Python json.load)
+- ✅ Versão sincronizada em 3 arquivos (direitos.json, package.json, sw.js)
+- ✅ Cache invalidado (novo sw.js v1.4.3)
+- ✅ Sincronização bidirecional verificada (documentos ↔ benefícios)
+- ✅ Total de documentos mestres: **18** (antes: 15)
+
+---
+
+## [1.4.2] - 2026-02-11
+
+### Corrigido
+
+#### Interface do Usuário
+- **Aviso Importante** reformatado com melhor hierarquia visual e espaçamento
+  - Removidos estilos inline, migrados para classes CSS reutilizáveis
+  - Seções separadas: Limitações do Serviço + Onde buscar ajuda + LGPD
+  - Melhor legibilidade com parágrafos e listas organizadas
+  
+- **Seção Transparência** reestruturada com mais clareza
+  - Compromisso com atualização agora destaca que o processo é **MANUAL**
+  - Data da última atualização exibida de forma proeminente
+  - Próxima revisão prevista informada claramente
+  - Call-to-action para reportar informações desatualizadas (e-mail fabiotreze@hotmail.com)
+
+- **Síntese de voz (TTS)** agora alerta usuário quando não há voz em português
+  - Mensagem: "⚠️ Seu navegador pode não suportar português. A leitura pode estar em outro idioma."
+  - Toast informativo orienta instalação de vozes pt-BR nas configurações do sistema
+  
+- **Exportação de PDF** corrigida para evitar páginas em branco
+  - Adicionado `@page { size: A4; margin: 2cm; }` para padrão ABNT
+  - Substituído `visibility: hidden` por `display: none` para evitar renderização fantasma
+  - Método `body.printing-analysis > *:not(.analysis-results)` elimina elementos desnecessários sem criar espaço vazio
+
+#### Versionamento
+- Versão sincronizada **v1.4.2** em todos os arquivos:
+  - `direitos.json`: versao "1.4.2"
+  - `package.json`: version "1.4.2"
+  - `sw.js`: CACHE_VERSION v1.4.2
+  - Rodapé do site agora exibe versão correta
+
+### Adicionado
+
+#### CSS
+- Novas classes para disclaimer estruturado:
+  - `.disclaimer-box`: Container principal do aviso
+  - `.disclaimer-title`: Título do aviso
+  - `.disclaimer-intro`: Parágrafo de introdução
+  - `.disclaimer-subtitle`: Subtítulos de seções
+  - `.disclaimer-list`: Listas formatadas
+  - `.disclaimer-section`: Seções internas com bordas
+
+- Suporte a novos elementos dinâmicos na transparência:
+  - `#transLastUpdateInline`: Data na lista de transparência
+  - `#transLastUpdateText`: Data no compromisso de atualização
+  - `#transNextReviewText`: Próxima revisão prevista
+
+---
+
+## [1.4.1] - 2026-02-11
+
+### Adicionado
+
+#### Benefícios PcD Completos — Educação, Trabalho, Habitação
+- **`docs/CHECKLIST_VALIDATIONS.md`** — Seções expandidas com pesquisa exaustiva:
+
+**📚 EDUCAÇÃO**
+- **FIES 50% Cotas** — Resolução 58/2024 CES/CNE reserva **50% das vagas** para política de cotas (inclui PcD)
+- **ProUni** — Lei 11.096/2005 (não específico PcD, mas acessível com renda até 3 SM)
+- **SISU** — Lei 13.409/2016 (cotas PcD confirmadas)
+- **Pé-de-Meia** — Universal (CadÚnico + ensino médio)
+
+**💼 TRABALHO**
+- **Lei 8.213/1991 Art. 93** — Cotas setor privado (2%-5% empresas com 100+ funcionários)
+  - Proteção demissão (§1º): empresas não podem demitir PcD sem contratar substituto PcD
+  - Fiscalização MTb (§2º): multa R$ 2.411,28 a R$ 241.126,88 por vaga não preenchida
+  - SINE e Emprego Apoiado disponíveis
+- **Lei 8.112/1990 Art. 5 §2º** — Cotas setor público federal (**ATÉ 20%** nos concursos) ⭐
+  - **4x-10x MAIOR** que setor privado
+  - Art. 98 §2º: Horário especial SEMCOMPENSAÇÃO para servidor PcD
+  - Art. 98 §3º: Extensão de horário especial para servidor com familiar PcD (COM compensação)
+  - Art. 24: Readaptação garantida se servidor desenvolver deficiência durante serviço
+  - Comparação completa setor público vs. privado documentada
+
+**🏠 HABITAÇÃO**
+- **Lei 11.977/2009 Art. 3º V (Lei 12.424/2011)** — Minha Casa Minha Vida
+  - ✅ **PRIORIDADE** para famílias com PcD
+  - **3% unidades adaptadas** (Art. 73) + acessibilidade obrigatória (rampas)
+  - Renda até R$ 4.650,00
+  - Emolumentos cartoriais reduzidos em 75%
+  - Registro preferencialmente em nome da mulher (Art. 35)
+
+**📊 RESUMO EXECUTIVO**
+- Tabela consolidada de todos os benefícios PcD (9 benefícios documentados)
+- 10 referências oficiais adicionadas (planalto.gov.br, gov.br/mec, CNE)
+
+### Documentado
+
+#### Validação com Fontes Primárias
+Todas as leis foram consultadas nos textos consolidados do Planalto.gov.br:
+- Lei 8.213/1991 (~15.000 tokens): Benefícios da Previdência Social + Cotas PcD
+- Lei 8.112/1990 (~70.000 tokens): Regime Jurídico dos Servidores Públicos Federais
+- Lei 11.977/2009 (~66.000 tokens): Programa Minha Casa Minha Vida completo
+- Lei 11.096/2005: ProUni
+- Resolução 58/2024 CES/CNE: FIES 50% cotas
+
+#### Comparações e Insights
+- **Setor Público vs. Privado**: Concursos federais oferecem quota 20% (vs. 2%-5% empresas privadas)
+- **Educação**: FIES agora reserva 50% das vagas para cotas (inclui PcD) — política recente
+- **Habitação**: MCMV prioriza PcD desde 2011 (Lei 12.424)
+
+## [1.4.0] - 2026-02-11
+
+### Adicionado
+
+#### Validação Oficial do Checklist
+- **`docs/CHECKLIST_VALIDATIONS.md`** — Documento completo validando ordem do checklist com fontes oficiais
+  - ✅ **BPC requer CadÚnico CONFIRMADO** — Lei 8.742/1993 Art. 20 §12 (Lei 13.846/2019)
+  - ✅ **Cotas PcD SISU** — Lei 13.409/2016 (reserva de vagas em universidades federais)
+  - ✅ **Pé-de-Meia** — Programa MEC para ensino médio (CadÚnico + frequência)
+  - ✅ **FGTS Saque PcD** — Já documentado (Lei 8.036/1990 Art. 20 XVII)
+  - ⚠️ **Bolsa Família e Auxílio Gás** — Não específicos para PcD (critério: renda familiar)
+  - 🔍 **Licenças trabalhistas** — Dependem de CCT (Convenção Coletiva de Trabalho)
+
+#### Checklist 10 Passos com Dependências Validadas
+- **Ordem validada com legislação federal:**
+  1. Gov.br OURO (recomendado para BPC digital)
+  2. Dossiê PcD organizado (boas práticas)
+  3. Validar laudo médico (prática comum, sem regulação específica sobre 6 meses)
+  4. **CRAS + CadÚnico** — **OBRIGATÓRIO por lei (Lei 8.742/1993 Art. 20 §12)**
+  5. Rede apoio emocional (recursos comunitários)
+  6. CIPTEA (Lei 13.977/2020)
+  7. **BPC/LOAS** — **DEPENDE do item 4 (requisito legal)**
+  8. Agendar UBS/CER/CAPS (SUS)
+  9. Matrícula escolar (LBI)
+  10. Plano de saúde (Lei 9.656/1998)
+
+- **Validação JavaScript automática:** checkDependencies() bloqueia ordem incorreta
+  - Item 7 (BPC) requer Item 4 (CadÚnico) — alerta + desmarca
+  - Itens 4,6,7,8 requerem Item 3 (laudo validado) — alerta + desmarca
+
+#### Reorganização da Documentação
+- **Estrutura V1/V2 padronizada:**
+  ```
+  docs/
+  ├── v1/                              # Versão atual em produção
+  │   ├── ARCHITECTURE.md              # Antes: SYSTEM_ARCHITECTURE_V1.md
+  │   ├── DIAGRAMS.md                  # Antes: SYSTEM_DIAGRAMS.md
+  │   ├── LEGAL_COMPLIANCE.md          # Inalterado
+  │   └── VLIBRAS_LIMITATIONS.md       # Inalterado
+  ├── v2/                              # Planejamento futuro
+  │   └── roadmap/                     # Antes: docs/roadmap/
+  │       ├── ROADMAP_V2.md
+  │       ├── ARCHITECTURE_V2.md
+  │       └── v2-backend/ (código exemplo)
+  ├── CHECKLIST_VALIDATIONS.md        # NOVO
+  └── README.md                        # NOVO — Padrão de nomenclatura
+  ```
+
+- **`docs/README.md`** — Padrão de organização e nomenclatura
+  - Convenções de nomes: UPPERCASE com underscores
+  - Versionamento por pastas (não por sufixos)
+  - Guia de commits (Conventional Commits)
+  - Métricas de cobertura documental
+
+### Documentado
+
+#### Novos Benefícios Pesquisados
+- **Lei 13.409/2016** — Cotas PcD no ensino superior (SISU + institutos federais)
+- **Pé-de-Meia** — Poupança estudantil para ensino médio (até R$ 9.200 total)
+- **FGTS** — Saque integral para titular ou dependente PcD (já em direitos.json)
+
+#### Referências Oficiais Validadas
+- **Planalto.gov.br:** Lei 8.742/1993 (LOAS), Lei 13.409/2016, Lei 13.977/2020
+- **MEC:** https://www.gov.br/mec/pt-br/acesso-a-informacao/acoes-e-programas/pe-de-meia
+- **SISU:** https://acessounico.mec.gov.br/sisu
+
+### Alterado
+
+#### Padrão de Nomenclatura de Arquivos
+- **Antes:** `SYSTEM_ARCHITECTURE_V1.md`, `SYSTEM_DIAGRAMS.md`
+- **Depois:** `v1/ARCHITECTURE.md`, `v1/DIAGRAMS.md`
+- **Razão:** Facilita diff entre versões (`diff v1/ARCHITECTURE.md v2/ARCHITECTURE.md`)
+
+### Pendente
+
+#### Simplificação do Roadmap V2
+- **Tarefa:** Revisar e simplificar `docs/v2/roadmap/ROADMAP_V2.md`
+- **Objetivo:** Arquitetura mais limpa, reduzir complexidade
+- **Próximos passos:** Definir tech stack minimalista, SLA realista
+
+---
+
 ## [1.3.0] - 2026-02-10
 
 ### Adicionado

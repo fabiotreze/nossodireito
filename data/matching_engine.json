@@ -80,7 +80,18 @@
         "icms",
         "iptu",
         "sisen",
-        "confaz"
+        "confaz",
+        "prouni",
+        "fies",
+        "sisu",
+        "enem",
+        "irpf",
+        "ir",
+        "mds",
+        "cras",
+        "nis",
+        "dpu",
+        "anadep"
     ],
     "cid_range_map": {
         "F": [
@@ -175,9 +186,10 @@
         },
         "cadastro único": {
             "cats": [
+                "bolsa_familia",
                 "bpc"
             ],
-            "weight": 3
+            "weight": 4
         },
         "inss": {
             "cats": [
@@ -697,9 +709,9 @@
         },
         "cotas": {
             "cats": [
-                "trabalho"
+                "prouni_fies_sisu"
             ],
-            "weight": 4
+            "weight": 3
         },
         "clt": {
             "cats": [
@@ -789,7 +801,7 @@
         },
         "vaga especial": {
             "cats": [
-                "moradia"
+                "estacionamento_especial"
             ],
             "weight": 5
         },
@@ -849,9 +861,10 @@
         },
         "nbr 9050": {
             "cats": [
-                "moradia"
+                "estacionamento_especial",
+                "educacao"
             ],
-            "weight": 5
+            "weight": 3
         },
         "lei 10.098": {
             "cats": [
@@ -1411,31 +1424,31 @@
         },
         "prótese": {
             "cats": [
-                "fgts",
+                "tecnologia_assistiva",
                 "sus_terapias"
             ],
-            "weight": 3
+            "weight": 4
         },
         "protese": {
             "cats": [
-                "fgts",
+                "tecnologia_assistiva",
                 "sus_terapias"
             ],
-            "weight": 3
+            "weight": 4
         },
         "órtese": {
             "cats": [
-                "fgts",
+                "tecnologia_assistiva",
                 "sus_terapias"
             ],
-            "weight": 3
+            "weight": 4
         },
         "ortese": {
             "cats": [
-                "fgts",
+                "tecnologia_assistiva",
                 "sus_terapias"
             ],
-            "weight": 3
+            "weight": 4
         },
         "g30": {
             "cats": [
@@ -1809,12 +1822,9 @@
         },
         "tecnologia assistiva": {
             "cats": [
-                "educacao",
-                "trabalho",
-                "fgts",
-                "sus_terapias"
+                "tecnologia_assistiva"
             ],
-            "weight": 4
+            "weight": 5
         },
         "lei 13.146": {
             "cats": [
@@ -1870,8 +1880,7 @@
         },
         "lei 10.048": {
             "cats": [
-                "transporte",
-                "moradia"
+                "atendimento_prioritario"
             ],
             "weight": 4
         },
@@ -1961,13 +1970,13 @@
         },
         "educação": {
             "cats": [
-                "educacao"
+                "prouni_fies_sisu"
             ],
             "weight": 2
         },
         "educacao": {
             "cats": [
-                "educacao"
+                "prouni_fies_sisu"
             ],
             "weight": 2
         },
@@ -2040,17 +2049,15 @@
         },
         "atendimento prioritário": {
             "cats": [
-                "ciptea",
-                "transporte"
+                "atendimento_prioritario"
             ],
-            "weight": 3
+            "weight": 5
         },
         "atendimento prioritario": {
             "cats": [
-                "ciptea",
-                "transporte"
+                "atendimento_prioritario"
             ],
-            "weight": 3
+            "weight": 5
         },
         "prioridade": {
             "cats": [
@@ -2524,41 +2531,17 @@
             ],
             "weight": 4
         },
-        "atendimento prioritário": {
-            "cats": [
-                "atendimento_prioritario"
-            ],
-            "weight": 5
-        },
-        "atendimento prioritario": {
-            "cats": [
-                "atendimento_prioritario"
-            ],
-            "weight": 5
-        },
         "fila preferencial": {
             "cats": [
                 "atendimento_prioritario"
             ],
             "weight": 5
         },
-        "lei 10.048": {
-            "cats": [
-                "atendimento_prioritario"
-            ],
-            "weight": 4
-        },
         "prioridade no atendimento": {
             "cats": [
                 "atendimento_prioritario"
             ],
             "weight": 4
-        },
-        "vaga especial": {
-            "cats": [
-                "estacionamento_especial"
-            ],
-            "weight": 5
         },
         "estacionamento pcd": {
             "cats": [
@@ -2583,13 +2566,6 @@
                 "estacionamento_especial"
             ],
             "weight": 4
-        },
-        "nbr 9050": {
-            "cats": [
-                "estacionamento_especial",
-                "educacao"
-            ],
-            "weight": 3
         },
         "aposentadoria especial": {
             "cats": [
@@ -2651,12 +2627,6 @@
             ],
             "weight": 3
         },
-        "tecnologia assistiva": {
-            "cats": [
-                "tecnologia_assistiva"
-            ],
-            "weight": 5
-        },
         "cadeira motorizada": {
             "cats": [
                 "tecnologia_assistiva"
@@ -2666,34 +2636,6 @@
         "leitor de tela": {
             "cats": [
                 "tecnologia_assistiva"
-            ],
-            "weight": 4
-        },
-        "prótese": {
-            "cats": [
-                "tecnologia_assistiva",
-                "sus_terapias"
-            ],
-            "weight": 4
-        },
-        "protese": {
-            "cats": [
-                "tecnologia_assistiva",
-                "sus_terapias"
-            ],
-            "weight": 4
-        },
-        "órtese": {
-            "cats": [
-                "tecnologia_assistiva",
-                "sus_terapias"
-            ],
-            "weight": 4
-        },
-        "ortese": {
-            "cats": [
-                "tecnologia_assistiva",
-                "sus_terapias"
             ],
             "weight": 4
         },
@@ -2710,6 +2652,470 @@
                 "isencoes_tributarias"
             ],
             "weight": 3
+        },
+        "prouni": {
+            "cats": [
+                "prouni_fies_sisu"
+            ],
+            "weight": 5
+        },
+        "fies": {
+            "cats": [
+                "prouni_fies_sisu"
+            ],
+            "weight": 5
+        },
+        "sisu": {
+            "cats": [
+                "prouni_fies_sisu"
+            ],
+            "weight": 5
+        },
+        "ensino superior": {
+            "cats": [
+                "prouni_fies_sisu"
+            ],
+            "weight": 4
+        },
+        "faculdade": {
+            "cats": [
+                "prouni_fies_sisu"
+            ],
+            "weight": 4
+        },
+        "universidade": {
+            "cats": [
+                "prouni_fies_sisu"
+            ],
+            "weight": 4
+        },
+        "bolsa estudos": {
+            "cats": [
+                "prouni_fies_sisu"
+            ],
+            "weight": 4
+        },
+        "bolsa de estudos": {
+            "cats": [
+                "prouni_fies_sisu"
+            ],
+            "weight": 4
+        },
+        "financiamento estudantil": {
+            "cats": [
+                "prouni_fies_sisu"
+            ],
+            "weight": 4
+        },
+        "cotas pcd": {
+            "cats": [
+                "prouni_fies_sisu"
+            ],
+            "weight": 5
+        },
+        "enem": {
+            "cats": [
+                "prouni_fies_sisu"
+            ],
+            "weight": 3
+        },
+        "graduação": {
+            "cats": [
+                "prouni_fies_sisu"
+            ],
+            "weight": 3
+        },
+        "graduacao": {
+            "cats": [
+                "prouni_fies_sisu"
+            ],
+            "weight": 3
+        },
+        "curso superior": {
+            "cats": [
+                "prouni_fies_sisu"
+            ],
+            "weight": 3
+        },
+        "mec": {
+            "cats": [
+                "prouni_fies_sisu"
+            ],
+            "weight": 2
+        },
+        "imposto de renda": {
+            "cats": [
+                "isencao_ir"
+            ],
+            "weight": 5
+        },
+        "imposto renda": {
+            "cats": [
+                "isencao_ir"
+            ],
+            "weight": 5
+        },
+        "irpf": {
+            "cats": [
+                "isencao_ir"
+            ],
+            "weight": 5
+        },
+        "isenção ir": {
+            "cats": [
+                "isencao_ir"
+            ],
+            "weight": 5
+        },
+        "isencao ir": {
+            "cats": [
+                "isencao_ir"
+            ],
+            "weight": 5
+        },
+        "dedução": {
+            "cats": [
+                "isencao_ir"
+            ],
+            "weight": 4
+        },
+        "deducao": {
+            "cats": [
+                "isencao_ir"
+            ],
+            "weight": 4
+        },
+        "restituição": {
+            "cats": [
+                "isencao_ir"
+            ],
+            "weight": 4
+        },
+        "restituicao": {
+            "cats": [
+                "isencao_ir"
+            ],
+            "weight": 4
+        },
+        "declaração": {
+            "cats": [
+                "isencao_ir"
+            ],
+            "weight": 3
+        },
+        "declaracao": {
+            "cats": [
+                "isencao_ir"
+            ],
+            "weight": 3
+        },
+        "receita federal": {
+            "cats": [
+                "isencao_ir"
+            ],
+            "weight": 3
+        },
+        "despesas médicas": {
+            "cats": [
+                "isencao_ir"
+            ],
+            "weight": 4
+        },
+        "despesas medicas": {
+            "cats": [
+                "isencao_ir"
+            ],
+            "weight": 4
+        },
+        "doença grave": {
+            "cats": [
+                "isencao_ir"
+            ],
+            "weight": 4
+        },
+        "doenca grave": {
+            "cats": [
+                "isencao_ir"
+            ],
+            "weight": 4
+        },
+        "aposentadoria": {
+            "cats": [
+                "isencao_ir"
+            ],
+            "weight": 3
+        },
+        "pensão": {
+            "cats": [
+                "isencao_ir"
+            ],
+            "weight": 3
+        },
+        "pensao": {
+            "cats": [
+                "isencao_ir"
+            ],
+            "weight": 3
+        },
+        "bolsa família": {
+            "cats": [
+                "bolsa_familia"
+            ],
+            "weight": 5
+        },
+        "bolsa familia": {
+            "cats": [
+                "bolsa_familia"
+            ],
+            "weight": 5
+        },
+        "auxílio brasil": {
+            "cats": [
+                "bolsa_familia"
+            ],
+            "weight": 4
+        },
+        "auxilio brasil": {
+            "cats": [
+                "bolsa_familia"
+            ],
+            "weight": 4
+        },
+        "cadastro unico": {
+            "cats": [
+                "bolsa_familia",
+                "bpc"
+            ],
+            "weight": 4
+        },
+        "cras": {
+            "cats": [
+                "bolsa_familia"
+            ],
+            "weight": 4
+        },
+        "transferência de renda": {
+            "cats": [
+                "bolsa_familia"
+            ],
+            "weight": 3
+        },
+        "transferencia de renda": {
+            "cats": [
+                "bolsa_familia"
+            ],
+            "weight": 3
+        },
+        "nis": {
+            "cats": [
+                "bolsa_familia"
+            ],
+            "weight": 3
+        },
+        "mds": {
+            "cats": [
+                "bolsa_familia"
+            ],
+            "weight": 2
+        },
+        "baixa renda": {
+            "cats": [
+                "bolsa_familia",
+                "bpc"
+            ],
+            "weight": 3
+        },
+        "pobreza": {
+            "cats": [
+                "bolsa_familia"
+            ],
+            "weight": 2
+        },
+        "defensoria pública": {
+            "cats": [
+                "atendimento_prioritario"
+            ],
+            "weight": 5
+        },
+        "defensoria publica": {
+            "cats": [
+                "atendimento_prioritario"
+            ],
+            "weight": 5
+        },
+        "dpu": {
+            "cats": [
+                "atendimento_prioritario"
+            ],
+            "weight": 4
+        },
+        "assistência jurídica": {
+            "cats": [
+                "atendimento_prioritario"
+            ],
+            "weight": 4
+        },
+        "assistencia juridica": {
+            "cats": [
+                "atendimento_prioritario"
+            ],
+            "weight": 4
+        },
+        "advocacia gratuita": {
+            "cats": [
+                "atendimento_prioritario"
+            ],
+            "weight": 4
+        },
+        "orientação jurídica": {
+            "cats": [
+                "atendimento_prioritario"
+            ],
+            "weight": 3
+        },
+        "orientacao juridica": {
+            "cats": [
+                "atendimento_prioritario"
+            ],
+            "weight": 3
+        },
+        "ação judicial": {
+            "cats": [
+                "atendimento_prioritario"
+            ],
+            "weight": 3
+        },
+        "acao judicial": {
+            "cats": [
+                "atendimento_prioritario"
+            ],
+            "weight": 3
+        },
+        "meia entrada": {
+            "cats": [
+                "meia_entrada"
+            ],
+            "weight": 5
+        },
+        "meia-entrada": {
+            "cats": [
+                "meia_entrada"
+            ],
+            "weight": 5
+        },
+        "ingresso": {
+            "cats": [
+                "meia_entrada"
+            ],
+            "weight": 3
+        },
+        "cinema": {
+            "cats": [
+                "meia_entrada"
+            ],
+            "weight": 3
+        },
+        "teatro": {
+            "cats": [
+                "meia_entrada"
+            ],
+            "weight": 3
+        },
+        "evento": {
+            "cats": [
+                "meia_entrada"
+            ],
+            "weight": 3
+        },
+        "espetáculo": {
+            "cats": [
+                "meia_entrada"
+            ],
+            "weight": 3
+        },
+        "espetaculo": {
+            "cats": [
+                "meia_entrada"
+            ],
+            "weight": 3
+        },
+        "desconto evento": {
+            "cats": [
+                "meia_entrada"
+            ],
+            "weight": 4
+        },
+        "tarifa social": {
+            "cats": [
+                "tarifa_social_energia"
+            ],
+            "weight": 5
+        },
+        "energia elétrica": {
+            "cats": [
+                "tarifa_social_energia"
+            ],
+            "weight": 4
+        },
+        "energia eletrica": {
+            "cats": [
+                "tarifa_social_energia"
+            ],
+            "weight": 4
+        },
+        "conta de luz": {
+            "cats": [
+                "tarifa_social_energia"
+            ],
+            "weight": 5
+        },
+        "desconto luz": {
+            "cats": [
+                "tarifa_social_energia"
+            ],
+            "weight": 5
+        },
+        "aneel": {
+            "cats": [
+                "tarifa_social_energia"
+            ],
+            "weight": 4
+        },
+        "distribuidora energia": {
+            "cats": [
+                "tarifa_social_energia"
+            ],
+            "weight": 3
+        },
+        "respirador": {
+            "cats": [
+                "tarifa_social_energia"
+            ],
+            "weight": 4
+        },
+        "concentrador oxigênio": {
+            "cats": [
+                "tarifa_social_energia"
+            ],
+            "weight": 4
+        },
+        "concentrador oxigenio": {
+            "cats": [
+                "tarifa_social_energia"
+            ],
+            "weight": 4
+        },
+        "equipamento médico elétrico": {
+            "cats": [
+                "tarifa_social_energia"
+            ],
+            "weight": 5
+        },
+        "equipamento medico eletrico": {
+            "cats": [
+                "tarifa_social_energia"
+            ],
+            "weight": 5
         }
     }
 }

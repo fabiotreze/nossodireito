@@ -39,3 +39,11 @@ terraform/crash.log
 # Node.js
 node_modules/
 package-lock.json
+
+# v2 roadmap (não publicar)
+v2/
+docs/v2/
+
+# Backups temporários
+backup/
+*.backup

@@ -2372,6 +2372,67 @@ html.high-contrast ::selection {
     color: var(--text-muted);
 }
 
+.transparency-note h3 {
+    margin-top: 0;
+    margin-bottom: 0.75rem;
+}
+
+.transparency-note ul {
+    margin: 0.5rem 0;
+    padding-left: 1.5rem;
+}
+
+.transparency-note p {
+    line-height: 1.7;
+    margin-bottom: 0.75rem;
+}
+
+.transparency-note p:last-child {
+    margin-bottom: 0;
+}
+
+/* Disclaimer Box — Aviso Importante */
+.disclaimer-box {
+    background-color: #fff3cd;
+    border-left: 4px solid #ffc107;
+    border-radius: var(--radius-sm);
+    padding: 1.5rem;
+    margin-top: 2rem;
+    line-height: 1.7;
+}
+
+.disclaimer-title {
+    margin: 0 0 1rem 0;
+    font-size: 1.1rem;
+    color: #856404;
+    font-weight: 700;
+}
+
+.disclaimer-intro {
+    font-size: 1rem;
+    margin-bottom: 0.75rem;
+}
+
+.disclaimer-subtitle {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--text);
+}
+
+.disclaimer-list {
+    margin: 0.5rem 0 0 1.5rem;
+    padding: 0;
+    list-style-type: disc;
+}
+
+.disclaimer-list li {
+    margin-bottom: 0.5rem;
+}
+
+.disclaimer-section {
+    margin-top: 1rem;
+}
+
 /* ---------- Footer ---------- */
 .footer {
     background: var(--surface-alt);
@@ -2564,6 +2625,11 @@ html.high-contrast ::selection {
 
 /* ---------- Print ---------- */
 @media print {
+    /* Configuração da página A4 (padrão ABNT) */
+    @page {
+        size: A4;
+        margin: 2cm 2cm 2cm 2cm;
+    }
 
     .navbar,
     .a11y-toolbar,
@@ -2609,23 +2675,22 @@ html.high-contrast ::selection {
 
 /* Print: Analysis-only mode (triggered by "Salvar PDF" button) */
 @media print {
-    body.printing-analysis * {
-        visibility: hidden !important;
+    /* Configuração específica para análise de direitos */
+    body.printing-analysis {
+        background: #fff !important;
     }
 
-    body.printing-analysis .analysis-results,
-    body.printing-analysis .analysis-results * {
-        visibility: visible !important;
+    /* Oculta TODO o conteúdo exceto análise */
+    body.printing-analysis > *:not(.analysis-results) {
+        display: none !important;
     }
 
     body.printing-analysis .analysis-results {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
         display: block !important;
         background: #fff !important;
         color: #000 !important;
+        margin: 0;
+        padding: 0;
     }
 
     body.printing-analysis .analysis-header-actions,
@@ -2787,6 +2852,109 @@ html.high-contrast ::selection {
 
 .ipva-table a:hover {
     text-decoration: underline;
+}
+
+/* IPVA Dropdown Detalhado */
+.ipva-dropdown {
+    width: 100%;
+    padding: 12px 16px;
+    font-size: 1rem;
+    font-family: var(--font-body);
+    border: 2px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--surface);
+    color: var(--text);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin-bottom: 16px;
+}
+
+.ipva-dropdown:hover {
+    border-color: var(--primary);
+}
+
+.ipva-dropdown:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
+}
+
+.ipva-info-box {
+    margin-top: 16px;
+    min-height: 0;
+    transition: all 0.3s ease;
+}
+
+.ipva-detail-card {
+    background: var(--surface);
+    border: 2px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.ipva-detail-card h4 {
+    margin: 0 0 16px 0;
+    color: var(--primary);
+    font-size: 1.25rem;
+    font-weight: 700;
+    border-bottom: 2px solid var(--primary);
+    padding-bottom: 8px;
+}
+
+.ipva-detail-row {
+    margin-bottom: 16px;
+    line-height: 1.6;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.ipva-detail-row strong {
+    color: var(--text);
+    font-weight: 700;
+    font-size: 0.95rem;
+}
+
+.ipva-detail-row span {
+    color: var(--text-muted);
+    padding-left: 8px;
+}
+
+.ipva-detail-card .btn {
+    margin-top: 16px;
+}
+
+/* Responsivo para mobile */
+@media (max-width: 768px) {
+    .ipva-dropdown {
+        font-size: 0.95rem;
+        padding: 10px 14px;
+    }
+    
+    .ipva-detail-card {
+        padding: 16px;
+    }
+    
+    .ipva-detail-card h4 {
+        font-size: 1.1rem;
+    }
+    
+    .ipva-detail-row {
+        margin-bottom: 12px;
+    }
 }
 
 .detalhe-section details summary {

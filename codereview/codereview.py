@@ -1185,7 +1185,7 @@ def check_category_schema(report: ReviewReport, json_data: dict) -> None:
         # Verificar que base_legal tem link do planalto
         base_legal = categoria.get("base_legal", [])
         has_official_law = any(
-            "planalto.gov.br" in bl.get("link", "") or "gov.br" in bl.get("link", "")
+            "planalto.gov.br" in bl.get("url", "") or "gov.br" in bl.get("url", "")
             for bl in base_legal if isinstance(bl, dict)
         )
         if base_legal and not has_official_law:
