@@ -35,6 +35,7 @@ terraform/crash.log
 # Temporary
 *.tmp
 *.log
+temp_*
 
 # Node.js
 node_modules/

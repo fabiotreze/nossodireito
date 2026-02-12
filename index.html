@@ -177,7 +177,8 @@
                     Consulte sempre as <a href="#transparencia">fontes oficiais</a> para informações atualizadas.</p>
             </div>
         </div>
- <a href="#transparencia" aria-hidden="true">fontes oficiais</a>          <div class="container hero-grid">
+        <section class="hero" id="inicio">
+            <div class="container hero-grid">
                 <div class="hero-visual"><img src="/images/nossodireito.png" alt="NossoDireito" class="hero-logo"
                         width="200" height="200"></div>
                 <div class="hero-content">
@@ -189,13 +190,15 @@
                         com informações de fontes oficiais do governo brasileiro.
                     </p>
                     <div class="hero-actions"><a href="#busca" class="btn btn-lg btn-white">
-          <a href="#busca" class="btn btn-lg btn-white" aria-hidden="true">
                             🔍 Buscar meus direitos
-                        </a><a href="#categorias" class="btn btn-lg btn-outline-white" aria-hidden="true">
+                        </a><a href="#categorias" class="btn btn-lg btn-outline-white">
                             📋 Ver categorias
-                        </a><a href="#documentos" class="btn btn-lg btn-outline-white" id="heroDocsBtn" aria-hidden="true">
+                        </a><a href="#documentos" class="btn btn-lg btn-outline-white" id="heroDocsBtn">
                             📄 Meus documentos
-                        </a>    <div class="container">
+                        </a></div>
+                </div>
+            </div>
+            <div class="container">
                 <div class="hero-stats">
                     <div class="stat"><span class="stat-number">18,6M</span><span class="stat-label">Pessoas com
                             deficiência no Brasil</span></div>
@@ -213,9 +216,11 @@
                     Digite palavras como: <em>BPC</em>, <em>escola</em>, <em>plano de saúde</em>,
                     <em>autismo</em>, <em>transporte</em>, <em>medicamento</em>...
                 </p>
-                <div class="search-box"><label for="searchInput" class="sr-only">Search</label>
-                    <button id="searchBtn"
-                        class="btn btn-primary" type="button" aria-label="Buscar">Buscar</button></div>
+                <div class="search-box"><label for="searchInput" class="sr-only">Buscar direitos</label>
+                    <input type="search" id="searchInput" class="search-input"
+                        placeholder="Ex: BPC, escola, transporte..." autocomplete="off">
+                    <button id="searchBtn" class="btn btn-primary" type="button" aria-label="Buscar">Buscar</button>
+                </div>
                 <div id="searchResults" class="search-results" aria-live="polite"></div>
             </div>
         </section>
@@ -230,7 +235,8 @@
             </div>
         </section>
         <section class="section" id="detalhe" style="display:none;">
-            <div class="container"><button id="voltarBtn" class="btn btn-outline btn-sm" type="button">← Voltar às
+            <div class="container"><button id="voltarBtn" class="btn btn-outline btn-sm" type="button">←
+                    Voltar às
                     categorias</button>
                 <div id="detalheContent" aria-live="polite"></div>
             </div>
@@ -240,14 +246,16 @@
                 <h2>✅ Primeiros Passos Após o Laudo</h2>
                 <p class="section-desc">
                     Acabou de receber o laudo do seu familiar e não sabe por onde começar?
-                    Siga esta lista passo a passo. <strong>Atenção:</strong> Alguns passos têm ordem obrigatória.
+                    Siga esta lista passo a passo. <strong>Atenção:</strong> Alguns passos têm ordem
+                    obrigatória.
                 </p>
                 <div class="checklist-card">
                     <div class="checklist-actions-bar"><span></span>
                         <div style="display:flex;gap:8px;"><button id="exportChecklistPdf"
                                 class="btn btn-sm btn-outline" type="button" aria-label="Salvar checklist como PDF">📥
                                 Salvar PDF</button><button id="shareChecklistWhatsApp" class="btn btn-sm btn-whatsapp"
-                                type="button" aria-label="Compartilhar checklist no WhatsApp">📲 WhatsApp</button></div>
+                                type="button" aria-label="Compartilhar checklist no WhatsApp">📲 WhatsApp</button>
+                        </div>
                     </div>
                     <div class="checklist-progress"><span class="checklist-progress-text" id="checklistProgress">0 de 10
                             concluídos</span>
@@ -256,33 +264,42 @@
                             <div class="progress-fill" id="checklistProgressBar" style="width:0%"></div>
                         </div>
                     </div><label class="checklist-item"><input type="checkbox" data-step="1"><span><strong>1.</strong>
-                            🔒 Crie <strong>conta Gov.br nível OURO</strong> do beneficiário e responsável legal
-                            (necessária para BPC digital, Meu INSS, assinatura eletrônica)</span></label><label
-                        class="checklist-item"><input type="checkbox" data-step="2"><span><strong>2.</strong> 📁
+                            🔒 Crie <strong>conta Gov.br nível OURO</strong> do beneficiário e
+                            responsável legal
+                            (necessária para BPC digital, Meu INSS, assinatura
+                            eletrônica)</span></label><label class="checklist-item"><input type="checkbox"
+                            data-step="2"><span><strong>2.</strong> 📁
                             Organize seu <strong>"Dossiê PcD"</strong>: pasta física ou digital com
-                            laudo original, receitas, relatórios de terapeutas, exames, comprovantes (ordene por
+                            laudo original, receitas, relatórios de terapeutas, exames, comprovantes
+                            (ordene por
                             data)</span></label><label class="checklist-item"><input type="checkbox"
-                            data-step="3"><span><strong>3.</strong> ✔️ <strong>Valide o laudo médico</strong>: confirme
+                            data-step="3"><span><strong>3.</strong> ✔️ <strong>Valide o laudo
+                                médico</strong>: confirme
                             se tem CID legível, data de emissão,
-                            assinatura e CRM do médico, papel timbrado (quanto mais recente, melhor para perícias) —
+                            assinatura e CRM do médico, papel timbrado (quanto mais recente, melhor para
+                            perícias) —
                             <em>ESSENCIAL antes dos próximos passos</em></span></label><label
                         class="checklist-item"><input type="checkbox" data-step="4"><span><strong>4.</strong> 🏢 Vá ao
                             <strong>CRAS</strong> da sua cidade e inscreva-se no
-                            <strong>CadÚnico</strong> (NIS) — <em>OBRIGATÓRIO antes do BPC</em></span></label><label
-                        class="checklist-item"><input type="checkbox" data-step="5"><span><strong>5.</strong> 💚 Procure
+                            <strong>CadÚnico</strong> (NIS) — <em>OBRIGATÓRIO antes do
+                                BPC</em></span></label><label class="checklist-item"><input type="checkbox"
+                            data-step="5"><span><strong>5.</strong> 💚 Procure
                             <strong>rede de apoio emocional</strong>: Busque grupos de famílias
                             (WhatsApp, Facebook), APAE, AMA, Instituto Jô Clemente, CRAS. Você não está
                             sozinho(a).</span></label><label class="checklist-item"><input type="checkbox"
-                            data-step="6"><span><strong>6.</strong> 🪪 Solicite a <strong>CIPTEA</strong> (carteira de
+                            data-step="6"><span><strong>6.</strong> 🪪 Solicite a
+                            <strong>CIPTEA</strong> (carteira de
                             identificação) na
                             prefeitura (precisa do laudo do passo 3)</span></label><label class="checklist-item"><input
                             type="checkbox" data-step="7"><span><strong>7.</strong> 💰 Agende o
                             <strong>BPC/LOAS</strong> no INSS (pelo 135 ou
-                            meu.inss.gov.br) — <em>Depende do CadÚnico (passo 4)</em></span></label><label
-                        class="checklist-item"><input type="checkbox" data-step="8"><span><strong>8.</strong> 🏥 Procure
+                            meu.inss.gov.br) — <em>Depende do CadÚnico (passo
+                                4)</em></span></label><label class="checklist-item"><input type="checkbox"
+                            data-step="8"><span><strong>8.</strong> 🏥 Procure
                             a <strong>UBS</strong> mais próxima para encaminhamento ao
-                            <strong>CER</strong> ou <strong>CAPS</strong> (terapias pelo SUS)</span></label><label
-                        class="checklist-item"><input type="checkbox" data-step="9"><span><strong>9.</strong> 🎓 Garanta
+                            <strong>CER</strong> ou <strong>CAPS</strong> (terapias pelo
+                            SUS)</span></label><label class="checklist-item"><input type="checkbox"
+                            data-step="9"><span><strong>9.</strong> 🎓 Garanta
                             a <strong>matrícula na escola</strong> — recusa é crime
                             (multa de 3 a 20 salários mínimos)</span></label><label class="checklist-item"><input
                             type="checkbox" data-step="10"><span><strong>10.</strong> 🩺 Se tiver <strong>plano de
@@ -290,7 +307,8 @@
                             prescritas — negativa por escrito se recusarem</span></label>
                 </div>
                 <p class="checklist-note">
-                    ⚠️ <strong>Ordem obrigatória:</strong> Passo 3 (laudo) antes de 4, 6, 7, 8. Passo 4 (CadÚnico)
+                    ⚠️ <strong>Ordem obrigatória:</strong> Passo 3 (laudo) antes de 4, 6, 7, 8. Passo 4
+                    (CadÚnico)
                     <strong>obrigatoriamente antes</strong> do passo 7 (BPC) — sem NIS, INSS não agenda.
                 </p>
                 <p class="checklist-note">
@@ -308,22 +326,26 @@
                 </p>
                 <div id="docsUploadArea" class="docs-upload-area">
                     <div class="upload-zone" id="uploadZone" role="button" tabindex="0"
-                        onclick="document.getElementById('fileInput').click()" aria-label="Clique ou arraste arquivos para enviar">
+                        onclick="document.getElementById('fileInput').click()"
+                        aria-label="Clique ou arraste arquivos para enviar">
                         <div class="upload-icon">📄</div>
-                        <p class="upload-text">Arraste arquivos aqui ou <strong>clique para selecionar</strong></p>
-                        <p class="upload-hint">PDF, JPG ou PNG · Máx. 5MB por arquivo · Até 5 arquivos</p>
+                        <p class="upload-text">Arraste arquivos aqui ou <strong>clique para
+                                selecionar</strong></p>
+                        <p class="upload-hint">PDF, JPG ou PNG · Máx. 5MB por arquivo · Até 5 arquivos
+                        </p>
                     </div>
-<input
-                            type="file" id="fileInput" multiple accept=".pdf,.jpg,.jpeg,.png" class="sr-only"
-                            aria-hidden="true">
+                    <input type="file" id="fileInput" multiple accept=".pdf,.jpg,.jpeg,.png" class="sr-only"
+                        aria-hidden="true">
                     <div id="fileList" class="file-list" aria-live="polite"></div><button id="analyzeSelected"
                         class="btn btn-primary btn-analyze-global" type="button" disabled>
                         🔍 Enviar para análise local
                     </button>
                     <div class="upload-privacy">
-                        <p>🔒 <strong>Consulta pontual:</strong> seus arquivos são criptografados (AES-256), analisados
+                        <p>🔒 <strong>Consulta pontual:</strong> seus arquivos são criptografados
+                            (AES-256), analisados
                             localmente e <strong>descartados automaticamente após a análise</strong>.
-                            Nenhum arquivo é enviado para servidores. Arquivos não analisados expiram em 15 minutos.</p>
+                            Nenhum arquivo é enviado para servidores. Arquivos não analisados expiram em
+                            15 minutos.</p>
                         <button id="deleteAllFiles" class="btn btn-sm btn-danger" type="button" style="display:none;">
                             🗑️ Apagar todos os arquivos
                         </button>
@@ -382,15 +404,17 @@
             <div class="container">
                 <h2>🏥 Classificação de Deficiência — CID-10 / CID-11</h2>
                 <p class="section-desc">
-                    Tabela de referência com os códigos CID usados em laudos médicos para cada tipo de deficiência.
+                    Tabela de referência com os códigos CID usados em laudos médicos para cada tipo de
+                    deficiência.
                     O sistema identifica automaticamente estes códigos ao analisar seus documentos.
                 </p>
                 <div id="classificacaoGrid"></div>
                 <div class="table-note" role="note" aria-label="Nota sobre a tabela de classificação de deficiência">
-                    ℹ️ Esta tabela utiliza códigos CID-10 e CID-11 oficiais da OMS e critérios técnicos baseados na
-                    legislação brasileira. Consulte sempre as fontes oficiais para informações atualizadas: <a
-                        href="https://icd.who.int/" target="_blank" rel="noopener noreferrer">OMS ICD</a>, <a
-                        href="https://www.gov.br/saude/pt-br" target="_blank" rel="noopener noreferrer">Ministério da
+                    ℹ️ Esta tabela utiliza códigos CID-10 e CID-11 oficiais da OMS e critérios técnicos
+                    baseados na
+                    legislação brasileira. Consulte sempre as fontes oficiais para informações
+                    atualizadas: <a href="https://icd.who.int/" target="_blank" rel="noopener noreferrer">OMS ICD</a>,
+                    <a href="https://www.gov.br/saude/pt-br" target="_blank" rel="noopener noreferrer">Ministério da
                         Saúde</a>.
                 </div>
             </div>
@@ -400,7 +424,8 @@
                 <h2>🏢 Órgãos Estaduais de Apoio à Pessoa com Deficiência</h2>
                 <p class="section-desc">
                     Secretarias e órgãos de cada estado brasileiro responsáveis por políticas públicas
-                    para pessoas com deficiência. Todos os links são de domínios oficiais <code>.gov.br</code>.
+                    para pessoas com deficiência. Todos os links são de domínios oficiais
+                    <code>.gov.br</code>.
                 </p>
                 <div class="orgao-filter-bar" role="group" aria-label="Filtrar por região"><button type="button"
                         class="orgao-filter-btn active" data-filter="todos" aria-pressed="true">Todos</button><button
@@ -410,7 +435,8 @@
                         class="orgao-filter-btn" data-filter="Centro-Oeste"
                         aria-pressed="false">Centro-Oeste</button><button type="button" class="orgao-filter-btn"
                         data-filter="Sudeste" aria-pressed="false">Sudeste</button><button type="button"
-                        class="orgao-filter-btn" data-filter="Sul" aria-pressed="false">Sul</button></div>
+                        class="orgao-filter-btn" data-filter="Sul" aria-pressed="false">Sul</button>
+                </div>
                 <div id="orgaosEstaduaisGrid" class="orgaos-grid"></div>
             </div>
         </section>
@@ -421,14 +447,16 @@
                     Organizações governamentais e ONGs que oferecem suporte gratuito ou de baixo custo
                     para famílias de pessoas com deficiência.
                 </p>
-                <div class="inst-filter" role="group" aria-label="Filtrar por tipo de instituição"><button type="button"
-                        class="inst-filter-btn active" data-filter="todos" aria-pressed="true">Todos</button><button
-                        type="button" class="inst-filter-btn" data-filter="governamental" aria-pressed="false">🏛️
+                <div class="inst-filter" role="group" aria-label="Filtrar por tipo de instituição">
+                    <button type="button" class="inst-filter-btn active" data-filter="todos"
+                        aria-pressed="true">Todos</button><button type="button" class="inst-filter-btn"
+                        data-filter="governamental" aria-pressed="false">🏛️
                         Governamental</button><button type="button" class="inst-filter-btn" data-filter="ong"
                         aria-pressed="false">💚
                         ONGs</button><button type="button" class="inst-filter-btn" data-filter="profissional"
                         aria-pressed="false">⚖️
-                        Profissional</button></div>
+                        Profissional</button>
+                </div>
                 <div id="instituicoesGrid" class="instituicoes-grid"></div>
             </div>
         </section>
@@ -436,21 +464,30 @@
             <div class="container">
                 <h2>🔍 Transparência e Fontes Oficiais</h2>
                 <p class="section-desc">
-                    Todas as informações deste site são compiladas de <strong>fontes oficiais</strong> do governo
-                    brasileiro e organismos internacionais (OMS, ONU, INSS, Ministério da Saúde, ANS, entre outros).
-                    Os dados são obtidos por meio de APIs públicas, bancos de dados oficiais e legislação vigente.
+                    Todas as informações deste site são compiladas de <strong>fontes oficiais</strong>
+                    do governo
+                    brasileiro e organismos internacionais (OMS, ONU, INSS, Ministério da Saúde, ANS,
+                    entre outros).
+                    Os dados são obtidos por meio de APIs públicas, bancos de dados oficiais e
+                    legislação vigente.
                 </p>
                 <ul class="transparency-list">
-                    <li><strong>Fontes oficiais:</strong> OMS ICD, Ministério da Saúde, INSS, ANS, Defensoria Pública,
+                    <li><strong>Fontes oficiais:</strong> OMS ICD, Ministério da Saúde, INSS, ANS,
+                        Defensoria Pública,
                         gov.br, legislação federal (Planalto.gov.br) e estadual</li>
-                    <li><strong>Frequência de atualização:</strong> Manual — revisões periódicas conforme mudanças
+                    <li><strong>Frequência de atualização:</strong> Manual — revisões periódicas
+                        conforme mudanças
                         legislativas e atualizações de portais oficiais</li>
-                    <li><strong>Última verificação:</strong><span id="transLastUpdateInline"></span></li>
-                    <li><strong>Compromisso:</strong> Revisão constante para garantir precisão, clareza e acessibilidade
+                    <li><strong>Última verificação:</strong><span id="transLastUpdateInline"></span>
+                    </li>
+                    <li><strong>Compromisso:</strong> Revisão constante para garantir precisão, clareza
+                        e acessibilidade
                         das informações</li>
                 </ul>
-                <p class="section-desc"><strong>Encontrou alguma informação desatualizada ou imprecisa?</strong>
-                    Avise-nos pelo e-mail <a href="mailto:fabiotreze@hotmail.com" aria-hidden="true">fabiotreze@hotmail.com</a>.
+                <p class="section-desc"><strong>Encontrou alguma informação desatualizada ou
+                        imprecisa?</strong>
+                    Avise-nos pelo e-mail <a href="mailto:fabiotreze@hotmail.com"
+                        aria-hidden="true">fabiotreze@hotmail.com</a>.
                 </p>
                 <div class="transparency-meta">
                     <div class="tmeta-item"><span class="tmeta-label">Última atualização</span><span class="tmeta-value"
@@ -465,45 +502,55 @@
                 <h3 class="trans-subtitle">📋 Normativas</h3>
                 <div id="fontesNormativas" class="fontes-list"></div>
                 <div class="transparency-note">
-                    <h3 style="margin-top: 0; font-size: 1rem; color: var(--accent);">📅 Compromisso com a Atualização
+                    <h3 style="margin-top: 0; font-size: 1rem; color: var(--accent);">📅 Compromisso com
+                        a Atualização
                     </h3>
                     <p>
-                        Este projeto realiza <strong>atualizações manuais</strong> periodicamente, revisando:
+                        Este projeto realiza <strong>atualizações manuais</strong> periodicamente,
+                        revisando:
                     </p>
                     <ul style="margin: 0.5rem 0 1rem 1.5rem; line-height: 1.8;">
                         <li>Alterações na legislação federal e estadual</li>
                         <li>Novos serviços e procedimentos governamentais</li>
                         <li>Atualização de links e fontes oficiais</li>
                     </ul>
-                    <p><strong>Última atualização:</strong><span id="transLastUpdateText">11 de fevereiro de 2026</span>
+                    <p><strong>Última atualização:</strong><span id="transLastUpdateText">11 de
+                            fevereiro de 2026</span>
                     </p>
                     <p style="margin-bottom: 0;"><strong>⚠️ Encontrou informação desatualizada ou
                             imprecisa?</strong><br>
-                        Entre em contato pelo e-mail <a href="mailto:fabiotreze@hotmail.com"
-                            style="font-weight: 600;" aria-hidden="true">fabiotreze@hotmail.com</a>.
+                        Entre em contato pelo e-mail <a href="mailto:fabiotreze@hotmail.com" style="font-weight: 600;"
+                            aria-hidden="true">fabiotreze@hotmail.com</a>.
                         Sua colaboração ajuda a manter este projeto atualizado para todos.
                     </p>
                 </div>
                 <div class="disclaimer-box">
                     <h3 class="disclaimer-title">⚠️ Aviso Importante — Limitações do Serviço</h3>
-                    <p class="disclaimer-intro"><strong>Este site NÃO substitui orientação profissional.</strong> As
-                        informações aqui apresentadas são de caráter <em>educacional e informativo</em>, compiladas de
+                    <p class="disclaimer-intro"><strong>Este site NÃO substitui orientação
+                            profissional.</strong> As
+                        informações aqui apresentadas são de caráter <em>educacional e informativo</em>,
+                        compiladas de
                         fontes públicas oficiais.
                     </p>
                     <p>
-                        Elas <strong>não constituem</strong> assessoria jurídica, médica, psicológica ou assistencial
+                        Elas <strong>não constituem</strong> assessoria jurídica, médica, psicológica ou
+                        assistencial
                         personalizada.
                     </p>
                     <div class="disclaimer-section">
-                        <p class="disclaimer-subtitle">🏛️ Para ajuda profissional especializada e gratuita:</p>
+                        <p class="disclaimer-subtitle">🏛️ Para ajuda profissional especializada e
+                            gratuita:</p>
                         <ul class="disclaimer-list">
-                            <li><strong>Assistência jurídica:</strong> Procure a <strong>Defensoria Pública</strong> do
+                            <li><strong>Assistência jurídica:</strong> Procure a <strong>Defensoria
+                                    Pública</strong> do
                                 seu estado ou município
                             </li>
-                            <li><strong>Assistência social e direitos sociais:</strong> Procure o <strong>CRAS (Centro
+                            <li><strong>Assistência social e direitos sociais:</strong> Procure o
+                                <strong>CRAS (Centro
                                     de Referência de Assistência Social)</strong> da sua cidade
                             </li>
-                            <li><strong>Saúde e atendimento médico:</strong> Utilize o <strong>SUS (Sistema Único de
+                            <li><strong>Saúde e atendimento médico:</strong> Utilize o <strong>SUS
+                                    (Sistema Único de
                                     Saúde)</strong> através de postos de saúde, UBS, CAPS ou CER
                             </li>
                         </ul>
@@ -512,12 +559,16 @@
                         style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(0,0,0,0.1);">
                         <p class="disclaimer-subtitle">🔒 Privacidade e LGPD</p>
                         <p style="margin-bottom: 0;">
-                            Este site <strong>não coleta dados pessoais dos usuários</strong>. Não utilizamos cookies de
-                            rastreamento, não solicitamos cadastro e não armazenamos informações de navegação.
+                            Este site <strong>não coleta dados pessoais dos usuários</strong>. Não
+                            utilizamos cookies de
+                            rastreamento, não solicitamos cadastro e não armazenamos informações de
+                            navegação.
                         </p>
                         <p style="margin: 0.5rem 0 0 0; font-size: 0.9rem;">
-                            Todas as consultas são processadas <em>localmente no seu navegador</em>. Em conformidade com
-                            a <strong>Lei Geral de Proteção de Dados (Lei 13.709/2018)</strong>, garantimos que sua
+                            Todas as consultas são processadas <em>localmente no seu navegador</em>. Em
+                            conformidade com
+                            a <strong>Lei Geral de Proteção de Dados (Lei 13.709/2018)</strong>,
+                            garantimos que sua
                             privacidade é preservada.
                         </p>
                     </div>
@@ -654,25 +705,6 @@
                 </div>
             </section>
 
-            <!-- Seção: Ações Rápidas -->
-            <section class="a11y-section">
-                <h3 class="a11y-section-title">
-                    <span aria-hidden="true">⚡</span> Ações Rápidas
-                </h3>
-                <div class="a11y-actions">
-                    <button id="a11yExportPDF" class="a11y-action-btn" type="button"
-                        aria-label="Salvar página atual como PDF">
-                        <span class="a11y-action-icon" aria-hidden="true">📥</span>
-                        <span class="a11y-action-label">Salvar PDF</span>
-                    </button>
-                    <button id="a11yShareWhatsApp" class="a11y-action-btn" type="button"
-                        aria-label="Compartilhar no WhatsApp">
-                        <span class="a11y-action-icon" aria-hidden="true">📲</span>
-                        <span class="a11y-action-label">Compartilhar</span>
-                    </button>
-                </div>
-            </section>
-
             <!-- Seção: Sobre -->
             <section class="a11y-section a11y-section-info">
                 <h3 class="a11y-section-title">
@@ -696,16 +728,17 @@
         </div>
     </aside>
 
-    <!-- VLibras Widget (mantido, obrigatório LBI Art. 63) --><aside aria-label="Widget de acessibilidade VLibras" role="complementary">
+    <!-- VLibras Widget (mantido, obrigatório LBI Art. 63) -->
+    <aside aria-label="Widget de acessibilidade VLibras" role="complementary">
 
-    <div vw class="enabled">
-        <div vw-access-button class="active"></div>
-        <div vw-plugin-wrapper>
-            <div class="vw-plugin-top-wrapper"></div>
+        <div vw class="enabled">
+            <div vw-access-button class="active" style="display:none !important"></div>
+            <div vw-plugin-wrapper>
+                <div class="vw-plugin-top-wrapper"></div>
+            </div>
         </div>
-    </div>
     </aside>
-<script src="https://vlibras.gov.br/app/vlibras-plugin.js" crossorigin="anonymous" referrerpolicy="no-referrer"
+    <script src="https://vlibras.gov.br/app/vlibras-plugin.js" crossorigin="anonymous" referrerpolicy="no-referrer"
         onerror="console.warn('VLibras indisponível. Funcionalidade de tradução LIBRAS desabilitada.')"></script>
     <script src="js/app.js"></script>
     <script src="js/sw-register.js"></script>

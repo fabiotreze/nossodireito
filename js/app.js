@@ -504,11 +504,7 @@
             if (ttsActive) stopReading();
         });
     }
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', setupAccessibilityPanel);
-    } else {
-        setupAccessibilityPanel();
-    }
+
     let _pdfJsReady = typeof pdfjsLib !== 'undefined';
     function ensurePdfJs() {
         if (_pdfJsReady) return Promise.resolve();
@@ -551,69 +547,93 @@
     }
     const $ = (sel) => document.querySelector(sel);
     const $$ = (sel) => document.querySelectorAll(sel);
-    const dom = {
-        disclaimerModal: $('#disclaimerModal'),
-        acceptBtn: $('#acceptDisclaimer'),
-        menuToggle: $('#menuToggle'),
-        navLinks: $('#navLinks'),
-        searchInput: $('#searchInput'),
-        searchBtn: $('#searchBtn'),
-        searchResults: $('#searchResults'),
-        categoryGrid: $('#categoryGrid'),
-        detalheSection: $('#detalhe'),
-        detalheContent: $('#detalheContent'),
-        voltarBtn: $('#voltarBtn'),
-        categoriasSection: $('#categorias'),
-        lastUpdate: $('#lastUpdate'),
-        showDisclaimer: $('#showDisclaimer'),
-        uploadZone: $('#uploadZone'),
-        fileInput: $('#fileInput'),
-        fileList: $('#fileList'),
-        deleteAllFiles: $('#deleteAllFiles'),
-        docsChecklist: $('#docsChecklist'),
-        analysisResults: $('#analysisResults'),
-        analysisLoading: $('#analysisLoading'),
-        analysisContent: $('#analysisContent'),
-        closeAnalysis: $('#closeAnalysis'),
-        exportPdf: $('#exportPdf'),
-        fontesLegislacao: $('#fontesLegislacao'),
-        fontesServicos: $('#fontesServicos'),
-        fontesNormativas: $('#fontesNormativas'),
-        instituicoesGrid: $('#instituicoesGrid'),
-        orgaosEstaduaisGrid: $('#orgaosEstaduaisGrid'),
-        classificacaoGrid: $('#classificacaoGrid'),
-        transLastUpdate: $('#transLastUpdate'),
-        transVersion: $('#transVersion'),
-        footerVersion: $('#footerVersion'),
-        linksGrid: $('#linksGrid'),
-        stalenessBanner: $('#stalenessBanner'),
-        staleDays: $('#staleDays'),
-        heroCatCount: $('#heroCatCount'),
-        heroFontesCount: $('#heroFontesCount'),
-    };
+    let dom;
+    function updateSectionAlternation() {
+        const main = document.querySelector('main');
+        if (!main) return;
+        const visibleSections = Array.from(main.querySelectorAll(':scope > .section'))
+            .filter(s => s.style.display !== 'none' && !s.hidden);
+        visibleSections.forEach((section, i) => {
+            if (i % 2 === 1) {
+                section.classList.add('section-alt');
+            } else {
+                section.classList.remove('section-alt');
+            }
+        });
+    }
+
     async function init() {
-        setupDisclaimer();
-        setupNavigation();
-        setupSearch();
-        setupChecklist();
-        setupFooter();
-        setupBackToTop();
-        await loadData();
-        enrichGovBr();
-        setupFooterVersion();
-        renderCategories();
-        renderTransparency();
-        renderInstituicoes();
-        renderOrgaosEstaduais();
-        renderClassificacao();
-        renderDocsChecklist();
-        renderLinksUteis();
-        renderHeroStats();
-        checkStaleness();
-        setupUpload();
-        setupAnalysis();
-        await cleanupExpiredFiles();
-        await renderFileList();
+        // Initialize DOM references after DOM is loaded
+        dom = {
+            disclaimerModal: $('#disclaimerModal'),
+            acceptBtn: $('#acceptDisclaimer'),
+            menuToggle: $('#menuToggle'),
+            navLinks: $('#navLinks'),
+            searchInput: $('#searchInput'),
+            searchBtn: $('#searchBtn'),
+            searchResults: $('#searchResults'),
+            categoryGrid: $('#categoryGrid'),
+            detalheSection: $('#detalhe'),
+            detalheContent: $('#detalheContent'),
+            voltarBtn: $('#voltarBtn'),
+            categoriasSection: $('#categorias'),
+            lastUpdate: $('#lastUpdate'),
+            showDisclaimer: $('#showDisclaimer'),
+            uploadZone: $('#uploadZone'),
+            fileInput: $('#fileInput'),
+            fileList: $('#fileList'),
+            deleteAllFiles: $('#deleteAllFiles'),
+            docsChecklist: $('#docsChecklist'),
+            analysisResults: $('#analysisResults'),
+            analysisLoading: $('#analysisLoading'),
+            analysisContent: $('#analysisContent'),
+            closeAnalysis: $('#closeAnalysis'),
+            exportPdf: $('#exportPdf'),
+            fontesLegislacao: $('#fontesLegislacao'),
+            fontesServicos: $('#fontesServicos'),
+            fontesNormativas: $('#fontesNormativas'),
+            instituicoesGrid: $('#instituicoesGrid'),
+            orgaosEstaduaisGrid: $('#orgaosEstaduaisGrid'),
+            classificacaoGrid: $('#classificacaoGrid'),
+            transLastUpdate: $('#transLastUpdate'),
+            transVersion: $('#transVersion'),
+            footerVersion: $('#footerVersion'),
+            linksGrid: $('#linksGrid'),
+            stalenessBanner: $('#stalenessBanner'),
+            staleDays: $('#staleDays'),
+            heroCatCount: $('#heroCatCount'),
+            heroFontesCount: $('#heroFontesCount'),
+        };
+        const safeRun = (name, fn) => {
+            try { fn(); } catch (e) { console.error(`[init] ${name} falhou:`, e); }
+        };
+        const safeRunAsync = async (name, fn) => {
+            try { await fn(); } catch (e) { console.error(`[init] ${name} falhou:`, e); }
+        };
+        safeRun('setupDisclaimer', setupDisclaimer);
+        safeRun('setupAccessibilityPanel', setupAccessibilityPanel);
+        safeRun('setupNavigation', setupNavigation);
+        safeRun('setupSearch', setupSearch);
+        safeRun('setupChecklist', setupChecklist);
+        safeRun('setupFooter', setupFooter);
+        safeRun('setupBackToTop', setupBackToTop);
+        await safeRunAsync('loadData', loadData);
+        safeRun('enrichGovBr', enrichGovBr);
+        safeRun('setupFooterVersion', setupFooterVersion);
+        safeRun('renderCategories', renderCategories);
+        safeRun('renderTransparency', renderTransparency);
+        safeRun('renderInstituicoes', renderInstituicoes);
+        safeRun('renderOrgaosEstaduais', renderOrgaosEstaduais);
+        safeRun('renderClassificacao', renderClassificacao);
+        safeRun('renderDocsChecklist', renderDocsChecklist);
+        safeRun('renderLinksUteis', renderLinksUteis);
+        safeRun('renderHeroStats', renderHeroStats);
+        safeRun('checkStaleness', checkStaleness);
+        safeRun('setupUpload', setupUpload);
+        safeRun('setupAnalysis', setupAnalysis);
+        await safeRunAsync('cleanupExpiredFiles', cleanupExpiredFiles);
+        await safeRunAsync('renderFileList', renderFileList);
+        safeRun('updateSectionAlternation', updateSectionAlternation);
         setInterval(async () => {
             const removed = await cleanupExpiredFiles();
             if (removed > 0) await renderFileList();
@@ -701,6 +721,7 @@
         dom.voltarBtn.addEventListener('click', () => {
             dom.detalheSection.style.display = 'none';
             dom.categoriasSection.style.display = '';
+            updateSectionAlternation();
             history.pushState({ view: 'categorias' }, '', '#categorias');
             dom.categoriasSection.scrollIntoView({ behavior: 'smooth' });
             const h2 = dom.categoriasSection.querySelector('h2');
@@ -712,6 +733,7 @@
             } else {
                 dom.detalheSection.style.display = 'none';
                 dom.categoriasSection.style.display = '';
+                updateSectionAlternation();
             }
         });
     }
@@ -759,7 +781,11 @@
         } catch { }
     }
     function renderCategories() {
-        if (!direitosData) return;
+        if (!direitosData || !dom.categoryGrid) {
+            console.warn('renderCategories: dados ou elemento faltando');
+            return;
+        }
+
         dom.categoryGrid.innerHTML = direitosData
             .map(
                 (cat) => `
@@ -772,6 +798,7 @@ data-id="${cat.id}">
 </div>`
             )
             .join('');
+
         dom.categoryGrid.querySelectorAll('.category-card').forEach((card) => {
             card.addEventListener('click', () => showDetalhe(card.dataset.id));
             card.addEventListener('keydown', (e) => {
@@ -787,6 +814,7 @@ data-id="${cat.id}">
         if (!cat) return;
         dom.categoriasSection.style.display = 'none';
         dom.detalheSection.style.display = '';
+        updateSectionAlternation();
         if (!skipHistory) {
             history.pushState({ view: 'detalhe', id }, '', `#direito/${id}`);
         }
@@ -1565,20 +1593,26 @@ No Brasil, a maioria dos laudos ainda usa CID-10. O sistema aceita ambas as codi
                 : `🔍 Analisar ${count} arquivos`;
     }
     function setupAnalysis() {
-        dom.closeAnalysis.addEventListener('click', () => {
-            dom.analysisResults.style.display = 'none';
-        });
-        dom.exportPdf.addEventListener('click', () => {
-            dom.analysisResults.setAttribute('data-print-date', new Date().toLocaleDateString('pt-BR'));
-            document.body.classList.add('printing-analysis');
-            window.print();
-            const cleanup = () => {
-                document.body.classList.remove('printing-analysis');
-                window.removeEventListener('afterprint', cleanup);
-            };
-            window.addEventListener('afterprint', cleanup);
-            setTimeout(cleanup, 5000);
-        });
+        if (dom.closeAnalysis) {
+            dom.closeAnalysis.addEventListener('click', () => {
+                dom.analysisResults.style.display = 'none';
+            });
+        }
+
+        if (dom.exportPdf) {
+            dom.exportPdf.addEventListener('click', () => {
+                dom.analysisResults.setAttribute('data-print-date', new Date().toLocaleDateString('pt-BR'));
+                document.body.classList.add('printing-analysis');
+                window.print();
+                const cleanup = () => {
+                    document.body.classList.remove('printing-analysis');
+                    window.removeEventListener('afterprint', cleanup);
+                };
+                window.addEventListener('afterprint', cleanup);
+                setTimeout(cleanup, 5000);
+            });
+        }
+
         const shareAnalysisBtn = document.getElementById('shareAnalysisWhatsApp');
         if (shareAnalysisBtn) {
             shareAnalysisBtn.addEventListener('click', () => {
