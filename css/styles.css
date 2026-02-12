@@ -259,12 +259,14 @@ input,
     flex-direction: column;
 
     overflow: hidden;
-    transition: right 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    transition: right 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), visibility 0.3s;
     z-index: 10000;
+    visibility: hidden;
 }
 
 .a11y-drawer[aria-hidden="false"] {
     right: 0;
+    visibility: visible;
 }
 
 /* Header */
@@ -933,12 +935,13 @@ html.high-contrast ::selection {
     padding: 20px;
     padding: max(20px, env(safe-area-inset-top)) max(20px, env(safe-area-inset-right)) max(20px, env(safe-area-inset-bottom)) max(20px, env(safe-area-inset-left));
     opacity: 1;
-    transition: opacity 0.3s ease;
+    transition: opacity 0.3s ease, visibility 0.3s;
 }
 
 .modal.hidden {
     opacity: 0;
     pointer-events: none;
+    visibility: hidden;
 }
 
 .modal-content {

@@ -1618,7 +1618,7 @@ No Brasil, a maioria dos laudos ainda usa CID-10. O sistema aceita ambas as codi
             shareAnalysisBtn.addEventListener('click', () => {
                 const analysisTitle = document.querySelector('.analysis-results h3')?.textContent || 'Análise';
                 const matches = document.querySelectorAll('.analysis-match');
-                const matchList = Array.from(matches).map((m, i) => `${i + 1}. ${m.querySelector('.analysis-title')?.textContent || 'Direito'}`).join('%0A');
+                const matchList = Array.from(matches).map((m, i) => `${i + 1}. ${m.querySelector('.analysis-match-title h4')?.textContent || 'Direito'}`).join('%0A');
                 const text = `*${analysisTitle}*%0A%0A${matchList}%0A%0AVeja mais em: ${window.location.origin}`;
                 window.open(`https://wa.me/?text=${text}`, '_blank');
             });
