@@ -1490,7 +1490,7 @@ html.high-contrast ::selection {
     height: 20px;
     margin-top: 3px;
     flex-shrink: 0;
-    accent-color: var(--accent);
+    accent-color: #0056b3;
     cursor: pointer;
 }
 
@@ -1833,7 +1833,7 @@ html.high-contrast ::selection {
     height: 20px;
     margin-top: 2px;
     flex-shrink: 0;
-    accent-color: var(--accent);
+    accent-color: #0056b3;
     cursor: pointer;
 }
 
@@ -2338,7 +2338,7 @@ html.high-contrast ::selection {
 
 .inst-tipo-badge.profissional {
     background: rgba(5, 150, 105, 0.15);
-    color: var(--accent);
+    color: #0056b3;
 }
 
 .inst-nome {

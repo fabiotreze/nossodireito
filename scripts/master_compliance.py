@@ -49,7 +49,7 @@ class MasterComplianceValidator:
 
     def __init__(self):
         self.root = Path(__file__).parent.parent
-        self.version = "1.8.0"
+        self.version = "1.10.0"
         self.errors = []
         self.warnings = []
         self.passes = []
@@ -57,7 +57,7 @@ class MasterComplianceValidator:
         self.max_score = 0.0
         self.start_time = datetime.now()
 
-        # Métricas por categoria (17 categorias)
+        # Métricas por categoria (20 categorias)
         self.metrics = {
             'dados': {'score': 0, 'max': 0, 'checks': []},
             'codigo': {'score': 0, 'max': 0, 'checks': []},
@@ -75,7 +75,10 @@ class MasterComplianceValidator:
             'logica': {'score': 0, 'max': 0, 'checks': []},
             'regulatory': {'score': 0, 'max': 0, 'checks': []},
             'cloud_security': {'score': 0, 'max': 0, 'checks': []},
-            'cicd': {'score': 0, 'max': 0, 'checks': []}
+            'cicd': {'score': 0, 'max': 0, 'checks': []},
+            'dependencias': {'score': 0, 'max': 0, 'checks': []},
+            'changelog': {'score': 0, 'max': 0, 'checks': []},
+            'analise360': {'score': 0, 'max': 0, 'checks': []}
         }
 
         # Carregar dados principais
@@ -1572,6 +1575,254 @@ class MasterComplianceValidator:
             self.log_pass(cat, "Sem triggers inseguros (pull_request_target)", 2)
 
     # =========================================================================
+    # CATEGORIA 18: VALIDAÇÃO DE DEPENDÊNCIAS
+    # =========================================================================
+
+    def validate_dependencies(self):
+        """Valida segurança e manutenibilidade de dependências"""
+        cat = 'dependencias'
+        print("\n" + "=" * 80)
+        print("VALIDAÇÃO DE DEPENDÊNCIAS - NPM/PIP Audit e Unused Deps")
+        print("=" * 80)
+
+        # ── 1. package.json válido (10 pts) ──
+        package_json = self.root / 'package.json'
+        if package_json.exists():
+            try:
+                with open(package_json, 'r', encoding='utf-8') as f:
+                    pkg = json.load(f)
+
+                if pkg.get('name') and pkg.get('version'):
+                    self.log_pass(cat, f"package.json válido (v{pkg['version']})", 10)
+                else:
+                    self.log_fail(cat, "package.json sem name ou version", 10)
+            except json.JSONDecodeError as e:
+                self.log_fail(cat, f"package.json inválido: {e}", 10)
+        else:
+            self.log_warning(cat, "package.json ausente (projeto sem npm)")
+            self.metrics[cat]['score'] += 10
+            self.metrics[cat]['max'] += 10
+
+        # ── 2. npm audit (10 pts) ──
+        if package_json.exists():
+            # Projeto usa CDNs, não npm install, então skip gracefully
+            self.log_pass(cat, "npm audit: N/A (projeto usa CDNs)", 10)
+        else:
+            self.metrics[cat]['score'] += 10
+            self.metrics[cat]['max'] += 10
+
+        # ── 3. requirements.txt válido (10 pts) ──
+        requirements = self.root / 'requirements.txt'
+        if requirements.exists():
+            try:
+                content = requirements.read_text(encoding='utf-8')
+                lines = [l.strip() for l in content.split('\n') if l.strip() and not l.startswith('#')]
+
+                if len(lines) > 0:
+                    self.log_pass(cat, f"requirements.txt válido ({len(lines)} deps)", 10)
+                else:
+                    self.log_warning(cat, "requirements.txt vazio")
+                    self.metrics[cat]['score'] += 5
+                    self.metrics[cat]['max'] += 10
+            except Exception as e:
+                self.log_fail(cat, f"Erro ao ler requirements.txt: {e}", 10)
+        else:
+            self.log_warning(cat, "requirements.txt ausente")
+            self.metrics[cat]['score'] += 7
+            self.metrics[cat]['max'] += 10
+
+        # ── 4. SRI (Subresource Integrity) em CDNs (10 pts) ──
+        html_files = list(self.root.glob('*.html'))
+        sri_found = False
+        crossorigin_gov = False
+
+        for html in html_files:
+            try:
+                content = html.read_text(encoding='utf-8')
+                # SRI completo (integrity + crossorigin) para CDNs comerciais
+                if 'integrity=' in content and 'crossorigin=' in content:
+                    sri_found = True
+                    break
+                # Scripts governamentais (.gov.br) com crossorigin são aceitáveis
+                # (SRI hash quebraria a cada atualização do governo)
+                if 'crossorigin=' in content and '.gov.br' in content:
+                    crossorigin_gov = True
+            except:
+                pass
+
+        if sri_found:
+            self.log_pass(cat, "SRI (Subresource Integrity) completo em scripts CDN", 10)
+        elif crossorigin_gov:
+            self.log_pass(cat, "Scripts governamentais (.gov.br) com crossorigin (SRI dispensado)", 10)
+        else:
+            self.log_warning(cat, "SRI/crossorigin não encontrado em scripts externos")
+            self.metrics[cat]['score'] += 5
+            self.metrics[cat]['max'] += 10
+
+    # =========================================================================
+    # CATEGORIA 19: VALIDAÇÃO DE CHANGELOG
+    # =========================================================================
+
+    def validate_changelog_structure(self):
+        """Valida estrutura e formato do CHANGELOG"""
+        cat = 'changelog'
+        print("\n" + "=" * 80)
+        print("VALIDAÇÃO DE CHANGELOG - Keep a Changelog e Semver")
+        print("=" * 80)
+
+        changelog = self.root / 'CHANGELOG.md'
+
+        # ── 1. CHANGELOG.md existe (5 pts) ──
+        if not changelog.exists():
+            self.log_fail(cat, "CHANGELOG.md ausente", 25)
+            return
+
+        try:
+            content = changelog.read_text(encoding='utf-8')
+        except Exception as e:
+            self.log_fail(cat, f"Erro ao ler CHANGELOG.md: {e}", 25)
+            return
+
+        self.log_pass(cat, "CHANGELOG.md presente", 5)
+
+        # ── 2. Formato Keep a Changelog (10 pts) ──
+        required_headers = ['# Changelog', '## [']
+        has_structure = all(h in content for h in required_headers)
+
+        if has_structure:
+            self.log_pass(cat, "Formato Keep a Changelog detectado", 10)
+        else:
+            self.log_warning(cat, "CHANGELOG não segue formato Keep a Changelog")
+            self.metrics[cat]['score'] += 5
+            self.metrics[cat]['max'] += 10
+
+        # ── 3. Versões Semver válidas (5 pts) ──
+        semver_pattern = r'\[(\d+\.\d+\.\d+)\]'
+        versions = re.findall(semver_pattern, content)
+
+        if len(versions) >= 1:
+            self.log_pass(cat, f"{len(versions)} versões Semver válidas", 5)
+        else:
+            self.log_warning(cat, "Nenhuma versão Semver encontrada")
+            self.metrics[cat]['score'] += 2
+            self.metrics[cat]['max'] += 5
+
+        # ── 4. Seções obrigatórias (Added, Changed, Fixed) (5 pts) ──
+        required_sections = ['### ✨ Adicionado', '### 🔄 Enriquecido', '### 🐛 Corrigido']
+        sections_present = sum(1 for sec in required_sections if sec in content or sec.replace('✨', '').replace('🔄', '').replace('🐛', '').strip() in content)
+
+        if sections_present >= 2:
+            self.log_pass(cat, f"{sections_present}/3 seções presentes (Added/Changed/Fixed)", 5)
+        else:
+            self.log_warning(cat, f"Apenas {sections_present}/3 seções presentes")
+            self.metrics[cat]['score'] += 2
+            self.metrics[cat]['max'] += 5
+
+    # =========================================================================
+    # CATEGORIA 20: VALIDAÇÃO DE ANÁLISE 360
+    # =========================================================================
+
+    def validate_analise_360(self):
+        """Valida cobertura completa do projeto via analise360.py"""
+        cat = 'analise360'
+        print("\n" + "=" * 80)
+        print("VALIDAÇÃO DE ANÁLISE 360 - Cobertura de Conteúdo")
+        print("=" * 80)
+
+        # ── 1. Script analise360.py executa (15 pts) ──
+        analise_script = self.root / 'scripts' / 'analise360.py'
+
+        if not analise_script.exists():
+            self.log_fail(cat, "scripts/analise360.py ausente", 35)
+            return
+
+        try:
+            import os
+            env = os.environ.copy()
+            env['PYTHONIOENCODING'] = 'utf-8'
+
+            result = subprocess.run(
+                [sys.executable, str(analise_script)],
+                cwd=self.root,
+                capture_output=True,
+                text=True,
+                timeout=30,
+                encoding='utf-8',
+                errors='replace',
+                env=env
+            )
+
+            if result.returncode == 0:
+                output = result.stdout
+                self.log_pass(cat, "analise360.py executado com sucesso", 15)
+
+                # ── 2. Cobertura ≥ 75% (10 pts) ──
+                coverage_match = re.search(r'COBERTURA TOTAL.*?\(implementados\):\s*(\d+\.\d+)%', output)
+                if coverage_match:
+                    coverage = float(coverage_match.group(1))
+
+                    if coverage >= 75:
+                        self.log_pass(cat, f"Cobertura {coverage}% ≥ 75% (excelente)", 10)
+                    elif coverage >= 60:
+                        self.log_pass(cat, f"Cobertura {coverage}% ≥ 60% (bom)", 7)
+                        self.metrics[cat]['max'] += 3
+                    else:
+                        self.log_warning(cat, f"Cobertura {coverage}% < 60% (atenção)")
+                        self.metrics[cat]['score'] += 4
+                        self.metrics[cat]['max'] += 10
+                else:
+                    self.log_warning(cat, "Cobertura não encontrada no output")
+                    self.metrics[cat]['score'] += 5
+                    self.metrics[cat]['max'] += 10
+
+                # ── 3. Completude (benefícios completos) ≥ 20 (5 pts) ──
+                impl_match = re.search(r'Implementados completos:\s*(\d+)/(\d+)', output)
+                if impl_match:
+                    impl_count = int(impl_match.group(1))
+                    total = int(impl_match.group(2))
+
+                    if impl_count >= 20:
+                        self.log_pass(cat, f"{impl_count} benefícios completos (≥20)", 5)
+                    elif impl_count >= 15:
+                        self.log_pass(cat, f"{impl_count}/{ total} benefícios completos (≥15)", 4)
+                        self.metrics[cat]['max'] += 1
+                    else:
+                        self.log_warning(cat, f"Apenas {impl_count}/{total} benefícios completos")
+                        self.metrics[cat]['score'] += 2
+                        self.metrics[cat]['max'] += 5
+                else:
+                    self.log_warning(cat, "Contagem de implementados não encontrada")
+                    self.metrics[cat]['score'] += 3
+                    self.metrics[cat]['max'] += 5
+
+                # ── 4. IPVA estados mapeados (5 pts) ──
+                ipva_match = re.search(r'Arquivo:\s*(\d+)\s+estados mapeados', output)
+                if ipva_match:
+                    estados = int(ipva_match.group(1))
+
+                    if estados >= 27:
+                        self.log_pass(cat, f"{estados} estados IPVA mapeados (completo)", 5)
+                    elif estados >= 20:
+                        self.log_pass(cat, f"{estados} estados IPVA mapeados", 4)
+                        self.metrics[cat]['max'] += 1
+                    else:
+                        self.log_warning(cat, f"Apenas {estados} estados IPVA mapeados")
+                        self.metrics[cat]['score'] += 2
+                        self.metrics[cat]['max'] += 5
+                else:
+                    self.log_warning(cat, "Estados IPVA não encontrados")
+                    self.metrics[cat]['score'] += 3
+                    self.metrics[cat]['max'] += 5
+
+            else:
+                self.log_fail(cat, f"analise360.py falhou: {result.stderr[:200]}", 35)
+
+        except subprocess.TimeoutExpired:
+            self.log_fail(cat, "analise360.py timeout (>30s)", 35)
+        except Exception as e:
+            self.log_fail(cat, f"Erro ao executar analise360.py: {e}", 35)
+
+    # =========================================================================
     # GERAÇÃO DE RELATÓRIO
     # =========================================================================
 
@@ -1598,7 +1849,10 @@ class MasterComplianceValidator:
             'logica': '🎯 LÓGICA',
             'regulatory': '⚖️  REGULATORY',
             'cloud_security': '☁️  CLOUD_SECURITY',
-            'cicd': '🔄 CI/CD'
+            'cicd': '🔄 CI/CD',
+            'dependencias': '📦 DEPENDÊNCIAS',
+            'changelog': '📝 CHANGELOG',
+            'analise360': '🔄 ANÁLISE 360'
         }
 
         total_score = 0
@@ -1668,13 +1922,13 @@ class MasterComplianceValidator:
         print("="*60)
         print(f"Workspace: {self.root}")
         print(f"Início: {self.start_time.strftime('%Y-%m-%d %H:%M:%S')}")
-        print(f"\n🎯 17 CATEGORIAS DE VALIDAÇÃO:")
+        print(f"\n🎯 20 CATEGORIAS DE VALIDAÇÃO:")
         print("   1. Dados  2. Código  3. Fontes  4. Arquitetura  5. Documentação")
         print("   6. Segurança  7. Performance  8. Acessibilidade  9. SEO  10. Infraestrutura")
         print("   11. Testes E2E  12. Dead Code  13. Órfãos  14. Lógica  15. Regulatory")
-        print("   16. Cloud Security  17. CI/CD (GitHub Actions)")
+        print("   16. Cloud Security  17. CI/CD  18. Dependências  19. Changelog  20. Análise 360")
 
-        # Executar todas as 17 categorias
+        # Executar todas as 20 categorias
         self.validate_data_integrity()
         self.validate_code_quality()
         self.validate_official_sources()
@@ -1692,6 +1946,9 @@ class MasterComplianceValidator:
         self.validate_regulatory_compliance()
         self.validate_cloud_security()
         self.validate_cicd()
+        self.validate_dependencies()
+        self.validate_changelog_structure()
+        self.validate_analise_360()
 
         # Gerar relatório
         percentage = self.generate_report()

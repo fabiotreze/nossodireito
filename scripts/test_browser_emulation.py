@@ -15,7 +15,6 @@ Valida:
 
 import http.server
 import json
-import re
 import socketserver
 import sys
 import threading

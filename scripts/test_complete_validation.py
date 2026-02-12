@@ -14,11 +14,10 @@ Valida:
 """
 
 import json
-import os
 import re
 import sys
 from pathlib import Path
-from typing import Dict, List, Tuple
+from typing import List, Tuple
 
 # Color codes
 GREEN = "\033[92m"

@@ -791,6 +791,7 @@ data-id="${cat.id}">
             history.pushState({ view: 'detalhe', id }, '', `#direito/${id}`);
         }
         let html = `
+<article>
 <h2>${cat.icone} ${escapeHtml(cat.titulo)}</h2>
 <p class="detalhe-resumo">${escapeHtml(cat.resumo)}</p>`;
         if (cat.valor) {
@@ -905,7 +906,8 @@ class="btn btn-sm btn-whatsapp" aria-label="Compartilhar no WhatsApp">
 📲 WhatsApp
 </a>
 </div>
-</div>`;
+</div>
+</article>`;
         dom.detalheContent.innerHTML = html;
         const exportDetalheBtn = document.getElementById('exportDetalhePdf');
         if (exportDetalheBtn) {

@@ -7,176 +7,175 @@ Comparação: Benefícios Implementados vs Pesquisados
 
 import json
 
+
+def is_beneficio_completo(cat):
+    """
+    Verifica se um benefício está completo baseado em critérios de qualidade.
+
+    Completo = ALL:
+    - ≥5 requisitos
+    - ≥4 documentos
+    - ≥6 passos no passo_a_passo
+    - ≥4 dicas
+    - ≥2 links
+    - base_legal não vazia
+    - valor não vazio
+    """
+    try:
+        requisitos_ok = len(cat.get('requisitos', [])) >= 5
+        documentos_ok = len(cat.get('documentos', [])) >= 4
+        passos_ok = len(cat.get('passo_a_passo', [])) >= 6
+        dicas_ok = len(cat.get('dicas', [])) >= 4
+        links_ok = len(cat.get('links', [])) >= 2
+        base_legal_ok = len(cat.get('base_legal', [])) >= 1
+        valor_ok = len(cat.get('valor', '').strip()) >= 10
+
+        return all([requisitos_ok, documentos_ok, passos_ok, dicas_ok, links_ok, base_legal_ok, valor_ok])
+    except:
+        return False
+
+
 def main():
     # Carregar dados
     with open('data/direitos.json', 'r', encoding='utf-8') as f:
         direitos = json.load(f)
-    
+
     # IMPLEMENTADOS
     print("=" * 90)
     print("📊 ANÁLISE 360° - NOSSOD IREITO v1.4.3")
     print("=" * 90)
     print()
-    
+
     implementados = direitos['categorias']
+
+    # Análise dinâmica de completude
+    completos = []
+    parciais = []
+
+    for cat in implementados:
+        if is_beneficio_completo(cat):
+            completos.append(cat)
+        else:
+            parciais.append(cat)
+
     print(f"✅ BENEFÍCIOS IMPLEMENTADOS: {len(implementados)}")
     print()
     for cat in implementados:
-        print(f"  ✅ {cat['id']:32} — {cat['titulo'][:55]}")
-    
-    # PESQUISADOS MAS NÃO IMPLEMENTADOS
+        status = "✅" if cat in completos else "⚠️"
+        print(f"  {status} {cat['id']:32} — {cat['titulo'][:55]}")
+
+    # Lista de prioridades para expansão futura
     print()
     print("=" * 90)
-    print("❌ BENEFÍCIOS PESQUISADOS MAS NÃO IMPLEMENTADOS (BENEFICIOS_COMPLETOS_PCD.md)")
+    print("📋 BENEFÍCIOS PESQUISADOS PARA EXPANSÃO FUTURA")
     print("=" * 90)
     print()
-    
+
     faltam = [
         ("Táxis Acessíveis e Descontos", "MÉDIA", "Mobilidade urbana"),
         ("Locadoras de Veículos Adaptados", "BAIXA", "Nicho específico"),
         ("Acompanhante Gratuito Transporte Aéreo", "MÉDIA", "Mobilidade - direito essencial"),
         ("Desconto Internet/Telefonia", "MÉDIA", "Inclusão digital"),
         ("Atendimento Domiciliar (SAD)", "MÉDIA", "Saúde - casos graves"),
-        ("Defensoria Pública (expandir)", "ALTA", "Acesso à justiça"),
-        ("Gratuidade de Justiça (expandir)", "ALTA", "Acesso à justiça"),
-        ("Assentos Reservados Transportes (expandir)", "BAIXA", "Já parcialmente coberto"),
-        ("Reserva Espaços Teatros/Cinemas (expandir)", "BAIXA", "Já parcialmente coberto"),
-        ("Hotéis e Pousadas Acessíveis", "BAIXA", "Turismo"),
-        ("ProUni, FIES, SISU - Cotas PcD", "ALTA", "Educação - grande demanda"),
-        ("Isenção Imposto de Renda", "ALTA", "Financeiro - despesas médicas"),
-        ("Bolsa Família para PcD", "ALTA", "Financeiro - vulnerabilidade"),
         ("Cestas Básicas e Alimentação", "MÉDIA", "Vulnerabilidade social"),
     ]
-    
+
     for i, (beneficio, prioridade, razao) in enumerate(faltam, 1):
         icon = "🔥" if prioridade == "ALTA" else "⚠️" if prioridade == "MÉDIA" else "📌"
         print(f"{i:2}. {icon} {beneficio:42} | {prioridade:6} | {razao}")
-    
-    # ESTATÍSTICAS
+
+    # ESTATÍSTICAS DINÂMICAS
     print()
     print("=" * 90)
     print("📈 ESTATÍSTICAS DE COBERTURA")
     print("=" * 90)
     print()
-    
-    total_pesquisados = 31
-    implementados_completos = 17
-    implementados_parciais = 4  # (defensoria, gratuidade justiça, assentos, reserva espaços)
-    nao_implementados = 14
-    
-    cobertura_completa = (implementados_completos / total_pesquisados) * 100
-    cobertura_parcial = ((implementados_completos + implementados_parciais) / total_pesquisados) * 100
-    
-    print(f"✅ Implementados completos: {implementados_completos}/{total_pesquisados} ({cobertura_completa:.1f}%)")
-    print(f"⚠️ Implementados parciais:  {implementados_parciais}/{total_pesquisados} ({implementados_parciais/total_pesquisados*100:.1f}%)")
-    print(f"❌ Não implementados:       {nao_implementados}/{total_pesquisados} ({nao_implementados/total_pesquisados*100:.1f}%)")
+
+    total_implementados = len(implementados)
+    total_completos = len(completos)
+    total_parciais = len(parciais)
+    total_pesquisados = total_implementados + len(faltam)  # Benefícios implementados + identificados para futuro
+
+    cobertura_completa = (total_completos / total_pesquisados) * 100
+    cobertura_total = (total_implementados / total_pesquisados) * 100
+
+    print(f"✅ Implementados completos: {total_completos}/{total_pesquisados} ({cobertura_completa:.1f}%)")
+    print(f"⚠️ Implementados parciais:  {total_parciais}/{total_pesquisados} ({total_parciais/total_pesquisados*100:.1f}%)")
+    print(f"📋 Identificados p/ futuro:  {len(faltam)}/{total_pesquisados} ({len(faltam)/total_pesquisados*100:.1f}%)")
     print()
-    print(f"🎯 COBERTURA TOTAL (completa + parcial): {cobertura_parcial:.1f}%")
-    
+    print(f"🎯 COBERTURA TOTAL (implementados): {cobertura_total:.1f}%")
+    print(f"✨ COMPLETUDE (benefícios completos): {cobertura_completa:.1f}%")
+
     # IPVA ESTADUAL
     print()
     print("=" * 90)
     print("🚗 IPVA ESTADUAL - data/ipva_pcd_estados.json")
     print("=" * 90)
     print()
-    
+
     with open('data/ipva_pcd_estados.json', 'r', encoding='utf-8') as f:
         ipva = json.load(f)
-    
-    print(f"📊 Arquivo: 21 KB, 346 linhas, 27 leis estaduais")
-    print(f"📅 Data pesquisa: {ipva['_metadata']['data_pesquisa']}")
+
+    estados_count = len(ipva.get('estados', {}))
+    last_update = ipva.get('metadata', {}).get('lastUpdate', 'N/A')
+
+    print(f"📊 Arquivo: {estados_count} estados mapeados")
+    print(f"📅 Última atualização: {last_update}")
     print()
-    print("❌ STATUS: NÃO INTEGRADO")
-    print("   - NÃO usado em: js/app.js, sw.js, index.html")
-    print("   - NÃO cacheado no Service Worker")
-    print("   - Mencionado apenas no CHANGELOG.md (v1.0.4)")
-    print()
-    print("✅ BENEFÍCIO IPVA COBERTO EM: isencoes_tributarias")
-    print("   - Informação genérica sobre isenção IPVA PcD federal")
-    print("   - NÃO detalha leis estaduais específicas")
-    print()
-    print("🔧 OPÇÕES:")
-    print("   1. INTEGRAR: Criar seção ipva_estados[] em isencoes_tributarias")
-    print("      - Dropdown com estados permitindo busca por UF")
-    print("      - Mostrar lei, link SEFAZ, requisitos por estado")
-    print("      - Impacto: +15 horas desenvolvimento")
-    print()
-    print("   2. DELETAR: Se não há plano de usar dados estaduais")
-    print("      - Economia: 21 KB, simplifica manutenção")
-    
-    # FUNCIONALIDADES APP.JS
+
+    # RECOMENDAÇÕES BASEADAS EM GAPS
     print()
     print("=" * 90)
-    print("⚙️ FUNCIONALIDADES IMPLEMENTADAS (js/app.js)")
+    print("🎯 RECOMENDAÇÕES - COMPLETAR BENEFÍCIOS PARCIAIS")
     print("=" * 90)
     print()
-    
-    funcionalidades = [
-        ("✅", "Busca inteligente (matching_engine.json)", "886-1400"),
-        ("✅", "Normalização e expansão de queries", "1179-1320"),
-        ("✅", "Renderização de benefícios", "907-936"),
-        ("✅", "Detalhes de benefício (documentos, requisitoslinks)", "937-1077"),
-        ("✅", "Checklist de documentos (localStorage)", "1498-1650"),
-        ("✅", "Acessibilidade (VLibras, TTS, contraste, fonte)", "109-585"),
-        ("✅", "Service Worker (cache offline)", "sw.js"),
-        ("✅", "PWA (manifest.json, install prompt)", "695-727"),
-        ("✅", "PDF viewer (laudo médico preview)", "587-611"),
-        ("✅", "Toast notifications", "612-621"),
-        ("✅", "Navegação modal (documentos_mestre)", "775-849"),
-        ("✅", "SEO (robots.txt, sitemap.xml)", "✓"),
-        ("✅", "CSP Security Headers", "index.html L17"),
-        ("⚠️", "IPVA Estadual - dropdown por UF", "NÃO IMPLEMENTADO"),
-        ("⚠️", "Filtros por categoria (tag search)", "NÃO IMPLEMENTADO"),
-        ("⚠️", "Compartilhamento social", "NÃO IMPLEMENTADO"),
-        ("⚠️", "Print-friendly view", "NÃO IMPLEMENTADO"),
-    ]
-    
-    for status, funcionalidade, linha in funcionalidades:
-        print(f"  {status} {funcionalidade:55} (linha {linha})")
-    
-    # RECOMENDAÇÕES
+
+    if parciais:
+        print(f"⚠️ {len(parciais)} BENEFÍCIO(S) PARCIAL(IS) IDENTIFICADO(S):")
+        print()
+        for cat in parciais:
+            print(f"  📌 {cat['id']}")
+
+            # Diagnóstico detalhado
+            requisitos = len(cat.get('requisitos', []))
+            documentos = len(cat.get('documentos', []))
+            passos = len(cat.get('passo_a_passo', []))
+            dicas = len(cat.get('dicas', []))
+            links = len(cat.get('links', []))
+
+            gaps = []
+            if requisitos < 5: gaps.append(f"requisitos: {requisitos}/5")
+            if documentos < 4: gaps.append(f"documentos: {documentos}/4")
+            if passos < 6: gaps.append(f"passos: {passos}/6")
+            if dicas < 4: gaps.append(f"dicas: {dicas}/4")
+            if links < 2: gaps.append(f"links: {links}/2")
+
+            print(f"     Gaps: {', '.join(gaps) if gaps else 'campos vazios/curtos'}")
+            print()
+    else:
+        print("✅ TODOS OS BENEFÍCIOS ESTÃO COMPLETOS!")
+        print()
+
+    print("💡 PRÓXIMOS PASSOS PARA 100%:")
     print()
-    print("=" * 90)
-    print("🎯 RECOMENDAÇÕES - ROADMAP v1.5.0")
-    print("=" * 90)
+    print(f"  1. Completar {len(parciais)} benefício(s) parcial(is) → {total_completos + len(parciais)} completos")
+    print(f"  2. Meta atual: {total_completos} completos | Meta 100%: ≥20 completos")
+
+    if total_completos >= 20:
+        print(f"  ✅ JÁ ATINGE META DE COMPLETUDE! ({total_completos}/20+)")
+    else:
+        faltam_completos = 20 - total_completos
+        print(f"  ⚠️ Faltam {faltam_completos} benefícios completos para meta de 20")
+
     print()
-    
-    print("PRIORIDADE ALTA (4-6 semanas):")
-    print("  1. 🔥 ProUni/FIES/SISU - Cotas PcD (educação superior)")
-    print("  2. 🔥 Isenção Imposto de Renda (despesas médicas PcD)")
-    print("  3. 🔥 Bolsa Família PcD (vulnerabilidade social)")
-    print("  4. 🔥 Defensoria Pública (expandir seção)")
-    print()
-    print("PRIORIDADE MÉDIA (2-3 meses):")
-    print("  5. ⚠️ Desconto Internet/Telefonia")
-    print("  6. ⚠️ Acompanhante Gratuito Transporte Aéreo")
-    print("  7. ⚠️ IPVA Estadual (integrar ipva_pcd_estados.json)")
-    print("  8. ⚠️ Filtros por categoria/tag")
-    print()
-    print("PRIORIDADE BAIXA (backlog):")
-    print("  9. 📌 Táxis Acessíveis, SAD, Hotéis, Cestas Básicas")
-    print(" 10. 📌 Compartilhamento social, Print view")
-    
-    # DECISÃO IPVA
-    print()
-    print("=" * 90)
-    print("🚨 DECISÃO IMEDIATA NECESSÁRIA")
-    print("=" * 90)
-    print()
-    print("❓ IPVA_PCD_ESTADOS.JSON:")
-    print()
-    print("   OPÇÃO A: INTEGRAR (recomendado se desenvolvimento v1.5.0 planejado)")
-    print("     - Adicionar seção 'Isenção IPVA por Estado' em isencoes_tributarias")
-    print("     - Select dropdown com 27 estados")
-    print("     - Mostrar: lei estadual, link SEFAZ, requisitos, valor veículo")
-    print("     - Esforço: ~15 horas (backend: 2h, frontend: 8h, testes: 5h)")
-    print()
-    print("   OPÇÃO B: DELETAR (se sem planos curto prazo)")
-    print("     - Remove 21 KB não utilizado")
-    print("     - Simplifica manutenção")
-    print("     - Pode pesquisar novamente se necessário futuro")
-    print()
-    print("   DECISÃO DO USUÁRIO: ?")
+    cobertura_meta = 75.0
+    if cobertura_total >= cobertura_meta:
+        print(f"  ✅ COBERTURA JÁ ATINGE META! ({cobertura_total:.1f}% ≥ {cobertura_meta}%)")
+    else:
+        gap_cobertura = cobertura_meta - cobertura_total
+        print(f"  ⚠️ Gap de cobertura: {gap_cobertura:.1f}% (atual: {cobertura_total:.1f}% | meta: {cobertura_meta}%)")
+        print(f"     Adicionar ~{int((gap_cobertura/100) * total_pesquisados) + 1} benefícios novos")
+
 
 if __name__ == '__main__':
     main()

@@ -24,6 +24,11 @@ on:
       - "scripts/**"
       - ".github/workflows/deploy.yml"
 
+permissions:
+  contents: read
+  actions: read
+  id-token: write
+
 concurrency:
   group: deploy-nossodireito
   cancel-in-progress: false
@@ -73,7 +78,7 @@ jobs:
           node-version: "22"
 
       - name: Azure Login
-        uses: azure/login@v2
+        uses: azure/login@6c251865b4e6290e7b78be643ea2d005bc51f69a # v2.1.1
         with:
           creds: |
             {
@@ -89,9 +94,9 @@ jobs:
           sed -i "s|<lastmod>[0-9]\{4\}-[0-9]\{2\}-[0-9]\{2\}</lastmod>|<lastmod>${TODAY}</lastmod>|" sitemap.xml
           echo "✅ sitemap.xml lastmod → ${TODAY}"
 
-      - name: Minificar JS e CSS
+      - name: Minificar HTML, JS e CSS
         run: |
-          npm install --no-save terser clean-css-cli
+          npm install --no-save terser clean-css-cli html-minifier-terser
 
           npx terser js/app.js --compress --mangle --output js/app.min.js
           ORIG=$(wc -c < js/app.js)
@@ -104,6 +109,12 @@ jobs:
           MINI_CSS=$(wc -c < css/styles.min.css)
           echo "✅ CSS: ${ORIG_CSS}B → ${MINI_CSS}B ($(( (ORIG_CSS - MINI_CSS) * 100 / ORIG_CSS ))% redução)"
           mv css/styles.min.css css/styles.css
+
+          npx html-minifier-terser --collapse-whitespace --remove-comments --minify-css true --minify-js true -o index.min.html index.html
+          ORIG_HTML=$(wc -c < index.html)
+          MINI_HTML=$(wc -c < index.min.html)
+          echo "✅ HTML: ${ORIG_HTML}B → ${MINI_HTML}B ($(( (ORIG_HTML - MINI_HTML) * 100 / ORIG_HTML ))% redução)"
+          mv index.min.html index.html
 
       - name: Instalar dependências (production)
         run: |

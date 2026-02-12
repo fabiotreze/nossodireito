@@ -1,0 +1,8 @@
+# NossoDireito - Python Dependencies
+# Python 3.8+
+
+# HTTP Client for URL validation
+requests>=2.31.0
+
+# HTML/XML parsing for content validation
+lxml>=4.9.0
