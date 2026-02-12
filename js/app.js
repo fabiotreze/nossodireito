@@ -773,15 +773,6 @@ html += `<div class="detalhe-tags">
 ${cat.tags.map((t) => `<span class="tag">${escapeHtml(t)}</span>`).join('')}
 </div>`;
 }
-const shareText = encodeURIComponent(
-`${cat.icone} ${cat.titulo}\n${cat.resumo}\n\nVeja mais em: https://nossodireito.fabiotreze.com`
-);
-html += `<div class="detalhe-section" style="text-align:center;padding-top:8px;">
-<a href="https://wa.me/?text=${shareText}" target="_blank" rel="noopener noreferrer"
-class="btn btn-whatsapp" aria-label="Compartilhar no WhatsApp">
-📲 Compartilhar no WhatsApp
-</a>
-</div>`;
 dom.detalheContent.innerHTML = html;
 if (cat.ipva_estados_detalhado && cat.ipva_estados_detalhado.length) {
 const ipvaSelect = $('#ipvaEstadoSelect');
@@ -1435,6 +1426,40 @@ window.removeEventListener('afterprint', cleanup);
 window.addEventListener('afterprint', cleanup);
 setTimeout(cleanup, 5000);
 });
+const exportChecklistBtn = document.getElementById('exportChecklistPdf');
+if (exportChecklistBtn) {
+exportChecklistBtn.addEventListener('click', () => {
+const checklistSection = document.getElementById('checklist');
+if (checklistSection) {
+checklistSection.setAttribute('data-print-date', new Date().toLocaleDateString('pt-BR'));
+}
+document.body.classList.add('printing-checklist');
+window.print();
+const cleanup = () => {
+document.body.classList.remove('printing-checklist');
+window.removeEventListener('afterprint', cleanup);
+};
+window.addEventListener('afterprint', cleanup);
+setTimeout(cleanup, 5000);
+});
+}
+const exportDocsChecklistBtn = document.getElementById('exportDocsChecklistPdf');
+if (exportDocsChecklistBtn) {
+exportDocsChecklistBtn.addEventListener('click', () => {
+const docsSection = document.getElementById('documentos');
+if (docsSection) {
+docsSection.setAttribute('data-print-date', new Date().toLocaleDateString('pt-BR'));
+}
+document.body.classList.add('printing-docs-checklist');
+window.print();
+const cleanup = () => {
+document.body.classList.remove('printing-docs-checklist');
+window.removeEventListener('afterprint', cleanup);
+};
+window.addEventListener('afterprint', cleanup);
+setTimeout(cleanup, 5000);
+});
+}
 const analyzeBtn = document.getElementById('analyzeSelected');
 if (analyzeBtn) {
 analyzeBtn.addEventListener('click', analyzeSelectedDocuments);

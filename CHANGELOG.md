@@ -5,6 +5,28 @@ Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/)
 e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [1.8.1] - 2026-02-12
+
+### 🐛 Corrigido
+- **Exportação PDF em branco** — CSS do modo de impressão corrigido para exibir corretamente os resultados da análise de documentos
+  - Bug: `body.printing-analysis > *:not(.analysis-results)` escondia `<main>`, mas `.analysis-results` está aninhado em `<main> > <section#documentos> > <div.container>`
+  - Solução: CSS de impressão reestruturado para ocultar seletivamente apenas elementos não relacionados à análise
+  - Print agora preserva cores (badges, barras de progresso), adiciona cabeçalho e rodapé, e evita quebra de página no meio de itens
+
+### ✨ Adicionado
+- **Botão "📥 Salvar PDF" no Checklist** — Seção "Primeiros Passos Após o Laudo" agora pode ser exportada como PDF
+  - Inclui progresso (X de 10 concluídos) e estado dos checkboxes marcados
+  - Cabeçalho: "NossoDireito — Primeiros Passos Após o Laudo"
+  - Rodapé: data de geração, URL, aviso legal
+- **Botão "📥 Salvar PDF" nos Documentos Necessários** — Seção "Documentos Necessários por Direito" agora pode ser exportada como PDF
+  - Lista completa de 16 documentos com descrições, dicas e categorias relacionadas
+  - Cabeçalho: "NossoDireito — Documentos Necessários por Direito"
+  - Rodapé: data de geração, URL, aviso legal
+
+### 🗑️ Removido
+- **Botão "📲 Compartilhar no WhatsApp"** — Removido da página de detalhes de cada direito
+  - Motivo: funcionalidade nativa do WhatsApp (wa.me) removida por decisão de design
+
 ## [1.8.0] - 2026-02-12
 
 ### ✨ Adicionado
