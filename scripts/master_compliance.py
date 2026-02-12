@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 """
 Master Compliance Validator - NossoDireito v1.8.0
 

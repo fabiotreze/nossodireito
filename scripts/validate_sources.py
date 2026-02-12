@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 """
 validate_sources.py — Validação Automática de Fontes Oficiais
 =============================================================

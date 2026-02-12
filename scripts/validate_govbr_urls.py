@@ -1,12 +1,16 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 """Validate all URLs from the gov.br PcD services page."""
 
-import urllib.request
-import urllib.error
 import ssl
 import sys
+import urllib.error
+import urllib.request
 
-urls = [
+
+def main():
+    """Validate all gov.br URLs for PcD services."""
+    urls = [
     # === Servicos para PcD ===
     ("Servico: Acompanhamento PcD - UFES",
      "https://www.gov.br/pt-br/servicos/solicitar-assistencia-e-acompanhamento-a-pessoa-com-deficiencia"),
@@ -120,27 +124,31 @@ for i, (label, url) in enumerate(urls, 1):
         status = f"FAIL {type(e).__name__}"
         results.append((status, label, url))
 
-    icon = "." if status == "OK" else "X"
-    sys.stdout.write(f"  [{i:2d}/{len(urls)}] {icon} {label}\n")
-    sys.stdout.flush()
+        icon = "." if status == "OK" else "X"
+        sys.stdout.write(f"  [{i:2d}/{len(urls)}] {icon} {label}\n")
+        sys.stdout.flush()
 
-print(f"\n\n{'='*60}")
-print(f"RESULTADO: {ok_count} OK / {fail_count} FALHA (de {len(urls)} URLs)")
-print(f"{'='*60}\n")
+    print(f"\n\n{'='*60}")
+    print(f"RESULTADO: {ok_count} OK / {fail_count} FALHA (de {len(urls)} URLs)")
+    print(f"{'='*60}\n")
 
-for status, label, url in results:
-    if status == "OK":
-        print(f"  [OK]   {label}")
+    for status, label, url in results:
+        if status == "OK":
+            print(f"  [OK]   {label}")
+        else:
+            print(f"  [FAIL] {label}")
+            print(f"         Status: {status}")
+            print(f"         URL: {url}")
+
+    failures = [(s, l, u) for s, l, u in results if s != "OK"]
+    if failures:
+        print(f"\n--- {len(failures)} URL(s) com problema ---")
+        for s, l, u in failures:
+            print(f"  [{s}] {l}")
+            print(f"    {u}")
     else:
-        print(f"  [FAIL] {label}")
-        print(f"         Status: {status}")
-        print(f"         URL: {url}")
+        print("\n--- Todas as 26 URLs estao funcionando! ---")
 
-failures = [(s, l, u) for s, l, u in results if s != "OK"]
-if failures:
-    print(f"\n--- {len(failures)} URL(s) com problema ---")
-    for s, l, u in failures:
-        print(f"  [{s}] {l}")
-        print(f"    {u}")
-else:
-    print("\n--- Todas as 26 URLs estao funcionando! ---")
+
+if __name__ == '__main__':
+    main()
