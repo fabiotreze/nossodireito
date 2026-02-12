@@ -29,10 +29,10 @@ jobs:
         id: qg
         continue-on-error: true
         run: |
-          RESULT=$(python codereview/codereview.py --ci --min-score 75 2>&1) || true
-          SCORE=$(echo "$RESULT" | grep -oP 'Score Total: \K[0-9.]+' || echo "N/A")
+          python scripts/quality_pipeline.py --ci > qg_result.txt 2>&1 || true
+          SCORE=$(cat quality_report.json | python -c "import json,sys; print(json.load(sys.stdin).get('score_total', 'N/A'))" 2>/dev/null || echo "N/A")
           echo "score=$SCORE" >> "$GITHUB_OUTPUT"
-          if echo "$RESULT" | grep -q "QUALITY GATE PASSOU"; then
+          if [ -f quality_report.json ]; then
             echo "status=✅ PASSOU ($SCORE/100)" >> "$GITHUB_OUTPUT"
           else
             echo "status=❌ FALHOU ($SCORE/100)" >> "$GITHUB_OUTPUT"
@@ -74,20 +74,20 @@ jobs:
         run: |
           echo "🔗 Validando todas as URLs das fontes oficiais..."
           python scripts/validate_sources.py --urls --json > url-validation.json || true
-          
+
           # Extract summary
           TOTAL=$(jq '.total' url-validation.json)
           OK=$(jq '.ok' url-validation.json)
           WARNINGS=$(jq '.warnings' url-validation.json)
           ERRORS=$(jq '.errors' url-validation.json)
           SCORE=$(echo "scale=1; $OK * 100 / $TOTAL" | bc)
-          
+
           echo "total=$TOTAL" >> "$GITHUB_OUTPUT"
           echo "ok=$OK" >> "$GITHUB_OUTPUT"
           echo "warnings=$WARNINGS" >> "$GITHUB_OUTPUT"
           echo "errors=$ERRORS" >> "$GITHUB_OUTPUT"
           echo "score=$SCORE" >> "$GITHUB_OUTPUT"
-          
+
           # Generate markdown report
           echo "## 🔗 Validação de URLs" > url-report.md
           echo "" >> url-report.md
@@ -95,21 +95,21 @@ jobs:
           echo "" >> url-report.md
           echo "**Score de Validação:** $SCORE%" >> url-report.md
           echo "" >> url-report.md
-          
+
           if [ "$ERRORS" -gt 0 ]; then
             echo "### ❌ URLs com Erro:" >> url-report.md
             echo "" >> url-report.md
             jq -r '.results[] | select(.status == "error") | "- **\(.item)**: \(.message) ([link](\(.url)))"' url-validation.json >> url-report.md
             echo "" >> url-report.md
           fi
-          
+
           if [ "$WARNINGS" -gt 0 ]; then
             echo "### ⚠️ URLs com Avisos:" >> url-report.md
             echo "" >> url-report.md
             jq -r '.results[] | select(.status == "warning") | "- **\(.item)**: \(.message) ([link](\(.url)))"' url-validation.json >> url-report.md
             echo "" >> url-report.md
           fi
-          
+
           echo "✅ Validação completa gerada em url-report.md"
 
       - name: Verificar fontes legislativas por mudanças recentes
@@ -245,7 +245,7 @@ jobs:
             - [ ] Verificar se algum direito PcD novo surgiu (ver backlog no GOVERNANCE.md)
             - [ ] Checar se alguma categoria existente precisa de atualização de valores
             - [ ] Verificar cobertura de instituições para todas as categorias
-            - [ ] Rodar \`python codereview/codereview.py --categoria schema\` para validar
+            - [ ] Rodar `python scripts/validate_content.py` para validar schema
 
             ### 🔗 Verificação de Links
             ${urlReport}

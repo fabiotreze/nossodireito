@@ -21,7 +21,6 @@ on:
       - "sitemap.xml"
       - "sw.js"
       - "manifest.json"
-      - "codereview/**"
       - "scripts/**"
       - ".github/workflows/deploy.yml"
 
@@ -57,7 +56,7 @@ jobs:
           echo "✅ Sem dados sensíveis."
 
       - name: Quality Gate (score >= 75)
-        run: python codereview/codereview.py --ci --min-score 75
+        run: python scripts/quality_pipeline.py --ci
 
   # ── Deploy (só executa se quality-gate passar) ──
   deploy:
@@ -118,7 +117,7 @@ jobs:
             robots.txt sitemap.xml sw.js manifest.json \
             node_modules/ css/ js/ data/ images/ \
             -x "*.bak" "*.swa.bak" "__pycache__/*" \
-            "terraform/*" "codereview/*" ".github/*" "tests/*" "docs/*" \
+            "terraform/*" ".github/*" "tests/*" "docs/*" \
             "node_modules/.package-lock.json" "node_modules/.cache/*"
 
           SIZE=$(wc -c < site.zip)
@@ -220,7 +219,7 @@ jobs:
     needs: deploy
     runs-on: ubuntu-latest
     name: Validate Sources (Post-Deploy)
-    continue-on-error: true  # Não bloqueia pipeline se links estiverem lentos
+    continue-on-error: true # Não bloqueia pipeline se links estiverem lentos
     if: needs.deploy.result == 'success' || needs.deploy.result == 'skipped'
     steps:
       - name: Checkout
@@ -246,21 +245,21 @@ jobs:
           script: |
             const title = '⚠️ Validação de Fontes: Links com Problemas';
             const body = `## Validação de Fontes Falhou
-            
+
             A validação rápida detectou links com problemas após o deploy.
-            
+
             **Ação Recomendada:**
             1. Execute localmente: \`python scripts/validate_sources.py --urls\`
             2. Verifique se URLs governamentais estão temporariamente lentas
             3. Atualize URLs quebrados em \`data/direitos.json\`
-            
+
             **Links para revisar manualmente:**
             - [Planalto.gov.br](https://www.planalto.gov.br/ccivil_03/)
             - [gov.br Serviços](https://www.gov.br/pt-br/servicos)
             - [INSS](https://meu.inss.gov.br/)
-            
+
             _Esta issue foi criada automaticamente pelo workflow de deploy._`;
-            
+
             // Check if issue already exists
             const issues = await github.rest.issues.listForRepo({
               owner: context.repo.owner,
@@ -268,7 +267,7 @@ jobs:
               state: 'open',
               labels: ['validação', 'fontes']
             });
-            
+
             if (issues.data.length === 0) {
               await github.rest.issues.create({
                 owner: context.repo.owner,

@@ -298,7 +298,7 @@ jobs:
             index.html server.js package.json package-lock.json \
             node_modules/ css/ js/ data/ images/ \
             -x "*.bak" "*.swa.bak" "__pycache__/*" \
-            "terraform/*" "codereview/*" ".github/*" "tests/*" "docs/*" \
+            "terraform/*" ".github/*" "tests/*" "docs/*" \
             "node_modules/.package-lock.json" "node_modules/.cache/*"
 
           SIZE=$(wc -c < site.zip)
