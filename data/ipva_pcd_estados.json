@@ -1,0 +1,233 @@
+{
+    "metadata": {
+        "description": "Informações sobre isenção de IPVA para PcD por estado brasileiro",
+        "version": "1.0.0",
+        "lastUpdate": "2026-02-12",
+        "source": "Secretarias de Fazenda Estaduais",
+        "note": "Este arquivo contém dados sobre benefícios fiscais de IPVA para pessoas com deficiência"
+    },
+    "estados": {
+        "AC": {
+            "sigla": "AC",
+            "nome": "Acre",
+            "isencao": true,
+            "valor_limite": null,
+            "legislacao": "Lei Estadual a definir",
+            "observacoes": "Verificar regulamentação atual"
+        },
+        "AL": {
+            "sigla": "AL",
+            "nome": "Alagoas",
+            "isencao": true,
+            "valor_limite": null,
+            "legislacao": "Lei Estadual a definir",
+            "observacoes": "Verificar regulamentação atual"
+        },
+        "AP": {
+            "sigla": "AP",
+            "nome": "Amapá",
+            "isencao": true,
+            "valor_limite": null,
+            "legislacao": "Lei Estadual a definir",
+            "observacoes": "Verificar regulamentação atual"
+        },
+        "AM": {
+            "sigla": "AM",
+            "nome": "Amazonas",
+            "isencao": true,
+            "valor_limite": null,
+            "legislacao": "Lei Estadual a definir",
+            "observacoes": "Verificar regulamentação atual"
+        },
+        "BA": {
+            "sigla": "BA",
+            "nome": "Bahia",
+            "isencao": true,
+            "valor_limite": null,
+            "legislacao": "Lei Estadual a definir",
+            "observacoes": "Verificar regulamentação atual"
+        },
+        "CE": {
+            "sigla": "CE",
+            "nome": "Ceará",
+            "isencao": true,
+            "valor_limite": null,
+            "legislacao": "Lei Estadual a definir",
+            "observacoes": "Verificar regulamentação atual"
+        },
+        "DF": {
+            "sigla": "DF",
+            "nome": "Distrito Federal",
+            "isencao": true,
+            "valor_limite": 150000,
+            "legislacao": "Lei Distrital 5.024/2013",
+            "observacoes": "Isenção para veículos até R$ 150.000"
+        },
+        "ES": {
+            "sigla": "ES",
+            "nome": "Espírito Santo",
+            "isencao": true,
+            "valor_limite": null,
+            "legislacao": "Lei Estadual a definir",
+            "observacoes": "Verificar regulamentação atual"
+        },
+        "GO": {
+            "sigla": "GO",
+            "nome": "Goiás",
+            "isencao": true,
+            "valor_limite": null,
+            "legislacao": "Lei Estadual a definir",
+            "observacoes": "Verificar regulamentação atual"
+        },
+        "MA": {
+            "sigla": "MA",
+            "nome": "Maranhão",
+            "isencao": true,
+            "valor_limite": null,
+            "legislacao": "Lei Estadual a definir",
+            "observacoes": "Verificar regulamentação atual"
+        },
+        "MT": {
+            "sigla": "MT",
+            "nome": "Mato Grosso",
+            "isencao": true,
+            "valor_limite": null,
+            "legislacao": "Lei Estadual a definir",
+            "observacoes": "Verificar regulamentação atual"
+        },
+        "MS": {
+            "sigla": "MS",
+            "nome": "Mato Grosso do Sul",
+            "isencao": true,
+            "valor_limite": null,
+            "legislacao": "Lei Estadual a definir",
+            "observacoes": "Verificar regulamentação atual"
+        },
+        "MG": {
+            "sigla": "MG",
+            "nome": "Minas Gerais",
+            "isencao": true,
+            "valor_limite": null,
+            "legislacao": "Lei Estadual a definir",
+            "observacoes": "Verificar regulamentação atual"
+        },
+        "PA": {
+            "sigla": "PA",
+            "nome": "Pará",
+            "isencao": true,
+            "valor_limite": null,
+            "legislacao": "Lei Estadual a definir",
+            "observacoes": "Verificar regulamentação atual"
+        },
+        "PB": {
+            "sigla": "PB",
+            "nome": "Paraíba",
+            "isencao": true,
+            "valor_limite": null,
+            "legislacao": "Lei Estadual a definir",
+            "observacoes": "Verificar regulamentação atual"
+        },
+        "PR": {
+            "sigla": "PR",
+            "nome": "Paraná",
+            "isencao": true,
+            "valor_limite": null,
+            "legislacao": "Lei Estadual a definir",
+            "observacoes": "Verificar regulamentação atual"
+        },
+        "PE": {
+            "sigla": "PE",
+            "nome": "Pernambuco",
+            "isencao": true,
+            "valor_limite": null,
+            "legislacao": "Lei Estadual a definir",
+            "observacoes": "Verificar regulamentação atual"
+        },
+        "PI": {
+            "sigla": "PI",
+            "nome": "Piauí",
+            "isencao": true,
+            "valor_limite": null,
+            "legislacao": "Lei Estadual a definir",
+            "observacoes": "Verificar regulamentação atual"
+        },
+        "RJ": {
+            "sigla": "RJ",
+            "nome": "Rio de Janeiro",
+            "isencao": true,
+            "valor_limite": 100000,
+            "legislacao": "Lei Estadual 2.877/1997",
+            "observacoes": "Isenção para veículos até R$ 100.000"
+        },
+        "RN": {
+            "sigla": "RN",
+            "nome": "Rio Grande do Norte",
+            "isencao": true,
+            "valor_limite": null,
+            "legislacao": "Lei Estadual a definir",
+            "observacoes": "Verificar regulamentação atual"
+        },
+        "RS": {
+            "sigla": "RS",
+            "nome": "Rio Grande do Sul",
+            "isencao": true,
+            "valor_limite": null,
+            "legislacao": "Lei Estadual a definir",
+            "observacoes": "Verificar regulamentação atual"
+        },
+        "RO": {
+            "sigla": "RO",
+            "nome": "Rondônia",
+            "isencao": true,
+            "valor_limite": null,
+            "legislacao": "Lei Estadual a definir",
+            "observacoes": "Verificar regulamentação atual"
+        },
+        "RR": {
+            "sigla": "RR",
+            "nome": "Roraima",
+            "isencao": true,
+            "valor_limite": null,
+            "legislacao": "Lei Estadual a definir",
+            "observacoes": "Verificar regulamentação atual"
+        },
+        "SC": {
+            "sigla": "SC",
+            "nome": "Santa Catarina",
+            "isencao": true,
+            "valor_limite": null,
+            "legislacao": "Lei Estadual a definir",
+            "observacoes": "Verificar regulamentação atual"
+        },
+        "SP": {
+            "sigla": "SP",
+            "nome": "São Paulo",
+            "isencao": true,
+            "valor_limite": 100000,
+            "legislacao": "Lei Estadual 17.293/2020",
+            "observacoes": "Isenção para veículos até R$ 100.000"
+        },
+        "SE": {
+            "sigla": "SE",
+            "nome": "Sergipe",
+            "isencao": true,
+            "valor_limite": null,
+            "legislacao": "Lei Estadual a definir",
+            "observacoes": "Verificar regulamentação atual"
+        },
+        "TO": {
+            "sigla": "TO",
+            "nome": "Tocantins",
+            "isencao": true,
+            "valor_limite": null,
+            "legislacao": "Lei Estadual a definir",
+            "observacoes": "Verificar regulamentação atual"
+        }
+    },
+    "requisitos_gerais": {
+        "cnh_especial": "CNH com código de adaptação",
+        "laudo_medico": "Laudo médico do DETRAN ou SES",
+        "uso_proprio": "Veículo deve ser para uso próprio da PcD",
+        "unico_beneficio": "Não pode ter outro veículo com isenção ativa"
+    }
+}

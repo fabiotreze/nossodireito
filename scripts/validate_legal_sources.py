@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 """
 Validador de Fontes Legais - NossoDireito v1.5.0
 

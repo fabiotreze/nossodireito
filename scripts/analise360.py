@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 """
 ANÁLISE 360° - NOSSODIREITO
 Comparação: Benefícios Implementados vs Pesquisados

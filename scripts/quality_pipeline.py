@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 """
 Quality Pipeline - Orquestração Completa de Validação
 NossoDireito v1.5.0
