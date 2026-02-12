@@ -3,9 +3,10 @@
 ## Versões Suportadas
 
 | Versão | Suportada |
-|--------|-----------|| 1.6.x  | ✅        |
-| 1.5.x  | ✅        |
-| < 1.5  | ❌        |
+|--------|-----------|
+| 1.8.x  | ✅        |
+| 1.7.x  | ✅        |
+| < 1.7  | ❌        |
 
 ## Reportando Vulnerabilidades
 

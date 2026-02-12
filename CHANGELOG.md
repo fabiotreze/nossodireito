@@ -5,9 +5,94 @@ Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/)
 e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [1.8.0] - 2026-02-12
+
+### ✨ Adicionado
+
+#### Links Completos para Família PcD (Paralisia Cerebral + TEA Grau 3) — Saúde, Isenções, DEFIS, CIPTEA
+- **10 novas fontes**: PCDT (Protocolos Clínicos SUS), Formulário LME (medicamentos especializados), Programa Agora Tem Especialistas, CST/OMS (Caregiver Skills Training para famílias TEA), DPU Contatos, MPF Serviços, Lei 10.048/2000, CIPTEA SP, SISEN Receita Federal, Meu SUS Digital
+- **1 nova instituição**: MPF — Ministério Público Federal (denúncias, SAC, ouvidoria, tel 61 3105-5100)
+- **47 novos keywords** no matching_engine.json (paralisia cerebral, TEA grau 3, LME, PCDT, DEFIS, Zona Azul, Meu INSS, passe livre, etc.)
+- **10 novos termos uppercase_only**: LME, PCDT, CNES, CST, DEFIS, SENATRAN, MPF, DPU, SEFAZ, CER
+
+### 🔄 Enriquecido
+- **`sus_terapias`** — +6 links (LME formulário, PCDT protocolos clínicos, CNES busca, Agora Tem Especialistas, CST/OMS para TEA, Meu SUS Digital), +4 dicas, +12 tags (LME, PCDT, CNES, paralisia cerebral, CER, CST)
+- **`ciptea`** — +5 links (CIPTEA SP portal, Autismo A-Z gov.br, CST/OMS, PCDT, Novo Viver sem Limite), +3 dicas (CIPTEA SP, CST programa, Lei Romeo Mion), +9 tags (TEA grau 3, paralisia cerebral, CST)
+- **`isencoes_tributarias`** — +3 links (SISEN receita.fazenda, SEFAZ SP, DEFIS SENATRAN), +6 dicas (IPI teto R$ 200.000/2026, ICMS ~R$ 120.000, IPVA total, isenção rodízio, Zona Azul grátis, SEFAZ), +11 tags (SISEN, SEFAZ, IPVA, ICMS, rodízio, Zona Azul, DEFIS)
+- **`estacionamento_especial`** — +2 links (DEFIS SENATRAN, SP156 São Paulo), +3 dicas (DEFIS credencial, Zona Azul grátis, credencial nacional), +7 tags
+- **`atendimento_prioritario`** — +2 links (Lei 10.048/2000, MPF Serviços), base_legal Lei 10.048
+- **`transporte`** — +1 link (Passe Livre gov.br/transportes)
+- **`bpc`** — dica Meu INSS app + Helô
+- **`auxilio_inclusao`** — dica Meu INSS + 135
+- **`aposentadoria_especial_pcd`** — dica Meu INSS simulador
+- **`tarifa_social_energia`** — dica distribuidora local (Enel, CPFL, Light, Energisa)
+- DPU instituição enriquecida com link contatos-dpu
+
+### 📊 Métricas
+- 📊 25 categorias, 68 fontes, 25 instituições, 352 tags únicos, 609 keywords, 116 uppercase terms
+- E2E: 18/18 (100%)
+- Codereview: 221 PASS, 100.0/100
+- Master Compliance: 100.00% (853.4/853.4, 17/17 pilares)
+- WAF Score: 100% (Seg=100%, Conf=100%, Perf=100%, Custo=100%, Ops=100%)
+
+## [1.7.0] - 2026-02-12
+
+### ✨ Adicionado
+
+#### Turismo Acessível, ANAC/PNAE, Convenção ONU e Enriquecimentos Massivos
+- **Nova categoria `turismo_acessivel`** — Turismo Acessível, Hospedagem e Transporte Aéreo para PcD
+  - Resolução ANAC 280/2013 — direitos completos do PNAE (Passageiro com Necessidade de Assistência Especial)
+  - Acompanhante aéreo: máx. 20% do bilhete; cão-guia: gratuito na cabine
+  - Ajudas técnicas (cadeira de rodas) transportadas GRATUITAMENTE
+  - 80% de desconto em bagagem de equipamento médico
+  - Portal Turismo Acessível (turismoacessivel.gov.br) — busca por hotéis/atrativos acessíveis
+  - Documentação MEDIF/FREMEC para viajantes frequentes com deficiência
+  - Links: Portal Turismo Acessível, ANAC PNAE, Resolução 280/2013, MEDIF/FREMEC
+- **Convenção ONU (Decreto 6.949/2009)** — "lei mãe" adicionada como base_legal em 7 categorias estratégicas (educação, trabalho, saúde, transporte, moradia, tecnologia, esporte)
+- **11 novas fontes**: Decreto 6.949/2009 (Convenção ONU), Resolução ANAC 280/2013, Lei 8.112/90, Portal Turismo Acessível, ANAC PNAE, eMAG/Acessibilidade Digital, IRPF moléstia grave, Sisen IPI/IOF, CAPS, Rede de Cuidados PcD SUS, ENEM Acessibilidade
+- **4 novas instituições de apoio**: ANAC (163), Portal Turismo Acessível (MTur), ObservaDH, CPB (Comitê Paralímpico Brasileiro)
+- **76 novos keywords** no matching_engine.json (turismo, avião, PNAE, hotel acessível, concurso, eMAG, CAPS, sisen, etc.)
+- **11 novos termos uppercase_only**: ANAC, PNAE, MEDIF, FREMEC, CAPS, CPB, MCMV, SISEN, NAPNE, INEP, eMAG
+
+### 🔄 Enriquecido
+- **`transporte`** — Resolução ANAC 280/2013, embarque prioritário, cão-guia, acompanhante 20%, dicas ANAC
+- **`trabalho`** — Lei 8.112/90 (concursos públicos: 5-20% vagas PcD), guia contratação PcD
+- **`educacao`** — ENEM acessibilidade (INEP), NAPNE (Institutos Federais), prova ampliada/Libras/ledor
+- **`moradia`** — Acessibilidade MCMV (portas largas, barras de apoio), Secretaria Nacional Habitação
+- **`tecnologia_assistiva`** — eMAG, ABNT NBR 17225, acessibilidade digital gov.br
+- **`isencao_ir`** — Link direto Receita Federal (isenção IRPF moléstia grave)
+- **`isencoes_tributarias`** — Link Sisen (IPI/IOF veículo PcD — serviço online gov.br)
+- **`sus_terapias`** — CAPS (saúde mental), Rede de Cuidados à Pessoa com Deficiência
+- **`prouni_fies_sisu`** — ENEM acessibilidade (prova Libras, Braile, ledor, tempo adicional)
+- **`esporte_paralimpico`** — Centros de Referência CPB
+- **`bpc`** — Painel de Monitoramento BPC (SAGI/MDS)
+- 📊 25 categorias, 58 fontes, 24 instituições, 334 tags únicos, 562 keywords, 106 uppercase terms
+
+### 📊 Métricas
+- E2E: 18/18 (100%)
+- Codereview: 210 PASS, 97.4/100
+- WAF Score: 96% (Seg=100%, Conf=100%, Perf=80%, Custo=100%, Ops=100%)
+
 ## [1.6.0] - 2026-02-12
 
 ### ✨ Adicionado
+
+#### Validação contra 15 URLs gov.br — Expansão de Cobertura
+- **Nova categoria `esporte_paralimpico`** — Bolsa Atleta e Esporte Paralímpico para PcD
+  - Lei 10.891/2004, Decreto 5.342/2005
+  - Categorias da Bolsa: Base (R$ 410) a Pódio (R$ 16.629/mês), equiparadas para paralímpicos
+  - Links: Ministério do Esporte, Comitê Paralímpico Brasileiro, Novo Viver sem Limite
+  - 37+ keywords no matching_engine.json (bolsa atleta, esporte paralímpico, CPB, goalball, etc.)
+- **`dica_seguranca`** — Campo top-level: "Sempre verifique se o site termina em .gov.br antes de fornecer dados pessoais"
+- **6 novas fontes**: Lei 10.891/2004, Decreto 5.342/2005, Portaria GM/MS 1.526/2023 (PNAISPD), Novo Viver sem Limite, ONDH, Fala.BR
+- **5 novas instituições de apoio**: ONDH/Disque 100, Fala.BR (CGU), Novo Viver sem Limite, DPU GT PcD, OuvSUS 136
+- **Enriquecimento `sus_terapias`** — PNAISPD (Portaria 1.526/2023), RCPD, CER, OuvSUS 136
+- **Disque 100** adicionado como dica em 14 categorias (24h, WhatsApp 61 99611-0100)
+- **Fala.BR** adicionado como dica em atendimento_prioritário, prioridade_judicial, plano_saude
+- **Novo Viver sem Limite** link adicionado em 4 categorias (tecnologia_assistiva, educacao, protecao_social, transporte)
+- 📊 24 categorias, 47 fontes, 20 instituições, 306 tags únicos, 486 keywords
+
+### ✨ Adicionado (anterior)
 
 #### Sistema de Compliance Total (15 Categorias)
 - **`scripts/master_compliance.py`** — Expandido para validação completa (v1.6.0)
@@ -879,9 +964,9 @@ Todas as leis foram consultadas nos textos consolidados do Planalto.gov.br:
 - Favicons (favicon.ico, favicon-32x32.png, apple-touch-icon.png)
 
 #### Documentação & Governança
-- GOVERNANCE.md — critérios para fontes, categorias, revisão semanal
+- GOVERNANCE.md — critérios para fontes, categorias, revisão periódica
 - SECURITY.md — política de divulgação de vulnerabilidades e boas práticas
 - SECURITY_AUDIT.md — auditoria de segurança documentada
 - LICENSE (MIT + aviso informativo)
-- Workflow `weekly-review.yml` — issue automática toda segunda-feira
+- Workflow `weekly-review.yml` — issue automática periódica
 - README.md com badges (Quality Gate, Deploy, Segurança, LGPD, Licença, Versão)

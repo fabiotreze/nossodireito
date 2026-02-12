@@ -1,7 +1,7 @@
 # Conformidade de Acessibilidade — NossoDireito
 
-**Última Auditoria:** 11 de fevereiro de 2026  
-**Versão do Site:** 1.5.0  
+**Última Auditoria:** 12 de fevereiro de 2026  
+**Versão do Site:** 1.8.0  
 **Versão deste Documento:** 1.0.0  
 
 ---

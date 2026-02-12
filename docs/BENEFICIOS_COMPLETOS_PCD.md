@@ -1,7 +1,7 @@
 # 📋 BENEFÍCIOS COMPLETOS PARA PcD - GUIA EXAUSTIVO
 
 **Documento:** Levantamento completo de direitos, benefícios, descontos, isenções e suportes para pessoas com deficiência no Brasil  
-**Última atualização:** 2026-02-11  
+**Última atualização:** 2026-02-12  
 **Base legal:** Leis federais, decretos e resoluções vigentes
 
 ---
@@ -785,6 +785,6 @@ Mantenha sempre cópias de:
 
 ---
 
-**Documento produzido em:** 2026-02-11  
+**Documento produzido em:** 2026-02-12  
 **Projeto:** NossoDireito - Direitos da Pessoa com Deficiência  
 **Licença:** Informação pública - uso livre para fins educacionais

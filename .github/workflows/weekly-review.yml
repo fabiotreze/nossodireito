@@ -1,8 +1,8 @@
-# NossoDireito — Revisão Semanal de Fontes
-# Abre uma issue toda segunda-feira lembrando de revisar as fontes oficiais.
+# NossoDireito — Revisão Periódica de Fontes
+# Abre uma issue periodicamente lembrando de revisar as fontes oficiais.
 # Para automação completa de verificação de links, descomente a seção "link-check".
 
-name: Revisão Semanal de Fontes
+name: Revisão Periódica de Fontes
 
 on:
   schedule:
@@ -203,7 +203,7 @@ jobs:
             const urlReport = fs.existsSync('url-report.md') ? fs.readFileSync('url-report.md', 'utf8') : '⚠️ Validação de URLs não executada.';
             const today = new Date().toISOString().split('T')[0];
 
-            const body = `# 📋 Revisão Semanal — ${today}
+            const body = `# 📋 Revisão Periódica — ${today}
 
             **Versão atual:** v${process.env.VERSAO}
             **Última atualização:** ${process.env.ULTIMA}
@@ -239,7 +239,7 @@ jobs:
             ### 📋 Conteúdo
             - [ ] Revisar dicas e orientações por categoria
             - [ ] Verificar se documentos necessários mudaram
-            - [ ] Atualizar data de "ultima_atualizacao" e "proxima_revisao" no JSON
+            - [ ] Atualizar data de "ultima_atualizacao" no JSON
 
             ### 🏠 Categorias
             - [ ] Verificar se algum direito PcD novo surgiu (ver backlog no GOVERNANCE.md)
@@ -257,14 +257,14 @@ jobs:
             ${cidReport}
 
             ---
-            *Issue criada automaticamente pelo workflow de revisão semanal.*
+            *Issue criada automaticamente pelo workflow de revisão periódica.*
             *Consulte GOVERNANCE.md para critérios de adição de fontes e categorias.*
-            *Após a revisão, atualize \`ultima_atualizacao\` e \`proxima_revisao\` em \`data/direitos.json\`.*`;
+            *Após a revisão, atualize \`ultima_atualizacao\` em \`data/direitos.json\`.*`;
 
             await github.rest.issues.create({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              title: `📋 Revisão semanal de fontes — ${today}`,
+              title: `📋 Revisão periódica de fontes — ${today}`,
               body: body,
-              labels: ['revisão-semanal', 'fontes']
+              labels: ['revisão-periódica', 'fontes']
             });

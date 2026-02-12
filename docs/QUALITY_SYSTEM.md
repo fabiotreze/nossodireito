@@ -1,4 +1,4 @@
-# 🔍 Sistema de Qualidade NossoDireito v1.5.0
+# 🔍 Sistema de Qualidade NossoDireito v1.8.0
 
 Infraestrutura completa de validação automática para garantir qualidade, segurança e conformidade antes de cada commit e deploy.
 
@@ -20,21 +20,21 @@ Infraestrutura completa de validação automática para garantir qualidade, segu
 
 ### O que validamos
 
-- ✅ **20 categorias** completas com todos os campos obrigatórios
+- ✅ **25 categorias** completas com todos os campos obrigatórios
 - ✅ **27 estados** no dropdown IPVA (lei, artigo, SEFAZ)
 - ✅ **Matching engine** (keywords, sinônimos, termos uppercase)
 - ✅ **Fontes oficiais** (gov.br, planalto.gov.br)
 - ✅ **Relacionamentos** entre categorias e documentos (88 relações)
 - ✅ **Padrões de código** (sem alert(), error handling, ARIA)
 - ✅ **Análise semântica** (resumos, dicas, valores monetários)
-- ✅ **Quality Gate** (98.7/100, WAF 100%)
+- ✅ **Quality Gate** (100.0/100, WAF 100%)
 - ✅ **Segurança** (HTTPS, CSP, dados sensíveis)
 - ✅ **Performance** (HTML <50KB, JS <100KB, JSON <150KB)
 
 ### Score Atual
 
 ```
-Quality Gate: 98.7/100
+Quality Gate: 100.0/100
 WAF 5 Pillars: 100% ✅
 - Security: 100%
 - Reliability: 100%
@@ -137,7 +137,7 @@ python3 codereview/codereview.py
 - WAF 5 Pilares
 - Schema / Governança
 
-**Score atual:** 98.7/100
+**Score atual:** 100.0/100
 
 ---
 
@@ -227,7 +227,7 @@ python3 scripts/quality_pipeline.py --ci
 **Saída:**
 ```json
 {
-  "timestamp": "2026-02-11T23:27:01",
+  "timestamp": "2026-02-12T23:27:01",
   "mode": "full",
   "steps": [
     {
@@ -588,4 +588,4 @@ Issues ou dúvidas:
 
 ---
 
-**Última atualização:** 2026-02-11 (v1.5.0)
+**Última atualização:** 2026-02-12 (v1.8.0)

@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 """
-Master Compliance Validator - NossoDireito v1.6.0
+Master Compliance Validator - NossoDireito v1.8.0
 
 Sistema mestre COMPLETO de validação de compliance, qualidade e consistência.
 Orquestra todos os validadores e gera score final de qualidade.
 
-Validações realizadas (15 categorias):
+Validações realizadas (17 categorias):
 1. Dados (direitos.json, matching_engine.json, vinculação, classificação)
 2. Código (Python, JS, HTML, CSS + linting avançado)
 3. Fontes oficiais (validação de URLs e artigos)
@@ -21,6 +21,8 @@ Validações realizadas (15 categorias):
 13. Arquivos Órfãos (cleanup automático)
 14. Lógica de Negócio (validação de regras e fluxos)
 15. Regulatory Compliance (LGPD, finance, disclaimer, dados sensíveis)
+16. Cloud Security (Azure, EASM, MITRE)
+17. CI/CD (GitHub Actions workflows, segurança, boas práticas)
 
 Objetivo: Precisão 100% com validação completa
 Requisito: Somente fontes oficiais validadas + segurança máxima
@@ -38,7 +40,7 @@ class MasterComplianceValidator:
     
     def __init__(self):
         self.root = Path(__file__).parent.parent
-        self.version = "1.7.0"
+        self.version = "1.8.0"
         self.errors = []
         self.warnings = []
         self.passes = []
@@ -46,7 +48,7 @@ class MasterComplianceValidator:
         self.max_score = 0.0
         self.start_time = datetime.now()
         
-        # Métricas por categoria (16 categorias)
+        # Métricas por categoria (17 categorias)
         self.metrics = {
             'dados': {'score': 0, 'max': 0, 'checks': []},
             'codigo': {'score': 0, 'max': 0, 'checks': []},
@@ -63,7 +65,8 @@ class MasterComplianceValidator:
             'orfaos': {'score': 0, 'max': 0, 'checks': []},
             'logica': {'score': 0, 'max': 0, 'checks': []},
             'regulatory': {'score': 0, 'max': 0, 'checks': []},
-            'cloud_security': {'score': 0, 'max': 0, 'checks': []}
+            'cloud_security': {'score': 0, 'max': 0, 'checks': []},
+            'cicd': {'score': 0, 'max': 0, 'checks': []}
         }
         
         # Carregar dados principais
@@ -128,12 +131,12 @@ class MasterComplianceValidator:
             else:
                 self.log_fail('dados', f"Campo obrigatório '{key}' ausente", 2)
         
-        # 2. Validar categorias (20 esperadas)
+        # 2. Validar categorias (25 esperadas)
         cats = self.direitos.get('categorias', [])
-        if len(cats) == 20:
-            self.log_pass('dados', f"20 categorias presentes ✓", 5)
+        if len(cats) == 25:
+            self.log_pass('dados', f"25 categorias presentes ✓", 5)
         else:
-            self.log_fail('dados', f"Esperado 20 categorias, encontrado {len(cats)}", 5)
+            self.log_fail('dados', f"Esperado 25 categorias, encontrado {len(cats)}", 5)
         
         # 3. Cada categoria deve ter campos obrigatórios
         required_cat_fields = ['id', 'titulo', 'resumo', 'base_legal', 'requisitos', 
@@ -282,7 +285,25 @@ class MasterComplianceValidator:
             'receita.fazenda.gov.br',
             'mec.gov.br',
             'who.int',       # OMS — Organização Mundial da Saúde (fonte internacional legítima)
-            'icd.who.int'    # OMS — CID-10/CID-11 (classificação oficial de doenças)
+            'icd.who.int',   # OMS — CID-10/CID-11 (classificação oficial de doenças)
+            'dpu.def.br',    # Defensoria Pública da União (domínio oficial)
+            'mpf.mp.br',     # Ministério Público Federal (domínio oficial)
+            'cpb.org.br',    # Comitê Paralímpico Brasileiro
+            'falabr.cgu.gov.br',  # Plataforma Fala.BR (CGU)
+            'apaebrasil.org.br',  # APAE Brasil
+            'ijc.org.br',        # Instituto Jô Clemente
+            'ama.org.br',        # AMA
+            'cnmp.mp.br',        # Conselho Nacional do MP
+            'mpt.mp.br',         # Ministério Público do Trabalho
+            'oab.org.br',        # OAB
+            'anadep.org.br',     # Associação Nac. Defensores Públicos
+            'procon.sp.gov.br',  # Procon SP
+            'cfm.org.br',        # Conselho Federal de Medicina
+            'cfp.org.br',        # Conselho Federal de Psicologia
+            'coffito.gov.br',    # COFFITO
+            'autismbrasil.org',  # ABRACI
+            'ans.gov.br',        # ANS
+            'caixa.gov.br',      # Caixa Econômica
         ]
         
         if self.direitos:
@@ -1226,6 +1247,275 @@ class MasterComplianceValidator:
             self.log_warning('cloud_security', "LGPD/GDPR não mencionado - validar se aplicável")
     
     # =========================================================================
+    # CATEGORIA 17: CI/CD — GitHub Actions Workflows
+    # =========================================================================
+    
+    def validate_cicd(self):
+        """Validação completa de CI/CD: workflows, segurança, boas práticas"""
+        print("\n" + "=" * 80)
+        print("VALIDAÇÃO DE CI/CD — GitHub Actions Workflows")
+        print("=" * 80)
+        
+        cat = 'cicd'
+        workflows_dir = self.root / '.github' / 'workflows'
+        
+        if not workflows_dir.exists():
+            self.log_fail(cat, "Pasta .github/workflows/ ausente", 30)
+            return
+        
+        self.log_pass(cat, ".github/workflows/ presente", 2)
+        
+        # ── 1. Workflows obrigatórios ──
+        required_workflows = {
+            'quality-gate.yml': 'Quality Gate (validação de qualidade)',
+            'deploy.yml': 'Deploy (entrega contínua)',
+            'terraform.yml': 'Terraform (infraestrutura como código)',
+            'weekly-review.yml': 'Revisão Periódica (monitoramento contínuo)'
+        }
+        
+        workflow_contents = {}  # cache para reusar
+        
+        for wf_name, wf_desc in required_workflows.items():
+            wf_path = workflows_dir / wf_name
+            if wf_path.exists():
+                self.log_pass(cat, f"{wf_name} presente — {wf_desc}", 3)
+                try:
+                    content = wf_path.read_text(encoding='utf-8')
+                    workflow_contents[wf_name] = content
+                except Exception as e:
+                    self.log_fail(cat, f"{wf_name}: erro ao ler — {e}", 3)
+            else:
+                self.log_fail(cat, f"{wf_name} ausente — {wf_desc}", 3)
+        
+        if not workflow_contents:
+            self.log_fail(cat, "Nenhum workflow legível encontrado", 10)
+            return
+        
+        # ── 2. YAML válido (sem erros de sintaxe) ──
+        for wf_name, content in workflow_contents.items():
+            # Verificar estrutura mínima YAML
+            has_name = 'name:' in content
+            has_on = '\non:' in content or content.startswith('on:')
+            has_jobs = 'jobs:' in content
+            
+            if has_name and has_on and has_jobs:
+                self.log_pass(cat, f"{wf_name}: estrutura YAML válida (name/on/jobs)", 2)
+            else:
+                missing = [x for x, v in [('name', has_name), ('on', has_on), ('jobs', has_jobs)] if not v]
+                self.log_fail(cat, f"{wf_name}: faltam campos — {', '.join(missing)}", 2)
+        
+        # ── 3. Segurança: permissions (least privilege) ──
+        for wf_name, content in workflow_contents.items():
+            if 'permissions:' in content:
+                self.log_pass(cat, f"{wf_name}: permissions definidas (least privilege)", 3)
+                
+                # Verificar se não tem permissions: write-all
+                if 'permissions: write-all' in content or 'permissions:\n  contents: write' in content:
+                    self.log_warning(cat, f"{wf_name}: permissions muito amplas — restringir")
+            else:
+                # deploy.yml pode não ter permissions explícitas mas herda defaults
+                if wf_name in ('deploy.yml',):
+                    self.log_warning(cat, f"{wf_name}: permissions não explícitas — considerar adicionar")
+                else:
+                    self.log_warning(cat, f"{wf_name}: permissions não definidas")
+        
+        # ── 4. Segurança: actions pinadas (versão fixa) ──
+        import re as re_mod
+        total_actions = 0
+        pinned_actions = 0
+        unpinned_list = []
+        
+        for wf_name, content in workflow_contents.items():
+            # Encontrar todas as uses:
+            action_refs = re_mod.findall(r'uses:\s*([^\s]+)', content)
+            for action_ref in action_refs:
+                total_actions += 1
+                # SHA-pinned: @sha256:... ou @<40-hex>
+                if re_mod.search(r'@[a-f0-9]{40}', action_ref):
+                    pinned_actions += 1
+                # Version tag: @v4, @v5, etc (aceitável para actions oficiais)
+                elif re_mod.search(r'@v\d+', action_ref):
+                    # Actions oficiais do GitHub com version tag são aceitáveis
+                    if action_ref.startswith('actions/'):
+                        pinned_actions += 1
+                    else:
+                        unpinned_list.append(f"{wf_name}: {action_ref}")
+                else:
+                    unpinned_list.append(f"{wf_name}: {action_ref}")
+        
+        if total_actions > 0:
+            pin_rate = (pinned_actions / total_actions) * 100
+            if pin_rate == 100:
+                self.log_pass(cat, f"Actions pinadas: {pinned_actions}/{total_actions} (100%)", 5)
+            elif pin_rate >= 80:
+                self.log_pass(cat, f"Actions pinadas: {pinned_actions}/{total_actions} ({pin_rate:.0f}%)", 3)
+                for item in unpinned_list:
+                    self.log_warning(cat, f"Action sem pin: {item}")
+            else:
+                self.log_fail(cat, f"Actions pinadas: {pinned_actions}/{total_actions} ({pin_rate:.0f}%) — risco supply chain", 5)
+        
+        # ── 5. Quality Gate obrigatório antes de deploy ──
+        deploy_content = workflow_contents.get('deploy.yml', '')
+        if deploy_content:
+            if 'needs: quality-gate' in deploy_content or 'needs:\n' in deploy_content:
+                self.log_pass(cat, "Deploy depende de Quality Gate (needs)", 5)
+            else:
+                self.log_fail(cat, "Deploy NÃO depende de Quality Gate — risco", 5)
+            
+            # Concurrency (evita deploys paralelos)
+            if 'concurrency:' in deploy_content:
+                self.log_pass(cat, "Deploy com concurrency group (sem paralelos)", 3)
+            else:
+                self.log_warning(cat, "Deploy sem concurrency — deploys paralelos possíveis")
+        
+        # ── 6. Sensitive data scan no CI ──
+        qg_content = workflow_contents.get('quality-gate.yml', '')
+        has_secret_scan = False
+        for content in workflow_contents.values():
+            if 'PRIVATE KEY' in content or 'AKIA' in content or 'dados sensíveis' in content.lower():
+                has_secret_scan = True
+                break
+        
+        if has_secret_scan:
+            self.log_pass(cat, "Scan de dados sensíveis presente nos workflows", 4)
+        else:
+            self.log_fail(cat, "Sem scan de dados sensíveis nos workflows", 4)
+        
+        # ── 7. Secrets: não hardcoded nos workflows ──
+        secrets_hardcoded = False
+        for wf_name, content in workflow_contents.items():
+            # Verificar se há valores hardcoded (não ${{ secrets.* }})
+            # Padrões perigosos: chaves AWS, tokens, senhas literais
+            dangerous_patterns = [
+                r'AKIA[0-9A-Z]{16}',
+                r'ghp_[a-zA-Z0-9]{36}',
+                r'sk-[a-zA-Z0-9]{20,}',
+                r"password:\s*['\"][^$][^{]",
+            ]
+            for pattern in dangerous_patterns:
+                if re_mod.search(pattern, content):
+                    secrets_hardcoded = True
+                    self.log_fail(cat, f"{wf_name}: segredo hardcoded detectado!", 5)
+                    break
+        
+        if not secrets_hardcoded:
+            self.log_pass(cat, "Sem segredos hardcoded nos workflows", 4)
+        
+        # Secrets usados via ${{ secrets.* }} (boa prática)
+        secrets_refs = set()
+        for content in workflow_contents.values():
+            refs = re_mod.findall(r'\$\{\{\s*secrets\.(\w+)\s*\}\}', content)
+            secrets_refs.update(refs)
+        
+        if secrets_refs:
+            self.log_pass(cat, f"Secrets via GitHub: {len(secrets_refs)} referências seguras", 3)
+        
+        # ── 8. Health check após deploy ──
+        if deploy_content:
+            if 'healthz' in deploy_content or 'health' in deploy_content.lower():
+                self.log_pass(cat, "Health check pós-deploy presente", 3)
+            else:
+                self.log_warning(cat, "Sem health check após deploy")
+        
+        # ── 9. Artifact upload (relatórios) ──
+        has_artifacts = False
+        for content in workflow_contents.values():
+            if 'upload-artifact' in content:
+                has_artifacts = True
+                break
+        
+        if has_artifacts:
+            self.log_pass(cat, "Artifact upload configurado (relatórios persistidos)", 2)
+        else:
+            self.log_warning(cat, "Sem upload de artifacts nos workflows")
+        
+        # ── 10. Terraform: workflow_dispatch com parâmetros ──
+        tf_content = workflow_contents.get('terraform.yml', '')
+        if tf_content:
+            if 'workflow_dispatch' in tf_content:
+                self.log_pass(cat, "Terraform: execução manual habilitada (workflow_dispatch)", 2)
+            
+            if 'terraform plan' in tf_content:
+                self.log_pass(cat, "Terraform: plan presente", 2)
+            else:
+                self.log_fail(cat, "Terraform: sem plan", 2)
+            
+            if 'terraform validate' in tf_content:
+                self.log_pass(cat, "Terraform: validate presente", 2)
+            else:
+                self.log_warning(cat, "Terraform: sem validate")
+            
+            if 'terraform fmt' in tf_content:
+                self.log_pass(cat, "Terraform: fmt check presente", 2)
+            else:
+                self.log_warning(cat, "Terraform: sem fmt check")
+            
+            # State management
+            if 'tfstate' in tf_content or 'terraform.tfstate' in tf_content:
+                self.log_pass(cat, "Terraform: state management configurado", 2)
+            else:
+                self.log_warning(cat, "Terraform: state management não encontrado")
+        
+        # ── 11. Weekly review (monitoramento contínuo) ──
+        weekly_content = workflow_contents.get('weekly-review.yml', '')
+        if weekly_content:
+            if 'schedule' in weekly_content or 'cron' in weekly_content:
+                self.log_pass(cat, "Revisão periódica com schedule/cron", 3)
+            else:
+                self.log_warning(cat, "Revisão periódica sem schedule — execução manual apenas")
+            
+            if 'issues: write' in weekly_content:
+                self.log_pass(cat, "Revisão periódica cria issues automaticamente", 2)
+            else:
+                self.log_warning(cat, "Revisão periódica não cria issues")
+        
+        # ── 12. CI executa codereview/codereview.py ──
+        ci_runs_codereview = False
+        for content in workflow_contents.values():
+            if 'codereview.py' in content or 'codereview/codereview.py' in content:
+                ci_runs_codereview = True
+                break
+        
+        if ci_runs_codereview:
+            self.log_pass(cat, "CI executa codereview.py (quality gate automatizado)", 4)
+        else:
+            self.log_fail(cat, "CI não executa codereview.py", 4)
+        
+        # ── 13. validate_content.py no CI ──
+        ci_runs_validate = False
+        for content in workflow_contents.values():
+            if 'validate_content.py' in content:
+                ci_runs_validate = True
+                break
+        
+        if ci_runs_validate:
+            self.log_pass(cat, "CI executa validate_content.py (validação de dados)", 3)
+        else:
+            self.log_warning(cat, "CI não executa validate_content.py")
+        
+        # ── 14. $GITHUB_STEP_SUMMARY (relatório no PR) ──
+        has_summary = False
+        for content in workflow_contents.values():
+            if 'GITHUB_STEP_SUMMARY' in content:
+                has_summary = True
+                break
+        
+        if has_summary:
+            self.log_pass(cat, "GitHub Step Summary configurado (relatório visual)", 2)
+        else:
+            self.log_warning(cat, "Sem GITHUB_STEP_SUMMARY nos workflows")
+        
+        # ── 15. Triggers seguros (não usa pull_request_target sem precaução) ──
+        unsafe_triggers = False
+        for wf_name, content in workflow_contents.items():
+            if 'pull_request_target' in content:
+                unsafe_triggers = True
+                self.log_warning(cat, f"{wf_name}: usa pull_request_target — risco de injection")
+        
+        if not unsafe_triggers:
+            self.log_pass(cat, "Sem triggers inseguros (pull_request_target)", 2)
+    
+    # =========================================================================
     # GERAÇÃO DE RELATÓRIO
     # =========================================================================
     
@@ -1251,7 +1541,8 @@ class MasterComplianceValidator:
             'orfaos': '🗑️  ÓRFÃOS',
             'logica': '🎯 LÓGICA',
             'regulatory': '⚖️  REGULATORY',
-            'cloud_security': '☁️  CLOUD_SECURITY'
+            'cloud_security': '☁️  CLOUD_SECURITY',
+            'cicd': '🔄 CI/CD'
         }
         
         total_score = 0
@@ -1321,13 +1612,13 @@ class MasterComplianceValidator:
         print("="*60)
         print(f"Workspace: {self.root}")
         print(f"Início: {self.start_time.strftime('%Y-%m-%d %H:%M:%S')}")
-        print(f"\n🎯 16 CATEGORIAS DE VALIDAÇÃO:")
+        print(f"\n🎯 17 CATEGORIAS DE VALIDAÇÃO:")
         print("   1. Dados  2. Código  3. Fontes  4. Arquitetura  5. Documentação")
         print("   6. Segurança  7. Performance  8. Acessibilidade  9. SEO  10. Infraestrutura")
         print("   11. Testes E2E  12. Dead Code  13. Órfãos  14. Lógica  15. Regulatory")
-        print("   16. Cloud Security (Azure/EASM/MITRE)")
+        print("   16. Cloud Security  17. CI/CD (GitHub Actions)")
         
-        # Executar todas as 16 categorias
+        # Executar todas as 17 categorias
         self.validate_data_integrity()
         self.validate_code_quality()
         self.validate_official_sources()
@@ -1344,6 +1635,7 @@ class MasterComplianceValidator:
         self.validate_business_logic()
         self.validate_regulatory_compliance()
         self.validate_cloud_security()
+        self.validate_cicd()
         
         # Gerar relatório
         percentage = self.generate_report()

@@ -1,7 +1,7 @@
 # 📋 AÇÕES IMEDIATAS — Priorização e Execução
 
-**Data:** 11 de fevereiro de 2026  
-**Projeto:** NossoDireito v1.5.0 → v1.6.0  
+**Data:** 12 de fevereiro de 2026  
+**Projeto:** NossoDireito v1.8.0  
 **Tempo estimado total:** 4-6 horas (prioridades CRÍTICAS)  
 
 ---
@@ -190,7 +190,7 @@ jobs:
 ```
 </details>
 
-**AÇÃO 2:** Criar `.github/workflows/link-check.yml` (validação semanal)
+**AÇÃO 2:** Criar `.github/workflows/link-check.yml` (validação periódica)
 
 <details>
 <summary>Ver código completo</summary>
@@ -563,6 +563,6 @@ https://github.com/fabiotreze/nossodireito/issues
 ---
 
 **Data de criação:** 11 de fevereiro de 2026  
-**Revisão:** Semanal (toda segunda-feira)  
+**Revisão:** Periódica  
 **Responsável:** Fábio Treze  
 **Licença:** MIT  

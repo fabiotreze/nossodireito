@@ -1,7 +1,7 @@
 # Problemas Conhecidos e Limitações — NossoDireito
 
-**Última Atualização:** 11 de fevereiro de 2026  
-**Versão:** 1.0.0  
+**Última Atualização:** 12 de fevereiro de 2026  
+**Versão:** 1.8.0  
 
 ---
 
@@ -93,7 +93,7 @@ Site carrega lento em redes 3G/2G devido ao tamanho do JavaScript (115 KB).
 - ❌ MDS reorganizou benefícios (dez 2025)
 
 **Mitigação:**  
-- ✅ **Validação semanal** automática (validate_sources.py)
+- ✅ **Validação periódica** automática (validate_sources.py)
 - ✅ **Fontes oficiais** priorizadas (planalto.gov.br, senado.leg.br)
 - ✅ **Múltiplas fontes** por benefício (backup links)
 - ✅ **Archive.org** como fallback (quando possível)

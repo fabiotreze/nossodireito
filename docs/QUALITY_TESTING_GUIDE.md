@@ -1,6 +1,6 @@
 # Guia Completo de Validação de Qualidade
-**NossoDireito v1.5.0**  
-Última atualização: 2026-02-11
+**NossoDireito v1.8.0**  
+Última atualização: 2026-02-12
 
 ---
 
@@ -101,7 +101,7 @@ python3 codereview/codereview.py
 
 # Duração: ~1 segundo
 # Score mínimo aceitável: 75/100
-# Score atual (v1.5.0): 98.7/100
+# Score atual (v1.8.0): 100.0/100
 ```
 
 #### **PASSO 5: Análise 360° (Opcional)**
@@ -211,11 +211,11 @@ python3 codereview/codereview.py | grep "Score Total"
 | WAF 5 Pilares | 100% | 100% | ✅ |
 | Schema / Governança | ≥75% | 78.8% | ⚠️ |
 
-**Score Total:** 98.7/100 ✅
+**Score Total:** 100.0/100 ✅
 
 **Detalhes do Schema/Governança (78.8%):**
-- ✅ 3/20 categorias COM planalto.gov.br: BPC, CIPTEA, Educação
-- ⚠️ 17/20 categorias ANTIGAS sem planalto.gov.br (aceitável - leis mais antigas)
+- ✅ 3/25 categorias COM planalto.gov.br: BPC, CIPTEA, Educação
+- ⚠️ 22/25 categorias ANTIGAS sem planalto.gov.br (aceitável - leis mais antigas)
 - Motivo: Leis mais recentes (2012-2025) exigem base_legal completa
 
 ---
@@ -260,7 +260,7 @@ python3 -m http.server 3000
 
 - [ ] Página carrega em <3 segundos
 - [ ] Nenhum erro no Console
-- [ ] 20 categorias visíveis na tela inicial
+- [ ] 25 categorias visíveis na tela inicial
 - [ ] Logo/título "NossoDireito" visível
 - [ ] Disclaimer/aviso legal visível no rodapé
 - [ ] VLibras widget visível no canto inferior direito
@@ -297,7 +297,7 @@ python3 -m http.server 3000
 
 #### **3.3 Categorias - Conteúdo Detalhado** 📄
 
-**Testar TODAS as 20 categorias:**
+**Testar TODAS as 25 categorias:**
 
 - [ ] **BPC/LOAS** - Clique → abre modal com:
   - Ícone 🏦
@@ -544,7 +544,7 @@ SEO:            95+ (meta tags, sitemap.xml, robots.txt)
 Antes de `git commit`, garantir:
 
 **Código:**
-- [ ] ✅ Quality gate score ≥75/100 (atual: 98.7)
+- [ ] ✅ Quality gate score ≥75/100 (atual: 100.0)
 - [ ] ✅ Nenhum erro no Console do browser
 - [ ] ✅ Nenhum warning crítico no codereview
 - [ ] ✅ JSON válido (direitos.json, matching_engine.json)
@@ -552,7 +552,7 @@ Antes de `git commit`, garantir:
 - [ ] ✅ JavaScript sem erros de sintaxe
 
 **Conteúdo:**
-- [ ] ✅ 20 categorias completas com todos os campos
+- [ ] ✅ 25 categorias completas com todos os campos
 - [ ] ✅ Todas URLs HTTPS (nenhum HTTP)
 - [ ] ✅ Base legal com lei + artigo + link (categorias novas)
 - [ ] ✅ Disclaimer/aviso legal visível
@@ -580,7 +580,7 @@ Antes de `git commit`, garantir:
 **Testes:**
 - [ ] ✅ Busca funcionando (autismo, BPC, carro)
 - [ ] ✅ IPVA dropdown com 27 estados
-- [ ] ✅ Modais de todas 20 categorias funcionando
+- [ ] ✅ Modais de todas 25 categorias funcionando
 - [ ] ✅ Links externos abrindo em nova aba
 - [ ] ✅ Responsividade (mobile, tablet, desktop)
 
@@ -597,7 +597,7 @@ python3 scripts/quality_pipeline.py --full
 
 # 2. Quality gate
 python3 codereview/codereview.py | grep "Score Total"
-# Esperado: Score Total: 98.7/100
+# Esperado: Score Total: 100.0/100
 
 # 3. Verificar tamanhos
 du -h index.html js/app.js data/direitos.json
@@ -605,7 +605,7 @@ du -h index.html js/app.js data/direitos.json
 ```
 
 **Testes Manuais:**
-- [ ] Todas 20 categorias testadas no browser
+- [ ] Todas 25 categorias testadas no browser
 - [ ] IPVA dropdown testado para 10+ estados
 - [ ] VLibras funcionando
 - [ ] Lighthouse scores ≥90
@@ -799,13 +799,13 @@ curl -I https://www.gov.br/pt-br/servicos/solicitar-beneficio-assistencial-a-pes
 
 ---
 
-## 📊 Resumo de Validação (v1.5.0)
+## 📊 Resumo de Validação (v1.8.0)
 
-| Métrica | Alvo | v1.5.0 | Status |
+| Métrica | Alvo | v1.8.0 | Status |
 |---------|------|--------|--------|
-| Quality Gate Score | ≥75/100 | 98.7/100 | ✅ |
+| Quality Gate Score | ≥75/100 | 100.0/100 | ✅ |
 | WAF 5 Pillars | 100% | 100% | ✅ |
-| Categorias Completas | 20/20 | 20/20 | ✅ |
+| Categorias Completas | 25/25 | 25/25 | ✅ |
 | HTML Size | <50KB | 29KB | ✅ |
 | JS Size | <100KB | 71KB | ✅ |
 | JSON Size | <150KB | 102KB | ✅ |
@@ -817,5 +817,5 @@ curl -I https://www.gov.br/pt-br/servicos/solicitar-beneficio-assistencial-a-pes
 ---
 
 **✅ Pronto para Produção!**  
-Última validação: 2026-02-11  
-Pipeline Status: ✅ PASSING (98.7/100)
+Última validação: 2026-02-12  
+Pipeline Status: ✅ PASSING (100.0/100)

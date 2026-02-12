@@ -1,7 +1,7 @@
 # NossoDireito — Documento Único de Compliance
 
-**Versão:** 1.0.0 (consolidado de múltiplos documentos)  
-**Data:** 11 de fevereiro de 2026  
+**Versão:** 1.8.0 (consolidado de múltiplos documentos)  
+**Data:** 12 de fevereiro de 2026  
 **Responsável:** Fabio Treze (fabiotreze@hotmail.com)  
 **Tipo:** Compliance Legal, Técnico, Segurança, Privacidade, Acessibilidade, Qualidade  
 **Framework:** ISO 27001 + SOC 2 + LGPD + LBI  
@@ -573,7 +573,7 @@ setTimeout(() => deleteFromIndexedDB(pdfId), 30 * 60 * 1000);
       "tipo": "legislacao|normativa|servico",
       "url": "Link oficial (planalto.gov.br, gov.br)",
       "orgao": "Órgão responsável",
-      "consultado_em": "2026-02-11",
+      "consultado_em": "2026-02-12",
       "artigos_referenciados": ["Art. X"]
     }
   ],
@@ -616,7 +616,7 @@ setTimeout(() => deleteFromIndexedDB(pdfId), 30 * 60 * 1000);
 
 **Procedimento de Correção:** Ver [DEPENDENCY_CONTROL.md](DEPENDENCY_CONTROL.md) Procedimento 6️⃣
 
-**Próxima Validação Automática:** Implementar GitHub Actions (semanal)
+**Próxima Validação Automática:** Implementar GitHub Actions (periódica)
 
 ---
 
@@ -662,7 +662,7 @@ setTimeout(() => deleteFromIndexedDB(pdfId), 30 * 60 * 1000);
 | 2026-02-11 | 1.4.3 | Acessibilidade | WCAG 2.1 AA, VLibras | 0 | ✅ Conforme |
 | 2026-02-10 | 1.4.2 | Integração | Meia-entrada + Tarifa Social | 0 | ✅ Concluído |
 
-**Próxima Auditoria Completa:** 18/02/2026 (semanal)
+**Próxima Auditoria Completa:** 18/02/2026 (periódica)
 
 ---
 
@@ -767,7 +767,7 @@ git commit -m "a11y: Melhora contraste (WCAG 2.1 AA 1.4.3)"
 | Risco | Probabilidade | Impacto | Nível | Mitigação Atual | Status |
 |-------|---------------|---------|-------|-----------------|--------|
 | **Informações desatualizadas** | MÉDIA | MÉDIO | 🟡 **MÉDIO** | Script `validate_sources.py`, disclaimer | ⚠️ Monitorar |
-| **Links quebrados** | MUITO BAIXA | BAIXO | 🟢 **BAIXO** | Script `validate_links.py` (semanal) | ✅ 0 links quebrados |
+| **Links quebrados** | MUITO BAIXA | BAIXO | 🟢 **BAIXO** | Script `validate_links.py` (periódica) | ✅ 0 links quebrados |
 | **Interpretação incorreta de lei** | BAIXA | MÉDIO | 🟡 **MÉDIO** | Cita fontes oficiais, direciona Defensoria | ✅ Mitigado |
 | **Vazamento de dados** | MUITO BAIXA | ALTO | 🟢 **BAIXO** | Zero-data, AES-GCM-256, TTL 30 min | ✅ Mitigado |
 | **Ataque DDoS** | BAIXA | MÉDIO | 🟡 **MÉDIO** | Azure DDoS Protection (Basic tier) | ✅ Mitigado |
@@ -813,7 +813,7 @@ git commit -m "a11y: Melhora contraste (WCAG 2.1 AA 1.4.3)"
 
 3. ✅ **Automatizar validação de links** (GitHub Actions)
    - Prioridade: MÉDIA
-   - Frequência: Semanal (domingo 00:00)
+   - Frequência: Periódica
    - Prazo: Fevereiro 2026
 
 4. ⚠️ **Script de validação pré-commit**
@@ -876,7 +876,7 @@ git commit -m "a11y: Melhora contraste (WCAG 2.1 AA 1.4.3)"
 
 | Tipo de Auditoria | Frequência | Próxima Data | Responsável |
 |-------------------|------------|--------------|-------------|
-| **Validação de Links** | Semanal | 18/02/2026 | Script automático |
+| **Validação de Links** | Periódica | 18/02/2026 | Script automático |
 | **Fontes Legislativas** | Mensal | 11/03/2026 | Fabio Treze |
 | **Acessibilidade (WCAG)** | Mensal | 11/03/2026 | Fabio Treze |
 | **Segurança (OWASP)** | Trimestral | 11/05/2026 | Fabio Treze |
@@ -1129,7 +1129,7 @@ git commit -m "a11y: Melhora contraste (WCAG 2.1 AA 1.4.3)"
   - [ ] Defensoria Pública (expandir)
 - [ ] **Feature:** Filtros por categoria/tag
 - [ ] **Feature:** Busca por tipo de deficiência
-- [ ] **Automatizar validação de links** (GitHub Actions semanal)
+- [ ] **Automatizar validação de links** (GitHub Actions periódica)
 
 #### Médio Prazo (2-3 meses — v1.6.0)
 

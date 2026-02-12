@@ -164,7 +164,7 @@ Verificando `data/direitos.json`:
         "nome": "Constituição Federal de 1988",
         "tipo": "legislacao",
         "url": "...",
-        "consultado_em": "2026-02-10"
+        "consultado_em": "2026-02-12"
     },
     {
         "nome": "Lei 8.036/1990 — FGTS",
@@ -296,6 +296,6 @@ Se decidir **mudar critérios**, considerar:
 
 ---
 
-**Última atualização:** 2026-02-11  
+**Última atualização:** 2026-02-12  
 **Autor:** Documentação técnica NossoDireito  
 **Versão:** 1.0

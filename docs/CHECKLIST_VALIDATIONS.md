@@ -535,6 +535,6 @@ Benefícios variam por **sindicato** e **categoria profissional**:
 
 ---
 
-**Documento gerado automaticamente pelo sistema NossoDireito v1.2.0**  
-**Última atualização:** 11 de fevereiro de 2026  
+**Documento gerado automaticamente pelo sistema NossoDireito v1.8.0**  
+**Última atualização:** 12 de fevereiro de 2026  
 **Licença:** CC BY-SA 4.0

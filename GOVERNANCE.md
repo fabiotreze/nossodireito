@@ -3,8 +3,8 @@
 > Documento que define os critérios, fluxos e boas práticas para manter o portal atualizado,
 > confiável e sempre embasado em fontes oficiais do governo brasileiro.
 
-**Última revisão:** 2026-02-10
-**Versão:** 1.1.0
+**Última revisão:** 2026-02-12
+**Versão:** 1.8.0
 
 ---
 
@@ -14,7 +14,7 @@
 |-----------|-----------|
 | **Oficialidade** | Toda informação deve vir de fonte oficial (gov.br, legislação, norma técnica) |
 | **Rastreabilidade** | Cada dado deve ter fonte, data de consulta e link verificável |
-| **Atualidade** | Informações devem ser revisadas semanalmente e atualizadas quando necessário |
+| **Atualidade** | Informações devem ser revisadas periodicamente e atualizadas quando necessário |
 | **Completude** | Cada categoria deve ter base legal, documentos, passo a passo e contatos |
 | **Acessibilidade** | Informações devem ser compreensíveis por leigos (linguagem simples) |
 
@@ -111,7 +111,7 @@
 5. Adicionar `fontes` — leis, decretos e serviços usados
 6. Atualizar `artigos_referenciados` nas fontes existentes (ex: LBI)
 7. Incrementar versão (semver MINOR para nova categoria)
-8. Atualizar `ultima_atualizacao` e `proxima_revisao`
+8. Atualizar `ultima_atualizacao`
 9. Rodar `codereview.py` — score mínimo 95/100
 10. Testar no navegador — categoria aparece, busca encontra, análise de documento detecta
 
@@ -138,15 +138,10 @@ Quando uma lei é alterada:
 
 ---
 
-## 5. Fluxo de Revisão Semanal
+## 5. Fluxo de Revisão
 
 ```
-Segunda (automático) ─→ GitHub Action cria issue
-                         ├─ Verifica links (curl)
-                         ├─ Conta fontes e categorias
-                         └─ Gera checklist de revisão
-
-Revisão (manual) ─────→ Seguir checklist da issue
+Revisão (manual) ─────→ Quando houver mudança legislativa ou atualização
                          ├─ Acessar sites oficiais
                          ├─ Verificar mudanças legislativas
                          ├─ Atualizar valores ($)
@@ -155,22 +150,21 @@ Revisão (manual) ─────→ Seguir checklist da issue
 
 Pós-revisão ──────────→ Atualizar campos do JSON
                          ├─ ultima_atualizacao
-                         ├─ proxima_revisao
                          ├─ consultado_em (nas fontes verificadas)
-                         └─ Fechar issue no GitHub
+                         └─ Registrar no CHANGELOG
 ```
 
 ### 5.1. Onde verificar mudanças legislativas
 
 | O que verificar | Onde | Frequência |
 |----------------|------|------------|
-| Novas leis PcD | planalto.gov.br → Legislação → Pesquisa | Semanal |
-| Alterações no BPC | gov.br/inss → Notícias | Semanal |
-| Valor salário mínimo | gov.br → Salário mínimo | Mensal (jan) |
-| Mudanças ANS | gov.br/ans → Notícias | Semanal |
-| NBR 9050 atualizações | abnt.org.br | Trimestral |
-| Programas habitacionais | gov.br/cidades → MCMV | Mensal |
-| Diário Oficial da União | dou.gov.br | Semanal |
+| Novas leis PcD | planalto.gov.br → Legislação → Pesquisa | Periódica |
+| Alterações no BPC | gov.br/inss → Notícias | Periódica |
+| Valor salário mínimo | gov.br → Salário mínimo | Anual (jan) |
+| Mudanças ANS | gov.br/ans → Notícias | Periódica |
+| NBR 9050 atualizações | abnt.org.br | Quando publicada |
+| Programas habitacionais | gov.br/cidades → MCMV | Periódica |
+| Diário Oficial da União | dou.gov.br | Periódica |
 
 ### 5.2. Alertas que demandam ação imediata
 
@@ -187,11 +181,11 @@ Categorias que podem ser adicionadas após pesquisa e validação:
 
 | Categoria | Base Legal Potencial | Status |
 |-----------|---------------------|--------|
-| Isenção de impostos (IR, IPTU) | Lei 7.713/1988, leis municipais | 🔍 Pesquisar |
-| Prioridade em filas e atendimento | Lei 10.048/2000 | 🔍 Pesquisar |
+| Isenção de impostos (IR, IPTU) | Lei 7.713/1988, leis municipais | ✅ Implementada (v1.5.0+) |
+| Prioridade em filas e atendimento | Lei 10.048/2000 | ✅ Implementada (v1.5.0+) |
 | Curatela e tomada de decisão apoiada | Código Civil Art. 1.767+, LBI Art. 84-87 | 🔍 Pesquisar |
-| Tecnologia assistiva | LBI Art. 74-75, Lei 10.098/2000 | 🔍 Pesquisar |
-| Perícia e aposentadoria PcD | LC 142/2013 | 🔍 Pesquisar |
+| Tecnologia assistiva | LBI Art. 74-75, Lei 10.098/2000 | ✅ Implementada (v1.5.0+) |
+| Perícia e aposentadoria PcD | LC 142/2013 | ✅ Implementada (v1.5.0+) |
 | CNH especial | Resolução Contran 168/2004 | 🔍 Pesquisar |
 | Certidão de PcD estadual | Leis estaduais variadas | 🔍 Pesquisar |
 
@@ -206,7 +200,7 @@ Categorias que podem ser adicionadas após pesquisa e validação:
 - ❌ Copiar texto de sites sem verificar a fonte original (gov.br)
 - ❌ Usar informações de fontes não-oficiais como base legal
 - ❌ Publicar sem rodar `codereview.py` (mínimo 95/100)
-- ❌ Deixar link quebrado por mais de 1 semana
+- ❌ Deixar link quebrado sem correção
 - ❌ Inventar ou inferir direitos não previstos em lei
 - ❌ Dar conselho jurídico — o site **informa**, não aconselha
 
@@ -218,7 +212,6 @@ Categorias que podem ser adicionadas após pesquisa e validação:
 - ✅ Testar todos os links antes de publicar
 - ✅ Rodar `codereview.py` após qualquer alteração
 - ✅ Incluir variantes sem acento no `KEYWORD_MAP` (ex: `condomínio` e `condominio`)
-- ✅ Atualizar `proxima_revisao` após cada revisão semanal
 
 ### 7.3. Tom e linguagem
 

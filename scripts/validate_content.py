@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """
 Content Validation - Validação Semântica e Estrutural
-NossoDireito v1.5.0
+NossoDireito v1.8.0
 
 Valida:
-- 20 categorias com todos os campos obrigatórios
+- 25 categorias com todos os campos obrigatórios
 - Matching engine (keywords, sinônimos)
 - Dropdown IPVA (27 estados)
 - Fontes oficiais (base_legal completa)
@@ -51,18 +51,18 @@ class ContentValidator:
             self.errors.append(message)
     
     def validate_categories(self):
-        """Validar 20 categorias completas"""
+        """Validar 25 categorias completas"""
         self.log("=" * 70, 'PASS')
-        self.log("VALIDAÇÃO DE CATEGORIAS (20)", 'PASS')
+        self.log("VALIDAÇÃO DE CATEGORIAS (25)", 'PASS')
         self.log("=" * 70, 'PASS')
         
         categorias = self.data.get('categorias', [])
         
         # 1. Total de categorias
-        if len(categorias) != 20:
-            self.log(f"Total de categorias: {len(categorias)} (esperado: 20)", 'ERROR')
+        if len(categorias) != 25:
+            self.log(f"Total de categorias: {len(categorias)} (esperado: 25)", 'ERROR')
         else:
-            self.log(f"Total de categorias: 20 ✓", 'PASS')
+            self.log(f"Total de categorias: 25 ✓", 'PASS')
         
         # IDs esperados
         expected_ids = [
@@ -70,7 +70,9 @@ class ContentValidator:
             'transporte', 'trabalho', 'fgts', 'moradia', 'isencoes_tributarias',
             'atendimento_prioritario', 'estacionamento_especial', 'aposentadoria_especial_pcd',
             'prioridade_judicial', 'tecnologia_assistiva', 'meia_entrada',
-            'prouni_fies_sisu', 'isencao_ir', 'bolsa_familia', 'tarifa_social_energia'
+            'prouni_fies_sisu', 'isencao_ir', 'bolsa_familia', 'tarifa_social_energia',
+            'auxilio_inclusao', 'protecao_social', 'pensao_zika',
+            'esporte_paralimpico', 'turismo_acessivel'
         ]
         
         found_ids = [c['id'] for c in categorias]
@@ -400,7 +402,7 @@ class ContentValidator:
     def run(self):
         """Executar todas validações"""
         self.log("=" * 70, 'PASS')
-        self.log("CONTENT VALIDATION - NossoDireito v1.5.0", 'PASS')
+        self.log("CONTENT VALIDATION - NossoDireito v1.8.0", 'PASS')
         self.log(f"Timestamp: {datetime.now().isoformat()}", 'PASS')
         self.log("=" * 70, 'PASS')
         

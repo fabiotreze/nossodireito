@@ -1,6 +1,6 @@
-# 📊 Análise Completa de Qualidade — NossoDireito v1.5.0
+# 📊 Análise Completa de Qualidade — NossoDireito v1.8.0
 
-**Data:** 11 de fevereiro de 2026  
+**Data:** 12 de fevereiro de 2026  
 **Autor:** Análise Automatizada  
 **Versão do Documento:** 1.0.0  
 
@@ -95,7 +95,7 @@ rm scripts/validate_links.py
 4. **Monitoramento de Uptime**
    - Links gov.br podem quebrar
    - APIs (Senado, OMS) podem ficar offline
-   - **Solução:** Cron job semanal rodando `validate_sources.py`
+   - **Solução:** Cron job periódico rodando `validate_sources.py`
 
 5. **Code Coverage**
    - Nenhum código testado
@@ -109,8 +109,8 @@ rm scripts/validate_links.py
 
 | Documento | Status | Última Atualização | Conformidade |
 |-----------|--------|-------------------|--------------|
-| `README.md` | ✅ Completo | 2026-02-11 | 100% |
-| `CHANGELOG.md` | ✅ Atualizado | 2026-02-11 | 100% |
+| `README.md` | ✅ Completo | 2026-02-12 | 100% |
+| `CHANGELOG.md` | ✅ Atualizado | 2026-02-12 | 100% |
 | `GOVERNANCE.md` | ✅ Completo | 2025-12-15 | 95% |
 | `SECURITY.md` | ✅ Completo | 2025-12-15 | 100% |
 | `SECURITY_AUDIT.md` | ✅ Completo | 2025-12-15 | 100% |
@@ -247,7 +247,7 @@ Este projeto é mantido por **VOCÊ**! Obrigado por contribuir.
 
 ### Links Gov.br Podem Mudar Sem Aviso
 - **Problema:** Governo reestru tura sites sem redirects
-- **Mitigação:** Validação semanal automática (validate_sources.py)
+- **Mitigação:** Validação periódica automática (validate_sources.py)
 - **Reportar:** [CONTRIBUTING.md](CONTRIBUTING.md)
 
 ### CONFAZ (confaz.fazenda.gov.br) com SSL Inválido
@@ -278,7 +278,7 @@ Este projeto é mantido por **VOCÊ**! Obrigado por contribuir.
 
 ---
 
-**Última Atualização:** 2026-02-11  
+**Última Atualização:** 2026-02-12  
 **Reportar novo problema:** [CONTRIBUTING.md](CONTRIBUTING.md)
 ```
 
@@ -549,7 +549,7 @@ nossodireito/
 │   └── workflows/
 │       ├── deploy.yml         # Deploy automático
 │       ├── quality-gate.yml   # Roda codereview.py em PR
-│       └── link-check.yml     # Valida links semanalmente
+│       └── link-check.yml     # Valida links periodicamente
 ├── codereview/                # ✅ Manter
 │   └── codereview.py
 ├── css/                       # ✅ Manter
@@ -626,7 +626,7 @@ mkdir -p tests/{unit,e2e}
 |-----------|--------|---------|
 | Deploy automático | ❌ Manual | Deploy lento, erroroso |
 | Quality gate em PR | ❌ Manual | PRs sem validação |
-| Link check semanal | ❌ Manual | Links quebrados não detectados |
+| Link check periódico | ❌ Manual | Links quebrados não detectados |
 | Dependency updates | ❌ Manual | Vulnerabilidades não detectadas |
 | Lighthouse CI | ❌ Ausente | Performance regressions não detectadas |
 
@@ -669,7 +669,7 @@ jobs:
           python codereview/codereview.py --categoria performance --json
 ```
 
-#### Workflow 2: Link Check (Semanal)
+#### Workflow 2: Link Check (Periódico)
 
 **Arquivo:** `.github/workflows/link-check.yml`
 

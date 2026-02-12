@@ -4,14 +4,14 @@
 
 # ⚖️ NossoDireito
 
-[![Quality Gate](https://img.shields.io/badge/Quality%20Gate-98.7%2F100-brightgreen?style=flat-square)](https://github.com/fabiotreze/nossodireito/actions)
+[![Quality Gate](https://img.shields.io/badge/Quality%20Gate-100.0%2F100-brightgreen?style=flat-square)](https://github.com/fabiotreze/nossodireito/actions)
 [![WAF 5 Pillars](https://img.shields.io/badge/WAF%205%20Pillars-100%25-success?style=flat-square)](docs/QUALITY_TESTING_GUIDE.md)
 [![Deploy](https://img.shields.io/badge/Deploy-Azure%20Static%20Web%20Apps-0078D4?style=flat-square&logo=microsoft-azure)](https://nossodireito.fabiotreze.com)
 [![Security](https://img.shields.io/badge/Security-HTTPS%20%7C%20CSP%20%7C%20Zero%20Tracking-green?style=flat-square&logo=letsencrypt)](SECURITY.md)
 [![Accessibility](https://img.shields.io/badge/Accessibility-ARIA%20%7C%20VLibras%20%7C%20WCAG-blue?style=flat-square&logo=accessible-icon)](docs/QUALITY_TESTING_GUIDE.md)
 [![LGPD](https://img.shields.io/badge/LGPD-Zero%20Data%20Collection-blue?style=flat-square)](SECURITY.md)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow?style=flat-square)](LICENSE)
-[![Version](https://img.shields.io/badge/Version-1.5.0-informational?style=flat-square)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/Version-1.8.0-informational?style=flat-square)](CHANGELOG.md)
 
 **Recebeu um laudo? Vem que a gente te ajuda.**
 
@@ -33,7 +33,7 @@ Este projeto responde essa pergunta de forma clara, objetiva e validada.
 
 ## ✨ Funcionalidades
 
-### 📋 **20 Categorias de Direitos**
+### 📋 **25 Categorias de Direitos**
 - **BPC/LOAS** — Benefício de Prestação Continuada (1 salário mínimo/mês)
 - **CIPTEA** — Carteira de Identificação da Pessoa com TEA
 - **Educação Inclusiva** — Matrícula obrigatória, acompanhante especializado
@@ -43,13 +43,13 @@ Este projeto responde essa pergunta de forma clara, objetiva e validada.
 - **Trabalho** — Cotas PcD em empresas (2% a 5% das vagas)
 - **FGTS** — Saque para tratamento ou equipamentos
 - **Moradia** — Prioridade no Minha Casa Minha Vida, adaptações em condomínios
-- **+ 11 outras categorias** (Isenções tributárias, tecnologia assistiva, meia-entrada, ProUni/FIES/SISU, etc.)
+- **+ 16 outras categorias** (Isenções tributárias, tecnologia assistiva, meia-entrada, ProUni/FIES/SISU, esporte paralímpico, turismo acessível, etc.)
 
 ### 🔍 **Busca Inteligente**
 - **Matching Engine** com algoritmo de busca semântica
 - Reconhece sinônimos e variações (ex: "autismo" → "TEA", "pessoa com deficiência" → "PcD")
 - Sistema de pesos para priorizar resultados mais relevantes
-- Busca por keywords em 3.000+ termos mapeados
+- Busca por keywords em 609 termos mapeados
 
 ### ♿ **Acessibilidade Máxima**
 - **50+ atributos ARIA** (WCAG 2.1 AA/AAA)
@@ -70,8 +70,8 @@ Este projeto responde essa pergunta de forma clara, objetiva e validada.
 ### 📚 **Documentação Oficial**
 - 40+ leis federais referenciadas com artigos específicos
 - URLs verificadas de fontes oficiais (planalto.gov.br, gov.br, inss.gov.br)
-- Última atualização: 11 de fevereiro de 2026
-- Revisões a cada 7 dias
+- Última atualização: 12 de fevereiro de 2026
+- Revisões periódicas
 
 ---
 
@@ -123,7 +123,7 @@ python3 -m http.server 3000
 - **Service Worker** — Cache inteligente, funcionalidade offline
 
 ### **Dados**
-- **JSON** — direitos.json (20 categorias, 180KB) + matching_engine.json (70KB)
+- **JSON** — direitos.json (25 categorias, 216KB) + matching_engine.json (70KB)
 - **Compressão** — Minificação de HTML/CSS/JS
 
 ### **Infraestrutura (IaC)**
@@ -134,10 +134,10 @@ python3 -m http.server 3000
 
 ### **Validação e Qualidade**
 - **Python 3.11+** — Scripts de validação
-- **validate_content.py** — 99 verificações de dados e código
+- **validate_content.py** — 147 verificações de dados e código
 - **validate_sources.py** — Teste de HTTP status de 40+ URLs
 - **validate_legal_sources.py** — Extração automática de artigos de leis
-- **master_compliance.py** — 10 categorias de compliance (score 100%)
+- **master_compliance.py** — 17 categorias de compliance (score 100%)
 - **Pre-commit Hook** — Validação automática antes de cada commit
 
 ### **Segurança**
@@ -182,7 +182,7 @@ python3 -m http.server 3000
 | Frontend | HTML5 + CSS3 + Vanilla JavaScript |
 | Acessibilidade | Web Speech API (TTS) + VLibras (Libras) |
 | PWA | Service Worker + manifest.json (offline) |
-| Server | Node.js 20 LTS (`server.js`) |
+| Server | Node.js 22 LTS (`server.js`) |
 | Base de dados | JSON estático (`data/direitos.json`) |
 | Criptografia | AES-GCM-256 via Web Crypto API |
 | Hospedagem | Azure App Service B1 Linux |
@@ -210,13 +210,18 @@ nossodireito/
 ├── js/
 │   └── app.js              # Busca, navegação, TTS, VLibras, criptografia
 ├── data/
-│   ├── direitos.json       # Base de conhecimento (9 categorias)
-│   └── matching_engine.json # Keywords de análise de documentos
+│   ├── direitos.json       # Base de conhecimento (25 categorias)
+│   ├── matching_engine.json # Keywords de análise de documentos
+│   └── ipva_pcd_estados.json # Tabela IPVA PcD por estado
 ├── images/                 # Favicons, OG image e logo
 ├── scripts/
-│   └── validate_sources.py # Validação de URLs + legislação + CID
+│   ├── validate_sources.py # Validação de URLs + legislação + CID
+│   ├── validate_content.py # Validação de conteúdo (147 checks)
+│   ├── master_compliance.py # Compliance 360° (17 pilares)
+│   ├── bump_version.py     # Semver automático
+│   └── pre-commit          # Hook de pré-commit
 ├── codereview/
-│   └── codereview.py       # Quality Gate (17 categorias, 160 checks)
+│   └── codereview.py       # Quality Gate (221 checks)
 ├── terraform/              # Infraestrutura como código
 │   ├── main.tf             # App Service + Key Vault + SSL
 │   ├── variables.tf        # Variáveis multi-ambiente
@@ -226,7 +231,7 @@ nossodireito/
 │   ├── deploy.yml          # CI/CD push → deploy
 │   ├── quality-gate.yml    # Quality Gate PR check
 │   ├── terraform.yml       # IaC manual dispatch
-│   └── weekly-review.yml   # Issue automática semanal
+│   └── weekly-review.yml   # Issue automática periódica
 ├── CHANGELOG.md
 ├── GOVERNANCE.md
 ├── SECURITY.md

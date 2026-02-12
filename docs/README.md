@@ -1,7 +1,7 @@
 # Estrutura da Documentação — Padrão de Versionamento
 
-**Versão:** 1.0.0  
-**Data:** 11 de fevereiro de 2026  
+**Versão:** 1.8.0  
+**Data:** 12 de fevereiro de 2026  
 **Objetivo:** Documentar padrão de organização e nomenclatura de arquivos
 
 ---
@@ -177,7 +177,7 @@ rsync -av --exclude='docs/roadmap' --exclude='backup' --exclude='.git' --exclude
 **Quando executar:**
 - Antes de grandes mudanças no código
 - Antes de migração V1 → V2
-- Periodicamente (semanal/mensal)
+- Periodicamente
 
 ### Git Commits
 
@@ -273,5 +273,5 @@ fix(vlibras): corrigir loading do widget em navegadores Safari
 
 ---
 
-**Última atualização:** 11 de fevereiro de 2026  
+**Última atualização:** 12 de fevereiro de 2026  
 **Responsável:** Equipe NossoDireito

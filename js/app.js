@@ -464,7 +464,6 @@ instituicoesGrid: $('#instituicoesGrid'),
 orgaosEstaduaisGrid: $('#orgaosEstaduaisGrid'),
 classificacaoGrid: $('#classificacaoGrid'),
 transLastUpdate: $('#transLastUpdate'),
-transNextReview: $('#transNextReview'),
 transVersion: $('#transVersion'),
 footerVersion: $('#footerVersion'),
 linksGrid: $('#linksGrid'),
@@ -967,9 +966,6 @@ if (!fontesData || !jsonMeta) return;
 if (dom.transLastUpdate) {
 dom.transLastUpdate.textContent = formatDate(jsonMeta.ultima_atualizacao);
 }
-if (dom.transNextReview) {
-dom.transNextReview.textContent = formatDate(jsonMeta.proxima_revisao);
-}
 if (dom.transVersion) {
 dom.transVersion.textContent = `v${jsonMeta.versao}`;
 }
@@ -980,10 +976,6 @@ transLastUpdateInline.textContent = formatDate(jsonMeta.ultima_atualizacao);
 const transLastUpdateText = document.getElementById('transLastUpdateText');
 if (transLastUpdateText) {
 transLastUpdateText.textContent = formatDate(jsonMeta.ultima_atualizacao);
-}
-const transNextReviewText = document.getElementById('transNextReviewText');
-if (transNextReviewText) {
-transNextReviewText.textContent = formatDate(jsonMeta.proxima_revisao);
 }
 const legislacao = fontesData.filter((f) => f.tipo === 'legislacao');
 const servicos = fontesData.filter((f) => f.tipo === 'servico');

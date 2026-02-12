@@ -89,6 +89,10 @@ OFFICIAL_DOMAINS = [
     "cfm.org.br",
     "cfp.org.br",
     "coffito.gov.br",
+    "dpu.def.br",
+    "mpf.mp.br",
+    "cpb.org.br",
+    "falabr.cgu.gov.br",
 ]
 
 # Versão mínima esperada
@@ -99,7 +103,7 @@ MIN_VERSION = "1.0.0"
 MAX_HTML_SIZE = 35_000
 MAX_CSS_SIZE = 60_000
 MAX_JS_SIZE = 115_000  # Aumentado para 115KB (TTS enterprise: chunking, preprocessing, seleção manual)
-MAX_JSON_SIZE = 135_000  # Aumentado para 135KB (20 categorias com base_legal completa)
+MAX_JSON_SIZE = 230_000  # Aumentado para 230KB (25 categorias com base_legal completa + instituições)
 
 # Padrões de dados sensíveis (regex)
 SENSITIVE_PATTERNS = [
@@ -895,16 +899,6 @@ def check_transparency(report: ReviewReport, json_data: dict) -> None:
             except ValueError:
                 pass
 
-    # Verificar proxima_revisao
-    proxima = json_data.get("proxima_revisao")
-    if proxima:
-        report.add(Finding(cat, "Data de próxima revisão definida", Severity.PASS,
-                           f"Próxima revisão agendada: {proxima}"))
-    else:
-        report.add(Finding(cat, "Sem data de próxima revisão", Severity.WARNING,
-                           "Campo 'proxima_revisao' ausente no JSON.",
-                           sugestao="Adicione campo 'proxima_revisao' com data YYYY-MM-DD."))
-
 
 def check_versioning(report: ReviewReport, json_data: dict) -> None:
     """Verifica versionamento semântico."""
@@ -981,7 +975,7 @@ def check_modularity(report: ReviewReport) -> None:
     workflow = PROJECT_ROOT / ".github" / "workflows" / "weekly-review.yml"
     if workflow.exists():
         report.add(Finding(cat, "CI/CD: weekly-review.yml", Severity.PASS,
-                           "Workflow de revisão semanal configurado."))
+                           "Workflow de revisão periódica configurado."))
     else:
         report.add(Finding(cat, "Sem CI/CD configurado", Severity.INFO,
                            "Nenhum workflow GitHub Actions encontrado.",
@@ -1547,7 +1541,7 @@ def check_documentation(report: ReviewReport) -> None:
             elif age_days <= 90:
                 report.add(Finding(cat, f"Dados com {age_days} dias", Severity.WARNING,
                                    f"Última atualização: {ultima} — considere revisar.",
-                                   sugestao="Execute revisão semanal conforme GOVERNANCE.md."))
+                                   sugestao="Execute revisão periódica conforme GOVERNANCE.md."))
             else:
                 report.add(Finding(cat, f"Dados desatualizados ({age_days} dias)", Severity.ERROR,
                                    f"Última atualização: {ultima} — dados possivelmente obsoletos.",
