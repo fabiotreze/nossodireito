@@ -152,7 +152,7 @@ const hasManyParagraphs = paragraphs.length > 3;
 if (text.length <= 1800 && !hasManyParagraphs) {
 return [text];
 }
-console.log('[TTS] Texto longo detectado - usando chunking inteligente por frases');
+
 const sentences = text.match(/[^.!?\n]+[.!?\n]+/g) || [text];
 const chunks = [];
 let currentChunk = '';
@@ -187,9 +187,9 @@ if (selection && selection.toString().trim().length > 0) {
 const selectedText = selection.toString().trim();
 const wordCount = selectedText.split(/\s+/).length;
 if (wordCount < 3) {
-console.log('[TTS] Seleção muito curta (< 3 palavras) - usando seção visível');
+
 } else {
-console.log('[TTS] Lendo texto selecionado pelo usuário');
+
 return selectedText;
 }
 }
@@ -221,7 +221,7 @@ const savedVoice = voices.find(v => v.name === savedVoiceName);
 if (savedVoice) {
 currentChunks = [];
 currentChunkIndex = 0;
-console.log('[TTS] Usando voz salva:', savedVoice.name, savedVoice.lang);
+
 return savedVoice;
 }
 }
@@ -272,7 +272,7 @@ return;
 }
 const voice = getBestPtBrVoice(voices);
 if (voice) {
-console.log('[TTS] Usando voz:', voice.name, '|', voice.lang);
+
 try {
 localStorage.setItem(STORAGE_PREFIX + 'tts_voice', voice.name);
 } catch (_) {  }
@@ -332,7 +332,7 @@ keepAliveInterval = null;
 }
 stopReading();
 if (e.error === 'canceled' || e.error === 'interrupted') {
-console.log('[TTS] Leitura interrompida pelo usuário');
+
 return;
 }
 if (e.error === 'not-allowed') {
@@ -370,14 +370,14 @@ await startReading();
 }
 });
 waitForVoices().then(voices => {
-console.log(`[TTS] ${voices.length} vozes disponíveis:`, voices.map(v => `${v.name} (${v.lang})`).join(', '));
+
 });
 } else if (btnReadAloud && !TTS_AVAILABLE) {
 btnReadAloud.style.display = 'none';
 }
 document.addEventListener('visibilitychange', () => {
 if (document.hidden && ttsActive) {
-console.log('[TTS] Aba oculta - parando leitura automaticamente');
+
 stopReading();
 }
 });

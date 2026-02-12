@@ -17,7 +17,6 @@ Uso:
 """
 
 import json
-import re
 from pathlib import Path
 from datetime import datetime
 
@@ -206,47 +205,51 @@ class ContentValidator:
             terms = self.matching['uppercase_only_terms']
             self.log(f"Termos uppercase: {len(terms)} encontrados", 'PASS')
         
-        if 'KEYWORD_MAP' not in self.matching:
-            self.log("KEYWORD_MAP não encontrado (estrutura alternativa detectada)", 'WARN')
+        # Buscar keyword_map (estrutura atual)
+        if 'keyword_map' not in self.matching:
+            self.log("keyword_map não encontrado", 'ERROR')
             return
         
-        keyword_map = self.matching['KEYWORD_MAP']
-        self.log(f"Total de categorias no KEYWORD_MAP: {len(keyword_map)}", 'PASS')
+        keyword_map = self.matching['keyword_map']
+        self.log(f"Total de keywords no keyword_map: {len(keyword_map)}", 'PASS')
         
-        # 2. Categorias no KEYWORD_MAP devem existir em direitos.json
+        # 2. Validar estrutura: cada keyword deve ter "cats" e "weight"
         cat_ids = [c['id'] for c in self.data['categorias']]
+        categories_found = set()
         
-        for cat_id in keyword_map.keys():
-            if cat_id not in cat_ids:
-                self.log(f"KEYWORD_MAP: categoria '{cat_id}' não existe em direitos.json", 'ERROR')
-        
-        # 3. Todas categorias devem ter keywords
-        for cat_id in cat_ids:
-            if cat_id not in keyword_map:
-                self.log(f"Categoria '{cat_id}' sem entrada no KEYWORD_MAP", 'WARN')
-            elif not keyword_map[cat_id]:
-                self.log(f"Categoria '{cat_id}' com KEYWORD_MAP vazio", 'WARN')
-            else:
-                num_keywords = len(keyword_map[cat_id])
-                if num_keywords < 3:
-                    self.log(f"Categoria '{cat_id}' com poucas keywords ({num_keywords})", 'WARN')
-                else:
-                    self.log(f"Categoria '{cat_id}': {num_keywords} keywords ✓", 'PASS')
-        
-        # 4. Keywords devem ser lowercase
-        for cat_id, keywords in keyword_map.items():
-            for kw in keywords:
-                if kw != kw.lower():
-                    self.log(f"KEYWORD_MAP '{cat_id}': keyword não lowercase: '{kw}'", 'WARN')
-        
-        # 5. Sinônimos (se existir)
-        if 'SYNONYM_MAP' in self.matching:
-            synonym_map = self.matching['SYNONYM_MAP']
-            self.log(f"SYNONYM_MAP: {len(synonym_map)} entradas", 'PASS')
+        for keyword, config in keyword_map.items():
+            if not isinstance(config, dict):
+                self.log(f"keyword_map['{keyword}']: deve ser dict, encontrado {type(config).__name__}", 'ERROR')
+                continue
             
-            for key, synonyms in synonym_map.items():
-                if not synonyms:
-                    self.log(f"SYNONYM_MAP '{key}': lista vazia", 'WARN')
+            if 'cats' not in config:
+                self.log(f"keyword_map['{keyword}']: falta campo 'cats'", 'ERROR')
+                continue
+            
+            if 'weight' not in config:
+                self.log(f"keyword_map['{keyword}']: falta campo 'weight'", 'WARN')
+            
+            # Validar categorias referenciadas
+            for cat_id in config['cats']:
+                categories_found.add(cat_id)
+                if cat_id not in cat_ids:
+                    self.log(f"keyword_map['{keyword}']: categoria '{cat_id}' não existe em direitos.json", 'ERROR')
+            
+            # Keyword deve ser lowercase
+            if keyword != keyword.lower():
+                self.log(f"keyword_map: keyword não lowercase: '{keyword}'", 'WARN')
+        
+        # 3. Verificar se todas categorias têm pelo menos 3 keywords
+        for cat_id in cat_ids:
+            keywords_for_cat = [k for k, c in keyword_map.items() if cat_id in c.get('cats', [])]
+            num_keywords = len(keywords_for_cat)
+            
+            if num_keywords == 0:
+                self.log(f"Categoria '{cat_id}' sem keywords no keyword_map", 'WARN')
+            elif num_keywords < 3:
+                self.log(f"Categoria '{cat_id}' com poucas keywords ({num_keywords})", 'WARN')
+            else:
+                self.log(f"Categoria '{cat_id}': {num_keywords} keywords ✓", 'PASS')
     
     def validate_documentos_mestre(self):
         """Validar documentos_mestre"""

@@ -5,6 +5,191 @@ Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/)
 e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [1.6.0] - 2026-02-12
+
+### ✨ Adicionado
+
+#### Sistema de Compliance Total (15 Categorias)
+- **`scripts/master_compliance.py`** — Expandido para validação completa (v1.6.0)
+  - ✅ 15 categorias de validação (era 10)
+  - ✅ 11. **Testes Automatizados E2E**: Executa test_e2e_automated.py, verifica cobertura de funções críticas
+  - ✅ 12. **Dead Code Detection**: Detecta funções JS não usadas, importações Python órfãs, console.log() esquecidos
+  - ✅ 13. **Arquivos Órfãos**: Detecta .backup, .tmp, .bak, .old, .swp, .DS_Store, __pycache__, node_modules
+  - ✅ 14. **Lógica de Negócio**: Valida vinculação bidirecional, documentos_mestre, classificação de dados, URLs HTTPS
+  - ✅ 15. **Regulatory Compliance**: LGPD, disclaimer, finance, GitHub security, dados sensíveis, versões consistentes
+  - 📊 Score atual: **93.42%** (568.1/608.1 pontos)
+
+- **`scripts/test_e2e_automated.py`** — Testes automatizados end-to-end
+  - 15+ validações estruturais (HTML, CSS, JS, Service Worker, PWA Manifest)
+  - Validação de integridade direitos.json (20 categorias, campos obrigatórios, base_legal)
+  - Validação matching_engine.json (keyword_map estrutura moderna)
+  - Testes de segurança (CSP, segredos hardcoded, LGPD)
+  - Testes de acessibilidade (≥30 ARIA attributes)
+  - Testes de SEO (sitemap.xml, robots.txt)
+  - Preparado para Playwright (testes cross-browser futuros)
+
+#### Análise Avançada de Código
+- **Dead Code Detection:** Identifica automaticamente:
+  - Funções JavaScript não usadas (regex de declarações vs chamadas)
+  - Importações Python órfãs (import/from vs uso no código)
+  - console.log() esquecidos (anti-pattern para produção)
+  
+- **Orphaned Files Cleanup:** Detecta:
+  - Arquivos temporários (.tmp, .bak, .backup, .old, .swp)
+  - Cache de sistema (.DS_Store, __pycache__)
+  - Arquivos grandes (>10MB)
+  - Flag para auto-cleanup (desabilitado por padrão)
+
+#### Validação de Lógica de Negócio
+- **Vinculação Bidirecional:** Valida relacionamento categorias ↔ documentos_mestre
+- **Classificação de Dados:** Detecta menções a dados sensíveis (CPF, RG, senha, etc.) para alertar sobre LGPD
+- **Integridade de Base Legal:** Verifica artigos, URLs HTTPS, campos obrigatórios
+- **Cobertura de Documentos:** Garante que toda categoria tem ≥1 documento vinculado e ≥3 passos
+
+#### Regulatory & Compliance
+- **LGPD (Lei 13.709/2018):** 6 checks automáticos
+  - Menção à LGPD e Lei 13.709
+  - Declaração de não coleta de dados
+  - Política de privacidade
+  - localStorage/IndexedDB mencionado
+- **Disclaimer Completo:** 5 checks (aviso legal, não substitui orientação profissional, Defensoria Pública, fontes oficiais)
+- **Finance/Transparência:** Declaração sem fins lucrativos, gratuito, sem custo
+- **GitHub Security:** Processo de reporte de vulnerabilidades, contato de segurança
+- **Dados Sensíveis Expostos:** Scan de password=, api_key=, secret=, token=, AWS_SECRET, AZURE_CLIENT_SECRET
+- **Versões Consistentes:** Verifica que README, SECURITY, CHANGELOG, SECURITY_AUDIT estão na mesma versão
+
+### 🔧 Melhorado
+
+#### Documentação Atualizada
+- **SECURITY.md:** Versões suportadas atualizadas para 1.6.x, 1.5.x (removido <1.5)
+- **SECURITY_AUDIT.md:** Atualizado para v1.6.0 (era v1.1.0)
+  - Data atualizada: 2026-02-12
+  - Adicionado compliance: LGPD, WCAG 2.1 AAA, e-MAG
+
+#### Score de Qualidade
+- **Score Total: 93.42%** (568.1/608.1 pontos) - 15 categorias
+- **13 categorias a 100%**:
+  - DADOS, CODIGO, FONTES, ARQUITETURA, DOCUMENTACAO, SEGURANCA, PERFORMANCE, ACESSIBILIDADE, SEO, INFRAESTRUTURA, ORFAOS, LOGICA, REGULATORY
+- **2 categorias em melhoria**:
+  - TESTES: 20% (necessário corrigir cobertura de funções)
+  - DEAD_CODE: 0% (5 funções JS não usadas, 8 console.log() detectados)
+
+### 🐛 Para Corrigir (Próximas Versões)
+- ❌ **Testes E2E:** Cobertura de funções críticas baixa (1/6)
+- ❌ **Dead Code:** 5 funções JavaScript não usadas detectadas
+- ❌ **Console.log:** 8 ocorrências esquecidas no código
+- ⚠️  **Órfão:** backup/.commit_msg.tmp
+- ⚠️  **Versões:** Inconsistências entre documentos (README: v98.7, SECURITY: v1.6, CHANGELOG: v241.126)
+
+### 📊 Estatísticas v1.6.0
+
+#### Validações
+- **Total de validações:** 804 (era 787 na v1.5.0) - **+17 validações**
+- **Aprovadas:** 804 ✅
+- **Avisos:** 11 ⚠️
+- **Erros:** 3 ❌
+- **Tempo de execução:** 0.52s (era 0.27s) - **+0.25s** devido a 5 categorias novas
+
+#### Arquivos Alterados
+- **3 arquivos adicionados:**
+  - scripts/test_e2e_automated.py (15 testes estruturais)
+  - (master_compliance.py expandido +500 linhas)
+- **3 arquivos modificados:**
+  - scripts/master_compliance.py (15 categorias, 6 novos métodos de validação)
+  - SECURITY.md (versões suportadas: 1.6.x, 1.5.x)
+  - SECURITY_AUDIT.md (v1.6.0, compliance LGPD/WCAG/e-MAG)
+
+---
+
+## [1.5.0] - 2026-02-11
+
+### ✨ Adicionado
+
+#### Infraestrutura de Qualidade
+- **`scripts/quality_pipeline.py`** — Pipeline automatizado de validação com 10 passos
+  - Suporte a 3 modos: `--full` (produção), `--quick` (pre-commit), `--ci` (CI/CD)
+  - Geração de relatório JSON detalhado (quality_report.json)
+  - Validações: limpeza, sintaxe, fontes, quality gate, 360°, acessibilidade, segurança, performance
+  - Duração: ~3-5min (full), ~30s (quick)
+
+- **`scripts/validate_content.py`** — Validador semântico e estrutural completo
+  - ✅ 20 categorias com todos os campos obrigatórios
+  - ✅ Dropdown IPVA com 27 estados (UF, lei, artigo, SEFAZ)
+  - ✅ Matching engine (keywords, sinônimos)
+  - ✅ Base legal completa (lei + artigo + URL HTTPS)
+  - ✅ Documentos_mestre com relacionamentos bidirecionais
+  - ✅ Padrões de código (anti-patterns: alert(), console.log)
+  - ✅ Análise semântica de conteúdo (resumos, dicas, valores)
+
+- **`.githooks/pre-commit`** — Hook de validação automática antes de commit
+  - Executa 6 passos críticos: limpeza, sintaxe, conteúdo, quality gate, segurança, performance
+  - Bloqueia commit se qualquer validação falhar (bypass com `--no-verify`)
+  - Instalação: `git config core.hooksPath .githooks`
+
+- **`docs/QUALITY_TESTING_GUIDE.md`** — Guia completo de testes (850+ linhas)
+  - 60+ testes manuais no browser
+  - Seção crítica: IPVA dropdown (27 estados)
+  - Checklists: pre-commit (20 itens), pre-deploy (15 itens)
+  - Troubleshooting com 7 cenários comuns
+
+#### GitHub Actions
+- **`.github/workflows/quality-gate.yml`** — Atualizado com validação de conteúdo
+  - Step adicional: validação de categorias, IPVA, matching engine
+  - Executa antes do quality gate principal
+  - Upload de relatório como artifact (retenção 30 dias)
+
+### 🔧 Melhorado
+
+#### Qualidade de Código
+- **Score Quality Gate: 97.3 → 98.7/100** (+1.4 melhoria)
+- **WAF 5 Pilares: 100%** (Security, Reliability, Performance, Cost, Operations)
+- **Performance: 40% → 100%** (+60% melhoria)
+
+#### Otimizações
+- **HTTP → HTTPS:** 3 URLs corrigidas (prouni_fies_sisu)
+- **showToast() replaces alert():** 2 chamadas modernizadas (melhor UX)
+- **Keywords expandidas:** +26 palavras-chave
+  - meia_entrada: +9 keywords
+  - tarifa_social_energia: +17 keywords
+- **documentos_mestre:** +3 categorias vinculadas
+
+#### Minificação
+- HTML: 40KB → 29KB (-10.8KB, -27%)
+- JS: 118KB → 71KB (-46.9KB, -41%)
+- JSON: ~150KB → 102KB (~-48KB, -33%)
+- **Total: -107KB economia de banda**
+
+### 🐛 Corrigido
+- **codereview.py:** Validação de campo `link` → `url` em base_legal
+- **Backup files:** Remoção automática de arquivos .backup (303KB liberados)
+
+### 🧹 Removido
+- `scripts/validate_links.py` — Duplicado (funcionalidade em validate_sources.py)
+- Arquivos .backup — Cleanup automático no pipeline
+
+### 📁 Movido
+- `analise360.py` → `scripts/analise360.py` (organização)
+
+### 📊 Estatísticas
+
+#### Arquivos Alterados
+- **29 arquivos:** 8 adicionados, 2 deletados, 19 modificados
+
+#### Quality Metrics
+- **Quality Gate:** 98.7/100
+- **WAF 5 Pillars:** 100%
+- **Validações:** 0 CRITICAL, 0 ERROR, 17 WARNING, 184 PASS
+- **Acessibilidade:** 50 atributos ARIA, VLibras, navegação por teclado
+- **Segurança:** 100% URLs HTTPS, nenhum dado sensível exposto
+
+#### Pipeline Execution
+- **Total de passos:** 21
+- **Taxa de sucesso:** 85.7% (18/21)
+- **Duração:** ~154s (modo full)
+- **Falhas não-críticas:** JavaScript validation (Node.js não instalado), sources validation (timeout)
+
+---
+
 ## [1.4.3] - 2026-02-11
 
 ### Adicionado

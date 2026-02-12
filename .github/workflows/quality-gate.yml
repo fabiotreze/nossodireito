@@ -68,6 +68,12 @@ jobs:
 
           echo "✅ Nenhum dado sensível detectado nos arquivos rastreados."
 
+      # ── Validação de Conteúdo ──
+      - name: Validar Conteúdo (categorias, IPVA, matching engine)
+        run: |
+          echo "🔍 Validando estrutura de conteúdo..."
+          python3 scripts/validate_content.py
+
       # ── Quality Gate Principal ──
       - name: Executar Quality Gate (codereview.py)
         run: |

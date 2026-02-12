@@ -1,0 +1,195 @@
+{
+  "timestamp": "2026-02-11T23:27:01.619065",
+  "mode": "full",
+  "steps": [
+    {
+      "name": "1.1 Remover arquivos .backup",
+      "command": "find . -name \"*.backup\" -type f -delete",
+      "duration": 0.041529,
+      "success": true,
+      "stdout": "",
+      "stderr": "",
+      "required": false
+    },
+    {
+      "name": "1.2 Remover cache Python",
+      "command": "find . -type d -name \"__pycache__\" -exec rm -rf {} + 2>/dev/null || true",
+      "duration": 0.029488,
+      "success": true,
+      "stdout": "",
+      "stderr": "",
+      "required": false
+    },
+    {
+      "name": "1.3 Remover arquivos temporários",
+      "command": "find . -type f \\( -name \"*.pyc\" -o -name \"*.pyo\" -o -name \"*~\" -o -name \"*.swp\" \\) -delete",
+      "duration": 0.028039,
+      "success": true,
+      "stdout": "",
+      "stderr": "",
+      "required": false
+    },
+    {
+      "name": "2.1 Validar JSON principal (direitos.json)",
+      "command": "python3 -c \"import json; json.load(open('data/direitos.json')); print('✅ JSON válido')\"",
+      "duration": 0.022952,
+      "success": true,
+      "stdout": "✅ JSON válido\n",
+      "stderr": "",
+      "required": true
+    },
+    {
+      "name": "2.2 Validar matching_engine.json",
+      "command": "python3 -c \"import json; json.load(open('data/matching_engine.json')); print('✅ matching_engine.json válido')\"",
+      "duration": 0.023263,
+      "success": true,
+      "stdout": "✅ matching_engine.json válido\n",
+      "stderr": "",
+      "required": true
+    },
+    {
+      "name": "2.3 Validar manifest.json",
+      "command": "python3 -c \"import json; json.load(open('manifest.json')); print('✅ manifest.json válido')\"",
+      "duration": 0.021352,
+      "success": true,
+      "stdout": "✅ manifest.json válido\n",
+      "stderr": "",
+      "required": true
+    },
+    {
+      "name": "2.4 Validar estrutura HTML",
+      "command": "grep -q \"<!DOCTYPE html>\" index.html && grep -q \"</html>\" index.html && echo \"✅ HTML válido\"",
+      "duration": 0.008094,
+      "success": true,
+      "stdout": "✅ HTML válido\n",
+      "stderr": "",
+      "required": true
+    },
+    {
+      "name": "2.5 Validar sintaxe JavaScript",
+      "command": "node -c js/app.js",
+      "duration": 0.003611,
+      "success": false,
+      "stdout": "",
+      "stderr": "/bin/sh: node: command not found\n",
+      "required": true
+    },
+    {
+      "name": "3.1 Validar fontes oficiais (gov.br, planalto.gov.br)",
+      "command": "python3 scripts/validate_sources.py",
+      "duration": 154.295012,
+      "success": false,
+      "stdout": "======================================================================\n  NossoDireito — Validação de Fontes Oficiais\n======================================================================\n\n🔗 Validando 99 URLs...\n------------------------------------------------------------\n  [  1/99] ✅ Constituição Federal de 1988                       → HTTP 200\n  [  2/99] ✅ Lei 8.036/1990 — FGTS                              → HTTP 200\n  [  3/99] ✅ Lei 8.213/1991 — Planos de Benefícios da Previdênc → HTTP 200\n  ",
+      "stderr": "",
+      "required": true
+    },
+    {
+      "name": "4.1 Executar codereview.py (Quality Gate completo)",
+      "command": "python3 codereview/codereview.py",
+      "duration": 0.190496,
+      "success": true,
+      "stdout": "======================================================================\n  NossoDireito — Quality Gate — Relatório de Qualidade\n======================================================================\n  Data: 2026-02-11T23:29:36.171114\n  Versão Quality Gate: 2.0.0\n  Score Total: 98.7/100\n======================================================================\n\n📊 SCORES POR CATEGORIA:\n----------------------------------------\n  ✅ LGPD / Privacidade             ████████████████████ 100.0\n  ✅ Segurança   ",
+      "stderr": "",
+      "required": true
+    },
+    {
+      "name": "5.1 Análise 360° (segurança, compliance, performance)",
+      "command": "python3 scripts/analise360.py",
+      "duration": 0.058794,
+      "success": false,
+      "stdout": "==========================================================================================\n📊 ANÁLISE 360° - NOSSOD IREITO v1.4.3\n==========================================================================================\n\n✅ BENEFÍCIOS IMPLEMENTADOS: 20\n\n  ✅ bpc                              — BPC/LOAS — Benefício de Prestação Continuada\n  ✅ ciptea                           — CIPTEA — Carteira de Identificação da Pessoa com TEA\n  ✅ educacao                         — Educação Inclusiva — Matrícula e",
+      "stderr": "Traceback (most recent call last):\n  File \"/Users/fabmacair/Library/CloudStorage/OneDrive-Personal/Documents/Personal/Education/_Self-Study/github/nossodireito/scripts/analise360.py\", line 181, in <module>\n    main()\n    ~~~~^^\n  File \"/Users/fabmacair/Library/CloudStorage/OneDrive-Personal/Documents/Personal/Education/_Self-Study/github/nossodireito/scripts/analise360.py\", line 82, in main\n    with open('data/ipva_pcd_estados.json', 'r', encoding='utf-8') as f:\n         ~~~~^^^^^^^^^^^^^^^^^^^^",
+      "required": false
+    },
+    {
+      "name": "6.1 Verificar atributos ARIA no HTML",
+      "command": "grep -c \"aria-\" index.html | xargs -I {} echo \"✅ {} atributos ARIA encontrados\"",
+      "duration": 0.028968,
+      "success": true,
+      "stdout": "✅ 33 atributos ARIA encontrados\n",
+      "stderr": "",
+      "required": false
+    },
+    {
+      "name": "6.2 Verificar alt em imagens",
+      "command": "grep \"<img\" index.html | grep -c \"alt=\" | xargs -I {} echo \"✅ {} imagens com alt\"",
+      "duration": 0.006526,
+      "success": true,
+      "stdout": "✅ 2 imagens com alt\n",
+      "stderr": "",
+      "required": false
+    },
+    {
+      "name": "6.3 Verificar integração VLibras",
+      "command": "grep -q \"vlibras\" index.html && echo \"✅ VLibras encontrado\" || echo \"⚠️ VLibras não encontrado\"",
+      "duration": 0.004534,
+      "success": true,
+      "stdout": "✅ VLibras encontrado\n",
+      "stderr": "",
+      "required": false
+    },
+    {
+      "name": "6.4 Verificar roles ARIA",
+      "command": "grep -c \"role=\" index.html | xargs -I {} echo \"✅ {} roles ARIA encontrados\"",
+      "duration": 0.006304,
+      "success": true,
+      "stdout": "✅ 12 roles ARIA encontrados\n",
+      "stderr": "",
+      "required": false
+    },
+    {
+      "name": "7.1 Verificar Content Security Policy",
+      "command": "grep -q \"Content-Security-Policy\" index.html && echo \"✅ CSP encontrado\" || echo \"⚠️ CSP não encontrado\"",
+      "duration": 0.00403,
+      "success": true,
+      "stdout": "✅ CSP encontrado\n",
+      "stderr": "",
+      "required": false
+    },
+    {
+      "name": "7.2 Verificar URLs HTTPS",
+      "command": "grep -i \"http://\" data/direitos.json && echo \"❌ URLs HTTP encontradas\" || echo \"✅ Todas URLs em HTTPS\"",
+      "duration": 0.004979,
+      "success": true,
+      "stdout": "{\"versao\":\"1.4.3\",\"ultima_atualizacao\":\"2026-02-11\",\"proxima_revisao\":\"2026-02-18\",\"aviso\":\"Informações compiladas de fontes oficiais do governo brasileiro (gov.br). Podem estar desatualizadas. Verifique sempre as fontes originais.\",\"fontes\":[{\"nome\":\"Constituição Federal de 1988\",\"tipo\":\"legislacao\",\"url\":\"https://www.planalto.gov.br/ccivil_03/constituicao/constituicao.htm\",\"orgao\":\"Presidência da República\",\"consultado_em\":\"2026-02-10\",\"artigos_referenciados\":[\"Art. 203, V\",\"Art. 208, III\"]},{",
+      "stderr": "",
+      "required": true
+    },
+    {
+      "name": "7.3 Verificar dados sensíveis",
+      "command": "grep -iE \"(password|secret|token|api[_-]?key)\" data/direitos.json && echo \"❌ Dados sensíveis encontrados\" || echo \"✅ Nenhum dado sensível encontrado\"",
+      "duration": 0.00478,
+      "success": true,
+      "stdout": "{\"versao\":\"1.4.3\",\"ultima_atualizacao\":\"2026-02-11\",\"proxima_revisao\":\"2026-02-18\",\"aviso\":\"Informações compiladas de fontes oficiais do governo brasileiro (gov.br). Podem estar desatualizadas. Verifique sempre as fontes originais.\",\"fontes\":[{\"nome\":\"Constituição Federal de 1988\",\"tipo\":\"legislacao\",\"url\":\"https://www.planalto.gov.br/ccivil_03/constituicao/constituicao.htm\",\"orgao\":\"Presidência da República\",\"consultado_em\":\"2026-02-10\",\"artigos_referenciados\":[\"Art. 203, V\",\"Art. 208, III\"]},{",
+      "stderr": "",
+      "required": true
+    },
+    {
+      "name": "8.1 Verificar tamanho do HTML (<50KB)",
+      "command": "stat -f \"%z\" index.html 2>/dev/null || stat -c \"%s\" index.html | xargs -I {} bash -c 'if [ {} -lt 50000 ]; then echo \"✅ HTML: {} bytes (OK)\"; else echo \"⚠️ HTML: {} bytes (grande)\"; fi'",
+      "duration": 0.005016,
+      "success": true,
+      "stdout": "29250\n",
+      "stderr": "",
+      "required": false
+    },
+    {
+      "name": "8.2 Verificar tamanho do JSON (<150KB)",
+      "command": "stat -f \"%z\" data/direitos.json 2>/dev/null || stat -c \"%s\" data/direitos.json | xargs -I {} bash -c 'if [ {} -lt 150000 ]; then echo \"✅ JSON: {} bytes (OK)\"; else echo \"⚠️ JSON: {} bytes (grande)\"; fi'",
+      "duration": 0.00432,
+      "success": true,
+      "stdout": "102410\n",
+      "stderr": "",
+      "required": false
+    },
+    {
+      "name": "8.3 Verificar tamanho do JavaScript (<100KB)",
+      "command": "stat -f \"%z\" js/app.js 2>/dev/null || stat -c \"%s\" js/app.js | xargs -I {} bash -c 'if [ {} -lt 100000 ]; then echo \"✅ JS: {} bytes (OK)\"; else echo \"⚠️ JS: {} bytes (grande)\"; fi'",
+      "duration": 0.004223,
+      "success": true,
+      "stdout": "70965\n",
+      "stderr": "",
+      "required": false
+    }
+  ]
+}
