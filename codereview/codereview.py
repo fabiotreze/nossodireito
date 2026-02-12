@@ -99,7 +99,7 @@ MIN_VERSION = "1.0.0"
 MAX_HTML_SIZE = 35_000
 MAX_CSS_SIZE = 60_000
 MAX_JS_SIZE = 115_000  # Aumentado para 115KB (TTS enterprise: chunking, preprocessing, seleção manual)
-MAX_JSON_SIZE = 110_000  # Aumentado para 110KB (15 categorias vs. 10 originais = +50% conteúdo)
+MAX_JSON_SIZE = 135_000  # Aumentado para 135KB (20 categorias com base_legal completa)
 
 # Padrões de dados sensíveis (regex)
 SENSITIVE_PATTERNS = [
@@ -1185,7 +1185,7 @@ def check_category_schema(report: ReviewReport, json_data: dict) -> None:
         # Verificar que base_legal tem link do planalto
         base_legal = categoria.get("base_legal", [])
         has_official_law = any(
-            "planalto.gov.br" in bl.get("url", "") or "gov.br" in bl.get("url", "")
+            "planalto.gov.br" in bl.get("link", "") or "gov.br" in bl.get("link", "")
             for bl in base_legal if isinstance(bl, dict)
         )
         if base_legal and not has_official_law:
@@ -1362,7 +1362,8 @@ def check_sensitive_data(report: ReviewReport) -> None:
                 # Ignorar falsos positivos em arquivos de configuração/automação
                 safe_files = {".gitignore", "codereview.py", "quality-gate.yml", "pre-commit",
                               "terraform.yml", "deploy.yml", "weekly-review.yml",
-                              "validate_sources.py"}
+                              "validate_sources.py", "test_e2e_automated.py",
+                              "test_e2e_interactive.py", "master_compliance.py"}
                 # Workflows CI referenciam paths de runtime (ex: cert.pfx decodificado de secret)
                 ci_dirs = {".github"}
                 is_ci = any(p in str(f.relative_to(PROJECT_ROOT)).replace("\\", "/") for p in ci_dirs)
