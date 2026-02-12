@@ -109,7 +109,7 @@ com base na legislação brasileira.
 </p><div id="categoryGrid" class="card-grid"></div></div></section><section class="section" id="detalhe" style="display:none;"><div class="container"><button id="voltarBtn" class="btn btn-outline btn-sm" type="button">← Voltar às categorias</button><div id="detalheContent" aria-live="polite"></div></div></section><section class="section section-alt" id="checklist"><div class="container"><h2>✅ Primeiros Passos Após o Laudo</h2><p class="section-desc">
 Acabou de receber o laudo do seu familiar e não sabe por onde começar?
 Siga esta lista passo a passo. <strong>Atenção:</strong> Alguns passos têm ordem obrigatória.
-</p><div class="checklist-card"><div class="checklist-progress"><span class="checklist-progress-text" id="checklistProgress">0 de 10 concluídos</span><div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0"
+</p><div class="checklist-card"><div class="checklist-actions-bar"><span></span><button id="exportChecklistPdf" class="btn btn-sm btn-outline" type="button" aria-label="Salvar checklist como PDF">📥 Salvar PDF</button></div><div class="checklist-progress"><span class="checklist-progress-text" id="checklistProgress">0 de 10 concluídos</span><div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0"
 aria-valuemax="10" aria-label="Progresso do checklist"><div class="progress-fill" id="checklistProgressBar" style="width:0%"></div></div></div><label class="checklist-item"><input type="checkbox" data-step="1"><span><strong>1.</strong> 🔒 Crie <strong>conta Gov.br nível OURO</strong> do beneficiário e responsável legal
 (necessária para BPC digital, Meu INSS, assinatura eletrônica)</span></label><label class="checklist-item"><input type="checkbox" data-step="2"><span><strong>2.</strong> 📁 Organize seu <strong>"Dossiê PcD"</strong>: pasta física ou digital com
 laudo original, receitas, relatórios de terapeutas, exames, comprovantes (ordene por data)</span></label><label class="checklist-item"><input type="checkbox" data-step="3"><span><strong>3.</strong> ✔️ <strong>Valide o laudo médico</strong>: confirme se tem CID legível, data de emissão,
@@ -126,7 +126,7 @@ prescritas — negativa por escrito se recusarem</span></label></div><p class="c
 <strong>obrigatoriamente antes</strong> do passo 7 (BPC) — sem NIS, INSS não agenda.
 </p><p class="checklist-note">
 💡 Progresso salvo no navegador. Nenhum dado pessoal é enviado para servidores.
-</p><button id="exportChecklistPdf" class="btn btn-sm btn-outline btn-export-pdf-checklist" type="button" aria-label="Salvar checklist como PDF">📥 Salvar PDF</button></div></section><section class="section" id="documentos"><div class="container"><h2>📎 Análise de Documentos</h2><p class="section-desc">
+</p></div></section><section class="section" id="documentos"><div class="container"><h2>📎 Análise de Documentos</h2><p class="section-desc">
 Faça upload do seu laudo ou documento para identificar seus direitos.
 A análise é 100% local — o arquivo é <strong>criptografado, analisado e descartado
 automaticamente</strong>.
@@ -144,7 +144,7 @@ aria-label="Salvar como PDF">📥
 Salvar PDF</button><button id="closeAnalysis" class="btn btn-sm btn-outline" type="button"
 aria-label="Fechar análise">✕
 Fechar</button></div></div><div id="analysisLoading" class="analysis-loading" style="display:none;" role="status"
-aria-live="polite"><div class="spinner"></div><p>Analisando documentos... (100% local, nada é enviado)</p></div><div id="analysisContent"></div></div><h3 class="docs-checklist-title">📋 Documentos Necessários por Direito</h3><button id="exportDocsChecklistPdf" class="btn btn-sm btn-outline btn-export-pdf-docs-checklist" type="button" aria-label="Salvar documentos como PDF" style="margin-bottom:12px;">📥 Salvar PDF</button><p class="section-desc" style="margin-bottom:16px;">
+aria-live="polite"><div class="spinner"></div><p>Analisando documentos... (100% local, nada é enviado)</p></div><div id="analysisContent"></div></div><div class="docs-checklist-actions-bar"><h3 class="docs-checklist-title">📋 Documentos Necessários por Direito</h3><button id="exportDocsChecklistPdf" class="btn btn-sm btn-outline" type="button" aria-label="Salvar documentos como PDF">📥 Salvar PDF</button></div><p class="section-desc" style="margin-bottom:16px;">
 Com base nas categorias de direitos, estes são os documentos que você pode precisar.
 Marque os que já tem em mãos.
 </p><div id="docsChecklist" class="docs-checklist"></div></div></section><section class="section section-alt" id="links"><div class="container"><h2>🔗 Sites Oficiais do Governo</h2><p class="section-desc">

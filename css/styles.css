@@ -1206,6 +1206,25 @@ html.high-contrast ::selection {
     margin-top: 16px;
 }
 
+.checklist-actions-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.docs-checklist-actions-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    flex-wrap: wrap;
+}
+
+.docs-checklist-actions-bar .docs-checklist-title {
+    margin: 0;
+}
+
 /* ---------- Links Grid ---------- */
 .links-grid {
     display: grid;
@@ -2669,42 +2688,36 @@ html.high-contrast ::selection {
 /* Print: Modo exclusivo para PDF ("Salvar PDF" button) */
 @media print {
 
-    /* ── Regra genérica: esconde TUDO quando algum print-mode está ativo ── */
-    body.printing-analysis *,
-    body.printing-checklist *,
-    body.printing-docs-checklist * {
-        /* reset: visibilidade começa oculta */
-    }
-
-    body.printing-analysis,
-    body.printing-checklist,
-    body.printing-docs-checklist {
+    /* ══════════════════════════════════════════════════
+       ANÁLISE DE DOCUMENTOS (printing-analysis)
+       Usa visibility para manter a cadeia de ancestrais
+       ══════════════════════════════════════════════════ */
+    body.printing-analysis {
         background: #fff !important;
     }
 
-    /* Oculta TODOS os elementos do body exceto ancestrais do alvo */
-    body.printing-analysis > *:not(main),
-    body.printing-analysis header,
-    body.printing-analysis footer,
-    body.printing-analysis noscript,
-    body.printing-analysis .modal,
-    body.printing-analysis .a11y-toolbar,
-    body.printing-analysis .navbar {
-        display: none !important;
+    body.printing-analysis > * {
+        visibility: hidden !important;
     }
 
-    body.printing-analysis main > *:not(#documentos),
-    body.printing-analysis #documentos > .container > *:not(.analysis-results),
-    body.printing-analysis #stalenessBanner {
-        display: none !important;
-    }
-
-    body.printing-analysis .analysis-results {
+    body.printing-analysis main,
+    body.printing-analysis main #documentos,
+    body.printing-analysis main #documentos > .container,
+    body.printing-analysis main #documentos > .container > .analysis-results {
+        visibility: visible !important;
         display: block !important;
+    }
+
+    body.printing-analysis main #documentos > .container > .analysis-results {
         background: #fff !important;
         color: #000 !important;
         margin: 0;
         padding: 0;
+        position: relative;
+    }
+
+    body.printing-analysis main #documentos > .container > .analysis-results > * {
+        visibility: visible !important;
     }
 
     body.printing-analysis .analysis-header-actions,
@@ -2717,6 +2730,7 @@ html.high-contrast ::selection {
     }
 
     body.printing-analysis .analysis-results::before {
+        visibility: visible !important;
         content: "NossoDireito — Análise de Direitos";
         display: block;
         font-size: 16pt;
@@ -2726,6 +2740,7 @@ html.high-contrast ::selection {
     }
 
     body.printing-analysis .analysis-results::after {
+        visibility: visible !important;
         content: "Gerado em " attr(data-print-date) " · nossodireito.fabiotreze.com · Consulte um advogado para orientação personalizada.";
         display: block;
         margin-top: 16pt;
@@ -2760,24 +2775,29 @@ html.high-contrast ::selection {
         display: none !important;
     }
 
-    /* ── Print: Checklist (Primeiros Passos) ── */
-    body.printing-checklist > *:not(main),
-    body.printing-checklist header,
-    body.printing-checklist footer,
-    body.printing-checklist noscript,
-    body.printing-checklist .modal,
-    body.printing-checklist .a11y-toolbar,
-    body.printing-checklist .navbar {
-        display: none !important;
+    /* ══════════════════════════════════════════════════
+       CHECKLIST — Primeiros Passos (printing-checklist)
+       ══════════════════════════════════════════════════ */
+    body.printing-checklist {
+        background: #fff !important;
     }
 
-    body.printing-checklist main > *:not(#checklist),
-    body.printing-checklist #stalenessBanner {
-        display: none !important;
+    body.printing-checklist > * {
+        visibility: hidden !important;
     }
 
-    body.printing-checklist #checklist {
+    body.printing-checklist main,
+    body.printing-checklist main #checklist,
+    body.printing-checklist main #checklist > .container {
+        visibility: visible !important;
         display: block !important;
+    }
+
+    body.printing-checklist main #checklist > .container > * {
+        visibility: visible !important;
+    }
+
+    body.printing-checklist main #checklist {
         background: #fff !important;
         color: #000 !important;
         margin: 0;
@@ -2789,15 +2809,20 @@ html.high-contrast ::selection {
         box-shadow: none !important;
     }
 
+    body.printing-checklist .checklist-card * {
+        visibility: visible !important;
+    }
+
     body.printing-checklist .checklist-item {
         page-break-inside: avoid;
     }
 
-    body.printing-checklist .btn-export-pdf-checklist {
+    body.printing-checklist .checklist-actions-bar {
         display: none !important;
     }
 
-    body.printing-checklist #checklist::before {
+    body.printing-checklist #checklist > .container::before {
+        visibility: visible !important;
         content: "NossoDireito — Primeiros Passos Após o Laudo";
         display: block;
         font-size: 16pt;
@@ -2806,7 +2831,8 @@ html.high-contrast ::selection {
         color: #1e3a8a;
     }
 
-    body.printing-checklist #checklist::after {
+    body.printing-checklist #checklist > .container::after {
+        visibility: visible !important;
         content: "Gerado em " attr(data-print-date) " · nossodireito.fabiotreze.com · Consulte um advogado para orientação personalizada.";
         display: block;
         margin-top: 16pt;
@@ -2816,53 +2842,49 @@ html.high-contrast ::selection {
         padding-top: 8pt;
     }
 
-    body.printing-checklist .progress-bar {
-        -webkit-print-color-adjust: exact;
-        print-color-adjust: exact;
-    }
-
+    body.printing-checklist .progress-bar,
     body.printing-checklist .progress-fill {
         -webkit-print-color-adjust: exact;
         print-color-adjust: exact;
     }
 
-    /* ── Print: Documentos Necessários (Docs Checklist) ── */
-    body.printing-docs-checklist > *:not(main),
-    body.printing-docs-checklist header,
-    body.printing-docs-checklist footer,
-    body.printing-docs-checklist noscript,
-    body.printing-docs-checklist .modal,
-    body.printing-docs-checklist .a11y-toolbar,
-    body.printing-docs-checklist .navbar {
-        display: none !important;
+    /* ══════════════════════════════════════════════════
+       DOCUMENTOS NECESSÁRIOS (printing-docs-checklist)
+       ══════════════════════════════════════════════════ */
+    body.printing-docs-checklist {
+        background: #fff !important;
     }
 
-    body.printing-docs-checklist main > *:not(#documentos),
-    body.printing-docs-checklist #stalenessBanner {
-        display: none !important;
+    body.printing-docs-checklist > * {
+        visibility: hidden !important;
     }
 
-    body.printing-docs-checklist #documentos > .container > *:not(.docs-checklist):not(.docs-checklist-title):not(.section-desc) {
-        display: none !important;
-    }
-
-    body.printing-docs-checklist .docs-upload-area,
-    body.printing-docs-checklist .analysis-results,
-    body.printing-docs-checklist #documentos > .container > h2,
-    body.printing-docs-checklist .btn-export-pdf-docs-checklist {
-        display: none !important;
-    }
-
-    body.printing-docs-checklist #documentos {
+    body.printing-docs-checklist main,
+    body.printing-docs-checklist main #documentos,
+    body.printing-docs-checklist main #documentos > .container {
+        visibility: visible !important;
         display: block !important;
+    }
+
+    body.printing-docs-checklist main #documentos {
         background: #fff !important;
         color: #000 !important;
         margin: 0;
         padding: 20px 0;
     }
 
-    body.printing-docs-checklist .docs-checklist {
-        display: block !important;
+    /* Mostrar apenas docs-checklist-title, section-desc e docs-checklist */
+    body.printing-docs-checklist .docs-checklist-title,
+    body.printing-docs-checklist .docs-checklist,
+    body.printing-docs-checklist .docs-checklist * {
+        visibility: visible !important;
+    }
+
+    body.printing-docs-checklist .docs-upload-area,
+    body.printing-docs-checklist .analysis-results,
+    body.printing-docs-checklist #documentos > .container > h2,
+    body.printing-docs-checklist .docs-checklist-actions-bar {
+        display: none !important;
     }
 
     body.printing-docs-checklist .doc-master-item {
@@ -2876,7 +2898,8 @@ html.high-contrast ::selection {
         print-color-adjust: exact;
     }
 
-    body.printing-docs-checklist #documentos::before {
+    body.printing-docs-checklist #documentos > .container::before {
+        visibility: visible !important;
         content: "NossoDireito — Documentos Necessários por Direito";
         display: block;
         font-size: 16pt;
@@ -2885,7 +2908,8 @@ html.high-contrast ::selection {
         color: #1e3a8a;
     }
 
-    body.printing-docs-checklist #documentos::after {
+    body.printing-docs-checklist #documentos > .container::after {
+        visibility: visible !important;
         content: "Gerado em " attr(data-print-date) " · nossodireito.fabiotreze.com · Consulte um advogado para orientação personalizada.";
         display: block;
         margin-top: 16pt;

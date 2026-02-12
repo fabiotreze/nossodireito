@@ -1429,9 +1429,9 @@ setTimeout(cleanup, 5000);
 const exportChecklistBtn = document.getElementById('exportChecklistPdf');
 if (exportChecklistBtn) {
 exportChecklistBtn.addEventListener('click', () => {
-const checklistSection = document.getElementById('checklist');
-if (checklistSection) {
-checklistSection.setAttribute('data-print-date', new Date().toLocaleDateString('pt-BR'));
+const container = document.querySelector('#checklist > .container');
+if (container) {
+container.setAttribute('data-print-date', new Date().toLocaleDateString('pt-BR'));
 }
 document.body.classList.add('printing-checklist');
 window.print();
@@ -1446,9 +1446,9 @@ setTimeout(cleanup, 5000);
 const exportDocsChecklistBtn = document.getElementById('exportDocsChecklistPdf');
 if (exportDocsChecklistBtn) {
 exportDocsChecklistBtn.addEventListener('click', () => {
-const docsSection = document.getElementById('documentos');
-if (docsSection) {
-docsSection.setAttribute('data-print-date', new Date().toLocaleDateString('pt-BR'));
+const container = document.querySelector('#documentos > .container');
+if (container) {
+container.setAttribute('data-print-date', new Date().toLocaleDateString('pt-BR'));
 }
 document.body.classList.add('printing-docs-checklist');
 window.print();
