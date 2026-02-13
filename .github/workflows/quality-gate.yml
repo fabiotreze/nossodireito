@@ -27,6 +27,9 @@ jobs:
         with:
           python-version: "3.11"
 
+      - name: Instalar dependências
+        run: pip install -r requirements.txt
+
       # ── Sensitive Data Scan (pre-check rápido) ──
       - name: Scan para dados sensíveis
         run: |
