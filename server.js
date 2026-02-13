@@ -1,7 +1,7 @@
 /**
  * NossoDireito — Static File Server (Hardened)
  * Serve static files with defense-in-depth security.
- * Azure App Service (Node.js 20 LTS)
+ * Azure App Service (Node.js 22 LTS)
  *
  * Security posture: EASM-hardened (Defender EASM / Qualys / Shodan-proof)
  * Integrates with Azure Application Insights for telemetry.
