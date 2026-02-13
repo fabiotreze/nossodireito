@@ -4,9 +4,9 @@
 
 | Versão | Suportada |
 |--------|-----------|
-| 1.8.x  | ✅        |
-| 1.7.x  | ✅        |
-| < 1.7  | ❌        |
+| 1.10.x | ✅        |
+| 1.9.x  | ✅        |
+| < 1.9  | ❌        |
 
 ## Reportando Vulnerabilidades
 

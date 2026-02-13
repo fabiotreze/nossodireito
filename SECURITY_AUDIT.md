@@ -1,6 +1,6 @@
-# 🔒 NossoDireito — Auditoria de Segurança v1.8.0
+# 🔒 NossoDireito — Auditoria de Segurança v1.10.0
 
-**Data**: 2026-02-12
+**Data**: 2026-02-13
 **Escopo**: Aplicação client-side (HTML5 + CSS3 + Vanilla JS) + servidor Node.js (`server.js`)
 **Domínio**: `nossodireito.fabiotreze.com` (HTTPS via Azure App Service + Key Vault PFX)
 **Classificação de dados**: Dados pessoais sensíveis de saúde (laudos médicos com CID)
@@ -47,7 +47,7 @@
 
 **Score anterior**: 4/8 controles = **50%**
 
-### 2.2 Postura de Segurança v1.8.0 (Depois)
+### 2.2 Postura de Segurança v1.10.0 (Depois)
 
 | Controle                          | Status | Detalhes                                    |
 |-----------------------------------|--------|---------------------------------------------|
@@ -192,7 +192,7 @@ O servidor Node.js (`server.js`) serve apenas arquivos estáticos e headers de s
 ### 8.1 CVSS Distribution
 
 ```
-              Before v1.0.0        After v1.8.0
+              Before v1.0.0        After v1.10.0
 CRITICAL  :   ■■ (1)              □ (0)
 HIGH      :   ■■■ (2)             □ (0)
 MEDIUM    :   ■■■■■■ (4)          ■ (1)*
@@ -257,9 +257,9 @@ NONE      :   □ (0)               ■■■■■■■■■■ (6)
 
 ## 13. Conclusão
 
-A aplicação NossoDireito v1.8.0 implementa um conjunto robusto de controles de segurança para uma aplicação client-side com servidor Node.js que processa dados sensíveis de saúde. O score de segurança evoluiu de **50%** (v1.0.0) para **100%** (v1.8.0) nos 15 controles aplicáveis.
+A aplicação NossoDireito v1.10.0 implementa um conjunto robusto de controles de segurança para uma aplicação client-side com servidor Node.js que processa dados sensíveis de saúde. O score de segurança evoluiu de **50%** (v1.0.0) para **100%** (v1.10.0) nos 15 controles aplicáveis.
 
-**Novidades v1.8.0**: Servidor Node.js com HSTS + rate limiting + CSP server-side, integração VLibras (Libras) via CSP allowlist, Web Speech API (TTS nativa), hospedagem Azure App Service com SSL via Key Vault.
+**Novidades v1.10.0**: Servidor Node.js com HSTS + rate limiting + CSP server-side, integração VLibras (Libras) via CSP allowlist, Web Speech API (TTS nativa), hospedagem Azure App Service com SSL via Key Vault.
 
 **Risco residual principal**: CVE-2024-4367 no pdf.js, mitigado via CSP mas não eliminado.
 
@@ -267,5 +267,5 @@ A aplicação NossoDireito v1.8.0 implementa um conjunto robusto de controles de
 
 ---
 
-*Documento atualizado em 2026-02-12 como parte do processo de Security Review do NossoDireito v1.8.0.*
+*Documento atualizado em 2026-02-13 como parte do processo de Security Review do NossoDireito v1.10.0.*
 *Para relatar vulnerabilidades: veja [SECURITY.md](SECURITY.md)*

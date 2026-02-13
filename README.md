@@ -4,12 +4,12 @@
 
 # ⚖️ NossoDireito
 
-[![Master Compliance](https://img.shields.io/badge/Master%20Compliance-100.0%25%20(973.9%2F973.9)-brightgreen?style=flat-square)](docs/ACHIEVEMENT_100_PERCENT_FINAL.md)
+[![Master Compliance](https://img.shields.io/badge/Master%20Compliance-100.0%25%20(1059.9%2F1059.9)-brightgreen?style=flat-square)](CHANGELOG.md)
 [![Quality Gate](https://img.shields.io/badge/Quality%20Gate-100.0%2F100-brightgreen?style=flat-square)](https://github.com/fabiotreze/nossodireito/actions)
-[![WAF 5 Pillars](https://img.shields.io/badge/WAF%205%20Pillars-100%25-success?style=flat-square)](docs/QUALITY_TESTING_GUIDE.md)
-[![Deploy](https://img.shields.io/badge/Deploy-Azure%20Static%20Web%20Apps-0078D4?style=flat-square&logo=microsoft-azure)](https://nossodireito.fabiotreze.com)
+[![WAF 5 Pillars](https://img.shields.io/badge/WAF%205%20Pillars-100%25-success?style=flat-square)](docs/QUALITY_GUIDE.md)
+[![Deploy](https://img.shields.io/badge/Deploy-Azure%20App%20Service-0078D4?style=flat-square&logo=microsoft-azure)](https://nossodireito.fabiotreze.com)
 [![Security](https://img.shields.io/badge/Security-HTTPS%20%7C%20CSP%20%7C%20Zero%20Tracking-green?style=flat-square&logo=letsencrypt)](SECURITY.md)
-[![Accessibility](https://img.shields.io/badge/Accessibility-ARIA%20%7C%20VLibras%20%7C%20WCAG-blue?style=flat-square&logo=accessible-icon)](docs/QUALITY_TESTING_GUIDE.md)
+[![Accessibility](https://img.shields.io/badge/Accessibility-ARIA%20%7C%20VLibras%20%7C%20WCAG-blue?style=flat-square&logo=accessible-icon)](docs/ACCESSIBILITY.md)
 [![LGPD](https://img.shields.io/badge/LGPD-Zero%20Data%20Collection-blue?style=flat-square)](SECURITY.md)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow?style=flat-square)](LICENSE)
 [![Version](https://img.shields.io/badge/Version-1.10.0-informational?style=flat-square)](CHANGELOG.md)
@@ -34,7 +34,7 @@ Este projeto responde essa pergunta de forma clara, objetiva e validada.
 
 ## 🎉 NOVIDADES (12/02/2026) — 100% COMPLIANCE ALCANÇADO!
 
-**🏆 Conquista:** Master Compliance v1.10.0 @ **973.9/973.9 pontos (100.00%)**
+**🏆 Conquista:** Master Compliance v1.10.0 @ **1059.9/1059.9 pontos (100.00%)**
 
 ### ✅ O que foi implementado:
 
@@ -59,14 +59,14 @@ Este projeto responde essa pergunta de forma clara, objetiva e validada.
    - ✅ Completude: 22/25 benefícios completos (≥20 meta)
    - ✅ IPVA: 27/27 estados mapeados
 
-### 📚 Documentação completa criada:
+### 📚 Documentação completa:
 
-- [`docs/ACHIEVEMENT_100_PERCENT_FINAL.md`](docs/ACHIEVEMENT_100_PERCENT_FINAL.md) — Conquista de 100%
-- [`docs/AUTOMATION_AUDIT.md`](docs/AUTOMATION_AUDIT.md) — Auditoria completa
-- [`docs/VALIDATION_ROUTINES_STATUS.md`](docs/VALIDATION_ROUTINES_STATUS.md) — Status de rotinas
-- [`docs/GUIA_RAPIDO_USO.md`](docs/GUIA_RAPIDO_USO.md) ⭐ — Guia prático completo
-- [`docs/RESPOSTAS_DIRETAS.md`](docs/RESPOSTAS_DIRETAS.md) ⭐ — FAQ técnico
-- [`docs/INDICE_GERAL.md`](docs/INDICE_GERAL.md) — Índice de tudo criado
+- [`docs/QUALITY_GUIDE.md`](docs/QUALITY_GUIDE.md) ⭐ — Pipeline, scripts, testes, troubleshooting
+- [`docs/ACCESSIBILITY.md`](docs/ACCESSIBILITY.md) — Auditoria WCAG/eMAG, correções, widgets
+- [`docs/VALIDATION_STATUS.md`](docs/VALIDATION_STATUS.md) — Automação, E2E, roadmap
+- [`docs/REFERENCE.md`](docs/REFERENCE.md) — 31+ benefícios PcD, dependências, ordenação
+- [`docs/COMPLIANCE.md`](docs/COMPLIANCE.md) — LGPD, LBI, ISO, Azure
+- [`docs/KNOWN_ISSUES.md`](docs/KNOWN_ISSUES.md) — Bugs, VLibras, limitações
 
 ### 🚀 Como usar:
 
@@ -74,14 +74,14 @@ Este projeto responde essa pergunta de forma clara, objetiva e validada.
 # Validação completa (recomendado antes de commitar)
 python scripts/validate_all.py
 
-# Master Compliance (20 categorias)
+# Master Compliance (21 categorias)
 python scripts/master_compliance.py
 
 # Análise de conteúdo
 python scripts/analise360.py
 ```
 
-**Roadmap P0-P3:** Próximas implementações em [`docs/VALIDATION_ROUTINES_STATUS.md`](docs/VALIDATION_ROUTINES_STATUS.md)
+**Roadmap P0-P3:** Próximas implementações em [`docs/VALIDATION_STATUS.md`](docs/VALIDATION_STATUS.md)
 
 ---
 
@@ -182,7 +182,7 @@ python3 -m http.server 3000
 
 ### **Infraestrutura (IaC)**
 - **Terraform** — Provisionamento automático Azure
-- **Azure Static Web Apps** — Hospedagem global com CDN
+- **Azure App Service** — Hospedagem (Linux, Node.js 22 LTS)
 - **Azure Blob Storage** — Armazenamento de assets
 - **GitHub Actions** — CI/CD automatizado
 
@@ -191,7 +191,7 @@ python3 -m http.server 3000
 - **validate_content.py** — 147 verificações de dados e código
 - **validate_sources.py** — Teste de HTTP status de 40+ URLs
 - **validate_legal_sources.py** — Extração automática de artigos de leis
-- **master_compliance.py** — 17 categorias de compliance (score 100%)
+- **master_compliance.py** — 21 categorias de compliance (score 100%)
 - **Pre-commit Hook** — Validação automática antes de cada commit
 
 ### **Segurança**
@@ -268,14 +268,23 @@ nossodireito/
 │   ├── matching_engine.json # Keywords de análise de documentos
 │   └── ipva_pcd_estados.json # Tabela IPVA PcD por estado
 ├── images/                 # Favicons, OG image e logo
+├── docs/
+│   ├── QUALITY_GUIDE.md    # Pipeline, scripts, testes (4→1)
+│   ├── ACCESSIBILITY.md    # WCAG/eMAG, correções, widgets (6→1)
+│   ├── VALIDATION_STATUS.md # Automação, E2E, roadmap (4→1)
+│   ├── REFERENCE.md        # 31+ benefícios PcD, dependências (3→1)
+│   ├── COMPLIANCE.md       # LGPD, LBI, ISO, Azure
+│   ├── KNOWN_ISSUES.md     # Bugs, VLibras, limitações
+│   ├── CONTRIBUTING.md     # Guia de contribuição
+│   ├── ARCHITECTURE.md     # Arquitetura completa do sistema
+│   └── v1/                 # Arquivo histórico
 ├── scripts/
 │   ├── validate_sources.py # Validação de URLs + legislação + CID
 │   ├── validate_content.py # Validação de conteúdo (147 checks)
-│   ├── master_compliance.py # Compliance 360° (17 pilares)
+│   ├── master_compliance.py # Compliance 360° (21 categorias)
+│   ├── validate_all.py     # Orquestrador (16 fases)
 │   ├── bump_version.py     # Semver automático
 │   └── pre-commit          # Hook de pré-commit
-├── codereview/
-│   └── codereview.py       # Quality Gate (221 checks)
 ├── terraform/              # Infraestrutura como código
 │   ├── main.tf             # App Service + Key Vault + SSL
 │   ├── variables.tf        # Variáveis multi-ambiente

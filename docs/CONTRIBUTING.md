@@ -91,10 +91,10 @@ Conhece um benefício PcD que NÃO está no site?
 
 #### 📌 Como Submeter:
 
-**GitHub Issue:**  
+**GitHub Issue:**
 https://github.com/fabiotreze/nossodireito/issues/new?template=novo_beneficio.md
 
-**Email:**  
+**Email:**
 Envie as informações acima para fabiotreze@gmail.com (assunto: "Novo Benefício")
 
 ---
@@ -127,9 +127,9 @@ open http://localhost:8080
 
 - [ ] **Rode o Quality Gate:**
   ```bash
-  python codereview/codereview.py --ci --min-score 75
+  python scripts/master_compliance.py --quick
   ```
-  
+
 - [ ] **Valide JSON:**
   ```bash
   python -c "import json; json.load(open('data/direitos.json'))"
@@ -149,7 +149,7 @@ open http://localhost:8080
 
 #### 📋 Estrutura do Pull Request:
 
-**Título:**  
+**Título:**
 `[FEATURE] Adiciona benefício X` ou `[FIX] Corrige link Y` ou `[DOCS] Atualiza Z`
 
 **Descrição:**
@@ -171,7 +171,7 @@ open http://localhost:8080
 [Cole prints antes/depois]
 ```
 
-**Label:**  
+**Label:**
 Adicione label apropriado: `bugfix`, `enhancement`, `documentation`, `security`
 
 #### ⏱️ Tempo de Revisão:
@@ -191,7 +191,7 @@ Documentação never is enough! Ajude a documentar:
 
 - [ ] **README.md** — Melhorar instruções de uso
 - [ ] **ARCHITECTURE.md** — Documentar decisões arquiteturais
-- [ ] **ACCESSIBILITY_COMPLIANCE.md** — Auditoria WCAG 2.1
+- [ ] **ACCESSIBILITY.md** — Auditoria WCAG 2.1
 - [ ] **PERFORMANCE.md** — Lighthouse scores, otimizações
 - [ ] **SECURITY.md** — Vulnerabilidades conhecidas
 
@@ -205,19 +205,19 @@ Documentação never is enough! Ajude a documentar:
 
 ### 5️⃣ Traduzir para Outros Idiomas
 
-**Planejado para v2.0.0:** Suporte a Espanhol e Inglês.
+**Planejado:** Suporte a Espanhol e Inglês (sem data definida).
 
-Se você fala esses idiomas e quer ajudar, entre em contato:  
+Se você fala esses idiomas e quer ajudar, entre em contato:
 fabiotreze@gmail.com (assunto: "Tradução")
 
 ---
 
 ## 🚨 O Que NÃO Fazer (Proibido)
 
-❌ **Não adicione dados pessoais:** Jamais inclua CPF, RG, endereço de terceiros  
-❌ **Não faça spam:** Pull Requests com propagandas serão rejeitados  
-❌ **Não copie conteúdo protegido:** Use apenas fontes oficiais e citadas  
-❌ **Não remova créditos:** Mantenha autoria e licença MIT  
+❌ **Não adicione dados pessoais:** Jamais inclua CPF, RG, endereço de terceiros
+❌ **Não faça spam:** Pull Requests com propagandas serão rejeitados
+❌ **Não copie conteúdo protegido:** Use apenas fontes oficiais e citadas
+❌ **Não remova créditos:** Mantenha autoria e licença MIT
 ❌ **Não quebre o código:** Sempre rode Quality Gate antes de enviar PR
 
 ---
@@ -233,7 +233,7 @@ Este projeto segue o [Contributor Covenant 2.1](https://www.contributor-covenant
 - ✅ Foque no que é melhor para a comunidade
 - ❌ Não tolere assédio, discriminação ou linguagem ofensiva
 
-**Reportar violações:**  
+**Reportar violações:**
 fabiotreze@gmail.com (assunto: "Código de Conduta")
 
 ---
@@ -247,7 +247,7 @@ fabiotreze@gmail.com (assunto: "Código de Conduta")
 | **Fábio Treze** | Criador e mantenedor | dez/2025 |
 | _(seu nome aqui)_ | _(suas contribuições)_ | _(data)_ |
 
-**Como aparecer aqui:**  
+**Como aparecer aqui:**
 Envie 3+ Pull Requests aceitos ou reporte 5+ issues úteis!
 
 ---
@@ -290,20 +290,20 @@ Sempre explicamos o motivo da rejeição no Issue/PR.
 
 ### P: Como sei se meu Issue já foi reportado?
 
-**R:** Busque antes de criar novo:  
+**R:** Busque antes de criar novo:
 https://github.com/fabiotreze/nossodireito/issues?q=is%3Aissue
 
 ---
 
 ## 📞 Contato
 
-**Mantenedor Principal:**  
+**Mantenedor Principal:**
 Fábio Treze — fabiotreze@gmail.com
 
-**GitHub:**  
+**GitHub:**
 https://github.com/fabiotreze/nossodireito
 
-**Site:**  
+**Site:**
 https://nossodireito.fabiotreze.com
 
 ---
@@ -319,6 +319,6 @@ Ao contribuir, você concorda que suas contribuições serão licenciadas sob a 
 
 ---
 
-**Última Atualização:** 11 de fevereiro de 2026  
-**Versão:** 1.0.0  
-**Agradecemos sua contribuição!** 🙏  
+**Última Atualização:** 11 de fevereiro de 2026
+**Versão:** 1.0.0
+**Agradecemos sua contribuição!** 🙏

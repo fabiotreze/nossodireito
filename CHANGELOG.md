@@ -5,6 +5,45 @@ Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/)
 e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [1.10.0] - 2026-02-13
+
+### ✨ Adicionado
+- **Testes E2E interativos com Playwright** — 24 testes cobrindo navegação, filtros, busca, modais e acessibilidade
+- **Cobertura WAVE completa** — 42 testes de acessibilidade cobrindo todos os 135 itens WAVE
+- **Testes visuais de browser** — 23 testes de renderização visual (overflow, fontes, contraste, layout responsivo)
+- **Testes de alto contraste** — 11 testes verificando funcionalidade completa em modo de alto contraste
+- **SEO expandido** — FAQPage (14 perguntas), GovernmentService schema, Google site verification
+
+### 🐛 Corrigido
+- **Contraste de botões de filtro ativos** — Ratio era 2.5:1 (white/blue), agora 12.6:1 (amber/black) em alto contraste
+- **CSS overflow-x** — Corrigido para evitar scroll horizontal indesejado
+- **Codificação cp1252** — 7 scripts corrigidos para funcionar em terminal Windows
+- **9 importações Python não usadas** — Removidas de 7 arquivos
+
+### 🔄 Melhorado
+- **Pipeline unificado** — Pre-commit agora executa apenas `master_compliance.py --quick` (comando único)
+- **`check_version_consistency.py` absorvido** — Função `check_versions()` embutida no master_compliance.py
+- **`validate_schema.py` absorvido** — Método `validate_json_schema()` embutido no master_compliance.py
+- **Master Compliance v1.10.0** — 21 categorias, 1059.9/1059.9 pontos (100.00%)
+- **CSS alto contraste** — Override para `.orgao-filter-btn.active` e `.inst-filter-btn.active`
+- **`reduced-motion`** — Media query para desabilitar animações conforme preferência do usuário
+
+### 🗑️ Removido
+- **`check_version_consistency.py`** — Absorvido como função inline no master_compliance.py
+- **`validate_all.py` do pre-commit** — Roda apenas manualmente (16 fases completas)
+- **Referências órfãs** — Limpeza de docs com referências a scripts removidos/consolidados
+
+## [1.9.0] - 2026-02-12
+
+### ✨ Adicionado
+- **Pipeline de qualidade** — `scripts/quality_pipeline.py` substitui `codereview/codereview.py`
+- **Detecção de referências órfãs** — Categoria 21 no master_compliance.py
+- **Terraform IaC** — Infraestrutura Azure como código (App Service, Key Vault, CDN)
+
+### 🔄 Melhorado
+- **Remoção de docs/v2/** — Eliminadas todas as referências v2 obsoletas
+- **Remoção de codereview/** — ~50 referências substituídas para quality_pipeline
+
 ## [1.8.1] - 2026-02-12
 
 ### 🐛 Corrigido
@@ -53,7 +92,7 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 ### 📊 Métricas
 - 📊 25 categorias, 68 fontes, 25 instituições, 352 tags únicos, 609 keywords, 116 uppercase terms
 - E2E: 18/18 (100%)
-- Codereview: 221 PASS, 100.0/100
+- Quality Pipeline: 221 PASS, 100.0/100
 - Master Compliance: 100.00% (853.4/853.4, 17/17 pilares)
 - WAF Score: 100% (Seg=100%, Conf=100%, Perf=100%, Custo=100%, Ops=100%)
 
@@ -92,7 +131,7 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 
 ### 📊 Métricas
 - E2E: 18/18 (100%)
-- Codereview: 210 PASS, 97.4/100
+- Quality Pipeline: 210 PASS, 97.4/100
 - WAF Score: 96% (Seg=100%, Conf=100%, Perf=80%, Custo=100%, Ops=100%)
 
 ## [1.6.0] - 2026-02-12
@@ -140,7 +179,7 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
   - Funções JavaScript não usadas (regex de declarações vs chamadas)
   - Importações Python órfãs (import/from vs uso no código)
   - console.log() esquecidos (anti-pattern para produção)
-  
+
 - **Orphaned Files Cleanup:** Detecta:
   - Arquivos temporários (.tmp, .bak, .backup, .old, .swp)
   - Cache de sistema (.DS_Store, __pycache__)
@@ -267,7 +306,7 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 - **Total: -107KB economia de banda**
 
 ### 🐛 Corrigido
-- **codereview.py:** Validação de campo `link` → `url` em base_legal
+- **quality_pipeline.py:** Validação de campo `link` → `url` em base_legal
 - **Backup files:** Remoção automática de arquivos .backup (303KB liberados)
 
 ### 🧹 Removido
@@ -355,7 +394,7 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
   - Removidos estilos inline, migrados para classes CSS reutilizáveis
   - Seções separadas: Limitações do Serviço + Onde buscar ajuda + LGPD
   - Melhor legibilidade com parágrafos e listas organizadas
-  
+
 - **Seção Transparência** reestruturada com mais clareza
   - Compromisso com atualização agora destaca que o processo é **MANUAL**
   - Data da última atualização exibida de forma proeminente
@@ -365,7 +404,7 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 - **Síntese de voz (TTS)** agora alerta usuário quando não há voz em português
   - Mensagem: "⚠️ Seu navegador pode não suportar português. A leitura pode estar em outro idioma."
   - Toast informativo orienta instalação de vozes pt-BR nas configurações do sistema
-  
+
 - **Exportação de PDF** corrigida para evitar páginas em branco
   - Adicionado `@page { size: A4; margin: 2cm; }` para padrão ABNT
   - Substituído `visibility: hidden` por `display: none` para evitar renderização fantasma
@@ -479,7 +518,7 @@ Todas as leis foram consultadas nos textos consolidados do Planalto.gov.br:
   - Itens 4,6,7,8 requerem Item 3 (laudo validado) — alerta + desmarca
 
 #### Reorganização da Documentação
-- **Estrutura V1/V2 padronizada:**
+- **Estrutura V1 padronizada:**
   ```
   docs/
   ├── v1/                              # Versão atual em produção
@@ -487,11 +526,6 @@ Todas as leis foram consultadas nos textos consolidados do Planalto.gov.br:
   │   ├── DIAGRAMS.md                  # Antes: SYSTEM_DIAGRAMS.md
   │   ├── LEGAL_COMPLIANCE.md          # Inalterado
   │   └── VLIBRAS_LIMITATIONS.md       # Inalterado
-  ├── v2/                              # Planejamento futuro
-  │   └── roadmap/                     # Antes: docs/roadmap/
-  │       ├── ROADMAP_V2.md
-  │       ├── ARCHITECTURE_V2.md
-  │       └── v2-backend/ (código exemplo)
   ├── CHECKLIST_VALIDATIONS.md        # NOVO
   └── README.md                        # NOVO — Padrão de nomenclatura
   ```
@@ -519,14 +553,8 @@ Todas as leis foram consultadas nos textos consolidados do Planalto.gov.br:
 #### Padrão de Nomenclatura de Arquivos
 - **Antes:** `SYSTEM_ARCHITECTURE_V1.md`, `SYSTEM_DIAGRAMS.md`
 - **Depois:** `v1/ARCHITECTURE.md`, `v1/DIAGRAMS.md`
-- **Razão:** Facilita diff entre versões (`diff v1/ARCHITECTURE.md v2/ARCHITECTURE.md`)
+- **Razão:** Facilita versionamento por pastas
 
-### Pendente
-
-#### Simplificação do Roadmap V2
-- **Tarefa:** Revisar e simplificar `docs/v2/roadmap/ROADMAP_V2.md`
-- **Objetivo:** Arquitetura mais limpa, reduzir complexidade
-- **Próximos passos:** Definir tech stack minimalista, SLA realista
 
 ---
 
@@ -838,7 +866,7 @@ Todas as leis foram consultadas nos textos consolidados do Planalto.gov.br:
 - Termos médicos expandidos com variantes sem acento para PDFs
 - Correção ortográfica: "Avise-nos" → "avise-nos" (minúscula em meio de frase)
 
-#### Quality Gate — codereview.py
+#### Quality Gate — quality_pipeline.py
 - Regex de `rel="noopener"` atualizado para aceitar `rel="noopener noreferrer"`
 - Contagem de links `target="_blank"` agora inclui links gerados por JS
 - Comentários HTML removidos para reduzir tamanho (36.390 → 34.156 bytes, limite 35.000)
@@ -852,8 +880,8 @@ Todas as leis foram consultadas nos textos consolidados do Planalto.gov.br:
 - **KEYWORD_MAP**, **CID_RANGE_MAP** e **UPPERCASE_ONLY_TERMS** movidos de `app.js` para `data/matching_engine.json` (53 KB)
 - `app.js` reduzido de 105 KB → 78 KB (abaixo do limite de 100 KB)
 - Dados carregados via `fetch()` assíncrono em `loadData()`, com `deepFreeze()` para imutabilidade
-- Codereview atualizado para validar KEYWORD_MAP tanto em `app.js` quanto em `matching_engine.json`
-- Domínio `who.int` adicionado à whitelist `OFFICIAL_DOMAINS` do codereview
+- Quality pipeline atualizado para validar KEYWORD_MAP tanto em `app.js` quanto em `matching_engine.json`
+- Domínio `who.int` adicionado à whitelist `OFFICIAL_DOMAINS` do quality pipeline
 
 #### PWA — Progressive Web App
 - **manifest.json** criado — nome, ícones (32/180/512), `display: standalone`, `theme_color: #1e3a8a`
@@ -883,7 +911,7 @@ Todas as leis foram consultadas nos textos consolidados do Planalto.gov.br:
 ### Corrigido
 - Links do GitHub corrigidos de `fabiorodrigues` → `fabiotreze/nossodireito` (2 locais)
 
-#### Codereview — Novos Checks
+#### Quality Pipeline — Novos Checks
 - Regex de inline JS exclui `<script type="application/ld+json">` (JSON-LD não é JS executável)
 - Registro de Service Worker excluído do check de inline JS (padrão de bootstrap válido)
 - WAF Segurança: reconhece `sw.js` como indicador de HTTPS (SW requer HTTPS)
@@ -924,7 +952,7 @@ Todas as leis foram consultadas nos textos consolidados do Planalto.gov.br:
 #### index.html
 - CSP atualizado com `upgrade-insecure-requests`
 
-#### codereview.py — 12 novos checks EASM (checks 11–21)
+#### quality_pipeline.py — 12 novos checks EASM (checks 11–21)
 - HSTS, COOP/CORP/COEP, rate limiting, host validation, connection timeouts
 - Server identity suppression, upgrade-insecure-requests
 - Prototype pollution guard, open redirect guard, safe JSON parse, deep freeze
@@ -970,7 +998,7 @@ Todas as leis foram consultadas nos textos consolidados do Planalto.gov.br:
 - server.js — Node.js 20 LTS com gzip, cache headers, security headers
 
 #### Quality Gate
-- codereview.py v2.0.0 — 17 categorias de verificação automática
+- quality_pipeline.py — 17 categorias de verificação automática
 - Score mínimo de 75 para deploy (score atual: 99.9/100)
 - Scan automático de segredos (chaves, tokens, certificados)
 - Avaliação WAF dos 5 pilares (Segurança, Confiabilidade, Performance, Custo, Ops)

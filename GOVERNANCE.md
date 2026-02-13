@@ -3,8 +3,8 @@
 > Documento que define os critérios, fluxos e boas práticas para manter o portal atualizado,
 > confiável e sempre embasado em fontes oficiais do governo brasileiro.
 
-**Última revisão:** 2026-02-12
-**Versão:** 1.8.0
+**Última revisão:** 2026-02-13
+**Versão:** 1.10.0
 
 ---
 
@@ -83,7 +83,7 @@
         {
             "lei": "Lei XXXXX/YYYY",
             "artigo": "Art. XX",
-            "link": "https://planalto.gov.br/..."
+            "link": "https://planalto.gov.br/..."  // campo 'url' no JSON real
         }
     ],
     "requisitos": ["..."],                  // Mínimo 2 requisitos
@@ -112,7 +112,7 @@
 6. Atualizar `artigos_referenciados` nas fontes existentes (ex: LBI)
 7. Incrementar versão (semver MINOR para nova categoria)
 8. Atualizar `ultima_atualizacao`
-9. Rodar `codereview.py` — score mínimo 95/100
+9. Rodar `master_compliance.py --quick` — todas as categorias devem passar
 10. Testar no navegador — categoria aparece, busca encontra, análise de documento detecta
 
 ---
@@ -122,7 +122,7 @@
 ### 4.1. Validação obrigatória
 
 - [ ] URL responde HTTP 200 (ou 301/302)
-- [ ] Domínio pertence a `OFFICIAL_DOMAINS` do codereview.py
+- [ ] Domínio pertence a `OFFICIAL_DOMAINS` do master_compliance.py
 - [ ] Campo `consultado_em` preenchido com data YYYY-MM-DD
 - [ ] Campo `orgao` preenchido
 - [ ] Se legislação: campo `artigos_referenciados` preenchido
@@ -199,7 +199,7 @@ Categorias que podem ser adicionadas após pesquisa e validação:
 
 - ❌ Copiar texto de sites sem verificar a fonte original (gov.br)
 - ❌ Usar informações de fontes não-oficiais como base legal
-- ❌ Publicar sem rodar `codereview.py` (mínimo 95/100)
+- ❌ Publicar sem rodar `master_compliance.py --quick` (todas as categorias devem passar)
 - ❌ Deixar link quebrado sem correção
 - ❌ Inventar ou inferir direitos não previstos em lei
 - ❌ Dar conselho jurídico — o site **informa**, não aconselha
@@ -210,7 +210,7 @@ Categorias que podem ser adicionadas após pesquisa e validação:
 - ✅ Incluir o disclaimer de que informações podem estar desatualizadas
 - ✅ Manter `consultado_em` atualizado em cada fonte verificada
 - ✅ Testar todos os links antes de publicar
-- ✅ Rodar `codereview.py` após qualquer alteração
+- ✅ Rodar `master_compliance.py --quick` após qualquer alteração
 - ✅ Incluir variantes sem acento no `KEYWORD_MAP` (ex: `condomínio` e `condominio`)
 
 ### 7.3. Tom e linguagem

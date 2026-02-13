@@ -1,10 +1,10 @@
 # NossoDireito — Documento Único de Compliance
 
-**Versão:** 1.8.0 (consolidado de múltiplos documentos)  
-**Data:** 12 de fevereiro de 2026  
-**Responsável:** Fabio Treze (fabiotreze@hotmail.com)  
-**Tipo:** Compliance Legal, Técnico, Segurança, Privacidade, Acessibilidade, Qualidade  
-**Framework:** ISO 27001 + SOC 2 + LGPD + LBI  
+**Versão:** 1.10.0 (consolidado de múltiplos documentos)
+**Data:** 13 de fevereiro de 2026
+**Responsável:** Fabio Treze (fabiotreze@hotmail.com)
+**Tipo:** Compliance Legal, Técnico, Segurança, Privacidade, Acessibilidade, Qualidade
+**Framework:** ISO 27001 + SOC 2 + LGPD + LBI
 **Próxima Auditoria:** 18 de fevereiro de 2026
 
 ---
@@ -58,7 +58,7 @@
 #### Status: ✅ **CONFORME** (Não Aplicabilidade — Art. 4º, I)
 
 **Base Legal:**
-> **LGPD Art. 4º, I**  
+> **LGPD Art. 4º, I**
 > "Esta Lei não se aplica ao tratamento de dados pessoais realizado por pessoa natural para fins exclusivamente particulares e não econômicos."
 
 **Análise:**
@@ -114,8 +114,8 @@ function clearUserData() {
 }
 ```
 
-**Última Auditoria:** 11/02/2026  
-**Próxima Revisão:** 11/03/2026 (mensal)  
+**Última Auditoria:** 11/02/2026
+**Próxima Revisão:** 11/03/2026 (mensal)
 **Documentos de Referência:**
 - [docs/v1/LEGAL_COMPLIANCE.md](v1/LEGAL_COMPLIANCE.md) (detalhamento completo)
 
@@ -126,7 +126,7 @@ function clearUserData() {
 #### Status: ✅ **CONFORME** (95% - VLibras tem limitações conhecidas)
 
 **Base Legal:**
-> **LBI Art. 63**  
+> **LBI Art. 63**
 > "É obrigatória a acessibilidade nos sítios da internet mantidos por empresas com sede ou representação comercial no País ou por órgãos de governo, para uso da pessoa com deficiência, garantindo-lhe acesso às informações disponíveis, conforme as melhores práticas e diretrizes de acessibilidade adotadas internacionalmente."
 
 **Aplicabilidade:**
@@ -136,7 +136,7 @@ function clearUserData() {
 
 **Conformidade WCAG 2.1 Nível AA:** Ver [§4 COMPLIANCE DE ACESSIBILIDADE](#4-compliance-de-acessibilidade)
 
-**Última Auditoria:** 11/02/2026  
+**Última Auditoria:** 11/02/2026
 **Próxima Revisão:** 11/03/2026
 
 ---
@@ -168,7 +168,7 @@ function clearUserData() {
 #### Status: ⚠️ **PARCIAL** (75% - Sem Seguro E&O)
 
 **Base Legal:**
-> **Código Civil Art. 927**  
+> **Código Civil Art. 927**
 > "Aquele que, por ato ilícito (arts. 186 e 187), causar dano a outrem, fica obrigado a repará-lo."
 
 **Risco:** Informações desatualizadas ou interpretação incorreta de legislação podem causar dano material (perda de benefício) ou moral (frustração).
@@ -178,11 +178,11 @@ function clearUserData() {
   > "⚠️ Este site NÃO substitui orientação profissional. As informações são de caráter educacional e informativo..."
 - ✅ **Direcionamento para profissionais**: Defensoria Pública, CRAS, SUS
 - ✅ **Citação de fontes oficiais**: Sempre linkando planalto.gov.br/gov.br
-- ✅ **Validação periódica**: Script `validate_sources.py`, `validate_links.py`
+- ✅ **Validação periódica**: Script `validate_sources.py`
 - ❌ **Sem seguro E&O** (Errors & Omissions Insurance)
 
 **Recomendação Futura (se escalar):**
-- 📌 Contratar seguro E&O se V2 escalar para >100k usuários/mês
+- 📌 Contratar seguro E&O se escalar para >100k usuários/mês
 - 📌 Adicionar Termos de Uso + Política de Privacidade formais
 
 **Última Auditoria:** 11/02/2026
@@ -225,7 +225,7 @@ setTimeout(() => deleteFromIndexedDB(pdfId), 30 * 60 * 1000);
 - ✅ IV (Initialization Vector) aleatório por criptografia
 - ✅ TTL automático (30 minutos)
 
-**Última Auditoria:** 11/02/2026  
+**Última Auditoria:** 11/02/2026
 **Documentos de Referência:** [SECURITY_AUDIT.md](../SECURITY_AUDIT.md)
 
 ---
@@ -295,7 +295,7 @@ setTimeout(() => deleteFromIndexedDB(pdfId), 30 * 60 * 1000);
 - ✅ **PCI DSS** (Segurança de Pagamentos — não aplicável ao projeto)
 - ✅ **ISO 27018** (Proteção de Dados Pessoais na Nuvem)
 
-**Região:** Brazil South (São Paulo)  
+**Região:** Brazil South (São Paulo)
 **Compliance Local:** LGPD-ready (dados não saem do Brasil)
 
 **Documentação Microsoft:**
@@ -426,7 +426,7 @@ setTimeout(() => deleteFromIndexedDB(pdfId), 30 * 60 * 1000);
 - ✅ [axe DevTools](https://www.deque.com/axe/devtools/) (browser extension)
 - ✅ Lighthouse Accessibility Audit (Chrome DevTools)
 
-**Última Auditoria:** 11/02/2026  
+**Última Auditoria:** 11/02/2026
 **Próxima Revisão:** 11/03/2026
 
 ---
@@ -451,7 +451,7 @@ setTimeout(() => deleteFromIndexedDB(pdfId), 30 * 60 * 1000);
 - ✅ **Decreto 5.296/2004 Art. 47**: Acessibilidade em LIBRAS (Língua Brasileira de Sinais)
 - ✅ **LBI Art. 63**: Disponibilização de LIBRAS
 
-**Limitações Conhecidas (documentadas em [VLIBRAS_LIMITATIONS.md](v1/VLIBRAS_LIMITATIONS.md)):**
+**Limitações Conhecidas (documentadas em [KNOWN_ISSUES.md](KNOWN_ISSUES.md)):**
 - ⚠️ Tradução automática (não validada por intérpretes certificados)
 - ⚠️ Vocabulário técnico pode ter erros (termos médicos, jurídicos)
 - ⚠️ Não substitui intérprete humano para decisões críticas
@@ -485,10 +485,10 @@ setTimeout(() => deleteFromIndexedDB(pdfId), 30 * 60 * 1000);
 
 #### Status: ✅ **ATIVO** (Processo Contínuo)
 
-**Documento de Referência:** [CHECKLIST_VALIDATIONS.md](CHECKLIST_VALIDATIONS.md)
+**Documento de Referência:** [VALIDATION_STATUS.md](VALIDATION_STATUS.md)
 
 **Processo de Validação:**
-1. Cada benefício em `direitos.json` tem entrada em CHECKLIST_VALIDATIONS.md
+1. Cada benefício em `direitos.json` tem entrada em VALIDATION_STATUS.md
 2. Base legal citada (Lei X/Ano, Decreto Y)
 3. Link oficial verificado (planalto.gov.br, gov.br)
 4. Requisitos documentados com fonte governamental
@@ -505,7 +505,7 @@ setTimeout(() => deleteFromIndexedDB(pdfId), 30 * 60 * 1000);
 - ✅ **13 categorias** de benefícios validadas
 - ✅ **100% das fontes** têm URL oficial gov.br/planalto.gov.br
 
-**Última Auditoria:** 11/02/2026  
+**Última Auditoria:** 11/02/2026
 **Próxima Revisão:** 18/02/2026
 
 ---
@@ -514,9 +514,9 @@ setTimeout(() => deleteFromIndexedDB(pdfId), 30 * 60 * 1000);
 
 #### Status: ⚠️ **PARCIAL** (86.4% sucesso)
 
-**Script de Validação:** `scripts/validate_links.py`
+**Script de Validação:** `scripts/validate_sources.py`
 
-**Última Execução:** 11/02/2026 17:21:49  
+**Última Execução:** 11/02/2026 17:21:49
 **Última Correção:** 11/02/2026 23:35 (CONFAZ, MPT, COFFITO)
 
 **Resultados:**
@@ -614,7 +614,7 @@ setTimeout(() => deleteFromIndexedDB(pdfId), 30 * 60 * 1000);
 - **IPVA Estadual:** `ipva_estados[].link_lei` (27 estados)
 - **Sites de Referência:** `categorias[].links_oficiais[]` (gov.br, INSS, ANS, etc.)
 
-**Procedimento de Correção:** Ver [DEPENDENCY_CONTROL.md](DEPENDENCY_CONTROL.md) Procedimento 6️⃣
+**Procedimento de Correção:** Ver [REFERENCE.md](REFERENCE.md) Procedimento 6️⃣
 
 **Próxima Validação Automática:** Implementar GitHub Actions (periódica)
 
@@ -624,7 +624,7 @@ setTimeout(() => deleteFromIndexedDB(pdfId), 30 * 60 * 1000);
 
 #### Status: ✅ **IMPLEMENTADO**
 
-**Documento de Referência:** [DEPENDENCY_CONTROL.md](DEPENDENCY_CONTROL.md)
+**Documento de Referência:** [REFERENCE.md](REFERENCE.md)
 
 **Problema Resolvido:**
 > "Sempre que peço para atualizar tenho que ficar pedindo para procurar todos os arquivos relacionados e sempre esquece de algum"
@@ -672,7 +672,7 @@ setTimeout(() => deleteFromIndexedDB(pdfId), 30 * 60 * 1000);
 | Métrica | Valor |
 |---------|-------|
 | **Total de categorias** | 13 |
-| **Total de benefícios** | 30+ (em BENEFICIOS_COMPLETOS_PCD.md) |
+| **Total de benefícios** | 30+ (em REFERENCE.md) |
 | **Benefícios integrados** | 13 |
 | **Benefícios pendentes integração** | ~17 |
 | **Fontes legislativas catalogadas** | 29 leis/decretos/normativas |
@@ -767,7 +767,7 @@ git commit -m "a11y: Melhora contraste (WCAG 2.1 AA 1.4.3)"
 | Risco | Probabilidade | Impacto | Nível | Mitigação Atual | Status |
 |-------|---------------|---------|-------|-----------------|--------|
 | **Informações desatualizadas** | MÉDIA | MÉDIO | 🟡 **MÉDIO** | Script `validate_sources.py`, disclaimer | ⚠️ Monitorar |
-| **Links quebrados** | MUITO BAIXA | BAIXO | 🟢 **BAIXO** | Script `validate_links.py` (periódica) | ✅ 0 links quebrados |
+| **Links quebrados** | MUITO BAIXA | BAIXO | 🟢 **BAIXO** | Script `validate_sources.py` (periódica) | ✅ 0 links quebrados |
 | **Interpretação incorreta de lei** | BAIXA | MÉDIO | 🟡 **MÉDIO** | Cita fontes oficiais, direciona Defensoria | ✅ Mitigado |
 | **Vazamento de dados** | MUITO BAIXA | ALTO | 🟢 **BAIXO** | Zero-data, AES-GCM-256, TTL 30 min | ✅ Mitigado |
 | **Ataque DDoS** | BAIXA | MÉDIO | 🟡 **MÉDIO** | Azure DDoS Protection (Basic tier) | ✅ Mitigado |
@@ -808,7 +808,7 @@ git commit -m "a11y: Melhora contraste (WCAG 2.1 AA 1.4.3)"
 
 2. ⏳ **Integrar benefícios pendentes** (~28 novos)
    - Prioridade: ALTA
-   - Fonte: BENEFICIOS_COMPLETOS_PCD.md
+   - Fonte: REFERENCE.md
    - Prazo: Março 2026
 
 3. ✅ **Automatizar validação de links** (GitHub Actions)
@@ -843,12 +843,12 @@ git commit -m "a11y: Melhora contraste (WCAG 2.1 AA 1.4.3)"
 8. 📌 **Contratar seguro E&O (Errors & Omissions)**
    - Prioridade: BAIXA
    - Condição: Se escalar para >100k usuários/mês
-   - Prazo: V2 (Q4 2026)
+   - Prazo: Q4 2026
 
 9. 📌 **Certificação ISO 27001 independente**
    - Prioridade: BAIXA
    - Custo: ~R$ 50k-100k (auditoria externa)
-   - Condição: Se comercializar V2
+   - Condição: Se comercializar versão premium
    - Prazo: 2027
 
 10. 📌 **Auditoria SOC 2 Type II independente**
@@ -861,8 +861,8 @@ git commit -m "a11y: Melhora contraste (WCAG 2.1 AA 1.4.3)"
 
 ## 📞 Contato para Compliance
 
-**Responsável:** Fabio Treze  
-**E-mail:** fabiotreze@hotmail.com  
+**Responsável:** Fabio Treze
+**E-mail:** fabiotreze@hotmail.com
 **Função:** Maintainer & Compliance Officer (informal)
 
 **Para questões específicas:**
@@ -886,9 +886,9 @@ git commit -m "a11y: Melhora contraste (WCAG 2.1 AA 1.4.3)"
 
 ## 🔐 Regra de Ouro do Compliance
 
-> **ANTES** de modificar qualquer arquivo, consulte este documento e verifique impactos em compliance.  
-> **DEPOIS** de modificar, atualize seções relevantes (§5 e §6).  
-> **NUNCA** faça commit sem passar pelo Checklist Pré-Commit (ver [DEPENDENCY_CONTROL.md](DEPENDENCY_CONTROL.md)).
+> **ANTES** de modificar qualquer arquivo, consulte este documento e verifique impactos em compliance.
+> **DEPOIS** de modificar, atualize seções relevantes (§5 e §6).
+> **NUNCA** faça commit sem passar pelo Checklist Pré-Commit (ver [REFERENCE.md](REFERENCE.md)).
 
 ---
 
@@ -907,10 +907,8 @@ git commit -m "a11y: Melhora contraste (WCAG 2.1 AA 1.4.3)"
 - [NIST Cybersecurity Framework](https://www.nist.gov/cyberframework)
 
 ### Documentação Interna
-- [DEPENDENCY_CONTROL.md](DEPENDENCY_CONTROL.md) — Mapa de dependências
-- [CHECKLIST_VALIDATIONS.md](CHECKLIST_VALIDATIONS.md) — Validação legal de benefícios
-- [SITE_ORDERING_CRITERIA.md](SITE_ORDERING_CRITERIA.md) — Decisões UX/IA
-- [BENEFICIOS_COMPLETOS_PCD.md](BENEFICIOS_COMPLETOS_PCD.md) — **Pesquisa** de 31 benefícios (documento de trabalho)
+- [REFERENCE.md](REFERENCE.md) — Mapa de dependências, decisões UX/IA, pesquisa de benefícios
+- [VALIDATION_STATUS.md](VALIDATION_STATUS.md) — Validação legal de benefícios
 - [v1/LEGAL_COMPLIANCE.md](v1/LEGAL_COMPLIANCE.md) — Detalhamento legal completo (866 linhas)
 - [SECURITY_AUDIT.md](../SECURITY_AUDIT.md) — Auditoria de segurança técnica
 
@@ -918,9 +916,9 @@ git commit -m "a11y: Melhora contraste (WCAG 2.1 AA 1.4.3)"
 
 ## §10 ANÁLISE DE COBERTURA DE BENEFÍCIOS
 
-> **Data da análise:** 11 de fevereiro de 2026  
-> **Versão analisada:** 1.4.3  
-> **Metodologia:** Comparação entre benefícios implementados (data/direitos.json) vs. pesquisados (docs/BENEFICIOS_COMPLETOS_PCD.md)
+> **Data da análise:** 11 de fevereiro de 2026
+> **Versão analisada:** 1.4.3
+> **Metodologia:** Comparação entre benefícios implementados (data/direitos.json) vs. pesquisados (docs/REFERENCE.md)
 
 ### 10.1 Estatísticas de Cobertura
 
@@ -934,7 +932,7 @@ git commit -m "a11y: Melhora contraste (WCAG 2.1 AA 1.4.3)"
 **Interpretação:**
 - ✅ **Boa cobertura** dos benefícios mais buscados (BPC, CIPTEA, Educação, Saúde, Transporte)
 - ⚠️ **Gaps em benefícios educacionais** (ProUni, FIES, SISU) e financeiros (IR, Bolsa Família)
-- 📊 Meta v2.0: **90% de cobertura** (28/31 benefícios)
+- 📊 Meta futura: **90% de cobertura** (28/31 benefícios)
 
 ---
 
@@ -1026,7 +1024,7 @@ git commit -m "a11y: Melhora contraste (WCAG 2.1 AA 1.4.3)"
 
 **Decisão pendente:** Aguardando confirmação do responsável
 
-#### 10.4.2 docs/BENEFICIOS_COMPLETOS_PCD.md
+#### 10.4.2 docs/REFERENCE.md
 
 **Status:** ✅ **DOCUMENTO DE PESQUISA** (não é funcionalidade)
 
@@ -1036,7 +1034,7 @@ git commit -m "a11y: Melhora contraste (WCAG 2.1 AA 1.4.3)"
 - **Não deve ser deletado:** É material de referência para desenvolvimento
 - **Uso:** Consulta durante implementação de novos benefícios
 
-**Benefícios deste documento JÁ implementados:** 17/31 (meia_entrada, tarifa_social_energia foram os 2 últimos)  
+**Benefícios deste documento JÁ implementados:** 17/31 (meia_entrada, tarifa_social_energia foram os 2 últimos)
 **Benefícios pendentes:** 14 (ver §10.3)
 
 **Decisão:** **MANTER** — É documentação de planejamento, não código não utilizado
@@ -1075,7 +1073,7 @@ git commit -m "a11y: Melhora contraste (WCAG 2.1 AA 1.4.3)"
 
 **Esforço estimado:** 50-70 horas
 
-#### v2.0.0 — COBERTURA COMPLETA (6+ meses)
+#### COBERTURA COMPLETA (6+ meses)
 
 **Meta:** **100% de cobertura** (31/31 benefícios) + novos benefícios pesquisados
 
@@ -1138,7 +1136,7 @@ git commit -m "a11y: Melhora contraste (WCAG 2.1 AA 1.4.3)"
 - [ ] **Feature:** Calculadora BPC
 - [ ] **Auditoria WCAG 2.1 AA completa** (ferramenta automatizada)
 
-#### Longo Prazo (6+ meses — v2.0.0)
+#### Longo Prazo (6+ meses)
 
 - [ ] Backend TypeScript + Redis
 - [ ] OpenAI GPT-4 (análise de documentos)
@@ -1149,6 +1147,6 @@ git commit -m "a11y: Melhora contraste (WCAG 2.1 AA 1.4.3)"
 
 **FIM DO DOCUMENTO DE COMPLIANCE**
 
-**Versão:** 1.1.0  
-**Data de Criação:** 11 de fevereiro de 2026  
-**Última Atualização:** 11 de fevereiro de 2026 (18:45 — Análise 360° adicionada)  
+**Versão:** 1.1.0
+**Data de Criação:** 11 de fevereiro de 2026
+**Última Atualização:** 11 de fevereiro de 2026 (18:45 — Análise 360° adicionada)
