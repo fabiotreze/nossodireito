@@ -1,12 +1,29 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-VALIDATE ALL — Rotina Geral de Revalidação Automática
-Executa todas as validações do projeto em sequência
-Detecta falhas, bugs, regressões automaticamente
+VALIDATE ALL — Validação Completa e Profunda do NossoDireito
+Executa TODAS as 16 verificações do projeto em sequência:
+
+  FASE 1 — Pré-Validações (estrutura de arquivos + sintaxe JSON)
+  FASE 2 — Schema (JSON Schema Draft 7)
+  FASE 3 — Conteúdo Profundo (25 categorias, matching engine, IPVA, semântica)
+  FASE 4 — Master Compliance (21 categorias, 993.9 pts)
+  FASE 5 — Análise 360° (cobertura benefícios implementados vs pesquisados)
+  FASE 6 — Análise Funcionalidades (app.js implementado vs testado)
+  FASE 7 — Fontes Oficiais (URLs gov.br, planalto)
+  FASE 8 — URLs gov.br PcD (serviços específicos)
+  FASE 9 — Base Legal (compliance, leis vigentes/revogadas)
+  FASE 10 — Fontes Legais (acesso HTTP fontes oficiais)
+  FASE 11 — Auditoria de Conteúdo (domínios, escopo)
+  FASE 12 — Auditoria de Automação (gaps, recomendações)
+  FASE 13 — Pytest (unit tests: JSON, campos, base_legal, versão)
+  FASE 14 — Análise de Scripts (syntax, imports, compilação de 10 scripts)
+  FASE 15 — Validação Completa (HTML, CSS, JS, integração, funcional)
+  FASE 16 — E2E Automatizado (PWA, search, crypto, segurança, LGPD, ARIA)
 
 Uso:
-    python scripts/validate_all.py                    # Modo read-only
+    python scripts/validate_all.py                    # Validação completa (16 fases)
+    python scripts/validate_all.py --quick            # Apenas fases críticas (1-4)
     python scripts/validate_all.py --fix              # Auto-corrige problemas
     python scripts/validate_all.py --notify           # Envia notificações
     python scripts/validate_all.py --fix --notify     # Ambos
@@ -25,15 +42,23 @@ from datetime import datetime
 from pathlib import Path
 from typing import Dict, List, Tuple
 
+# Configurar encoding UTF-8 para saída (Windows compatibility)
+if hasattr(sys.stdout, 'reconfigure'):
+    sys.stdout.reconfigure(encoding='utf-8')
+elif hasattr(sys.stdout, 'buffer'):
+    import io
+    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
+
 
 class ValidationResult:
     """Resultado de uma validação individual"""
 
-    def __init__(self, name: str, success: bool, message: str = "", details: str = ""):
+    def __init__(self, name: str, success: bool, message: str = "", details: str = "", is_timeout: bool = False):
         self.name = name
         self.success = success
         self.message = message
         self.details = details
+        self.is_timeout = is_timeout
         self.timestamp = datetime.now()
 
 
@@ -55,7 +80,8 @@ class MasterValidator:
         if self.verbose:
             print(message)
 
-    def run_script(self, name: str, script_path: str, timeout: int = 60) -> ValidationResult:
+    def run_script(self, name: str, script_path: str, timeout: int = 60,
+                   timeout_as_warning: bool = False) -> ValidationResult:
         """Executa um script Python e retorna resultado"""
         self.log(f"▶️  {name}...")
 
@@ -82,8 +108,12 @@ class MasterValidator:
                 return ValidationResult(name, False, "Validation failed", error_msg)
 
         except subprocess.TimeoutExpired:
-            self.log(f"   ⏱️ {name}: TIMEOUT ({timeout}s)")
-            return ValidationResult(name, False, f"Timeout after {timeout}s")
+            if timeout_as_warning:
+                self.log(f"   ⏱️ {name}: TIMEOUT ({timeout}s) — rede lenta (warning)")
+                return ValidationResult(name, True, f"Timeout after {timeout}s (rede)", is_timeout=True)
+            else:
+                self.log(f"   ⏱️ {name}: TIMEOUT ({timeout}s)")
+                return ValidationResult(name, False, f"Timeout after {timeout}s")
         except Exception as e:
             self.log(f"   ❌ {name}: EXCEPTION")
             self.log(f"      {str(e)}")
@@ -119,6 +149,70 @@ class MasterValidator:
         self.log("   ✅ Estrutura de Arquivos: OK")
         return ValidationResult("Estrutura de Arquivos", True, "Todos os arquivos essenciais presentes")
 
+    def validate_workspace_hygiene(self) -> ValidationResult:
+        """Verifica higiene do workspace: temp files, CSS duplicados, scripts soltos, dirs vazios"""
+        self.log("▶️  Validando higiene do workspace...")
+
+        issues: list[str] = []
+
+        # 1) Arquivos temporários na raiz
+        for f in self.root.iterdir():
+            if not f.is_file():
+                continue
+            name = f.name.lower()
+            if name.startswith('_temp_') or name.startswith('temp_'):
+                issues.append(f"Temp na raiz: {f.name}")
+
+        # 2) index.backup_* na raiz
+        for f in self.root.glob('index.backup_*'):
+            if f.is_file():
+                issues.append(f"Backup na raiz: {f.name}")
+
+        # 3) Relatórios JSON gerados na raiz (exceto validation_report.json que
+        #    é gerado pelo próprio validate_all — master_compliance já cobre)
+        for report in ['quality_report.json', 'validation_legal_report.json']:
+            if (self.root / report).is_file():
+                issues.append(f"Report gerado na raiz: {report}")
+
+        # 4) CSS duplicados
+        css_dir = self.root / 'css'
+        if css_dir.is_dir():
+            for css_file in css_dir.iterdir():
+                if css_file.is_file() and css_file.suffix == '.css' \
+                   and css_file.name != 'styles.css':
+                    issues.append(f"CSS duplicado: css/{css_file.name}")
+
+        # 5) Python de teste solto na raiz
+        for f in self.root.iterdir():
+            if f.is_file() and f.suffix == '.py' and f.name.startswith('test_'):
+                issues.append(
+                    f"Python na raiz (mover para scripts/ ou tests/): {f.name}")
+
+        # 6) Diretórios vazios
+        for d in ['backups']:
+            dp = self.root / d
+            if dp.is_dir() and not any(dp.iterdir()):
+                issues.append(f"Diretório vazio: {d}/")
+
+        # 7) Arquivos genéricos órfãos (*.bak, *.old, *.swp, *.tmp)
+        for pattern in ['*.bak', '*.old', '*.swp', '*.tmp']:
+            for f in self.root.rglob(pattern):
+                if f.is_file() and '.git' not in str(f):
+                    issues.append(f"Órfão: {f.relative_to(self.root)}")
+
+        if issues:
+            detail = "; ".join(issues[:5])
+            if len(issues) > 5:
+                detail += f" (+{len(issues) - 5} mais)"
+            return ValidationResult(
+                "Higiene do Workspace", False,
+                f"{len(issues)} problema(s): {detail}")
+
+        self.log("   ✅ Higiene do Workspace: OK")
+        return ValidationResult(
+            "Higiene do Workspace", True,
+            "Sem arquivos temporários, duplicados ou órfãos")
+
     def validate_json_files(self) -> ValidationResult:
         """Valida sintaxe de arquivos JSON"""
         self.log("▶️  Validando arquivos JSON...")
@@ -126,6 +220,7 @@ class MasterValidator:
         json_files = [
             'data/direitos.json',
             'data/ipva_pcd_estados.json',
+            'data/matching_engine.json',
             'manifest.json'
         ]
 
@@ -171,17 +266,109 @@ class MasterValidator:
 
         self.log(f"   ✅ Backup criado em: {backup_dir}")
 
-    def run_all_validations(self) -> Tuple[int, int]:
+    def run_pytest(self, name: str, test_path: str, timeout: int = 120) -> ValidationResult:
+        """Executa pytest e retorna resultado"""
+        self.log(f"▶️  {name}...")
+
+        try:
+            result = subprocess.run(
+                [sys.executable, "-m", "pytest", str(test_path), "-v", "--tb=short"],
+                cwd=self.root,
+                capture_output=True,
+                text=True,
+                timeout=timeout,
+                encoding='utf-8',
+                errors='replace'
+            )
+
+            success = result.returncode == 0
+
+            if success:
+                self.log(f"   ✅ {name}: OK")
+                return ValidationResult(name, True, "All tests passed", result.stdout[-500:])
+            else:
+                self.log(f"   ❌ {name}: FAILED")
+                error_msg = result.stdout[-500:] if result.stdout else result.stderr[:500]
+                self.log(f"      {error_msg}")
+                return ValidationResult(name, False, "Some tests failed", error_msg)
+
+        except subprocess.TimeoutExpired:
+            self.log(f"   ⏱️ {name}: TIMEOUT ({timeout}s)")
+            return ValidationResult(name, False, f"Timeout after {timeout}s")
+        except Exception as e:
+            self.log(f"   ❌ {name}: EXCEPTION — {str(e)}")
+            return ValidationResult(name, False, f"Exception: {str(e)}")
+
+    def _print_summary(self):
+        """Imprime consolidação de resultados"""
+        print()
+        print("=" * 100)
+        print("📊 CONSOLIDAÇÃO DE RESULTADOS")
+        print("=" * 100)
+
+        passed = sum(1 for r in self.results if r.success)
+        total = len(self.results)
+        timeouts = [r for r in self.results if r.is_timeout]
+        failures = [r for r in self.results if not r.success]
+        real_passed = passed - len(timeouts)
+        percentage = (passed / total * 100) if total > 0 else 0
+
+        print()
+        if timeouts:
+            print(f"✅ Passed: {real_passed}/{total} ({percentage:.1f}%) + ⏱️ {len(timeouts)} timeout(s) de rede")
+        else:
+            print(f"✅ Passed: {passed}/{total} ({percentage:.1f}%)")
+        print()
+
+        if passed == total and not timeouts:
+            print("🎉 PERFEITO! Todas as 16 fases passaram!")
+        elif passed == total and timeouts:
+            print("✅ EXCELENTE! Sem falhas reais. Timeouts são de verificação de rede (aceitável offline).")
+        elif percentage >= 80:
+            print("✅ EXCELENTE! Maioria das validações OK.")
+        elif percentage >= 60:
+            print("⚠️ BOM, mas há problemas que precisam atenção.")
+        else:
+            print("❌ CRÍTICO! Múltiplas validações falharam.")
+
+        # Listar falhas reais
+        if failures:
+            print()
+            print("❌ FALHAS DETECTADAS:")
+            for r in failures:
+                print(f"   • {r.name}: {r.message}")
+
+        # Listar timeouts de rede
+        if timeouts:
+            print()
+            print("⏱️ TIMEOUTS DE REDE (não-bloqueantes):")
+            for r in timeouts:
+                print(f"   • {r.name}: {r.message}")
+
+        # Listar sucessos
+        successes = [r for r in self.results if r.success and not r.is_timeout]
+        if successes:
+            print()
+            print("✅ VALIDAÇÕES OK:")
+            for r in successes:
+                print(f"   • {r.name}")
+
+        print()
+        print("=" * 100)
+
+    def run_all_validations(self, quick: bool = False) -> Tuple[int, int]:
         """
-        Executa todas as validações em ordem de prioridade
+        Executa todas as validações em ordem de prioridade.
+        quick=True: apenas fases 1-4 (sem rede, sem testes longos).
         Retorna: (passed, total)
         """
         print("=" * 100)
-        print("🔄 VALIDAÇÃO COMPLETA — NOSSODIREITO")
+        print("🔄 VALIDAÇÃO COMPLETA — NOSSODIREITO (16 FASES)")
         print("=" * 100)
         print(f"📅 Data/Hora: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
         print(f"🔧 Modo: {'AUTO-FIX ✨' if self.auto_fix else 'READ-ONLY 📖'}")
         print(f"📢 Notificações: {'ATIVADAS ✅' if self.notify else 'DESATIVADAS ❌'}")
+        print(f"⚡ Quick: {'SIM (fases 1-4)' if quick else 'NÃO (todas as 16 fases)'}")
         print()
 
         # Backup preventivo se auto-fix ativo
@@ -190,153 +377,287 @@ class MasterValidator:
             print()
 
         # ====================
-        # FASE 1: PRÉ-VALIDAÇÕES
+        # FASE 1: PRÉ-VALIDAÇÕES (Estrutura & Sintaxe)
         # ====================
         print("=" * 100)
-        print("📋 FASE 1: PRÉ-VALIDAÇÕES (Estrutura & Sintaxe)")
+        print("📋 FASE 1/16: PRÉ-VALIDAÇÕES (Estrutura & Sintaxe)")
         print("=" * 100)
 
         self.results.append(self.validate_structure())
         self.results.append(self.validate_json_files())
+        self.results.append(self.validate_workspace_hygiene())
 
         # ====================
-        # FASE 2: VALIDAÇÕES PRINCIPAIS
+        # FASE 2: SCHEMA (JSON Schema Draft 7)
         # ====================
         print()
         print("=" * 100)
-        print("🔍 FASE 2: VALIDAÇÕES PRINCIPAIS (Master Compliance)")
+        print("📐 FASE 2/16: VALIDAÇÃO DE SCHEMA (JSON Schema Draft 7)")
         print("=" * 100)
 
-        # Master Compliance (20 categorias, 973.9 pts)
         self.results.append(self.run_script(
-            "Master Compliance",
+            "JSON Schema (direitos.json vs schema)",
+            self.root / "scripts" / "validate_schema.py",
+            timeout=30
+        ))
+
+        # ====================
+        # FASE 3: CONTEÚDO PROFUNDO (25 categorias, matching, IPVA, semântica)
+        # ====================
+        print()
+        print("=" * 100)
+        print("🔬 FASE 3/16: VALIDAÇÃO DE CONTEÚDO PROFUNDO (147 checks)")
+        print("=" * 100)
+
+        self.results.append(self.run_script(
+            "Conteúdo Profundo (categorias, matching engine, IPVA, semântica)",
+            self.root / "scripts" / "validate_content.py",
+            timeout=60
+        ))
+
+        # ====================
+        # FASE 4: MASTER COMPLIANCE (21 categorias, 993.9 pts)
+        # ====================
+        print()
+        print("=" * 100)
+        print("🏆 FASE 4/16: MASTER COMPLIANCE (21 categorias, 993.9 pts)")
+        print("=" * 100)
+
+        self.results.append(self.run_script(
+            "Master Compliance (21 cats — HTML, CSS, JS, PWA, ARIA, SEO, órfãs...)",
             self.root / "scripts" / "master_compliance.py",
             timeout=120
         ))
 
+        # No modo quick, parar aqui — master_compliance (fase 4) já inclui
+        # validate_analise_360() internamente, então fase 5 seria redundante.
+        if quick:
+            self._print_summary()
+            return sum(1 for r in self.results if r.success), len(self.results)
+
         # ====================
-        # FASE 3: ANÁLISE DE CONTEÚDO
+        # FASE 5: ANÁLISE 360° (Cobertura & Completude)
         # ====================
+        # No modo completo, roda analise360.py como script separado
+        # para gerar relatório detalhado (é mais verbose que o embutido no master).
         print()
         print("=" * 100)
-        print("📊 FASE 3: ANÁLISE DE CONTEÚDO (Cobertura & Completude)")
+        print("🌐 FASE 5/16: ANÁLISE 360° (Cobertura de Benefícios)")
         print("=" * 100)
 
-        # Análise 360° (cobertura, completude, IPVA)
         self.results.append(self.run_script(
-            "Análise 360°",
+            "Análise 360° (benefícios implementados vs pesquisados)",
             self.root / "scripts" / "analise360.py",
             timeout=30
         ))
 
         # ====================
-        # FASE 4: VALIDAÇÃO DE FONTES
+        # FASE 6: ANÁLISE DE FUNCIONALIDADES (implementado vs testado)
         # ====================
         print()
         print("=" * 100)
-        print("🔗 FASE 4: VALIDAÇÃO DE FONTES (URLs & Conectividade)")
+        print("🧩 FASE 6/16: ANÁLISE DE FUNCIONALIDADES (app.js vs E2E)")
         print("=" * 100)
 
-        # Validate Sources (URLs .gov.br)
-        if (self.root / "scripts" / "validate_sources.py").exists():
+        if (self.root / "scripts" / "analise_funcionalidades.py").exists():
             self.results.append(self.run_script(
-                "Validação de Fontes",
-                self.root / "scripts" / "validate_sources.py",
-                timeout=60
+                "Funcionalidades (implementadas vs testadas)",
+                self.root / "scripts" / "analise_funcionalidades.py",
+                timeout=30
             ))
         else:
-            self.log("   ⚠️ Validação de Fontes: SCRIPT NÃO ENCONTRADO")
+            self.log("   ⚠️ analise_funcionalidades.py: NÃO ENCONTRADO")
 
         # ====================
-        # FASE 5: VALIDAÇÃO LEGAL (SE IMPLEMENTADO)
+        # FASE 7: FONTES OFICIAIS (URLs gov.br, planalto)
         # ====================
         print()
         print("=" * 100)
-        print("⚖️ FASE 5: VALIDAÇÃO LEGAL (Base Legal)")
+        print("🔗 FASE 7/16: VALIDAÇÃO DE FONTES OFICIAIS (URLs)")
+        print("=" * 100)
+
+        if (self.root / "scripts" / "validate_sources.py").exists():
+            self.results.append(self.run_script(
+                "Fontes Oficiais (gov.br, planalto)",
+                self.root / "scripts" / "validate_sources.py",
+                timeout=180,
+                timeout_as_warning=True
+            ))
+        else:
+            self.log("   ⚠️ validate_sources.py: NÃO ENCONTRADO")
+
+        # ====================
+        # FASE 8: URLs GOV.BR PcD (Serviços específicos)
+        # ====================
+        print()
+        print("=" * 100)
+        print("🏛️ FASE 8/16: URLS GOV.BR PcD (Serviços Específicos)")
+        print("=" * 100)
+
+        if (self.root / "scripts" / "validate_govbr_urls.py").exists():
+            self.results.append(self.run_script(
+                "URLs gov.br PcD (serviços específicos)",
+                self.root / "scripts" / "validate_govbr_urls.py",
+                timeout=120
+            ))
+        else:
+            self.log("   ⚠️ validate_govbr_urls.py: NÃO ENCONTRADO")
+
+        # ====================
+        # FASE 9: BASE LEGAL (Compliance, leis vigentes)
+        # ====================
+        print()
+        print("=" * 100)
+        print("⚖️ FASE 9/16: BASE LEGAL (Compliance, Vigência)")
         print("=" * 100)
 
         if (self.root / "scripts" / "validate_legal_compliance.py").exists():
             self.results.append(self.run_script(
-                "Validação de Base Legal",
+                "Base Legal (compliance, vigência de leis)",
                 self.root / "scripts" / "validate_legal_compliance.py",
-                timeout=120
+                timeout=240,
+                timeout_as_warning=True
             ))
         else:
-            self.log("   ⚠️ Validação de Base Legal: NÃO IMPLEMENTADO AINDA")
-            self.log("      Recomendação: Implementar validate_legal_compliance.py (P0)")
+            self.log("   ⚠️ validate_legal_compliance.py: NÃO ENCONTRADO")
 
         # ====================
-        # FASE 6: AUTO-CORREÇÃO (SE --fix)
-        # ====================
-        if self.auto_fix:
-            print()
-            print("=" * 100)
-            print("🔧 FASE 6: AUTO-CORREÇÃO (Complete Benefícios)")
-            print("=" * 100)
-
-            if (self.root / "scripts" / "complete_beneficios.py").exists():
-                self.results.append(self.run_script(
-                    "Complete Benefícios",
-                    self.root / "scripts" / "complete_beneficios.py",
-                    timeout=60
-                ))
-            else:
-                self.log("   ⚠️ Complete Benefícios: SCRIPT NÃO ENCONTRADO")
-
-        # ====================
-        # FASE 7: AUDITORIA DE AUTOMAÇÃO
+        # FASE 10: FONTES LEGAIS (acesso HTTP)
         # ====================
         print()
         print("=" * 100)
-        print("📈 FASE 7: AUDITORIA DE AUTOMAÇÃO (Gaps & Recomendações)")
+        print("📜 FASE 10/16: FONTES LEGAIS (Acesso HTTP)")
+        print("=" * 100)
+
+        if (self.root / "scripts" / "validate_legal_sources.py").exists():
+            self.results.append(self.run_script(
+                "Fontes Legais (acesso HTTP a fontes oficiais)",
+                self.root / "scripts" / "validate_legal_sources.py",
+                timeout=180
+            ))
+        else:
+            self.log("   ⚠️ validate_legal_sources.py: NÃO ENCONTRADO")
+
+        # ====================
+        # FASE 11: AUDITORIA DE CONTEÚDO (domínios, escopo)
+        # ====================
+        print()
+        print("=" * 100)
+        print("🔍 FASE 11/16: AUDITORIA DE CONTEÚDO (Domínios, Escopo)")
+        print("=" * 100)
+
+        if (self.root / "scripts" / "audit_content.py").exists():
+            self.results.append(self.run_script(
+                "Auditoria de Conteúdo (domínios, escopo)",
+                self.root / "scripts" / "audit_content.py",
+                timeout=30
+            ))
+        else:
+            self.log("   ⚠️ audit_content.py: NÃO ENCONTRADO")
+
+        # ====================
+        # FASE 12: AUDITORIA DE AUTOMAÇÃO (Gaps & Recomendações)
+        # ====================
+        print()
+        print("=" * 100)
+        print("📈 FASE 12/16: AUDITORIA DE AUTOMAÇÃO (Gaps & Recomendações)")
         print("=" * 100)
 
         if (self.root / "scripts" / "audit_automation.py").exists():
             self.results.append(self.run_script(
-                "Auditoria de Automação",
+                "Auditoria de Automação (gaps, recomendações)",
                 self.root / "scripts" / "audit_automation.py",
                 timeout=30
             ))
         else:
-            self.log("   ⚠️ Auditoria de Automação: SCRIPT NÃO ENCONTRADO")
+            self.log("   ⚠️ audit_automation.py: NÃO ENCONTRADO")
+
+        # ====================
+        # FASE 13: PYTEST (Unit Tests)
+        # ====================
+        print()
+        print("=" * 100)
+        print("🧪 FASE 13/16: PYTEST (Unit Tests — JSON, campos, base_legal)")
+        print("=" * 100)
+
+        self.results.append(self.run_pytest(
+            "Pytest (tests/test_master_compliance.py)",
+            "tests/"
+        ))
+
+        # ====================
+        # FASE 14: ANÁLISE DE SCRIPTS (syntax, imports, compilação)
+        # ====================
+        print()
+        print("=" * 100)
+        print("📝 FASE 14/16: ANÁLISE DE SCRIPTS (90 checks em 10 scripts)")
+        print("=" * 100)
+
+        if (self.root / "scripts" / "test_analysis_scripts.py").exists():
+            self.results.append(self.run_script(
+                "Análise de Scripts (syntax, imports, compilação)",
+                self.root / "scripts" / "test_analysis_scripts.py",
+                timeout=60
+            ))
+        else:
+            self.log("   ⚠️ test_analysis_scripts.py: NÃO ENCONTRADO")
+
+        # ====================
+        # FASE 15: VALIDAÇÃO COMPLETA (HTML, CSS, JS, integração, funcional)
+        # ====================
+        print()
+        print("=" * 100)
+        print("✅ FASE 15/16: VALIDAÇÃO COMPLETA (HTML, CSS, JS, Integração, Funcional)")
+        print("=" * 100)
+
+        if (self.root / "scripts" / "test_complete_validation.py").exists():
+            self.results.append(self.run_script(
+                "Validação Completa (HTML 26, CSS 18, JS 25, Integração 12, Funcional 16)",
+                self.root / "scripts" / "test_complete_validation.py",
+                timeout=60
+            ))
+        else:
+            self.log("   ⚠️ test_complete_validation.py: NÃO ENCONTRADO")
+
+        # ====================
+        # FASE 16: E2E AUTOMATIZADO (PWA, search, segurança, LGPD, ARIA)
+        # ====================
+        print()
+        print("=" * 100)
+        print("🚀 FASE 16/16: E2E AUTOMATIZADO (PWA, Search, Segurança, LGPD)")
+        print("=" * 100)
+
+        if (self.root / "scripts" / "test_e2e_automated.py").exists():
+            self.results.append(self.run_script(
+                "E2E Automatizado (PWA, search, crypto, segurança, LGPD, ARIA)",
+                self.root / "scripts" / "test_e2e_automated.py",
+                timeout=60
+            ))
+        else:
+            self.log("   ⚠️ test_e2e_automated.py: NÃO ENCONTRADO")
+
+        # ====================
+        # FASE BÔNUS: AUTO-CORREÇÃO (SE --fix)
+        # ====================
+        if self.auto_fix:
+            print()
+            print("=" * 100)
+            print("🔧 BÔNUS: AUTO-CORREÇÃO (Complete Benefícios)")
+            print("=" * 100)
+
+            if (self.root / "scripts" / "complete_beneficios.py").exists():
+                self.results.append(self.run_script(
+                    "Complete Benefícios (auto-fix)",
+                    self.root / "scripts" / "complete_beneficios.py",
+                    timeout=60
+                ))
 
         # ====================
         # CONSOLIDAÇÃO DE RESULTADOS
         # ====================
-        print()
-        print("=" * 100)
-        print("📊 CONSOLIDAÇÃO DE RESULTADOS")
-        print("=" * 100)
+        self._print_summary()
 
-        passed = sum(1 for r in self.results if r.success)
-        total = len(self.results)
-        percentage = (passed / total * 100) if total > 0 else 0
-
-        print()
-        print(f"✅ Passed: {passed}/{total} ({percentage:.1f}%)")
-        print()
-
-        if passed == total:
-            print("🎉 PERFEITO! Todas as validações passaram!")
-        elif percentage >= 80:
-            print("✅ EXCELENTE! Maioria das validações OK.")
-        elif percentage >= 60:
-            print("⚠️ BOM, mas há problemas que precisam atenção.")
-        else:
-            print("❌ CRÍTICO! Múltiplas validações falharam.")
-
-        # Listar falhas
-        failures = [r for r in self.results if not r.success]
-        if failures:
-            print()
-            print("❌ FALHAS DETECTADAS:")
-            for r in failures:
-                print(f"   • {r.name}: {r.message}")
-
-        print()
-        print("=" * 100)
-
-        return passed, total
+        return sum(1 for r in self.results if r.success), len(self.results)
 
     def generate_report(self):
         """Gera relatório JSON consolidado"""
@@ -355,6 +676,7 @@ class MasterValidator:
                 {
                     'name': r.name,
                     'success': r.success,
+                    'is_timeout': r.is_timeout,
                     'message': r.message,
                     'timestamp': r.timestamp.isoformat()
                 }
@@ -420,14 +742,25 @@ def main():
     import argparse
 
     parser = argparse.ArgumentParser(
-        description='Validação completa do projeto NossoDireito',
+        description='Validação completa do projeto NossoDireito (16 fases)',
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Exemplos de uso:
-  python scripts/validate_all.py                    # Apenas validar
+  python scripts/validate_all.py                    # Validação completa (16 fases)
+  python scripts/validate_all.py --quick            # Apenas fases críticas (1-4)
   python scripts/validate_all.py --fix              # Validar e corrigir
   python scripts/validate_all.py --notify           # Validar e notificar
   python scripts/validate_all.py --fix --notify     # Tudo junto
+
+FASES:
+   1 Estrutura & Sintaxe     9  Base Legal
+   2 JSON Schema             10 Fontes Legais (HTTP)
+   3 Conteúdo Profundo       11 Auditoria Conteúdo
+   4 Master Compliance       12 Auditoria Automação
+   5 Análise 360°            13 Pytest
+   6 Funcionalidades         14 Análise Scripts
+   7 Fontes Oficiais         15 Validação Completa
+   8 URLs gov.br PcD         16 E2E Automatizado
 
 Variáveis de ambiente:
   SLACK_WEBHOOK_URL    - URL do webhook Slack
@@ -439,6 +772,7 @@ Variáveis de ambiente:
     parser.add_argument('--fix', action='store_true', help='Auto-corrigir problemas quando possível')
     parser.add_argument('--notify', action='store_true', help='Enviar notificações (Slack/Email)')
     parser.add_argument('--quiet', action='store_true', help='Modo silencioso (menos output)')
+    parser.add_argument('--quick', action='store_true', help='Apenas fases críticas 1-4 (sem rede)')
 
     args = parser.parse_args()
 
@@ -449,7 +783,7 @@ Variáveis de ambiente:
     )
 
     # Executar validações
-    passed, total = validator.run_all_validations()
+    passed, total = validator.run_all_validations(quick=args.quick)
 
     # Gerar relatório
     report = validator.generate_report()

@@ -313,12 +313,12 @@ def extract_all_urls(json_data: dict) -> list[dict]:
 # ─── 1. Validar URLs (HTTP HEAD) ───────────────────────────────────
 def validate_urls(report: ValidationReport, json_data: dict, quick: bool = False) -> None:
     """Testa todas as URLs com HTTP HEAD/GET.
-    
+
     Args:
         quick: Se True, valida apenas amostra de 5 URLs (fast check)
     """
     all_urls = extract_all_urls(json_data)
-    
+
     if quick:
         # Amostra: primeira e última de cada tipo
         import random
@@ -763,6 +763,8 @@ Exemplos:
     run_urls = args.urls or args.all or (not args.urls and not args.legislacao and not args.cid)
     run_leg = args.legislacao or args.all or (not args.urls and not args.legislacao and not args.cid)
     run_cid = args.cid or args.all
+
+    sys.stdout.reconfigure(encoding='utf-8')
 
     json_data = load_json()
     report = ValidationReport()

@@ -328,13 +328,14 @@ class AutomationAudit:
 
 
 def main():
+    sys.stdout.reconfigure(encoding='utf-8')
     auditor = AutomationAudit()
 
     # Exibir no terminal
     print(auditor.generate_report())
 
     # Salvar em arquivo
-    output_file = Path('docs/AUTOMATION_AUDIT.md')
+    output_file = Path('docs/VALIDATION_STATUS.md')
     output_file.parent.mkdir(exist_ok=True)
     saved_file = auditor.save_report(output_file)
 

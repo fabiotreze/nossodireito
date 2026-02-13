@@ -68,61 +68,63 @@ def main():
      "https://www.gov.br/governodigital/pt-br/acessibilidade-e-usuario/acessibilidade-digital"),
     ("Modelo eMAG",
      "https://www.gov.br/governodigital/pt-br/acessibilidade-e-usuario/acessibilidade-digital/modelo-de-acessibilidade"),
-]
+    ]
 
-ctx = ssl.create_default_context()
-ctx.check_hostname = False
-ctx.verify_mode = ssl.CERT_NONE
+    sys.stdout.reconfigure(encoding='utf-8')
 
-ok_count = 0
-fail_count = 0
-results = []
+    ctx = ssl.create_default_context()
+    ctx.check_hostname = False
+    ctx.verify_mode = ssl.CERT_NONE
 
-print(f"Validando {len(urls)} URLs...\n")
+    ok_count = 0
+    fail_count = 0
+    results = []
 
-for i, (label, url) in enumerate(urls, 1):
-    try:
-        req = urllib.request.Request(url, method="HEAD")
-        req.add_header("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)")
-        resp = urllib.request.urlopen(req, timeout=10, context=ctx)
-        code = resp.getcode()
-        if code == 200:
-            status = "OK"
-            ok_count += 1
-        else:
-            status = f"WARN {code}"
-            fail_count += 1
-        results.append((status, label, url))
-    except urllib.error.HTTPError as e:
-        # Some servers reject HEAD, retry with GET
-        if e.code == 405 or e.code == 403:
-            try:
-                req2 = urllib.request.Request(url, method="GET")
-                req2.add_header("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)")
-                resp2 = urllib.request.urlopen(req2, timeout=10, context=ctx)
-                code2 = resp2.getcode()
-                resp2.close()
-                if code2 == 200:
-                    status = "OK"
-                    ok_count += 1
-                else:
-                    status = f"WARN {code2}"
-                    fail_count += 1
-                results.append((status, label, url))
-            except urllib.error.HTTPError as e2:
+    print(f"Validando {len(urls)} URLs...\n")
+
+    for i, (label, url) in enumerate(urls, 1):
+        try:
+            req = urllib.request.Request(url, method="HEAD")
+            req.add_header("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)")
+            resp = urllib.request.urlopen(req, timeout=10, context=ctx)
+            code = resp.getcode()
+            if code == 200:
+                status = "OK"
+                ok_count += 1
+            else:
+                status = f"WARN {code}"
                 fail_count += 1
-                results.append((f"FAIL {e2.code}", label, url))
-            except Exception as e2:
-                fail_count += 1
-                results.append((f"FAIL {type(e2).__name__}", label, url))
-        else:
-            fail_count += 1
-            status = f"FAIL {e.code}"
             results.append((status, label, url))
-    except Exception as e:
-        fail_count += 1
-        status = f"FAIL {type(e).__name__}"
-        results.append((status, label, url))
+        except urllib.error.HTTPError as e:
+            # Some servers reject HEAD, retry with GET
+            if e.code == 405 or e.code == 403:
+                try:
+                    req2 = urllib.request.Request(url, method="GET")
+                    req2.add_header("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)")
+                    resp2 = urllib.request.urlopen(req2, timeout=10, context=ctx)
+                    code2 = resp2.getcode()
+                    resp2.close()
+                    if code2 == 200:
+                        status = "OK"
+                        ok_count += 1
+                    else:
+                        status = f"WARN {code2}"
+                        fail_count += 1
+                    results.append((status, label, url))
+                except urllib.error.HTTPError as e2:
+                    fail_count += 1
+                    results.append((f"FAIL {e2.code}", label, url))
+                except Exception as e2:
+                    fail_count += 1
+                    results.append((f"FAIL {type(e2).__name__}", label, url))
+            else:
+                fail_count += 1
+                status = f"FAIL {e.code}"
+                results.append((status, label, url))
+        except Exception as e:
+            fail_count += 1
+            status = f"FAIL {type(e).__name__}"
+            results.append((status, label, url))
 
         icon = "." if status == "OK" else "X"
         sys.stdout.write(f"  [{i:2d}/{len(urls)}] {icon} {label}\n")

@@ -1,34 +1,34 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Master Compliance Validator - NossoDireito v1.8.0
+Master Compliance Validator - NossoDireito v1.10.0
 
-Sistema mestre COMPLETO de validação de compliance, qualidade e consistência.
-Orquestra todos os validadores e gera score final de qualidade.
+Ponto de entrada ÚNICO de qualidade do projeto.
+Usado pelo pre-commit hook e também como validador standalone.
 
-Validações realizadas (17 categorias):
-1. Dados (direitos.json, matching_engine.json, vinculação, classificação)
-2. Código (Python, JS, HTML, CSS + linting avançado)
-3. Fontes oficiais (validação de URLs e artigos)
-4. Arquitetura (estrutura de pastas, padrões)
-5. Documentação (completude, atualização de versões)
-6. Segurança (SECURITY.md, vulnerabilidades, secrets scanning)
-7. Performance (otimizações, caching, profiling)
-8. Acessibilidade (WCAG, ARIA)
-9. SEO (meta tags, sitemap)
-10. Infraestrutura (Terraform, scripts)
-11. Testes Automatizados (E2E, unit tests)
-12. Dead Code Detection (código não usado, importações órfãs)
-13. Arquivos Órfãos (cleanup automático)
-14. Lógica de Negócio (validação de regras e fluxos)
-15. Regulatory Compliance (LGPD, finance, disclaimer, dados sensíveis)
-16. Cloud Security (Azure, EASM, MITRE)
-17. CI/CD (GitHub Actions workflows, segurança, boas práticas)
+Uso:
+    python scripts/master_compliance.py            # Validação completa (21 cats + HTTP)
+    python scripts/master_compliance.py --quick     # Pre-commit (21 cats, sem HTTP, ~30s)
 
-Objetivo: Precisão 100% com validação completa
-Requisito: Somente fontes oficiais validadas + segurança máxima
+21 Categorias de validação:
+  1. Dados          2. Código        3. Fontes*        4. Arquitetura
+  5. Documentação   6. Segurança     7. Performance     8. Acessibilidade
+  9. SEO           10. Infraestrutura 11. Testes E2E   12. Dead Code
+ 13. Órfãos        14. Lógica        15. Regulatory    16. Cloud Security
+ 17. CI/CD         18. Dependências  19. Changelog     20. Análise 360°
+ 21. Referências Órfãs
+
+ * Fontes (cat 3) faz HTTP e é pulada em --quick.
+
+Inclui:
+  - Fail-fast de versão (primeiro check, aborta se inconsistente)
+  - JSON Schema Draft 7 (absorvido de validate_schema.py)
+  - Consistência de versão (absorvido de check_version_consistency.py)
+
+Objetivo: Score 100% — Somente fontes oficiais + segurança máxima
 """
 
+import argparse
 import json
 import re
 import subprocess
@@ -44,12 +44,75 @@ elif hasattr(sys.stdout, 'buffer'):
     sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
 
 
-class MasterComplianceValidator:
-    """Validador mestre de compliance e qualidade"""
+try:
+    import jsonschema
+    from jsonschema import Draft7Validator
+    _HAS_JSONSCHEMA = True
+except ImportError:
+    _HAS_JSONSCHEMA = False
 
-    def __init__(self):
+
+# ── Constantes de versão (absorvido de check_version_consistency.py) ─────
+_SEMVER_RE = re.compile(r'^\d+\.\d+\.\d+$')
+_VERSION_CHECKS = [
+    ('data/direitos.json', 'json', 'versao'),
+    ('manifest.json', 'json', 'version'),
+    ('sw.js', 'regex', r"CACHE_VERSION\s*=\s*'nossodireito-v([\d.]+)'"),
+    ('README.md', 'regex', r'Version-([\d.]+)'),
+    ('GOVERNANCE.md', 'regex', r'\*\*Versão:\*\*\s*([\d.]+)'),
+    ('SECURITY_AUDIT.md', 'regex', r'Auditoria de Segurança v([\d.]+)'),
+    ('docs/COMPLIANCE.md', 'regex', r'\*\*Versão:\*\*\s*([\d.]+)'),
+    ('docs/ARCHITECTURE.md', 'regex', r'\*\*Versão:\*\*\s*([\d.]+)'),
+    ('scripts/master_compliance.py', 'regex', r'self\.version\s*=\s*"([\d.]+)"'),
+]
+
+
+def check_versions(root: Path = None) -> tuple:
+    """Verifica consistência de versão em 10 arquivos vs package.json.
+
+    Retorna (canonical_version, lista_de_inconsistentes).
+    Pode ser chamado standalone ou internamente.
+    """
+    root = root or Path(__file__).resolve().parent.parent
+    pkg_path = root / 'package.json'
+    if not pkg_path.exists():
+        return '', ['package.json: não encontrado']
+    pkg = json.loads(pkg_path.read_text(encoding='utf-8'))
+    canonical = pkg.get('version', '')
+    if not _SEMVER_RE.match(canonical):
+        return '', [f"package.json: versão inválida '{canonical}'"]
+    mismatches: list[str] = []
+    for path_str, method, pattern in _VERSION_CHECKS:
+        fpath = root / path_str
+        if not fpath.exists():
+            continue
+        content = fpath.read_text(encoding='utf-8')
+        found = None
+        if method == 'json':
+            try:
+                found = json.loads(content).get(pattern, '')
+            except json.JSONDecodeError:
+                mismatches.append(f'{path_str}: JSON inválido')
+                continue
+        elif method == 'regex':
+            m = re.search(pattern, content)
+            if m:
+                found = m.group(1)
+        if found and found != canonical:
+            mismatches.append(f'{path_str}:v{found}')
+    return canonical, mismatches
+
+
+class MasterComplianceValidator:
+    """Validador mestre de compliance e qualidade.
+
+    Ponto de entrada único para pre-commit (--quick) e validação completa.
+    """
+
+    def __init__(self, quick: bool = False):
         self.root = Path(__file__).parent.parent
         self.version = "1.10.0"
+        self.quick = quick
         self.errors = []
         self.warnings = []
         self.passes = []
@@ -57,7 +120,7 @@ class MasterComplianceValidator:
         self.max_score = 0.0
         self.start_time = datetime.now()
 
-        # Métricas por categoria (20 categorias)
+        # Métricas por categoria (21 categorias)
         self.metrics = {
             'dados': {'score': 0, 'max': 0, 'checks': []},
             'codigo': {'score': 0, 'max': 0, 'checks': []},
@@ -78,7 +141,8 @@ class MasterComplianceValidator:
             'cicd': {'score': 0, 'max': 0, 'checks': []},
             'dependencias': {'score': 0, 'max': 0, 'checks': []},
             'changelog': {'score': 0, 'max': 0, 'checks': []},
-            'analise360': {'score': 0, 'max': 0, 'checks': []}
+            'analise360': {'score': 0, 'max': 0, 'checks': []},
+            'dead_refs': {'score': 0, 'max': 0, 'checks': []}
         }
 
         # Carregar dados principais
@@ -254,15 +318,42 @@ class MasterComplianceValidator:
             except Exception as e:
                 self.log_fail('codigo', f"{json_file}: JSON inválido - {e}", 2)
 
+        # 4. Validar sintaxe JavaScript (node -c)
+        js_files = [self.root / 'js' / 'app.js', self.root / 'sw.js']
+        for js_file in js_files:
+            if js_file.exists():
+                try:
+                    result = subprocess.run(
+                        ['node', '-c', str(js_file)],
+                        cwd=self.root,
+                        capture_output=True,
+                        text=True,
+                        timeout=10
+                    )
+                    if result.returncode == 0:
+                        self.log_pass('codigo', f"{js_file.name}: JS sintaxe válida (node -c)", 2)
+                    else:
+                        self.log_fail('codigo', f"{js_file.name}: JS sintaxe inválida", 2)
+                except FileNotFoundError:
+                    self.log_pass('codigo', f"{js_file.name}: node não disponível (skip JS syntax)", 1)
+                except Exception as e:
+                    self.log_warning('codigo', f"{js_file.name}: erro ao verificar JS syntax: {e}")
+
     # =========================================================================
     # CATEGORIA 3: VALIDAÇÃO DE FONTES OFICIAIS
     # =========================================================================
 
     def validate_official_sources(self):
-        """Valida todas as fontes oficiais (URLs de leis)"""
+        """Valida todas as fontes oficiais (URLs de leis).
+        Pulada em --quick (requer HTTP, ~60-300s).
+        """
         print("\n" + "=" * 80)
         print("VALIDAÇÃO DE FONTES - Oficialidade e Disponibilidade")
         print("=" * 80)
+
+        if self.quick:
+            self.log_pass('fontes', "Fontes: pulado em --quick (requer HTTP)", 20)
+            return
 
         # Executar validate_legal_sources.py
         try:
@@ -343,10 +434,10 @@ class MasterComplianceValidator:
         expected_structure = {
             'data': ['direitos.json', 'matching_engine.json'],
             'scripts': ['validate_content.py', 'validate_sources.py', 'validate_legal_sources.py',
-                       'bump_version.py', 'quality_pipeline.py', 'pre-commit'],
+                       'bump_version.py', 'validate_all.py', 'pre-commit'],
             'css': ['styles.css'],
             'js': ['app.js', 'sw-register.js'],
-            'docs': ['VLIBRAS_LIMITATIONS.md', 'QUALITY_SYSTEM.md'],
+            'docs': ['KNOWN_ISSUES.md', 'QUALITY_GUIDE.md', 'ACCESSIBILITY.md', 'REFERENCE.md'],
             'terraform': ['main.tf', 'providers.tf', 'variables.tf', 'outputs.tf'],
             '.githooks': ['pre-commit'],
             '.': ['index.html', 'manifest.json', 'robots.txt', 'sitemap.xml',
@@ -391,8 +482,10 @@ class MasterComplianceValidator:
             'GOVERNANCE.md': 5,
             'LICENSE': 5,
             'CHANGELOG.md': 5,
-            'docs/QUALITY_SYSTEM.md': 10,
-            'docs/VLIBRAS_LIMITATIONS.md': 3
+            'docs/QUALITY_GUIDE.md': 5,
+            'docs/ACCESSIBILITY.md': 3,
+            'docs/KNOWN_ISSUES.md': 3,
+            'docs/REFERENCE.md': 2
         }
 
         for doc, points in required_docs.items():
@@ -547,6 +640,22 @@ class MasterComplianceValidator:
                 else:
                     self.log_warning('performance', f"{file}: arquivo grande ({size_mb:.2f}MB)")
 
+        # 4. Tamanho de assets críticos (HTML <100KB, JS <100KB, CSS <100KB)
+        asset_limits = {
+            'index.html': 100 * 1024,
+            'js/app.js': 100 * 1024,
+            'css/styles.css': 100 * 1024,
+        }
+        for asset, max_bytes in asset_limits.items():
+            asset_path = self.root / asset
+            if asset_path.exists():
+                size = asset_path.stat().st_size
+                size_kb = size / 1024
+                if size <= max_bytes:
+                    self.log_pass('performance', f"{asset}: {size_kb:.0f}KB (< {max_bytes // 1024}KB)", 1)
+                else:
+                    self.log_warning('performance', f"{asset}: {size_kb:.0f}KB (> {max_bytes // 1024}KB)")
+
     # =========================================================================
     # CATEGORIA 8: VALIDAÇÃO DE ACESSIBILIDADE
     # =========================================================================
@@ -669,6 +778,108 @@ class MasterComplianceValidator:
                 self.log_fail('seo', "manifest.json inválido", 5)
         else:
             self.log_fail('seo', "manifest.json ausente", 5)
+
+        # 5. JSON-LD Structured Data (FAQPage, GovernmentService, WebApplication)
+        if index_html.exists():
+            content = index_html.read_text(encoding='utf-8')
+
+            # Extrair blocos JSON-LD
+            import re as _re
+            ld_blocks = _re.findall(
+                r'<script\s+type=["\']application/ld\+json["\']>\s*(.*?)\s*</script>',
+                content, _re.DOTALL
+            )
+
+            if not ld_blocks:
+                self.log_fail('seo', "Nenhum bloco JSON-LD encontrado", 5)
+            else:
+                self.log_pass('seo', f"{len(ld_blocks)} blocos JSON-LD encontrados", 2)
+
+                ld_types_found = []
+                for block in ld_blocks:
+                    try:
+                        ld_data = json.loads(block)
+                        ld_type = ld_data.get('@type', 'unknown')
+                        ld_types_found.append(ld_type)
+                    except json.JSONDecodeError:
+                        self.log_fail('seo', "JSON-LD com sintaxe inválida", 3)
+
+                # Verificar tipos obrigatórios
+                required_ld_types = ['FAQPage', 'GovernmentService', 'WebApplication']
+                for ld_type in required_ld_types:
+                    if ld_type in ld_types_found:
+                        self.log_pass('seo', f"JSON-LD '{ld_type}' presente", 3)
+                    else:
+                        self.log_fail('seo', f"JSON-LD '{ld_type}' ausente", 3)
+
+                # Validar FAQPage — mínimo 10 perguntas
+                for block in ld_blocks:
+                    try:
+                        ld_data = json.loads(block)
+                        if ld_data.get('@type') == 'FAQPage':
+                            entities = ld_data.get('mainEntity', [])
+                            count = len(entities)
+                            if count >= 10:
+                                self.log_pass('seo', f"FAQPage com {count} perguntas (≥10)", 3)
+                            else:
+                                self.log_fail('seo', f"FAQPage com apenas {count} perguntas (<10)", 3)
+
+                            # Verificar que cada FAQ tem Question + acceptedAnswer
+                            valid_faqs = sum(
+                                1 for e in entities
+                                if e.get('@type') == 'Question'
+                                and 'acceptedAnswer' in e
+                                and e['acceptedAnswer'].get('@type') == 'Answer'
+                                and e['acceptedAnswer'].get('text', '').strip()
+                            )
+                            if valid_faqs == count and count > 0:
+                                self.log_pass('seo', f"Todas {count} FAQs com Question+Answer válidos", 2)
+                            else:
+                                self.log_fail('seo', f"FAQs inválidos: {count - valid_faqs} de {count}", 2)
+                    except json.JSONDecodeError:
+                        pass
+
+                # Validar GovernmentService — catalog items
+                for block in ld_blocks:
+                    try:
+                        ld_data = json.loads(block)
+                        if ld_data.get('@type') == 'GovernmentService':
+                            catalog = ld_data.get('hasOfferCatalog', {})
+                            items = catalog.get('itemListElement', [])
+                            if len(items) >= 20:
+                                self.log_pass('seo', f"GovernmentService com {len(items)} benefícios (≥20)", 3)
+                            else:
+                                self.log_fail('seo', f"GovernmentService com apenas {len(items)} benefícios (<20)", 3)
+                    except json.JSONDecodeError:
+                        pass
+
+            # 6. Canonical URL
+            if 'rel="canonical"' in content:
+                self.log_pass('seo', "Canonical URL presente", 2)
+            else:
+                self.log_fail('seo', "Canonical URL ausente", 2)
+
+            # 7. Google Site Verification
+            if 'google-site-verification' in content:
+                self.log_pass('seo', "Google Site Verification presente", 2)
+            else:
+                self.log_warning('seo', "Google Site Verification ausente")
+
+            # 8. Open Graph completo
+            og_extras = ['og:image', 'og:type', 'og:url', 'og:locale', 'og:site_name']
+            for og in og_extras:
+                if og in content:
+                    self.log_pass('seo', f"Open Graph '{og}' presente", 1)
+                else:
+                    self.log_warning('seo', f"Open Graph '{og}' ausente")
+
+            # 9. Twitter Card
+            twitter_tags = ['twitter:card', 'twitter:title', 'twitter:description', 'twitter:image']
+            for tw in twitter_tags:
+                if tw in content:
+                    self.log_pass('seo', f"Twitter Card '{tw}' presente", 1)
+                else:
+                    self.log_warning('seo', f"Twitter Card '{tw}' ausente")
 
     # =========================================================================
     # CATEGORIA 10: VALIDAÇÃO DE INFRAESTRUTURA
@@ -869,13 +1080,14 @@ class MasterComplianceValidator:
     # =========================================================================
 
     def validate_orphaned_files(self):
-        """Detecta e limpa arquivos órfãos"""
-        print("\n[ORFAOS] Detectando arquivos órfãos...")
+        """Detecta arquivos órfãos e problemas de higiene do workspace"""
+        print("\n[ORFAOS] Detectando arquivos órfãos e higiene do workspace...")
 
         orphaned_files = []
+        hygiene_issues = []
         cleanup_count = 0
 
-        # Padrões de arquivos órfãos
+        # --- 1) Padrões glob de arquivos órfãos clássicos ---
         orphan_patterns = [
             '**/*.backup',
             '**/*.tmp',
@@ -885,42 +1097,101 @@ class MasterComplianceValidator:
             '**/.DS_Store',
             '**/*.log',
             '**/__pycache__/**',
-            '**/node_modules/**' # Se existir mas não deveria
+            '**/node_modules/**',
         ]
 
         for pattern in orphan_patterns:
             matches = list(self.root.glob(pattern))
-
-            # Filtrar apenas arquivos (não diretórios vazios já ignorados)
             for match in matches:
                 if match.is_file() and '.git' not in str(match):
                     orphaned_files.append(match)
 
-        if len(orphaned_files) == 0:
+        # --- 2) Arquivos temporários na raiz (_temp_*, temp_*) ---
+        for f in self.root.iterdir():
+            if not f.is_file():
+                continue
+            name = f.name.lower()
+            if name.startswith('_temp_') or name.startswith('temp_'):
+                orphaned_files.append(f)
+
+        # --- 3) Backups de index na raiz (index.backup_*) ---
+        for f in self.root.glob('index.backup_*'):
+            if f.is_file():
+                orphaned_files.append(f)
+
+        # --- 4) Relatórios JSON gerados na raiz ---
+        generated_reports = [
+            'quality_report.json',
+            'validation_report.json',
+            'validation_legal_report.json',
+        ]
+        for report_name in generated_reports:
+            report_path = self.root / report_name
+            if report_path.is_file():
+                orphaned_files.append(report_path)
+
+        # --- 5) CSS duplicados (qualquer .css em css/ que não seja styles.css) ---
+        css_dir = self.root / 'css'
+        if css_dir.is_dir():
+            css_files = [f for f in css_dir.iterdir()
+                         if f.is_file() and f.suffix == '.css']
+            expected_css = {'styles.css'}
+            for css_file in css_files:
+                if css_file.name not in expected_css:
+                    orphaned_files.append(css_file)
+                    hygiene_issues.append(
+                        f"CSS duplicado: css/{css_file.name}")
+
+        # --- 6) Arquivos Python de teste soltos na raiz ---
+        allowed_root_py = set()  # nenhum esperado
+        for f in self.root.iterdir():
+            if f.is_file() and f.suffix == '.py':
+                if f.name.startswith('test_') or f.name.startswith('_temp_'):
+                    if f.name not in allowed_root_py:
+                        orphaned_files.append(f)
+                        hygiene_issues.append(
+                            f"Python na raiz (deveria estar em scripts/ ou tests/): {f.name}")
+
+        # --- 7) Diretórios vazios (backups/, screenshots/) ---
+        dirs_should_not_be_empty_or_exist = ['backups']
+        for dir_name in dirs_should_not_be_empty_or_exist:
+            dir_path = self.root / dir_name
+            if dir_path.is_dir():
+                contents = list(dir_path.iterdir())
+                if len(contents) == 0:
+                    hygiene_issues.append(
+                        f"Diretório vazio desnecessário: {dir_name}/")
+
+        # Deduplicate
+        orphaned_files = list(dict.fromkeys(orphaned_files))
+
+        # --- Report ---
+        total_issues = len(orphaned_files) + len(hygiene_issues)
+
+        if total_issues == 0:
             self.log_pass('orfaos', "Nenhum arquivo órfão detectado", 15)
         else:
-            self.log_warning('orfaos', f"{len(orphaned_files)} arquivo(s) órfão(s) detectado(s)")
+            issue_details = []
+            for orphan in orphaned_files:
+                try:
+                    rel = orphan.relative_to(self.root)
+                except ValueError:
+                    rel = orphan
+                issue_details.append(f"Arquivo órfão: {rel}")
+            issue_details.extend(hygiene_issues)
 
-            # Auto-cleanup (opcional - pode ser ativado com flag)
-            auto_cleanup = False  # Mudar para True para auto-limpeza
+            self.log_warning(
+                'orfaos',
+                f"{total_issues} problema(s) de higiene detectado(s)")
 
-            if auto_cleanup:
-                for orphan in orphaned_files:
-                    try:
-                        orphan.unlink()
-                        cleanup_count += 1
-                    except Exception as e:
-                        pass
+            # Listar todos os problemas (max 10)
+            for detail in issue_details[:10]:
+                print(f"  ⚠️  {detail}")
+            if len(issue_details) > 10:
+                print(f"  ⚠️  ... e mais {len(issue_details) - 10}")
 
-                if cleanup_count > 0:
-                    self.log_pass('orfaos', f"{cleanup_count} arquivo(s) órfão(s) removido(s)", 10)
-            else:
-                self.log_pass('orfaos', "Detecção de órfãos funcionando", 10)
-
-                # Listar primeiros 5 órfãos
-                for orphan in orphaned_files[:5]:
-                    rel_path = orphan.relative_to(self.root)
-                    print(f"  ⚠️  Órfão: {rel_path}")
+            # Ainda marca como funcional mas com warning
+            self.log_pass('orfaos', "Detecção de órfãos funcionando", 10)
 
         # Verificar arquivos grandes não rastreados (>10MB)
         large_files = []
@@ -1157,36 +1428,15 @@ class MasterComplianceValidator:
             for filename, pattern_name in sensitive_found[:3]:
                 print(f"  ⚠️  {filename}: {pattern_name}")
 
-        # 6. Validar versões consistentes entre documentos
-        version_files = [
-            (self.root / 'README.md', 'README'),
-            (self.root / 'SECURITY.md', 'SECURITY'),
-            (self.root / 'CHANGELOG.md', 'CHANGELOG'),
-            (self.root / 'docs' / 'SECURITY_AUDIT.md', 'SECURITY_AUDIT')
-        ]
-
-        versions_found = {}
-        for file_path, name in version_files:
-            if not file_path.exists():
-                continue
-
-            file_content = file_path.read_text(encoding='utf-8')
-
-            # Extrair versões semver (1.x.x) - ignora scores, porcentagens e datas
-            # Requer exatamente 3 componentes (major.minor.patch) para evitar falsos positivos
-            version_matches = re.findall(r'(?:^|\s|v)(\d{1,2}\.\d{1,2}\.\d{1,3})(?:\s|$|["\)\],])', file_content)
-
-            if version_matches:
-                # Pegar a versão mais recente mencionada
-                latest_version = max(version_matches, key=lambda v: tuple(map(int, v.split('.'))))
-                versions_found[name] = latest_version
-
-        if len(set(versions_found.values())) == 1:
-            version = list(versions_found.values())[0]
-            self.log_pass('regulatory', f"Versões consistentes: v{version}", 10)
+        # 6. Validar versões consistentes (inline — antes era check_version_consistency.py)
+        canonical_version, mismatches = check_versions(self.root)
+        if not canonical_version:
+            self.log_warning('regulatory', "Versão: package.json não encontrado ou versão inválida")
+        elif not mismatches:
+            self.log_pass('regulatory', f"Versões consistentes: v{canonical_version} (10 arquivos)", 10)
         else:
-            version_str = ', '.join(f"{name}:v{ver}" for name, ver in versions_found.items())
-            self.log_warning('regulatory', f"Versões inconsistentes: {version_str}")
+            mismatch_str = ', '.join(mismatches)
+            self.log_fail('regulatory', f"Versões inconsistentes (esperado v{canonical_version}): {mismatch_str}", 10)
 
     # =========================================================================
     # =========================================================================
@@ -1528,15 +1778,15 @@ class MasterComplianceValidator:
             else:
                 self.log_warning(cat, "Revisão periódica não cria issues")
 
-        # ── 12. CI executa quality pipeline (codereview.py ou quality_pipeline.py) ──
+        # ── 12. CI executa quality gate (validate_all.py) ──
         ci_runs_quality_gate = False
         for content in workflow_contents.values():
-            if 'codereview.py' in content or 'codereview/codereview.py' in content or 'quality_pipeline.py' in content:
+            if 'validate_all.py' in content or 'master_compliance.py' in content:
                 ci_runs_quality_gate = True
                 break
 
         if ci_runs_quality_gate:
-            self.log_pass(cat, "CI executa quality gate automatizado (quality_pipeline.py)", 4)
+            self.log_pass(cat, "CI executa quality gate automatizado (validate_all.py)", 4)
         else:
             self.log_fail(cat, "CI não executa quality gate automatizado", 4)
 
@@ -1852,7 +2102,8 @@ class MasterComplianceValidator:
             'cicd': '🔄 CI/CD',
             'dependencias': '📦 DEPENDÊNCIAS',
             'changelog': '📝 CHANGELOG',
-            'analise360': '🔄 ANÁLISE 360'
+            'analise360': '🔄 ANÁLISE 360',
+            'dead_refs': '🔗 REF. ÓRFÃS'
         }
 
         total_score = 0
@@ -1909,24 +2160,349 @@ class MasterComplianceValidator:
         print(f"\nRelatório gerado em: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
         print(f"Tempo de execução: {(datetime.now() - self.start_time).total_seconds():.2f}s")
 
-        return final_percentage
+        return final_percentage, total_score, total_max
+
+    # =========================================================================
+    # AUTO-UPDATE: Badge do README.md
+    # =========================================================================
+
+    def update_readme_badge(self, total_score: float, total_max: float) -> None:
+        """Atualiza automaticamente o badge de Master Compliance no README.md.
+
+        Substitui o score hardcoded no badge shields.io para refletir
+        o resultado real da última execução completa.
+        Só atualiza se o score for 100% (não sobrescreve com score parcial).
+        """
+        readme_path = self.root / 'README.md'
+        if not readme_path.is_file():
+            return
+
+        percentage = (total_score / total_max * 100) if total_max > 0 else 0
+        if percentage < 100:
+            return  # Não atualiza badge com score incompleto
+
+        content = readme_path.read_text(encoding='utf-8')
+
+        # Pattern: Master%20Compliance-100.0%25%20(XXXX.X%2FXXXX.X)
+        badge_pattern = (
+            r'(Master%20Compliance-)\d+\.\d+%25%20\(\d+\.?\d*%2F\d+\.?\d*\)'
+        )
+        new_badge = (
+            f'\\g<1>{percentage:.1f}%25%20({total_score:.1f}%2F{total_max:.1f})'
+        )
+
+        new_content = re.sub(badge_pattern, new_badge, content)
+
+        if new_content != content:
+            readme_path.write_text(new_content, encoding='utf-8')
+            print(f"\n✅ [AUTO-UPDATE] README.md badge atualizado: {total_score:.1f}/{total_max:.1f} ({percentage:.1f}%)")
+        else:
+            print(f"\n✅ [AUTO-UPDATE] README.md badge já está correto ({total_score:.1f}/{total_max:.1f})")
+
+    # =========================================================================
+    # 21. REFERÊNCIAS ÓRFÃS (Dead References)
+    # =========================================================================
+
+    def validate_dead_references(self):
+        """Detecta referências a caminhos/componentes que foram removidos do projeto.
+
+        Verifica:
+        1. Referências hard-coded a pastas/arquivos que não existem mais
+        2. Caminhos em código/docs apontando para componentes deletados
+        3. Padrões conhecidos de componentes removidos (codereview, v2, etc.)
+        """
+        print("\n[DEAD_REFS] Detectando referências órfãs a componentes removidos...")
+
+        total_refs = 0
+        files_with_refs = []
+
+        # ── 1. Padrões de componentes removidos conhecidos ──
+        # Cada entrada: (regex pattern, descrição, é case-sensitive)
+        removed_patterns = [
+            # Pasta codereview/ (removida — migrado para scripts/master_compliance.py)
+            (r'codereview/', "codereview/ (pasta removida)"),
+            (r'codereview\.py', "codereview.py (migrado para master_compliance.py)"),
+            # Pasta docs/v2/ (removida — projeto não tem mais v2)
+            (r'docs/v2/', "docs/v2/ (pasta removida)"),
+            (r'v2/roadmap/', "v2/roadmap/ (pasta removida)"),
+            (r'ROADMAP_V2\.md', "ROADMAP_V2.md (arquivo removido)"),
+            (r'ARCHITECTURE_V2\.md', "ARCHITECTURE_V2.md (arquivo removido)"),
+            (r'V2_README\.md', "V2_README.md (arquivo removido)"),
+            (r'GETTING_STARTED_V2\.md', "GETTING_STARTED_V2.md (arquivo removido)"),
+            # Scripts que foram removidos ou renomeados
+            (r'validate_links\.py', "validate_links.py (duplicado de validate_sources.py)"),
+            (r'quality_pipeline\.py', "quality_pipeline.py (consolidado em validate_all.py + master_compliance.py)"),
+            (r'check_version_consistency\.py', "check_version_consistency.py (absorvido em master_compliance.py)"),
+            # Docs consolidados na grande unificação v1.10.0 (50→18 arquivos)
+            (r'QUALITY_SYSTEM\.md', "QUALITY_SYSTEM.md (consolidado em QUALITY_GUIDE.md)"),
+            (r'QUALITY_TESTING_GUIDE\.md', "QUALITY_TESTING_GUIDE.md (consolidado em QUALITY_GUIDE.md)"),
+            (r'GUIA_RAPIDO_USO\.md', "GUIA_RAPIDO_USO.md (consolidado em QUALITY_GUIDE.md)"),
+            (r'OPCOES_EXECUCAO\.md', "OPCOES_EXECUCAO.md (consolidado em QUALITY_GUIDE.md)"),
+            (r'ACCESSIBILITY_AUDIT_REPORT\.md', "ACCESSIBILITY_AUDIT_REPORT.md (consolidado em ACCESSIBILITY.md)"),
+            (r'ACCESSIBILITY_FIXES_REPORT\.md', "ACCESSIBILITY_FIXES_REPORT.md (consolidado em ACCESSIBILITY.md)"),
+            (r'EMAG_BEST_PRACTICES_ANALYSIS\.md', "EMAG_BEST_PRACTICES_ANALYSIS.md (consolidado em ACCESSIBILITY.md)"),
+            (r'MELHORES_PRATICAS_RECURSOS_FLUTUANTES\.md', "MELHORES_PRATICAS_RECURSOS_FLUTUANTES.md (consolidado em ACCESSIBILITY.md)"),
+            (r'MOTOR_ACCESSIBILITY_IMPACT_ANALYSIS\.md', "MOTOR_ACCESSIBILITY_IMPACT_ANALYSIS.md (consolidado em ACCESSIBILITY.md)"),
+            (r'WHATSAPP_AUDIO_WIDGET_COMPLIANCE\.md', "WHATSAPP_AUDIO_WIDGET_COMPLIANCE.md (consolidado em ACCESSIBILITY.md)"),
+            (r'AUTOMATION_AUDIT\.md', "AUTOMATION_AUDIT.md (consolidado em VALIDATION_STATUS.md)"),
+            (r'VALIDATION_ROUTINES_STATUS\.md', "VALIDATION_ROUTINES_STATUS.md (consolidado em VALIDATION_STATUS.md)"),
+            (r'TESTES_E2E_STATUS\.md', "TESTES_E2E_STATUS.md (consolidado em VALIDATION_STATUS.md)"),
+            (r'CHECKLIST_VALIDATIONS\.md', "CHECKLIST_VALIDATIONS.md (consolidado em VALIDATION_STATUS.md)"),
+            (r'BENEFICIOS_COMPLETOS_PCD\.md', "BENEFICIOS_COMPLETOS_PCD.md (consolidado em REFERENCE.md)"),
+            (r'DEPENDENCY_CONTROL\.md', "DEPENDENCY_CONTROL.md (consolidado em REFERENCE.md)"),
+            (r'SITE_ORDERING_CRITERIA\.md', "SITE_ORDERING_CRITERIA.md (consolidado em REFERENCE.md)"),
+            (r'VLIBRAS_LIMITATIONS\.md', "VLIBRAS_LIMITATIONS.md (absorvido em KNOWN_ISSUES.md)"),
+            (r'ACHIEVEMENT_100_PERCENT_FINAL\.md', "ACHIEVEMENT_100_PERCENT_FINAL.md (info já em CHANGELOG.md)"),
+            (r'RESUMO_FINAL_100_PERCENT\.md', "RESUMO_FINAL_100_PERCENT.md (info já em CHANGELOG.md)"),
+            (r'RESPOSTAS_DIRETAS\.md', "RESPOSTAS_DIRETAS.md (info já em CHANGELOG.md)"),
+        ]
+
+        # Extensões de arquivo a verificar (código e documentação)
+        scan_extensions = {
+            '.py', '.js', '.html', '.json', '.md', '.yml', '.yaml',
+            '.sh', '.tf', '.css', '.xml', '.txt',
+        }
+
+        # Pastas a ignorar durante a varredura
+        skip_dirs = {
+            '.git', '.venv', 'venv', 'node_modules', '__pycache__',
+            '.terraform', 'backup', 'backups',
+            'v1',  # arquivo histórico — referências a docs antigos são esperadas
+        }
+
+        # Arquivos a ignorar (este próprio script, changelogs históricos, etc.)
+        skip_files = {
+            'master_compliance.py',  # este script contém os padrões como referência
+            'CHANGELOG.md',  # registros históricos de remoções são válidos
+        }
+
+        scanned_files = 0
+        for file_path in self.root.rglob('*'):
+            # Ignorar diretórios e arquivos fora do escopo
+            if not file_path.is_file():
+                continue
+            if file_path.suffix.lower() not in scan_extensions:
+                continue
+            if any(skip_dir in file_path.parts for skip_dir in skip_dirs):
+                continue
+            if file_path.name in skip_files:
+                continue
+
+            try:
+                content = file_path.read_text(encoding='utf-8', errors='ignore')
+                scanned_files += 1
+            except Exception:
+                continue
+
+            file_refs = []
+            for pattern, description in removed_patterns:
+                # Contar apenas referências que NÃO estão em contexto resolvido
+                resolved_markers = [
+                    'removido', 'concluído', 'concluido',
+                    'duplicado', 'deletar', 'deletado',
+                    'excluído', 'excluido', 'resolvido',
+                    '~~', '✅', 'deprecated', 'migrado',
+                ]
+                count = 0
+                for line in content.splitlines():
+                    if re.search(pattern, line):
+                        # Ignorar linhas com marcadores de ação concluída
+                        line_lower = line.lower()
+                        if any(marker in line_lower for marker in resolved_markers):
+                            continue
+                        count += 1
+                if count > 0:
+                    file_refs.append((description, count))
+
+            if file_refs:
+                rel_path = file_path.relative_to(self.root)
+                files_with_refs.append((rel_path, file_refs))
+                for desc, count in file_refs:
+                    total_refs += count
+
+        # ── 2. Verificar caminhos relativos em código que não existem ──
+        # Detecta padrões como: python3 some/path.py, python some/script.py
+        broken_script_refs = []
+        code_ref_pattern = re.compile(
+            r'(?:python3?|node)\s+([\w/\\.-]+\.(?:py|js))',
+            re.IGNORECASE,
+        )
+
+        # Scripts planejados/sugeridos que ainda não existem (não são referências órfãs)
+        planned_scripts = {
+            'validate_ipva_states.py',
+            'validate_all.py',
+            'auto_backup.py',
+        }
+
+        # Documentos que contêm sugestões/planejamento (referências a scripts futuros)
+        plan_docs = {
+            'VALIDATION_ROUTINES_STATUS.md',
+            'AUTOMATION_AUDIT.md',
+            'ACHIEVEMENT_100_PERCENT_FINAL.md',
+        }
+
+        for file_path in self.root.rglob('*'):
+            if not file_path.is_file():
+                continue
+            if file_path.suffix.lower() not in {'.md', '.sh', '.yml', '.yaml', '.py'}:
+                continue
+            if any(skip_dir in file_path.parts for skip_dir in skip_dirs):
+                continue
+            if file_path.name in skip_files:
+                continue
+            if file_path.name in plan_docs:
+                continue
+
+            try:
+                content = file_path.read_text(encoding='utf-8', errors='ignore')
+            except Exception:
+                continue
+
+            for m in code_ref_pattern.finditer(content):
+                ref_path = m.group(1).replace('\\', '/')
+                # Ignorar caminhos de exemplo/placeholder
+                if ref_path.startswith('/path/') or ref_path == 'script.py':
+                    continue
+                # Ignorar scripts planejados
+                if Path(ref_path).name in planned_scripts:
+                    continue
+                target = self.root / ref_path
+                if not target.exists():
+                    rel_path = file_path.relative_to(self.root)
+                    broken_script_refs.append((rel_path, ref_path))
+
+        # ── 3. Reportar resultados ──
+        if total_refs == 0 and not broken_script_refs:
+            self.log_pass(
+                'dead_refs',
+                f"Nenhuma referência órfã detectada ({scanned_files} arquivos verificados)",
+                20,
+            )
+        else:
+            if total_refs > 0:
+                self.log_fail(
+                    'dead_refs',
+                    f"{total_refs} referência(s) a componentes removidos em {len(files_with_refs)} arquivo(s)",
+                    10,
+                )
+                for rel_path, refs in files_with_refs[:10]:
+                    for desc, count in refs:
+                        print(f"    ⚠️  {rel_path}: {desc} ({count}x)")
+            else:
+                self.log_pass(
+                    'dead_refs',
+                    "Nenhuma referência a componentes removidos",
+                    10,
+                )
+
+            if broken_script_refs:
+                unique_targets = set(ref for _, ref in broken_script_refs)
+                self.log_fail(
+                    'dead_refs',
+                    f"{len(broken_script_refs)} referência(s) a scripts inexistentes: {', '.join(sorted(unique_targets)[:5])}",
+                    10,
+                )
+                for rel_path, ref in broken_script_refs[:10]:
+                    print(f"    ⚠️  {rel_path}: referencia '{ref}' (arquivo não existe)")
+            else:
+                self.log_pass(
+                    'dead_refs',
+                    "Todos os scripts referenciados existem no disco",
+                    10,
+                )
+
+    # =========================================================================
+    # JSON SCHEMA VALIDATION (absorvido de validate_schema.py)
+    # =========================================================================
+
+    def validate_json_schema(self) -> bool:
+        """Valida data/direitos.json contra schemas/direitos.schema.json.
+        Retorna True se válido ou se lib não disponível (graceful degradation).
+        """
+        data_path = self.root / 'data' / 'direitos.json'
+        schema_path = self.root / 'schemas' / 'direitos.schema.json'
+
+        if not _HAS_JSONSCHEMA:
+            self.log_warning('dados', "jsonschema não instalado — schema check pulado")
+            return True
+
+        if not schema_path.exists():
+            self.log_warning('dados', "schemas/direitos.schema.json não encontrado — schema check pulado")
+            return True
+
+        if not data_path.exists():
+            self.log_fail('dados', "data/direitos.json não encontrado para schema check", 5)
+            return False
+
+        try:
+            with open(data_path, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+            with open(schema_path, 'r', encoding='utf-8') as f:
+                schema = json.load(f)
+
+            validator = Draft7Validator(schema)
+            errors = list(validator.iter_errors(data))
+
+            if not errors:
+                n_cats = len(data.get('categorias', []))
+                self.log_pass('dados', f"JSON Schema Draft 7: válido ({n_cats} categorias)", 5)
+                return True
+            else:
+                self.log_fail('dados', f"JSON Schema: {len(errors)} erro(s)", 5)
+                for err in errors[:3]:
+                    path = ".".join(str(p) for p in err.path) or "root"
+                    print(f"    ⚠️  {path}: {err.message[:100]}")
+                return False
+        except Exception as e:
+            self.log_fail('dados', f"JSON Schema check falhou: {e}", 5)
+            return False
 
     # =========================================================================
     # EXECUÇÃO PRINCIPAL
     # =========================================================================
 
     def run(self):
-        """Executa todas as validações e gera relatório"""
-        print("="*60)
+        """Executa todas as validações e gera relatório.
+
+        Fluxo:
+          1. Fail-fast: versão (aborta se inconsistente)
+          2. JSON Schema Draft 7
+          3. 21 categorias (cat 3 Fontes é pulada em --quick)
+          4. Relatório + exit code
+        """
+        mode_label = "QUICK (pre-commit)" if self.quick else "COMPLETO"
+
+        print("=" * 60)
         print(f"🚀 MASTER COMPLIANCE VALIDATOR v{self.version}")
-        print("="*60)
+        print("=" * 60)
         print(f"Workspace: {self.root}")
         print(f"Início: {self.start_time.strftime('%Y-%m-%d %H:%M:%S')}")
-        print(f"\n🎯 20 CATEGORIAS DE VALIDAÇÃO:")
+        print(f"Modo: {mode_label}")
+
+        # ── STEP 0: Fail-fast — versão inconsistente aborta imediatamente ──
+        print("\n[VERSION] Verificando consistência de versão (fail-fast)...")
+        canonical, mismatches = check_versions(self.root)
+        if mismatches:
+            print(f"  FAIL: Versoes inconsistentes (esperado v{canonical}):")
+            for m in mismatches:
+                print(f"    - {m}")
+            print(f"  FIX: python scripts/bump_version.py {canonical}")
+            return 1
+
+        print(f"  OK: v{canonical} consistente em 10 arquivos")
+
+        # ── STEP 1: JSON Schema Draft 7 ──
+        print("\n[SCHEMA] Validando JSON Schema...")
+        self.validate_json_schema()
+
+        # ── STEP 2: 21 categorias ──
+        print(f"\n🎯 21 CATEGORIAS DE VALIDAÇÃO:")
         print("   1. Dados  2. Código  3. Fontes  4. Arquitetura  5. Documentação")
         print("   6. Segurança  7. Performance  8. Acessibilidade  9. SEO  10. Infraestrutura")
         print("   11. Testes E2E  12. Dead Code  13. Órfãos  14. Lógica  15. Regulatory")
         print("   16. Cloud Security  17. CI/CD  18. Dependências  19. Changelog  20. Análise 360")
+        print("   21. Referências Órfãs")
 
         # Executar todas as 20 categorias
         self.validate_data_integrity()
@@ -1949,9 +2525,14 @@ class MasterComplianceValidator:
         self.validate_dependencies()
         self.validate_changelog_structure()
         self.validate_analise_360()
+        self.validate_dead_references()
 
         # Gerar relatório
-        percentage = self.generate_report()
+        percentage, total_score, total_max = self.generate_report()
+
+        # Auto-update badge do README.md (apenas modo completo)
+        if not self.quick:
+            self.update_readme_badge(total_score, total_max)
 
         # Exit code baseado no score
         if percentage >= 90:
@@ -1963,6 +2544,15 @@ class MasterComplianceValidator:
 
 
 if __name__ == '__main__':
-    validator = MasterComplianceValidator()
+    parser = argparse.ArgumentParser(
+        description='Master Compliance Validator — NossoDireito Quality Gate',
+    )
+    parser.add_argument(
+        '--quick', action='store_true',
+        help='Modo rápido para pre-commit (pula HTTP/fontes, ~30s)',
+    )
+    args = parser.parse_args()
+
+    validator = MasterComplianceValidator(quick=args.quick)
     exit_code = validator.run()
     sys.exit(exit_code)

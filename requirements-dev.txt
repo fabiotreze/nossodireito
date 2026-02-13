@@ -1,6 +1,9 @@
 # NossoDireito - Development Dependencies
 # Python 3.8+
 
+# Test framework
+pytest>=7.0.0
+
 # Browser automation for E2E testing (optional)
 playwright>=1.40.0
 

@@ -25,7 +25,6 @@ USO:
 
 import argparse
 import json
-import shutil
 import subprocess
 import zipfile
 from datetime import datetime, timedelta

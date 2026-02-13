@@ -6,6 +6,7 @@ Comparação: Benefícios Implementados vs Pesquisados
 """
 
 import json
+import sys
 
 
 def is_beneficio_completo(cat):
@@ -36,6 +37,7 @@ def is_beneficio_completo(cat):
 
 
 def main():
+    sys.stdout.reconfigure(encoding='utf-8')
     # Carregar dados
     with open('data/direitos.json', 'r', encoding='utf-8') as f:
         direitos = json.load(f)

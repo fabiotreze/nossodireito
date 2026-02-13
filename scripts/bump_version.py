@@ -9,16 +9,18 @@ Uso:
     python scripts/bump_version.py 1.2.0 --dry-run   # apenas mostra o que faria
 
 Arquivos atualizados:
-    1. package.json         → "version": "x.y.z"
-    2. data/direitos.json   → "versao": "x.y.z"
-    3. sw.js                → CACHE_VERSION = 'nossodireito-vx.y.z'
-    4. README.md            → badge Version-x.y.z
-    5. GOVERNANCE.md        → **Versão:** x.y.z
-    6. SECURITY_AUDIT.md    → título + referências
-    7. CHANGELOG.md         → insere seção [x.y.z] (se não existir)
+    1. package.json             → "version": "x.y.z"
+    2. data/direitos.json       → "versao": "x.y.z"
+    3. manifest.json            → "version": "x.y.z"
+    4. sw.js                    → CACHE_VERSION = 'nossodireito-vx.y.z'
+    5. README.md                → badge Version-x.y.z
+    6. GOVERNANCE.md            → **Versão:** x.y.z
+    7. SECURITY_AUDIT.md        → título + referências
+    8. docs/COMPLIANCE.md       → **Versão:** x.y.z
+    9. docs/ARCHITECTURE.md     → **Versão:** x.y.z
+   10. master_compliance.py     → self.version = "x.y.z"
+   11. CHANGELOG.md             → insere seção [x.y.z] (se não existir)
 """
-
-from __future__ import annotations
 
 import argparse
 import json
@@ -210,6 +212,84 @@ def bump_changelog(new: str, old: str, *, dry_run: bool) -> bool:
     return True
 
 
+def bump_manifest_json(new: str, old: str, *, dry_run: bool) -> bool:
+    path = ROOT / "manifest.json"
+    data = json.loads(read_text(path))
+    if data.get("version") == new:
+        print(f"  ✅ manifest.json já está em {new}")
+        return False
+    data["version"] = new
+    write_text(path, json.dumps(data, indent=4, ensure_ascii=False) + "\n", dry_run=dry_run)
+    print(f"  ✅ manifest.json: {old} → {new}")
+    return True
+
+
+def bump_compliance_md(new: str, old: str, *, dry_run: bool) -> bool:
+    path = ROOT / "docs" / "COMPLIANCE.md"
+    if not path.exists():
+        print("  ⚠️  docs/COMPLIANCE.md: não encontrado")
+        return False
+    text = read_text(path)
+    # Atualiza padrão **Versão:** X.Y.Z
+    old_re = re.compile(r'(\*\*Versão:\*\*\s*)\d+\.\d+\.\d+')
+    if not old_re.search(text):
+        print("  ⚠️  docs/COMPLIANCE.md: padrão **Versão:** não encontrado")
+        return False
+    new_text = old_re.sub(f'\\g<1>{new}', text, count=1)
+    if new_text == text:
+        print(f"  ✅ docs/COMPLIANCE.md já está em {new}")
+        return False
+    write_text(path, new_text, dry_run=dry_run)
+    print(f"  ✅ docs/COMPLIANCE.md: → {new}")
+    return True
+
+
+def bump_architecture_md(new: str, old: str, *, dry_run: bool) -> bool:
+    path = ROOT / "docs" / "ARCHITECTURE.md"
+    if not path.exists():
+        print("  ⚠️  docs/ARCHITECTURE.md: não encontrado")
+        return False
+    text = read_text(path)
+    old_re = re.compile(r'(\*\*Versão:\*\*\s*)\d+\.\d+\.\d+')
+    if not old_re.search(text):
+        print("  ⚠️  docs/ARCHITECTURE.md: padrão **Versão:** não encontrado")
+        return False
+    new_text = old_re.sub(f'\\g<1>{new}', text, count=1)
+    if new_text == text:
+        print(f"  ✅ docs/ARCHITECTURE.md já está em {new}")
+        return False
+    write_text(path, new_text, dry_run=dry_run)
+    print(f"  ✅ docs/ARCHITECTURE.md: → {new}")
+    return True
+
+
+def bump_master_compliance(new: str, old: str, *, dry_run: bool) -> bool:
+    path = ROOT / "scripts" / "master_compliance.py"
+    if not path.exists():
+        print("  ⚠️  scripts/master_compliance.py: não encontrado")
+        return False
+    text = read_text(path)
+    old_pattern = f'self.version = "{old}"'
+    new_pattern = f'self.version = "{new}"'
+    if old_pattern not in text:
+        if f'self.version = "{new}"' in text:
+            print(f"  ✅ master_compliance.py já está em {new}")
+            return False
+        # Tentar regex mais flexível
+        ver_re = re.compile(r'self\.version\s*=\s*"\d+\.\d+\.\d+"')
+        if ver_re.search(text):
+            text = ver_re.sub(f'self.version = "{new}"', text, count=1)
+            write_text(path, text, dry_run=dry_run)
+            print(f"  ✅ master_compliance.py: → {new}")
+            return True
+        print(f"  ⚠️  master_compliance.py: padrão self.version não encontrado")
+        return False
+    text = text.replace(old_pattern, new_pattern, 1)
+    write_text(path, text, dry_run=dry_run)
+    print(f"  ✅ master_compliance.py: {old} → {new}")
+    return True
+
+
 # ── Detecção da versão atual ──────────────────────────────────────
 def detect_current_version() -> str:
     """Lê a versão atual de package.json."""
@@ -251,10 +331,14 @@ def main() -> None:
     results = [
         bump_package_json(new_version, old_version, dry_run=args.dry_run),
         bump_direitos_json(new_version, old_version, dry_run=args.dry_run),
+        bump_manifest_json(new_version, old_version, dry_run=args.dry_run),
         bump_sw_js(new_version, old_version, dry_run=args.dry_run),
         bump_readme(new_version, old_version, dry_run=args.dry_run),
         bump_governance(new_version, old_version, dry_run=args.dry_run),
         bump_security_audit(new_version, old_version, dry_run=args.dry_run),
+        bump_compliance_md(new_version, old_version, dry_run=args.dry_run),
+        bump_architecture_md(new_version, old_version, dry_run=args.dry_run),
+        bump_master_compliance(new_version, old_version, dry_run=args.dry_run),
         bump_changelog(new_version, old_version, dry_run=args.dry_run),
     ]
 

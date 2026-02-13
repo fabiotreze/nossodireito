@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Teste Completo e Automatizado - NossoDireito v1.9.0
+Teste Completo e Automatizado - NossoDireito
 
 Valida:
 - HTML: estrutura, semântica, ARIA, acessibilidade
@@ -525,11 +525,11 @@ class IntegrationValidator(TestSuite):
         if package_json.exists():
             pkg = json.loads(package_json.read_text(encoding='utf-8'))
             version = pkg.get('version', 'unknown')
-
-            if version == '1.9.0':
+            import re
+            if re.match(r'^\d+\.\d+\.\d+$', version):
                 self.log_success(f"Versão: {version} (package.json)")
             else:
-                self.log_failure(f"Versão: {version} (esperado 1.9.0)")
+                self.log_failure(f"Versão: formato inválido '{version}' (esperado SemVer X.Y.Z)")
         else:
             self.log_warning("Versão: package.json não encontrado")
 
@@ -668,7 +668,7 @@ def main():
 
     print(f"{BOLD}{BLUE}")
     print("=" * 71)
-    print("     TESTE COMPLETO E AUTOMATIZADO - NossoDireito v1.9.0         ")
+    print("     TESTE COMPLETO E AUTOMATIZADO - NossoDireito                ")
     print("                                                                   ")
     print("  Validacao de HTML, CSS, JavaScript, Acessibilidade e Funcoes   ")
     print("=" * 71)
@@ -693,7 +693,7 @@ def main():
     if exit_code == 0:
         print(f"{CYAN}{'─'*70}{RESET}")
         print(f"{CYAN}PRÓXIMOS PASSOS:{RESET}")
-        print(f"{GREEN}1. git commit -m \"feat: implementar Painel Lateral v1.9.0\"{RESET}")
+        print(f"{GREEN}1. git commit -m \"feat: validação completa NossoDireito\"{RESET}")
         print(f"{GREEN}2. git push origin feature/a11y-drawer-panel{RESET}")
         print(f"{GREEN}3. Criar Pull Request para main{RESET}")
         print(f"{CYAN}{'─'*70}{RESET}\n")

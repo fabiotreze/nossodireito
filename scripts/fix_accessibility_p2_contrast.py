@@ -27,10 +27,8 @@ CORES PRINCIPAIS:
 - --text: #212529
 """
 
-import re
 import sys
-from pathlib import Path
-from typing import Dict, List, Tuple
+from typing import Tuple
 
 
 def hex_to_rgb(hex_color: str) -> Tuple[int, int, int]:

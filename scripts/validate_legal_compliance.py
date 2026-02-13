@@ -30,7 +30,6 @@ import time
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional
-from urllib.parse import urlparse
 
 try:
     import requests
@@ -397,6 +396,7 @@ class LegalComplianceValidator:
 
 def main():
     """CLI principal"""
+    sys.stdout.reconfigure(encoding='utf-8')
     parser = argparse.ArgumentParser(
         description="Validate Legal Compliance — Validação de base legal"
     )

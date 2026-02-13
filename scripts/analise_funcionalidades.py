@@ -5,13 +5,16 @@ Análise Completa de Funcionalidades - NossoDireito
 Compara funcionalidades implementadas vs testadas
 """
 
+import sys
 from pathlib import Path
 
+
 def main():
+    sys.stdout.reconfigure(encoding='utf-8')
     root = Path(__file__).parent.parent
-    app_js = (root / 'js' / 'app.js').read_text()
-    test_e2e = (root / 'scripts' / 'test_e2e_automated.py').read_text()
-    
+    app_js = (root / 'js' / 'app.js').read_text(encoding='utf-8')
+    test_e2e = (root / 'scripts' / 'test_e2e_automated.py').read_text(encoding='utf-8')
+
     # Funcionalidades principais do site
     features = {
         '♿ Acessibilidade': {
@@ -73,45 +76,45 @@ def main():
             'Error Handling': ['try', 'catch', 'error']
         }
     }
-    
+
     print('='*80)
     print('📊 ANÁLISE COMPLETA DE FUNCIONALIDADES - NossoDireito')
     print('='*80)
-    
+
     total_features = 0
     implemented = 0
     tested = 0
     not_tested = []
-    
+
     for category, funcs in features.items():
         print(f'\n{category}')
         print('-'*80)
-        
+
         for feature_name, patterns in funcs.items():
             total_features += 1
-            
+
             # Verificar se está implementado
             is_implemented = any(pattern in app_js for pattern in patterns)
-            
+
             # Verificar se está testado
             feature_keywords = feature_name.lower().replace('(', '').replace(')', '')
             is_tested = any(keyword in test_e2e.lower() for keyword in feature_keywords.split()[:2])
-            
+
             if is_implemented:
                 implemented += 1
-            
+
             if is_tested:
                 tested += 1
             else:
                 if is_implemented:
                     not_tested.append((category, feature_name))
-            
+
             # Status
             impl_icon = '✅' if is_implemented else '❌'
             test_icon = '🧪' if is_tested else '⚠️ '
-            
+
             print(f'  {impl_icon} {test_icon} {feature_name}')
-    
+
     print('\n' + '='*80)
     print('📈 ESTATÍSTICAS:')
     print('='*80)
@@ -119,33 +122,33 @@ def main():
     print(f'Implementadas: {implemented}/{total_features} ({implemented/total_features*100:.1f}%)')
     print(f'Testadas: {tested}/{total_features} ({tested/total_features*100:.1f}%)')
     print(f'Não testadas: {len(not_tested)} ({len(not_tested)/total_features*100:.1f}%)')
-    
+
     if not_tested:
         print('\n' + '='*80)
         print('⚠️  FUNCIONALIDADES NÃO TESTADAS (implementadas mas sem testes):')
         print('='*80)
         for category, feature in not_tested:
             print(f'  • {category}: {feature}')
-    
+
     print('\n' + '='*80)
     print('🎯 COBERTURA DE TESTES E2E:')
     print('='*80)
-    
+
     # Analisar o que test_e2e_automated.py já testa
     test_methods = [
-        line.strip() for line in test_e2e.split('\n') 
+        line.strip() for line in test_e2e.split('\n')
         if line.strip().startswith('def test_')
     ]
-    
+
     print(f'\nTestes Implementados ({len(test_methods)}):')
     for method in test_methods:
         method_name = method.replace('def ', '').replace('(self)', '').replace(':', '')
         print(f'  ✅ {method_name}')
-    
+
     print('\n' + '='*80)
     print('💡 RECOMENDAÇÕES:')
     print('='*80)
-    
+
     missing_tests = [
         '♿ Acessibilidade Interativa (font size, contrast, VLibras)',
         '🧭 Navegação e History (pushState, popstate)',
@@ -154,16 +157,16 @@ def main():
         '✅ Checklist Progress Calculation',
         '🔍 Matching Engine com CID Ranges'
     ]
-    
+
     print('\n🚀 Testes que devem ser adicionados para 100% de cobertura:')
     for i, test in enumerate(missing_tests, 1):
         print(f'  {i}. {test}')
-    
+
     print('\n⚡ Opções para Testes E2E Completos:')
     print('  A) Playwright/Selenium - Testes browser reais (RECOMENDADO)')
     print('  B) Puppeteer - Testes headless browser')
     print('  C) Cypress - Testes interativos com UI')
-    
+
     print('\n' + '='*80)
 
 if __name__ == '__main__':

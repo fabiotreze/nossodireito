@@ -1,207 +1,52 @@
-#!/usr/bin/env python3
-"""
-Pre-Commit Hook - Validação Completa Antes de Commit
-NossoDireito v1.5.0
+#!/bin/sh
+# NossoDireito — Pre-commit Hook (Quality Gate)
+#
+# Comando unico: master_compliance.py --quick
+# Inclui internamente:
+#   - Fail-fast de versao (aborta se inconsistente)
+#   - JSON Schema Draft 7
+#   - 21 categorias de validacao (~1050 pts)
+#   - Pula HTTP/fontes (modo rapido, ~30s)
+#
+# O que NAO roda aqui (requer servidor/browser ou CI/CD):
+#   - test_e2e_interactive.py, test_visual_browser.py, test_high_contrast.py
+#   - pytest tests/ (regressao de dados — usar no CI/CD)
+#   - validate_all.py (16 fases completas — usar manualmente)
+#
+# Instalacao: cp scripts/pre-commit .git/hooks/pre-commit
+# Para pular: git commit --no-verify
 
-Este hook executa TODAS as validações antes de permitir commit:
-1. Limpeza de arquivos temporários
-2. Validação de sintaxe (JSON, HTML, JS)
-3. Validação de conteúdo (categorias, IPVA, matching engine)
-4. Quality gate completo (codereview.py)
-5. Validação de fontes oficiais
-6. Testes de segurança (HTTPS, dados sensíveis)
-7. Checagem de dependências atualizadas
+echo ""
+echo "======================================================"
+echo "  Pre-commit Quality Gate -- NossoDireito"
+echo "======================================================"
+echo ""
 
-Se QUALQUER validação falhar, o commit é bloqueado.
+# Detectar Python (prefere 'python' no Windows para evitar Store alias)
+if command -v python > /dev/null 2>&1; then
+    PYTHON=python
+elif command -v python3 > /dev/null 2>&1; then
+    PYTHON=python3
+else
+    echo "  WARN: Python nao encontrado -- pulando Quality Gate."
+    exit 0
+fi
 
-Instalação:
-    chmod +x .githooks/pre-commit
-    git config core.hooksPath .githooks
-"""
+$PYTHON scripts/master_compliance.py --quick
+RESULT=$?
 
-import subprocess
-import sys
-from pathlib import Path
-from datetime import datetime
+echo ""
+echo "======================================================"
+if [ $RESULT -ne 0 ]; then
+    echo "  BLOQUEADO -- Quality Gate falhou."
+    echo "  Corrija os problemas acima e tente novamente."
+    echo "  Para pular: git commit --no-verify"
+    echo "======================================================"
+    echo ""
+    exit 1
+fi
 
-
-class PreCommitValidator:
-    """Validador pre-commit completo"""
-    
-    def __init__(self):
-        self.root = Path(__file__).parent.parent
-        self.failed = []
-    
-    def log(self, message, level='INFO'):
-        timestamp = datetime.now().strftime('%H:%M:%S')
-        symbols = {'INFO': 'ℹ️', 'SUCCESS': '✅', 'ERROR': '❌', 'WARN': '⚠️'}
-        print(f"[{timestamp}] {symbols.get(level, 'ℹ️')} {message}")
-    
-    def run_check(self, name, command, required=True):
-        """Executa check e registra resultado"""
-        self.log(f"Executando: {name}", 'INFO')
-        
-        try:
-            result = subprocess.run(
-                command,
-                shell=True,
-                capture_output=True,
-                text=True,
-                timeout=120,
-                cwd=self.root
-            )
-            
-            if result.returncode == 0:
-                self.log(f"✓ {name} passou", 'SUCCESS')
-                return True
-            else:
-                level = 'ERROR' if required else 'WARN'
-                self.log(f"✗ {name} falhou", level)
-                if required:
-                    self.failed.append(name)
-                    if result.stderr:
-                        self.log(f"Erro: {result.stderr[:200]}", 'ERROR')
-                return False
-        except subprocess.TimeoutExpired:
-            self.log(f"✗ {name} timeout", 'ERROR')
-            if required:
-                self.failed.append(name)
-            return False
-        except Exception as e:
-            self.log(f"✗ {name} erro: {str(e)}", 'ERROR')
-            if required:
-                self.failed.append(name)
-            return False
-    
-    def run(self):
-        """Executa todas validações"""
-        self.log("=" * 70, 'INFO')
-        self.log("PRE-COMMIT HOOK - Validação Completa", 'INFO')
-        self.log("=" * 70, 'INFO')
-        
-        # 1. Limpeza
-        self.log("", 'INFO')
-        self.log("PASSO 1: LIMPEZA", 'INFO')
-        self.run_check(
-            "Remover backups",
-            'find . -name "*.backup" -type f -delete',
-            required=False
-        )
-        self.run_check(
-            "Remover cache Python",
-            'find . -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true',
-            required=False
-        )
-        
-        # 2. Validação de Sintaxe
-        self.log("", 'INFO')
-        self.log("PASSO 2: VALIDAÇÃO DE SINTAXE", 'INFO')
-        self.run_check(
-            "JSON: direitos.json",
-            'python3 -c "import json; json.load(open(\'data/direitos.json\'))"',
-            required=True
-        )
-        self.run_check(
-            "JSON: matching_engine.json",
-            'python3 -c "import json; json.load(open(\'data/matching_engine.json\'))"',
-            required=True
-        )
-        self.run_check(
-            "JSON: manifest.json",
-            'python3 -c "import json; json.load(open(\'manifest.json\'))"',
-            required=True
-        )
-        self.run_check(
-            "HTML: estrutura básica",
-            'grep -q "<!DOCTYPE html>" index.html && grep -q "</html>" index.html',
-            required=True
-        )
-        
-        # 3. Validação de Conteúdo
-        self.log("", 'INFO')
-        self.log("PASSO 3: VALIDAÇÃO DE CONTEÚDO", 'INFO')
-        self.run_check(
-            "Conteúdo: categorias, IPVA, matching engine",
-            'python3 scripts/validate_content.py',
-            required=True
-        )
-        
-        # 4. Quality Gate
-        self.log("", 'INFO')
-        self.log("PASSO 4: QUALITY GATE", 'INFO')
-        self.run_check(
-            "Quality Gate (score ≥75/100)",
-            'python3 codereview/codereview.py',
-            required=True
-        )
-        
-        # 5. Segurança
-        self.log("", 'INFO')
-        self.log("PASSO 5: SEGURANÇA", 'INFO')
-        self.run_check(
-            "URLs HTTPS (nenhum HTTP)",
-            'grep -i "http://" data/direitos.json && exit 1 || exit 0',
-            required=True
-        )
-        self.run_check(
-            "Dados sensíveis (nenhum encontrado)",
-            'grep -iE "\\b(password|secret|token|api[_-]?key)\\b" data/direitos.json && exit 1 || exit 0',
-            required=True
-        )
-        
-        # 6. Performance
-        self.log("", 'INFO')
-        self.log("PASSO 6: PERFORMANCE", 'INFO')
-        self.run_check(
-            "HTML <50KB",
-            '[ $(stat -f "%z" index.html 2>/dev/null || stat -c "%s" index.html) -lt 50000 ]',
-            required=False
-        )
-        self.run_check(
-            "JS <100KB",
-            '[ $(stat -f "%z" js/app.js 2>/dev/null || stat -c "%s" js/app.js) -lt 100000 ]',
-            required=False
-        )
-        self.run_check(
-            "JSON <150KB",
-            '[ $(stat -f "%z" data/direitos.json 2>/dev/null || stat -c "%s" data/direitos.json) -lt 150000 ]',
-            required=False
-        )
-        
-        # 7. Dependências (opcional - pode ser lento)
-        # self.log("", 'INFO')
-        # self.log("PASSO 7: DEPENDÊNCIAS", 'INFO')
-        # self.run_check(
-        #     "Verificar dependências desatualizadas",
-        #     'npm outdated || true',
-        #     required=False
-        # )
-        
-        # Relatório Final
-        self.log("", 'INFO')
-        self.log("=" * 70, 'INFO')
-        self.log("RELATÓRIO FINAL", 'INFO')
-        self.log("=" * 70, 'INFO')
-        
-        if self.failed:
-            self.log("", 'ERROR')
-            self.log(f"❌ {len(self.failed)} VALIDAÇÕES FALHARAM:", 'ERROR')
-            for name in self.failed:
-                self.log(f"  - {name}", 'ERROR')
-            self.log("", 'ERROR')
-            self.log("🛑 COMMIT BLOQUEADO - Corrija os erros acima", 'ERROR')
-            self.log("", 'ERROR')
-            self.log("Para commitar mesmo assim (NÃO RECOMENDADO):", 'WARN')
-            self.log("  git commit --no-verify", 'WARN')
-            return False
-        else:
-            self.log("", 'SUCCESS')
-            self.log("✅ TODAS VALIDAÇÕES PASSARAM!", 'SUCCESS')
-            self.log("🎉 Commit autorizado", 'SUCCESS')
-            return True
-
-
-if __name__ == '__main__':
-    validator = PreCommitValidator()
-    success = validator.run()
-    sys.exit(0 if success else 1)
+echo "  OK -- Quality Gate COMPLETO -- commit permitido."
+echo "======================================================"
+echo ""
+exit 0

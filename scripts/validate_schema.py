@@ -18,7 +18,6 @@ import argparse
 import json
 import sys
 from pathlib import Path
-from typing import Any, Dict, List
 
 try:
     import jsonschema
@@ -40,6 +39,7 @@ def validate_json_schema(data_path: Path, schema_path: Path, verbose: bool = Fal
     Returns:
         True se válido, False caso contrário
     """
+    sys.stdout.reconfigure(encoding='utf-8')
     print("=" * 80)
     print("✅ VALIDATE SCHEMA — Validação Formal JSON Schema")
     print("=" * 80)

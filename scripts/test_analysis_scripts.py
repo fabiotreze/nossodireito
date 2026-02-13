@@ -9,7 +9,7 @@ Valida todos os scripts Python de análise:
 - audit_content.py
 - bump_version.py
 - master_compliance.py
-- quality_pipeline.py
+- validate_all.py
 - validate_content.py
 - validate_govbr_urls.py
 - validate_legal_sources.py
@@ -19,7 +19,6 @@ Valida todos os scripts Python de análise:
 import ast
 import sys
 from pathlib import Path
-from typing import List, Tuple
 
 # Color codes
 GREEN = "\033[92m"
@@ -47,7 +46,7 @@ class ScriptTester:
             'audit_content.py',
             'bump_version.py',
             'master_compliance.py',
-            'quality_pipeline.py',
+            'validate_all.py',
             'validate_content.py',
             'validate_govbr_urls.py',
             'validate_legal_sources.py',

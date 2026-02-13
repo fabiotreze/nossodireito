@@ -1,42 +1,52 @@
 #!/bin/sh
-# NossoDireito — Pre-commit Hook (Quality Gate Local)
-# Bloqueia commits se o Quality Gate falhar (score < 75 ou CRITICAL).
+# NossoDireito — Pre-commit Hook (Quality Gate)
 #
-# Instalação: copie para .git/hooks/pre-commit
-#   cp scripts/pre-commit .git/hooks/pre-commit
-#   chmod +x .git/hooks/pre-commit
+# Comando unico: master_compliance.py --quick
+# Inclui internamente:
+#   - Fail-fast de versao (aborta se inconsistente)
+#   - JSON Schema Draft 7
+#   - 21 categorias de validacao (~1050 pts)
+#   - Pula HTTP/fontes (modo rapido, ~30s)
 #
-# Para pular temporariamente: git commit --no-verify
+# O que NAO roda aqui (requer servidor/browser ou CI/CD):
+#   - test_e2e_interactive.py, test_visual_browser.py, test_high_contrast.py
+#   - pytest tests/ (regressao de dados — usar no CI/CD)
+#   - validate_all.py (16 fases completas — usar manualmente)
+#
+# Instalacao: cp scripts/pre-commit .git/hooks/pre-commit
+# Para pular: git commit --no-verify
 
 echo ""
-echo "🔎 Quality Gate (pre-commit) — verificando..."
+echo "======================================================"
+echo "  Pre-commit Quality Gate -- NossoDireito"
+echo "======================================================"
 echo ""
 
-# Detectar Python
-if command -v python3 > /dev/null 2>&1; then
-    PYTHON=python3
-elif command -v python > /dev/null 2>&1; then
+# Detectar Python (prefere 'python' no Windows para evitar Store alias)
+if command -v python > /dev/null 2>&1; then
     PYTHON=python
+elif command -v python3 > /dev/null 2>&1; then
+    PYTHON=python3
 else
-    echo "⚠️  Python não encontrado — pulando Quality Gate."
+    echo "  WARN: Python nao encontrado -- pulando Quality Gate."
     exit 0
 fi
 
-# Rodar Quality Gate em modo CI
-$PYTHON codereview/codereview.py --ci --min-score 75
+$PYTHON scripts/master_compliance.py --quick
+RESULT=$?
 
-EXIT_CODE=$?
-
-if [ $EXIT_CODE -ne 0 ]; then
-    echo ""
-    echo "🚫 COMMIT BLOQUEADO — Quality Gate falhou."
-    echo "   Corrija os problemas acima e tente novamente."
-    echo "   Para pular: git commit --no-verify"
+echo ""
+echo "======================================================"
+if [ $RESULT -ne 0 ]; then
+    echo "  BLOQUEADO -- Quality Gate falhou."
+    echo "  Corrija os problemas acima e tente novamente."
+    echo "  Para pular: git commit --no-verify"
+    echo "======================================================"
     echo ""
     exit 1
 fi
 
-echo ""
-echo "✅ Quality Gate OK — commit permitido."
+echo "  OK -- Quality Gate COMPLETO -- commit permitido."
+echo "======================================================"
 echo ""
 exit 0
