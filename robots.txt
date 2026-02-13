@@ -3,7 +3,6 @@
 
 User-agent: *
 Allow: /
-Disallow: /codereview/
 Disallow: /terraform/
 Disallow: /scripts/
 
