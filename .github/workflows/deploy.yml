@@ -60,8 +60,8 @@ jobs:
           if [ "$FOUND" -gt 0 ]; then exit 1; fi
           echo "✅ Sem dados sensíveis."
 
-      - name: Quality Gate (score >= 75)
-        run: python scripts/quality_pipeline.py --ci
+      - name: Quality Gate (validate_all --quick)
+        run: python scripts/validate_all.py --quick
 
   # ── Deploy (só executa se quality-gate passar) ──
   deploy:

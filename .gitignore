@@ -36,15 +36,26 @@ terraform/crash.log
 *.tmp
 *.log
 temp_*
+_temp_*
+
+# Build artifacts
+index.min.html
+
+# Generated reports (re-created by scripts)
+quality_report.json
+validation_report.json
+validation_legal_report.json
+screenshots/
 
 # Node.js
 node_modules/
 package-lock.json
 
-# v2 roadmap (não publicar)
-v2/
-docs/v2/
+# Documentos internos (não publicar)
+docs/GOOGLE_SEARCH_CONSOLE.md
 
 # Backups temporários
 backup/
+backups/
 *.backup
+index.backup_*

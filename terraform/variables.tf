@@ -51,18 +51,6 @@ variable "enable_custom_domain" {
   default     = true
 }
 
-variable "github_repo_url" {
-  description = "URL do repositório GitHub"
-  type        = string
-  default     = "https://github.com/fabiotreze/nossodireito"
-}
-
-variable "github_repo_branch" {
-  description = "Branch principal do repositório"
-  type        = string
-  default     = "main"
-}
-
 variable "extra_tags" {
   description = "Tags adicionais para os recursos (merge com tags padrão)"
   type        = map(string)
@@ -109,8 +97,6 @@ variable "alert_email" {
 
 # --- Locals: nomes derivados do ambiente ---
 locals {
-  name_prefix = "nossodireito-${var.environment}"
-
   # prod usa nomes limpos, outros ambientes ganham sufixo
   resource_group_name   = var.environment == "prod" ? "rg-nossodireito" : "rg-nossodireito-${var.environment}"
   app_service_plan_name = var.environment == "prod" ? "plan-nossodireito" : "plan-nossodireito-${var.environment}"

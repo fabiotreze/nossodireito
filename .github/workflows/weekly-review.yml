@@ -29,13 +29,13 @@ jobs:
         id: qg
         continue-on-error: true
         run: |
-          python scripts/quality_pipeline.py --ci > qg_result.txt 2>&1 || true
-          SCORE=$(cat quality_report.json | python -c "import json,sys; print(json.load(sys.stdin).get('score_total', 'N/A'))" 2>/dev/null || echo "N/A")
+          python scripts/validate_all.py --quick > qg_result.txt 2>&1 || true
+          SCORE=$(cat validation_report.json | python -c "import json,sys; d=json.load(sys.stdin); print(f\"{d['summary']['passed']}/{d['summary']['total']}\")" 2>/dev/null || echo "N/A")
           echo "score=$SCORE" >> "$GITHUB_OUTPUT"
-          if [ -f quality_report.json ]; then
-            echo "status=✅ PASSOU ($SCORE/100)" >> "$GITHUB_OUTPUT"
+          if [ -f validation_report.json ]; then
+            echo "status=✅ PASSOU ($SCORE)" >> "$GITHUB_OUTPUT"
           else
-            echo "status=❌ FALHOU ($SCORE/100)" >> "$GITHUB_OUTPUT"
+            echo "status=❌ FALHOU ($SCORE)" >> "$GITHUB_OUTPUT"
           fi
 
       - name: Health check do site

@@ -75,16 +75,16 @@ jobs:
           python3 scripts/validate_content.py
 
       # ── Quality Gate Principal ──
-      - name: Executar Quality Gate (quality_pipeline.py)
+      - name: Executar Quality Gate (validate_all.py)
         run: |
-          echo "🔎 Executando Quality Gate v2.0..."
-          python scripts/quality_pipeline.py --ci
+          echo "🔎 Executando Quality Gate..."
+          python scripts/validate_all.py --quick
 
       # ── Salvar relatório como artefato ──
       - name: Copiar relatório JSON
         if: always()
         run: |
-          cp quality_report.json quality-gate-report.json 2>&1 || true
+          cp validation_report.json quality-gate-report.json 2>&1 || true
 
       - name: Upload relatório
         if: always()

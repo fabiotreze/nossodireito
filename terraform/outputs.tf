@@ -37,8 +37,8 @@ output "custom_domain_url" {
   value       = var.enable_custom_domain && var.custom_domain != "" ? "https://${var.custom_domain}" : "(não configurado)"
 }
 
-output "dns_config" {
-  description = "Configuração DNS para o seu provedor (GoDaddy, etc.)"
+output "next_steps" {
+  description = "Configuração DNS e próximos passos após terraform apply"
   value       = <<-EOT
 
     ┌──────────────────────────────────────────────────────────┐
@@ -48,10 +48,13 @@ output "dns_config" {
     │  Name:  ${var.custom_domain != "" ? split(".", var.custom_domain)[0] : "<subdominio>"}
     │  Value: ${azurerm_linux_web_app.main.default_hostname}
     │  TTL:   600                                              │
+    ├──────────────────────────────────────────────────────────┤
+    │  Próximos Passos                                         │
+    ├──────────────────────────────────────────────────────────┤
+    │  1. Atualize o CNAME no GoDaddy (veja acima)              │
+    │  2. git push (auto-deploy no push para main)              │
+    │  3. curl -vI https://${var.custom_domain}                │
     └──────────────────────────────────────────────────────────┘
-
-    ⚠️  IMPORTANTE: O CNAME agora aponta para .azurewebsites.net
-    (antes era .azurestaticapps.net). Atualize no GoDaddy!
 
   EOT
 }
@@ -83,12 +86,6 @@ output "app_insights_name" {
   value       = azurerm_application_insights.main.name
 }
 
-output "app_insights_instrumentation_key" {
-  description = "Instrumentation Key (usar no SDK client-side se necessário)"
-  value       = azurerm_application_insights.main.instrumentation_key
-  sensitive   = true
-}
-
 output "app_insights_connection_string" {
   description = "Connection string do App Insights (injetada automaticamente no App Service)"
   value       = azurerm_application_insights.main.connection_string
@@ -100,38 +97,9 @@ output "app_insights_portal_url" {
   value       = "https://portal.azure.com/#@/resource${azurerm_application_insights.main.id}/overview"
 }
 
-output "next_steps" {
-  description = "Próximos passos após terraform apply"
-  value       = <<-EOT
-
-    ┌──────────────────────────────────────────────────────────┐
-    │  Próximos Passos                                         │
-    ├──────────────────────────────────────────────────────────┤
-    │  1. Atualize o CNAME no GoDaddy:                         │
-    │     nossodireito → ${azurerm_linux_web_app.main.default_hostname}
-    │                                                          │
-    │  2. Dispare o deploy via GitHub Actions:                 │
-    │     git push (auto-deploy no push para main)             │
-    │                                                          │
-    │  3. Verifique o SSL:                                     │
-    │     curl -vI https://${var.custom_domain}                │
-    └──────────────────────────────────────────────────────────┘
-
-  EOT
-}
 
 # --- Monitoring Outputs ---
 output "alert_email" {
   description = "E-mail que recebe alertas de monitoramento"
   value       = var.alert_email
-}
-
-output "monitoring_alerts" {
-  description = "Alertas configurados"
-  value = {
-    http_5xx      = "Sev1 — Qualquer erro 5xx (imediato)"
-    health_check  = "Sev0 — Health check < 100% (crítico)"
-    response_time = "Sev2 — Latência média > 5s (15min)"
-    http_4xx      = "Sev3 — Mais de 50 erros 4xx/5min (scan)"
-  }
 }

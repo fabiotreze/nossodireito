@@ -153,7 +153,7 @@ const ALLOWED_EXT = new Set(Object.keys(MIME));
 const COMPRESSIBLE = new Set(['.html', '.css', '.js', '.json', '.svg', '.txt', '.xml']);
 
 // Blocked directories
-const BLOCKED_DIRS = new Set(['terraform', 'codereview', 'node_modules', 'tests', '.github', 'docs', '__pycache__']);
+const BLOCKED_DIRS = new Set(['terraform', 'node_modules', 'tests', '.github', 'docs', '__pycache__']);
 
 // Max URL length (CWE-400 — prevent URL buffer attacks)
 const MAX_URL_LENGTH = 2048;
@@ -314,34 +314,34 @@ const server = http.createServer((req, res) => {
             signal: controller.signal,
             headers: { 'User-Agent': 'NossoDireito-Proxy/1.0' }
         })
-        .then(r => r.text().then(body => ({ r, body })))
-        .then(({ r, body }) => {
-            clearTimeout(timeout);
-            const status = r.ok ? r.status : r.status;
-            const cacheControl = r.ok ? 'public, max-age=3600' : 'no-cache';
-            res.writeHead(status, {
-                'Content-Type': 'application/json',
-                'Cache-Control': cacheControl,
-                ...SECURITY_HEADERS,
+            .then(r => r.text().then(body => ({ r, body })))
+            .then(({ r, body }) => {
+                clearTimeout(timeout);
+                const status = r.ok ? r.status : r.status;
+                const cacheControl = r.ok ? 'public, max-age=3600' : 'no-cache';
+                res.writeHead(status, {
+                    'Content-Type': 'application/json',
+                    'Cache-Control': cacheControl,
+                    ...SECURITY_HEADERS,
+                });
+                if (req.method === 'HEAD') {
+                    res.end();
+                    return;
+                }
+                if (r.ok) {
+                    res.end(body);
+                } else {
+                    res.end(JSON.stringify({ error: 'Gov.br API unavailable' }));
+                }
+            })
+            .catch(() => {
+                clearTimeout(timeout);
+                res.writeHead(503, {
+                    'Content-Type': 'application/json',
+                    'Cache-Control': 'no-cache',
+                });
+                res.end(JSON.stringify({ error: 'Service unavailable' }));
             });
-            if (req.method === 'HEAD') {
-                res.end();
-                return;
-            }
-            if (r.ok) {
-                res.end(body);
-            } else {
-                res.end(JSON.stringify({ error: 'Gov.br API unavailable' }));
-            }
-        })
-        .catch(() => {
-            clearTimeout(timeout);
-            res.writeHead(503, {
-                'Content-Type': 'application/json',
-                'Cache-Control': 'no-cache',
-            });
-            res.end(JSON.stringify({ error: 'Service unavailable' }));
-        });
         return;
     }
 

@@ -24,7 +24,7 @@ subscription_id = "YOUR_AZURE_SUBSCRIPTION_ID"
 # environment = "prod"     # prod | staging | dev
 
 # --- SKU ---
-# sku_tier = "Free"        # Free ($0) | Standard ($9/mês, para SSL próprio)
+# app_service_sku = "B1"   # F1 (Free) | B1 ($13/mês, suporta SSL)
 
 # --- Domínio customizado (2 etapas) ---
 # Etapa 1: Deploy sem domínio → copie o default_hostname → configure CNAME no DNS
@@ -41,7 +41,7 @@ subscription_id = "YOUR_AZURE_SUBSCRIPTION_ID"
 #
 # enable_keyvault = true
 # pfx_file_path   = "../fabiotreze-wildcard.pfx"
-# sku_tier        = "Standard"   # Necessário para SSL próprio ($9/mês)
+# app_service_sku = "B1"         # Necessário para SSL próprio ($13/mês)
 
 # --- Região ---
 # location = "eastus2"

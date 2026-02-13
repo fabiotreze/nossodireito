@@ -87,6 +87,7 @@ html {
     scroll-behavior: smooth;
     scroll-padding-top: 120px;
     font-size: 16px;
+    overflow-x: hidden;
 }
 
 body {
@@ -96,6 +97,7 @@ body {
     line-height: 1.6;
     -webkit-font-smoothing: antialiased;
     min-height: 100vh;
+    overflow-x: hidden;
 }
 
 a {
@@ -108,6 +110,10 @@ a:hover,
 a:focus-visible {
     color: var(--primary-light);
     text-decoration: underline;
+}
+
+small {
+    font-size: max(0.8rem, 12px);
 }
 
 img {
@@ -124,8 +130,7 @@ input,
 .search-result-item,
 .checklist-item,
 .upload-zone,
-.inst-card,
-.nav-link {
+.inst-card {
     touch-action: manipulation;
 }
 
@@ -218,7 +223,7 @@ input,
 }
 
 .a11y-trigger-label {
-    font-size: 0.75rem;
+    font-size: 0.8rem;
     letter-spacing: 0.1em;
     text-transform: uppercase;
 }
@@ -422,13 +427,6 @@ input,
 .a11y-toggle-state {
     font-size: 0.875rem;
     opacity: 0.8;
-}
-
-/* Action Buttons */
-.a11y-actions {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
 }
 
 .a11y-action-btn {
@@ -681,6 +679,28 @@ html.high-contrast .analysis-match-bar {
 html.high-contrast .upload-zone {
     border-color: #fbbf24;
     background: #0a0a0a;
+}
+
+html.high-contrast .orgao-filter-btn.active,
+html.high-contrast .inst-filter-btn.active,
+html.high-contrast .orgao-filter-btn[aria-pressed="true"],
+html.high-contrast .inst-filter-btn[aria-pressed="true"] {
+    background: #fbbf24;
+    color: #000;
+    border-color: #fbbf24;
+}
+
+html.high-contrast .orgao-filter-btn,
+html.high-contrast .inst-filter-btn {
+    border-color: #fbbf24;
+    color: #ffff00;
+}
+
+html.high-contrast .orgao-filter-btn:hover,
+html.high-contrast .inst-filter-btn:hover {
+    background: #1a1a1a;
+    border-color: #fbbf24;
+    color: #fbbf24;
 }
 
 html.high-contrast ::selection {
@@ -979,15 +999,6 @@ html.high-contrast ::selection {
     color: var(--text-muted);
 }
 
-.disclaimer-advice {
-    background: var(--warning-bg);
-    border-left: 4px solid var(--warning);
-    padding: 12px 16px;
-    border-radius: var(--radius-sm);
-    margin-top: 16px;
-    font-size: 0.95rem;
-}
-
 .modal-content .btn {
     width: 100%;
     margin-top: 20px;
@@ -1224,6 +1235,7 @@ html.high-contrast ::selection {
 /* ---------- Sections ---------- */
 .section {
     padding: 64px 0;
+    background-color: var(--surface);
 }
 
 .section-alt {
@@ -1235,6 +1247,7 @@ html.high-contrast ::selection {
     font-weight: 700;
     margin-bottom: 12px;
     text-align: center;
+    color: var(--text);
 }
 
 .section-desc {
@@ -1386,6 +1399,38 @@ html.high-contrast ::selection {
     margin-bottom: 24px;
 }
 
+.btn-govbr {
+    display: inline-block;
+    color: #fff;
+    text-decoration: none;
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 0.95rem;
+    transition: opacity var(--transition);
+}
+
+.btn-govbr:hover {
+    opacity: 0.85;
+}
+
+.btn-govbr.live {
+    background: #168821;
+}
+
+.btn-govbr:not(.live) {
+    background: #1351b4;
+}
+
+.table-note {
+    margin-top: 16px;
+    padding: 12px 16px;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    background: var(--bg-alt);
+    border-radius: var(--radius-sm);
+    border-left: 3px solid var(--primary);
+}
+
 .detalhe-section h3 {
     font-size: 1.15rem;
     font-weight: 700;
@@ -1509,14 +1554,6 @@ html.high-contrast ::selection {
     margin-top: 16px;
 }
 
-.btn-export-pdf-checklist,
-.btn-export-pdf-docs-checklist {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    margin-top: 16px;
-}
-
 .checklist-actions-bar {
     display: flex;
     justify-content: space-between;
@@ -1573,7 +1610,6 @@ html.high-contrast ::selection {
     color: var(--text);
 }
 
-.link-source,
 .link-domain {
     font-size: 0.875rem;
     color: var(--text-light);
@@ -1693,12 +1729,6 @@ html.high-contrast ::selection {
     border-radius: 4px;
     margin-left: 6px;
     letter-spacing: 0.02em;
-}
-
-.file-expiry {
-    font-size: 0.75rem;
-    color: var(--text-light);
-    opacity: 0.8;
 }
 
 .file-item-actions {
@@ -2239,23 +2269,6 @@ html.high-contrast ::selection {
 .legend-bar-sample.low {
     background: var(--bar-low);
     width: 12px;
-}
-
-.btn-analyze {
-    padding: 4px 10px;
-    font-size: 0.875rem;
-    background: var(--primary);
-    color: #fff;
-    border: none;
-    border-radius: var(--radius-sm);
-    cursor: pointer;
-    transition: all var(--transition);
-    font-weight: 600;
-}
-
-.btn-analyze:hover {
-    background: var(--primary-dark);
-    transform: translateY(-1px);
 }
 
 /* ---------- Instituições de Apoio ---------- */
@@ -3066,7 +3079,7 @@ html.high-contrast ::selection {
     body.printing-analysis .analysis-see-more,
     body.printing-analysis .btn-view,
     body.printing-analysis .btn-delete,
-    body.printing-analysis .btn-analyze {
+    body.printing-analysis .btn-analyze-global {
         display: none !important;
     }
 
@@ -3421,9 +3434,6 @@ html.high-contrast ::selection {
         font-size: 2rem;
     }
 
-    .a11y-actions {
-        grid-template-columns: 1fr;
-    }
 }
 
 /* ---------- Footer Version Badge ---------- */
@@ -3446,6 +3456,8 @@ html.high-contrast ::selection {
     *::before,
     *::after {
         animation-duration: 0.01ms !important;
+        animation-name: none !important;
+        animation-iteration-count: 1 !important;
         transition-duration: 0.01ms !important;
         scroll-behavior: auto !important;
     }
@@ -3454,6 +3466,16 @@ html.high-contrast ::selection {
 :focus-visible {
     outline: 3px solid var(--primary-light);
     outline-offset: 2px;
+}
+
+/* Focus outline reforçado para elementos que usam :focus em vez de :focus-visible */
+#menuToggle:focus,
+#a11yPanelTrigger:focus,
+#backToTop:focus,
+.nav-links a:focus {
+    outline: 3px solid var(--primary-light) !important;
+    outline-offset: 2px;
+    box-shadow: 0 0 0 2px var(--surface), 0 0 0 5px var(--primary-light);
 }
 
 /* High contrast mode */

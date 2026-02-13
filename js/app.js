@@ -912,7 +912,7 @@ ${cat.ipva_estados_detalhado.map(e =>
         if (cat.govbr_servico_id) {
             const live = sessionStorage.getItem('govbr_' + cat.govbr_servico_id);
             html += `<div class="detalhe-section" style="text-align:center">
-<a href="https://www.gov.br/pt-br/servicos/obter-isencao-de-impostos-para-comprar-carro" target="_blank" rel="noopener noreferrer" class="tag" style="display:inline-block;background:${live ? '#168821' : '#1351b4'};color:#fff;text-decoration:none;padding:6px 16px;border-radius:20px;font-size:0.95rem">
+<a href="https://www.gov.br/pt-br/servicos/obter-isencao-de-impostos-para-comprar-carro" target="_blank" rel="noopener noreferrer" class="btn-govbr${live ? ' live' : ''}">
 🇧🇷 ${live ? 'Serviço digital confirmado no gov.br' : 'Acessar serviço no gov.br'}
 </a></div>`;
         }
