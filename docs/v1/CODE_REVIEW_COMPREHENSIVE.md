@@ -36,7 +36,7 @@ TOTAL:      90
 - ✅ audit_content.py - Validação de conteúdo ✓
 - ✅ bump_version.py - Atualização de versão multi-arquivo ✓
 - ✅ master_compliance.py - Orquestrador principal (74.9 KB) ✓
-- ✅ quality_pipeline.py - Pipeline CI/CD ✓
+- ✅ validate_all.py - Validação completa (consolidado) ✓
 - ✅ validate_content.py - Validação de JSON ✓
 - ✅ validate_govbr_urls.py - Verificação de links oficiais ✓
 - ✅ validate_legal_sources.py - Validação de fontes legais ✓
@@ -159,7 +159,7 @@ playwright install chromium
 - Offline support
 
 **Recomendação:** ⚠️ **Não integrar em CI** (browser automation pesado, requer headless browser)
-**Uso:** Testes manuais antes de releases grandes (v2.0, etc.)
+**Uso:** Testes manuais antes de releases grandes
 
 ---
 

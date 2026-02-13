@@ -1,8 +1,8 @@
 # 📊 Análise Completa de Qualidade — NossoDireito v1.8.0
 
-**Data:** 12 de fevereiro de 2026  
-**Autor:** Análise Automatizada  
-**Versão do Documento:** 1.0.0  
+**Data:** 12 de fevereiro de 2026
+**Autor:** Análise Automatizada
+**Versão do Documento:** 1.0.0
 
 ---
 
@@ -17,7 +17,7 @@ Esta análise identifica **sobreposições, duplicações, gaps e oportunidades 
 | **Sobreposição de Scripts** | ⚠️ 2 scripts duplicados | ALTA |
 | **Gaps de Documentação** | ❌ 5 documentos faltando | CRÍTICA |
 | **Acessibilidade** | ✅ Implementado, não documentado | ALTA |
-| **Segurança** | ✅ Robusto (codereview.py) | MÉDIA |
+| **Segurança** | ✅ Robusto (validate_all.py) | MÉDIA |
 | **Conformidade LGPD** | ✅ Completo | BAIXA |
 | **Versionamento** | ⚠️ Manual, não unificado | ALTA |
 | **Estrutura de Pastas** | ⚠️ Inconsistente | MÉDIA |
@@ -30,36 +30,31 @@ Esta análise identifica **sobreposições, duplicações, gaps e oportunidades 
 
 | Script | Linhas | Função | Status |
 |--------|--------|--------|--------|
-| `codereview/codereview.py` | 2,025 | **Quality Gate completo** com 17 categorias | ✅ **MANTER** |
-| `scripts/validate_sources.py` | 800 | Valida URLs + Legislação (Senado) + CID (OMS) | ⚠️ **UNIFICAR** |
-| `scripts/validate_links.py` | 343 | Valida URLs (DUPLICADO) | ❌ **REMOVER** |
+| `scripts/validate_all.py` | — | **Validação completa** (consolidado) | ✅ **MANTER** |
+| `scripts/validate_sources.py` | 800 | Valida URLs + Legislação (Senado) + CID (OMS) | ✅ **VALIDADOR ÚNICO** |
 | `scripts/bump_version.py` | 271 | Atualiza versão em 7 arquivos | ✅ **MANTER** |
-| `scripts/pre-commit` | 46 | Hook Git (roda codereview.py) | ✅ **MANTER** |
+| `scripts/pre-commit` | 46 | Hook Git (roda validate_all.py) | ✅ **MANTER** |
 | `analise360.py` | 182 | Análise de cobertura de benefícios | ⚠️ **MOVER para scripts/** |
 
 ### 1.2. Sobreposições Identificadas
 
-#### 🔴 CRÍTICO: Duplicação de Validação de Links
+#### ✅ RESOLVIDO: Duplicação de Validação de Links
 
-**Problema:**
-- `validate_sources.py` (linhas 1-150): valida URLs com HTTP HEAD/GET
-- `validate_links.py` (linhas 1-150): **FAZ EXATAMENTE A MESMA COISA**
-- `codereview.py` (categoria 12): **TAMBÉM valida links** (opcional, com flag `--check-links`)
+**Problema (resolvido):**
+- `validate_links.py` era duplicado de `validate_sources.py` — **removido**
+- `validate_sources.py` é o validador único de URLs
+- `validate_all.py` (categoria 12): valida links (opcional, com flag `--check-links`)
 
 **Impacto:**
 - Manutenção triplicada
 - Confusão sobre qual script usar
 - Possíveis resultados divergentes
 
-**Solução Recomendada:**
+**Solução Aplicada:**
 ```bash
-# AÇÃO 1: Deletar validate_links.py (redundante)
-rm scripts/validate_links.py
-
-# AÇÃO 2: validate_sources.py vira O ÚNICO validador
-# (já tem Senado API + CID API, mais completo)
-
-# AÇÃO 3: codereview.py usa validate_sources como dependência
+# validate_links.py removido (redundante)
+# validate_sources.py é o VALIDADOR ÚNICO
+# validate_all.py usa validate_sources como dependência
 # (não reimplementa validação)
 ```
 
@@ -129,8 +124,8 @@ rm scripts/validate_links.py
 ## 🚨 Problema: VLibras Não Funciona em iPhone/Android
 
 ### Descrição
-O plugin VLibras (https://vlibras.gov.br) apresenta erro de inicialização em 
-navegadores mobile (Safari iOS, Chrome Android) devido a limitações do módulo 
+O plugin VLibras (https://vlibras.gov.br) apresenta erro de inicialização em
+navegadores mobile (Safari iOS, Chrome Android) devido a limitações do módulo
 oficial fornecido pelo Governo Federal.
 
 ### Causa Raíz
@@ -213,7 +208,7 @@ Encontrou um link quebrado, lei revogada ou informação incorreta?
 ### Opção 3: Pull Request (Avançado)
 1. Fork o repositório
 2. Edite `data/direitos.json`
-3. Rode `python codereview/codereview.py --ci` (valida mudanças)
+3. Rode `python scripts/validate_all.py --quick` (valida mudanças)
 4. Envie PR com descrição clara
 
 ## ⏱️ Tempo de Resposta
@@ -278,7 +273,7 @@ Este projeto é mantido por **VOCÊ**! Obrigado por contribuir.
 
 ---
 
-**Última Atualização:** 2026-02-12  
+**Última Atualização:** 2026-02-12
 **Reportar novo problema:** [CONTRIBUTING.md](CONTRIBUTING.md)
 ```
 
@@ -291,10 +286,10 @@ Este projeto é mantido por **VOCÊ**! Obrigado por contribuir.
 | Proteção | Status | Implementação |
 |----------|--------|---------------|
 | Content Security Policy (CSP) | ✅ Completo | index.html linha 18 |
-| Subresource Integrity (SRI) | ✅ CDN verificado | codereview.py |
+| Subresource Integrity (SRI) | ✅ CDN verificado | validate_all.py |
 | XSS Protection | ✅ escapeHtml() em app.js | Todas as renderizações |
 | HTTPS Enforcement | ✅ upgrade-insecure-requests | CSP |
-| Detecção de Segredos | ✅ 10 padrões regex | codereview.py |
+| Detecção de Segredos | ✅ 10 padrões regex | validate_all.py |
 | Rate Limiting | ✅ 0.3s delay | validate_sources.py |
 | Error Handling | ✅ try/catch everywhere | app.js |
 
@@ -332,7 +327,7 @@ docker run -t owasp/zap2docker-stable zap-baseline.py \
 **Comando:**
 ```bash
 pip install bandit
-bandit -r codereview/ scripts/ -f json -o bandit-report.json
+bandit -r scripts/ -f json -o bandit-report.json
 ```
 
 ### 3.3. Conformidade com Regulações
@@ -425,7 +420,7 @@ lhci autorun --upload.target=temporary-public-storage
 |-----------|--------|---------------|
 | Automação de deploy | ⚠️ Parcial | Terraform para infra, falta CI/CD app |
 | Monitoramento | ❌ Ausente | Falta APM, logs, alertas |
-| Code review | ✅ Completo | codereview.py (17 categorias) |
+| Code review | ✅ Completo | validate_all.py (17 categorias) |
 | Documentação | ⚠️ 70% | Faltam 5 docs (seção 2.2) |
 | IaC (Infrastructure as Code) | ✅ Terraform | terraform/ (5 arquivos) |
 
@@ -442,7 +437,7 @@ lhci autorun --upload.target=temporary-public-storage
 | Least privilege | ✅ Completo | Sem backend, sem DB |
 | Encryption | ✅ HTTPS | Cloudflare + Let's Encrypt |
 | Secrets management | ✅ Nenhum segredo | Static site |
-| Vulnerability scanning | ⚠️ Manual | codereview.py (sem automação) |
+| Vulnerability scanning | ⚠️ Manual | validate_all.py (sem automação) |
 
 **Gaps:**
 - OWASP ZAP automated scans
@@ -506,8 +501,6 @@ lhci autorun --upload.target=temporary-public-storage
 ```
 nossodireito/
 ├── backup/                    # ⚠️ TEMPORÁRIO demais (deletar após deploy)
-├── codereview/                # ✅ BOM (scripts de qualidade)
-│   └── codereview.py
 ├── css/                       # ✅ BOM
 │   └── styles.css
 ├── data/                      # ✅ BOM
@@ -519,10 +512,10 @@ nossodireito/
 ├── js/                        # ✅ BOM
 │   ├── app.js
 │   └── sw-register.js
-├── scripts/                   # ✅ BOM (mas tem duplicação)
+├── scripts/                   # ✅ BOM
 │   ├── bump_version.py
 │   ├── pre-commit
-│   ├── validate_links.py      # ❌ DELETAR (duplicado)
+│   ├── validate_all.py        # Validação completa (consolidado)
 │   └── validate_sources.py
 ├── terraform/                 # ✅ BOM
 │   ├── main.tf
@@ -548,10 +541,8 @@ nossodireito/
 ├── .github/                   # 🆕 CI/CD workflows
 │   └── workflows/
 │       ├── deploy.yml         # Deploy automático
-│       ├── quality-gate.yml   # Roda codereview.py em PR
+│       ├── quality-gate.yml   # Roda validate_all.py em PR
 │       └── link-check.yml     # Valida links periodicamente
-├── codereview/                # ✅ Manter
-│   └── codereview.py
 ├── css/                       # ✅ Manter
 │   └── styles.css
 ├── data/                      # ✅ Manter
@@ -602,10 +593,7 @@ nossodireito/
 # 1. Deletar backup/ (se deployado e funcionando)
 rm -rf backup/
 
-# 2. Deletar validate_links.py (duplicado)
-rm scripts/validate_links.py
-
-# 3. Mover analise360.py
+# 2. Mover analise360.py
 mv analise360.py scripts/analise360.py
 
 # 4. Criar estrutura docs/
@@ -650,23 +638,23 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      
+
       - name: Run Quality Gate
         run: |
-          python codereview/codereview.py --ci --min-score 75
-      
+          python scripts/validate_all.py --quick
+
       - name: Validate JSON syntax
         run: |
           python -c "import json; json.load(open('data/direitos.json'))"
-      
+
       - name: Check file sizes
         run: |
-          python codereview/codereview.py --categoria performance --json
+          python scripts/validate_all.py --quick
 ```
 
 #### Workflow 2: Link Check (Periódico)
@@ -686,22 +674,22 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      
+
       - name: Validate URLs
         run: |
           python scripts/validate_sources.py --urls --json > link-report.json
-      
+
       - name: Upload report
         uses: actions/upload-artifact@v4
         with:
           name: link-validation-report
           path: link-report.json
-      
+
       - name: Create issue if links broken
         if: failure()
         uses: actions/github-script@v7
@@ -733,11 +721,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Quality Gate (blocker)
         run: |
-          python codereview/codereview.py --ci --min-score 80
-      
+          python scripts/validate_all.py --quick
+
       - name: Publish to Cloudflare Pages
         uses: cloudflare/pages-action@v1
         with:
@@ -758,7 +746,7 @@ jobs:
 
 ```html
 <p>
-    Contamos com a colaboração de todos para mantermos as informações atualizadas. 
+    Contamos com a colaboração de todos para mantermos as informações atualizadas.
     Encontrou algo desatualizado? Entre em contato!
 </p>
 ```
@@ -768,12 +756,12 @@ jobs:
 ```html
 <div class="collaboration-notice">
     <h3>🤝 Ajude a Manter Este Site Atualizado</h3>
-    
+
     <p>
-        Este site é mantido pela <strong>comunidade</strong>. Leis, links e benefícios 
+        Este site é mantido pela <strong>comunidade</strong>. Leis, links e benefícios
         podem mudar sem aviso prévio. <strong>Sua ajuda é essencial!</strong>
     </p>
-    
+
     <h4>📢 Encontrou algo desatualizado?</h4>
     <ul>
         <li>✅ <strong>Link quebrado</strong> (retorna erro 404 ou 500)</li>
@@ -781,31 +769,31 @@ jobs:
         <li>✅ <strong>Informação incorreta</strong> (valor, requisito, prazo)</li>
         <li>✅ <strong>Benefício novo</strong> (não listado aqui)</li>
     </ul>
-    
+
     <h4>💬 Como Reportar?</h4>
     <div class="report-options">
-        <a href="https://github.com/fabiotreze/nossodireito/issues/new?template=bug_report.md" 
-           target="_blank" 
-           rel="noopener noreferrer" 
+        <a href="https://github.com/fabiotreze/nossodireito/issues/new?template=bug_report.md"
+           target="_blank"
+           rel="noopener noreferrer"
            class="btn btn-primary">
             📝 Abrir Issue no GitHub
         </a>
-        
-        <a href="mailto:fabiotreze@gmail.com?subject=NossoDireito%20-%20Conteúdo%20Desatualizado&body=Por%20favor,%20descreva%20o%20problema%20encontrado:%0A%0ABenefício:%20%0AProblema:%20%0AFonte%20correta:%20" 
+
+        <a href="mailto:fabiotreze@gmail.com?subject=NossoDireito%20-%20Conteúdo%20Desatualizado&body=Por%20favor,%20descreva%20o%20problema%20encontrado:%0A%0ABenefício:%20%0AProblema:%20%0AFonte%20correta:%20"
            class="btn btn-outline">
             ✉️ Enviar Email
         </a>
     </div>
-    
+
     <p style="margin-top:16px;font-size:0.9rem;color:var(--text-muted)">
-        <strong>Tempo de resposta:</strong> 24-72 horas (dias úteis). 
+        <strong>Tempo de resposta:</strong> 24-72 horas (dias úteis).
         Atualizações críticas (links gov.br quebrados) são priorizadas.
     </p>
-    
+
     <p style="font-size:0.9rem;color:var(--text-muted)">
-        📖 <strong>Quer contribuir com código?</strong> 
-        Leia nosso <a href="https://github.com/fabiotreze/nossodireito/blob/main/docs/CONTRIBUTING.md" 
-                       target="_blank" 
+        📖 <strong>Quer contribuir com código?</strong>
+        Leia nosso <a href="https://github.com/fabiotreze/nossodireito/blob/main/docs/CONTRIBUTING.md"
+                       target="_blank"
                        rel="noopener noreferrer">
             guia de contribuição
         </a>.
@@ -842,7 +830,7 @@ jobs:
     .report-options {
         flex-direction: column;
     }
-    
+
     .report-options .btn {
         width: 100%;
         text-align: center;
@@ -857,7 +845,7 @@ jobs:
 
 ### 🔥 CRÍTICAS (Fazer HOJE)
 
-- [ ] **Deletar** `scripts/validate_links.py` (duplicado)
+- [x] ~~**Deletar** `scripts/validate_links.py` (duplicado)~~ ✅ CONCLUÍDO
 - [ ] **Mover** `analise360.py` → `scripts/analise360.py`
 - [ ] **Criar** `docs/VLIBRAS_LIMITATIONS.md` (usuários confusos)
 - [ ] **Criar** `docs/KNOWN_ISSUES.md` (base de conhecimento)
@@ -896,14 +884,14 @@ jobs:
 
 ### 10.1. Score Atual
 
-| Categoria | Score Atual | Meta v1.6.0 | Meta v2.0.0 |
-|-----------|-------------|-------------|-------------|
-| **Code Quality** | 85/100 | 90/100 | 95/100 |
-| **Security** | 90/100 | 95/100 | 98/100 |
-| **Accessibility** | 92/100 | 95/100 | 98/100 |
-| **Performance** | 87/100 | 92/100 | 95/100 |
-| **SEO** | 100/100 | 100/100 | 100/100 |
-| **Best Practices** | 95/100 | 98/100 | 100/100 |
+| Categoria | Score Atual | Meta v1.6.0 |
+|-----------|-------------|-------------|
+| **Code Quality** | 85/100 | 90/100 |
+| **Security** | 90/100 | 95/100 |
+| **Accessibility** | 92/100 | 95/100 |
+| **Performance** | 87/100 | 92/100 |
+| **SEO** | 100/100 | 100/100 |
+| **Best Practices** | 95/100 | 98/100 |
 
 ### 10.2. KPIs de Manutenção
 
@@ -932,17 +920,9 @@ jobs:
 - 🆕 Lighthouse CI (bloqueio em score < 90)
 - 🆕 Minificação app.js (Terser)
 
-### v2.0.0 (Junho 2026)
-- 🆕 Certificação WCAG 2.1 AA
-- 🆕 Pen-test profissional annual
-- 🆕 Testes com usuários PcD
-- 🆕 APM monitoring (Application Insights)
-- 🆕 Auto-healing links (fallback automático)
-- 🆕 Multi-idioma (Português + Espanhol)
-
 ---
 
-**Documento gerado automaticamente em:** 2026-02-11  
-**Próxima revisão:** Mensal (toda 1ª segunda-feira)  
-**Responsável:** Fábio Treze (fabiotreze@gmail.com)  
+**Documento gerado automaticamente em:** 2026-02-11
+**Próxima revisão:** Mensal (toda 1ª segunda-feira)
+**Responsável:** Fábio Treze (fabiotreze@gmail.com)
 **Licença:** MIT

@@ -1,6 +1,6 @@
 # NossoDireito — Arquitetura do Sistema V1 (Produção Atual)
 
-**Versão:** 1.2.0
+**Versão:** 1.10.0
 **Data:** Fevereiro 2026
 **Status:** Produção Estável (Quality Gate: 100.0/100)
 **URL:** https://nossodireito.fabiotreze.com
@@ -33,7 +33,7 @@
 ### Propósito
 **NossoDireito** é um portal web gratuito que fornece informações sobre direitos e benefícios para pessoas com deficiência (PcD) no Brasil. Criado para famílias que recebem laudos médicos (TEA, deficiência física, intelectual, sensorial), o portal oferece:
 
-- **9 categorias de direitos**: BPC/LOAS, CIPTEA, Educação Inclusiva, Terapias SUS, Planos de Saúde, Transporte, Trabalho, FGTS, Habitação
+- **25 categorias de direitos**: BPC/LOAS, CIPTEA, Educação Inclusiva, Terapias SUS, Planos de Saúde, Transporte, Trabalho, FGTS, Habitação, IPVA PcD, Isenção IR, Prioridade em Filas, Tecnologia Assistiva, Aposentadoria PcD, entre outras
 - **Análise de documentos**: Upload de laudos médicos em PDF para identificação automática de direitos relacionados (regex-based matching)
 - **Recursos de acessibilidade**: TTS (Text-to-Speech), VLibras (Libras em vídeo), ajuste de fonte, alto contraste, navegação por teclado
 - **Totalmente offline-first**: Service Worker com cache, dados JSON estáticos, zero backend dinâmico
@@ -54,8 +54,8 @@
 | **Uptime SLA** | 99.95% (Azure App Service Basic+) |
 | **Custo Mensal** | ~$13/mês (App Service B1 + Key Vault) |
 | **Tempo de Resposta** | <500ms (95th percentile) |
-| **Categorias de Direitos** | 9 (2.293 linhas JSON) |
-| **Keywords Matching** | ~180 termos + CID-10/11 ranges |
+| **Categorias de Direitos** | 25 (direitos.json 216KB) |
+| **Keywords Matching** | ~1.218 termos + CID-10/11 ranges |
 | **Acurácia de Análise** | ~70% (limitação regex) |
 | **Lighthouse Score** | Performance: 95+, Accessibility: 100, Best Practices: 100, SEO: 100 |
 | **Tamanho Total** | 2.78 MB (52 arquivos) |
@@ -73,7 +73,7 @@
    ↓
 3. Navegação:
    ├─ Busca por palavra-chave (search bar)
-   ├─ Exploração de categorias (9 cards)
+   ├─ Exploração de categorias (25 cards)
    ├─ Checklist "Primeiros Passos" (guia interativo)
    └─ Upload de laudo PDF (análise local)
        ↓
@@ -222,7 +222,7 @@
 ### Dados Estáticos (JSON)
 
 #### data/direitos.json (2.293 linhas)
-Fonte de verdade para as 9 categorias de direitos PcD. Estrutura:
+Fonte de verdade para as 25 categorias de direitos PcD. Estrutura:
 
 ```json
 {
@@ -248,21 +248,14 @@ Fonte de verdade para as 9 categorias de direitos PcD. Estrutura:
       "cids_relacionados": ["F84.0", "F84.9", "F90.0", "Q90.0", "..."],
       "keywords": ["bpc", "loas", "beneficio", "assistencial", "baixa renda"]
     },
-    // ... outras 8 categorias
+    // ... outras 24 categorias
   ]
 }
 ```
 
-**Total de Categorias:**
-1. BPC/LOAS
-2. CIPTEA (Carteira de Identificação TEA)
-3. Educação Inclusiva
-4. Terapias e Planos de Saúde
-5. Terapias pelo SUS
-6. Transporte (Passe Livre, IPVA, Estacionamento)
-7. Trabalho (Cotas PcD, Estabilidade)
-8. FGTS (Saque)
-9. Habitação (Prioridade Minha Casa Minha Vida)
+**Total de Categorias (25):**
+
+Incluem BPC/LOAS, CIPTEA, Educação Inclusiva, Terapias e Planos de Saúde, Terapias pelo SUS, Transporte (Passe Livre, IPVA, Estacionamento), Trabalho (Cotas PcD, Estabilidade), FGTS (Saque), Habitação (Prioridade MCMV), IPVA PcD (isenção por estado), Isenção de Imposto de Renda, Prioridade em Filas, Tecnologia Assistiva, Aposentadoria PcD, entre outras. Lista completa em `data/direitos.json`.
 
 #### data/matching_engine.json (2.716 linhas)
 Motor de análise de documentos baseado em regex e pesos.
@@ -294,7 +287,7 @@ Motor de análise de documentos baseado em regex e pesos.
       "secondary": ["autismo", "tea", "transtorno espectro autista"],
       "uppercase_only_terms": ["CIPTEA", "TEA"]
     }
-    // ... para todas 9 categorias
+    // ... para todas 25 categorias
   },
   "cid_ranges": [
     {

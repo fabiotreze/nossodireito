@@ -36,7 +36,7 @@
 **Scripts novos:** 3 (P0: backup + validação legal, P2: links)
 **Correções aplicadas:** 14 (7 P0 + 7 P2)
 
-**Relatório executivo completo:** [`docs/EXECUCAO_COMPLETA_20260212.md`](EXECUCAO_COMPLETA_20260212.md) ⭐ **NOVO!**
+**Relatório executivo completo:** [`docs/v1/EXECUCAO_COMPLETA_20260212.md`](v1/EXECUCAO_COMPLETA_20260212.md) (arquivado)
 **Opções executáveis:** [`docs/OPCOES_EXECUCAO.md`](OPCOES_EXECUCAO.md) ⭐ **NOVO!**
 
 ---

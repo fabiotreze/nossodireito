@@ -1,29 +1,17 @@
 # 📋 AÇÕES IMEDIATAS — Priorização e Execução
 
-**Data:** 12 de fevereiro de 2026  
-**Projeto:** NossoDireito v1.8.0  
-**Tempo estimado total:** 4-6 horas (prioridades CRÍTICAS)  
+**Data:** 12 de fevereiro de 2026
+**Projeto:** NossoDireito v1.8.0
+**Tempo estimado total:** 4-6 horas (prioridades CRÍTICAS)
 
 ---
 
 ## 🔥 CRÍTICAS — Fazer HOJE (2-3 horas)
 
-### 1. Limpar Scripts Duplicados ⏱️ 10 min
+### 1. ~~Limpar Scripts Duplicados~~ ✅ CONCLUÍDO
 
-**Problema:** `validate_links.py` é 100% duplicado de `validate_sources.py`  
-**Impacto:** Confusão, manutenção duplicada, 343 linhas de código morto
-
-```bash
-# AÇÃO 1: Deletar script duplicado
-rm scripts/validate_links.py
-
-# AÇÃO 2: Atualizar imports (se houver)
-grep -r "validate_links" .
-
-# AÇÃO 3: Commit
-git add scripts/validate_links.py
-git commit -m "chore: Remove duplicate validate_links.py (functionality in validate_sources.py)"
-```
+**Problema:** `validate_links.py` era 100% duplicado de `validate_sources.py`
+**Resolução:** Script removido. `validate_sources.py` é o validador único.
 
 **Benefício:** -343 linhas código, -100% duplicação
 
@@ -51,24 +39,24 @@ git commit -m "refactor: Move analise360.py to scripts/ directory"
 
 ### 3. Atualizar Texto de Colaboração (index.html) ⏱️ 30 min
 
-**Problema:** Texto atual é MUITO genérico ("Entre em contato!")  
+**Problema:** Texto atual é MUITO genérico ("Entre em contato!")
 **Impacto:** Usuários não sabem COMO reportar problemas
 
 **AÇÃO:** Substituir seção "Colaboração" no index.html
 
-**Localizar:** Busque no `index.html` por "Contamos com a colaboração"  
+**Localizar:** Busque no `index.html` por "Contamos com a colaboração"
 **Substituir por:** (ver código completo em `docs/ANALISE_COMPLETA_QUALIDADE.md` seção 8.2)
 
 **Snippet resumido:**
 ```html
 <div class="collaboration-notice">
     <h3>🤝 Ajude a Manter Este Site Atualizado</h3>
-    
+
     <p>
-        Este site é mantido pela <strong>comunidade</strong>. Leis, links e benefícios 
+        Este site é mantido pela <strong>comunidade</strong>. Leis, links e benefícios
         podem mudar sem aviso prévio. <strong>Sua ajuda é essencial!</strong>
     </p>
-    
+
     <h4>📢 Encontrou algo desatualizado?</h4>
     <ul>
         <li>✅ Link quebrado (404 ou 500)</li>
@@ -76,21 +64,21 @@ git commit -m "refactor: Move analise360.py to scripts/ directory"
         <li>✅ Informação incorreta (valor, requisito, prazo)</li>
         <li>✅ Benefício novo (não listado)</li>
     </ul>
-    
+
     <h4>💬 Como Reportar?</h4>
     <div class="report-options">
-        <a href="https://github.com/fabiotreze/nossodireito/issues/new" 
-           target="_blank" 
+        <a href="https://github.com/fabiotreze/nossodireito/issues/new"
+           target="_blank"
            class="btn btn-primary">
             📝 Abrir Issue no GitHub
         </a>
-        
-        <a href="mailto:fabiotreze@gmail.com?subject=NossoDireito - Conteúdo Desatualizado" 
+
+        <a href="mailto:fabiotreze@gmail.com?subject=NossoDireito - Conteúdo Desatualizado"
            class="btn btn-outline">
             ✉️ Enviar Email
         </a>
     </div>
-    
+
     <p style="margin-top:16px;">
         <strong>Tempo de resposta:</strong> 24-72 horas (dias úteis).
     </p>
@@ -105,12 +93,12 @@ git commit -m "refactor: Move analise360.py to scripts/ directory"
 
 ### 4. Adicionar Link para CONTRIBUTING.md no Disclaimer ⏱️ 10 min
 
-**Localizar:** Modal de "Aviso Legal" no index.html  
+**Localizar:** Modal de "Aviso Legal" no index.html
 **Adicionar ao final:**
 
 ```html
 <p style="margin-top: 16px; border-top: 1px solid var(--border); padding-top: 16px;">
-    📖 <strong>Quer ajudar a manter este site atualizado?</strong>  
+    📖 <strong>Quer ajudar a manter este site atualizado?</strong>
     Leia nosso <a href="docs/CONTRIBUTING.md" target="_blank">
         guia de contribuição
     </a> para saber como reportar conteúdo desatualizado.
@@ -174,16 +162,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      
+
       - name: Run Quality Gate
         run: |
-          python codereview/codereview.py --ci --min-score 75
-      
+          python scripts/validate_all.py --quick
+
       - name: Validate JSON syntax
         run: |
           python -c "import json; json.load(open('data/direitos.json'))"
@@ -208,16 +196,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      
+
       - name: Validate URLs
         run: |
           python scripts/validate_sources.py --urls --json > link-report.json
-      
+
       - name: Upload report
         uses: actions/upload-artifact@v4
         with:
@@ -229,7 +217,7 @@ jobs:
 **Teste local:**
 ```bash
 # Simular CI workflow
-python codereview/codereview.py --ci --min-score 75
+python scripts/validate_all.py --quick
 echo $?  # Deve retornar 0 se passou
 ```
 
@@ -256,7 +244,7 @@ echo $?  # Deve retornar 0 se passou
 
 ### Análises Técnicas
 
-- 🔍 [codereview.py](codereview/codereview.py) — Quality Gate (17 categorias)
+- 🔍 [validate_all.py](scripts/validate_all.py) — Validação completa (consolidado)
 - 🔗 [validate_sources.py](scripts/validate_sources.py) — Validação de URLs e legislação
 - 📦 [bump_version.py](scripts/bump_version.py) — Atualização multi-arquivo de versão
 - 📈 [analise360.py](scripts/analise360.py) — Análise de cobertura de benefícios
@@ -290,15 +278,15 @@ lighthouse http://localhost:8080 --output json | \
 ```markdown
 # Performance Baseline
 
-**Versão:** v1.5.0  
-**Data:** 11/fev/2026  
+**Versão:** v1.5.0
+**Data:** 11/fev/2026
 
-| Métrica | Score | Meta v1.6.0 | Meta v2.0.0 |
-|---------|-------|-------------|-------------|
-| Performance | 87 | 92 | 95 |
-| Accessibility | 92 | 95 | 98 |
-| Best Practices | 95 | 98 | 100 |
-| SEO | 100 | 100 | 100 |
+| Métrica | Score | Meta v1.6.0 |
+|---------|-------|-------------|
+| Performance | 87 | 92 |
+| Accessibility | 92 | 95 |
+| Best Practices | 95 | 98 |
+| SEO | 100 | 100 |
 
 **Core Web Vitals:**
 - LCP: 2.1s (meta: < 2.5s) ✅
@@ -314,7 +302,7 @@ lighthouse http://localhost:8080 --output json | \
 
 ### 9. Minificar app.js com Terser ⏱️ 1 hora
 
-**Problema:** `app.js` tem 115 KB (muito pesado para 3G)  
+**Problema:** `app.js` tem 115 KB (muito pesado para 3G)
 **Meta:** Reduzir para ~75 KB (-35%)
 
 ```bash
@@ -371,7 +359,7 @@ npm test
 // js/app.js — adicionar ao final
 function lazyLoadImages() {
   const images = document.querySelectorAll('img[data-src]');
-  
+
   const imageObserver = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
@@ -382,7 +370,7 @@ function lazyLoadImages() {
       }
     });
   });
-  
+
   images.forEach(img => imageObserver.observe(img));
 }
 
@@ -425,8 +413,8 @@ updates:
 
 ### 13. Certificação WCAG 2.1 AA Formal ⏱️ N/A (pago)
 
-**Contratar empresa:** Movimento Web Para Todos, Hand Talk, etc.  
-**Custo:** R$ 5.000 - R$ 15.000  
+**Contratar empresa:** Movimento Web Para Todos, Hand Talk, etc.
+**Custo:** R$ 5.000 - R$ 15.000
 **Tempo:** 2-4 semanas
 
 **Alternativa gratuita:** Auto-declaração de conformidade (menos peso)
@@ -435,8 +423,8 @@ updates:
 
 ### 14. Testes com Usuários PcD Reais ⏱️ 40 horas
 
-**Recrutar:** 15 voluntários (5 cegos, 5 baixa visão, 3 surdos, 2 mobilidade reduzida)  
-**Método:** System Usability Scale (SUS), think-aloud protocol  
+**Recrutar:** 15 voluntários (5 cegos, 5 baixa visão, 3 surdos, 2 mobilidade reduzida)
+**Método:** System Usability Scale (SUS), think-aloud protocol
 **Meta:** SUS score > 80 (excellent)
 
 ---
@@ -467,7 +455,7 @@ Rode TUDO antes de fazer merge para `main`:
 
 ```bash
 # 1. Quality Gate (score >= 75)
-python codereview/codereview.py --ci --min-score 75
+python scripts/validate_all.py --quick
 
 # 2. JSON válido
 python -c "import json; json.load(open('data/direitos.json'))"
@@ -499,7 +487,7 @@ head -n 20 CHANGELOG.md  # Deve ter seção [1.5.0]
 
 ```
 ALTO IMPACTO + BAIXO ESFORÇO (Fazer AGORA)
-├── ✅ Deletar validate_links.py (10 min)
+├── ✅ Deletar validate_links.py (CONCLUÍDO)
 ├── ✅ Mover analise360.py (15 min)
 ├── ✅ Atualizar texto colaboração (30 min)
 └── ✅ Adicionar link CONTRIBUTING.md (10 min)
@@ -527,16 +515,15 @@ BAIXO IMPACTO + ALTO ESFORÇO (Próximo trimestre)
 Copy-paste esses comandos no terminal:
 
 ```bash
-# 1. Limpar duplicação (CRÍTICO — 10 min)
+# 1. Reorganizar estrutura (CRÍTICO — 10 min)
 cd /Users/fabmacair/Library/CloudStorage/OneDrive-Personal/Documents/Personal/Education/_Self-Study/github/nossodireito
-rm scripts/validate_links.py
 mv analise360.py scripts/analise360.py
 echo "backup/" >> .gitignore
 git add .
 git commit -m "chore: Remove duplicates, reorganize structure, ignore backups"
 
 # 2. Rodar Quality Gate (validação)
-python codereview/codereview.py --ci --min-score 75
+python scripts/validate_all.py --quick
 
 # 3. Validar JSON
 python -c "import json; json.load(open('data/direitos.json')); print('✅ JSON válido!')"
@@ -554,15 +541,15 @@ echo "✅ Pronto! Próximo passo: Atualizar index.html (texto colaboração)"
 
 ## 📞 Precisa de Ajuda?
 
-**Dúvidas sobre priorização:**  
+**Dúvidas sobre priorização:**
 fabiotreze@gmail.com (assunto: "Ações Imediatas - Dúvidas")
 
-**Sugestões de melhorias neste doc:**  
+**Sugestões de melhorias neste doc:**
 https://github.com/fabiotreze/nossodireito/issues
 
 ---
 
-**Data de criação:** 11 de fevereiro de 2026  
-**Revisão:** Periódica  
-**Responsável:** Fábio Treze  
-**Licença:** MIT  
+**Data de criação:** 11 de fevereiro de 2026
+**Revisão:** Periódica
+**Responsável:** Fábio Treze
+**Licença:** MIT
