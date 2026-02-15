@@ -5,6 +5,27 @@ Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/)
 e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [1.12.0] - 2026-02-15
+
+### 🐛 Corrigido
+- **TTS `stopReading()` duplicada** — Removida primeira definição morta de `stopReading()` que causava conflito de escopo
+- **TTS `textContent` destruía child spans** — `btnReadAloud.textContent` substituía todo o conteúdo do botão, removendo `.a11y-toggle-icon`, `.a11y-toggle-label` e `.a11y-toggle-state`; agora atualiza cada span individualmente
+- **TTS `getBestPtBrVoice()` resetava chunks** — Removia `currentChunks = []` e `currentChunkIndex = 0` que zeravam os chunks antes da leitura iniciar
+- **`resilientFetch` retornava `undefined` em erro 5xx** — Após todos os retries com 5xx, a função retornava `undefined` causando crash ao chamar `.json()`; agora lança exceção
+- **`waitForVoices()` podia travar para sempre** — Adicionado timeout de 3s para evitar Promise que nunca resolve quando `onvoiceschanged` não dispara
+- **`setupDisclaimer()` sem null guard** — Adicionada verificação `if (!dom.disclaimerModal) return` para evitar erro quando elemento não existe no DOM
+- **CSS `--font-body` indefinida** — `.ipva-dropdown` usava `var(--font-body)` inexistente; corrigido para `var(--font)`
+- **Estastísticas do hero hardcoded** — Valores `9` e `20` causavam flash de conteúdo incorreto (FOUC); atualizados para `25` e `50` (mais próximos dos dados reais)
+
+### 🔄 Melhorado
+- **Dark mode: painel de acessibilidade** — Drawer, botões, seções, notas e info agora com cores adaptadas para dark mode
+- **Dark mode: disclaimer box** — Caixa de aviso com cores ajustadas para dark mode (fundo âmbar escuro)
+- **Dark mode: search suggestions** — `.search-suggestion` e `.search-location` com cores adaptadas para dark mode
+- **server.js: health check cacheado** — `package.json` lido uma vez na inicialização em vez de `readFileSync` a cada request
+- **server.js: validação `servicoId`** — Limite de 10 dígitos no proxy Gov.br para prevenir abuso
+- **server.js: ternário redundante** — `r.ok ? r.status : r.status` simplificado para `r.status`
+- **sw.js: cache resiliente** — `cache.addAll()` substituído por cache individual com try/catch (falha em um asset não bloqueia instalação do SW)
+
 ## [1.11.0] - 2026-02-15
 
 ### ✨ Adicionado

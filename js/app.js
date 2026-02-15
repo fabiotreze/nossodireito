@@ -29,6 +29,8 @@
                 clearTimeout(timeout);
                 if (res.ok) return res;
                 if (res.status >= 400 && res.status < 500) throw new Error(`HTTP ${res.status}`);
+                // 5xx: throw on last attempt to avoid returning undefined
+                if (attempt === retries) throw new Error(`HTTP ${res.status}`);
             } catch (err) {
                 clearTimeout(timeout);
                 if (attempt === retries) throw err;
@@ -271,7 +273,12 @@
             return new Promise((resolve) => {
                 const voices = speechSynthesis.getVoices();
                 if (voices.length) return resolve(voices);
+                const timeout = setTimeout(() => {
+                    speechSynthesis.onvoiceschanged = null;
+                    resolve(speechSynthesis.getVoices());
+                }, 3000);
                 speechSynthesis.onvoiceschanged = () => {
+                    clearTimeout(timeout);
                     const loadedVoices = speechSynthesis.getVoices();
                     speechSynthesis.onvoiceschanged = null;
                     resolve(loadedVoices);
@@ -316,9 +323,6 @@
             if (savedVoiceName) {
                 const savedVoice = voices.find(v => v.name === savedVoiceName);
                 if (savedVoice) {
-                    currentChunks = [];
-                    currentChunkIndex = 0;
-
                     return savedVoice;
                 }
             }
@@ -335,21 +339,6 @@
             console.warn('[TTS] Nenhuma voz pt encontrada. Usando:', voices[0].name, voices[0].lang);
             showToast('\u26a0\ufe0f Seu navegador pode n\u00e3o suportar portugu\u00eas. A leitura pode estar em outro idioma. Instale vozes pt-BR nas configura\u00e7\u00f5es do sistema.', 'warning');
             return voices[0];
-        }
-        function stopReading() {
-            ttsActive = false;
-            if (keepAliveInterval) {
-                clearInterval(keepAliveInterval);
-                keepAliveInterval = null;
-            }
-            if (speechSynthesis.speaking || speechSynthesis.pending) {
-                speechSynthesis.cancel();
-            }
-            currentUtterance = null;
-            if (btnReadAloud) {
-                btnReadAloud.textContent = '🔊 Ouvir';
-                btnReadAloud.setAttribute('aria-pressed', 'false');
-            }
         }
         async function startReading() {
             if (!('speechSynthesis' in window)) {
@@ -453,13 +442,13 @@
             }
             speechSynthesis.speak(utterance);
             if (btnReadAloud && currentChunkIndex === 0) {
-                btnReadAloud.textContent = '⏹️ Parar';
-                btnReadAloud.setAttribute('aria-pressed', 'true');
-                // Update state text
+                const iconEl = btnReadAloud.querySelector('.a11y-toggle-icon');
+                const labelEl = btnReadAloud.querySelector('.a11y-toggle-label');
                 const stateEl = btnReadAloud.querySelector('.a11y-toggle-state');
-                if (stateEl) {
-                    stateEl.textContent = 'Ativo';
-                }
+                if (iconEl) iconEl.textContent = '⏹️';
+                if (labelEl) labelEl.textContent = 'Parar';
+                if (stateEl) stateEl.textContent = 'Ativo';
+                btnReadAloud.setAttribute('aria-pressed', 'true');
             }
         }
         function stopReading() {
@@ -473,13 +462,13 @@
             }
             currentUtterance = null;
             if (btnReadAloud) {
-                btnReadAloud.textContent = '🔊 Ouvir';
-                btnReadAloud.setAttribute('aria-pressed', 'false');
-                // Update state text
+                const iconEl = btnReadAloud.querySelector('.a11y-toggle-icon');
+                const labelEl = btnReadAloud.querySelector('.a11y-toggle-label');
                 const stateEl = btnReadAloud.querySelector('.a11y-toggle-state');
-                if (stateEl) {
-                    stateEl.textContent = 'Desativado';
-                }
+                if (iconEl) iconEl.textContent = '🔊';
+                if (labelEl) labelEl.textContent = 'Ouvir Página';
+                if (stateEl) stateEl.textContent = 'Desativado';
+                btnReadAloud.setAttribute('aria-pressed', 'false');
             }
         }
         async function toggleReadAloud() {
@@ -644,6 +633,7 @@
         }, 60000);
     }
     function setupDisclaimer() {
+        if (!dom.disclaimerModal) return;
         function closeModal() {
             dom.disclaimerModal.classList.add('hidden');
             dom.disclaimerModal.setAttribute('aria-hidden', 'true');
@@ -1071,12 +1061,113 @@ style="margin-top:16px;display:inline-block">
         }
         return bestDist <= maxDist ? best : null;
     }
+    const ESTADOS_BR = {
+        'acre': 'AC', 'alagoas': 'AL', 'amapa': 'AP', 'amazonas': 'AM', 'bahia': 'BA',
+        'ceara': 'CE', 'distrito federal': 'DF', 'espirito santo': 'ES', 'goias': 'GO',
+        'maranhao': 'MA', 'mato grosso': 'MT', 'mato grosso do sul': 'MS', 'minas gerais': 'MG',
+        'para': 'PA', 'paraiba': 'PB', 'parana': 'PR', 'pernambuco': 'PE', 'piaui': 'PI',
+        'rio de janeiro': 'RJ', 'rio grande do norte': 'RN', 'rio grande do sul': 'RS',
+        'rondonia': 'RO', 'roraima': 'RR', 'santa catarina': 'SC', 'sao paulo': 'SP',
+        'sergipe': 'SE', 'tocantins': 'TO',
+    };
+    const UF_SET = new Set(Object.values(ESTADOS_BR));
+    const CIDADES_UF = {
+        'barueri': 'SP', 'osasco': 'SP', 'guarulhos': 'SP', 'campinas': 'SP', 'santos': 'SP',
+        'sorocaba': 'SP', 'jundiai': 'SP', 'santo andre': 'SP', 'sao bernardo': 'SP',
+        'sao caetano': 'SP', 'diadema': 'SP', 'maua': 'SP', 'mogi das cruzes': 'SP',
+        'suzano': 'SP', 'taboao da serra': 'SP', 'cotia': 'SP', 'itaquaquecetuba': 'SP',
+        'carapicuiba': 'SP', 'itapevi': 'SP', 'embu das artes': 'SP', 'francisco morato': 'SP',
+        'franco da rocha': 'SP', 'caieiras': 'SP', 'ribeirao preto': 'SP', 'piracicaba': 'SP',
+        'sao jose dos campos': 'SP', 'sao jose do rio preto': 'SP', 'araraquara': 'SP',
+        'marilia': 'SP', 'presidente prudente': 'SP', 'bauru': 'SP', 'franca': 'SP',
+        'limeira': 'SP', 'taubate': 'SP', 'indaiatuba': 'SP', 'sumare': 'SP', 'americana': 'SP',
+        'rio de janeiro': 'RJ', 'niteroi': 'RJ', 'sao goncalo': 'RJ', 'duque de caxias': 'RJ',
+        'nova iguacu': 'RJ', 'petropolis': 'RJ', 'volta redonda': 'RJ', 'campos dos goytacazes': 'RJ',
+        'belo horizonte': 'MG', 'uberlandia': 'MG', 'contagem': 'MG', 'juiz de fora': 'MG',
+        'betim': 'MG', 'montes claros': 'MG', 'uberaba': 'MG', 'governador valadares': 'MG',
+        'curitiba': 'PR', 'londrina': 'PR', 'maringa': 'PR', 'ponta grossa': 'PR', 'cascavel': 'PR',
+        'foz do iguacu': 'PR', 'sao jose dos pinhais': 'PR', 'colombo': 'PR',
+        'porto alegre': 'RS', 'caxias do sul': 'RS', 'pelotas': 'RS', 'canoas': 'RS', 'gravatai': 'RS',
+        'florianopolis': 'SC', 'joinville': 'SC', 'blumenau': 'SC', 'chapeco': 'SC', 'itajai': 'SC',
+        'brasilia': 'DF', 'goiania': 'GO', 'aparecida de goiania': 'GO', 'anapolis': 'GO',
+        'cuiaba': 'MT', 'varzea grande': 'MT', 'rondonopolis': 'MT', 'sinop': 'MT',
+        'campo grande': 'MS', 'dourados': 'MS', 'tres lagoas': 'MS',
+        'salvador': 'BA', 'feira de santana': 'BA', 'vitoria da conquista': 'BA', 'camacari': 'BA',
+        'recife': 'PE', 'jaboatao dos guararapes': 'PE', 'olinda': 'PE', 'caruaru': 'PE',
+        'fortaleza': 'CE', 'caucaia': 'CE', 'juazeiro do norte': 'CE', 'maracanau': 'CE',
+        'natal': 'RN', 'mossoro': 'RN', 'parnamirim': 'RN',
+        'joao pessoa': 'PB', 'campina grande': 'PB',
+        'maceio': 'AL', 'arapiraca': 'AL',
+        'aracaju': 'SE',
+        'teresina': 'PI',
+        'sao luis': 'MA', 'imperatriz': 'MA',
+        'belem': 'PA', 'ananindeua': 'PA', 'santarem': 'PA', 'maraba': 'PA',
+        'manaus': 'AM', 'parintins': 'AM',
+        'macapa': 'AP',
+        'porto velho': 'RO', 'ji-parana': 'RO',
+        'boa vista': 'RR',
+        'rio branco': 'AC',
+        'palmas': 'TO',
+        'vitoria': 'ES', 'vila velha': 'ES', 'serra': 'ES', 'cariacica': 'ES',
+    };
+    function detectLocation(queryNorm) {
+        const q = queryNorm.toLowerCase().trim();
+        if (UF_SET.has(q.toUpperCase()) && q.length === 2) {
+            return { type: 'uf', uf: q.toUpperCase(), name: q.toUpperCase() };
+        }
+        if (ESTADOS_BR[q]) {
+            return { type: 'estado', uf: ESTADOS_BR[q], name: q };
+        }
+        if (CIDADES_UF[q]) {
+            return { type: 'cidade', uf: CIDADES_UF[q], name: q };
+        }
+        for (const [cidade, uf] of Object.entries(CIDADES_UF)) {
+            if (q.includes(cidade) || cidade.includes(q)) {
+                return { type: 'cidade', uf, name: cidade };
+            }
+        }
+        for (const [estado, uf] of Object.entries(ESTADOS_BR)) {
+            if (q.includes(estado)) {
+                return { type: 'estado', uf, name: estado };
+            }
+        }
+        return null;
+    }
+    function renderLocationResults(location, query) {
+        const ufLabel = location.uf;
+        const nomeDisplay = location.name.charAt(0).toUpperCase() + location.name.slice(1);
+        const orgao = orgaosEstaduaisData
+            ? orgaosEstaduaisData.find((o) => o.uf === ufLabel)
+            : null;
+        const allCats = direitosData
+            .map((cat) => ({ cat, score: 1 }))
+            .sort((a, b) => a.cat.titulo.localeCompare(b.cat.titulo));
+        const orgaoHtml = orgao && isSafeUrl(orgao.url)
+            ? `<p class="search-orgao">🏢 Órgão estadual (${escapeHtml(ufLabel)}): <a href="${escapeHtml(orgao.url)}" target="_blank" rel="noopener noreferrer"><strong>${escapeHtml(orgao.nome)}</strong> ↗</a></p>`
+            : orgao
+                ? `<p class="search-orgao">🏢 Órgão estadual (${escapeHtml(ufLabel)}): <strong>${escapeHtml(orgao.nome)}</strong></p>`
+                : '';
+        dom.searchResults.innerHTML =
+            `<div class="search-suggestion search-location">
+<p>📍 <strong>${escapeHtml(nomeDisplay)}</strong> ${location.type === 'cidade' ? `(${escapeHtml(ufLabel)})` : ''} — os direitos abaixo são <strong>federais</strong> e valem em todo o Brasil, incluindo na sua cidade/estado.</p>
+${orgaoHtml}
+<p class="search-hint">💡 Clique em qualquer direito para ver detalhes, documentos e passo a passo.</p>
+</div>` +
+            renderSearchResults(allCats);
+        bindSearchResultEvents();
+    }
     function performSearch(query) {
         const terms = query
             .normalize('NFD')
             .replace(/[\u0300-\u036f]/g, '')
             .split(/\s+/)
             .filter(Boolean);
+        const queryNorm = terms.join(' ');
+        const location = detectLocation(queryNorm);
+        if (location) {
+            renderLocationResults(location, query);
+            return;
+        }
         const scored = scoreSearch(terms);
         if (scored.length === 0 && terms.some((t) => t.length > 3)) {
             const dictionary = buildSearchDictionary();
@@ -1115,6 +1206,20 @@ style="margin-top:16px;display:inline-block">
         bindSearchResultEvents();
     }
     function scoreSearch(terms) {
+        const queryJoined = terms.join(' ');
+        const kwScores = {};
+        if (KEYWORD_MAP && Object.keys(KEYWORD_MAP).length > 0) {
+            for (const [keyword, { cats, weight }] of Object.entries(KEYWORD_MAP)) {
+                const normKey = normalizeText(keyword);
+                const matches = terms.some((t) => normKey.includes(t) || t.includes(normKey))
+                    || queryJoined.includes(normKey) || normKey.includes(queryJoined);
+                if (matches) {
+                    cats.forEach((catId) => {
+                        kwScores[catId] = (kwScores[catId] || 0) + weight;
+                    });
+                }
+            }
+        }
         return direitosData
             .map((cat) => {
                 const searchable = normalizeText(
@@ -1127,10 +1232,11 @@ style="margin-top:16px;display:inline-block">
                         ...(cat.dicas || []),
                     ].join(' ')
                 );
-                const score = terms.reduce((acc, term) => {
+                let score = terms.reduce((acc, term) => {
                     const count = (searchable.match(new RegExp(escapeRegex(term), 'g')) || []).length;
                     return acc + count;
                 }, 0);
+                score += (kwScores[cat.id] || 0);
                 return { cat, score };
             })
             .filter((r) => r.score > 0)

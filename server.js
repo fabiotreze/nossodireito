@@ -167,6 +167,9 @@ const MAX_URL_LENGTH = 2048;
 
 const ROOT = __dirname;
 
+// Cache package.json version at startup (avoid readFileSync on every health check)
+const PKG_VERSION = JSON.parse(fs.readFileSync(path.join(__dirname, 'package.json'), 'utf8')).version;
+
 function resolveFile(urlPath) {
     // Reject null-byte injection (CWE-158)
     if (urlPath.includes('\0')) return null;
@@ -240,12 +243,11 @@ const server = http.createServer((req, res) => {
     // Must respond 200 on ALL hosts (including *.azurewebsites.net)
     // before the domain redirect, otherwise probe marks app unhealthy.
     if (req.url === '/healthz' || req.url === '/health') {
-        const pkg = JSON.parse(fs.readFileSync(path.join(__dirname, 'package.json'), 'utf8'));
         res.writeHead(200, {
             'Content-Type': 'application/json',
             'Cache-Control': 'no-cache, no-store',
         });
-        res.end(JSON.stringify({ status: 'healthy', version: pkg.version }));
+        res.end(JSON.stringify({ status: 'healthy', version: PKG_VERSION }));
         return;
     }
 
@@ -313,6 +315,12 @@ const server = http.createServer((req, res) => {
     const govbrMatch = req.url.match(/^\/api\/govbr-servico\/(\d+)$/);
     if (govbrMatch) {
         const servicoId = govbrMatch[1];
+        // Limit servicoId length to prevent abuse (valid gov.br IDs are < 10 digits)
+        if (servicoId.length > 10) {
+            res.writeHead(400, { 'Content-Type': 'text/plain' });
+            res.end('Bad Request');
+            return;
+        }
         const govbrUrl = `https://servicos.gov.br/api/v1/servicos/${servicoId}`;
 
         const controller = new AbortController();
@@ -325,7 +333,7 @@ const server = http.createServer((req, res) => {
             .then(r => r.text().then(body => ({ r, body })))
             .then(({ r, body }) => {
                 clearTimeout(timeout);
-                const status = r.ok ? r.status : r.status;
+                const status = r.status;
                 const cacheControl = r.ok ? 'public, max-age=3600' : 'no-cache';
                 res.writeHead(status, {
                     'Content-Type': 'application/json',

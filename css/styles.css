@@ -1375,6 +1375,27 @@ html.high-contrast ::selection {
     font-size: 0.85rem;
 }
 
+.search-location {
+    background: var(--success-bg, #e8f8ef);
+    border-color: var(--success-border, #a3d9b1);
+}
+
+.search-orgao {
+    margin: 8px 0 4px;
+    font-size: 0.9rem;
+}
+
+.search-orgao a {
+    color: var(--primary);
+    text-decoration: underline;
+}
+
+.search-hint {
+    margin: 4px 0 0;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
 /* ---------- Card Grid (Categorias) ---------- */
 .card-grid {
     display: grid;
@@ -3608,7 +3629,7 @@ html.high-contrast ::selection {
     width: 100%;
     padding: 12px 16px;
     font-size: 1rem;
-    font-family: var(--font-body);
+    font-family: var(--font);
     border: 2px solid var(--border);
     border-radius: var(--radius);
     background: var(--surface);
@@ -3766,6 +3787,93 @@ html.high-contrast ::selection {
 
     .back-to-top:hover {
         background: var(--primary);
+    }
+
+    /* Dark mode: Accessibility Drawer */
+    .a11y-drawer {
+        background: #1e293b;
+    }
+
+    .a11y-section {
+        border-bottom-color: #334155;
+    }
+
+    .a11y-section-title {
+        color: #f1f5f9;
+    }
+
+    .a11y-drawer-btn {
+        background: #334155;
+        border-color: #475569;
+        color: #f1f5f9;
+    }
+
+    .a11y-drawer-btn:hover {
+        background: #475569;
+        border-color: #64748b;
+    }
+
+    .a11y-toggle-btn {
+        background: #334155;
+        border-color: #475569;
+        color: #f1f5f9;
+    }
+
+    .a11y-toggle-btn:hover {
+        background: #475569;
+        border-color: #64748b;
+    }
+
+    .a11y-action-btn {
+        background: #334155;
+        border-color: #475569;
+        color: #f1f5f9;
+    }
+
+    .a11y-action-btn:hover {
+        background: #475569;
+        border-color: #64748b;
+    }
+
+    .a11y-note {
+        background: #422006;
+        border-left-color: #d97706;
+        color: #fde68a;
+    }
+
+    .a11y-section-info {
+        background: #0c1e3a;
+        border-color: #1e3a8a;
+    }
+
+    .a11y-info-text,
+    .a11y-compliance-list {
+        color: #93c5fd;
+    }
+
+    .a11y-help-text {
+        color: #94a3b8;
+    }
+
+    /* Dark mode: Disclaimer Box */
+    .disclaimer-box {
+        background-color: #422006;
+        border-left-color: #d97706;
+    }
+
+    .disclaimer-title {
+        color: #fde68a;
+    }
+
+    /* Dark mode: Search suggestions */
+    .search-suggestion {
+        background: #0c1e3a;
+        border-color: #1e3a8a;
+    }
+
+    .search-location {
+        background: #052e16;
+        border-color: #166534;
     }
 }
 

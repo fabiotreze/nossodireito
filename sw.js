@@ -8,7 +8,7 @@
 
 'use strict';
 
-const CACHE_VERSION = 'nossodireito-v1.11.0';
+const CACHE_VERSION = 'nossodireito-v1.12.0';
 const STATIC_ASSETS = [
     '/',
     '/index.html',
@@ -37,8 +37,14 @@ const CDN_ASSETS = [
 self.addEventListener('install', (event) => {
     event.waitUntil(
         caches.open(CACHE_VERSION).then(async (cache) => {
-            // Cache local assets
-            await cache.addAll(STATIC_ASSETS);
+            // Cache local assets (best-effort per asset — don't fail install if one is missing)
+            for (const url of STATIC_ASSETS) {
+                try {
+                    await cache.add(url);
+                } catch {
+                    console.warn(`[SW] Static asset not cached: ${url}`);
+                }
+            }
             // Cache CDN assets (best-effort — don't fail install if CDN is down)
             for (const url of CDN_ASSETS) {
                 try {
