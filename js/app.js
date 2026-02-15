@@ -39,14 +39,16 @@
                 clearTimeout(timeout);
                 if (res.ok) return res;
                 if (res.status >= 400 && res.status < 500) throw new Error(`HTTP ${res.status}`);
-                // 5xx: throw on last attempt to avoid returning undefined
                 if (attempt === retries) throw new Error(`HTTP ${res.status}`);
+                // 5xx with retries left: backoff then retry
+                await new Promise(r => setTimeout(r, delay * Math.pow(2, attempt)));
             } catch (err) {
                 clearTimeout(timeout);
                 if (attempt === retries) throw err;
                 await new Promise(r => setTimeout(r, delay * Math.pow(2, attempt)));
             }
         }
+        throw new Error('resilientFetch: exhausted retries');
     }
     let direitosData = null;
     let fontesData = null;
@@ -494,9 +496,7 @@
         } else if (btnReadAloud && !TTS_AVAILABLE) {
             btnReadAloud.style.display = 'none';
         }
-        waitForVoices().then(voices => {
-
-        });
+        waitForVoices().catch(() => { /* pre-warm voices; errors handled in startReading */ });
         document.addEventListener('visibilitychange', () => {
             if (document.hidden && ttsActive) {
 
@@ -543,7 +543,7 @@
         d.className = 'confirm-dialog';
         d.setAttribute('role', 'alertdialog');
         d.setAttribute('aria-label', msg);
-        d.innerHTML = '<p>' + msg + '</p><div class="confirm-actions"><button>Cancelar</button><button class="btn-confirm">Confirmar</button></div>';
+        d.innerHTML = '<p>' + escapeHtml(msg) + '</p><div class="confirm-actions"><button>Cancelar</button><button class="btn-confirm">Confirmar</button></div>';
         document.body.appendChild(d);
         d.showModal();
         d.onclick = e => { if (e.target.tagName === 'BUTTON') { const ok = e.target.classList.contains('btn-confirm'); d.close(); d.remove(); if (ok) cb(); } };
@@ -637,6 +637,9 @@
         await safeRunAsync('cleanupExpiredFiles', cleanupExpiredFiles);
         await safeRunAsync('renderFileList', renderFileList);
         safeRun('updateSectionAlternation', updateSectionAlternation);
+        // Remove SEO-only content from DOM to reduce DOM size (crawlers already parsed it)
+        const seoContent = document.getElementById('seo-content');
+        if (seoContent) seoContent.remove();
         setInterval(async () => {
             const removed = await cleanupExpiredFiles();
             if (removed > 0) await renderFileList();
@@ -672,13 +675,14 @@
         dom.disclaimerModal.addEventListener('click', (e) => {
             if (e.target === dom.disclaimerModal) closeModal();
         });
-        dom.acceptBtn.addEventListener('click', closeModal);
-        dom.showDisclaimer.addEventListener('click', (e) => {
+        if (dom.acceptBtn) dom.acceptBtn.addEventListener('click', closeModal);
+        if (dom.showDisclaimer) dom.showDisclaimer.addEventListener('click', (e) => {
             e.preventDefault();
             openModal();
         });
     }
     function setupNavigation() {
+        if (!dom.menuToggle || !dom.navLinks) return;
         dom.menuToggle.addEventListener('click', () => {
             const open = dom.navLinks.classList.toggle('open');
             dom.menuToggle.classList.toggle('open', open);
@@ -722,7 +726,7 @@
             { rootMargin: '-100px 0px -60% 0px' }
         );
         sections.forEach((s) => observer.observe(s));
-        dom.voltarBtn.addEventListener('click', () => {
+        if (dom.voltarBtn) dom.voltarBtn.addEventListener('click', () => {
             dom.detalheSection.style.display = 'none';
             dom.categoriasSection.style.display = '';
             updateSectionAlternation();
@@ -779,8 +783,11 @@
     }
     async function enrichGovBr() {
         try {
+            const _gc = new AbortController();
+            const _gt = setTimeout(() => _gc.abort(), 4000);
             const r = await fetch('/api/govbr-servico/10783',
-                { signal: AbortSignal.timeout(4000) });
+                { signal: _gc.signal });
+            clearTimeout(_gt);
             if (r.ok) sessionStorage.setItem('govbr_10783', '1');
         } catch { }
     }
@@ -969,7 +976,7 @@ class="btn btn-sm btn-whatsapp" aria-label="Compartilhar no WhatsApp">
                         ipvaInfo.innerHTML = '';
                         return;
                     }
-                    const estado = cat.ipva_estados_detalhado.find(e => e.uf === uf);
+                    const estado = cat.ipva_estados_detalhado.find(item => item.uf === uf);
                     if (estado) {
                         ipvaInfo.innerHTML = `
 <div class="ipva-detail-card">
@@ -1044,7 +1051,9 @@ style="margin-top:16px;display:inline-block">
         }
         return matrix[b.length][a.length];
     }
+    let _cachedDictionary = null;
     function buildSearchDictionary() {
+        if (_cachedDictionary) return _cachedDictionary;
         const words = new Set();
         Object.keys(KEYWORD_MAP).forEach((k) => {
             normalizeText(k).split(/\s+/).forEach((w) => { if (w.length > 2) words.add(w); });
@@ -1055,7 +1064,8 @@ style="margin-top:16px;display:inline-block">
                 normalizeText(text).split(/\s+/).forEach((w) => { if (w.length > 2) words.add(w); });
             });
         }
-        return Array.from(words);
+        _cachedDictionary = Array.from(words);
+        return _cachedDictionary;
     }
     function findClosestWord(term, dictionary, maxDist) {
         let best = null;
@@ -1230,6 +1240,8 @@ ${orgaoHtml}
                 }
             }
         }
+        // Pre-compile regexes once for all terms
+        const termRegexes = terms.map(t => new RegExp(escapeRegex(t), 'g'));
         return direitosData
             .map((cat) => {
                 const searchable = normalizeText(
@@ -1242,8 +1254,9 @@ ${orgaoHtml}
                         ...(cat.dicas || []),
                     ].join(' ')
                 );
-                let score = terms.reduce((acc, term) => {
-                    const count = (searchable.match(new RegExp(escapeRegex(term), 'g')) || []).length;
+                let score = termRegexes.reduce((acc, regex) => {
+                    regex.lastIndex = 0;
+                    const count = (searchable.match(regex) || []).length;
                     return acc + count;
                 }, 0);
                 score += (kwScores[cat.id] || 0);
@@ -2477,7 +2490,7 @@ um advogado ou o <strong>CRAS</strong> da sua cidade.</p>
     }
     function formatDate(dateStr) {
         try {
-            const d = new Date(dateStr + 'T00:00:00');
+            const d = new Date(dateStr.includes('T') ? dateStr : dateStr + 'T00:00:00');
             return d.toLocaleDateString('pt-BR', {
                 day: '2-digit',
                 month: 'long',
@@ -2504,13 +2517,15 @@ um advogado ou o <strong>CRAS</strong> da sua cidade.</p>
     function setupBackToTop() {
         const btn = document.getElementById('backToTop');
         if (!btn) return;
+        let _bttTicking = false;
         window.addEventListener('scroll', () => {
-            if (window.scrollY > 300) {
-                btn.classList.add('visible');
-            } else {
-                btn.classList.remove('visible');
-            }
-        });
+            if (_bttTicking) return;
+            _bttTicking = true;
+            requestAnimationFrame(() => {
+                btn.classList.toggle('visible', window.scrollY > 300);
+                _bttTicking = false;
+            });
+        }, { passive: true });
         btn.addEventListener('click', () => {
             window.scrollTo({
                 top: 0,

@@ -5,6 +5,33 @@ Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/)
 e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [1.12.1] - 2026-02-15
+
+### 🐛 Corrigido
+- **`resilientFetch()` podia retornar `undefined`** — 5xx sem retries restantes não fazia backoff; agora faz delay+retry e lança exceção ao esgotar tentativas
+- **Null-dereference em `setupDisclaimer()`/`setupNavigation()`** — Adicionados null guards para `acceptBtn`, `showDisclaimer`, `menuToggle`, `navLinks`, `voltarBtn`
+- **`AbortSignal.timeout()` incompatível** — Substituído por `AbortController` + `setTimeout` em `enrichGovBr()` para compatibilidade com Safari < 16
+- **XSS potencial em `confirmAction()`** — `msg` agora passa por `escapeHtml()` antes de `innerHTML`
+- **`formatDate()` quebrava com ISO completo** — Detecta se já contém 'T' antes de acrescentar timezone
+- **Shadow variable `e` no IPVA handler** — Renomeada para `item` no `.find()` callback
+- **`server.js` I/O bloqueante** — `resolveFile()` convertida para async com `fs.promises.lstat()`
+- **`server.js` stream error double-end** — Verifica `res.writableEnded` antes de `res.end()`
+- **SPA fallback mascarava 404** — Requests com extensão de arquivo que não existem retornam 404 em vez de `index.html`
+
+### ⚡ Performance
+- **Scroll listener throttled** — `backToTop` usa `requestAnimationFrame` + `passive: true` (era 60fps sem throttle)
+- **Search dictionary cacheada** — `buildSearchDictionary()` não reconstrói a cada busca
+- **Regex pre-compilada em `scoreSearch()`** — Regexes criadas uma vez por termo, não por categoria × termo
+- **SW install paralelo** — Assets cacheados com `Promise.allSettled()` (era sequencial)
+- **DOM reduzido** — Bloco SEO `#seo-content` removido do DOM após init (~35 elementos)
+- **CLS 0.014 corrigido** — Inline CSS para `hero-actions` mobile (480px) agora inclui `flex-direction:column; min-height:176px`
+- **LCP image preload** — Adicionado `<link rel="preload">` para hero image WebP no `<head>`
+
+### 🔒 Segurança
+- **Rate limit map cap** — Limite de 50.000 entradas para evitar crescimento sem limite sob ataque distribuído
+
+---
+
 ## [1.12.0] - 2026-02-15
 
 ### 🐛 Corrigido

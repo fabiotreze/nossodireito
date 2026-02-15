@@ -1,4 +1,4 @@
-# 🔒 NossoDireito — Auditoria de Segurança v1.12.0
+# 🔒 NossoDireito — Auditoria de Segurança v1.12.1
 
 **Data**: 2026-02-15
 **Escopo**: Aplicação client-side (HTML5 + CSS3 + Vanilla JS) + servidor Node.js (`server.js`)
@@ -267,5 +267,5 @@ A aplicação NossoDireito v1.10.0 implementa um conjunto robusto de controles d
 
 ---
 
-*Documento atualizado em 2026-02-13 como parte do processo de Security Review do NossoDireito v1.10.0.*
+*Documento atualizado em 2026-02-15 como parte do processo de Security Review do NossoDireito v1.10.0.*
 *Para relatar vulnerabilidades: veja [SECURITY.md](SECURITY.md)*

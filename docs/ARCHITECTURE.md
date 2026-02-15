@@ -1,6 +1,6 @@
 # NossoDireito — Arquitetura do Sistema V1 (Produção Atual)
 
-**Versão:** 1.12.0
+**Versão:** 1.12.1
 **Data:** Fevereiro 2026
 **Status:** Produção Estável (Quality Gate: 100.0/100)
 **URL:** https://nossodireito.fabiotreze.com

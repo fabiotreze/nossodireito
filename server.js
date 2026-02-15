@@ -11,6 +11,7 @@
 
 const http = require('node:http');
 const fs = require('node:fs');
+const fsPromises = require('node:fs/promises');
 const path = require('node:path');
 const zlib = require('node:zlib');
 
@@ -50,6 +51,8 @@ const rateLimitMap = new Map();
 
 function isRateLimited(ip) {
     const now = Date.now();
+    // Safety cap: prevent unbounded memory growth under distributed attack
+    if (rateLimitMap.size > 50000) rateLimitMap.clear();
     const entry = rateLimitMap.get(ip);
     if (!entry || now - entry.start > RATE_LIMIT_WINDOW) {
         rateLimitMap.set(ip, { start: now, count: 1 });
@@ -170,7 +173,7 @@ const ROOT = __dirname;
 // Cache package.json version at startup (avoid readFileSync on every health check)
 const PKG_VERSION = JSON.parse(fs.readFileSync(path.join(__dirname, 'package.json'), 'utf8')).version;
 
-function resolveFile(urlPath) {
+async function resolveFile(urlPath) {
     // Reject null-byte injection (CWE-158)
     if (urlPath.includes('\0')) return null;
 
@@ -215,17 +218,19 @@ function resolveFile(urlPath) {
 
     // File must exist and be a regular file (no symlink following)
     try {
-        const stat = fs.lstatSync(fullPath);
+        const stat = await fsPromises.lstat(fullPath);
         if (stat.isFile() && !stat.isSymbolicLink()) return fullPath;
     } catch {
-        // File doesn't exist — fall through to SPA fallback
+        // File doesn't exist
     }
 
-    // Fallback: serve index.html for SPA navigation
+    // SPA fallback only for navigation-like requests (no extension)
+    // Requests with file extensions that don't exist → 404
+    if (ext) return null;
     return path.join(ROOT, 'index.html');
 }
 
-const server = http.createServer((req, res) => {
+const server = http.createServer(async (req, res) => {
     // ── Suppress server identification (CWE-200) ──
     res.removeHeader('X-Powered-By');
 
@@ -361,7 +366,7 @@ const server = http.createServer((req, res) => {
         return;
     }
 
-    const fullPath = resolveFile(urlPath);
+    const fullPath = await resolveFile(urlPath);
 
     if (!fullPath) {
         res.writeHead(404, {
@@ -423,7 +428,7 @@ const server = http.createServer((req, res) => {
         if (!res.headersSent) {
             res.writeHead(500, { 'Content-Type': 'text/plain' });
         }
-        res.end('Internal Server Error');
+        if (!res.writableEnded) res.end('Internal Server Error');
     });
 });
 

@@ -8,7 +8,7 @@
 
 'use strict';
 
-const CACHE_VERSION = 'nossodireito-v1.12.0';
+const CACHE_VERSION = 'nossodireito-v1.12.1';
 const STATIC_ASSETS = [
     '/',
     '/index.html',
@@ -37,22 +37,11 @@ const CDN_ASSETS = [
 self.addEventListener('install', (event) => {
     event.waitUntil(
         caches.open(CACHE_VERSION).then(async (cache) => {
-            // Cache local assets (best-effort per asset — don't fail install if one is missing)
-            for (const url of STATIC_ASSETS) {
-                try {
-                    await cache.add(url);
-                } catch {
-                    console.warn(`[SW] Static asset not cached: ${url}`);
-                }
-            }
-            // Cache CDN assets (best-effort — don't fail install if CDN is down)
-            for (const url of CDN_ASSETS) {
-                try {
-                    await cache.add(url);
-                } catch {
-                    console.warn(`[SW] CDN asset not cached: ${url}`);
-                }
-            }
+            // Cache all assets in parallel (best-effort — don't fail install if any is missing)
+            const allAssets = [...STATIC_ASSETS, ...CDN_ASSETS];
+            await Promise.allSettled(allAssets.map(url =>
+                cache.add(url).catch(() => console.warn(`[SW] Asset not cached: ${url}`))
+            ));
         })
     );
     // Activate immediately (don't wait for old SW to finish)

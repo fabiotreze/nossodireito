@@ -16,6 +16,7 @@
     <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
     <link rel="dns-prefetch" href="https://vlibras.gov.br">
     <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+    <link rel="preload" as="image" type="image/webp" href="/images/nossodireito-400.webp" fetchpriority="high">
     <!-- CSP enforced via HTTP header in server.js -->
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
     <meta http-equiv="Referrer-Policy" content="no-referrer">
@@ -78,6 +79,7 @@ body{font-family:var(--font);color:var(--text);background:var(--surface);line-he
 .nav-links a{display:block;padding:6px 10px;border-radius:8px;font-size:.875rem;font-weight:500;text-decoration:none}
 .menu-toggle{display:none}
 @media(max-width:768px){html{font-size:15px}.hero{padding:40px 0 32px}.hero-grid{flex-direction:column;text-align:center;gap:24px}.hero-logo{width:120px;height:120px}.hero-actions{justify-content:center}.hero h1{font-size:1.8rem}.hero-sub{font-size:1rem;margin-left:auto;margin-right:auto}.nav-links{position:fixed;transform:translateY(-120%)}.menu-toggle{display:flex;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer;padding:8px}}
+@media(max-width:480px){.hero-actions{flex-direction:column;align-items:stretch;max-width:320px;margin-left:auto;margin-right:auto;min-height:176px}}
     </style>
     <link rel="stylesheet" href="css/styles.css">
     <script type="application/ld+json">
@@ -763,8 +765,8 @@ body{font-family:var(--font);color:var(--text);background:var(--surface);line-he
                     ℹ️ Esta tabela utiliza códigos CID-10 e CID-11 oficiais da OMS e critérios técnicos
                     baseados na
                     legislação brasileira. Consulte sempre as fontes oficiais para informações
-                    atualizadas: <a href="https://icd.who.int/" rel="noopener noreferrer">OMS ICD (site externo)</a>,
-                    <a href="https://www.gov.br/saude/pt-br" rel="noopener noreferrer">Ministério da
+                    atualizadas: <a href="https://icd.who.int/" target="_blank" rel="noopener noreferrer">OMS ICD (site externo)</a>,
+                    <a href="https://www.gov.br/saude/pt-br" target="_blank" rel="noopener noreferrer">Ministério da
                         Saúde (site externo)</a>.
                 </div>
             </div>
