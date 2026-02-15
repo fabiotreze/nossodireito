@@ -1026,13 +1026,96 @@ style="margin-top:16px;display:inline-block">
             timer = setTimeout(doSearch, 300);
         });
     }
+    function levenshtein(a, b) {
+        if (a.length === 0) return b.length;
+        if (b.length === 0) return a.length;
+        const matrix = [];
+        for (let i = 0; i <= b.length; i++) matrix[i] = [i];
+        for (let j = 0; j <= a.length; j++) matrix[0][j] = j;
+        for (let i = 1; i <= b.length; i++) {
+            for (let j = 1; j <= a.length; j++) {
+                const cost = b.charAt(i - 1) === a.charAt(j - 1) ? 0 : 1;
+                matrix[i][j] = Math.min(
+                    matrix[i - 1][j] + 1,
+                    matrix[i][j - 1] + 1,
+                    matrix[i - 1][j - 1] + cost
+                );
+            }
+        }
+        return matrix[b.length][a.length];
+    }
+    function buildSearchDictionary() {
+        const words = new Set();
+        Object.keys(KEYWORD_MAP).forEach((k) => {
+            normalizeText(k).split(/\s+/).forEach((w) => { if (w.length > 2) words.add(w); });
+        });
+        if (direitosData) {
+            direitosData.forEach((cat) => {
+                const text = [cat.titulo, cat.resumo, ...(cat.tags || [])].join(' ');
+                normalizeText(text).split(/\s+/).forEach((w) => { if (w.length > 2) words.add(w); });
+            });
+        }
+        return Array.from(words);
+    }
+    function findClosestWord(term, dictionary, maxDist) {
+        let best = null;
+        let bestDist = maxDist + 1;
+        for (const word of dictionary) {
+            if (Math.abs(word.length - term.length) > maxDist) continue;
+            const d = levenshtein(term, word);
+            if (d < bestDist) {
+                bestDist = d;
+                best = word;
+                if (d === 1) break;
+            }
+        }
+        return bestDist <= maxDist ? best : null;
+    }
     function performSearch(query) {
         const terms = query
             .normalize('NFD')
             .replace(/[\u0300-\u036f]/g, '')
             .split(/\s+/)
             .filter(Boolean);
-        const scored = direitosData
+        const scored = scoreSearch(terms);
+        if (scored.length === 0 && terms.some((t) => t.length > 3)) {
+            const dictionary = buildSearchDictionary();
+            const corrected = terms.map((t) => {
+                if (t.length <= 3) return t;
+                const closest = findClosestWord(t, dictionary, 2);
+                return closest || t;
+            });
+            const correctedQuery = corrected.join(' ');
+            if (correctedQuery !== terms.join(' ')) {
+                const rescored = scoreSearch(corrected);
+                if (rescored.length > 0) {
+                    dom.searchResults.innerHTML =
+                        `<div class="search-suggestion"><p>Mostrando resultados para "<strong>${escapeHtml(correctedQuery)}</strong>" <span class="search-original">(você pesquisou "${escapeHtml(query)}")</span></p></div>` +
+                        renderSearchResults(rescored);
+                    bindSearchResultEvents();
+                    return;
+                }
+            }
+            dom.searchResults.innerHTML = `
+<div class="search-no-results">
+<p>Nenhum resultado para "<strong>${escapeHtml(query)}</strong>".</p>
+<p>Tente palavras como: BPC, escola, plano de saúde, transporte, TEA...</p>
+</div>`;
+            return;
+        }
+        if (scored.length === 0) {
+            dom.searchResults.innerHTML = `
+<div class="search-no-results">
+<p>Nenhum resultado para "<strong>${escapeHtml(query)}</strong>".</p>
+<p>Tente palavras como: BPC, escola, plano de saúde, transporte, TEA...</p>
+</div>`;
+            return;
+        }
+        dom.searchResults.innerHTML = renderSearchResults(scored);
+        bindSearchResultEvents();
+    }
+    function scoreSearch(terms) {
+        return direitosData
             .map((cat) => {
                 const searchable = normalizeText(
                     [
@@ -1052,26 +1135,22 @@ style="margin-top:16px;display:inline-block">
             })
             .filter((r) => r.score > 0)
             .sort((a, b) => b.score - a.score);
-        if (scored.length === 0) {
-            dom.searchResults.innerHTML = `
-<div class="search-no-results">
-<p>Nenhum resultado para "<strong>${escapeHtml(query)}</strong>".</p>
-<p>Tente palavras como: BPC, escola, plano de saúde, transporte, TEA...</p>
-</div>`;
-            return;
-        }
-        dom.searchResults.innerHTML = scored
+    }
+    function renderSearchResults(scored) {
+        return scored
             .map(
                 ({ cat }) => `
 <div class="search-result-item" data-id="${cat.id}" tabindex="0" role="button">
 <span class="search-result-icon">${cat.icone}</span>
 <div class="search-result-info">
-<h4>${escapeHtml(cat.titulo)}</h4>
+<h3>${escapeHtml(cat.titulo)}</h3>
 <p>${escapeHtml(cat.resumo)}</p>
 </div>
 </div>`
             )
             .join('');
+    }
+    function bindSearchResultEvents() {
         dom.searchResults.querySelectorAll('.search-result-item').forEach((item) => {
             item.addEventListener('click', () => showDetalhe(item.dataset.id));
             item.addEventListener('keydown', (e) => {
@@ -1256,7 +1335,7 @@ ${doc.dica ? `<div class="doc-master-dica">💡 ${escapeHtml(doc.dica)}</div>` :
 <div class="inst-header">
 <span class="inst-tipo-badge ${inst.tipo}">${tipoIcon} ${tipoLabel}</span>
 </div>
-<h4 class="inst-nome">${escapeHtml(inst.nome)}</h4>
+<h3 class="inst-nome">${escapeHtml(inst.nome)}</h3>
 <p class="inst-desc">${escapeHtml(inst.descricao)}</p>
 ${servicos ? `<ul class="inst-servicos">${servicos}</ul>` : ''}
 <div class="inst-como">${escapeHtml(inst.como_acessar)}</div>

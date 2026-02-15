@@ -1340,7 +1340,7 @@ html.high-contrast ::selection {
     flex-shrink: 0;
 }
 
-.search-result-info h4 {
+.search-result-info h3 {
     font-size: 1rem;
     margin-bottom: 4px;
 }
@@ -1354,6 +1354,25 @@ html.high-contrast ::selection {
     text-align: center;
     padding: 24px;
     color: var(--text-muted);
+}
+
+.search-suggestion {
+    padding: 12px 16px;
+    margin-bottom: 12px;
+    background: var(--info-bg, #e8f4fd);
+    border: 1px solid var(--info-border, #b3d9f2);
+    border-radius: var(--radius);
+    font-size: 0.9rem;
+    color: var(--text);
+}
+
+.search-suggestion p {
+    margin: 0;
+}
+
+.search-original {
+    color: var(--text-muted);
+    font-size: 0.85rem;
 }
 
 /* ---------- Card Grid (Categorias) ---------- */
