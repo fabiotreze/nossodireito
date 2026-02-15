@@ -170,7 +170,7 @@ class VisualBrowserTests:
                                 canvas.width = 1; canvas.height = 1;
                                 const ctx = canvas.getContext('2d');
                                 // Parse the gradient to extract colors
-                                const colors = bgImg.match(/rgb[a]?\([^)]+\)/g);
+                                const colors = bgImg.match(/rgb[a]?\\([^)]+\\)/g);
                                 if (colors && colors.length > 0) {
                                     // Use the darkest/first color as approximation
                                     return colors[0];

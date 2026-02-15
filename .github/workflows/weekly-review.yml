@@ -45,11 +45,11 @@ jobs:
         id: health
         continue-on-error: true
         run: |
-          HZ=$(curl -s -o /dev/null -w "%{http_code}" --max-time 10 "https://app-nossodireito.azurewebsites.net/healthz" 2>/dev/null || echo "ERRO")
+          HZ=$(curl -s -o /dev/null -w "%{http_code}" --max-time 10 "https://app-nossodireito.azurewebsites.net/health" 2>/dev/null || echo "ERRO")
           CD=$(curl -s -o /dev/null -w "%{http_code}" --max-time 10 "https://nossodireito.fabiotreze.com/" 2>/dev/null || echo "ERRO")
           RD=$(curl -s -o /dev/null -w "%{http_code}" --max-time 10 --max-redirs 0 "https://app-nossodireito.azurewebsites.net/" 2>/dev/null || echo "ERRO")
 
-          echo "healthz=$HZ" >> "$GITHUB_OUTPUT"
+          echo "health=$HZ" >> "$GITHUB_OUTPUT"
           echo "custom_domain=$CD" >> "$GITHUB_OUTPUT"
           echo "redirect=$RD" >> "$GITHUB_OUTPUT"
 
@@ -214,7 +214,7 @@ jobs:
           NUM_CATEGORIAS: ${{ steps.fontes.outputs.num_categorias }}
           QG_STATUS: ${{ steps.qg.outputs.status }}
           HEALTH_OVERALL: ${{ steps.health.outputs.overall }}
-          HEALTH_HZ: ${{ steps.health.outputs.healthz }}
+          HEALTH_HZ: ${{ steps.health.outputs.health }}
           HEALTH_CD: ${{ steps.health.outputs.custom_domain }}
           HEALTH_RD: ${{ steps.health.outputs.redirect }}
           CID_OK: ${{ steps.cidcheck.outputs.cid_ok }}
@@ -246,7 +246,7 @@ jobs:
             | Verificação | Resultado |
             |-------------|-----------|
             | Quality Gate | ${process.env.QG_STATUS} |
-            | Health Probe (/healthz) | HTTP ${process.env.HEALTH_HZ} |
+            | Health Probe (/health) | HTTP ${process.env.HEALTH_HZ} |
             | Custom Domain | HTTP ${process.env.HEALTH_CD} |
             | Redirect Azure | HTTP ${process.env.HEALTH_RD} |
             | URL Validation | ${process.env.URL_SCORE}% (${process.env.URL_ERRORS} erros, ${process.env.URL_WARNINGS} avisos) |

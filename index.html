@@ -13,12 +13,10 @@
     <meta name="robots" content="index, follow">
     <meta name="google-site-verification" content="NKr8hf2QLuBl8TrcDwcUxoH0OVWoLDE7Yi-rWsd-xUA" />
     <link rel="canonical" href="https://nossodireito.fabiotreze.com">
-    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
     <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
-    <link rel="preconnect" href="https://vlibras.gov.br" crossorigin>
     <link rel="dns-prefetch" href="https://vlibras.gov.br">
-    <meta http-equiv="Content-Security-Policy"
-        content="default-src 'none'; script-src 'self' blob: https://cdnjs.cloudflare.com https://vlibras.gov.br https://*.vlibras.gov.br https://cdn.jsdelivr.net 'unsafe-eval' 'wasm-unsafe-eval'; script-src-elem 'self' blob: https://cdnjs.cloudflare.com https://vlibras.gov.br https://*.vlibras.gov.br https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://*.vlibras.gov.br https://cdn.jsdelivr.net; img-src 'self' data: blob: https://vlibras.gov.br https://*.vlibras.gov.br https://cdn.jsdelivr.net; connect-src 'self' https://vlibras.gov.br https://*.vlibras.gov.br https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; worker-src 'self' blob: https://cdnjs.cloudflare.com; child-src blob:; frame-src 'self' https://*.vlibras.gov.br blob:; media-src 'self' https://*.vlibras.gov.br; font-src 'self' https://vlibras.gov.br https://*.vlibras.gov.br https://cdn.jsdelivr.net; form-action 'none'; base-uri 'self'; manifest-src 'self';">
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+    <!-- CSP enforced via HTTP header in server.js -->
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
     <meta http-equiv="Referrer-Policy" content="no-referrer">
     <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=(), payment=()">
@@ -49,8 +47,10 @@
     <meta name="apple-mobile-web-app-title" content="NossoDireito">
     <meta name="mobile-web-app-capable" content="yes">
     <link rel="manifest" href="/manifest.json">
-    <link rel="stylesheet" href="css/styles.css">
-    <link rel="preload" as="image" type="image/webp" href="/images/nossodireito-400.webp">
+    <style>:root{--primary:#1e40af;--primary-light:#3b82f6;--primary-dark:#1e3a8a;--surface:#ffffff;--text:#1e293b;--border:#e2e8f0;--radius:12px;--radius-sm:8px;--shadow-sm:0 1px 3px rgba(0,0,0,.08);--font:'Segoe UI',system-ui,-apple-system,sans-serif;--max-width:1100px;--transition:0.2s ease}*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}html{scroll-behavior:smooth;scroll-padding-top:120px;font-size:16px;overflow-x:hidden}body{font-family:var(--font);color:var(--text);background:var(--surface);line-height:1.6;-webkit-font-smoothing:antialiased;min-height:100vh;overflow-x:hidden}.container{max-width:var(--max-width);margin:0 auto;padding:0 20px}.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}.navbar{position:sticky;top:0;z-index:1000;background:var(--surface);border-bottom:1px solid var(--border);box-shadow:var(--shadow-sm)}.navbar .container{display:flex;align-items:center;justify-content:space-between;height:64px}.navbar-brand{display:flex;align-items:center;gap:10px;font-size:1.25rem;font-weight:700;color:var(--text);text-decoration:none}.hero{background:linear-gradient(135deg,var(--primary-dark),var(--primary));color:#fff;padding:80px 0 40px}.hero-grid{display:flex;align-items:center;gap:48px;text-align:left}.hero-visual{flex-shrink:0}.hero-content{flex:1;min-width:0}.hero-logo{display:block;width:200px;height:200px;border-radius:50%;filter:drop-shadow(0 0 28px rgba(255,255,255,.35))}h1{font-size:2.4rem;font-weight:800;line-height:1.2;margin-bottom:16px}.hero-highlight{color:#fbbf24}@media(prefers-color-scheme:dark){:root{--primary:#60a5fa;--primary-dark:#3b82f6;--surface:#0f172a;--text:#f1f5f9;--border:#334155}.hero-highlight{color:#fde68a}}</style>
+    <link rel="stylesheet" href="css/styles.css" media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="css/styles.css"></noscript>
+    <link rel="preload" as="image" type="image/webp" href="/images/nossodireito-200.webp">
     <script type="application/ld+json">
 {
 "@context": "https://schema.org",
@@ -501,7 +501,7 @@
         </div>
         <section class="hero" id="inicio">
             <div class="container hero-grid">
-                <div class="hero-visual"><picture><source type="image/webp" srcset="/images/nossodireito-400.webp 400w, /images/nossodireito.webp 1024w" sizes="200px"><img src="/images/nossodireito-400.png" alt="NossoDireito" class="hero-logo"
+                <div class="hero-visual"><picture><source type="image/webp" srcset="/images/nossodireito-200.webp 200w, /images/nossodireito-400.webp 400w" sizes="200px"><img src="/images/nossodireito-200.png" alt="NossoDireito" class="hero-logo"
                         width="200" height="200" fetchpriority="high"></picture></div>
                 <div class="hero-content">
                     <h1>Direitos e Benefícios para Pessoas com Deficiência no Brasil</h1>

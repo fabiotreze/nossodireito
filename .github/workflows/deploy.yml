@@ -173,16 +173,16 @@ jobs:
           echo "⏳ Aguardando estabilização do deploy..."
           MAX_RETRIES=12
           RETRY_DELAY=15
-          HEALTHZ_OK=false
+          HEALTH_OK=false
 
           # 1. Health probe com retry (B1 pode demorar até 3min para estabilizar)
           for i in $(seq 1 $MAX_RETRIES); do
             HZ_STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
               --connect-timeout 10 --max-time 15 \
-              "https://app-nossodireito.azurewebsites.net/healthz" || true)
-            echo "🏥 Tentativa ${i}/${MAX_RETRIES}: /healthz → HTTP ${HZ_STATUS}"
+              "https://app-nossodireito.azurewebsites.net/health" || true)
+            echo "🏥 Tentativa ${i}/${MAX_RETRIES}: /health → HTTP ${HZ_STATUS}"
             if [ "$HZ_STATUS" = "200" ]; then
-              HEALTHZ_OK=true
+              HEALTH_OK=true
               break
             fi
             if [ "$i" -lt "$MAX_RETRIES" ]; then
@@ -190,8 +190,8 @@ jobs:
             fi
           done
 
-          if [ "$HEALTHZ_OK" != "true" ]; then
-            echo "::error::/healthz não respondeu 200 após ${MAX_RETRIES} tentativas"
+          if [ "$HEALTH_OK" != "true" ]; then
+            echo "::error::/health não respondeu 200 após ${MAX_RETRIES} tentativas"
             exit 1
           fi
 

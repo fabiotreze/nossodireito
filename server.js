@@ -83,16 +83,16 @@ const MIME = Object.freeze({
 
 // Cache policies (seconds)
 const CACHE = Object.freeze({
-    '.html': 'public, max-age=300',    // 5 min
-    '.json': 'public, max-age=3600',   // 1 hour
-    '.css': 'public, max-age=604800',  // 1 week
-    '.js': 'public, max-age=604800',   // 1 week
-    '.png': 'public, max-age=604800',  // 1 week
-    '.ico': 'public, max-age=604800',
-    '.svg': 'public, max-age=604800',
-    '.webp': 'public, max-age=604800',
-    '.xml': 'public, max-age=3600',     // 1 hour
-    '.txt': 'public, max-age=86400',     // 1 day
+    '.html': 'public, max-age=300',       // 5 min
+    '.json': 'public, max-age=3600',      // 1 hour
+    '.css': 'public, max-age=2592000',    // 30 days
+    '.js': 'public, max-age=2592000',     // 30 days
+    '.png': 'public, max-age=2592000',    // 30 days
+    '.ico': 'public, max-age=2592000',    // 30 days
+    '.svg': 'public, max-age=2592000',    // 30 days
+    '.webp': 'public, max-age=2592000',   // 30 days
+    '.xml': 'public, max-age=3600',       // 1 hour
+    '.txt': 'public, max-age=86400',      // 1 day
 });
 
 // ── Security Headers (EASM-hardened) ──

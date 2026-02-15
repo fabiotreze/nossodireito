@@ -112,7 +112,7 @@
         │  │  - Security headers (CSP, HSTS)          │  │
         │  │  - Rate limiting (120 req/min)           │  │
         │  │  - Gzip/Brotli compression               │  │
-        │  │  - Health check endpoint (/healthz)      │  │
+        │  │  - Health check endpoint (/health)       │  │
         │  └──────────────────────────────────────────┘  │
         │                                                  │
         │  Assets Servidos:                                │
@@ -379,7 +379,7 @@ Motor de análise de documentos baseado em regex e pesos.
 3. Rate limiting por IP (120 req/min, janela 1 minuto)
 4. Compressão Gzip/Brotli para assets text-based
 5. Cache headers otimizados por tipo de arquivo
-6. Health check endpoint (`/healthz`) para Azure probe
+6. Health check endpoint (`/health`) para Azure probe
 7. Redirect azurewebsites.net → domínio customizado (SEO)
 8. Proxy reverso para API gov.br (CORS bypass)
 
@@ -1082,7 +1082,7 @@ self.addEventListener('fetch', (event) => {
    - Always On: Enabled (sem cold starts)
    - HTTPS Only: Enabled
    - FTPS: Disabled
-   - Health Check: `/healthz` (probe a cada 5 min)
+   - Health Check: `/health` (probe a cada 5 min)
    - HTTP/2: Enabled
    - Managed Identity: System-Assigned (acesso ao Key Vault)
 
@@ -1647,7 +1647,7 @@ jobs:
 
       - name: Verify deployment
         run: |
-          curl -f https://nossodireito.fabiotreze.com/healthz || exit 1
+          curl -f https://nossodireito.fabiotreze.com/health || exit 1
 ```
 
 **Secrets Requeridos:**
@@ -2223,15 +2223,16 @@ if (host === 'app-nossodireito.azurewebsites.net' && req.headers.accept?.include
 **Healthcheck Endpoint:**
 ```javascript
 // server.js
-if (req.url === '/healthz') {
-    res.writeHead(200, { 'Content-Type': 'text/plain' });
-    res.end('OK');
+if (req.url === '/healthz' || req.url === '/health') {
+    const pkg = JSON.parse(fs.readFileSync(path.join(__dirname, 'package.json'), 'utf8'));
+    res.writeHead(200, { 'Content-Type': 'application/json', 'Cache-Control': 'no-cache, no-store' });
+    res.end(JSON.stringify({ status: 'healthy', version: pkg.version }));
     return;
 }
 ```
 
 **Azure Monitor Probe:**
-- Path: `/healthz`
+- Path: `/health`
 - Interval: 5 minutos
 - Timeout: 30 segundos
 - Unhealthy threshold: 3 consecutive failures

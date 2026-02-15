@@ -657,7 +657,7 @@ graph LR
         InstallDeps[npm ci<br/>Install applicationinsights]
         AzLogin[Azure Login<br/>Service Principal JSON]
         Deploy[Deploy App Service<br/>azure/webapps-deploy@v2]
-        HealthCheck[Verify /healthz<br/>curl -f https://nossodireito...]
+        HealthCheck[Verify /health<br/>curl -f https://nossodireito...]
     end
     
     subgraph "Terraform Workflow Manual"
@@ -725,7 +725,7 @@ graph LR
    - `npm ci` instala applicationinsights
    - Azure login com Service Principal
    - Deploy para App Service via `azure/webapps-deploy@v2`
-   - Health check `/healthz` (200 OK = success)
+   - Health check `/health` (200 OK = success)
 
 3. **Terraform (Manual)**:
    - `terraform init`: Baixa provider azurerm

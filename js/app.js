@@ -22,11 +22,15 @@
     }
     async function resilientFetch(url, retries = 2, delay = 500) {
         for (let attempt = 0; attempt <= retries; attempt++) {
+            const controller = new AbortController();
+            const timeout = setTimeout(() => controller.abort(), 10000);
             try {
-                const res = await fetch(url);
+                const res = await fetch(url, { signal: controller.signal });
+                clearTimeout(timeout);
                 if (res.ok) return res;
                 if (res.status >= 400 && res.status < 500) throw new Error(`HTTP ${res.status}`);
             } catch (err) {
+                clearTimeout(timeout);
                 if (attempt === retries) throw err;
                 await new Promise(r => setTimeout(r, delay * Math.pow(2, attempt)));
             }

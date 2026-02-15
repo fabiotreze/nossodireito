@@ -682,7 +682,7 @@ Todas as leis foram consultadas nos textos consolidados do Planalto.gov.br:
   - ✅ Mais defensive (funciona sempre, mesmo se código refatorado)
   - ✅ Melhor tratamento de erros (catch específico para proxy)
 - **Quality Gate**: Mantido 100.0/100 (166 checks PASS)
-- **Testes locais**: `/healthz` → 200, `/` → 200, `/api/govbr-servico/10783` → 200
+- **Testes locais**: `/health` → 200, `/` → 200, `/api/govbr-servico/10783` → 200
 
 ## [1.2.2] - 2026-02-10
 

@@ -21,8 +21,10 @@ const STATIC_ASSETS = [
     '/images/favicon-32x32.png',
     '/images/apple-touch-icon.png',
     '/images/nossodireito.png',
+    '/images/nossodireito-200.webp',
     '/images/nossodireito-400.webp',
     '/images/nossodireito.webp',
+    '/images/nossodireito-200.png',
     '/images/nossodireito-400.png',
 ];
 

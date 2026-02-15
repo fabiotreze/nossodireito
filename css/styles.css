@@ -2800,8 +2800,8 @@ html.high-contrast ::selection {
 
 /* ---------- Footer ---------- */
 .footer {
-    background: #334155;
-    color: #f0f0f0;
+    background: #1e293b;
+    color: #f1f5f9;
     border-top: 3px solid var(--primary);
     padding: 48px 0 32px;
 }
@@ -2838,7 +2838,7 @@ html.high-contrast ::selection {
 }
 
 .footer-brand p {
-    color: #ccc;
+    color: #e2e8f0;
     font-size: 0.9rem;
 }
 
@@ -2848,12 +2848,12 @@ html.high-contrast ::selection {
     border-left: 4px solid var(--warning);
     border-radius: var(--radius-sm);
     font-size: 0.875rem;
-    color: #e0e0e0;
+    color: #f1f5f9;
 }
 
 .footer-meta {
     font-size: 0.875rem;
-    color: #aaa;
+    color: #cbd5e1;
 }
 
 .footer-meta a {
