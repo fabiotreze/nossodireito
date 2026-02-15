@@ -403,13 +403,17 @@
             utterance.pitch = 1.0;
             currentUtterance = utterance;
             if (chunk.length > 200 && currentChunks.length === 1) {
-                keepAliveInterval = setInterval(() => {
-                    if (!ttsActive) return;
-                    if (speechSynthesis.speaking && !speechSynthesis.paused) {
-                        speechSynthesis.pause();
-                        setTimeout(() => speechSynthesis.resume(), 50);
-                    }
-                }, 12000);
+                // Chrome TTS keepalive (pause/resume workaround) - skip on Safari/iOS where it breaks TTS
+                const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+                if (!isSafari) {
+                    keepAliveInterval = setInterval(() => {
+                        if (!ttsActive) return;
+                        if (speechSynthesis.speaking && !speechSynthesis.paused) {
+                            speechSynthesis.pause();
+                            setTimeout(() => speechSynthesis.resume(), 50);
+                        }
+                    }, 12000);
+                }
             }
             const handleEnd = () => {
                 if (keepAliveInterval) {
@@ -540,6 +544,10 @@
     }
     function confirmAction(msg, cb) {
         const d = document.createElement('dialog');
+        if (typeof d.showModal !== 'function') {
+            if (window.confirm(msg)) cb();
+            return;
+        }
         d.className = 'confirm-dialog';
         d.setAttribute('role', 'alertdialog');
         d.setAttribute('aria-label', msg);
@@ -568,8 +576,6 @@
     async function init() {
         // Initialize DOM references after DOM is loaded
         dom = {
-            disclaimerModal: $('#disclaimerModal'),
-            acceptBtn: $('#acceptDisclaimer'),
             menuToggle: $('#menuToggle'),
             navLinks: $('#navLinks'),
             searchInput: $('#searchInput'),
@@ -581,7 +587,6 @@
             voltarBtn: $('#voltarBtn'),
             categoriasSection: $('#categorias'),
             lastUpdate: $('#lastUpdate'),
-            showDisclaimer: $('#showDisclaimer'),
             uploadZone: $('#uploadZone'),
             fileInput: $('#fileInput'),
             fileList: $('#fileList'),
@@ -613,7 +618,6 @@
         const safeRunAsync = async (name, fn) => {
             try { await fn(); } catch (e) { console.error(`[init] ${name} falhou:`, e); }
         };
-        safeRun('setupDisclaimer', setupDisclaimer);
         safeRun('setupAccessibilityPanel', setupAccessibilityPanel);
         safeRun('setupNavigation', setupNavigation);
         safeRun('setupSearch', setupSearch);
@@ -645,42 +649,7 @@
             if (removed > 0) await renderFileList();
         }, 60000);
     }
-    function setupDisclaimer() {
-        if (!dom.disclaimerModal) return;
-        function closeModal() {
-            dom.disclaimerModal.classList.add('hidden');
-            dom.disclaimerModal.setAttribute('aria-hidden', 'true');
-            if (dom.showDisclaimer) dom.showDisclaimer.focus();
-        }
-        function openModal() {
-            dom.disclaimerModal.classList.remove('hidden');
-            dom.disclaimerModal.setAttribute('aria-hidden', 'false');
-            const firstFocusable = dom.disclaimerModal.querySelector('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
-            if (firstFocusable) firstFocusable.focus();
-        }
-        dom.disclaimerModal.addEventListener('keydown', (e) => {
-            if (e.key === 'Tab') {
-                const focusable = dom.disclaimerModal.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
-                if (focusable.length === 0) return;
-                const first = focusable[0];
-                const last = focusable[focusable.length - 1];
-                if (e.shiftKey) {
-                    if (document.activeElement === first) { e.preventDefault(); last.focus(); }
-                } else {
-                    if (document.activeElement === last) { e.preventDefault(); first.focus(); }
-                }
-            }
-            if (e.key === 'Escape') closeModal();
-        });
-        dom.disclaimerModal.addEventListener('click', (e) => {
-            if (e.target === dom.disclaimerModal) closeModal();
-        });
-        if (dom.acceptBtn) dom.acceptBtn.addEventListener('click', closeModal);
-        if (dom.showDisclaimer) dom.showDisclaimer.addEventListener('click', (e) => {
-            e.preventDefault();
-            openModal();
-        });
-    }
+
     function setupNavigation() {
         if (!dom.menuToggle || !dom.navLinks) return;
         dom.menuToggle.addEventListener('click', () => {
@@ -1092,6 +1061,7 @@ style="margin-top:16px;display:inline-block">
     };
     const UF_SET = new Set(Object.values(ESTADOS_BR));
     const CIDADES_UF = {
+        // SP — Grande São Paulo e interior
         'barueri': 'SP', 'osasco': 'SP', 'guarulhos': 'SP', 'campinas': 'SP', 'santos': 'SP',
         'sorocaba': 'SP', 'jundiai': 'SP', 'santo andre': 'SP', 'sao bernardo': 'SP',
         'sao caetano': 'SP', 'diadema': 'SP', 'maua': 'SP', 'mogi das cruzes': 'SP',
@@ -1101,65 +1071,102 @@ style="margin-top:16px;display:inline-block">
         'sao jose dos campos': 'SP', 'sao jose do rio preto': 'SP', 'araraquara': 'SP',
         'marilia': 'SP', 'presidente prudente': 'SP', 'bauru': 'SP', 'franca': 'SP',
         'limeira': 'SP', 'taubate': 'SP', 'indaiatuba': 'SP', 'sumare': 'SP', 'americana': 'SP',
+        'praia grande': 'SP', 'sao vicente': 'SP', 'guaruja': 'SP', 'itanhaem': 'SP',
+        'hortolandia': 'SP', 'santa barbara d\'oeste': 'SP', 'ferraz de vasconcelos': 'SP',
+        'itapecerica da serra': 'SP', 'jacarei': 'SP', 'itu': 'SP', 'atibaia': 'SP',
+        'rio claro': 'SP', 'braganca paulista': 'SP', 'sertaozinho': 'SP', 'catanduva': 'SP',
+        // RJ
         'rio de janeiro': 'RJ', 'niteroi': 'RJ', 'sao goncalo': 'RJ', 'duque de caxias': 'RJ',
         'nova iguacu': 'RJ', 'petropolis': 'RJ', 'volta redonda': 'RJ', 'campos dos goytacazes': 'RJ',
+        'belford roxo': 'RJ', 'sao joao de meriti': 'RJ', 'macae': 'RJ', 'magalhaes bastos': 'RJ',
+        'mesquita': 'RJ', 'nilopolis': 'RJ', 'itaborai': 'RJ', 'marica': 'RJ', 'cabo frio': 'RJ',
+        'angra dos reis': 'RJ', 'teresopolis': 'RJ', 'resende': 'RJ', 'barra mansa': 'RJ',
+        // MG
         'belo horizonte': 'MG', 'uberlandia': 'MG', 'contagem': 'MG', 'juiz de fora': 'MG',
         'betim': 'MG', 'montes claros': 'MG', 'uberaba': 'MG', 'governador valadares': 'MG',
+        'ribeirao das neves': 'MG', 'santa luzia': 'MG', 'ipatinga': 'MG', 'sete lagoas': 'MG',
+        'divinopolis': 'MG', 'pocos de caldas': 'MG', 'patos de minas': 'MG', 'teofilo otoni': 'MG',
+        'barbacena': 'MG', 'sabara': 'MG', 'varginha': 'MG', 'conselheiro lafaiete': 'MG',
+        // PR
         'curitiba': 'PR', 'londrina': 'PR', 'maringa': 'PR', 'ponta grossa': 'PR', 'cascavel': 'PR',
         'foz do iguacu': 'PR', 'sao jose dos pinhais': 'PR', 'colombo': 'PR',
+        'guarapuava': 'PR', 'paranagua': 'PR', 'toledo': 'PR', 'apucarana': 'PR', 'campo largo': 'PR',
+        // RS
         'porto alegre': 'RS', 'caxias do sul': 'RS', 'pelotas': 'RS', 'canoas': 'RS', 'gravatai': 'RS',
+        'viamao': 'RS', 'novo hamburgo': 'RS', 'sao leopoldo': 'RS', 'rio grande': 'RS',
+        'alvorada': 'RS', 'passo fundo': 'RS', 'sapucaia do sul': 'RS', 'santa maria': 'RS',
+        // SC
         'florianopolis': 'SC', 'joinville': 'SC', 'blumenau': 'SC', 'chapeco': 'SC', 'itajai': 'SC',
-        'brasilia': 'DF', 'goiania': 'GO', 'aparecida de goiania': 'GO', 'anapolis': 'GO',
-        'cuiaba': 'MT', 'varzea grande': 'MT', 'rondonopolis': 'MT', 'sinop': 'MT',
-        'campo grande': 'MS', 'dourados': 'MS', 'tres lagoas': 'MS',
+        'criciuma': 'SC', 'jaragua do sul': 'SC', 'lages': 'SC', 'palhoca': 'SC', 'brusque': 'SC',
+        // DF + GO
+        'brasilia': 'DF', 'taguatinga': 'DF', 'ceilandia': 'DF', 'samambaia': 'DF',
+        'goiania': 'GO', 'aparecida de goiania': 'GO', 'anapolis': 'GO', 'rio verde': 'GO', 'luziania': 'GO',
+        // MT + MS
+        'cuiaba': 'MT', 'varzea grande': 'MT', 'rondonopolis': 'MT', 'sinop': 'MT', 'tangara da serra': 'MT',
+        'campo grande': 'MS', 'dourados': 'MS', 'tres lagoas': 'MS', 'corumba': 'MS', 'ponta pora': 'MS',
+        // BA
         'salvador': 'BA', 'feira de santana': 'BA', 'vitoria da conquista': 'BA', 'camacari': 'BA',
+        'itabuna': 'BA', 'juazeiro': 'BA', 'lauro de freitas': 'BA', 'ilheus': 'BA', 'jequie': 'BA',
+        'teixeira de freitas': 'BA', 'barreiras': 'BA', 'alagoinhas': 'BA', 'porto seguro': 'BA',
+        // PE
         'recife': 'PE', 'jaboatao dos guararapes': 'PE', 'olinda': 'PE', 'caruaru': 'PE',
+        'paulista': 'PE', 'petrolina': 'PE', 'cabo de santo agostinho': 'PE', 'garanhuns': 'PE',
+        // CE
         'fortaleza': 'CE', 'caucaia': 'CE', 'juazeiro do norte': 'CE', 'maracanau': 'CE',
-        'natal': 'RN', 'mossoro': 'RN', 'parnamirim': 'RN',
-        'joao pessoa': 'PB', 'campina grande': 'PB',
-        'maceio': 'AL', 'arapiraca': 'AL',
-        'aracaju': 'SE',
-        'teresina': 'PI',
-        'sao luis': 'MA', 'imperatriz': 'MA',
+        'sobral': 'CE', 'crato': 'CE', 'itapipoca': 'CE', 'maranguape': 'CE', 'iguatu': 'CE',
+        // RN + PB + AL + SE + PI
+        'natal': 'RN', 'mossoro': 'RN', 'parnamirim': 'RN', 'sao goncalo do amarante': 'RN', 'caico': 'RN',
+        'joao pessoa': 'PB', 'campina grande': 'PB', 'santa rita': 'PB', 'patos': 'PB',
+        'maceio': 'AL', 'arapiraca': 'AL', 'rio largo': 'AL', 'palmeira dos indios': 'AL',
+        'aracaju': 'SE', 'nossa senhora do socorro': 'SE', 'lagarto': 'SE',
+        'teresina': 'PI', 'parnaiba': 'PI', 'picos': 'PI', 'floriano': 'PI',
+        // MA
+        'sao luis': 'MA', 'imperatriz': 'MA', 'sao jose de ribamar': 'MA', 'timon': 'MA', 'caxias': 'MA',
+        'codó': 'MA', 'paco do lumiar': 'MA', 'acailandia': 'MA',
+        // PA
         'belem': 'PA', 'ananindeua': 'PA', 'santarem': 'PA', 'maraba': 'PA',
-        'manaus': 'AM', 'parintins': 'AM',
-        'macapa': 'AP',
-        'porto velho': 'RO', 'ji-parana': 'RO',
-        'boa vista': 'RR',
-        'rio branco': 'AC',
-        'palmas': 'TO',
+        'castanhal': 'PA', 'parauapebas': 'PA', 'cameta': 'PA', 'braganca': 'PA', 'altamira': 'PA',
+        // AM + AP + RO + RR + AC + TO
+        'manaus': 'AM', 'parintins': 'AM', 'itacoatiara': 'AM', 'manacapuru': 'AM', 'tefe': 'AM',
+        'macapa': 'AP', 'santana': 'AP', 'laranjal do jari': 'AP',
+        'porto velho': 'RO', 'ji-parana': 'RO', 'ariquemes': 'RO', 'vilhena': 'RO', 'cacoal': 'RO',
+        'boa vista': 'RR', 'rorainopolis': 'RR',
+        'rio branco': 'AC', 'cruzeiro do sul': 'AC', 'sena madureira': 'AC',
+        'palmas': 'TO', 'araguaina': 'TO', 'gurupi': 'TO',
+        // ES
         'vitoria': 'ES', 'vila velha': 'ES', 'serra': 'ES', 'cariacica': 'ES',
+        'linhares': 'ES', 'cachoeiro de itapemirim': 'ES', 'colatina': 'ES', 'guarapari': 'ES',
     };
     function detectLocation(queryNorm) {
         const q = queryNorm.toLowerCase().trim();
         if (UF_SET.has(q.toUpperCase()) && q.length === 2) {
-            return { type: 'uf', uf: q.toUpperCase(), name: q.toUpperCase() };
+            return { type: 'uf', uf: q.toUpperCase(), name: q.toUpperCase(), matched: q };
         }
         if (ESTADOS_BR[q]) {
-            return { type: 'estado', uf: ESTADOS_BR[q], name: q };
+            return { type: 'estado', uf: ESTADOS_BR[q], name: q, matched: q };
         }
         if (CIDADES_UF[q]) {
-            return { type: 'cidade', uf: CIDADES_UF[q], name: q };
+            return { type: 'cidade', uf: CIDADES_UF[q], name: q, matched: q };
         }
         for (const [cidade, uf] of Object.entries(CIDADES_UF)) {
-            if (q.includes(cidade) || cidade.includes(q)) {
-                return { type: 'cidade', uf, name: cidade };
+            if (q.includes(cidade)) {
+                return { type: 'cidade', uf, name: cidade, matched: cidade };
             }
         }
         for (const [estado, uf] of Object.entries(ESTADOS_BR)) {
             if (q.includes(estado)) {
-                return { type: 'estado', uf, name: estado };
+                return { type: 'estado', uf, name: estado, matched: estado };
             }
         }
         return null;
     }
-    function renderLocationResults(location, query) {
+    function renderLocationResults(location, query, filteredCats) {
         const ufLabel = location.uf;
         const nomeDisplay = location.name.charAt(0).toUpperCase() + location.name.slice(1);
         const orgao = orgaosEstaduaisData
             ? orgaosEstaduaisData.find((o) => o.uf === ufLabel)
             : null;
-        const allCats = direitosData
+        const cats = filteredCats || direitosData
             .map((cat) => ({ cat, score: 1 }))
             .sort((a, b) => a.cat.titulo.localeCompare(b.cat.titulo));
         const orgaoHtml = orgao && isSafeUrl(orgao.url)
@@ -1167,28 +1174,55 @@ style="margin-top:16px;display:inline-block">
             : orgao
                 ? `<p class="search-orgao">🏢 Órgão estadual (${escapeHtml(ufLabel)}): <strong>${escapeHtml(orgao.nome)}</strong></p>`
                 : '';
+        const filterNote = filteredCats
+            ? `<p class="search-hint">🔎 Mostrando <strong>${filteredCats.length}</strong> resultado(s) filtrado(s) para sua busca em <strong>${escapeHtml(nomeDisplay)}</strong>.</p>`
+            : '';
         dom.searchResults.innerHTML =
             `<div class="search-suggestion search-location">
 <p>📍 <strong>${escapeHtml(nomeDisplay)}</strong> ${location.type === 'cidade' ? `(${escapeHtml(ufLabel)})` : ''} — os direitos abaixo são <strong>federais</strong> e valem em todo o Brasil, incluindo na sua cidade/estado.</p>
 ${orgaoHtml}
+${filterNote}
 <p class="search-hint">💡 Clique em qualquer direito para ver detalhes, documentos e passo a passo.</p>
 </div>` +
-            renderSearchResults(allCats);
+            renderSearchResults(cats);
         bindSearchResultEvents();
     }
+    // Stopwords PT-BR: common words that add no search value
+    const STOPWORDS = new Set([
+        'e', 'ou', 'de', 'do', 'da', 'dos', 'das', 'em', 'no', 'na', 'nos', 'nas',
+        'para', 'por', 'com', 'sem', 'que', 'o', 'a', 'os', 'as', 'um', 'uma',
+        'uns', 'umas', 'ao', 'aos', 'seu', 'sua', 'meu', 'minha', 'ele', 'ela',
+        'se', 'como', 'mais', 'mas', 'muito', 'tambem', 'ja', 'ate', 'sobre',
+        'entre', 'tem', 'ter', 'esta', 'esse', 'essa', 'isso', 'isto',
+    ]);
     function performSearch(query) {
-        const terms = query
+        const raw = query
             .normalize('NFD')
             .replace(/[\u0300-\u036f]/g, '')
+            .replace(/[,;.!?()]/g, ' ')   // strip punctuation
             .split(/\s+/)
             .filter(Boolean);
-        const queryNorm = terms.join(' ');
+        // Keep stopwords for phrase matching / location detection but filter for scoring
+        const terms = raw.filter((t) => !STOPWORDS.has(t.toLowerCase()) || t.length > 3);
+        const queryNorm = raw.join(' ');
         const location = detectLocation(queryNorm);
         if (location) {
-            renderLocationResults(location, query);
+            // Extract non-location terms for combined search (e.g. "TEA Barueri")
+            const locWords = location.matched.split(/\s+/);
+            const remainingTerms = terms.filter((t) => !locWords.includes(t.toLowerCase()));
+            const remainingRaw = raw.filter((t) => !locWords.includes(t.toLowerCase()));
+            if (remainingTerms.length > 0) {
+                // Combined search: filter results by remaining terms + show location banner
+                const scored = scoreSearch(remainingTerms, remainingRaw);
+                if (scored.length > 0) {
+                    renderLocationResults(location, query, scored);
+                    return;
+                }
+            }
+            renderLocationResults(location, query, null);
             return;
         }
-        const scored = scoreSearch(terms);
+        const scored = scoreSearch(terms, raw);
         if (scored.length === 0 && terms.some((t) => t.length > 3)) {
             const dictionary = buildSearchDictionary();
             const corrected = terms.map((t) => {
@@ -1225,8 +1259,10 @@ ${orgaoHtml}
         dom.searchResults.innerHTML = renderSearchResults(scored);
         bindSearchResultEvents();
     }
-    function scoreSearch(terms) {
+    function scoreSearch(terms, rawTerms) {
         const queryJoined = terms.join(' ');
+        // Use raw terms (with stopwords) for phrase matching so "sindrome de down" matches fully
+        const phraseQuery = rawTerms ? rawTerms.join(' ') : queryJoined;
         const kwScores = {};
         if (KEYWORD_MAP && Object.keys(KEYWORD_MAP).length > 0) {
             for (const [keyword, { cats, weight }] of Object.entries(KEYWORD_MAP)) {
@@ -1240,8 +1276,13 @@ ${orgaoHtml}
                 }
             }
         }
+        // Phrase bonus: if full query (2+ words) matches as compound, boost those results
+        const phraseBonus = (rawTerms ? rawTerms.length : terms.length) >= 2
+            ? new RegExp(escapeRegex(phraseQuery), 'g') : null;
         // Pre-compile regexes once for all terms
         const termRegexes = terms.map(t => new RegExp(escapeRegex(t), 'g'));
+        // Minimum terms matched threshold: if >1 term, require at least 2 terms to match
+        const minTermsHit = terms.length >= 2 ? 2 : 1;
         return direitosData
             .map((cat) => {
                 const searchable = normalizeText(
@@ -1254,15 +1295,27 @@ ${orgaoHtml}
                         ...(cat.dicas || []),
                     ].join(' ')
                 );
-                let score = termRegexes.reduce((acc, regex) => {
+                let score = 0;
+                let termsHit = 0;
+                termRegexes.forEach((regex) => {
                     regex.lastIndex = 0;
                     const count = (searchable.match(regex) || []).length;
-                    return acc + count;
-                }, 0);
+                    if (count > 0) termsHit++;
+                    score += count;
+                });
+                // Phrase bonus: boost compound matches (e.g. "sindrome de down" as one phrase)
+                if (phraseBonus) {
+                    phraseBonus.lastIndex = 0;
+                    const phraseHits = (searchable.match(phraseBonus) || []).length;
+                    score += phraseHits * 5;
+                    if (phraseHits > 0) termsHit = terms.length; // phrase match counts as all terms
+                }
                 score += (kwScores[cat.id] || 0);
-                return { cat, score };
+                // If keyword_map matched this category, always include it
+                if (kwScores[cat.id]) termsHit = Math.max(termsHit, minTermsHit);
+                return { cat, score, termsHit };
             })
-            .filter((r) => r.score > 0)
+            .filter((r) => r.score > 0 && r.termsHit >= minTermsHit)
             .sort((a, b) => b.score - a.score);
     }
     function renderSearchResults(scored) {

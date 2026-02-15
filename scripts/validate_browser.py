@@ -176,25 +176,24 @@ async def main():
         elif detalhe:
             warn("#detalhe: deveria estar oculto", detalhe["d"])
 
-        # ─── 6. DISCLAIMER MODAL ───
-        print("\n6️⃣  Disclaimer Modal")
+        # ─── 6. INLINE DISCLAIMER ───
+        print("\n6️⃣  Inline Disclaimer")
 
-        modal = await page.evaluate("""(() => {
-            const m = document.getElementById('disclaimerModal');
-            if (!m) return null;
-            const s = getComputedStyle(m);
-            return {d: s.display, v: s.visibility, o: s.opacity, z: s.zIndex};
+        disclaimer = await page.evaluate("""(() => {
+            const d = document.getElementById('disclaimerInline');
+            if (!d) return null;
+            return {text: d.textContent.substring(0, 100)};
         })()""")
-        if modal:
-            ok(f"Modal no DOM (display={modal['d']}, visibility={modal['v']})")
+        if disclaimer:
+            ok(f"Disclaimer inline presente no DOM")
         else:
-            fail("Modal #disclaimerModal não encontrado")
+            fail("Disclaimer #disclaimerInline não encontrado")
 
-        accept_btn = await page.evaluate("document.getElementById('acceptDisclaimer') ? 'FOUND' : null")
-        if accept_btn:
-            ok("Botão 'Entendi — Fechar' presente")
+        footer_link = await page.evaluate("document.querySelector(\"a[href='#disclaimerInline']\") ? 'FOUND' : null")
+        if footer_link:
+            ok("Footer link aponta para #disclaimerInline")
         else:
-            fail("Botão acceptDisclaimer ausente")
+            fail("Footer link para disclaimer ausente")
 
         # ─── 7. SEARCH ───
         print("\n7️⃣  Busca")

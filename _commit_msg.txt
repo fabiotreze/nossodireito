@@ -1,0 +1,26 @@
+feat(v1.12.2): search intelligence, modal removal, cross-browser fixes
+
+### Removed
+- Disclaimer modal removed entirely (DOM, JS, all scripts)
+- Content preserved as inline disclaimer with #disclaimerInline anchor
+
+### Added
+- Combined search: disease + city (e.g. "TEA Barueri", "F84 Curitiba")
+- 220+ Brazilian cities across all 27 UFs (was ~100)
+- PT-BR stopwords filter (e, de, do, da, para, com...)
+- Phrase matching bonus ("sindrome de down" as compound +5/hit)
+- Minimum terms threshold (2+ term queries require 2+ matches)
+- Safari < 15.4 dialog.showModal() fallback to window.confirm()
+- iOS TTS keepalive guard (skip Chrome workaround on Safari)
+- iOS format-detection meta tag (prevent auto-linking numbers)
+
+### Tests
+- E2E: 196/196 PASS (modal->inline, 6 combined search tests)
+- CSP test: now checks both HTML and server.js
+- Compliance: 1042.4/1042.4 = 100.00%
+
+### Search improvements (before -> after)
+- "sindrome de down": 25 -> 5 results (phrase matching)
+- "sindrome de down Osasco": 25 -> 5 results (+LOC +FILT)
+- "TEA BPC": 16 -> 8 results (min-terms filter)
+- "down autismo": 8 -> 6 results (compound scoring)

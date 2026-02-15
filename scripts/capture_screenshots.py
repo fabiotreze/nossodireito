@@ -1,12 +1,20 @@
 #!/usr/bin/env python3
-"""Capture screenshots of the running site for validation."""
+"""Capture versioned screenshots of the running site for validation."""
 
 from playwright.sync_api import sync_playwright
+import json
 import os
 
-SCREENSHOTS_DIR = "screenshots"
 BASE_URL = "http://localhost:8080"
 
+# Read version from package.json
+try:
+    with open(os.path.join(os.path.dirname(__file__), '..', 'package.json')) as f:
+        VERSION = json.load(f).get('version', 'unknown')
+except Exception:
+    VERSION = 'unknown'
+
+SCREENSHOTS_DIR = os.path.join("screenshots", f"v{VERSION}")
 os.makedirs(SCREENSHOTS_DIR, exist_ok=True)
 
 
@@ -26,13 +34,6 @@ def main():
         ctx = browser.new_context(viewport={"width": 1280, "height": 800})
         page = ctx.new_page()
         page.goto(BASE_URL, wait_until="networkidle")
-
-        # Dismiss disclaimer modal if present
-        try:
-            page.click("#acceptDisclaimer", timeout=3000)
-            page.wait_for_timeout(500)
-        except Exception:
-            pass
 
         capture(page, "01_hero_desktop.png", "Hero section")
 
@@ -64,12 +65,6 @@ def main():
         page = ctx.new_page()
         page.goto(BASE_URL, wait_until="networkidle")
 
-        try:
-            page.click("#acceptDisclaimer", timeout=3000)
-            page.wait_for_timeout(500)
-        except Exception:
-            pass
-
         capture(page, "06_hero_mobile.png", "Hero section")
 
         page.evaluate('document.querySelector("#categorias").scrollIntoView()')
@@ -91,12 +86,6 @@ def main():
         page = ctx.new_page()
         page.goto(BASE_URL, wait_until="networkidle")
 
-        try:
-            page.click("#acceptDisclaimer", timeout=3000)
-            page.wait_for_timeout(500)
-        except Exception:
-            pass
-
         capture(page, "09_hero_dark.png", "Hero section (dark mode)")
 
         page.evaluate('document.querySelector("#categorias").scrollIntoView()')
@@ -106,7 +95,7 @@ def main():
         ctx.close()
         browser.close()
 
-    print("\nAll screenshots saved to screenshots/")
+    print(f"\nAll screenshots saved to {SCREENSHOTS_DIR}/")
 
 
 if __name__ == "__main__":

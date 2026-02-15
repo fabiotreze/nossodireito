@@ -361,9 +361,12 @@ class E2ETestRunner:
             return False
 
     def test_security_headers(self) -> bool:
-        """Valida que HTML tem CSP e security headers"""
+        """Valida que HTML ou server.js tem CSP e security headers"""
         index_html = self.root / 'index.html'
+        server_js = self.root / 'server.js'
         content = index_html.read_text(encoding='utf-8')
+        server_content = server_js.read_text(encoding='utf-8') if server_js.exists() else ''
+        combined = content + server_content
 
         # Testes de funcionalidades E2E
         self.run_test("Busca semântica funcional", self.test_search_functionality)
@@ -374,9 +377,9 @@ class E2ETestRunner:
         # Testes de infraestrutura
 
         return all([
-            'Content-Security-Policy' in content,
-            'X-Content-Type-Options' in content,
-            'Referrer-Policy' in content
+            'Content-Security-Policy' in combined,
+            'X-Content-Type-Options' in combined,
+            'Referrer-Policy' in combined
         ])
 
     def test_aria_attributes(self) -> bool:

@@ -193,7 +193,7 @@ def run_all_tests():
         # ── Run test groups ────────────────────────────────────────
         test_groups = [
             ("Page Structure", test_page_structure),
-            ("Disclaimer Modal", test_disclaimer_modal),
+            ("Inline Disclaimer", test_inline_disclaimer),
             ("Navigation Desktop", test_navigation_desktop),
             ("Search Comprehensive", test_search_comprehensive),
             ("Category Grid", test_category_grid),
@@ -298,55 +298,35 @@ def test_page_structure(page):
 
 
 # ══════════════════════════════════════════════════════════════════
-#  2. DISCLAIMER MODAL
+#  2. INLINE DISCLAIMER
 # ══════════════════════════════════════════════════════════════════
-def test_disclaimer_modal(page):
-    print(f"\n{CYAN}{BOLD}═══ 2. Disclaimer Modal ═══{RESET}")
+def test_inline_disclaimer(page):
+    print(f"\n{CYAN}{BOLD}═══ 2. Inline Disclaimer ═══{RESET}")
 
-    modal = page.locator("#disclaimerModal")
-    # Modal starts hidden in HTML (class="modal hidden") — only opens via footer link
-    starts_hidden = modal.evaluate("el => el.classList.contains('hidden')")
-    R.check(starts_hidden, "Disclaimer modal starts hidden")
+    # Modal should NOT exist (was removed)
+    modal_count = page.locator("#disclaimerModal").count()
+    R.check(modal_count == 0, "Disclaimer modal removed from DOM")
 
-    # Accept button exists
-    accept_btn = page.locator("#acceptDisclaimer")
-    R.check(accept_btn.count() > 0, "Accept button exists")
+    # Inline disclaimer box exists in transparency section
+    disclaimer_box = page.locator("#disclaimerInline")
+    R.check(disclaimer_box.count() > 0, "Inline disclaimer box exists")
 
-    # Open via footer link
-    show_link = page.locator("#showDisclaimer")
-    if show_link.count() > 0:
-        js_click(page, "#showDisclaimer")
-        page.wait_for_timeout(500)
-        is_open = not modal.evaluate("el => el.classList.contains('hidden')")
-        R.check(is_open, "Modal opens from footer link")
+    # Scroll to it and verify visibility
+    disclaimer_box.scroll_into_view_if_needed()
+    page.wait_for_timeout(300)
+    R.check(disclaimer_box.is_visible(), "Inline disclaimer visible on page")
 
-        # Close with Accept button
-        js_click(page, "#acceptDisclaimer")
-        page.wait_for_timeout(500)
-        is_hidden = modal.evaluate("el => el.classList.contains('hidden')")
-        R.check(is_hidden, "Modal closes on accept click")
+    # Check content keywords
+    text = disclaimer_box.text_content().lower()
+    R.check("não substitui" in text, "Disclaimer has 'não substitui'")
+    R.check("defensoria" in text or "cras" in text,
+            "Disclaimer mentions professional help")
+    R.check("lgpd" in text or "privacidade" in text,
+            "Disclaimer mentions privacy/LGPD")
 
-        # Reopen and close with Escape
-        js_click(page, "#showDisclaimer")
-        page.wait_for_timeout(500)
-        # Focus inside modal first so Escape listener fires
-        page.evaluate("document.querySelector('#disclaimerModal button')?.focus()")
-        page.wait_for_timeout(200)
-        page.keyboard.press("Escape")
-        page.wait_for_timeout(500)
-        is_closed_esc = modal.evaluate("el => el.classList.contains('hidden')")
-        R.check(is_closed_esc, "Modal closes on Escape key")
-
-        # Reopen and close by clicking backdrop
-        js_click(page, "#showDisclaimer")
-        page.wait_for_timeout(500)
-        # Click on the modal backdrop — use JS dispatch
-        page.evaluate("document.getElementById('disclaimerModal')?.dispatchEvent(new MouseEvent('click', {bubbles:true}))")
-        page.wait_for_timeout(300)
-        is_closed_backdrop = modal.evaluate("el => el.classList.contains('hidden')")
-        R.check(is_closed_backdrop, "Modal closes on backdrop click")
-    else:
-        R.warn("showDisclaimer link", "Not found in footer")
+    # Footer link points to inline disclaimer (anchor, not modal)
+    footer_link = page.locator("a[href='#disclaimerInline']")
+    R.check(footer_link.count() > 0, "Footer Aviso Legal links to #disclaimerInline")
 
 
 # ══════════════════════════════════════════════════════════════════
@@ -488,6 +468,29 @@ def test_search_comprehensive(page):
         "Gibberish search graceful",
         f"HTML length: {len(gibberish_html)}"
     )
+
+    # ── Combined search (disease + city) ─────────────────────────
+    combined = [
+        ("TEA Barueri", "Combined: TEA Barueri"),
+        ("autismo São Paulo", "Combined: autismo São Paulo"),
+        ("BPC Curitiba", "Combined: BPC Curitiba"),
+        ("FGTS Salvador", "Combined: FGTS Salvador"),
+        ("escola Recife", "Combined: escola Recife"),
+        ("deficiencia visual Manaus", "Combined: deficiencia visual Manaus"),
+    ]
+    for query, label in combined:
+        page.evaluate("window.scrollTo(0, document.getElementById('busca')?.offsetTop - 80 || 0)")
+        page.wait_for_timeout(200)
+        search_input.fill("")
+        search_input.fill(query)
+        js_click(page, "#searchBtn")
+        page.wait_for_timeout(800)
+        html = results_div.inner_html()
+        has_location = "search-location" in html
+        has_results = "search-result-item" in html
+        # Combined search should show location banner AND filtered results
+        R.check(has_location and has_results, label,
+                f"location={has_location} results={has_results}")
 
     # Clear results
     search_input.fill("")
@@ -948,9 +951,9 @@ def test_footer(page):
     ver_text = ver.text_content().strip()
     R.check(len(ver_text) > 0, "Footer version not empty", f"'{ver_text}'")
 
-    # Disclaimer link
-    R.check(page.locator("#showDisclaimer").count() > 0,
-            "Disclaimer link in footer")
+    # Disclaimer link in footer (now anchors to inline, no modal)
+    R.check(page.locator("a[href='#disclaimerInline']").count() > 0,
+            "Disclaimer anchor link in footer")
 
 
 # ══════════════════════════════════════════════════════════════════
@@ -1020,12 +1023,9 @@ def test_keyboard_and_aria(page):
     R.check(live_regions.count() >= 2, "2+ aria-live regions",
             f"Found {live_regions.count()}")
 
-    # Dialog has proper ARIA
-    modal = page.locator("#disclaimerModal")
-    R.check(modal.get_attribute("role") == "dialog", "Modal role=dialog")
-    R.check(modal.get_attribute("aria-modal") == "true", "Modal aria-modal=true")
-    R.check(modal.get_attribute("aria-labelledby") is not None,
-            "Modal aria-labelledby set")
+    # Inline disclaimer is accessible (no modal needed)
+    disclaimer_box = page.locator("#disclaimerInline")
+    R.check(disclaimer_box.count() > 0, "Inline disclaimer accessible in DOM")
 
 
 # ══════════════════════════════════════════════════════════════════

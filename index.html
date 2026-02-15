@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="format-detection" content="telephone=no">
     <title>Direitos PcD: BPC, CIPTEA, Escola Inclusiva, TEA — NossoDireito</title>
     <meta name="description"
         content="Recebeu um laudo de autismo (TEA) ou deficiência? Descubra seus direitos como PcD: BPC, CIPTEA, escola inclusiva, plano de saúde, SUS, transporte. Guia gratuito com passo a passo e fontes oficiais do governo brasileiro.">
@@ -383,31 +384,6 @@ body{font-family:var(--font);color:var(--text);background:var(--surface);line-he
     <a href="#mainContent" class="skip-link" accesskey="1">Ir para o conteúdo [1]</a>
     <a href="#navLinks" class="skip-link" accesskey="2">Ir para o menu [2]</a>
     <a href="#searchInput" class="skip-link" accesskey="3">Ir para a busca [3]</a>
-    <div id="disclaimerModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="disclaimerTitle"
-        aria-hidden="true">
-        <div class="modal-content">
-            <div id="disclaimerTitle" role="heading" aria-level="2" class="modal-heading">⚠️ Aviso Legal</div>
-            <div class="disclaimer-text">
-                <p>Este site é um <strong>guia informacional gratuito e sem fins lucrativos</strong>.
-                    Não constitui consultoria jurídica, médica ou profissional. As informações podem
-                    variar por estado/município e sofrer alterações — confirme nas fontes oficiais.</p>
-                <p class="disclaimer-heading" role="heading" aria-level="3">🔒 Privacidade (LGPD)</p>
-                <ul>
-                    <li>Não coletamos, armazenamos ou recebemos dados pessoais em servidores</li>
-                    <li>Nenhum documento é transmitido pela internet — análise 100% local no navegador</li>
-                    <li>"Meus Documentos", checklists e preferências (fonte, contraste, voz) ficam no
-                        localStorage/IndexedDB do seu dispositivo e podem ser apagados a qualquer momento</li>
-                    <li>VLibras (Gov.br) carrega bibliotecas externas sem envio dos seus dados</li>
-                </ul>
-                <p class="disclaimer-heading" role="heading" aria-level="3">♿ Acessibilidade (eMAG/WCAG)</p>
-                <p>Desenvolvido com navegação por teclado, ajuste de fonte, alto contraste, leitura em
-                    voz alta e integração com VLibras (Governo Federal para Libras).
-                    📩 Algo desatualizado? <a href="mailto:fabiotreze@hotmail.com">fabiotreze@hotmail.com</a></p>
-            </div><button id="acceptDisclaimer" class="btn btn-primary btn-lg" type="button">
-                Entendi — Fechar
-            </button>
-        </div>
-    </div>
     <header>
         <nav class="navbar" role="navigation" aria-label="Menu principal">
             <div class="container"><a href="#" class="navbar-brand"
@@ -875,7 +851,7 @@ body{font-family:var(--font);color:var(--text);background:var(--surface);line-he
                         Sua colaboração ajuda a manter este projeto atualizado para todos.
                     </p>
                 </div>
-                <div class="disclaimer-box">
+                <div class="disclaimer-box" id="disclaimerInline">
                     <h3 class="disclaimer-title">⚠️ Aviso Importante — Limitações do Serviço</h3>
                     <p class="disclaimer-intro"><strong>Este site NÃO substitui orientação
                             profissional.</strong> As
@@ -915,6 +891,12 @@ body{font-family:var(--font);color:var(--text);background:var(--surface);line-he
                             rastreamento, não solicitamos cadastro e não armazenamos informações de
                             navegação.
                         </p>
+                        <ul style="margin: 0.5rem 0 0 0; font-size: 0.9rem; padding-left: 1.5em;">
+                            <li>Nenhum documento é transmitido pela internet — análise 100% local no navegador</li>
+                            <li>"Meus Documentos", checklists e preferências ficam no localStorage/IndexedDB
+                                do seu dispositivo</li>
+                            <li>VLibras (Gov.br) carrega bibliotecas externas sem envio dos seus dados</li>
+                        </ul>
                         <p style="margin: 0.5rem 0 0 0; font-size: 0.9rem;">
                             Todas as consultas são processadas <em>localmente no seu navegador</em>. Em
                             conformidade com
@@ -945,7 +927,7 @@ body{font-family:var(--font);color:var(--text);background:var(--surface);line-he
                 <div class="footer-meta">
                     <p>Última atualização: <span id="lastUpdate"></span> · <span id="footerVersion"
                             class="footer-version"></span></p>
-                    <p><a href="#" id="showDisclaimer">Aviso Legal</a> ·
+                    <p><a href="#disclaimerInline">Aviso Legal</a> ·
                         <span>Projeto open source educacional — não presta serviços
                             jurídicos</span>
                     </p>

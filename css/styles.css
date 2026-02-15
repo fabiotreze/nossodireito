@@ -957,7 +957,7 @@ html.high-contrast ::selection {
     color: #fff;
 }
 
-/* ---------- Modal (Disclaimer) ---------- */
+/* ---------- Modal (reserved for future use) ---------- */
 .modal {
     position: fixed;
     top: 0;

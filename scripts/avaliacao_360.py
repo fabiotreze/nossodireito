@@ -479,8 +479,8 @@ def check_security():
         "X-Content-Type-Options": r'X-Content-Type-Options',
         "Referrer-Policy": r'Referrer-Policy',
         "Permissions-Policy": r'Permissions-Policy',
-        "Aviso LGPD no modal": r'LGPD',
-        "Disclaimer presente": r'disclaimerModal',
+        "Aviso LGPD no site": r'LGPD',
+        "Disclaimer presente": r'disclaimerInline',
     }
     for name, pattern in checks.items():
         check(f"Segurança: {name}", bool(re.search(pattern, html)))

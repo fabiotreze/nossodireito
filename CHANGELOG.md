@@ -5,6 +5,31 @@ Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/)
 e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [1.12.2] - 2026-02-15
+
+### 🚮 Removido
+- **Disclaimer modal removido** — Modal de disclaimer eliminado completamente do DOM, JS e scripts de teste; conteúdo mantido como disclaimer inline no footer com âncora `#disclaimerInline`
+
+### ✨ Novo
+- **Busca combinada doença + cidade** — Pesquisas como "TEA Barueri", "autismo São Paulo", "F84 Curitiba" agora filtram resultados por tema dentro do contexto de localização
+- **220+ cidades brasileiras** — Expandido de ~100 para ~220+ cidades cobrindo todas as 27 UFs (capitais, regiões metropolitanas e cidades do interior)
+- **Busca inteligente com stopwords** — Palavras comuns PT-BR ("e", "de", "do", "da", "para", "com") filtradas da pontuação; pontuação removida automaticamente
+- **Phrase matching (match composto)** — Frases como "síndrome de down" recebem bonus de pontuação quando encontradas como bloco contínuo (+5 por hit)
+- **Minimum terms threshold** — Queries com 2+ termos exigem pelo menos 2 termos presentes na categoria para aparecer nos resultados (reduz ruído em ~50-80%)
+- **CID + cidade combinados** — "F84 Barueri" retorna 4 categorias TEA filtradas em contexto de Barueri (SP)
+
+### 🔧 Compatibilidade
+- **Safari < 15.4 dialog fallback** — `dialog.showModal()` substituído por `window.confirm()` quando API não disponível
+- **iOS TTS fix** — Workaround de keepalive do Chrome desativado no Safari (causava parada permanente do TTS)
+- **iOS format-detection** — `<meta name="format-detection" content="telephone=no">` previne auto-link de números
+
+### 🧪 Testes
+- **E2E atualizado: 196/196 PASS** — Modal tests substituídos por inline disclaimer tests (7 tests); 6 testes de busca combinada adicionados
+- **CSP test corrigido** — `test_e2e_automated.py` agora verifica CSP tanto em HTML quanto em `server.js`
+- **Screenshots versionados** — Script `capture_screenshots.py` agora salva em `screenshots/v{VERSION}/`
+
+---
+
 ## [1.12.1] - 2026-02-15
 
 ### 🐛 Corrigido

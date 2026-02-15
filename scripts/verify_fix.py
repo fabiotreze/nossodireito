@@ -8,13 +8,6 @@ with sync_playwright() as p:
     pg = b.new_page(viewport={"width": 1280, "height": 800})
     pg.goto("http://localhost:8080", wait_until="networkidle")
 
-    # Accept disclaimer
-    try:
-        pg.click("#acceptDisclaimer", timeout=3000)
-        pg.wait_for_timeout(500)
-    except Exception:
-        pass
-
     pg.screenshot(path="screenshots/verify_fix.png")
     b.close()
 
