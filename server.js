@@ -239,12 +239,13 @@ const server = http.createServer((req, res) => {
     // ── Health check endpoint (Azure App Service probe) ──
     // Must respond 200 on ALL hosts (including *.azurewebsites.net)
     // before the domain redirect, otherwise probe marks app unhealthy.
-    if (req.url === '/healthz') {
+    if (req.url === '/healthz' || req.url === '/health') {
+        const pkg = JSON.parse(fs.readFileSync(path.join(__dirname, 'package.json'), 'utf8'));
         res.writeHead(200, {
-            'Content-Type': 'text/plain',
+            'Content-Type': 'application/json',
             'Cache-Control': 'no-cache, no-store',
         });
-        res.end('OK');
+        res.end(JSON.stringify({ status: 'healthy', version: pkg.version }));
         return;
     }
 
