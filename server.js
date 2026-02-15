@@ -387,11 +387,7 @@ const server = http.createServer((req, res) => {
 
     // Early hints — push critical sub-resources for HTML pages
     if (ext === '.html') {
-        headers['Link'] = [
-            '</data/direitos.json>; rel=preload; as=fetch; crossorigin',
-            '</data/matching_engine.json>; rel=preload; as=fetch; crossorigin',
-            '</css/styles.css>; rel=preload; as=style',
-        ].join(', ');
+        headers['Link'] = '</css/styles.css>; rel=preload; as=style';
     }
 
     // Compression for text-based content (Brotli > Gzip > None)

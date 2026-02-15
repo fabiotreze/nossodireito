@@ -217,7 +217,7 @@ input,
     line-height: 1;
     cursor: pointer;
     z-index: 9999;
-    transition: all 0.3s ease;
+    transition: box-shadow 0.3s ease, padding-right 0.3s ease;
 
     writing-mode: vertical-rl;
     text-orientation: mixed;
@@ -258,7 +258,7 @@ input,
     backdrop-filter: blur(4px);
     opacity: 0;
     visibility: hidden;
-    transition: all 0.3s ease;
+    transition: opacity 0.3s ease, visibility 0.3s;
     z-index: 9998;
 }
 
@@ -330,7 +330,7 @@ input,
     justify-content: center;
     font-size: 1.5rem;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: background-color 0.2s ease, transform 0.2s ease;
 }
 
 .a11y-close-btn:hover {
@@ -388,7 +388,7 @@ input,
     font-weight: 600;
     color: #1f2937;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
     min-height: 44px;
 }
 
@@ -414,7 +414,7 @@ input,
     border-radius: 8px;
     text-align: left;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
     min-height: 44px;
 }
 
@@ -458,7 +458,7 @@ input,
     border: 2px solid #d1d5db;
     border-radius: 8px;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
     min-height: 80px;
 }
 
@@ -884,7 +884,7 @@ html.high-contrast ::selection {
     font-size: 1rem;
     font-weight: 600;
     cursor: pointer;
-    transition: all var(--transition);
+    transition: background-color var(--transition), color var(--transition), transform var(--transition), border-color var(--transition), box-shadow var(--transition);
     text-decoration: none;
     line-height: 1.4;
     font-family: var(--font);
@@ -1074,7 +1074,7 @@ html.high-contrast ::selection {
     font-size: 0.875rem;
     font-weight: 500;
     color: var(--text-muted);
-    transition: all var(--transition);
+    transition: background-color var(--transition), color var(--transition);
     white-space: nowrap;
 }
 
@@ -1102,7 +1102,7 @@ html.high-contrast ::selection {
     height: 2px;
     background: var(--text);
     border-radius: 2px;
-    transition: all 0.3s ease;
+    transition: transform 0.3s ease, opacity 0.3s ease;
     transform-origin: center;
 }
 
@@ -1224,6 +1224,7 @@ html.high-contrast ::selection {
     gap: 16px;
     flex-wrap: wrap;
     margin-bottom: 0;
+    min-height: 52px;
 }
 
 .hero-stats {
@@ -1297,7 +1298,7 @@ html.high-contrast ::selection {
     font-size: 1rem;
     background: var(--surface);
     color: var(--text);
-    transition: border-color var(--transition);
+    transition: border-color var(--transition), box-shadow var(--transition);
     font-family: var(--font);
 }
 
@@ -1326,7 +1327,7 @@ html.high-contrast ::selection {
     border: 1px solid var(--border);
     border-radius: var(--radius-sm);
     cursor: pointer;
-    transition: all var(--transition);
+    transition: border-color var(--transition), box-shadow var(--transition), transform var(--transition);
 }
 
 .search-result-item:hover {
@@ -1409,7 +1410,7 @@ html.high-contrast ::selection {
     border-radius: var(--radius);
     padding: 24px;
     cursor: pointer;
-    transition: all var(--transition);
+    transition: border-color var(--transition), box-shadow var(--transition), transform var(--transition);
     text-align: center;
 }
 
@@ -1539,7 +1540,7 @@ html.high-contrast ::selection {
     border-radius: var(--radius-sm);
     font-size: 0.875rem;
     margin: 4px;
-    transition: all var(--transition);
+    transition: border-color var(--transition), background-color var(--transition);
 }
 
 .legal-link:hover {
@@ -1653,7 +1654,7 @@ html.high-contrast ::selection {
     border: 1px solid var(--border);
     border-radius: var(--radius);
     text-align: center;
-    transition: all var(--transition);
+    transition: border-color var(--transition), box-shadow var(--transition), transform var(--transition);
 }
 
 .link-card:hover {
@@ -1705,7 +1706,7 @@ html.high-contrast ::selection {
     border-radius: var(--radius);
     text-align: center;
     cursor: pointer;
-    transition: all var(--transition);
+    transition: border-color var(--transition), background-color var(--transition), box-shadow var(--transition);
     background: var(--surface);
 }
 
@@ -1750,7 +1751,7 @@ html.high-contrast ::selection {
     border: 1px solid var(--border);
     border-radius: var(--radius-sm);
     margin-bottom: 8px;
-    transition: all var(--transition);
+    transition: border-color var(--transition);
 }
 
 .file-item:hover {
@@ -1808,7 +1809,7 @@ html.high-contrast ::selection {
     border-radius: var(--radius-sm);
     background: var(--surface);
     cursor: pointer;
-    transition: all var(--transition);
+    transition: border-color var(--transition), color var(--transition);
     color: var(--text-muted);
 }
 
@@ -1851,7 +1852,7 @@ html.high-contrast ::selection {
     border: none;
     border-radius: var(--radius-sm);
     cursor: pointer;
-    transition: all var(--transition);
+    transition: opacity var(--transition), background-color var(--transition);
 }
 
 .btn-analyze-global:disabled {
@@ -2057,7 +2058,7 @@ html.high-contrast ::selection {
     border-radius: var(--radius-sm);
     border: 1px solid var(--border);
     background: var(--surface);
-    transition: all var(--transition);
+    transition: box-shadow var(--transition);
     cursor: default;
 }
 
@@ -2351,7 +2352,7 @@ html.high-contrast ::selection {
     border-radius: var(--radius);
     color: var(--text-muted);
     cursor: pointer;
-    transition: all var(--transition);
+    transition: background-color var(--transition), border-color var(--transition), color var(--transition);
     font-weight: 500;
 }
 
@@ -2380,7 +2381,7 @@ html.high-contrast ::selection {
     display: flex;
     flex-direction: column;
     gap: 10px;
-    transition: all var(--transition);
+    transition: border-color var(--transition), box-shadow var(--transition), transform var(--transition);
 }
 
 .inst-card:hover {
@@ -2580,7 +2581,7 @@ html.high-contrast ::selection {
     cursor: pointer;
     font-size: 0.875rem;
     font-weight: 500;
-    transition: all var(--transition);
+    transition: background-color var(--transition), border-color var(--transition), color var(--transition);
 }
 
 .orgao-filter-btn:hover {
@@ -2608,7 +2609,7 @@ html.high-contrast ::selection {
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: var(--radius);
-    transition: all var(--transition);
+    transition: border-color var(--transition), box-shadow var(--transition), transform var(--transition);
 }
 
 .orgao-card:hover {
@@ -2706,7 +2707,7 @@ html.high-contrast ::selection {
     border: 1px solid var(--border);
     border-radius: var(--radius-sm);
     margin-bottom: 6px;
-    transition: all var(--transition);
+    transition: border-color var(--transition);
 }
 
 .fonte-item:hover {
@@ -2757,7 +2758,7 @@ html.high-contrast ::selection {
     border: 1px solid var(--border);
     border-radius: var(--radius-sm);
     color: var(--primary);
-    transition: all var(--transition);
+    transition: background-color var(--transition), border-color var(--transition), color var(--transition);
 }
 
 .fonte-link a:hover {
@@ -3008,6 +3009,7 @@ html.high-contrast ::selection {
         max-width: 320px;
         margin-left: auto;
         margin-right: auto;
+        min-height: 176px;
     }
 }
 
@@ -3635,7 +3637,7 @@ html.high-contrast ::selection {
     background: var(--surface);
     color: var(--text);
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
     margin-bottom: 16px;
 }
 
@@ -3652,7 +3654,7 @@ html.high-contrast ::selection {
 .ipva-info-box {
     margin-top: 16px;
     min-height: 0;
-    transition: all 0.3s ease;
+    transition: opacity 0.3s ease;
 }
 
 .ipva-detail-card {
@@ -3755,7 +3757,7 @@ html.high-contrast ::selection {
     font-size: 24px;
     cursor: pointer;
     box-shadow: var(--shadow-md);
-    transition: opacity 0.3s ease, transform 0.3s ease, background 0.2s ease;
+    transition: opacity 0.3s ease, transform 0.3s ease, background 0.2s ease, visibility 0.3s, box-shadow 0.3s ease;
     opacity: 0;
     visibility: hidden;
     z-index: 999;

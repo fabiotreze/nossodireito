@@ -1,6 +1,10 @@
 
 (function () {
     'use strict';
+    // Fetch JSON data eagerly at module scope (before DOMContentLoaded).
+    // Replaces <link rel="preload"> which had credential-mode mismatch.
+    const _earlyDireitos = fetch('data/direitos.json').then(r => r.ok ? r : Promise.reject(r)).catch(() => null);
+    const _earlyMatching = fetch('data/matching_engine.json').then(r => r.ok ? r : Promise.reject(r)).catch(() => null);
     function safeJsonParse(str) {
         return JSON.parse(str, (key, value) => {
             if (key === '__proto__' || key === 'constructor' || key === 'prototype') {
@@ -207,7 +211,7 @@
         function ldVL(u) { return new Promise((y, n) => { const s = document.createElement('script'); s.src = u; s.onload = () => window.VLibras ? (initVL(), y()) : n(); s.onerror = n; document.head.appendChild(s); }); }
         const VLC = 'https://cdn.jsdelivr.net/gh/spbgovbr-vlibras/vlibras-portal@dev/app/vlibras-plugin.js';
         function ensureVL() { if (vlOK) return Promise.resolve(!0); if (window.VLibras) { initVL(); return Promise.resolve(!0); } if (!vlP) vlP = ldVL('https://vlibras.gov.br/app/vlibras-plugin.js').catch(() => ldVL(VLC)).then(() => !0, () => { vlP = null; return !1; }); return vlP; }
-        if (window.VLibras) initVL(); else ensureVL();
+        if (window.VLibras) initVL();
         if (btnLibras) btnLibras.addEventListener('click', async () => {
             btnLibras.disabled = true; btnLibras.textContent = '⏳ Carregando...';
             try {
@@ -733,7 +737,7 @@
     }
     async function loadData() {
         try {
-            const res = await resilientFetch('data/direitos.json');
+            const res = (await _earlyDireitos) || await resilientFetch('data/direitos.json');
             const json = await res.json();
             direitosData = deepFreeze(json.categorias);
             fontesData = deepFreeze(json.fontes || []);
@@ -758,7 +762,7 @@
 </div>`;
         }
         try {
-            const meRes = await resilientFetch('data/matching_engine.json');
+            const meRes = (await _earlyMatching) || await resilientFetch('data/matching_engine.json');
             const me = await meRes.json();
             UPPERCASE_ONLY_TERMS = Object.freeze(new Set(me.uppercase_only_terms));
             CID_RANGE_MAP = deepFreeze(me.cid_range_map);
