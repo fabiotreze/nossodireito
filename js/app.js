@@ -3,8 +3,14 @@
     'use strict';
     // Fetch JSON data eagerly at module scope (before DOMContentLoaded).
     // Replaces <link rel="preload"> which had credential-mode mismatch.
-    const _earlyDireitos = fetch('data/direitos.json').then(r => r.ok ? r : Promise.reject(r)).catch(() => null);
-    const _earlyMatching = fetch('data/matching_engine.json').then(r => r.ok ? r : Promise.reject(r)).catch(() => null);
+    // AbortController prevents ERR_TIMED_OUT on cold starts.
+    function _earlyFetch(url) {
+        const c = new AbortController();
+        const t = setTimeout(() => c.abort(), 6000);
+        return fetch(url, { signal: c.signal }).then(r => { clearTimeout(t); return r.ok ? r : Promise.reject(r); }).catch(() => { clearTimeout(t); return null; });
+    }
+    const _earlyDireitos = _earlyFetch('data/direitos.json');
+    const _earlyMatching = _earlyFetch('data/matching_engine.json');
     function safeJsonParse(str) {
         return JSON.parse(str, (key, value) => {
             if (key === '__proto__' || key === 'constructor' || key === 'prototype') {
