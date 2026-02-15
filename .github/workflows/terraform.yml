@@ -102,6 +102,8 @@ jobs:
         run: terraform init
 
       # ── Auto-import: importa recursos que existem no Azure mas nao no state ──
+      # IMPORTANTE: Descobrir OIDs e exportar TF_VAR_* ANTES dos imports,
+      # para que o count > 0 nas configurações condicionais.
       - name: Auto-import recursos existentes
         if: github.event.inputs.action != 'destroy'
         run: |
@@ -119,6 +121,23 @@ jobs:
 
           SUB="${ARM_SUBSCRIPTION_ID}"
           BASE="/subscriptions/${SUB}/resourceGroups/rg-nossodireito"
+
+          # ── Descobrir OIDs via az CLI (antes dos imports) ──
+          az login --service-principal \
+            -u "${ARM_CLIENT_ID}" -p "${ARM_CLIENT_SECRET}" \
+            --tenant "${ARM_TENANT_ID}" --output none 2>/dev/null || true
+
+          # Web RP OID — necessário para count > 0 em web_rp resource
+          WEB_RP_OID="${{ secrets.WEB_RP_OBJECT_ID }}"
+          if [ -z "$WEB_RP_OID" ]; then
+            WEB_RP_OID=$(az ad sp show --id "abfa0a7c-a6b6-4736-8310-5855508787cd" \
+              --query "id" -o tsv 2>/dev/null || true)
+          fi
+          if [ -n "$WEB_RP_OID" ]; then
+            export TF_VAR_web_rp_object_id="${WEB_RP_OID}"
+            echo "TF_VAR_web_rp_object_id=${WEB_RP_OID}" >> $GITHUB_ENV
+            echo "✅ Web RP OID: ${WEB_RP_OID}"
+          fi
 
           echo "── Verificando state ──"
           import_if_missing "azurerm_resource_group.main" "${BASE}"
@@ -138,11 +157,7 @@ jobs:
           import_if_missing "azurerm_key_vault.main[0]" \
             "${BASE}/providers/Microsoft.KeyVault/vaults/kv-nossodireito"
 
-          # Access Policies precisam dos object_id via az CLI
-          az login --service-principal \
-            -u "${ARM_CLIENT_ID}" -p "${ARM_CLIENT_SECRET}" \
-            --tenant "${ARM_TENANT_ID}" --output none 2>/dev/null || true
-
+          # Access Policies
           DEPLOYER_OID=$(az ad sp show --id "${ARM_CLIENT_ID}" \
             --query "id" -o tsv 2>/dev/null || true)
           if [ -n "$DEPLOYER_OID" ]; then
@@ -158,23 +173,30 @@ jobs:
               "${BASE}/providers/Microsoft.KeyVault/vaults/kv-nossodireito/objectId/${APP_PID}"
           fi
 
-          # Microsoft.Web RP — import da policy (OID via secret ou discovery)
-          WEB_RP_OID="${{ secrets.WEB_RP_OBJECT_ID }}"
-          if [ -z "$WEB_RP_OID" ]; then
-            WEB_RP_OID=$(az ad sp show --id "abfa0a7c-a6b6-4736-8310-5855508787cd" \
-              --query "id" -o tsv 2>/dev/null || true)
-          fi
+          # Microsoft.Web RP access policy
           if [ -n "$WEB_RP_OID" ]; then
             import_if_missing "azurerm_key_vault_access_policy.web_rp[0]" \
               "${BASE}/providers/Microsoft.KeyVault/vaults/kv-nossodireito/objectId/${WEB_RP_OID}"
           fi
 
-          # User access policy — import
+          # User access policy
           USER_OID="${{ secrets.USER_OBJECT_ID }}"
           if [ -n "$USER_OID" ]; then
             import_if_missing "azurerm_key_vault_access_policy.user[0]" \
               "${BASE}/providers/Microsoft.KeyVault/vaults/kv-nossodireito/objectId/${USER_OID}"
           fi
+
+          # ── Certificate (descobrir ID via az CLI) ──
+          CERT_ID=$(az keyvault certificate show \
+            --vault-name kv-nossodireito --name fabiotreze-wildcard \
+            --query "id" -o tsv 2>/dev/null || true)
+          if [ -n "$CERT_ID" ]; then
+            import_if_missing "azurerm_key_vault_certificate.wildcard[0]" "$CERT_ID"
+          fi
+
+          # ── Custom hostname binding ──
+          import_if_missing "azurerm_app_service_custom_hostname_binding.main[0]" \
+            "${BASE}/providers/Microsoft.Web/sites/app-nossodireito/hostNameBindings/nossodireito.fabiotreze.com"
 
           echo "── State atual ──"
           terraform state list 2>/dev/null || echo "(vazio)"
