@@ -5,6 +5,16 @@ Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/)
 e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [1.12.3] - 2026-02-15
+
+### Corrigido
+
+- **VLibras painel não aparecia** — O widget VLibras usa `window.onload` para inicializar seu DOM (injetar imagens e HTML do plugin). Como o script é carregado sob demanda (lazy-load) após o `onload` já ter disparado, a inicialização nunca ocorria. Corrigido chamando `window.onload()` manualmente após `new VLibras.Widget()`.
+- **Detecção do botão VLibras mais robusta** — Polling alterado para aceitar `img` ou `img[src]` dentro de `[vw-access-button]`, com timeout estendido de 5s para 8s.
+- **Testes E2E** — 196/196 PASS (100%)
+
+---
+
 ## [1.12.2] - 2026-02-15
 
 ### 🚮 Removido

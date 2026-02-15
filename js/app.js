@@ -215,7 +215,15 @@
             try { localStorage.setItem(A11Y_CONTRAST_KEY, String(on)); } catch (_) { }
         }
         let vlOK = false, vlP = null;
-        function initVL() { try { new window.VLibras.Widget('https://vlibras.gov.br/app'); vlOK = true; } catch (_) { } }
+        function initVL() {
+            try {
+                new window.VLibras.Widget('https://vlibras.gov.br/app');
+                /* VLibras sets window.onload to inject its DOM (imgs, plugin HTML).
+                   When lazy-loaded after page load, onload never fires — trigger it. */
+                if (typeof window.onload === 'function') { try { window.onload(); } catch (_) { } }
+                vlOK = true;
+            } catch (_) { }
+        }
         function ldVL(u) { return new Promise((y, n) => { const s = document.createElement('script'); s.src = u; s.onload = () => window.VLibras ? (initVL(), y()) : n(); s.onerror = n; document.head.appendChild(s); }); }
         const VLC = 'https://cdn.jsdelivr.net/gh/spbgovbr-vlibras/vlibras-portal@dev/app/vlibras-plugin.js';
         function ensureVL() { if (vlOK) return Promise.resolve(!0); if (window.VLibras) { initVL(); return Promise.resolve(!0); } if (!vlP) vlP = ldVL('https://vlibras.gov.br/app/vlibras-plugin.js').catch(() => ldVL(VLC)).then(() => !0, () => { vlP = null; return !1; }); return vlP; }
@@ -224,7 +232,14 @@
             btnLibras.disabled = true; btnLibras.textContent = '⏳ Carregando...';
             try {
                 if (!await ensureVL()) { showToast('VLibras indisponível. Tente novamente mais tarde.', 'error'); return; }
-                await new Promise(r => { let c = 0; const iv = setInterval(() => { const b = document.querySelector('[vw-access-button] img[src]'); if (b) { clearInterval(iv); b.closest('[vw-access-button]').click(); r(); } else if (++c > 25) { clearInterval(iv); showToast('VLibras carregou mas o painel não apareceu. Recarregue a página.', 'warning'); r(); } }, 200); });
+                /* Poll for VLibras DOM: look for img[src] (preferred) or any img child
+                   inside [vw-access-button], then programmatically click to open panel. */
+                await new Promise(r => { let c = 0; const iv = setInterval(() => {
+                    const ab = document.querySelector('[vw-access-button]');
+                    const img = ab && (ab.querySelector('img[src]') || ab.querySelector('img'));
+                    if (img) { clearInterval(iv); ab.click(); r(); }
+                    else if (++c > 40) { clearInterval(iv); showToast('VLibras carregou mas o painel não apareceu. Recarregue a página.', 'warning'); r(); }
+                }, 200); });
             } finally { btnLibras.disabled = false; btnLibras.textContent = '🤟 Libras'; }
         });
         const btnReadAloud = document.getElementById('a11yReadAloud');
