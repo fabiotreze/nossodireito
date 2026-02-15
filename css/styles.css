@@ -28,8 +28,8 @@ textarea:focus {
     --surface-alt: #edf2f7;
     --surface-hover: #f1f5f9;
     --text: #1e293b;
-    --text-muted: #64748b;
-    --text-light: #64748b;
+    --text-muted: #5f6f85;
+    --text-light: #5f6f85;
     --border: #e2e8f0;
     --danger: #dc2626;
     --success: #16a34a;
@@ -102,7 +102,9 @@ body {
 
 a {
     color: var(--primary);
-    text-decoration: none;
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 2px;
     transition: color var(--transition);
 }
 
@@ -110,6 +112,19 @@ a:hover,
 a:focus-visible {
     color: var(--primary-light);
     text-decoration: underline;
+    text-decoration-thickness: 2px;
+}
+
+/* Remove underline from nav/button-style links */
+.nav-links a,
+.btn,
+.hero-actions a,
+.skip-link,
+.footer-brand a,
+.inst-link,
+.btn-govbr,
+.orgao-card a {
+    text-decoration: none;
 }
 
 small {
@@ -153,7 +168,7 @@ input,
     border: 0;
 }
 
-/* ---------- Skip to content (a11y) ---------- */
+/* ---------- Skip to content (a11y) — eMAG 4.1 ---------- */
 .skip-link {
     position: absolute;
     top: -100%;
@@ -170,6 +185,10 @@ input,
 
 .skip-link:focus {
     top: 12px;
+}
+
+.skip-link:focus ~ .skip-link:focus {
+    top: 56px;
 }
 
 /* ==================== Painel de Acessibilidade (Drawer Pattern) ==================== */
@@ -840,17 +859,17 @@ html.high-contrast ::selection {
 
 /* ---------- WhatsApp Share ---------- */
 .btn-whatsapp {
-    background: #25d366;
+    background: #177a3c;
     color: #fff;
-    border-color: #25d366;
+    border-color: #177a3c;
     font-size: 0.875rem;
     padding: 6px 14px;
     gap: 4px;
 }
 
 .btn-whatsapp:hover {
-    background: #1da851;
-    border-color: #1da851;
+    background: #126630;
+    border-color: #126630;
 }
 
 /* ---------- Buttons ---------- */
@@ -976,16 +995,20 @@ html.high-contrast ::selection {
     box-shadow: var(--shadow-lg);
 }
 
-.modal-content h2 {
+.modal-content h2,
+.modal-heading {
     font-size: 1.5rem;
     margin-bottom: 16px;
     color: var(--warning);
+    font-weight: 700;
 }
 
-.disclaimer-text h3 {
+.disclaimer-text h3,
+.disclaimer-heading {
     font-size: 1rem;
     margin: 16px 0 8px;
     color: var(--text);
+    font-weight: 700;
 }
 
 .disclaimer-text ul {
@@ -1426,7 +1449,7 @@ html.high-contrast ::selection {
     padding: 12px 16px;
     font-size: 0.9rem;
     color: var(--text-muted);
-    background: var(--bg-alt);
+    background: var(--surface-alt);
     border-radius: var(--radius-sm);
     border-left: 3px solid var(--primary);
 }
@@ -2349,7 +2372,13 @@ html.high-contrast ::selection {
 
 .inst-tipo-badge.ong {
     background: rgba(22, 163, 74, 0.15);
-    color: var(--success);
+    color: #0d7a33;
+}
+
+@media (prefers-color-scheme: dark) {
+    .inst-tipo-badge.ong {
+        color: #4ade80;
+    }
 }
 
 .inst-tipo-badge.profissional {

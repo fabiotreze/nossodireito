@@ -1,6 +1,6 @@
 # NossoDireito — Arquitetura do Sistema V1 (Produção Atual)
 
-**Versão:** 1.10.0
+**Versão:** 1.11.0
 **Data:** Fevereiro 2026
 **Status:** Produção Estável (Quality Gate: 100.0/100)
 **URL:** https://nossodireito.fabiotreze.com
@@ -44,7 +44,7 @@
 ### Conformidade
 - **LGPD Art. 4º, I**: Não armazena dados pessoais em servidores (análise 100% local no navegador)
 - **WCAG 2.1 Nível AA**: Contraste ≥4.5:1, navegação por teclado, ARIA labels, landmarks
-- **eMAG 1.0** (Gov.br): VLibras para tradução em Libras, text-to-speech nativo
+- **eMAG 3.1** (Gov.br): VLibras para tradução em Libras, text-to-speech nativo
 - **OWASP Secure Headers**: CSP, HSTS, X-Frame-Options, Permissions-Policy
 
 ### KPIs V1
@@ -1420,7 +1420,7 @@ Como não há tratamento de dados pessoais (LGPD Art. 4º, I), não é necessár
 ✅ **4.1.2 — Nome, Função, Valor**: ARIA attributes (`aria-label`, `aria-expanded`, `aria-pressed`)
 ✅ **4.1.3 — Status Messages**: `role="alert"` para mensagens dinâmicas
 
-### eMAG 1.0 (Modelo de Acessibilidade Gov.br)
+### eMAG 3.1 (Modelo de Acessibilidade Gov.br)
 
 ✅ **Recomendação 2.1**: Disponibilizar Libras → VLibras widget gov.br
 ✅ **Recomendação 2.5**: Áudio ou vídeo alternativo → TTS (Web Speech API)

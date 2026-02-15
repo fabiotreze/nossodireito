@@ -1,6 +1,6 @@
-# 🔒 NossoDireito — Auditoria de Segurança v1.10.0
+# 🔒 NossoDireito — Auditoria de Segurança v1.11.0
 
-**Data**: 2026-02-13
+**Data**: 2026-02-15
 **Escopo**: Aplicação client-side (HTML5 + CSS3 + Vanilla JS) + servidor Node.js (`server.js`)
 **Domínio**: `nossodireito.fabiotreze.com` (HTTPS via Azure App Service + Key Vault PFX)
 **Classificação de dados**: Dados pessoais sensíveis de saúde (laudos médicos com CID)

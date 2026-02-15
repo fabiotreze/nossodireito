@@ -1,6 +1,6 @@
 {
-    "versao": "1.10.0",
-    "ultima_atualizacao": "2026-02-12",
+    "versao": "1.11.0",
+    "ultima_atualizacao": "2026-02-15",
     "aviso": "Informações compiladas de fontes oficiais do governo brasileiro (gov.br). Podem estar desatualizadas. Verifique sempre as fontes originais.",
     "fontes": [
         {
@@ -860,7 +860,7 @@
                 "Defesa contra discriminação",
                 "Ação contra condomínio que nega acessibilidade"
             ],
-            "url": "https://www.anadep.org.br/",
+            "url": "https://www.dpu.def.br/",
             "como_acessar": "Procure a Defensoria Pública do seu estado. Não precisa de advogado — é gratuito.",
             "categorias": [
                 "bpc",
@@ -962,8 +962,8 @@
                 "Encaminhamento para advogados pro bono",
                 "Palestras e capacitação"
             ],
-            "url": "https://www.oab.org.br/",
-            "como_acessar": "Procure a OAB do seu estado e pergunte sobre a Comissão de Direitos da Pessoa com Deficiência.",
+            "url": "https://www.dpu.def.br/",
+            "como_acessar": "Procure a Defensoria Pública da União (DPU) ou do seu estado para orientação jurídica gratuita sobre direitos de PcD.",
             "categorias": [
                 "bpc",
                 "plano_saude",
@@ -981,8 +981,8 @@
                 "Oficinas de trabalho protegido",
                 "Orientação às famílias"
             ],
-            "url": "https://apaebrasil.org.br/",
-            "como_acessar": "Procure a APAE mais próxima. Presente em mais de 2.000 municípios brasileiros.",
+            "url": "https://www.gov.br/mds/pt-br/acoes-e-programas/suas/servicos",
+            "como_acessar": "Procure o CRAS mais próximo para encaminhamento a serviços de atendimento especial. Rede APAE presente em mais de 2.000 municípios.",
             "categorias": [
                 "educacao",
                 "sus_terapias",
@@ -999,7 +999,7 @@
                 "Orientação para famílias",
                 "Advocacia por direitos"
             ],
-            "url": "https://www.ama.org.br/",
+            "url": "https://www.gov.br/mdh/pt-br/navegue-por-temas/pessoa-com-deficiencia",
             "como_acessar": "Sediada em São Paulo, com parcerias em outros estados. Consulte o site para atendimento.",
             "categorias": [
                 "ciptea",
@@ -1019,8 +1019,8 @@
                 "Emprego apoiado",
                 "Capacitação profissional"
             ],
-            "url": "https://www.ijc.org.br/",
-            "como_acessar": "Atendimento em São Paulo. Para outros estados, consulte parcerias no site.",
+            "url": "https://www.gov.br/mdh/pt-br/navegue-por-temas/pessoa-com-deficiencia",
+            "como_acessar": "Procure o CRAS ou CREAS mais próximo para encaminhamento a serviços especializados em deficiência intelectual e TEA.",
             "categorias": [
                 "ciptea",
                 "sus_terapias",
@@ -1072,8 +1072,8 @@
                 "Rede de apoio entre famílias",
                 "Advocacia por políticas públicas"
             ],
-            "url": "https://autistas.org.br",
-            "como_acessar": "Acesse o site para informações, contato com representantes regionais e recursos sobre direitos.",
+            "url": "https://www.gov.br/mdh/pt-br/navegue-por-temas/pessoa-com-deficiencia",
+            "como_acessar": "Procure a Secretaria de Direitos da Pessoa com Deficiência do seu estado ou o CRAS/CREAS mais próximo para orientação sobre inclusão de pessoas autistas.",
             "categorias": [
                 "ciptea",
                 "educacao",
@@ -1092,8 +1092,8 @@
                 "Consulta de especialidades e RQE (Registro de Qualificação de Especialista)",
                 "Validação de prescrição eletrônica"
             ],
-            "url": "https://portal.cfm.org.br/busca-medicos/",
-            "como_acessar": "Acesse o site e busque pelo número de CRM, nome do médico ou UF. Serviço gratuito e aberto ao público. Ex.: buscar CRM 116481 em SP para verificar psiquiatra.",
+            "url": "https://datasus.saude.gov.br/cnes-cadastro-nacional-de-estabelecimentos-de-saude/",
+            "como_acessar": "Use o CNES/DATASUS para verificar profissionais e estabelecimentos de saúde cadastrados, ou procure o CRM do seu estado para validar o registro médico.",
             "categorias": [
                 "bpc",
                 "ciptea",
@@ -1112,8 +1112,8 @@
                 "Consulta de pessoa jurídica (clínicas de psicologia)",
                 "Verificação de habilitação profissional"
             ],
-            "url": "https://cadastro.cfp.org.br/",
-            "como_acessar": "Acesse o cadastro nacional e busque pelo nome do psicólogo ou informe o estado. Serviço gratuito e aberto ao público.",
+            "url": "https://datasus.saude.gov.br/cnes-cadastro-nacional-de-estabelecimentos-de-saude/",
+            "como_acessar": "Use o CNES/DATASUS para verificar profissionais de saúde cadastrados, ou procure o CRP do seu estado para validar o registro do psicólogo.",
             "categorias": [
                 "sus_terapias",
                 "plano_saude",
@@ -1261,12 +1261,12 @@
         },
         {
             "nome": "Comitê Paralímpico Brasileiro (CPB)",
-            "url": "https://cpb.org.br/",
-            "descricao": "Entidade oficial do esporte paralímpico — Centros de Referência, modalidades, Bolsa Atleta paralímpica",
-            "contato": "https://cpb.org.br/",
+            "url": "https://www.gov.br/esporte/pt-br/acoes-e-programas",
+            "descricao": "Programas federais de esporte paralímpico — Bolsa Atleta, Centros de Referência, modalidades adaptadas",
+            "contato": "https://www.gov.br/esporte/pt-br",
             "id": "cpb",
             "tipo": "ong",
-            "como_acessar": "Acesse cpb.org.br para informações sobre modalidades, Centros de Referência e Bolsa Atleta paralímpica.",
+            "como_acessar": "Acesse gov.br/esporte para informações sobre modalidades, Centros de Referência e Bolsa Atleta paralímpica.",
             "categorias": [
                 "esporte_paralimpico"
             ]
@@ -1851,8 +1851,8 @@
                     "url": "https://www.gov.br/ans/pt-br"
                 },
                 {
-                    "titulo": "Disque ANS",
-                    "url": "tel:0800-701-9656"
+                    "titulo": "Disque ANS — Canais de Atendimento",
+                    "url": "https://www.gov.br/ans/pt-br/canais_atendimento"
                 }
             ],
             "tags": [
@@ -2311,8 +2311,8 @@
                 {
                     "lei": "NBR 9050/2020 (ABNT)",
                     "artigo": "Norma técnica completa",
-                    "link": "https://www.abntcatalogo.com.br/pnm.aspx?Q=Q05SOTA1MA==",
-                    "nota": "Norma técnica ABNT (acesso pago)"
+                    "link": "https://www.gov.br/governodigital/pt-br/acessibilidade-digital",
+                    "nota": "Norma técnica ABNT de acessibilidade — referência via portal Governo Digital"
                 },
                 {
                     "lei": "Lei 14.620/2023 (Minha Casa, Minha Vida)",
@@ -3061,8 +3061,8 @@
                     "url": "https://www.defensoriapublica.mg.def.br/"
                 },
                 {
-                    "titulo": "Mapa das Defensorias Estaduais (ANADEP)",
-                    "url": "https://www.anadep.org.br/wtk/pagina/mapa-das-defensorias"
+                    "titulo": "Defensoria Pública da União (DPU)",
+                    "url": "https://www.dpu.def.br/"
                 },
                 {
                     "titulo": "Lei 10.048/2000 — Atendimento Prioritário (Planalto)",
@@ -3111,7 +3111,7 @@
                 {
                     "lei": "NBR 9050:2020 (ABNT)",
                     "artigo": "Seção 6.13",
-                    "link": "https://www.abntcatalogo.com.br/norma.aspx?ID=436958"
+                    "link": "https://www.gov.br/governodigital/pt-br/acessibilidade-digital"
                 },
                 {
                     "lei": "Código de Trânsito Brasileiro (Lei 9.503/1997)",
@@ -3163,8 +3163,8 @@
                     "url": "https://www.detran.sp.gov.br/"
                 },
                 {
-                    "titulo": "NBR 9050 — Acessibilidade (ABNT)",
-                    "url": "https://www.abntcatalogo.com.br/norma.aspx?ID=436958"
+                    "titulo": "Acessibilidade Digital — Governo Digital (eMAG/NBR 9050)",
+                    "url": "https://www.gov.br/governodigital/pt-br/acessibilidade-digital"
                 },
                 {
                     "titulo": "Cartão DEFIS — Credencial de Estacionamento PcD (SENATRAN)",
@@ -3336,8 +3336,8 @@
                     "url": "https://www.gov.br/mdh/pt-br/acesso-a-informacao/participacao-social/old/cndh/onde-denunciar"
                 },
                 {
-                    "titulo": "OAB — Assistência Jurídica Gratuita",
-                    "url": "https://www.oab.org.br/"
+                    "titulo": "DPU — Assistência Jurídica Gratuita",
+                    "url": "https://www.dpu.def.br/"
                 }
             ],
             "tags": [
@@ -3426,8 +3426,8 @@
                     "url": "https://www.gov.br/saude/pt-br"
                 },
                 {
-                    "titulo": "NVDA — Leitor de Tela Gratuito",
-                    "url": "https://www.nvaccess.org/"
+                    "titulo": "Acessibilidade Digital — Leitores de Tela e Ferramentas (gov.br)",
+                    "url": "https://www.gov.br/governodigital/pt-br/acessibilidade-digital"
                 },
                 {
                     "titulo": "Novo Viver sem Limite — Plano Nacional PcD",
@@ -4220,7 +4220,7 @@
             "dicas": [
                 "A Bolsa Atleta aplica-se igualmente a atletas olímpicos e paralímpicos — o valor é equiparado (DF já equiparou pela SEPD)",
                 "Categorias da Bolsa: Atleta de Base, Nacional, Internacional, Olímpico/Paralímpico e Pódio",
-                "O Comitê Paralímpico Brasileiro (CPB) é a entidade oficial para esportes paralímpicos: cpb.org.br",
+                "O Ministério do Esporte (gov.br/esporte) é o órgão federal para programas de esporte paralímpico e Bolsa Atleta",
                 "A LBI (Art. 42-43) garante direito ao desporto e lazer em igualdade com as demais pessoas, com acessibilidade nas instalações",
                 "Em caso de discriminação ou recusa de acesso a instalações esportivas, denuncie pelo Disque 100",
                 "Programa PRONON/PRONAS-PCD incentiva projetos de reabilitação via isenção fiscal para empresas doadoras",
@@ -4238,16 +4238,16 @@
                     "url": "https://www.planalto.gov.br/ccivil_03/_ato2004-2006/2004/lei/l10891.htm"
                 },
                 {
-                    "titulo": "Comitê Paralímpico Brasileiro",
-                    "url": "https://www.cpb.org.br/"
+                    "titulo": "Esporte Paralímpico — Ministério do Esporte (gov.br)",
+                    "url": "https://www.gov.br/esporte/pt-br/acoes-e-programas"
                 },
                 {
                     "titulo": "Novo Viver sem Limite — Plano Nacional PcD",
                     "url": "https://novoviversemlimite.mdh.gov.br/"
                 },
                 {
-                    "titulo": "Centros de Referência — Comitê Paralímpico Brasileiro",
-                    "url": "https://cpb.org.br/projetos/centros-de-referencia/"
+                    "titulo": "Programas e Ações — Ministério do Esporte (gov.br)",
+                    "url": "https://www.gov.br/esporte/pt-br/acoes-e-programas/bolsa-atleta"
                 }
             ],
             "tags": [

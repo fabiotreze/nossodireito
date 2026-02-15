@@ -1,7 +1,7 @@
 # Guia de Qualidade — NossoDireito
 
 > **Status:** 🟢 Ativo
-> **Versão:** 1.10.0 | **Atualizado:** 2026-02-13
+> **Versão:** 1.11.0 | **Atualizado:** 2026-02-15
 > **Escopo:** Pipeline de qualidade, execução de scripts, testes manuais e troubleshooting
 > **Consolida:** QUALITY_SYSTEM + QUALITY_TESTING_GUIDE + GUIA_RAPIDO_USO + OPCOES_EXECUCAO
 
@@ -77,8 +77,9 @@ chmod +x .git/hooks/pre-commit
 | Teste | Checks | Motivo |
 |-------|--------|--------|
 | `test_e2e_interactive.py` | 42 testes Playwright | Requer `node server.js` + Chromium |
-| `test_visual_browser.py` | 24 testes visuais | Requer `node server.js` + Chromium |
-| `test_high_contrast.py` | 11 testes contraste | Requer `node server.js` + Chromium |
+| `test_visual_browser.py` | 24 testes visuais + 4 screenshots | Requer `node server.js` + Chromium |
+| `test_high_contrast.py` | 11 testes contraste + 5 screenshots | Requer `node server.js` + Chromium |
+| `capture_screenshots.py` | 10 screenshots (desktop/mobile/dark) | Requer `node server.js` + Chromium |
 | `pytest tests/` | 9 testes unitários | Coberto por master_compliance (usar no CI/CD) |
 | `validate_all.py` | 16 fases completas | Inclui HTTP (usar manualmente/semanal) |
 
@@ -154,6 +155,32 @@ Preenche campos faltantes com templates (mín: 5 requisitos, 4 documentos, 6 pas
 python scripts/audit_automation.py
 ```
 
+### 2.8 `avaliacao_360.py` — Avaliação Completa (807 checks)
+
+```bash
+python scripts/avaliacao_360.py
+```
+
+807 verificações em 11 seções: SEO, segurança, acessibilidade, conteúdo, performance, legal, URLs (318). Gera relatório detalhado com percentual por seção.
+
+### 2.9 `validate_urls.py` — Validação de URLs
+
+```bash
+python scripts/validate_urls.py
+```
+
+Valida 318 URLs do projeto (gov.br, legislação, internacionais). Whitelist `DOMINIOS_INTERNACIONAIS` para domínios como icd.who.int.
+
+### 2.10 `capture_screenshots.py` — Capturas de Tela
+
+```bash
+python scripts/capture_screenshots.py
+```
+
+Captura 10 screenshots automáticos via Playwright: hero, busca, categorias, footer, fullpage (desktop), hero, categorias, footer (mobile @2x), hero e categorias (dark mode). Salvos em `screenshots/` (gitignored).
+
+> **Dica:** Para screenshots adicionais (responsivos + alto contraste), usar também `test_visual_browser.py` (24 testes + 4 screenshots) e `test_high_contrast.py` (11 testes + 5 screenshots).
+
 ### Quando Usar Cada Script
 
 | Situação | Script | Quando |
@@ -162,9 +189,14 @@ python scripts/audit_automation.py
 | Bump de versão | `bump_version.py <versao>` | Antes de release |
 | Verificar versão | `master_compliance.py --quick` | Automático (pre-commit) |
 | Verificação completa | `validate_all.py` | Semanal |
+| Avaliação 360° | `avaliacao_360.py` | Antes de release |
 | Após editar benefícios | `analise360.py` | Conforme necessário |
 | Completar parciais | `complete_beneficios.py` | Quando completude < 20 |
 | Validar links gov.br | `validate_sources.py` | Semanal |
+| Validar todas URLs | `validate_urls.py` | Antes de release |
+| Atualizar screenshots | `capture_screenshots.py` | Antes de release |
+| Testes visuais | `test_visual_browser.py` | Antes de release |
+| Testes alto contraste | `test_high_contrast.py` | Antes de release |
 | Planejar melhorias | `audit_automation.py` | Mensal |
 
 ---
@@ -201,8 +233,19 @@ python scripts/master_compliance.py --quick
 python scripts/validate_all.py --fix
 python scripts/analise360.py
 python scripts/validate_sources.py
+python scripts/validate_urls.py
 # Backup manual:
 cp data/direitos.json "backups/direitos_$(date +%Y%m%d).json"
+```
+
+**Antes de release:**
+
+```bash
+python scripts/avaliacao_360.py
+python scripts/capture_screenshots.py
+python scripts/test_visual_browser.py
+python scripts/test_high_contrast.py
+# Revisar screenshots em screenshots/
 ```
 
 **Mensal:**
@@ -435,6 +478,7 @@ python scripts/validate_all.py --quick  # pula validação de URLs
 
 | Data | Mudança |
 |------|---------|
+| 2026-02-15 | v1.11.0: Adicionados scripts avaliacao_360.py (807 checks), validate_urls.py (318 URLs), capture_screenshots.py (10 screenshots). Tabela "Quando Usar" expandida com 5 novos scripts. Workflow "Antes de release" adicionado. |
 | 2026-02-13 | Criado por consolidação de QUALITY_SYSTEM + QUALITY_TESTING_GUIDE + GUIA_RAPIDO_USO + OPCOES_EXECUCAO |
 | 2026-02-13 | Pipeline simplificado: 4→3 estágios, removida duplicação versão/test_complete, docs atualizados |
 | 2026-02-13 | Pipeline mínimo: 3→2 estágios, removidos pytest (redundante c/ master_compliance) e fase 5 do quick (redundante c/ validate_analise_360) |

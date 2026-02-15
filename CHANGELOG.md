@@ -5,6 +5,28 @@ Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/)
 e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [1.11.0] - 2026-02-15
+
+### ✨ Adicionado
+- **`avaliacao_360.py`** — Script de avaliação completa com 807 verificações em 11 seções (SEO, segurança, acessibilidade, conteúdo, performance, legal)
+- **Whitelist `DOMINIOS_INTERNACIONAIS`** — icd.who.int restaurado como domínio válido para referências CID/ICD
+- **Conteúdo SEO pré-renderizado** — `<div id="seo-content">` com texto acessível a crawlers sem JavaScript
+- **4 novos schemas JSON-LD** — Organization, BreadcrumbList, 2× ItemList (direitos + benefícios)
+- **Sitemap expandido** — De 1 para 34 URLs indexáveis (categorias, filtros, âncoras de seção)
+- **Conteúdo `<noscript>` enriquecido** — Informações completas sobre direitos PcD para navegadores sem JS
+- **Meta keywords expandidas** — De ~15 para 45+ termos relevantes para SEO
+
+### 🐛 Corrigido
+- **icd.who.int restaurado** — URL da OMS para classificação CID/ICD removida indevidamente, agora na whitelist
+- **"eMAG 1.0" → "eMAG 3.1"** — Versão correta do Modelo de Acessibilidade corrigida em todos os docs ativos
+
+### 🔄 Melhorado
+- **robots.txt** — Limpeza conforme padrões web (removidos comentários keyword-stuffing, Crawl-delay, Allow redundantes)
+- **eMAG 4.1 — Atalhos de teclado** — `accesskey="1"` (conteúdo), `accesskey="2"` (menu), `accesskey="3"` (busca)
+- **eMAG 1.9 — Links externos** — Removido `target="_blank"` de links hardcoded no HTML
+- **Painel de acessibilidade** — Adicionados atalhos de teclado (1, 2, 3) na lista de recursos
+- **Master Compliance v1.11.0** — 21 categorias, 1059.9/1059.9 pontos (100.00%)
+
 ## [1.10.0] - 2026-02-13
 
 ### ✨ Adicionado

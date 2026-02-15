@@ -1,0 +1,864 @@
+{
+    "versao": "1.0.0",
+    "atualizado_em": "2025-02-13",
+    "descricao": "Dicionário validado de deficiências, condições, leis, benefícios e direitos PcD — fontes exclusivamente governamentais (.gov.br, .leg.br, .jus.br, .def.br, .mp.br, .mil.br)",
+
+    "deficiencias": [
+        {
+            "id": "tea",
+            "nome": "Transtorno do Espectro Autista (TEA)",
+            "sinonimos": ["autismo", "espectro autista", "TEA", "neurodivergente", "comportamento repetitivo", "interação social", "Asperger", "TID"],
+            "cid10": ["F84.0", "F84.1", "F84.2", "F84.3", "F84.4", "F84.5", "F84.8", "F84.9"],
+            "cid11": ["6A02"],
+            "descricao": "Condição neurológica que afeta comunicação, interação social e comportamento, com diferentes níveis de suporte (1, 2 e 3).",
+            "niveis": ["Nível 1 — leve", "Nível 2 — moderado", "Nível 3 — grave (severo)"],
+            "leis_especificas": ["Lei 12.764/2012 (Berenice Piana)", "Lei 13.977/2020 (Romeo Mion — CIPTEA)", "Lei 15.131/2025 (Terapia Nutricional)"],
+            "beneficios_elegiveis": ["bpc", "ciptea", "educacao", "plano_saude", "sus_terapias", "transporte", "trabalho", "fgts", "moradia", "isencoes_tributarias", "atendimento_prioritario", "estacionamento_especial", "aposentadoria_especial_pcd", "prioridade_judicial", "tecnologia_assistiva", "meia_entrada", "prouni_fies_sisu", "isencao_ir", "bolsa_familia", "tarifa_social_energia", "auxilio_inclusao", "protecao_social", "esporte_paralimpico", "turismo_acessivel"],
+            "keywords_busca": ["autismo", "TEA", "espectro autista", "autista", "Berenice Piana", "Romeo Mion", "CIPTEA", "ABA", "terapia ABA", "neurodivergente", "F84", "6A02", "nível de suporte", "CST", "Caregiver Skills Training"]
+        },
+        {
+            "id": "deficiencia_intelectual",
+            "nome": "Deficiência Intelectual",
+            "sinonimos": ["deficiência intelectual", "deficiência mental", "retardo mental", "funcionamento intelectual inferior"],
+            "cid10": ["F70", "F71", "F72", "F73", "F78", "F79"],
+            "cid11": ["6A00"],
+            "descricao": "Funcionamento intelectual significativamente inferior à média, com limitações adaptativas em pelo menos duas áreas.",
+            "niveis": ["Leve (F70)", "Moderada (F71)", "Grave (F72)", "Profunda (F73)"],
+            "leis_especificas": ["Lei 13.146/2015 (LBI)"],
+            "beneficios_elegiveis": ["bpc", "educacao", "plano_saude", "sus_terapias", "transporte", "trabalho", "fgts", "moradia", "isencoes_tributarias", "atendimento_prioritario", "estacionamento_especial", "aposentadoria_especial_pcd", "prioridade_judicial", "tecnologia_assistiva", "meia_entrada", "prouni_fies_sisu", "bolsa_familia", "tarifa_social_energia", "auxilio_inclusao", "protecao_social", "esporte_paralimpico", "turismo_acessivel"],
+            "keywords_busca": ["deficiência intelectual", "deficiência mental", "intelectual", "F70", "F79", "APAE", "emprego apoiado", "curatela"]
+        },
+        {
+            "id": "deficiencia_visual",
+            "nome": "Deficiência Visual",
+            "sinonimos": ["cegueira", "baixa visão", "visão monocular", "deficiente visual", "invidente"],
+            "cid10": ["H54", "H54.0", "H54.1", "H54.2"],
+            "cid11": ["9B50"],
+            "descricao": "Inclui cegueira total, baixa visão e visão monocular. Perda total ou parcial da capacidade visual.",
+            "niveis": ["Cegueira (H54.0)", "Baixa Visão (H54.1–H54.2)", "Visão Monocular"],
+            "leis_especificas": ["Lei 13.146/2015 (LBI)", "Lei 14.126/2021 (Visão Monocular)"],
+            "beneficios_elegiveis": ["bpc", "educacao", "plano_saude", "sus_terapias", "transporte", "trabalho", "fgts", "moradia", "isencoes_tributarias", "atendimento_prioritario", "estacionamento_especial", "aposentadoria_especial_pcd", "prioridade_judicial", "tecnologia_assistiva", "meia_entrada", "prouni_fies_sisu", "isencao_ir", "bolsa_familia", "tarifa_social_energia", "auxilio_inclusao", "protecao_social", "esporte_paralimpico", "turismo_acessivel"],
+            "keywords_busca": ["cegueira", "baixa visão", "visual", "cego", "deficiência visual", "visão monocular", "Braille", "leitor de tela", "NVDA", "DOSVOX", "cão-guia", "bengala"]
+        },
+        {
+            "id": "deficiencia_auditiva",
+            "nome": "Deficiência Auditiva",
+            "sinonimos": ["surdez", "surdo", "deficiente auditivo", "perda auditiva", "hipoacusia"],
+            "cid10": ["H90", "H90.0", "H90.3", "H90.5", "H91"],
+            "cid11": ["AB00", "AB0Z"],
+            "descricao": "Perda auditiva bilateral parcial ou total, igual ou superior a 41 dB. Inclui surdez neurossensorial, condutiva e mista.",
+            "niveis": ["Leve (26–40 dB)", "Moderada (41–55 dB)", "Severa (56–70 dB)", "Profunda (>90 dB)"],
+            "leis_especificas": ["Lei 13.146/2015 (LBI)", "Lei 10.436/2002 (Libras)"],
+            "beneficios_elegiveis": ["bpc", "educacao", "plano_saude", "sus_terapias", "transporte", "trabalho", "fgts", "moradia", "isencoes_tributarias", "atendimento_prioritario", "aposentadoria_especial_pcd", "prioridade_judicial", "tecnologia_assistiva", "meia_entrada", "prouni_fies_sisu", "bolsa_familia", "auxilio_inclusao", "protecao_social", "esporte_paralimpico", "turismo_acessivel"],
+            "keywords_busca": ["surdez", "surdo", "auditiva", "aparelho auditivo", "implante coclear", "Libras", "intérprete", "audiometria", "H90", "H91"]
+        },
+        {
+            "id": "deficiencia_fisica_paralisia",
+            "nome": "Deficiência Física — Paralisias",
+            "sinonimos": ["paraplegia", "tetraplegia", "hemiplegia", "paralisia", "paralisia cerebral", "monoplegia"],
+            "cid10": ["G80", "G81", "G82", "G82.2", "G82.5", "G83"],
+            "cid11": ["8D20"],
+            "descricao": "Comprometimento motor por lesão medular, cerebral ou neurológica. Inclui paraplegia, tetraplegia, hemiplegia e paralisia cerebral.",
+            "niveis": ["Paraplegia (G82.2)", "Tetraplegia (G82.5)", "Hemiplegia (G81)", "Paralisia Cerebral (G80)"],
+            "leis_especificas": ["Lei 13.146/2015 (LBI)"],
+            "beneficios_elegiveis": ["bpc", "educacao", "plano_saude", "sus_terapias", "transporte", "trabalho", "fgts", "moradia", "isencoes_tributarias", "atendimento_prioritario", "estacionamento_especial", "aposentadoria_especial_pcd", "prioridade_judicial", "tecnologia_assistiva", "meia_entrada", "prouni_fies_sisu", "bolsa_familia", "tarifa_social_energia", "auxilio_inclusao", "protecao_social", "esporte_paralimpico", "turismo_acessivel"],
+            "keywords_busca": ["paraplegia", "tetraplegia", "hemiplegia", "paralisia cerebral", "cadeira de rodas", "cadeira motorizada", "mobilidade reduzida", "lesão medular", "G80", "G82"]
+        },
+        {
+            "id": "deficiencia_fisica_amputacao",
+            "nome": "Deficiência Física — Amputação",
+            "sinonimos": ["amputação", "agenesia", "amputado", "membro amputado"],
+            "cid10": ["S78", "S88", "Z89", "Q71", "Q72", "Q73"],
+            "cid11": ["MA10"],
+            "descricao": "Perda total ou parcial de membro por amputação traumática, cirúrgica ou agenesia congênita.",
+            "niveis": ["Membro superior", "Membro inferior", "Bilateral", "Congênita (agenesia)"],
+            "leis_especificas": ["Lei 13.146/2015 (LBI)"],
+            "beneficios_elegiveis": ["bpc", "educacao", "plano_saude", "sus_terapias", "transporte", "trabalho", "fgts", "moradia", "isencoes_tributarias", "atendimento_prioritario", "estacionamento_especial", "aposentadoria_especial_pcd", "prioridade_judicial", "tecnologia_assistiva", "meia_entrada", "prouni_fies_sisu", "bolsa_familia", "auxilio_inclusao", "protecao_social", "esporte_paralimpico", "turismo_acessivel"],
+            "keywords_busca": ["amputação", "amputado", "prótese", "órtese", "membro", "agenesia", "Z89", "S78", "S88"]
+        },
+        {
+            "id": "nanismo",
+            "nome": "Deficiência Física — Nanismo",
+            "sinonimos": ["nanismo", "acondroplasia", "baixa estatura acentuada", "pessoa de baixa estatura"],
+            "cid10": ["E34.3", "Q77"],
+            "cid11": ["5B51"],
+            "descricao": "Condição caracterizada por estatura significativamente inferior à média, geralmente por acondroplasia ou outras displasias esqueléticas.",
+            "niveis": [],
+            "leis_especificas": ["Lei 13.472/2017", "Lei 13.146/2015 (LBI)"],
+            "beneficios_elegiveis": ["bpc", "educacao", "sus_terapias", "transporte", "trabalho", "fgts", "moradia", "isencoes_tributarias", "atendimento_prioritario", "estacionamento_especial", "aposentadoria_especial_pcd", "prioridade_judicial", "meia_entrada", "prouni_fies_sisu", "auxilio_inclusao", "protecao_social", "esporte_paralimpico"],
+            "keywords_busca": ["nanismo", "acondroplasia", "baixa estatura", "E34.3", "Q77"]
+        },
+        {
+            "id": "deficiencia_psicossocial",
+            "nome": "Deficiência Mental / Psicossocial",
+            "sinonimos": ["esquizofrenia", "transtorno bipolar grave", "deficiência psicossocial", "transtorno mental grave"],
+            "cid10": ["F20", "F31"],
+            "cid11": ["6A20", "6A60"],
+            "descricao": "Transtornos mentais severos e persistentes que geram impedimento de longo prazo para participação plena na sociedade.",
+            "niveis": ["Esquizofrenia (F20/6A20)", "Transtorno Bipolar grave (F31/6A60)"],
+            "leis_especificas": ["Lei 13.146/2015 (LBI)", "Lei 10.216/2001 (Reforma Psiquiátrica)"],
+            "beneficios_elegiveis": ["bpc", "educacao", "plano_saude", "sus_terapias", "transporte", "trabalho", "fgts", "moradia", "isencoes_tributarias", "atendimento_prioritario", "aposentadoria_especial_pcd", "prioridade_judicial", "meia_entrada", "bolsa_familia", "auxilio_inclusao", "protecao_social"],
+            "keywords_busca": ["esquizofrenia", "bipolar", "psicossocial", "CAPS", "saúde mental", "F20", "F31", "transtorno mental"]
+        },
+        {
+            "id": "deficiencia_multipla",
+            "nome": "Deficiência Múltipla",
+            "sinonimos": ["deficiência múltipla", "múltiplas deficiências", "surdocegueira"],
+            "cid10": [],
+            "cid11": [],
+            "descricao": "Combinação de duas ou mais deficiências (física, visual, auditiva, intelectual). Gera necessidades complexas de acessibilidade.",
+            "niveis": [],
+            "leis_especificas": ["Lei 13.146/2015 (LBI)"],
+            "beneficios_elegiveis": ["bpc", "educacao", "plano_saude", "sus_terapias", "transporte", "trabalho", "fgts", "moradia", "isencoes_tributarias", "atendimento_prioritario", "estacionamento_especial", "aposentadoria_especial_pcd", "prioridade_judicial", "tecnologia_assistiva", "meia_entrada", "prouni_fies_sisu", "bolsa_familia", "tarifa_social_energia", "auxilio_inclusao", "protecao_social", "esporte_paralimpico", "turismo_acessivel"],
+            "keywords_busca": ["deficiência múltipla", "múltipla", "surdocegueira", "combinação de deficiências"]
+        },
+        {
+            "id": "sindrome_down",
+            "nome": "Síndrome de Down",
+            "sinonimos": ["Down", "trissomia 21", "trissomia do cromossomo 21", "Síndrome de Down"],
+            "cid10": ["Q90", "Q90.0", "Q90.1", "Q90.2", "Q90.9"],
+            "cid11": ["LD40.0"],
+            "descricao": "Condição genética causada pela trissomia do cromossomo 21 que pode se enquadrar como deficiência intelectual e/ou física.",
+            "niveis": [],
+            "leis_especificas": ["Lei 13.146/2015 (LBI)"],
+            "beneficios_elegiveis": ["bpc", "educacao", "plano_saude", "sus_terapias", "transporte", "trabalho", "fgts", "moradia", "isencoes_tributarias", "atendimento_prioritario", "estacionamento_especial", "aposentadoria_especial_pcd", "prioridade_judicial", "tecnologia_assistiva", "meia_entrada", "prouni_fies_sisu", "bolsa_familia", "tarifa_social_energia", "auxilio_inclusao", "protecao_social", "esporte_paralimpico"],
+            "keywords_busca": ["Síndrome de Down", "Down", "trissomia 21", "Q90", "cromossomo 21"]
+        },
+        {
+            "id": "sindrome_zika",
+            "nome": "Síndrome Congênita do Zika Vírus",
+            "sinonimos": ["Zika", "microcefalia", "síndrome congênita Zika", "Zika vírus"],
+            "cid10": ["P35.4", "Q02"],
+            "cid11": [],
+            "descricao": "Conjunto de malformações congênitas (microcefalia e outras) causadas pelo Zika vírus durante a gestação.",
+            "niveis": [],
+            "leis_especificas": ["Lei 13.985/2020 (Pensão Especial Zika)"],
+            "beneficios_elegiveis": ["bpc", "educacao", "plano_saude", "sus_terapias", "transporte", "fgts", "moradia", "atendimento_prioritario", "prioridade_judicial", "tecnologia_assistiva", "bolsa_familia", "tarifa_social_energia", "protecao_social", "pensao_zika"],
+            "keywords_busca": ["Zika", "microcefalia", "síndrome congênita", "pensão Zika", "P35.4", "Q02", "Lei 13.985"]
+        },
+        {
+            "id": "reabilitados_inss",
+            "nome": "Reabilitados pelo INSS",
+            "sinonimos": ["reabilitação profissional", "reabilitado INSS", "certificado de reabilitação"],
+            "cid10": [],
+            "cid11": [],
+            "descricao": "Pessoas que possuem certificado de reabilitação profissional emitido pelo INSS. Enquadram-se nas cotas de PcD (Lei 8.213/91).",
+            "niveis": [],
+            "leis_especificas": ["Lei 8.213/1991 Art. 93"],
+            "beneficios_elegiveis": ["trabalho", "fgts", "aposentadoria_especial_pcd"],
+            "keywords_busca": ["reabilitação profissional", "reabilitado", "INSS", "certificado reabilitação", "cotas", "Lei 8.213"]
+        },
+        {
+            "id": "mobilidade_reduzida",
+            "nome": "Mobilidade Reduzida",
+            "sinonimos": ["mobilidade reduzida", "dificuldade de locomoção", "idoso com mobilidade reduzida"],
+            "cid10": [],
+            "cid11": [],
+            "descricao": "Pessoa com dificuldade permanente ou temporária de locomoção (idosos, gestantes, obesos). Para fins de acessibilidade e estacionamento.",
+            "niveis": [],
+            "leis_especificas": ["Lei 13.146/2015 (LBI)", "Decreto 5.296/2004"],
+            "beneficios_elegiveis": ["atendimento_prioritario", "estacionamento_especial", "turismo_acessivel"],
+            "keywords_busca": ["mobilidade reduzida", "locomoção", "dificuldade de movimentação", "rampa", "elevador"]
+        },
+        {
+            "id": "tdah",
+            "nome": "Transtorno do Déficit de Atenção e Hiperatividade (TDAH)",
+            "sinonimos": ["TDAH", "déficit de atenção", "hiperatividade", "TDA"],
+            "cid10": ["F90", "F90.0", "F90.1"],
+            "cid11": ["6A05"],
+            "descricao": "Transtorno do neurodesenvolvimento que afeta atenção, controle de impulsos e hiperatividade. Pode configurar deficiência quando com impedimento de longo prazo.",
+            "niveis": ["Predominantemente desatento", "Predominantemente hiperativo-impulsivo", "Combinado"],
+            "leis_especificas": ["Lei 14.254/2021 (Acompanhamento escolar TDAH/dislexia)"],
+            "beneficios_elegiveis": ["educacao", "plano_saude", "sus_terapias", "atendimento_prioritario", "prouni_fies_sisu"],
+            "keywords_busca": ["TDAH", "déficit de atenção", "hiperatividade", "F90", "6A05", "dislexia", "Lei 14.254"]
+        }
+    ],
+
+    "leis": [
+        {
+            "id": "constituicao_federal",
+            "nome": "Constituição Federal de 1988",
+            "numero": "CF/1988",
+            "tipo": "constituicao",
+            "artigos_relevantes": ["Art. 203, V", "Art. 208, III", "Art. 201, §1º", "Art. 7º, XXXI", "Art. 37, VIII"],
+            "descricao": "Garante assistência social, educação, previdência e reserva de vagas para PcD.",
+            "url": "https://www.planalto.gov.br/ccivil_03/constituicao/constituicao.htm",
+            "beneficios_relacionados": ["bpc", "educacao", "trabalho", "aposentadoria_especial_pcd"]
+        },
+        {
+            "id": "lbi",
+            "nome": "Estatuto da Pessoa com Deficiência (Lei Brasileira de Inclusão)",
+            "numero": "Lei 13.146/2015",
+            "tipo": "lei_federal",
+            "artigos_relevantes": ["Art. 9º", "Art. 18", "Art. 28", "Art. 31–34", "Art. 34–38", "Art. 42–45", "Art. 46", "Art. 47", "Art. 56–58", "Art. 74", "Art. 75", "Art. 94"],
+            "descricao": "Lei principal de direitos PcD. Abrange educação, saúde, trabalho, moradia, transporte, cultura, esporte, lazer e acessibilidade.",
+            "url": "https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2015/lei/l13146.htm",
+            "beneficios_relacionados": ["bpc", "educacao", "plano_saude", "sus_terapias", "transporte", "trabalho", "moradia", "atendimento_prioritario", "estacionamento_especial", "prioridade_judicial", "tecnologia_assistiva", "meia_entrada", "esporte_paralimpico", "turismo_acessivel"]
+        },
+        {
+            "id": "berenice_piana",
+            "nome": "Lei Berenice Piana — Política Nacional de Proteção dos Direitos da Pessoa com TEA",
+            "numero": "Lei 12.764/2012",
+            "tipo": "lei_federal",
+            "artigos_relevantes": ["Art. 3º, III", "Art. 3º-A", "Art. 5º", "Art. 7º"],
+            "descricao": "Institui a Política Nacional de Proteção dos Direitos da Pessoa com TEA. Equipara autistas a pessoas com deficiência para todos os efeitos legais.",
+            "url": "https://www.planalto.gov.br/ccivil_03/_ato2011-2014/2012/lei/l12764.htm",
+            "beneficios_relacionados": ["ciptea", "educacao", "plano_saude", "sus_terapias", "atendimento_prioritario"]
+        },
+        {
+            "id": "romeo_mion",
+            "nome": "Lei Romeo Mion — CIPTEA",
+            "numero": "Lei 13.977/2020",
+            "tipo": "lei_federal",
+            "artigos_relevantes": ["Art. 2º"],
+            "descricao": "Cria a Carteira de Identificação da Pessoa com TEA (CIPTEA) — documento gratuito para identificação e prioridade.",
+            "url": "https://www.planalto.gov.br/ccivil_03/_ato2019-2022/2020/lei/l13977.htm",
+            "beneficios_relacionados": ["ciptea"]
+        },
+        {
+            "id": "loas",
+            "nome": "LOAS — Lei Orgânica da Assistência Social",
+            "numero": "Lei 8.742/1993",
+            "tipo": "lei_federal",
+            "artigos_relevantes": ["Art. 20", "Art. 6º-A a 6º-E"],
+            "descricao": "Regulamenta o BPC/LOAS — benefício de 1 salário mínimo para PcD de baixa renda.",
+            "url": "https://www.planalto.gov.br/ccivil_03/leis/l8742.htm",
+            "beneficios_relacionados": ["bpc", "protecao_social"]
+        },
+        {
+            "id": "cotas_trabalho",
+            "nome": "Lei de Cotas para PcD no Trabalho",
+            "numero": "Lei 8.213/1991",
+            "tipo": "lei_federal",
+            "artigos_relevantes": ["Art. 93"],
+            "descricao": "Obriga empresas com 100+ empregados a reservar 2% a 5% das vagas para PcD ou reabilitados.",
+            "url": "https://www.planalto.gov.br/ccivil_03/leis/l8213cons.htm",
+            "beneficios_relacionados": ["trabalho"]
+        },
+        {
+            "id": "passe_livre",
+            "nome": "Lei do Passe Livre Interestadual",
+            "numero": "Lei 8.899/1994",
+            "tipo": "lei_federal",
+            "artigos_relevantes": ["Art. 1º"],
+            "descricao": "Garante passe livre interestadual em transporte coletivo para PcD comprovadamente carente.",
+            "url": "https://www.planalto.gov.br/ccivil_03/leis/l8899.htm",
+            "beneficios_relacionados": ["transporte"]
+        },
+        {
+            "id": "isencao_ipi",
+            "nome": "Isenção de IPI na Aquisição de Automóveis por PcD",
+            "numero": "Lei 8.989/1995",
+            "tipo": "lei_federal",
+            "artigos_relevantes": ["Art. 1º, IV", "Art. 2º", "Art. 3º"],
+            "descricao": "Isenção de IPI para PcD na compra de veículo novo até R$ 200.000.",
+            "url": "https://www.planalto.gov.br/ccivil_03/leis/l8989.htm",
+            "beneficios_relacionados": ["isencoes_tributarias"]
+        },
+        {
+            "id": "isencao_iof",
+            "nome": "Isenção de IOF para PcD",
+            "numero": "Lei 8.383/1991",
+            "tipo": "lei_federal",
+            "artigos_relevantes": ["Art. 72, IV"],
+            "descricao": "Isenção de IOF no financiamento de veículo por PcD.",
+            "url": "https://www.planalto.gov.br/ccivil_03/leis/l8383.htm",
+            "beneficios_relacionados": ["isencoes_tributarias"]
+        },
+        {
+            "id": "atendimento_prioritario",
+            "nome": "Lei do Atendimento Prioritário",
+            "numero": "Lei 10.048/2000",
+            "tipo": "lei_federal",
+            "artigos_relevantes": ["Art. 1º", "Art. 2º", "Art. 3º"],
+            "descricao": "Garante atendimento prioritário para PcD, idosos, gestantes e lactantes em estabelecimentos públicos e privados.",
+            "url": "https://www.planalto.gov.br/ccivil_03/leis/l10048.htm",
+            "beneficios_relacionados": ["atendimento_prioritario"]
+        },
+        {
+            "id": "acessibilidade",
+            "nome": "Lei de Acessibilidade",
+            "numero": "Lei 10.098/2000",
+            "tipo": "lei_federal",
+            "artigos_relevantes": ["Art. 11–18"],
+            "descricao": "Normas gerais e critérios básicos para promoção da acessibilidade em espaços públicos e edificações.",
+            "url": "https://www.planalto.gov.br/ccivil_03/leis/l10098.htm",
+            "beneficios_relacionados": ["moradia", "atendimento_prioritario", "estacionamento_especial"]
+        },
+        {
+            "id": "meia_entrada",
+            "nome": "Lei da Meia-Entrada",
+            "numero": "Lei 12.933/2013",
+            "tipo": "lei_federal",
+            "artigos_relevantes": ["Art. 1º, § 8º", "Art. 1º, § 10"],
+            "descricao": "Garante 50% de desconto em eventos culturais, artísticos e esportivos para PcD e acompanhante.",
+            "url": "https://www.planalto.gov.br/ccivil_03/_ato2011-2014/2013/lei/l12933.htm",
+            "beneficios_relacionados": ["meia_entrada"]
+        },
+        {
+            "id": "planos_saude",
+            "nome": "Lei dos Planos de Saúde",
+            "numero": "Lei 9.656/1998",
+            "tipo": "lei_federal",
+            "artigos_relevantes": ["Art. 14"],
+            "descricao": "Proíbe discriminação na contratação de planos de saúde por PcD e garante cobertura de procedimentos.",
+            "url": "https://www.planalto.gov.br/ccivil_03/leis/l9656.htm",
+            "beneficios_relacionados": ["plano_saude"]
+        },
+        {
+            "id": "fgts_saque",
+            "nome": "Lei do FGTS — Saque PcD",
+            "numero": "Lei 8.036/1990",
+            "tipo": "lei_federal",
+            "artigos_relevantes": ["Art. 20, XVII"],
+            "descricao": "Permite saque integral do FGTS para PcD ou para aquisição de equipamentos de acessibilidade.",
+            "url": "https://www.planalto.gov.br/ccivil_03/leis/l8036consol.htm",
+            "beneficios_relacionados": ["fgts"]
+        },
+        {
+            "id": "isencao_ir",
+            "nome": "Isenção de Imposto de Renda — Doença Grave",
+            "numero": "Lei 7.713/1988",
+            "tipo": "lei_federal",
+            "artigos_relevantes": ["Art. 6º, XIV"],
+            "descricao": "Isenta de IR rendimentos de aposentadoria/pensão de portadores de doenças graves (cegueira, esclerose múltipla, neoplasia, etc.).",
+            "url": "https://www.planalto.gov.br/ccivil_03/leis/l7713.htm",
+            "beneficios_relacionados": ["isencao_ir"]
+        },
+        {
+            "id": "aposentadoria_especial_pcd",
+            "nome": "Aposentadoria Especial PcD",
+            "numero": "LC 142/2013",
+            "tipo": "lei_complementar",
+            "artigos_relevantes": ["Art. 3º"],
+            "descricao": "Permite aposentadoria com tempo reduzido conforme grau de deficiência: grave, moderada ou leve.",
+            "url": "https://www.planalto.gov.br/ccivil_03/leis/lcp/lcp142.htm",
+            "beneficios_relacionados": ["aposentadoria_especial_pcd"]
+        },
+        {
+            "id": "auxilio_inclusao",
+            "nome": "Auxílio-Inclusão",
+            "numero": "Lei 14.176/2021",
+            "tipo": "lei_federal",
+            "artigos_relevantes": ["Art. 26", "Art. 26-A"],
+            "descricao": "Benefício de ½ SM para ex-beneficiários BPC que ingressam no mercado de trabalho formal.",
+            "url": "https://www.planalto.gov.br/ccivil_03/_ato2019-2022/2021/lei/l14176.htm",
+            "beneficios_relacionados": ["auxilio_inclusao"]
+        },
+        {
+            "id": "pensao_zika",
+            "nome": "Pensão Especial Zika Vírus",
+            "numero": "Lei 13.985/2020",
+            "tipo": "lei_federal",
+            "artigos_relevantes": ["Art. 1º a 7º"],
+            "descricao": "Pensão vitalícia de 1 SM para crianças com Síndrome Congênita do Zika, nascidas entre 2015–2019.",
+            "url": "https://www.planalto.gov.br/ccivil_03/_ato2019-2022/2020/lei/l13985.htm",
+            "beneficios_relacionados": ["pensao_zika"]
+        },
+        {
+            "id": "prouni",
+            "nome": "ProUni — Programa Universidade para Todos",
+            "numero": "Lei 11.096/2005",
+            "tipo": "lei_federal",
+            "artigos_relevantes": ["Art. 2º, III"],
+            "descricao": "Bolsas de 50% a 100% para PcD no ensino superior privado.",
+            "url": "https://www.planalto.gov.br/ccivil_03/_ato2004-2006/2005/lei/l11096.htm",
+            "beneficios_relacionados": ["prouni_fies_sisu"]
+        },
+        {
+            "id": "fies",
+            "nome": "FIES — Financiamento Estudantil",
+            "numero": "Lei 10.260/2001",
+            "tipo": "lei_federal",
+            "artigos_relevantes": ["Art. 1"],
+            "descricao": "Financiamento estudantil federal com condições especiais para PcD.",
+            "url": "https://www.planalto.gov.br/ccivil_03/leis/leis_2001/l10260.htm",
+            "beneficios_relacionados": ["prouni_fies_sisu"]
+        },
+        {
+            "id": "cotas_sisu",
+            "nome": "Cotas PcD nas Universidades Federais",
+            "numero": "Lei 13.409/2016",
+            "tipo": "lei_federal",
+            "artigos_relevantes": ["Art. 1"],
+            "descricao": "Reserva de vagas para PcD nas universidades e institutos federais via SISU.",
+            "url": "https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2016/lei/l13409.htm",
+            "beneficios_relacionados": ["prouni_fies_sisu"]
+        },
+        {
+            "id": "tarifa_social",
+            "nome": "Tarifa Social de Energia Elétrica",
+            "numero": "Lei 12.212/2010",
+            "tipo": "lei_federal",
+            "artigos_relevantes": ["Art. 2º, § 1º"],
+            "descricao": "Desconto na conta de luz para famílias de baixa renda e PcD que usam equipamento médico elétrico.",
+            "url": "https://www.planalto.gov.br/ccivil_03/_ato2007-2010/2010/lei/l12212.htm",
+            "beneficios_relacionados": ["tarifa_social_energia"]
+        },
+        {
+            "id": "bolsa_familia",
+            "nome": "Programa Bolsa Família / Auxílio Brasil",
+            "numero": "Lei 14.284/2021",
+            "tipo": "lei_federal",
+            "artigos_relevantes": [],
+            "descricao": "Transferência de renda com benefício variável para famílias com PcD.",
+            "url": "https://www.planalto.gov.br/ccivil_03/_ato2019-2022/2021/lei/l14284.htm",
+            "beneficios_relacionados": ["bolsa_familia"]
+        },
+        {
+            "id": "bolsa_atleta",
+            "nome": "Programa Bolsa-Atleta",
+            "numero": "Lei 10.891/2004",
+            "tipo": "lei_federal",
+            "artigos_relevantes": ["Art. 1º", "Art. 3º-A"],
+            "descricao": "Bolsa mensal para atletas paralímpicos com valores equiparados aos olímpicos.",
+            "url": "https://www.planalto.gov.br/ccivil_03/_ato2004-2006/2004/lei/l10891.htm",
+            "beneficios_relacionados": ["esporte_paralimpico"]
+        },
+        {
+            "id": "convencao_onu",
+            "nome": "Convenção da ONU sobre os Direitos das Pessoas com Deficiência",
+            "numero": "Decreto 6.949/2009",
+            "tipo": "decreto",
+            "artigos_relevantes": ["Art. 9º", "Art. 20", "Art. 24", "Art. 27", "Art. 30"],
+            "descricao": "Tratado internacional com força constitucional no Brasil. Base para toda a legislação PcD.",
+            "url": "https://www.planalto.gov.br/ccivil_03/_ato2007-2010/2009/decreto/d6949.htm",
+            "beneficios_relacionados": ["bpc", "educacao", "trabalho", "moradia", "esporte_paralimpico", "turismo_acessivel"]
+        },
+        {
+            "id": "regulamenta_acessibilidade",
+            "nome": "Regulamentação da Acessibilidade",
+            "numero": "Decreto 5.296/2004",
+            "tipo": "decreto",
+            "artigos_relevantes": ["Art. 10–22"],
+            "descricao": "Regulamenta as Leis 10.048/2000 e 10.098/2000 — critérios de acessibilidade em edificações, transporte e comunicação.",
+            "url": "https://www.planalto.gov.br/ccivil_03/_ato2004-2006/2004/decreto/d5296.htm",
+            "beneficios_relacionados": ["moradia", "atendimento_prioritario", "estacionamento_especial"]
+        },
+        {
+            "id": "cpc_prioridade",
+            "nome": "Código de Processo Civil — Prioridade de Tramitação",
+            "numero": "Lei 13.105/2015",
+            "tipo": "lei_federal",
+            "artigos_relevantes": ["Art. 1.048"],
+            "descricao": "Garante prioridade na tramitação de processos judiciais envolvendo PcD.",
+            "url": "https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2015/lei/l13105.htm",
+            "beneficios_relacionados": ["prioridade_judicial"]
+        },
+        {
+            "id": "terapia_nutricional_tea",
+            "nome": "Terapia Nutricional para TEA",
+            "numero": "Lei 15.131/2025",
+            "tipo": "lei_federal",
+            "artigos_relevantes": ["Art. 1º–3º"],
+            "descricao": "Garante cobertura obrigatória de terapia nutricional para pessoas com TEA por planos de saúde e SUS.",
+            "url": "https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2025/lei/L15131.htm",
+            "beneficios_relacionados": ["plano_saude", "sus_terapias"]
+        },
+        {
+            "id": "defensoria_publica",
+            "nome": "Lei Orgânica da Defensoria Pública",
+            "numero": "LC 80/1994",
+            "tipo": "lei_complementar",
+            "artigos_relevantes": ["Art. 1º", "Art. 4º"],
+            "descricao": "Organiza a Defensoria Pública — assistência jurídica gratuita para PcD de baixa renda.",
+            "url": "https://www.planalto.gov.br/ccivil_03/leis/lcp/lcp80.htm",
+            "beneficios_relacionados": ["atendimento_prioritario", "prioridade_judicial"]
+        },
+        {
+            "id": "servidor_publico_cotas",
+            "nome": "Estatuto do Servidor Público Federal",
+            "numero": "Lei 8.112/1990",
+            "tipo": "lei_federal",
+            "artigos_relevantes": ["Art. 5º, § 2º"],
+            "descricao": "Reserva até 20% das vagas em concursos públicos federais para PcD.",
+            "url": "https://www.planalto.gov.br/ccivil_03/leis/l8112cons.htm",
+            "beneficios_relacionados": ["trabalho"]
+        },
+        {
+            "id": "minha_casa_minha_vida",
+            "nome": "Minha Casa, Minha Vida",
+            "numero": "Lei 14.620/2023",
+            "tipo": "lei_federal",
+            "artigos_relevantes": ["Art. 3º, § 1º"],
+            "descricao": "Programa habitacional com prioridade e adaptações obrigatórias para PcD.",
+            "url": "https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2023/lei/l14620.htm",
+            "beneficios_relacionados": ["moradia"]
+        },
+        {
+            "id": "anac_resolucao_280",
+            "nome": "Acessibilidade no Transporte Aéreo",
+            "numero": "Resolução ANAC 280/2013",
+            "tipo": "resolucao",
+            "artigos_relevantes": ["Art. 1º a 45"],
+            "descricao": "Regulamenta assistência especial para passageiros com deficiência ou mobilidade reduzida em voos.",
+            "url": "https://www.anac.gov.br/assuntos/legislacao/legislacao-1/resolucoes/resolucoes-2013/resolucao-no-280-de-11-07-2013",
+            "beneficios_relacionados": ["transporte", "turismo_acessivel"]
+        },
+        {
+            "id": "ctb",
+            "nome": "Código de Trânsito Brasileiro",
+            "numero": "Lei 9.503/1997",
+            "tipo": "lei_federal",
+            "artigos_relevantes": ["Art. 181-A"],
+            "descricao": "Prevê infração para quem estaciona irregularmente em vaga reservada para PcD.",
+            "url": "https://www.planalto.gov.br/ccivil_03/leis/l9503compilado.htm",
+            "beneficios_relacionados": ["estacionamento_especial"]
+        }
+    ],
+
+    "beneficios": [
+        {
+            "id": "bpc",
+            "nome": "BPC/LOAS — Benefício de Prestação Continuada",
+            "tipo": "assistencia_social",
+            "valor": "1 salário mínimo/mês (R$ 1.621,00 em 2026)",
+            "orgao": "INSS / Ministério do Desenvolvimento Social",
+            "url": "https://www.gov.br/pt-br/servicos/solicitar-beneficio-assistencial-a-pessoa-com-deficiencia",
+            "requisitos_resumo": "PcD + renda per capita ≤ ¼ SM + CadÚnico + perícia biopsicossocial",
+            "keywords_busca": ["BPC", "LOAS", "benefício assistencial", "salário mínimo", "baixa renda", "perícia", "INSS"]
+        },
+        {
+            "id": "ciptea",
+            "nome": "CIPTEA — Carteira de Identificação da Pessoa com TEA",
+            "tipo": "identificacao",
+            "valor": "Gratuito",
+            "orgao": "Secretarias estaduais/municipais de saúde ou direitos PcD",
+            "url": "https://ciptea.sp.gov.br/",
+            "requisitos_resumo": "Diagnóstico de TEA + relatório médico com CID F84/6A02",
+            "keywords_busca": ["CIPTEA", "carteira", "TEA", "autismo", "Romeo Mion", "identificação"]
+        },
+        {
+            "id": "isencao_ipi",
+            "nome": "Isenção de IPI na Compra de Veículo",
+            "tipo": "tributario",
+            "valor": "7–25% de economia no valor do veículo (até R$ 200.000)",
+            "orgao": "Receita Federal / SISEN",
+            "url": "https://sisen.receita.fazenda.gov.br/",
+            "requisitos_resumo": "PcD física/visual/mental/intelectual/TEA + laudo + veículo ≤ R$ 200.000",
+            "keywords_busca": ["IPI", "isenção", "veículo", "carro", "automóvel", "SISEN", "Receita Federal"]
+        },
+        {
+            "id": "isencao_icms",
+            "nome": "Isenção de ICMS na Compra de Veículo",
+            "tipo": "tributario",
+            "valor": "7–18% de economia",
+            "orgao": "SEFAZ estadual / CONFAZ",
+            "url": "https://www.gov.br/pgfn/pt-br/cidadania-tributaria/por-assunto/relacoes-federativas-1/confaz-conselho-nacional-de-politica-fazendaria",
+            "requisitos_resumo": "PcD + laudo + veículo ≤ ~R$ 120.000 (CONFAZ)",
+            "keywords_busca": ["ICMS", "isenção", "veículo", "CONFAZ", "SEFAZ"]
+        },
+        {
+            "id": "isencao_iof",
+            "nome": "Isenção de IOF no Financiamento de Veículo",
+            "tipo": "tributario",
+            "valor": "1–3% de economia",
+            "orgao": "Receita Federal",
+            "url": "https://www.gov.br/receitafederal/pt-br",
+            "requisitos_resumo": "PcD condutora + veículo ≤ 127 HP + uso único",
+            "keywords_busca": ["IOF", "isenção", "financiamento", "veículo"]
+        },
+        {
+            "id": "isencao_ipva",
+            "nome": "Isenção de IPVA",
+            "tipo": "tributario",
+            "valor": "1–4% do valor do veículo/ano",
+            "orgao": "SEFAZ estadual",
+            "url": "https://portal.fazenda.sp.gov.br/servicos/ipva/",
+            "requisitos_resumo": "Varia por estado — PcD + laudo + veículo registrado",
+            "keywords_busca": ["IPVA", "isenção", "veículo", "SEFAZ", "Detran"]
+        },
+        {
+            "id": "passe_livre",
+            "nome": "Passe Livre Interestadual",
+            "tipo": "transporte",
+            "valor": "Gratuidade no transporte interestadual",
+            "orgao": "Ministério dos Transportes",
+            "url": "https://www.gov.br/pt-br/servicos/obter-passe-livre-interestadual-digital",
+            "requisitos_resumo": "PcD + renda per capita ≤ 1 SM + laudo médico",
+            "keywords_busca": ["passe livre", "transporte", "ônibus", "gratuito", "interestadual"]
+        },
+        {
+            "id": "cotas_trabalho",
+            "nome": "Cotas PcD em Empresas",
+            "tipo": "trabalho",
+            "valor": "2–5% das vagas em empresas com 100+ empregados",
+            "orgao": "Ministério do Trabalho e Emprego",
+            "url": "https://www.gov.br/trabalho-e-emprego/pt-br",
+            "requisitos_resumo": "PcD com laudo ou reabilitado INSS",
+            "keywords_busca": ["cotas", "emprego", "trabalho", "vaga PcD", "CLT", "Lei 8.213"]
+        },
+        {
+            "id": "aposentadoria_especial",
+            "nome": "Aposentadoria Especial PcD",
+            "tipo": "previdencia",
+            "valor": "1–10 SM/mês conforme contribuição",
+            "orgao": "INSS",
+            "url": "https://meu.inss.gov.br/",
+            "requisitos_resumo": "Grave: 25/20a, Moderada: 29/24a, Leve: 33/28a (H/M)",
+            "keywords_busca": ["aposentadoria especial", "tempo reduzido", "INSS", "LC 142", "perícia", "contribuição"]
+        },
+        {
+            "id": "auxilio_inclusao",
+            "nome": "Auxílio-Inclusão",
+            "tipo": "assistencia_social",
+            "valor": "½ salário mínimo/mês (R$ 810,50 em 2026)",
+            "orgao": "INSS",
+            "url": "https://meu.inss.gov.br/",
+            "requisitos_resumo": "Ex-BPC (até 5 anos) + emprego formal ≤ 2 SM + CadÚnico",
+            "keywords_busca": ["auxílio-inclusão", "BPC", "trabalho", "emprego", "meio salário", "Lei 14.176"]
+        },
+        {
+            "id": "bolsa_familia",
+            "nome": "Bolsa Família",
+            "tipo": "transferencia_renda",
+            "valor": "Mínimo R$ 600 + adicionais PcD",
+            "orgao": "Ministério do Desenvolvimento Social / Caixa",
+            "url": "https://www.gov.br/mds",
+            "requisitos_resumo": "Renda per capita ≤ R$ 218 + CadÚnico + PcD na família",
+            "keywords_busca": ["Bolsa Família", "CadÚnico", "transferência de renda", "Caixa", "CRAS"]
+        },
+        {
+            "id": "tarifa_social",
+            "nome": "Tarifa Social de Energia Elétrica",
+            "tipo": "servico_publico",
+            "valor": "Até 100% de desconto na conta de luz",
+            "orgao": "ANEEL / Distribuidoras",
+            "url": "https://www.gov.br/mds",
+            "requisitos_resumo": "CadÚnico + (BPC OU equipamento médico elétrico)",
+            "keywords_busca": ["tarifa social", "energia", "conta de luz", "desconto", "ANEEL", "BPC"]
+        },
+        {
+            "id": "meia_entrada",
+            "nome": "Meia-Entrada para PcD",
+            "tipo": "cultura_lazer",
+            "valor": "50% de desconto",
+            "orgao": "Estabelecimentos culturais e esportivos",
+            "url": "https://www.planalto.gov.br/ccivil_03/_ato2011-2014/2013/lei/l12933.htm",
+            "requisitos_resumo": "PcD com comprovante de deficiência + acompanhante quando necessário",
+            "keywords_busca": ["meia-entrada", "cinema", "teatro", "show", "evento", "desconto", "cultura"]
+        },
+        {
+            "id": "fgts_saque",
+            "nome": "Saque FGTS para PcD",
+            "tipo": "financeiro",
+            "valor": "Saque integral do saldo FGTS",
+            "orgao": "Caixa Econômica Federal",
+            "url": "https://www.caixa.gov.br/",
+            "requisitos_resumo": "Titular FGTS + laudo PcD (titular ou dependente)",
+            "keywords_busca": ["FGTS", "saque", "Caixa", "deficiência", "prótese", "cadeira de rodas"]
+        },
+        {
+            "id": "pensao_zika",
+            "nome": "Pensão Especial Zika Vírus",
+            "tipo": "assistencia_social",
+            "valor": "1 salário mínimo/mês, vitalício",
+            "orgao": "INSS",
+            "url": "https://meu.inss.gov.br/",
+            "requisitos_resumo": "Síndrome Congênita Zika + nascida 2015–2019 + BPC",
+            "keywords_busca": ["pensão Zika", "microcefalia", "síndrome congênita", "vitalícia"]
+        },
+        {
+            "id": "bolsa_atleta",
+            "nome": "Bolsa Atleta Paralímpica",
+            "tipo": "esporte",
+            "valor": "R$ 410 (Base) a R$ 16.629/mês (Pódio)",
+            "orgao": "Ministério do Esporte",
+            "url": "https://www.gov.br/esporte/pt-br/acoes-e-programas/bolsa-atleta",
+            "requisitos_resumo": "Atleta PcD + vínculo entidade esportiva + competição recente",
+            "keywords_busca": ["Bolsa Atleta", "esporte paralímpico", "CPB", "atleta PcD", "competição"]
+        },
+        {
+            "id": "isencao_ir",
+            "nome": "Isenção de Imposto de Renda",
+            "tipo": "tributario",
+            "valor": "Isenção total do IR sobre aposentadoria/pensão + dedução ilimitada de despesas médicas",
+            "orgao": "Receita Federal",
+            "url": "https://www.gov.br/receitafederal/pt-br/assuntos/orientacao-tributaria/isencoes/isencao-irpf-molestia-grave",
+            "requisitos_resumo": "Doença grave (lista Lei 7.713/88) ou PcD com despesas médicas",
+            "keywords_busca": ["imposto de renda", "IR", "IRPF", "isenção", "doença grave", "dedução médica"]
+        }
+    ],
+
+    "documentos_comuns": [
+        {
+            "id": "laudo_medico",
+            "nome": "Laudo Médico com CID",
+            "descricao": "Documento médico obrigatório na maioria dos benefícios PcD. Deve conter: CID-10 ou CID-11, descrição funcional, data e assinatura do profissional.",
+            "validade": "Geralmente 12 meses (verificar por benefício)",
+            "categorias_que_exigem": 23,
+            "dica": "Solicite ao médico que inclua o CID, a descrição detalhada da limitação funcional e se o impedimento é de longo prazo (≥2 anos)."
+        },
+        {
+            "id": "cadúnico",
+            "nome": "Cadastro Único (CadÚnico/NIS)",
+            "descricao": "Cadastro obrigatório para benefícios de baixa renda. Inscrição no CRAS.",
+            "validade": "Atualizar a cada 24 meses",
+            "categorias_que_exigem": 8,
+            "dica": "Mantenha os dados atualizados. Desatualização pode bloquear benefícios como BPC e Bolsa Família."
+        },
+        {
+            "id": "cnh_especial",
+            "nome": "CNH Especial",
+            "descricao": "Carteira Nacional de Habilitação com categoria especial para PcD condutora.",
+            "validade": "Conforme prazo da CNH",
+            "categorias_que_exigem": 3,
+            "dica": "Necessária para isenção de IPI/ICMS/IOF quando PcD é o condutor do veículo."
+        }
+    ],
+
+    "orgaos_denuncia": [
+        {
+            "id": "disque_100",
+            "nome": "Disque 100 — Direitos Humanos",
+            "tipo": "federal",
+            "telefone": "100",
+            "url": "https://www.gov.br/mdh/pt-br/ondh",
+            "para_que": "Violações de direitos de PcD, discriminação, maus-tratos, negligência",
+            "horario": "24 horas, 7 dias por semana"
+        },
+        {
+            "id": "ouvsus",
+            "nome": "OuvSUS — Ligue 136",
+            "tipo": "federal",
+            "telefone": "136",
+            "url": "https://www.gov.br/saude/pt-br",
+            "para_que": "Negativa de atendimento ou medicamento no SUS",
+            "horario": "24 horas"
+        },
+        {
+            "id": "ans",
+            "nome": "ANS — Planos de Saúde",
+            "tipo": "federal",
+            "telefone": "0800-701-9656",
+            "url": "https://www.gov.br/ans/pt-br/canais_atendimento",
+            "para_que": "Negativa de cobertura, tratamento ou procedimento por plano de saúde",
+            "horario": "Seg a Sex, 8h às 20h"
+        },
+        {
+            "id": "procon",
+            "nome": "Procon",
+            "tipo": "estadual",
+            "telefone": "151 (varia por estado)",
+            "url": "https://www.procon.sp.gov.br/",
+            "para_que": "Questões de consumidor, discriminação em estabelecimentos comerciais",
+            "horario": "Horário comercial"
+        },
+        {
+            "id": "falabr",
+            "nome": "Fala.BR — CGU",
+            "tipo": "federal",
+            "telefone": null,
+            "url": "https://falabr.cgu.gov.br/",
+            "para_que": "Ouvidoria federal — reclamações, denúncias e elogios sobre serviços públicos",
+            "horario": "Online 24h"
+        },
+        {
+            "id": "mpf",
+            "nome": "MPF — Ministério Público Federal",
+            "tipo": "federal",
+            "telefone": "(61) 3105-5100",
+            "url": "https://www.mpf.mp.br/mpf-servicos",
+            "para_que": "Violação de direitos coletivos ou difusos de PcD (acessibilidade, discriminação)",
+            "horario": "Horário comercial"
+        },
+        {
+            "id": "dpu",
+            "nome": "DPU — Defensoria Pública da União",
+            "tipo": "federal",
+            "telefone": "129",
+            "url": "https://www.dpu.def.br/",
+            "para_que": "Assistência jurídica gratuita para PcD de baixa renda",
+            "horario": "Horário comercial"
+        }
+    ],
+
+    "elegibilidade_cruzada": {
+        "descricao": "Mapa de elegibilidade: quais condições dão acesso a quais benefícios específicos",
+        "condicoes_universais_pcd": {
+            "descricao": "Benefícios acessíveis a TODAS as pessoas com deficiência (qualquer tipo), desde que cumpridos os requisitos específicos de cada programa",
+            "beneficios": ["bpc", "educacao", "plano_saude", "sus_terapias", "transporte", "trabalho", "fgts", "moradia", "atendimento_prioritario", "aposentadoria_especial_pcd", "prioridade_judicial", "meia_entrada", "prouni_fies_sisu", "bolsa_familia", "auxilio_inclusao", "protecao_social", "esporte_paralimpico"]
+        },
+        "beneficios_condicionados": [
+            {
+                "beneficio": "ciptea",
+                "condicao": "Exclusivo para TEA (Transtorno do Espectro Autista)",
+                "deficiencias": ["tea"]
+            },
+            {
+                "beneficio": "isencoes_tributarias",
+                "condicao": "PcD física, visual, mental severa/profunda, intelectual ou TEA",
+                "deficiencias": ["tea", "deficiencia_intelectual", "deficiencia_visual", "deficiencia_fisica_paralisia", "deficiencia_fisica_amputacao", "nanismo", "deficiencia_psicossocial", "deficiencia_multipla", "sindrome_down"]
+            },
+            {
+                "beneficio": "estacionamento_especial",
+                "condicao": "PcD com mobilidade reduzida ou deficiência física",
+                "deficiencias": ["deficiencia_fisica_paralisia", "deficiencia_fisica_amputacao", "nanismo", "mobilidade_reduzida", "deficiencia_multipla"]
+            },
+            {
+                "beneficio": "pensao_zika",
+                "condicao": "Exclusivo para Síndrome Congênita do Zika Vírus (nascidos 2015–2019)",
+                "deficiencias": ["sindrome_zika"]
+            },
+            {
+                "beneficio": "tarifa_social_energia",
+                "condicao": "PcD que usa equipamento médico elétrico domiciliar OU beneficiário BPC",
+                "deficiencias": ["deficiencia_fisica_paralisia", "deficiencia_multipla"],
+                "nota": "Qualquer PcD pode se beneficiar se receber BPC, independente do tipo de deficiência"
+            },
+            {
+                "beneficio": "isencao_ir",
+                "condicao": "Aposentado/pensionista com doença grave conforme lista da Lei 7.713/88",
+                "deficiencias": ["deficiencia_visual", "deficiencia_psicossocial"],
+                "nota": "Qualquer PcD pode deduzir despesas médicas integralmente no IR"
+            },
+            {
+                "beneficio": "tecnologia_assistiva",
+                "condicao": "PcD com necessidade de equipamento assistivo (cadeira de rodas, leitor de tela, prótese, etc.)",
+                "deficiencias": ["deficiencia_fisica_paralisia", "deficiencia_fisica_amputacao", "deficiencia_visual", "deficiencia_auditiva", "deficiencia_multipla"]
+            },
+            {
+                "beneficio": "turismo_acessivel",
+                "condicao": "PcD, mobilidade reduzida ou PNAE (pessoa com necessidade de assistência especial)",
+                "deficiencias": ["deficiencia_fisica_paralisia", "deficiencia_fisica_amputacao", "deficiencia_visual", "deficiencia_auditiva", "mobilidade_reduzida", "deficiencia_multipla"]
+            }
+        ]
+    },
+
+    "keywords_master": {
+        "descricao": "Lista mestre de palavras-chave para buscas automatizadas, agrupadas por categoria semântica",
+        "deficiencias": ["PcD", "pessoa com deficiência", "deficiente", "deficiência", "autismo", "TEA", "autista", "Down", "Síndrome de Down", "paralisia cerebral", "paraplegia", "tetraplegia", "hemiplegia", "cegueira", "baixa visão", "surdez", "surdo", "amputação", "nanismo", "esquizofrenia", "bipolar", "TDAH", "dislexia", "microcefalia", "Zika", "deficiência intelectual", "deficiência visual", "deficiência auditiva", "deficiência física", "deficiência mental", "deficiência múltipla", "mobilidade reduzida", "neurodivergente", "necessidades especiais", "inclusão"],
+        "beneficios_financeiros": ["BPC", "LOAS", "Bolsa Família", "auxílio-inclusão", "auxílio", "salário mínimo", "pensão", "benefício", "aposentadoria", "FGTS", "saque", "renda", "CadÚnico", "baixa renda", "transferência de renda"],
+        "isencoes_tributarias": ["isenção", "IPI", "ICMS", "IOF", "IPVA", "IPTU", "imposto de renda", "IR", "tributo", "veículo", "carro", "automóvel", "desconto", "taxa", "SISEN", "CONFAZ", "SEFAZ", "Receita Federal"],
+        "saude": ["SUS", "terapia", "ABA", "fonoaudiologia", "psicologia", "terapia ocupacional", "fisioterapia", "medicamento", "reabilitação", "prótese", "órtese", "aparelho auditivo", "CAPS", "CER", "UBS", "plano de saúde", "ANS", "cobertura", "Rol de Procedimentos", "hemodiálise", "RENAME", "cadeira de rodas", "implante coclear"],
+        "educacao": ["escola", "matrícula", "educação inclusiva", "AEE", "ENEM", "ProUni", "FIES", "SISU", "faculdade", "universidade", "cotas", "Libras", "Braille", "NAPNE", "acompanhante escolar"],
+        "trabalho": ["emprego", "cota", "vaga PcD", "CLT", "concurso", "aprendiz", "demissão", "reabilitação profissional", "CTPS"],
+        "transporte": ["passe livre", "ônibus", "transporte", "avião", "voo", "ANAC", "embarque prioritário", "cão-guia", "estacionamento", "vaga especial", "Cartão DEFIS", "Zona Azul", "rodízio"],
+        "direitos_gerais": ["atendimento prioritário", "acessibilidade", "meia-entrada", "prioridade", "discriminação", "denúncia", "Disque 100", "Defensoria Pública", "Procon", "Ministério Público"],
+        "moradia": ["moradia", "condomínio", "rampa", "elevador", "adaptação", "acessibilidade", "Minha Casa Minha Vida", "NBR 9050"],
+        "documentos": ["laudo médico", "CID", "perícia", "CadÚnico", "NIS", "CIPTEA", "CNH especial", "Cartão DEFIS", "certidão"],
+        "leis": ["LBI", "Lei 13.146", "Berenice Piana", "Romeo Mion", "LOAS", "Lei 8.742", "Lei 8.213", "LC 142", "Lei 8.899", "Lei 8.989", "Lei 12.764", "Lei 13.977", "Lei 10.048", "Lei 10.098", "Convenção ONU", "Decreto 6.949", "Estatuto da Pessoa com Deficiência"]
+    },
+
+    "fontes_oficiais_validacao": {
+        "descricao": "Domínios oficiais aceitos para validação de fontes — todo link no sistema deve pertencer a um destes domínios",
+        "dominios_aceitos": [".gov.br", ".leg.br", ".jus.br", ".def.br", ".mp.br", ".mil.br"],
+        "exemplos": [
+            "planalto.gov.br — Legislação federal",
+            "meu.inss.gov.br — Serviços INSS",
+            "gov.br/mdh — Ministério dos Direitos Humanos",
+            "gov.br/ans — ANS",
+            "gov.br/saude — Ministério da Saúde",
+            "gov.br/receitafederal — Receita Federal",
+            "dpu.def.br — Defensoria Pública da União",
+            "mpf.mp.br — Ministério Público Federal",
+            "cnmp.mp.br — Conselho Nacional do Ministério Público",
+            "senado.leg.br — Legislação Senado"
+        ],
+        "dominios_rejeitados_motivo": [
+            "Sites privados, ONGs, associações (anadep.org.br, oab.org.br, cpb.org.br, etc.) — substituir por equivalente oficial",
+            "Catálogos comerciais (abntcatalogo.com.br) — substituir por referência gov.br",
+            "Sites internacionais (nvaccess.org, who.int) — usar referência gov.br que cita a fonte"
+        ]
+    }
+}

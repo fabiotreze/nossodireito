@@ -45,6 +45,8 @@ index.min.html
 quality_report.json
 validation_report.json
 validation_legal_report.json
+data/discovery_report.json
+data/discovery_report.md
 screenshots/
 
 # Node.js

@@ -8,7 +8,7 @@
 
 'use strict';
 
-const CACHE_VERSION = 'nossodireito-v1.10.0';
+const CACHE_VERSION = 'nossodireito-v1.11.0';
 const STATIC_ASSETS = [
     '/',
     '/index.html',
@@ -21,6 +21,9 @@ const STATIC_ASSETS = [
     '/images/favicon-32x32.png',
     '/images/apple-touch-icon.png',
     '/images/nossodireito.png',
+    '/images/nossodireito-400.webp',
+    '/images/nossodireito.webp',
+    '/images/nossodireito-400.png',
 ];
 
 const CDN_ASSETS = [

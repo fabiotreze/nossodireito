@@ -4,7 +4,7 @@
 
 # ⚖️ NossoDireito
 
-[![Master Compliance](https://img.shields.io/badge/Master%20Compliance-100.0%25%20(1059.9%2F1059.9)-brightgreen?style=flat-square)](CHANGELOG.md)
+[![Master Compliance](https://img.shields.io/badge/Master%20Compliance-100.0%25%20(1055.4%2F1055.4)-brightgreen?style=flat-square)](CHANGELOG.md)
 [![Quality Gate](https://img.shields.io/badge/Quality%20Gate-100.0%2F100-brightgreen?style=flat-square)](https://github.com/fabiotreze/nossodireito/actions)
 [![WAF 5 Pillars](https://img.shields.io/badge/WAF%205%20Pillars-100%25-success?style=flat-square)](docs/QUALITY_GUIDE.md)
 [![Deploy](https://img.shields.io/badge/Deploy-Azure%20App%20Service-0078D4?style=flat-square&logo=microsoft-azure)](https://nossodireito.fabiotreze.com)
@@ -12,7 +12,7 @@
 [![Accessibility](https://img.shields.io/badge/Accessibility-ARIA%20%7C%20VLibras%20%7C%20WCAG-blue?style=flat-square&logo=accessible-icon)](docs/ACCESSIBILITY.md)
 [![LGPD](https://img.shields.io/badge/LGPD-Zero%20Data%20Collection-blue?style=flat-square)](SECURITY.md)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow?style=flat-square)](LICENSE)
-[![Version](https://img.shields.io/badge/Version-1.10.0-informational?style=flat-square)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/Version-1.11.0-informational?style=flat-square)](CHANGELOG.md)
 
 **Recebeu um laudo? Vem que a gente te ajuda.**
 
@@ -32,9 +32,9 @@ Este projeto responde essa pergunta de forma clara, objetiva e validada.
 
 ---
 
-## 🎉 NOVIDADES (12/02/2026) — 100% COMPLIANCE ALCANÇADO!
+## 🎉 NOVIDADES (15/02/2026) — 100% COMPLIANCE ALCANÇADO!
 
-**🏆 Conquista:** Master Compliance v1.10.0 @ **1059.9/1059.9 pontos (100.00%)**
+**🏆 Conquista:** Master Compliance v1.11.0 @ **1055.4/1055.4 pontos (100.00%)**
 
 ### ✅ O que foi implementado:
 
@@ -42,19 +42,28 @@ Este projeto responde essa pergunta de forma clara, objetiva e validada.
    - Executa 7 fases de validação em sequência
    - Detecção automática de falhas/bugs
    - Modo `--fix` para auto-correção
-   - Resultado: 5/6 OK (83.3%)
 
-2. **`complete_beneficios.py`** — Auto-preenchimento de benefícios
-   - Completou 17 benefícios automaticamente (8→22 completos)
-   - Templates contextualizados (saúde, INSS, educação)
-   - Backup automático
+2. **`avaliacao_360.py`** — Avaliação completa (807 verificações)
+   - 11 seções: SEO, segurança, acessibilidade, conteúdo, performance, legal
+   - 318 URLs validadas (gov.br + internacionais)
+   - Relatório detalhado com percentual por seção
 
-3. **`audit_automation.py`** — Auditoria de automação
-   - Mapeou 100% dos gaps (automatizado vs não automatizado)
-   - 8 recomendações priorizadas (P0-P3)
-   - Estimativa de ~100h para 100% automação
+3. **Screenshots automatizados** — 3 scripts Playwright
+   - `capture_screenshots.py`: 10 screenshots (desktop, mobile, dark mode)
+   - `test_visual_browser.py`: 24 testes visuais + 4 screenshots responsivos
+   - `test_high_contrast.py`: 11 testes alto contraste + 5 screenshots comparativos
 
-4. **ANÁLISE 360 @ 100%** — Agora captura métricas corretamente:
+4. **SEO overhaul** — Sitemap expandido de 1→34 URLs
+   - 4 novos schemas JSON-LD (Organization, BreadcrumbList, 2× ItemList)
+   - Conteúdo SEO pré-renderizado, 45+ meta keywords
+   - Rich `<noscript>` para navegadores sem JS
+
+5. **eMAG 3.1 compliance** — Modelo de Acessibilidade Gov.br
+   - Atalhos `accesskey="1/2/3"` (conteúdo, menu, busca)
+   - `target="_blank"` removido de links hardcoded
+   - Painel de acessibilidade com shortcuts de teclado
+
+6. **ANÁLISE 360 @ 100%** — Métricas atualizadas:
    - ✅ Cobertura: 80.6% (≥75% meta)
    - ✅ Completude: 22/25 benefícios completos (≥20 meta)
    - ✅ IPVA: 27/27 estados mapeados
@@ -77,8 +86,13 @@ python scripts/validate_all.py
 # Master Compliance (21 categorias)
 python scripts/master_compliance.py
 
-# Análise de conteúdo
-python scripts/analise360.py
+# Avaliação 360° (807 checks, 318 URLs)
+python scripts/avaliacao_360.py
+
+# Screenshots + testes visuais (requer node server.js)
+python scripts/capture_screenshots.py
+python scripts/test_visual_browser.py
+python scripts/test_high_contrast.py
 ```
 
 **Roadmap P0-P3:** Próximas implementações em [`docs/VALIDATION_STATUS.md`](docs/VALIDATION_STATUS.md)

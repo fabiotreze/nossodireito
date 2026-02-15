@@ -115,6 +115,31 @@ jobs:
 
           echo "✅ Validação completa gerada em url-report.md"
 
+      - name: Descoberta automática de novos benefícios PcD
+        id: discovery
+        continue-on-error: true
+        run: |
+          echo "🔍 Executando descoberta automática de novos benefícios..."
+          python scripts/discover_benefits.py --since 14 --json > discovery_output.json 2>discovery_log.txt || true
+
+          DISC_TOTAL=$(jq '.candidates_found // 0' discovery_output.json 2>/dev/null || echo "0")
+          DISC_ALTA=$(jq '.candidates_by_priority.ALTA // 0' discovery_output.json 2>/dev/null || echo "0")
+
+          echo "disc_total=$DISC_TOTAL" >> "$GITHUB_OUTPUT"
+          echo "disc_alta=$DISC_ALTA" >> "$GITHUB_OUTPUT"
+
+          # Gera relatório MD
+          echo "## 🆕 Descoberta Automática de Benefícios" > disc-report.md
+          echo "" >> disc-report.md
+          if [ "$DISC_TOTAL" -gt 0 ]; then
+            echo "**$DISC_TOTAL candidatos encontrados** ($DISC_ALTA prioridade ALTA)" >> disc-report.md
+            echo "" >> disc-report.md
+            jq -r '.candidates[] | "- \(if .priority == "ALTA" then "🔴" elif .priority == "MÉDIA" then "🟡" else "🟢" end) **\(.title[:80])** (\(.source)) → `\(.suggested_category)`"' discovery_output.json >> disc-report.md 2>/dev/null
+          else
+            echo "✅ Nenhum benefício novo detectado esta semana." >> disc-report.md
+          fi
+          echo "" >> disc-report.md
+
       - name: Verificar fontes legislativas por mudanças recentes
         id: legcheck
         continue-on-error: true
@@ -198,12 +223,15 @@ jobs:
           URL_SCORE: ${{ steps.validate_urls.outputs.score }}
           URL_ERRORS: ${{ steps.validate_urls.outputs.errors }}
           URL_WARNINGS: ${{ steps.validate_urls.outputs.warnings }}
+          DISC_TOTAL: ${{ steps.discovery.outputs.disc_total }}
+          DISC_ALTA: ${{ steps.discovery.outputs.disc_alta }}
         with:
           script: |
             const fs = require('fs');
             const legReport = fs.readFileSync('leg-report.md', 'utf8');
             const cidReport = fs.existsSync('cid-report.md') ? fs.readFileSync('cid-report.md', 'utf8') : '⚠️ Relatório CID não disponível.';
             const urlReport = fs.existsSync('url-report.md') ? fs.readFileSync('url-report.md', 'utf8') : '⚠️ Validação de URLs não executada.';
+            const discReport = fs.existsSync('disc-report.md') ? fs.readFileSync('disc-report.md', 'utf8') : '⚠️ Descoberta automática não executada.';
             const today = new Date().toISOString().split('T')[0];
 
             const body = `# 📋 Revisão Periódica — ${today}
@@ -258,6 +286,9 @@ jobs:
 
             ### 🏥 Validação CID
             ${cidReport}
+
+            ### 🆕 Descoberta Automática de Benefícios
+            ${discReport}
 
             ---
             *Issue criada automaticamente pelo workflow de revisão periódica.*

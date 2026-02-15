@@ -1,0 +1,147 @@
+# NossoDireito — Descoberta Automática de Novos Benefícios PcD
+# Executa a cada 15 dias (1º e 15 de cada mês) + manual.
+# Busca em fontes oficiais (DOU, Senado, gov.br, LexML) por novos
+# direitos, leis e serviços para PcD que ainda não estão no sistema.
+# Se encontrar candidatos, cria uma issue para revisão humana.
+
+name: Descoberta de Novos Benefícios PcD
+
+on:
+  schedule:
+    # 1º e 15 de cada mês às 10:00 UTC (07:00 BRT)
+    - cron: "0 10 1,15 * *"
+  workflow_dispatch:
+    inputs:
+      since_days:
+        description: "Buscar nos últimos N dias"
+        default: "60"
+        type: string
+      dry_run:
+        description: "Dry-run (não cria issue)"
+        default: false
+        type: boolean
+
+concurrency:
+  group: discover-benefits
+  cancel-in-progress: true
+
+jobs:
+  discover:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Instalar dependências
+        run: pip install -r requirements.txt
+
+      - name: Executar descoberta de benefícios
+        id: discover
+        continue-on-error: true
+        run: |
+          SINCE="${{ inputs.since_days || '60' }}"
+          echo "🔍 Buscando novos benefícios PcD (últimos $SINCE dias)..."
+
+          python scripts/discover_benefits.py \
+            --since "$SINCE" \
+            --json > discovery_output.json 2>discovery_log.txt || true
+
+          # Exibir log
+          cat discovery_log.txt
+
+          # Extrair contadores
+          TOTAL=$(jq '.candidates_found // 0' discovery_output.json 2>/dev/null || echo "0")
+          ALTA=$(jq '.candidates_by_priority.ALTA // 0' discovery_output.json 2>/dev/null || echo "0")
+          MEDIA=$(jq '.candidates_by_priority."MÉDIA" // 0' discovery_output.json 2>/dev/null || echo "0")
+          BAIXA=$(jq '.candidates_by_priority.BAIXA // 0' discovery_output.json 2>/dev/null || echo "0")
+
+          echo "total=$TOTAL" >> "$GITHUB_OUTPUT"
+          echo "alta=$ALTA" >> "$GITHUB_OUTPUT"
+          echo "media=$MEDIA" >> "$GITHUB_OUTPUT"
+          echo "baixa=$BAIXA" >> "$GITHUB_OUTPUT"
+
+          if [ "$TOTAL" -gt 0 ]; then
+            echo "has_candidates=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_candidates=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Gerar relatório Markdown
+        if: steps.discover.outputs.has_candidates == 'true'
+        run: |
+          python scripts/discover_benefits.py \
+            --since "${{ inputs.since_days || '60' }}" > discovery_report.md 2>/dev/null || true
+
+      - name: Criar issue com candidatos
+        if: steps.discover.outputs.has_candidates == 'true' && inputs.dry_run != 'true'
+        uses: actions/github-script@v7
+        env:
+          TOTAL: ${{ steps.discover.outputs.total }}
+          ALTA: ${{ steps.discover.outputs.alta }}
+          MEDIA: ${{ steps.discover.outputs.media }}
+          BAIXA: ${{ steps.discover.outputs.baixa }}
+        with:
+          script: |
+            const fs = require('fs');
+            const today = new Date().toISOString().split('T')[0];
+
+            // Lê o relatório gerado
+            let report = '';
+            try {
+              report = fs.readFileSync('discovery_report.md', 'utf8');
+            } catch (e) {
+              report = '⚠️ Erro ao gerar relatório detalhado.';
+            }
+
+            // Lê candidatos JSON para checklist
+            let candidates = [];
+            try {
+              const json = JSON.parse(fs.readFileSync('discovery_output.json', 'utf8'));
+              candidates = json.candidates || [];
+            } catch (e) {}
+
+            // Monta checklist
+            let checklist = '\n## ✅ Checklist de Revisão\n\n';
+            for (const c of candidates) {
+              const icon = c.priority === 'ALTA' ? '🔴' : c.priority === 'MÉDIA' ? '🟡' : '🟢';
+              checklist += `- [ ] ${icon} **${c.title.substring(0, 80)}** (${c.source}) → \`${c.suggested_category}\`\n`;
+            }
+
+            const body = `${report}\n${checklist}\n---\n*Issue criada automaticamente pelo workflow de descoberta de benefícios PcD.*\n*Consulte GOVERNANCE.md para critérios de adição de novas categorias.*`;
+
+            const alta = parseInt(process.env.ALTA) || 0;
+            const labels = ['descoberta-beneficios', 'conteúdo'];
+            if (alta > 0) labels.push('prioridade-alta');
+
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `🆕 ${process.env.TOTAL} novos benefícios PcD detectados — ${today}`,
+              body: body,
+              labels: labels
+            });
+
+            console.log(`✅ Issue criada com ${process.env.TOTAL} candidatos (${alta} ALTA).`);
+
+      - name: Sem novidades
+        if: steps.discover.outputs.has_candidates != 'true'
+        run: echo "✅ Nenhum benefício novo detectado. Base de dados está atualizada!"
+
+      - name: Upload relatório como artefato
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: discovery-report-${{ github.run_number }}
+          path: |
+            discovery_output.json
+            discovery_report.md
+            discovery_log.txt
+          retention-days: 30

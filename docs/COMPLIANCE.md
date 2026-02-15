@@ -1,7 +1,7 @@
 # NossoDireito — Documento Único de Compliance
 
-**Versão:** 1.10.0 (consolidado de múltiplos documentos)
-**Data:** 13 de fevereiro de 2026
+**Versão:** 1.11.0 (consolidado de múltiplos documentos)
+**Data:** 15 de fevereiro de 2026
 **Responsável:** Fabio Treze (fabiotreze@hotmail.com)
 **Tipo:** Compliance Legal, Técnico, Segurança, Privacidade, Acessibilidade, Qualidade
 **Framework:** ISO 27001 + SOC 2 + LGPD + LBI
@@ -464,7 +464,7 @@ setTimeout(() => deleteFromIndexedDB(pdfId), 30 * 60 * 1000);
 
 #### Status: ✅ **CONFORME** (referência para sites governamentais)
 
-**eMAG 1.0 — Modelo de Acessibilidade em Governo Eletrônico**
+**eMAG 3.1 — Modelo de Acessibilidade em Governo Eletrônico**
 
 **Conformidade (baseada em WCAG 2.0 + requisitos brasileiros):**
 - ✅ **Recomendação 1.1**: Marcação HTML semântica
@@ -744,7 +744,7 @@ git commit -m "a11y: Melhora contraste (WCAG 2.1 AA 1.4.3)"
 | **SOC 2 Type II** | ⚠️ **Herdado** | Azure tem, projeto não auditado independentemente |
 | **LGPD** | ✅ **Conforme** | Art. 4º, I — Não aplicabilidade |
 | **WCAG 2.1 AA** | ✅ **Conforme** | 95% conformidade (VLibras com limitações) |
-| **eMAG 1.0** | ✅ **Conforme** | Modelo Gov.br aplicado |
+| **eMAG 3.1** | ✅ **Conforme** | Modelo Gov.br aplicado |
 | **GDPR** | ✅ **Conforme** | Zero-data + anonimização |
 | **NIST CSF** | ⚠️ **Parcial** | Identify, Protect OK; Detect/Respond manuais |
 

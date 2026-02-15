@@ -6,47 +6,59 @@
 ----------------------------------------------------------------------------------------------------
 
 📌 Master Compliance (scripts/master_compliance.py)
-   Cobertura: 21 categorias, 1054.9/1054.9 pontos (100.00%)
-   ✅ Dados (direitos.json): schema, estrutura, 25 categorias
-   ✅ Código: dead code, imports, syntax
+   Cobertura: 21 categorias, 1055.4 pontos
+   ✅ Dados (direitos.json): schema, estrutura, categorias
    ✅ Fontes: validação de URLs .gov.br
-   ✅ Arquitetura: estrutura de arquivos esperada
    ✅ Documentação: README, CHANGELOG, LICENSE
-   ✅ Segurança: HTTPS, CSP, SRI
+   ✅ Acessibilidade: WCAG 2.1, eMAG 3.1, VLibras
+   ✅ SEO: meta tags, sitemap, robots.txt, JSON-LD schemas
    ✅ Performance: carregamento, métricas
-   ✅ Acessibilidade: WCAG 2.1, VLibras
-   ✅ SEO: meta tags, sitemap, robots.txt
-   ✅ Infraestrutura: Terraform, Azure config
-   ✅ Testes: cobertura, E2E status
-   ✅ Dead Code: detecção de código morto
-   ✅ Órfãos: arquivos sem referência
-   ✅ Lógica: validação de regras de negócio
-   ✅ Regulatory: LGPD, conformidade legal
-   ✅ Cloud Security: headers, configuração Azure
-   ✅ CI/CD: workflow, pre-commit hook
+   ✅ Segurança: HTTPS, CSP, SRI
+   ✅ PWA: service worker, manifest
+   ✅ Estrutura HTML: validação W3C
+   ✅ CSS: validação, boas práticas
+   ✅ JavaScript: sintaxe, estrutura
+   ✅ Assets: imagens, ícones
+   ✅ Mobile: responsividade
+   ✅ Git: .gitignore, estrutura
+   ✅ Legal: LGPD, LBI, termos
+   ✅ Testes: cobertura, E2E
    ✅ Dependências: requirements, package.json, SRI
    ✅ CHANGELOG: versionamento, formato
-   ✅ Análise 360: cobertura, completude, IPVA
-   ✅ Referências Órfãs: detecção de refs a scripts removidos
-   ✅ JSON Schema: validação Draft7 de direitos.json
-   ✅ Versão: fail-fast de consistência entre 11 arquivos
-
-📌 Pre-commit Hook (scripts/pre-commit → .git/hooks/pre-commit)
-   Comando único: master_compliance.py --quick
-   ✅ Quality Gate automático antes de cada commit
+   ✅ ANÁLISE 360: cobertura, completude, IPVA
+   ✅ REF. ÓRFÃS: referências a scripts/docs removidos
 
 📌 Validação de Fontes (scripts/validate_sources.py)
+   Cobertura: Parcial (não valida conteúdo)
    ✅ URLs .gov.br: conectividade, status HTTP
+   ✅ Formato de links: estrutura JSON
 
 📌 Análise 360° (scripts/analise360.py)
-   ✅ Benefícios: completude dinâmica (7 critérios)
-   ✅ IPVA: mapeamento estadual (27/27)
+   Cobertura: Completo (7 critérios de qualidade)
+   ✅ Benefícios: completude dinâmica
+   ✅ Cobertura: % implementados
+   ✅ IPVA: mapeamento estadual
+   ✅ Gaps: identificação automática
 
-📌 Testes (pytest + Playwright)
-   ✅ 9 testes unitários (test_master_compliance.py)
-   ✅ 42 testes E2E WAVE (acessibilidade)
-   ✅ 23 testes visuais de browser
-   ✅ 11 testes de alto contraste
+📌 Avaliação 360° (scripts/avaliacao_360.py)
+   Cobertura: 807 verificações em 11 seções
+   ✅ SEO: meta tags, JSON-LD, sitemap, Open Graph
+   ✅ Segurança: CSP, HSTS, headers, SRI
+   ✅ Acessibilidade: WCAG 2.1, eMAG 3.1, ARIA, landmarks
+   ✅ Conteúdo: direitos.json, base legal, completude
+   ✅ Performance: cache, compressão, assets
+   ✅ Legal: LGPD, LBI, disclaimer
+   ✅ URLs: 318 URLs validadas (gov.br + internacionais)
+
+📌 Screenshots & Testes Visuais
+   ✅ capture_screenshots.py: 10 screenshots (desktop, mobile, dark mode)
+   ✅ test_visual_browser.py: 24 testes visuais (responsivo, fontes, contraste, layout)
+   ✅ test_high_contrast.py: 11 testes alto contraste (toggle, persistência, componentes)
+   ✅ Gerados em screenshots/ (gitignored, validação local)
+
+📌 Validação de URLs (scripts/validate_urls.py)
+   ✅ 318 URLs validadas (gov.br, legislação, internacionais)
+   ✅ Whitelist DOMINIOS_INTERNACIONAIS (icd.who.int, etc.)
 
 ====================================================================================================
 ❌ O QUE NÃO ESTÁ AUTOMATIZADO
@@ -76,20 +88,26 @@
    ❌ Atualização automática de IPVA estadual
 
 📌 Schema & Estrutura
-   ✅ Validação formal de JSON Schema (Draft 7 — integrado no master_compliance)
+   Impacto: MÉDIO - Schema pode divergir
+   ❌ Validação formal de JSON Schema
    ❌ Detecção de campos obsoletos
    ❌ Migração automática de versões de schema
+   ❌ Análise de relacionamentos entre dados
 
 📌 Testes Automáticos
-   ✅ Testes unitários de scripts Python (pytest — 9 testes)
-   ✅ Testes E2E interativos (Playwright — 42 WAVE + 23 visuais + 11 alto contraste)
-   ❌ CI/CD: execução automática em push (GitHub Actions)
+   Impacto: ALTO - Bugs podem passar despercebidos
+   ❌ Testes unitários de scripts Python
+   ❌ Testes de integração (scripts + dados)
+   ✅ Testes de regressão visual (screenshots) — capture_screenshots.py + test_visual_browser.py (24 testes) + test_high_contrast.py (11 testes)
    ❌ Testes de carga (performance)
+   ❌ CI/CD: execução automática em commits
 
 📌 Versionamento & Backup
-   ✅ Consistência de versão (fail-fast em 11 arquivos)
+   Impacto: ALTO - Risco de perda de dados
    ❌ Backup automático de data/direitos.json
    ❌ Changelog automático (conventional commits)
+   ❌ Rollback automático em falhas
+   ❌ Snapshots versionados de dados
 
 📌 Monitoramento Contínuo
    Impacto: MÉDIO - Problemas detectados tardiamente
@@ -172,12 +190,15 @@ P3 - BAIXO
 ====================================================================================================
 📊 RESUMO EXECUTIVO
 ----------------------------------------------------------------------------------------------------
-✅ Áreas automatizadas: 7 (Quality Gate, Schema, Testes, Versão, Fontes, 360°, Pre-commit)
-❌ Áreas sem automação: 3 (Scraping gov.br, Dashboard, Backup automático)
-⚠️ Áreas parciais: 3 (Conteúdo semântico, Monitoramento contínuo, CI/CD)
+✅ Áreas automatizadas: 7 (Master Compliance, Fontes, Análise 360°, Avaliação 360°, Screenshots/Visuais, URLs, Alto Contraste)
+❌ Áreas sem automação: 5
+⚠️ Áreas parciais: 3
+💡 Recomendações: 8
 
-🎯 COBERTURA ATUAL: ~70% (21 categorias master_compliance + JSON Schema + fail-fast versão)
-🎯 SCORE: 1054.9/1054.9 = 100.00%
+🎯 COBERTURA ATUAL: ~60% (12 de 20 áreas críticas)
+🎯 META RECOMENDADA: ≥80% (16 de 20 áreas)
+
+⏱️ ESFORÇO TOTAL ESTIMADO: ~60 horas para 100% de automação
 
 ====================================================================================================
 ✨ FIM DO RELATÓRIO
