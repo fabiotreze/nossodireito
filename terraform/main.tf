@@ -251,6 +251,7 @@ resource "azurerm_app_service_certificate_binding" "main" {
 
 # --- Action Group (destinatário dos alertas) ---
 resource "azurerm_monitor_action_group" "email" {
+  count               = var.alert_email != "" ? 1 : 0
   name                = "ag-nossodireito-email"
   resource_group_name = azurerm_resource_group.main.name
   short_name          = "nd-email"
@@ -266,6 +267,7 @@ resource "azurerm_monitor_action_group" "email" {
 
 # --- Alerta: HTTP 5xx (erros de servidor) ---
 resource "azurerm_monitor_metric_alert" "http_5xx" {
+  count               = var.alert_email != "" ? 1 : 0
   name                = "alert-${local.web_app_name}-5xx"
   resource_group_name = azurerm_resource_group.main.name
   scopes              = [azurerm_linux_web_app.main.id]
@@ -284,7 +286,7 @@ resource "azurerm_monitor_metric_alert" "http_5xx" {
   }
 
   action {
-    action_group_id = azurerm_monitor_action_group.email.id
+    action_group_id = azurerm_monitor_action_group.email[0].id
   }
 
   tags = local.tags
@@ -292,6 +294,7 @@ resource "azurerm_monitor_metric_alert" "http_5xx" {
 
 # --- Alerta: Health Check Failures (disponibilidade) ---
 resource "azurerm_monitor_metric_alert" "health_check" {
+  count               = var.alert_email != "" ? 1 : 0
   name                = "alert-${local.web_app_name}-health"
   resource_group_name = azurerm_resource_group.main.name
   scopes              = [azurerm_linux_web_app.main.id]
@@ -310,7 +313,7 @@ resource "azurerm_monitor_metric_alert" "health_check" {
   }
 
   action {
-    action_group_id = azurerm_monitor_action_group.email.id
+    action_group_id = azurerm_monitor_action_group.email[0].id
   }
 
   tags = local.tags
@@ -318,6 +321,7 @@ resource "azurerm_monitor_metric_alert" "health_check" {
 
 # --- Alerta: Response Time > 5s (performance degradada) ---
 resource "azurerm_monitor_metric_alert" "response_time" {
+  count               = var.alert_email != "" ? 1 : 0
   name                = "alert-${local.web_app_name}-latency"
   resource_group_name = azurerm_resource_group.main.name
   scopes              = [azurerm_linux_web_app.main.id]
@@ -336,7 +340,7 @@ resource "azurerm_monitor_metric_alert" "response_time" {
   }
 
   action {
-    action_group_id = azurerm_monitor_action_group.email.id
+    action_group_id = azurerm_monitor_action_group.email[0].id
   }
 
   tags = local.tags
@@ -344,6 +348,7 @@ resource "azurerm_monitor_metric_alert" "response_time" {
 
 # --- Alerta: HTTP 4xx excessivos (possível ataque/scan) ---
 resource "azurerm_monitor_metric_alert" "http_4xx_spike" {
+  count               = var.alert_email != "" ? 1 : 0
   name                = "alert-${local.web_app_name}-4xx"
   resource_group_name = azurerm_resource_group.main.name
   scopes              = [azurerm_linux_web_app.main.id]
@@ -362,7 +367,7 @@ resource "azurerm_monitor_metric_alert" "http_4xx_spike" {
   }
 
   action {
-    action_group_id = azurerm_monitor_action_group.email.id
+    action_group_id = azurerm_monitor_action_group.email[0].id
   }
 
   tags = local.tags

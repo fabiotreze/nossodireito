@@ -930,13 +930,13 @@ ${cat.tags.map((t) => `<span class="tag">${escapeHtml(t)}</span>`).join('')}
         );
         html += `<div class="detalhe-section" style="text-align:center;padding-top:8px;">
 <div style="display:inline-flex;gap:8px;">
-<button id="exportDetalhePdf" class="btn btn-sm btn-outline" type="button" aria-label="Salvar direito como PDF">
-📥 Salvar PDF
-</button>
 <a href="https://wa.me/?text=${shareText}" target="_blank" rel="noopener noreferrer"
 class="btn btn-sm btn-whatsapp" aria-label="Compartilhar no WhatsApp">
 📲 WhatsApp
 </a>
+<button id="exportDetalhePdf" class="btn btn-sm btn-outline" type="button" aria-label="Salvar direito como PDF">
+📥 Salvar PDF
+</button>
 </div>
 </div>
 </article>`;
