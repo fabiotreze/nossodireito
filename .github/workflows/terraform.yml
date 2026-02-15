@@ -202,9 +202,11 @@ jobs:
           import_if_missing "azurerm_app_service_certificate.main[0]" \
             "${BASE}/providers/Microsoft.Web/certificates/cert-app-nossodireito"
 
-          # ── SSL Binding (SNI) — import via hostname binding ID ──
+          # ── SSL Binding (SNI) — composite ID: hostNameBinding|certificate ──
+          CERT_RES_ID="${BASE}/providers/Microsoft.Web/certificates/cert-app-nossodireito"
+          BINDING_COMPOSITE="${BASE}/providers/Microsoft.Web/sites/app-nossodireito/hostNameBindings/nossodireito.fabiotreze.com|${CERT_RES_ID}"
           import_if_missing "azurerm_app_service_certificate_binding.main[0]" \
-            "${BASE}/providers/Microsoft.Web/sites/app-nossodireito/hostNameBindings/nossodireito.fabiotreze.com"
+            "$BINDING_COMPOSITE"
 
           echo "── State atual ──"
           terraform state list 2>/dev/null || echo "(vazio)"
