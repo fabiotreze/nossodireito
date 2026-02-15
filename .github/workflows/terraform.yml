@@ -198,6 +198,23 @@ jobs:
           import_if_missing "azurerm_app_service_custom_hostname_binding.main[0]" \
             "${BASE}/providers/Microsoft.Web/sites/app-nossodireito/hostNameBindings/nossodireito.fabiotreze.com"
 
+          # ── App Service Certificate (from Key Vault) ──
+          import_if_missing "azurerm_app_service_certificate.main[0]" \
+            "${BASE}/providers/Microsoft.Web/certificates/cert-app-nossodireito"
+
+          # ── SSL Binding (SNI) — discover ID via az CLI ──
+          BINDING_ID=$(az webapp config ssl show \
+            --resource-group rg-nossodireito \
+            --certificate-name cert-app-nossodireito \
+            --query "id" -o tsv 2>/dev/null || true)
+          if [ -n "$BINDING_ID" ]; then
+            import_if_missing "azurerm_app_service_certificate_binding.main[0]" "$BINDING_ID"
+          else
+            # Fallback: construct binding ID from hostname binding + cert
+            HOSTNAME_BINDING_ID="${BASE}/providers/Microsoft.Web/sites/app-nossodireito/hostNameBindings/nossodireito.fabiotreze.com"
+            import_if_missing "azurerm_app_service_certificate_binding.main[0]" "$HOSTNAME_BINDING_ID" || true
+          fi
+
           echo "── State atual ──"
           terraform state list 2>/dev/null || echo "(vazio)"
 
