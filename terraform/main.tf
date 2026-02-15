@@ -232,6 +232,13 @@ resource "azurerm_app_service_certificate" "main" {
     azurerm_key_vault_access_policy.web_rp,
     azurerm_key_vault_access_policy.app_service,
   ]
+
+  # After import, the state stores a versioned secret ID while the config uses
+  # versionless_secret_id.  This difference causes ForceNew (destroy+create)
+  # which Azure blocks with 409 because the cert is bound to a hostname.
+  lifecycle {
+    ignore_changes = [key_vault_secret_id]
+  }
 }
 
 # --- SSL Binding (SNI) ---
@@ -241,6 +248,11 @@ resource "azurerm_app_service_certificate_binding" "main" {
   hostname_binding_id = azurerm_app_service_custom_hostname_binding.main[0].id
   certificate_id      = azurerm_app_service_certificate.main[0].id
   ssl_state           = "SniEnabled"
+
+  # Prevent destroy+create after import when referenced IDs drift
+  lifecycle {
+    ignore_changes = [hostname_binding_id, certificate_id]
+  }
 }
 
 # ============================================================
