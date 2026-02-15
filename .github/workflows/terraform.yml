@@ -274,6 +274,12 @@ jobs:
       # ── Deploy site para App Service apos apply ──
       # O binding de certificado SSL é gerenciado nativamente pelo Terraform
       # via azurerm_app_service_certificate_binding — não precisa de az rest.
+      - name: Setup Node.js 22 LTS
+        if: github.event.inputs.action == 'apply'
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
       - name: Deploy site to App Service
         if: github.event.inputs.action == 'apply'
         run: |
@@ -289,13 +295,42 @@ jobs:
 
           echo "═══ Deploying site to ${APP_NAME} ═══"
 
-          # Instalar dependências e criar zip com conteudo do site
           cd "${GITHUB_WORKSPACE}"
+
+          # Atualizar sitemap.xml lastmod (SEO)
+          TODAY=$(date -u +%Y-%m-%d)
+          sed -i "s|<lastmod>[0-9]\{4\}-[0-9]\{2\}-[0-9]\{2\}</lastmod>|<lastmod>${TODAY}</lastmod>|" sitemap.xml
+          echo "✅ sitemap.xml lastmod → ${TODAY}"
+
+          # Minificar HTML, JS e CSS
+          npm install --no-save terser clean-css-cli html-minifier-terser
+
+          npx terser js/app.js --compress --mangle --output js/app.min.js
+          ORIG=$(wc -c < js/app.js)
+          MINI=$(wc -c < js/app.min.js)
+          echo "✅ JS: ${ORIG}B → ${MINI}B ($(( (ORIG - MINI) * 100 / ORIG ))% redução)"
+          mv js/app.min.js js/app.js
+
+          npx cleancss -o css/styles.min.css css/styles.css
+          ORIG_CSS=$(wc -c < css/styles.css)
+          MINI_CSS=$(wc -c < css/styles.min.css)
+          echo "✅ CSS: ${ORIG_CSS}B → ${MINI_CSS}B ($(( (ORIG_CSS - MINI_CSS) * 100 / ORIG_CSS ))% redução)"
+          mv css/styles.min.css css/styles.css
+
+          npx html-minifier-terser --collapse-whitespace --remove-comments --minify-css true --minify-js true -o index.min.html index.html
+          ORIG_HTML=$(wc -c < index.html)
+          MINI_HTML=$(wc -c < index.min.html)
+          echo "✅ HTML: ${ORIG_HTML}B → ${MINI_HTML}B ($(( (ORIG_HTML - MINI_HTML) * 100 / ORIG_HTML ))% redução)"
+          mv index.min.html index.html
+
+          # Instalar dependências de produção
           npm ci --production --ignore-scripts 2>/dev/null || npm install --production
           echo "✅ node_modules: $(du -sh node_modules | cut -f1)"
 
+          # Criar pacote de deploy (mesmo conteúdo do deploy.yml)
           zip -r site.zip \
             index.html server.js package.json package-lock.json \
+            robots.txt sitemap.xml sw.js manifest.json \
             node_modules/ css/ js/ data/ images/ \
             -x "*.bak" "*.swa.bak" "__pycache__/*" \
             "terraform/*" ".github/*" "tests/*" "docs/*" \
@@ -310,17 +345,43 @@ jobs:
             --name "$APP_NAME" \
             --src-path site.zip \
             --type zip \
-            --async true
+            --async true \
+            --timeout 900 || {
+              echo "::warning::Polling expirou — verificando via health check"
+            }
 
-          echo "✅ Deploy iniciado."
+          echo "✅ Deploy enviado."
 
-          # Health check
-          sleep 15
-          URL=$(terraform output -raw site_url 2>/dev/null || true)
-          if [ -n "$URL" ]; then
-            STATUS=$(curl -s -o /dev/null -w "%{http_code}" "$URL" || true)
-            echo "Health check: ${URL} → HTTP ${STATUS}"
+      - name: Health check (com retries)
+        if: github.event.inputs.action == 'apply'
+        run: |
+          echo "⏳ Aguardando estabilização do deploy..."
+          MAX_RETRIES=12
+          RETRY_DELAY=15
+          HEALTH_OK=false
+
+          for i in $(seq 1 $MAX_RETRIES); do
+            HZ_STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
+              --connect-timeout 10 --max-time 15 \
+              "https://app-nossodireito.azurewebsites.net/health" || true)
+            echo "🏥 Tentativa ${i}/${MAX_RETRIES}: /health → HTTP ${HZ_STATUS}"
+            if [ "$HZ_STATUS" = "200" ]; then
+              HEALTH_OK=true
+              break
+            fi
+            if [ "$i" -lt "$MAX_RETRIES" ]; then
+              sleep $RETRY_DELAY
+            fi
+          done
+
+          if [ "$HEALTH_OK" != "true" ]; then
+            echo "::warning::/health não respondeu 200 após ${MAX_RETRIES} tentativas"
           fi
+
+          # Custom domain check
+          CD_STATUS=$(curl -s -o /dev/null -w "%{http_code}" --connect-timeout 10 \
+            "https://nossodireito.fabiotreze.com/" || true)
+          echo "🌐 Custom domain → HTTP ${CD_STATUS}"
 
       # ── Destroy (manual) ──
       - name: Terraform Destroy
