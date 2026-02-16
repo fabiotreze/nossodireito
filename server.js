@@ -235,10 +235,10 @@ const server = http.createServer(async (req, res) => {
     res.removeHeader('X-Powered-By');
 
     // ── Method allowlist ──
-    if (req.method !== 'GET' && req.method !== 'HEAD') {
+    if (req.method !== 'GET' && req.method !== 'HEAD' && req.method !== 'OPTIONS') {
         res.writeHead(405, {
             'Content-Type': 'text/plain',
-            'Allow': 'GET, HEAD',
+            'Allow': 'GET, HEAD, OPTIONS',
         });
         res.end('Method Not Allowed');
         return;
@@ -283,6 +283,32 @@ const server = http.createServer(async (req, res) => {
         `localhost:${PORT}`,
         `127.0.0.1:${PORT}`
     ];
+
+    // ── CORS (Safari SW compat + govbr API proxy) ──
+    // Safari enforces strict access-control checks on same-origin fetch
+    // when routed through Service Worker. Explicit CORS headers resolve it.
+    const origin = req.headers.origin || '';
+    const ALLOWED_ORIGINS = [
+        `https://${CANONICAL_HOST}`,
+        `https://app-nossodireito.azurewebsites.net`,
+        `http://localhost:${PORT}`,
+        `http://127.0.0.1:${PORT}`,
+    ];
+    const corsOrigin = ALLOWED_ORIGINS.includes(origin) ? origin : '';
+
+    // Handle CORS preflight (OPTIONS)
+    if (req.method === 'OPTIONS') {
+        const preflightHeaders = {
+            'Access-Control-Allow-Methods': 'GET, HEAD, OPTIONS',
+            'Access-Control-Allow-Headers': 'Content-Type',
+            'Access-Control-Max-Age': '86400',
+            ...SECURITY_HEADERS,
+        };
+        if (corsOrigin) preflightHeaders['Access-Control-Allow-Origin'] = corsOrigin;
+        res.writeHead(204, preflightHeaders);
+        res.end();
+        return;
+    }
 
     // Redirect default Azure domain → canonical custom domain (SEO + security)
     // Only redirect browser requests (with Accept: text/html), not health probes
@@ -340,11 +366,13 @@ const server = http.createServer(async (req, res) => {
                 clearTimeout(timeout);
                 const status = r.status;
                 const cacheControl = r.ok ? 'public, max-age=3600' : 'no-cache';
-                res.writeHead(status, {
+                const proxyHeaders = {
                     'Content-Type': 'application/json',
                     'Cache-Control': cacheControl,
                     ...SECURITY_HEADERS,
-                });
+                };
+                if (corsOrigin) proxyHeaders['Access-Control-Allow-Origin'] = corsOrigin;
+                res.writeHead(status, proxyHeaders);
                 if (req.method === 'HEAD') {
                     res.end();
                     return;
@@ -389,6 +417,9 @@ const server = http.createServer(async (req, res) => {
         'Cache-Control': cacheControl,
         ...SECURITY_HEADERS,
     };
+
+    // CORS header for same-origin (Safari SW compat)
+    if (corsOrigin) headers['Access-Control-Allow-Origin'] = corsOrigin;
 
     // Early hints — push critical sub-resources for HTML pages
     if (ext === '.html') {

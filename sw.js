@@ -119,8 +119,13 @@ async function cacheFirst(request) {
  * Best for dynamic content (JSON data, HTML).
  */
 async function networkFirst(request) {
+    // Use URL string (not Request object) for same-origin fetches.
+    // Safari enforces strict CORS checks when passing a Request with
+    // mode:'cors' through the SW, even for same-origin. Using the URL
+    // string creates a fresh request that Safari handles correctly.
+    const fetchTarget = request.url;
     try {
-        const response = await fetch(request);
+        const response = await fetch(fetchTarget);
         if (response.ok) {
             const cache = await caches.open(CACHE_VERSION);
             cache.put(request, response.clone());
