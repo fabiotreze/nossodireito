@@ -644,11 +644,42 @@
         safeRun('setupFooterVersion', setupFooterVersion);
         safeRun('renderCategories', renderCategories);
         safeRun('renderTransparency', renderTransparency);
-        safeRun('renderInstituicoes', renderInstituicoes);
-        safeRun('renderOrgaosEstaduais', renderOrgaosEstaduais);
-        safeRun('renderClassificacao', renderClassificacao);
         safeRun('renderDocsChecklist', renderDocsChecklist);
-        safeRun('renderLinksUteis', renderLinksUteis);
+        /* Defer below-fold sections to reduce initial DOM size (~500 fewer elements).
+           They render when scrolled into the viewport (or immediately on hash nav). */
+        const deferredSections = [
+            { id: 'links', fn: renderLinksUteis },
+            { id: 'classificacao', fn: renderClassificacao },
+            { id: 'orgaos-estaduais', fn: renderOrgaosEstaduais },
+            { id: 'instituicoes', fn: renderInstituicoes },
+        ];
+        const deferredRendered = new Set();
+        function renderDeferred(sectionId) {
+            const entry = deferredSections.find(s => s.id === sectionId);
+            if (entry && !deferredRendered.has(sectionId)) {
+                deferredRendered.add(sectionId);
+                safeRun('deferred:' + sectionId, entry.fn);
+            }
+        }
+        if ('IntersectionObserver' in window) {
+            const io = new IntersectionObserver((entries) => {
+                entries.forEach(e => {
+                    if (e.isIntersecting) {
+                        renderDeferred(e.target.id);
+                        io.unobserve(e.target);
+                    }
+                });
+            }, { rootMargin: '200px' });
+            deferredSections.forEach(s => {
+                const el = document.getElementById(s.id);
+                if (el) io.observe(el);
+            });
+        } else {
+            deferredSections.forEach(s => safeRun(s.id, s.fn));
+        }
+        /* If page loaded with a hash pointing to a deferred section, render it now */
+        const hashTarget = location.hash.replace('#', '');
+        if (hashTarget) renderDeferred(hashTarget);
         safeRun('renderHeroStats', renderHeroStats);
         safeRun('checkStaleness', checkStaleness);
         safeRun('setupUpload', setupUpload);

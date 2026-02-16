@@ -111,7 +111,7 @@ class MasterComplianceValidator:
 
     def __init__(self, quick: bool = False):
         self.root = Path(__file__).parent.parent
-        self.version = "1.12.3"
+        self.version = "1.12.4"
         self.quick = quick
         self.errors = []
         self.warnings = []
@@ -1015,8 +1015,10 @@ class MasterComplianceValidator:
                 # Contar chamadas diretas funcName() e addEventListener(funcName - sem parênteses)
                 direct_calls = content.count(f'{func_name}(') - 1  # -1 para declaração
                 event_listener_calls = content.count(f'addEventListener(') and func_name in re.findall(rf'addEventListener\([^,]+,\s*{func_name}\)', content)
+                # Contar referências como valor (fn: funcName, callback, array entries)
+                ref_as_value = len(re.findall(rf'[:,\[]\s*{func_name}\b', content))
 
-                total_usage = direct_calls + len(re.findall(rf'addEventListener\([^,]+,\s*{func_name}\)', content))
+                total_usage = direct_calls + len(re.findall(rf'addEventListener\([^,]+,\s*{func_name}\)', content)) + ref_as_value
 
                 if total_usage == 0:
                     # Verificar se é callback em outro contexto

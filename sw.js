@@ -1,14 +1,15 @@
 /**
- * NossoDireito — Service Worker (Cache-First)
+ * NossoDireito — Service Worker (Network-First)
  * Habilita uso offline para famílias em áreas com conexão instável.
  *
- * Estratégia: Cache-first para assets estáticos, network-first para dados JSON.
+ * Estratégia: Network-first para todos os assets do mesmo domínio (garante
+ * conteúdo fresco após deploy); cache-first apenas para CDN externas.
  * Versão do cache: incrementar CACHE_VERSION ao fazer deploy para invalidar cache antigo.
  */
 
 'use strict';
 
-const CACHE_VERSION = 'nossodireito-v1.12.3';
+const CACHE_VERSION = 'nossodireito-v1.12.4';
 const STATIC_ASSETS = [
     '/',
     '/index.html',
@@ -78,25 +79,20 @@ self.addEventListener('fetch', (event) => {
     // VLibras/CDN: let browser handle natively (avoid synthetic 503 from SW)
     if (url.hostname.includes('vlibras.gov.br') || url.hostname.includes('jsdelivr.net')) return;
 
-    // JSON data files: Network-first (always try to get fresh data)
-    if (url.pathname.endsWith('.json') && url.origin === self.location.origin) {
-        event.respondWith(networkFirst(request));
+    // External CDN assets (versioned URLs, immutable): Cache-first
+    if (url.origin !== self.location.origin) {
+        event.respondWith(cacheFirst(request));
         return;
     }
 
-    // HTML: Network-first (ensure latest version)
-    if (request.mode === 'navigate' || url.pathname.endsWith('.html')) {
-        event.respondWith(networkFirst(request));
-        return;
-    }
-
-    // Static assets (CSS, JS, images, CDN): Cache-first
-    event.respondWith(cacheFirst(request));
+    // All same-origin assets (HTML, CSS, JS, JSON, images): Network-first
+    // Garante conteúdo fresco após cada deploy; cai no cache apenas offline.
+    event.respondWith(networkFirst(request));
 });
 
 /**
  * Cache-first: Return cached response, fall back to network.
- * Best for immutable assets (CSS, JS, images).
+ * Used only for external CDN assets (versioned/immutable URLs).
  */
 async function cacheFirst(request) {
     const cached = await caches.match(request);

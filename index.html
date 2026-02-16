@@ -17,7 +17,7 @@
     <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
     <link rel="dns-prefetch" href="https://vlibras.gov.br">
     <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
-    <link rel="preload" as="image" type="image/webp" href="/images/nossodireito-400.webp" fetchpriority="high">
+    <link rel="preload" as="image" type="image/webp" href="/images/nossodireito-400.webp" fetchpriority="high" imagesrcset="/images/nossodireito-200.webp 200w, /images/nossodireito-400.webp 400w" imagesizes="200px">
     <!-- CSP enforced via HTTP header in server.js -->
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
     <meta http-equiv="Referrer-Policy" content="no-referrer">
@@ -82,7 +82,8 @@ body{font-family:var(--font);color:var(--text);background:var(--surface);line-he
 @media(max-width:768px){html{font-size:15px}.hero{padding:40px 0 32px}.hero-grid{flex-direction:column;text-align:center;gap:24px}.hero-logo{width:120px;height:120px}.hero-actions{justify-content:center}.hero h1{font-size:1.8rem}.hero-sub{font-size:1rem;margin-left:auto;margin-right:auto}.nav-links{position:fixed;transform:translateY(-120%)}.menu-toggle{display:flex;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer;padding:8px}}
 @media(max-width:480px){.hero-actions{flex-direction:column;align-items:stretch;max-width:320px;margin-left:auto;margin-right:auto;min-height:176px}}
     </style>
-    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/styles.css" media="print" onload="this.media='all'">
+    <noscript><link rel="stylesheet" href="css/styles.css"></noscript>
     <script type="application/ld+json">
 {
 "@context": "https://schema.org",

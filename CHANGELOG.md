@@ -5,6 +5,31 @@ Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/)
 e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [1.12.4] - 2026-02-15
+
+### ⚡ Performance (LCP & DOM)
+
+- **CSS async loading** — Stylesheet carrega de forma não-bloqueante (`media="print" onload="this.media='all'"`) com fallback `<noscript>`, eliminando render-blocking CSS
+- **Deferred rendering (IntersectionObserver)** — 4 seções abaixo do fold (`#links`, `#classificacao`, `#orgaos-estaduais`, `#instituicoes`) renderizam sob demanda ao scroll, reduzindo DOM inicial de 2.335 para ~1.434 elementos (-38%)
+- **Image preload responsivo** — Tag `<link rel="preload">` agora inclui `imagesrcset` e `imagesizes` para matching correto com `<picture>` element
+- **Hash navigation** — Navegação direta por hash (ex: `/#links`) pré-renderiza a seção correspondente imediatamente
+- **Fallback sem IntersectionObserver** — Browsers antigos renderizam todas as seções imediatamente
+
+### 🔧 Corrigido
+
+- **Dead code scanner (master_compliance.py)** — Corrigido falso-positivo: funções referenciadas como valores em objetos/arrays (`fn: renderLinksUteis`) agora são detectadas via regex `[:,\[]\s*funcName`
+- **Service Worker — cache stale após deploy** — Estratégia alterada de cache-first para **network-first** em todos os assets do mesmo domínio (CSS, JS, imagens). Assets de CDN externas mantêm cache-first. Garante que, após cada deploy, o usuário recebe a versão mais recente imediatamente — cache é usado apenas quando offline.
+- **sw-register.js — reload automático** — Detecta instalação de novo Service Worker via evento `controllerchange` e recarrega a página automaticamente, evitando conteúdo desatualizado sem intervenção do usuário. Inclui verificação periódica de atualização a cada 60s.
+
+### 📊 Métricas
+
+- DOM inicial: 2.335 → 1.434 (-38%)
+- Seções deferred: 4 (links 91, classificação 2, órgãos 27, instituições 25 = 911 elementos)
+- E2E: 196/196 PASS (100%)
+- Compliance: 1042.9/1042.9 = 100.00%
+
+---
+
 ## [1.12.3] - 2026-02-15
 
 ### Corrigido
