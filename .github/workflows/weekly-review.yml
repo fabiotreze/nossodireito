@@ -228,77 +228,100 @@ jobs:
         with:
           script: |
             const fs = require('fs');
-            const legReport = fs.readFileSync('leg-report.md', 'utf8');
+            const legReport = fs.existsSync('leg-report.md') ? fs.readFileSync('leg-report.md', 'utf8') : '⚠️ Relatório legislativo não disponível.';
             const cidReport = fs.existsSync('cid-report.md') ? fs.readFileSync('cid-report.md', 'utf8') : '⚠️ Relatório CID não disponível.';
             const urlReport = fs.existsSync('url-report.md') ? fs.readFileSync('url-report.md', 'utf8') : '⚠️ Validação de URLs não executada.';
             const discReport = fs.existsSync('disc-report.md') ? fs.readFileSync('disc-report.md', 'utf8') : '⚠️ Descoberta automática não executada.';
             const today = new Date().toISOString().split('T')[0];
 
-            const body = `# 📋 Revisão Periódica — ${today}
+            const e = (v, fallback = 'N/A') => process.env[v] || fallback;
 
-            **Versão atual:** v${process.env.VERSAO}
-            **Última atualização:** ${process.env.ULTIMA}
-            **Fontes cadastradas:** ${process.env.NUM_FONTES}
-            **Categorias:** ${process.env.NUM_CATEGORIAS}
+            const body = [
+              `# 📋 Revisão Periódica — ${today}`,
+              '',
+              `**Versão atual:** v${e('VERSAO')}`,
+              `**Última atualização:** ${e('ULTIMA')}`,
+              `**Fontes cadastradas:** ${e('NUM_FONTES')}`,
+              `**Categorias:** ${e('NUM_CATEGORIAS')}`,
+              '',
+              '## 🏥 Status do Site',
+              '',
+              '| Verificação | Resultado |',
+              '|-------------|-----------|',
+              `| Quality Gate | ${e('QG_STATUS')} |`,
+              `| Health Probe (/health) | HTTP ${e('HEALTH_HZ')} |`,
+              `| Custom Domain | HTTP ${e('HEALTH_CD')} |`,
+              `| Redirect Azure | HTTP ${e('HEALTH_RD')} |`,
+              `| URL Validation | ${e('URL_SCORE', '?')}% (${e('URL_ERRORS', '?')} erros, ${e('URL_WARNINGS', '?')} avisos) |`,
+              `| CID (OMS ICD API) | ${e('CID_OK', '?')}/${e('CID_TOTAL', '?')} ✅ |`,
+              `| **Status Geral** | **${e('HEALTH_OVERALL')}** |`,
+              '',
+              '## Checklist de Revisão',
+              '',
+              '### 📜 Legislação',
+              '- [ ] Verificar se houve alterações legislativas (planalto.gov.br)',
+              '- [ ] Conferir valores atualizados (salário mínimo, BPC)',
+              '- [ ] Checar novas leis ou decretos relevantes para PcD',
+              '- [ ] Verificar Diário Oficial da União (in.gov.br) para portarias e decretos',
+              '- [ ] Checar se houve mudanças no Minha Casa Minha Vida (gov.br/cidades)',
+              '',
+              '### 🏛️ Serviços',
+              '- [ ] Testar links de serviços (gov.br, INSS, ANS)',
+              '- [ ] Verificar se os procedimentos/passos continuam os mesmos',
+              '- [ ] Checar se há novos serviços digitais disponíveis',
+              '',
+              '### 📋 Conteúdo',
+              '- [ ] Revisar dicas e orientações por categoria',
+              '- [ ] Verificar se documentos necessários mudaram',
+              '- [ ] Atualizar data de "ultima_atualizacao" no JSON',
+              '',
+              '### 🏠 Categorias',
+              '- [ ] Verificar se algum direito PcD novo surgiu (ver backlog no GOVERNANCE.md)',
+              '- [ ] Checar se alguma categoria existente precisa de atualização de valores',
+              '- [ ] Verificar cobertura de instituições para todas as categorias',
+              '- [ ] Rodar `python scripts/validate_content.py` para validar schema',
+              '',
+              '### 🔗 Verificação de Links',
+              urlReport,
+              '',
+              '### 📜 Verificação Legislativa',
+              legReport,
+              '',
+              '### 🏥 Validação CID',
+              cidReport,
+              '',
+              '### 🆕 Descoberta Automática de Benefícios',
+              discReport,
+              '',
+              '---',
+              '*Issue criada automaticamente pelo workflow de revisão periódica.*',
+              '*Consulte GOVERNANCE.md para critérios de adição de fontes e categorias.*',
+              '*Após a revisão, atualize `ultima_atualizacao` em `data/direitos.json`.*',
+            ].join('\n');
 
-            ## 🏥 Status do Site
-
-            | Verificação | Resultado |
-            |-------------|-----------|
-            | Quality Gate | ${process.env.QG_STATUS} |
-            | Health Probe (/health) | HTTP ${process.env.HEALTH_HZ} |
-            | Custom Domain | HTTP ${process.env.HEALTH_CD} |
-            | Redirect Azure | HTTP ${process.env.HEALTH_RD} |
-            | URL Validation | ${process.env.URL_SCORE}% (${process.env.URL_ERRORS} erros, ${process.env.URL_WARNINGS} avisos) |
-            | CID (OMS ICD API) | ${process.env.CID_OK}/${process.env.CID_TOTAL} ✅ |
-            | **Status Geral** | **${process.env.HEALTH_OVERALL}** |
-
-            ## Checklist de Revisão
-
-            ### 📜 Legislação
-            - [ ] Verificar se houve alterações legislativas (planalto.gov.br)
-            - [ ] Conferir valores atualizados (salário mínimo, BPC)
-            - [ ] Checar novas leis ou decretos relevantes para PcD
-            - [ ] Verificar Diário Oficial da União (in.gov.br) para portarias e decretos
-            - [ ] Checar se houve mudanças no Minha Casa Minha Vida (gov.br/cidades)
-
-            ### 🏛️ Serviços
-            - [ ] Testar links de serviços (gov.br, INSS, ANS)
-            - [ ] Verificar se os procedimentos/passos continuam os mesmos
-            - [ ] Checar se há novos serviços digitais disponíveis
-
-            ### 📋 Conteúdo
-            - [ ] Revisar dicas e orientações por categoria
-            - [ ] Verificar se documentos necessários mudaram
-            - [ ] Atualizar data de "ultima_atualizacao" no JSON
-
-            ### 🏠 Categorias
-            - [ ] Verificar se algum direito PcD novo surgiu (ver backlog no GOVERNANCE.md)
-            - [ ] Checar se alguma categoria existente precisa de atualização de valores
-            - [ ] Verificar cobertura de instituições para todas as categorias
-            - [ ] Rodar `python scripts/validate_content.py` para validar schema
-
-            ### 🔗 Verificação de Links
-            ${urlReport}
-
-            ### 📜 Verificação Legislativa
-            ${legReport}
-
-            ### 🏥 Validação CID
-            ${cidReport}
-
-            ### 🆕 Descoberta Automática de Benefícios
-            ${discReport}
-
-            ---
-            *Issue criada automaticamente pelo workflow de revisão periódica.*
-            *Consulte GOVERNANCE.md para critérios de adição de fontes e categorias.*
-            *Após a revisão, atualize \`ultima_atualizacao\` em \`data/direitos.json\`.*`;
+            // Ensure labels exist before creating the issue
+            const labels = ['revisão-periódica', 'fontes'];
+            for (const label of labels) {
+              try {
+                await github.rest.issues.getLabel({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  name: label,
+                });
+              } catch {
+                await github.rest.issues.createLabel({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  name: label,
+                  color: label === 'revisão-periódica' ? '0075ca' : 'd876e3',
+                });
+              }
+            }
 
             await github.rest.issues.create({
               owner: context.repo.owner,
               repo: context.repo.repo,
               title: `📋 Revisão periódica de fontes — ${today}`,
               body: body,
-              labels: ['revisão-periódica', 'fontes']
+              labels: labels,
             });

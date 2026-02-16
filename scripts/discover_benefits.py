@@ -1305,6 +1305,11 @@ def main():
                         help="Filtrar municípios: --cidade barueri-sp")
     args = parser.parse_args()
 
+    # When --json, redirect progress output to stderr so stdout is clean JSON
+    _original_stdout = sys.stdout
+    if args.json:
+        sys.stdout = sys.stderr
+
     print("=" * 70)
     print("🔍 NOSSODIREITO — DESCOBERTA AUTOMÁTICA DE BENEFÍCIOS PcD")
     print("=" * 70)
@@ -1387,7 +1392,9 @@ def main():
     print()
 
     if args.json:
+        sys.stdout = _original_stdout
         print(json.dumps(report, ensure_ascii=False, indent=2))
+        sys.stdout = sys.stderr
     else:
         md = generate_markdown(report)
         print(md)

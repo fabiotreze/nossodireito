@@ -766,6 +766,12 @@ Exemplos:
 
     sys.stdout.reconfigure(encoding='utf-8')
 
+    # When --json, redirect progress output to stderr so stdout is clean JSON
+    _original_stdout = sys.stdout
+    if args.json:
+        sys.stderr.reconfigure(encoding='utf-8')
+        sys.stdout = sys.stderr
+
     json_data = load_json()
     report = ValidationReport()
 
@@ -789,6 +795,7 @@ Exemplos:
 
     # Output
     if args.json:
+        sys.stdout = _original_stdout
         print(json.dumps(report.to_dict(), ensure_ascii=False, indent=2))
     else:
         print(format_report(report))
