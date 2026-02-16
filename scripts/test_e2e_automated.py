@@ -316,8 +316,8 @@ class E2ETestRunner:
             if 'categorias' not in data:
                 return False
 
-            # Validar 25 categorias
-            if len(data['categorias']) != 25:
+            # Validar 30 categorias
+            if len(data['categorias']) != 30:
                 return False
 
             # Cada categoria deve ter campos obrigatórios

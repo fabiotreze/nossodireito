@@ -4,9 +4,9 @@
 
 | Versão | Suportada |
 |--------|-----------|
-| 1.11.x | ✅        |
-| 1.10.x | ✅        |
-| < 1.10 | ❌        |
+| 1.13.x | ✅        |
+| 1.12.x | ✅        |
+| < 1.12 | ❌        |
 
 ## Reportando Vulnerabilidades
 
@@ -40,6 +40,25 @@ Se você encontrar uma vulnerabilidade de segurança neste projeto, por favor re
 - `Referrer-Policy`: `strict-origin-when-cross-origin`
 - `Permissions-Policy`: camera, microphone, geolocation desabilitados
 - **SRI** (Subresource Integrity) em todos os scripts CDN
+
+### Trade-off CSP: `unsafe-eval` para VLibras (decisão documentada)
+
+O VLibras (widget oficial do governo brasileiro para tradução em Libras) é construído
+com **Unity WebGL**, que internamente usa `eval()` para compilação de WebAssembly.
+Sem `'unsafe-eval'` no CSP, o VLibras não carrega e o avatar de Libras não aparece.
+
+**Decisão:** Priorizamos acessibilidade governamental (LBI Art. 63) sobre CSP restritivo.
+
+- `'unsafe-eval'` — necessário para Unity WebGL (VLibras)
+- `'wasm-unsafe-eval'` — Chrome 95+ permite .wasm sem `unsafe-eval` (fallback progressivo)
+
+**Mitigações aplicadas para compensar:**
+- `script-src` restringe origens a domínios confiáveis (`'self'`, `cdnjs.cloudflare.com`, `vlibras.gov.br`, `cdn.jsdelivr.net`)
+- Rate limiting (120 req/min), HSTS preload, host validation (exact match)
+- `X-Content-Type-Options: nosniff`, `X-Frame-Options: DENY`, SRI em CDNs
+- Nenhum dado do usuário é transmitido — processamento 100% local
+
+**Referências:** [KNOWN_ISSUES.md](docs/KNOWN_ISSUES.md), [ARCHITECTURE.md](docs/ARCHITECTURE.md), [server.js L110](server.js)
 
 ### Infraestrutura
 - Azure App Service com **HTTPS Only** enforced

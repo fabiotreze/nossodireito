@@ -1,6 +1,6 @@
 # NossoDireito — Arquitetura do Sistema V1 (Produção Atual)
 
-**Versão:** 1.12.4
+**Versão:** 1.13.1
 **Data:** Fevereiro 2026
 **Status:** Produção Estável (Quality Gate: 100.0/100)
 **URL:** https://nossodireito.fabiotreze.com
@@ -33,7 +33,7 @@
 ### Propósito
 **NossoDireito** é um portal web gratuito que fornece informações sobre direitos e benefícios para pessoas com deficiência (PcD) no Brasil. Criado para famílias que recebem laudos médicos (TEA, deficiência física, intelectual, sensorial), o portal oferece:
 
-- **25 categorias de direitos**: BPC/LOAS, CIPTEA, Educação Inclusiva, Terapias SUS, Planos de Saúde, Transporte, Trabalho, FGTS, Habitação, IPVA PcD, Isenção IR, Prioridade em Filas, Tecnologia Assistiva, Aposentadoria PcD, entre outras
+- **30 categorias de direitos**: BPC/LOAS, CIPTEA, Educação Inclusiva, Terapias SUS, Planos de Saúde, Transporte, Trabalho, FGTS, Habitação, IPVA PcD, Isenção IR, Prioridade em Filas, Tecnologia Assistiva, Aposentadoria PcD, entre outras
 - **Análise de documentos**: Upload de laudos médicos em PDF para identificação automática de direitos relacionados (regex-based matching)
 - **Recursos de acessibilidade**: TTS (Text-to-Speech), VLibras (Libras em vídeo), ajuste de fonte, alto contraste, navegação por teclado
 - **Totalmente offline-first**: Service Worker com cache, dados JSON estáticos, zero backend dinâmico
@@ -54,7 +54,7 @@
 | **Uptime SLA** | 99.95% (Azure App Service Basic+) |
 | **Custo Mensal** | ~$13/mês (App Service B1 + Key Vault) |
 | **Tempo de Resposta** | <500ms (95th percentile) |
-| **Categorias de Direitos** | 25 (direitos.json 216KB) |
+| **Categorias de Direitos** | 30 (direitos.json ~265KB) |
 | **Keywords Matching** | ~1.218 termos + CID-10/11 ranges |
 | **Acurácia de Análise** | ~70% (limitação regex) |
 | **Lighthouse Score** | Performance: 95+, Accessibility: 100, Best Practices: 100, SEO: 100 |
@@ -73,7 +73,7 @@
    ↓
 3. Navegação:
    ├─ Busca por palavra-chave (search bar)
-   ├─ Exploração de categorias (25 cards)
+   ├─ Exploração de categorias (30 cards)
    ├─ Checklist "Primeiros Passos" (guia interativo)
    └─ Upload de laudo PDF (análise local)
        ↓
@@ -121,8 +121,9 @@
         │  ├─ js/app.js (2.682 linhas, lógica principal)  │
         │  ├─ js/sw-register.js (Service Worker loader)   │
         │  ├─ sw.js (158 linhas, cache-first strategy)    │
-        │  ├─ data/direitos.json (2.293 linhas)           │
-        │  └─ data/matching_engine.json (2.716 linhas)    │
+        │  ├─ data/direitos.json (30 categorias, ~265KB)  │
+        │  ├─ data/matching_engine.json (keywords, ~106KB) │
+        │  └─ data/dicionario_pcd.json (glossário, ~72KB)  │
         └───────────┬────────────────────────────────────┘
                     │
         ┌───────────▼──────────────────┐
@@ -221,13 +222,13 @@
 
 ### Dados Estáticos (JSON)
 
-#### data/direitos.json (2.293 linhas)
-Fonte de verdade para as 25 categorias de direitos PcD. Estrutura:
+#### data/direitos.json (~265KB, 30 categorias)
+Fonte de verdade para as 30 categorias de direitos PcD, 27 órgãos estaduais (SEFAZ/DETRAN), 25 instituições de apoio, 16 classificações de deficiência, e IPVA inline por estado. Estrutura:
 
 ```json
 {
-  "versao": "1.3.0",
-  "ultima_atualizacao": "2026-02-10",
+  "versao": "1.13.1",
+  "ultima_atualizacao": "2026-02-16",
   "categorias": [
     {
       "id": "bpc_loas",
@@ -248,21 +249,28 @@ Fonte de verdade para as 25 categorias de direitos PcD. Estrutura:
       "cids_relacionados": ["F84.0", "F84.9", "F90.0", "Q90.0", "..."],
       "keywords": ["bpc", "loas", "beneficio", "assistencial", "baixa renda"]
     },
-    // ... outras 24 categorias
-  ]
+    // ... outras 29 categorias
+  ],
+  "orgaos_estaduais": [ /* 27 UFs com sefaz, detran, beneficios_destaque */ ],
+  "instituicoes_apoio": [ /* 25 instituições */ ],
+  "classificacao_deficiencia": [ /* 16 tipos CID-10/11 */ ],
+  "dica_seguranca": { /* dicas de segurança digital */ }
 }
 ```
 
-**Total de Categorias (25):**
+**Total de Categorias (30):**
 
 Incluem BPC/LOAS, CIPTEA, Educação Inclusiva, Terapias e Planos de Saúde, Terapias pelo SUS, Transporte (Passe Livre, IPVA, Estacionamento), Trabalho (Cotas PcD, Estabilidade), FGTS (Saque), Habitação (Prioridade MCMV), IPVA PcD (isenção por estado), Isenção de Imposto de Renda, Prioridade em Filas, Tecnologia Assistiva, Aposentadoria PcD, entre outras. Lista completa em `data/direitos.json`.
 
-#### data/matching_engine.json (2.716 linhas)
+#### data/dicionario_pcd.json (~72KB)
+Glossário de 14 deficiências com sinônimos, CID-10/CID-11, keywords de busca e benefícios elegíveis. Carregado em `app.js` e integrado ao `KEYWORD_MAP` para enriquecer buscas por sinônimos (ex: "trissomia 21" → Síndrome de Down) e códigos CID.
+
+#### data/matching_engine.json (~106KB)
 Motor de análise de documentos baseado em regex e pesos.
 
 ```json
 {
-  "version": "1.2.0",
+  "version": "1.13.1",
   "cid_mappings": {
     "F84.0": {
       "disease": "Autismo Infantil",
@@ -287,7 +295,7 @@ Motor de análise de documentos baseado em regex e pesos.
       "secondary": ["autismo", "tea", "transtorno espectro autista"],
       "uppercase_only_terms": ["CIPTEA", "TEA"]
     }
-    // ... para todas 25 categorias
+    // ... para todas 30 categorias
   },
   "cid_ranges": [
     {
@@ -999,11 +1007,12 @@ function renderCategoryCards(categories, container) {
 ### Service Worker (sw.js) — Offline-First Strategy
 
 ```javascript
-const CACHE_VERSION = 'nossodireito-v1.2.0';
+const CACHE_VERSION = 'nossodireito-v1.13.1';
 const STATIC_ASSETS = [
     '/', '/index.html', '/css/styles.css', '/js/app.js',
-    '/data/direitos.json', '/data/matching_engine.json', '/manifest.json',
-    '/images/favicon.ico', '/images/favicon-32x32.png', '/images/apple-touch-icon.png'
+    '/data/direitos.json', '/data/matching_engine.json', '/data/dicionario_pcd.json',
+    '/manifest.json', '/images/favicon.ico', '/images/favicon-32x32.png',
+    '/images/apple-touch-icon.png'
 ];
 
 // Install: Pre-cache all static assets
@@ -1824,9 +1833,9 @@ if __name__ == '__main__':
 
 **Uso:**
 ```bash
-python scripts/bump_version.py patch  # 1.2.0 → 1.2.1
-python scripts/bump_version.py minor  # 1.2.1 → 1.3.0
-python scripts/bump_version.py major  # 1.3.0 → 2.0.0
+python scripts/bump_version.py patch  # 1.13.1 → 1.13.2
+python scripts/bump_version.py minor  # 1.13.1 → 1.14.0
+python scripts/bump_version.py major  # 1.13.1 → 2.0.0
 ```
 
 ---
@@ -2048,10 +2057,10 @@ Configurados via Terraform (`azurerm_monitor_metric_alert`):
    - **Workaround:** Foto com celular → converter para PDF
    - **Solução Futura:** OCR mobile (Tesseract.js ou Azure Computer Vision)
 
-7. **Categorias Limitadas a 9 (Não Escalável)**
-   - **Problema:** Adicionar nova categoria requer editar 3 arquivos manualmente
-   - **Impacto:** Dificulta manutenção
-   - **Solução Futura:** CMS headless (Strapi) ou banco de dados
+7. **Categorias Expandidas para 30 (Resolvido em v1.13.1)**
+   - **Antes:** Limitado a 9 categorias (v1.0), expandido para 25 (v1.3), 30 (v1.13.1)
+   - **Status Atual:** ✅ 30 categorias + 27 UFs com IPVA/SEFAZ/DETRAN inline
+   - **Manutenção:** Adicionar categoria requer editar direitos.json + matching_engine.json
 
 8. **Zero Busca Semântica (Apenas Keyword Exact Match)**
    - **Problema:** Busca por "dinheiro" não encontra "benefício" ou "BPC"
@@ -2243,7 +2252,7 @@ if (req.url === '/healthz' || req.url === '/health') {
 
 ## Conclusão
 
-Este documento apresenta a arquitetura completa do sistema **NossoDireito V1** (versão 1.2.0) em produção. O portal atende ~1.000 famílias/mês com informações sobre direitos PcD, mantendo:
+Este documento apresenta a arquitetura completa do sistema **NossoDireito V1** (versão 1.13.1) em produção. O portal atende ~1.000 famílias/mês com informações sobre direitos PcD, mantendo:
 
 ✅ **Conformidade LGPD** (zero data collection)
 ✅ **Acessibilidade WCAG 2.1 AA** (TTS, VLibras, alto contraste)

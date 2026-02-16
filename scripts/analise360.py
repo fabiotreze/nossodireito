@@ -108,21 +108,20 @@ def main():
     print(f"🎯 COBERTURA TOTAL (implementados): {cobertura_total:.1f}%")
     print(f"✨ COMPLETUDE (benefícios completos): {cobertura_completa:.1f}%")
 
-    # IPVA ESTADUAL
+    # IPVA ESTADUAL (inline em direitos.json → isencoes_tributarias)
     print()
     print("=" * 90)
-    print("🚗 IPVA ESTADUAL - data/ipva_pcd_estados.json")
+    print("🚗 IPVA ESTADUAL — dados inline em direitos.json")
     print("=" * 90)
     print()
 
-    with open('data/ipva_pcd_estados.json', 'r', encoding='utf-8') as f:
-        ipva = json.load(f)
+    isencoes_cat = next((c for c in direitos['categorias'] if c['id'] == 'isencoes_tributarias'), None)
+    ipva_estados = isencoes_cat.get('ipva_estados', []) if isencoes_cat else []
+    ipva_detalhado = isencoes_cat.get('ipva_estados_detalhado', []) if isencoes_cat else []
 
-    estados_count = len(ipva.get('estados', {}))
-    last_update = ipva.get('metadata', {}).get('lastUpdate', 'N/A')
-
-    print(f"📊 Arquivo: {estados_count} estados mapeados")
-    print(f"📅 Última atualização: {last_update}")
+    print(f"📊 IPVA simples: {len(ipva_estados)} estados mapeados")
+    print(f"📊 IPVA detalhado: {len(ipva_detalhado)} estados com dropdown")
+    print(f"📅 Última atualização: {direitos.get('ultima_atualizacao', 'N/A')}")
     print()
 
     # RECOMENDAÇÕES BASEADAS EM GAPS

@@ -2,10 +2,10 @@
 # -*- coding: utf-8 -*-
 """
 Content Validation - Validação Semântica e Estrutural
-NossoDireito v1.8.0
+NossoDireito v1.13.1
 
 Valida:
-- 25 categorias com todos os campos obrigatórios
+- 30 categorias com todos os campos obrigatórios
 - Matching engine (keywords, sinônimos)
 - Dropdown IPVA (27 estados)
 - Fontes oficiais (base_legal completa)
@@ -60,18 +60,18 @@ class ContentValidator:
             self.errors.append(message)
 
     def validate_categories(self):
-        """Validar 25 categorias completas"""
+        """Validar 30 categorias completas"""
         self.log("=" * 70, 'PASS')
-        self.log("VALIDAÇÃO DE CATEGORIAS (25)", 'PASS')
+        self.log("VALIDAÇÃO DE CATEGORIAS (30)", 'PASS')
         self.log("=" * 70, 'PASS')
 
         categorias = self.data.get('categorias', [])
 
         # 1. Total de categorias
-        if len(categorias) != 25:
-            self.log(f"Total de categorias: {len(categorias)} (esperado: 25)", 'ERROR')
+        if len(categorias) != 30:
+            self.log(f"Total de categorias: {len(categorias)} (esperado: 30)", 'ERROR')
         else:
-            self.log(f"Total de categorias: 25 ✓", 'PASS')
+            self.log(f"Total de categorias: 30 ✓", 'PASS')
 
         # IDs esperados
         expected_ids = [
@@ -81,7 +81,9 @@ class ContentValidator:
             'prioridade_judicial', 'tecnologia_assistiva', 'meia_entrada',
             'prouni_fies_sisu', 'isencao_ir', 'bolsa_familia', 'tarifa_social_energia',
             'auxilio_inclusao', 'protecao_social', 'pensao_zika',
-            'esporte_paralimpico', 'turismo_acessivel'
+            'esporte_paralimpico', 'turismo_acessivel',
+            'acessibilidade_arquitetonica', 'capacidade_legal',
+            'crimes_contra_pcd', 'acessibilidade_digital', 'reabilitacao'
         ]
 
         found_ids = [c['id'] for c in categorias]
@@ -93,7 +95,7 @@ class ContentValidator:
         if extra:
             self.log(f"Categorias extras (não esperadas): {extra}", 'WARN')
         if not missing and not extra:
-            self.log("Todas 20 categorias presentes ✓", 'PASS')
+            self.log("Todas 30 categorias presentes ✓", 'PASS')
 
         # 2. Campos obrigatórios por categoria
         required_fields = ['id', 'titulo', 'icone', 'resumo', 'base_legal',
@@ -204,6 +206,48 @@ class ContentValidator:
                 self.log(f"IPVA detalhado: {len(ipva_detalhado)} estados (esperado: 27)", 'WARN')
             else:
                 self.log(f"IPVA detalhado: 27 estados ✓", 'PASS')
+
+    def validate_orgaos_estaduais(self):
+        """Validar órgãos estaduais expandidos (27 UFs com sefaz, detran, benefícios)"""
+        self.log("=" * 70, 'PASS')
+        self.log("VALIDAÇÃO ÓRGÃOS ESTADUAIS EXPANDIDOS", 'PASS')
+        self.log("=" * 70, 'PASS')
+
+        expected_ufs = sorted([
+            'AC', 'AL', 'AP', 'AM', 'BA', 'CE', 'DF', 'ES', 'GO',
+            'MA', 'MT', 'MS', 'MG', 'PA', 'PB', 'PR', 'PE', 'PI',
+            'RJ', 'RN', 'RS', 'RO', 'RR', 'SC', 'SP', 'SE', 'TO'
+        ])
+
+        orgaos = self.data.get('orgaos_estaduais', [])
+
+        # 1. Total de estados
+        found_ufs = sorted([o['uf'] for o in orgaos])
+        if found_ufs != expected_ufs:
+            missing = set(expected_ufs) - set(found_ufs)
+            self.log(f"Órgãos estaduais: faltando UFs {missing}", 'ERROR')
+        else:
+            self.log(f"Órgãos estaduais: 27 UFs presentes ✓", 'PASS')
+
+        # 2. Campos obrigatórios
+        for o in orgaos:
+            uf = o.get('uf', '?')
+            for campo in ['nome', 'url', 'sefaz', 'detran']:
+                if campo not in o or not o[campo]:
+                    self.log(f"Órgão {uf}: campo '{campo}' ausente ou vazio", 'ERROR')
+
+            # 3. URLs HTTPS
+            for url_field in ['url', 'sefaz', 'detran']:
+                url = o.get(url_field, '')
+                if url and not url.startswith('https://'):
+                    self.log(f"Órgão {uf}: {url_field} não-HTTPS: {url}", 'ERROR')
+
+            # 4. Benefícios destaque
+            beneficios = o.get('beneficios_destaque', [])
+            if len(beneficios) < 1:
+                self.log(f"Órgão {uf}: sem benefícios destaque", 'WARN')
+
+        self.log("Validação de órgãos estaduais concluída ✓", 'PASS')
 
     def validate_matching_engine(self):
         """Validar matching engine e keywords"""
@@ -411,13 +455,14 @@ class ContentValidator:
     def run(self):
         """Executar todas validações"""
         self.log("=" * 70, 'PASS')
-        self.log("CONTENT VALIDATION - NossoDireito v1.8.0", 'PASS')
+        self.log("CONTENT VALIDATION - NossoDireito v1.13.1", 'PASS')
         self.log(f"Timestamp: {datetime.now().isoformat()}", 'PASS')
         self.log("=" * 70, 'PASS')
 
         # Executar validações
         self.validate_categories()
         self.validate_ipva_dropdown()
+        self.validate_orgaos_estaduais()
         self.validate_matching_engine()
         self.validate_documentos_mestre()
         self.validate_related_categories()

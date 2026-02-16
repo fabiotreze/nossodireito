@@ -73,7 +73,7 @@ git commit -m "refactor: Move analise360.py to scripts/ directory"
             📝 Abrir Issue no GitHub
         </a>
 
-        <a href="mailto:fabiotreze@gmail.com?subject=NossoDireito - Conteúdo Desatualizado"
+        <a href="mailto:fabiotreze@hotmail.com?subject=NossoDireito - Conteúdo Desatualizado"
            class="btn btn-outline">
             ✉️ Enviar Email
         </a>
@@ -516,7 +516,7 @@ Copy-paste esses comandos no terminal:
 
 ```bash
 # 1. Reorganizar estrutura (CRÍTICO — 10 min)
-cd /Users/fabmacair/Library/CloudStorage/OneDrive-Personal/Documents/Personal/Education/_Self-Study/github/nossodireito
+cd <caminho-do-projeto>/nossodireito
 mv analise360.py scripts/analise360.py
 echo "backup/" >> .gitignore
 git add .
@@ -542,7 +542,7 @@ echo "✅ Pronto! Próximo passo: Atualizar index.html (texto colaboração)"
 ## 📞 Precisa de Ajuda?
 
 **Dúvidas sobre priorização:**
-fabiotreze@gmail.com (assunto: "Ações Imediatas - Dúvidas")
+fabiotreze@hotmail.com (assunto: "Ações Imediatas - Dúvidas")
 
 **Sugestões de melhorias neste doc:**
 https://github.com/fabiotreze/nossodireito/issues

@@ -44,7 +44,7 @@ Encontrou um link quebrado, lei revogada ou informação incorreta?
 
 ##### Opção B: Email (Alternativa)
 
-- **Para:** fabiotreze@gmail.com
+- **Para:** fabiotreze@hotmail.com
 - **Assunto:** `NossoDireito — Conteúdo Desatualizado`
 - **Corpo:**
 
@@ -95,7 +95,7 @@ Conhece um benefício PcD que NÃO está no site?
 https://github.com/fabiotreze/nossodireito/issues/new?template=novo_beneficio.md
 
 **Email:**
-Envie as informações acima para fabiotreze@gmail.com (assunto: "Novo Benefício")
+Envie as informações acima para fabiotreze@hotmail.com (assunto: "Novo Benefício")
 
 ---
 
@@ -208,7 +208,7 @@ Documentação never is enough! Ajude a documentar:
 **Planejado:** Suporte a Espanhol e Inglês (sem data definida).
 
 Se você fala esses idiomas e quer ajudar, entre em contato:
-fabiotreze@gmail.com (assunto: "Tradução")
+fabiotreze@hotmail.com (assunto: "Tradução")
 
 ---
 
@@ -234,7 +234,7 @@ Este projeto segue o [Contributor Covenant 2.1](https://www.contributor-covenant
 - ❌ Não tolere assédio, discriminação ou linguagem ofensiva
 
 **Reportar violações:**
-fabiotreze@gmail.com (assunto: "Código de Conduta")
+fabiotreze@hotmail.com (assunto: "Código de Conduta")
 
 ---
 
@@ -298,7 +298,7 @@ https://github.com/fabiotreze/nossodireito/issues?q=is%3Aissue
 ## 📞 Contato
 
 **Mantenedor Principal:**
-Fábio Treze — fabiotreze@gmail.com
+Fábio Treze — fabiotreze@hotmail.com
 
 **GitHub:**
 https://github.com/fabiotreze/nossodireito

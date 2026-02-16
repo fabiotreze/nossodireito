@@ -17,7 +17,8 @@ P1 (Altos - 2 issues):
 7. Texto visível em nomes acessíveis
 8. VLibras em landmark (já em P0)
 
-Uso: python scripts/fix_accessibility_p0.py
+Uso: python scripts/_archive/migrations/fix_accessibility_p0.py
+(ARCHIVED — migrated from scripts/fix_accessibility_p0.py)
 """
 
 import re

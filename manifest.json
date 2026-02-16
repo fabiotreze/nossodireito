@@ -1,10 +1,11 @@
 {
     "name": "NossoDireito — Direitos e Benefícios para Pessoas com Deficiência",
     "short_name": "NossoDireito",
-    "version": "1.12.4",
+    "version": "1.13.1",
     "description": "Guia gratuito de direitos e benefícios para pessoas com deficiência no Brasil. Informações oficiais do governo brasileiro.",
     "start_url": "/",
     "display": "standalone",
+    "orientation": "any",
     "background_color": "#ffffff",
     "theme_color": "#1e3a8a",
     "lang": "pt-BR",
@@ -26,10 +27,22 @@
             "type": "image/png"
         },
         {
+            "src": "/images/icon-192x192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "any"
+        },
+        {
             "src": "/images/nossodireito.png",
             "sizes": "512x512",
             "type": "image/png",
-            "purpose": "any maskable"
+            "purpose": "any"
+        },
+        {
+            "src": "/images/icon-512x512-maskable.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "maskable"
         }
     ]
 }

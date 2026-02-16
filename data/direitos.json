@@ -1,6 +1,6 @@
 {
-    "versao": "1.12.4",
-    "ultima_atualizacao": "2026-02-15",
+    "versao": "1.13.1",
+    "ultima_atualizacao": "2026-02-16",
     "aviso": "Informações compiladas de fontes oficiais do governo brasileiro (gov.br). Podem estar desatualizadas. Verifique sempre as fontes originais.",
     "fontes": [
         {
@@ -482,14 +482,14 @@
         {
             "nome": "Portal Turismo Acessível — Ministério do Turismo",
             "tipo": "servico",
-            "url": "https://www.turismoacessivel.gov.br/",
+            "url": "https://www.gov.br/turismo/pt-br",
             "orgao": "Ministério do Turismo",
             "consultado_em": "2026-02-12"
         },
         {
             "nome": "ANAC — Acessibilidade do Passageiro (PNAE)",
             "tipo": "servico",
-            "url": "https://www.gov.br/anac/pt-br/assuntos/passageiros/pnae",
+            "url": "https://www.gov.br/anac/pt-br/assuntos/passageiros/acessibilidade",
             "orgao": "ANAC — Agência Nacional de Aviação Civil",
             "consultado_em": "2026-02-12"
         },
@@ -503,7 +503,7 @@
         {
             "nome": "Isenção IRPF por Moléstia Grave — Receita Federal",
             "tipo": "servico",
-            "url": "https://www.gov.br/receitafederal/pt-br/assuntos/orientacao-tributaria/isencoes/isencao-irpf-molestia-grave",
+            "url": "https://www.gov.br/receitafederal/pt-br/assuntos/orientacao-tributaria/declaracoes-e-demonstrativos/dirpf",
             "orgao": "Receita Federal do Brasil",
             "consultado_em": "2026-02-12"
         },
@@ -578,18 +578,6 @@
             "consultado_em": "2026-02-12"
         },
         {
-            "nome": "Lei 10.048/2000 — Atendimento Prioritário para PcD, Idosos, Gestantes",
-            "tipo": "legislacao",
-            "url": "https://www.planalto.gov.br/ccivil_03/leis/l10048.htm",
-            "orgao": "Presidência da República",
-            "consultado_em": "2026-02-12",
-            "artigos_referenciados": [
-                "Art. 1º",
-                "Art. 2º",
-                "Art. 3º"
-            ]
-        },
-        {
             "nome": "CIPTEA SP — Portal de Emissão da Carteira TEA (São Paulo)",
             "tipo": "servico",
             "url": "https://ciptea.sp.gov.br/",
@@ -599,7 +587,7 @@
         {
             "nome": "SISEN — Sistema de Isenção IPI/IOF para Veículos PcD (Receita Federal)",
             "tipo": "servico",
-            "url": "https://sisen.receita.fazenda.gov.br/",
+            "url": "https://www.sisen.receita.fazenda.gov.br/",
             "orgao": "Receita Federal do Brasil",
             "consultado_em": "2026-02-12"
         },
@@ -609,6 +597,66 @@
             "url": "https://www.gov.br/saude/pt-br/composicao/seidigi/meususdigital",
             "orgao": "Ministério da Saúde / SEIDIGI",
             "consultado_em": "2026-02-12"
+        },
+        {
+            "nome": "Lei 10.436/2002 — Libras como Língua Oficial",
+            "tipo": "legislacao",
+            "url": "https://www.planalto.gov.br/ccivil_03/leis/2002/l10436.htm",
+            "orgao": "Presidência da República",
+            "consultado_em": "2026-02-16",
+            "artigos_referenciados": [
+                "Art. 1º a 7º"
+            ]
+        },
+        {
+            "nome": "Lei 7.853/1989 — Crimes contra PcD e Política de Integração",
+            "tipo": "legislacao",
+            "url": "https://www.planalto.gov.br/ccivil_03/leis/l7853.htm",
+            "orgao": "Presidência da República",
+            "consultado_em": "2026-02-16",
+            "artigos_referenciados": [
+                "Art. 8º"
+            ]
+        },
+        {
+            "nome": "Lei 8.080/1990 — Lei Orgânica do SUS",
+            "tipo": "legislacao",
+            "url": "https://www.planalto.gov.br/ccivil_03/leis/l8080.htm",
+            "orgao": "Presidência da República",
+            "consultado_em": "2026-02-16",
+            "artigos_referenciados": [
+                "Art. 6º, II"
+            ]
+        },
+        {
+            "nome": "Decreto 3.298/1999 — Política Nacional para Integração da PcD",
+            "tipo": "legislacao",
+            "url": "https://www.planalto.gov.br/ccivil_03/decreto/d3298.htm",
+            "orgao": "Presidência da República",
+            "consultado_em": "2026-02-16",
+            "artigos_referenciados": [
+                "Art. 17 a 25"
+            ]
+        },
+        {
+            "nome": "Código Civil (Lei 10.406/2002)",
+            "tipo": "legislacao",
+            "url": "https://www.planalto.gov.br/ccivil_03/leis/2002/l10406compilada.htm",
+            "orgao": "Presidência da República",
+            "consultado_em": "2026-02-16",
+            "artigos_referenciados": [
+                "Art. 3º e 4º"
+            ]
+        },
+        {
+            "nome": "Decreto 5.626/2005 — Regulamenta Libras",
+            "tipo": "legislacao",
+            "url": "https://www.planalto.gov.br/ccivil_03/_ato2004-2006/2005/decreto/d5626.htm",
+            "orgao": "Presidência da República",
+            "consultado_em": "2026-02-16",
+            "artigos_referenciados": [
+                "Art. 14, 25 a 29"
+            ]
         }
     ],
     "documentos_mestre": [
@@ -1221,7 +1269,7 @@
         },
         {
             "nome": "ANAC — Agência Nacional de Aviação Civil (Acessibilidade PNAE)",
-            "url": "https://www.gov.br/anac/pt-br/assuntos/passageiros/pnae",
+            "url": "https://www.gov.br/anac/pt-br/assuntos/passageiros/acessibilidade",
             "descricao": "Normas e assistência para passageiros com necessidade especial (PNAE) — Resolução 280/2013, embarque prioritário, cão-guia, acompanhante",
             "contato": "163",
             "id": "anac",
@@ -1235,12 +1283,12 @@
         },
         {
             "nome": "Portal Turismo Acessível — Ministério do Turismo",
-            "url": "https://www.turismoacessivel.gov.br/",
+            "url": "https://www.gov.br/turismo/pt-br",
             "descricao": "Consulta e avaliação de hotéis, restaurantes e atrativos turísticos por tipo de acessibilidade (auditiva, visual, física, mobilidade)",
-            "contato": "https://www.turismoacessivel.gov.br/",
+            "contato": "https://www.gov.br/turismo/pt-br",
             "id": "turismo_acessivel_portal",
             "tipo": "governamental",
-            "como_acessar": "Acesse turismoacessivel.gov.br para consultar e avaliar hotéis, restaurantes e atrativos por tipo de acessibilidade.",
+            "como_acessar": "Acesse gov.br/turismo para consultar informações sobre turismo acessível, hotéis, restaurantes e atrativos.",
             "categorias": [
                 "turismo_acessivel",
                 "atendimento_prioritario"
@@ -1357,143 +1405,401 @@
             "cid11": "Variados",
             "criterio": "Pessoas que passaram por programa de reabilitação profissional do INSS e possuem o Certificado de Reabilitação Profissional.",
             "detalhes": "CID conforme o certificado. Contam para a cota de PcD nas empresas (Lei 8.213/1991, art. 93)."
+        },
+        {
+            "tipo": "Ostomizados (colostomia, ileostomia, urostomia)",
+            "cid10": "K63.2, Z93",
+            "cid11": "DA96, QC60",
+            "criterio": "Reconhecidos como PcD pelo Decreto 3.298/1999 Art. 4º. Elegíveis a isenções tributárias, estacionamento especial, BPC e demais direitos.",
+            "detalhes": "Inclui colostomia, ileostomia e urostomia. Pessoas ostomizadas frequentemente desconhecem que têm os mesmos direitos de PcD."
+        },
+        {
+            "tipo": "Doença Renal Crônica em Diálise",
+            "cid10": "N18",
+            "cid11": "GB61",
+            "criterio": "Doença renal crônica em estágio avançado (diálise) é considerada moléstia grave para isenção de IRPF (Lei 7.713/1988). Quando gera impedimento de longo prazo, configura deficiência para fins de BPC e demais direitos.",
+            "detalhes": "Pacientes em hemodiálise têm direito a tarifa social de energia (equipamento elétrico domiciliar), isenção de IRPF e BPC quando houver impedimento funcional de longo prazo."
+        },
+        {
+            "tipo": "Epilepsia Grave (refratária)",
+            "cid10": "G40",
+            "cid11": "8A60",
+            "criterio": "Epilepsia refratária ao tratamento pode configurar deficiência quando gera impedimento de longo prazo. Elegível a isenção de IRPF (se considerada moléstia grave por laudo), BPC e aposentadoria especial.",
+            "detalhes": "A epilepsia controlada por medicamentos geralmente não configura deficiência. Já a epilepsia refratária, com crises frequentes que impedem atividades diárias, pode ser reconhecida como deficiência pela avaliação biopsicossocial."
+        },
+        {
+            "tipo": "Doenças Neuromusculares (distrofia muscular, ELA, esclerose múltipla)",
+            "cid10": "G12, G35, G71",
+            "cid11": "8B60, 8A40, 8C60",
+            "criterio": "Doenças neuromusculares progressivas configuram deficiência física. Elegíveis a todos os direitos de PcD: BPC, isenções tributárias, aposentadoria especial, reabilitação.",
+            "detalhes": "Inclui Esclerose Lateral Amiotrófica (ELA/G12.2), Esclerose Múltipla (G35), Distrofias Musculares (G71). São doenças progressivas que geram impedimento de longo prazo."
+        },
+        {
+            "tipo": "Surdocegueira",
+            "cid10": "Combinação H54 + H90/H91",
+            "cid11": "Combinação 9B50 + AB00",
+            "criterio": "Deficiência única que combina perda visual e auditiva. Reconhecida como deficiência múltipla com necessidades específicas de comunicação (Libras tátil, guia-intérprete).",
+            "detalhes": "A surdocegueira demanda guia-intérprete especializado e métodos próprios de comunicação (Libras tátil, Tadoma, Braille). A pessoa surdocega tem direito a intérprete/guia em todos os serviços públicos."
+        },
+        {
+            "tipo": "Fissura Labiopalatina",
+            "cid10": "Q35 a Q37",
+            "cid11": "LA40 a LA42",
+            "criterio": "Reconhecida como deficiência física. Elegível a tratamento integral pelo SUS (cirurgias, fonoaudiologia, ortodontia) e demais direitos de PcD quando gera impedimento de longo prazo.",
+            "detalhes": "O tratamento completo é realizado pelo SUS em centros especializados (ex: Hospital de Reabilitação de Anomalias Craniofaciais — HRAC/USP Bauru). Inclui cirurgias, fonoaudiologia e acompanhamento até a vida adulta."
         }
     ],
     "orgaos_estaduais": [
         {
             "uf": "AC",
             "nome": "Secretaria de Estado de Saúde (SESACRE)",
-            "url": "https://saude.ac.gov.br"
+            "url": "https://saude.ac.gov.br",
+            "sefaz": "https://sefaznet.ac.gov.br/",
+            "detran": "https://detran.ac.gov.br",
+            "beneficios_destaque": [
+                "Isenção IPVA: consulte a SEFAZ/AC para condições e limites",
+                "Isenção ICMS: veículos PcD conforme Convênio ICMS 38/12 — solicitar na SEFAZ/AC",
+                "CNH Especial: DETRAN/AC — avaliação médica e adaptação veicular",
+                "Estacionamento PcD: credencial via DETRAN/AC ou prefeitura"
+            ]
         },
         {
             "uf": "AL",
             "nome": "Sec. de Estado da Cidadania e Pessoa com Deficiência (SECDEF)",
-            "url": "https://secdef.al.gov.br"
+            "url": "https://secdef.al.gov.br",
+            "sefaz": "https://www.sefaz.al.gov.br/",
+            "detran": "https://www.detran.al.gov.br",
+            "beneficios_destaque": [
+                "Isenção IPVA: consulte a SEFAZ/AL para condições e limites",
+                "Isenção ICMS: veículos PcD conforme Convênio ICMS 38/12 — solicitar na SEFAZ/AL",
+                "CNH Especial: DETRAN/AL — avaliação médica e adaptação veicular",
+                "Estacionamento PcD: credencial via DETRAN/AL ou prefeitura"
+            ]
         },
         {
             "uf": "AM",
             "nome": "Sec. de Estado de Justiça, Direitos Humanos e Cidadania (SEJUSC)",
-            "url": "https://sejusc.am.gov.br"
+            "url": "https://sejusc.am.gov.br",
+            "sefaz": "https://www.sefaz.am.gov.br/",
+            "detran": "https://www.detran.am.gov.br",
+            "beneficios_destaque": [
+                "Isenção IPVA: consulte a SEFAZ/AM para condições e limites",
+                "Isenção ICMS: veículos PcD conforme Convênio ICMS 38/12 — solicitar na SEFAZ/AM",
+                "CNH Especial: DETRAN/AM — avaliação médica e adaptação veicular",
+                "Estacionamento PcD: credencial via DETRAN/AM ou prefeitura"
+            ]
         },
         {
             "uf": "AP",
             "nome": "Sec. de Estado de Assistência Social (SEAS)",
-            "url": "https://seas.portal.ap.gov.br"
+            "url": "https://seas.portal.ap.gov.br",
+            "sefaz": "https://www.sefaz.ap.gov.br/",
+            "detran": "https://www.detran.ap.gov.br",
+            "beneficios_destaque": [
+                "Isenção IPVA: consulte a SEFAZ/AP para condições e limites",
+                "Isenção ICMS: veículos PcD conforme Convênio ICMS 38/12 — solicitar na SEFAZ/AP",
+                "CNH Especial: DETRAN/AP — avaliação médica e adaptação veicular",
+                "Estacionamento PcD: credencial via DETRAN/AP ou prefeitura"
+            ]
         },
         {
             "uf": "BA",
             "nome": "Sec. de Justiça e Direitos Humanos (SJDH)",
-            "url": "https://www.ba.gov.br/justica/"
+            "url": "https://www.ba.gov.br/justica/",
+            "sefaz": "https://www.sefaz.ba.gov.br/",
+            "detran": "https://www.detran.ba.gov.br",
+            "beneficios_destaque": [
+                "Isenção IPVA: consulte a SEFAZ/BA para condições e limites",
+                "Isenção ICMS: veículos PcD conforme Convênio ICMS 38/12 — solicitar na SEFAZ/BA",
+                "CNH Especial: DETRAN/BA — avaliação médica e adaptação veicular",
+                "Estacionamento PcD: credencial via DETRAN/BA ou prefeitura"
+            ]
         },
         {
             "uf": "CE",
             "nome": "Secretaria da Proteção Social (SPS)",
-            "url": "https://www.sps.ce.gov.br"
+            "url": "https://www.sps.ce.gov.br",
+            "sefaz": "https://www.sefaz.ce.gov.br/",
+            "detran": "https://www.detran.ce.gov.br",
+            "beneficios_destaque": [
+                "Isenção IPVA: consulte a SEFAZ/CE para condições e limites",
+                "Isenção ICMS: veículos PcD conforme Convênio ICMS 38/12 — solicitar na SEFAZ/CE",
+                "CNH Especial: DETRAN/CE — avaliação médica e adaptação veicular",
+                "Estacionamento PcD: credencial via DETRAN/CE ou prefeitura"
+            ]
         },
         {
             "uf": "DF",
             "nome": "Secretaria de Pessoa com Deficiência (SEPD)",
-            "url": "https://sepd.df.gov.br"
+            "url": "https://sepd.df.gov.br",
+            "sefaz": "https://www.economia.df.gov.br/",
+            "detran": "https://www.detran.df.gov.br",
+            "beneficios_destaque": [
+                "Isenção IPVA: consulte a SEFAZ/DF para condições e limites",
+                "Isenção ICMS: veículos PcD conforme Convênio ICMS 38/12 — solicitar na SEFAZ/DF",
+                "CNH Especial: DETRAN/DF — avaliação médica e adaptação veicular",
+                "Estacionamento PcD: credencial via DETRAN/DF ou prefeitura"
+            ]
         },
         {
             "uf": "ES",
             "nome": "Secretaria de Direitos Humanos (SEDH)",
-            "url": "https://sedh.es.gov.br"
+            "url": "https://sedh.es.gov.br",
+            "sefaz": "https://internet.sefaz.es.gov.br/",
+            "detran": "https://www.detran.es.gov.br",
+            "beneficios_destaque": [
+                "Isenção IPVA: consulte a SEFAZ/ES para condições e limites",
+                "Isenção ICMS: veículos PcD conforme Convênio ICMS 38/12 — solicitar na SEFAZ/ES",
+                "CNH Especial: DETRAN/ES — avaliação médica e adaptação veicular",
+                "Estacionamento PcD: credencial via DETRAN/ES ou prefeitura"
+            ]
         },
         {
             "uf": "GO",
             "nome": "Secretaria de Desenvolvimento Social (SEDS)",
-            "url": "https://social.go.gov.br"
+            "url": "https://social.go.gov.br",
+            "sefaz": "https://www.economia.go.gov.br/",
+            "detran": "https://www.detran.go.gov.br",
+            "beneficios_destaque": [
+                "Isenção IPVA: consulte a SEFAZ/GO para condições e limites",
+                "Isenção ICMS: veículos PcD conforme Convênio ICMS 38/12 — solicitar na SEFAZ/GO",
+                "CNH Especial: DETRAN/GO — avaliação médica e adaptação veicular",
+                "Estacionamento PcD: credencial via DETRAN/GO ou prefeitura"
+            ]
         },
         {
             "uf": "MA",
             "nome": "Sec. de Estado de Direitos Humanos e Participação Popular (SEDIHPOP)",
-            "url": "https://sedihpop.ma.gov.br"
+            "url": "https://sedihpop.ma.gov.br",
+            "sefaz": "https://www.sefaz.ma.gov.br/",
+            "detran": "https://www.detran.ma.gov.br",
+            "beneficios_destaque": [
+                "Isenção IPVA: consulte a SEFAZ/MA para condições e limites",
+                "Isenção ICMS: veículos PcD conforme Convênio ICMS 38/12 — solicitar na SEFAZ/MA",
+                "CNH Especial: DETRAN/MA — avaliação médica e adaptação veicular",
+                "Estacionamento PcD: credencial via DETRAN/MA ou prefeitura"
+            ]
         },
         {
             "uf": "MG",
             "nome": "Secretaria de Desenvolvimento Social (SEDESE)",
-            "url": "https://social.mg.gov.br"
+            "url": "https://social.mg.gov.br",
+            "sefaz": "https://www.fazenda.mg.gov.br/",
+            "detran": "https://www.detran.mg.gov.br",
+            "beneficios_destaque": [
+                "Isenção IPVA: consulte a SEFAZ/MG para condições e limites",
+                "Isenção ICMS: veículos PcD conforme Convênio ICMS 38/12 — solicitar na SEFAZ/MG",
+                "CNH Especial: DETRAN/MG — avaliação médica e adaptação veicular",
+                "Estacionamento PcD: credencial via DETRAN/MG ou prefeitura"
+            ]
         },
         {
             "uf": "MS",
             "nome": "Subsecretaria de Políticas Públicas para PcD (SETESC)",
-            "url": "https://www.setesc.ms.gov.br"
+            "url": "https://www.setesc.ms.gov.br",
+            "sefaz": "https://www.sefaz.ms.gov.br/",
+            "detran": "https://www.detran.ms.gov.br",
+            "beneficios_destaque": [
+                "Isenção IPVA: consulte a SEFAZ/MS para condições e limites",
+                "Isenção ICMS: veículos PcD conforme Convênio ICMS 38/12 — solicitar na SEFAZ/MS",
+                "CNH Especial: DETRAN/MS — avaliação médica e adaptação veicular",
+                "Estacionamento PcD: credencial via DETRAN/MS ou prefeitura"
+            ]
         },
         {
             "uf": "MT",
             "nome": "Secretaria de Assistência Social e Cidadania (SETASC)",
-            "url": "https://www.setasc.mt.gov.br"
+            "url": "https://www.setasc.mt.gov.br",
+            "sefaz": "https://www.sefaz.mt.gov.br/",
+            "detran": "https://www.detran.mt.gov.br",
+            "beneficios_destaque": [
+                "Isenção IPVA: consulte a SEFAZ/MT para condições e limites",
+                "Isenção ICMS: veículos PcD conforme Convênio ICMS 38/12 — solicitar na SEFAZ/MT",
+                "CNH Especial: DETRAN/MT — avaliação médica e adaptação veicular",
+                "Estacionamento PcD: credencial via DETRAN/MT ou prefeitura"
+            ]
         },
         {
             "uf": "PA",
             "nome": "Secretaria de Estado de Saúde Pública (SESPA)",
-            "url": "https://www.saude.pa.gov.br"
+            "url": "https://www.saude.pa.gov.br",
+            "sefaz": "https://www.sefa.pa.gov.br/",
+            "detran": "https://www.detran.pa.gov.br",
+            "beneficios_destaque": [
+                "Isenção IPVA: consulte a SEFAZ/PA para condições e limites",
+                "Isenção ICMS: veículos PcD conforme Convênio ICMS 38/12 — solicitar na SEFAZ/PA",
+                "CNH Especial: DETRAN/PA — avaliação médica e adaptação veicular",
+                "Estacionamento PcD: credencial via DETRAN/PA ou prefeitura"
+            ]
         },
         {
             "uf": "PB",
             "nome": "Secretaria de Estado do Desenvolvimento Humano (SEDH)",
-            "url": "https://paraiba.pb.gov.br"
+            "url": "https://paraiba.pb.gov.br",
+            "sefaz": "https://www.sefaz.pb.gov.br/",
+            "detran": "https://www.detran.pb.gov.br",
+            "beneficios_destaque": [
+                "Isenção IPVA: consulte a SEFAZ/PB para condições e limites",
+                "Isenção ICMS: veículos PcD conforme Convênio ICMS 38/12 — solicitar na SEFAZ/PB",
+                "CNH Especial: DETRAN/PB — avaliação médica e adaptação veicular",
+                "Estacionamento PcD: credencial via DETRAN/PB ou prefeitura"
+            ]
         },
         {
             "uf": "PE",
             "nome": "Secretaria de Assistência Social (SAS)",
-            "url": "https://www.sas.pe.gov.br"
+            "url": "https://www.sas.pe.gov.br",
+            "sefaz": "https://www.sefaz.pe.gov.br/",
+            "detran": "https://www.detran.pe.gov.br",
+            "beneficios_destaque": [
+                "Isenção IPVA: consulte a SEFAZ/PE para condições e limites",
+                "Isenção ICMS: veículos PcD conforme Convênio ICMS 38/12 — solicitar na SEFAZ/PE",
+                "CNH Especial: DETRAN/PE — avaliação médica e adaptação veicular",
+                "Estacionamento PcD: credencial via DETRAN/PE ou prefeitura"
+            ]
         },
         {
             "uf": "PI",
             "nome": "Secretaria de Estado para Inclusão da Pessoa com Deficiência (SEID)",
-            "url": "https://www.seid.pi.gov.br"
+            "url": "https://www.seid.pi.gov.br",
+            "sefaz": "https://www.sefaz.pi.gov.br/",
+            "detran": "https://www.detran.pi.gov.br",
+            "beneficios_destaque": [
+                "Isenção IPVA: consulte a SEFAZ/PI para condições e limites",
+                "Isenção ICMS: veículos PcD conforme Convênio ICMS 38/12 — solicitar na SEFAZ/PI",
+                "CNH Especial: DETRAN/PI — avaliação médica e adaptação veicular",
+                "Estacionamento PcD: credencial via DETRAN/PI ou prefeitura"
+            ]
         },
         {
             "uf": "PR",
             "nome": "Secretaria de Desenvolvimento Social e Família (SEDEF)",
-            "url": "https://sedef.pr.gov.br"
+            "url": "https://sedef.pr.gov.br",
+            "sefaz": "https://www.fazenda.pr.gov.br/",
+            "detran": "https://www.detran.pr.gov.br",
+            "beneficios_destaque": [
+                "Isenção IPVA: consulte a SEFAZ/PR para condições e limites",
+                "Isenção ICMS: veículos PcD conforme Convênio ICMS 38/12 — solicitar na SEFAZ/PR",
+                "CNH Especial: DETRAN/PR — avaliação médica e adaptação veicular",
+                "Estacionamento PcD: credencial via DETRAN/PR ou prefeitura"
+            ]
         },
         {
             "uf": "RJ",
             "nome": "Secretaria de Estado de Desenvolvimento Social e Direitos Humanos",
-            "url": "https://www.rj.gov.br/secretaria/SecretariaDeDireitosHumanos"
+            "url": "https://www.rj.gov.br/secretaria/SecretariaDeDireitosHumanos",
+            "sefaz": "https://portal.fazenda.rj.gov.br/ipva/",
+            "detran": "https://www.detran.rj.gov.br",
+            "beneficios_destaque": [
+                "Isenção IPVA: consulte a SEFAZ/RJ para condições e limites",
+                "Isenção ICMS: veículos PcD conforme Convênio ICMS 38/12 — solicitar na SEFAZ/RJ",
+                "CNH Especial: DETRAN/RJ — avaliação médica e adaptação veicular",
+                "Estacionamento PcD: credencial via DETRAN/RJ ou prefeitura"
+            ]
         },
         {
             "uf": "RN",
             "nome": "Administração Direta do Governo do RN",
-            "url": "https://www.rn.gov.br"
+            "url": "https://www.rn.gov.br",
+            "sefaz": "https://www.set.rn.gov.br/",
+            "detran": "https://www.detran.rn.gov.br",
+            "beneficios_destaque": [
+                "Isenção IPVA: consulte a SEFAZ/RN para condições e limites",
+                "Isenção ICMS: veículos PcD conforme Convênio ICMS 38/12 — solicitar na SEFAZ/RN",
+                "CNH Especial: DETRAN/RN — avaliação médica e adaptação veicular",
+                "Estacionamento PcD: credencial via DETRAN/RN ou prefeitura"
+            ]
         },
         {
             "uf": "RO",
             "nome": "Sec. de Estado da Assistência e do Desenvolvimento Social (SEAS)",
-            "url": "https://rondonia.ro.gov.br/seas"
+            "url": "https://rondonia.ro.gov.br/seas",
+            "sefaz": "https://www.sefin.ro.gov.br/",
+            "detran": "https://www.detran.ro.gov.br",
+            "beneficios_destaque": [
+                "Isenção IPVA: consulte a SEFAZ/RO para condições e limites",
+                "Isenção ICMS: veículos PcD conforme Convênio ICMS 38/12 — solicitar na SEFAZ/RO",
+                "CNH Especial: DETRAN/RO — avaliação médica e adaptação veicular",
+                "Estacionamento PcD: credencial via DETRAN/RO ou prefeitura"
+            ]
         },
         {
             "uf": "RR",
             "nome": "Secretaria de Trabalho e Bem-Estar Social (SETRABES)",
-            "url": "https://setrabes.rr.gov.br"
+            "url": "https://setrabes.rr.gov.br",
+            "sefaz": "https://www.sefaz.rr.gov.br/",
+            "detran": "https://www.detran.rr.gov.br",
+            "beneficios_destaque": [
+                "Isenção IPVA: consulte a SEFAZ/RR para condições e limites",
+                "Isenção ICMS: veículos PcD conforme Convênio ICMS 38/12 — solicitar na SEFAZ/RR",
+                "CNH Especial: DETRAN/RR — avaliação médica e adaptação veicular",
+                "Estacionamento PcD: credencial via DETRAN/RR ou prefeitura"
+            ]
         },
         {
             "uf": "RS",
             "nome": "FADERS — Fundação de Articulação e Des. de Políticas Públicas",
-            "url": "https://faders.rs.gov.br"
+            "url": "https://faders.rs.gov.br",
+            "sefaz": "https://www.sefaz.rs.gov.br/",
+            "detran": "https://www.detran.rs.gov.br",
+            "beneficios_destaque": [
+                "Isenção IPVA: consulte a SEFAZ/RS para condições e limites",
+                "Isenção ICMS: veículos PcD conforme Convênio ICMS 38/12 — solicitar na SEFAZ/RS",
+                "CNH Especial: DETRAN/RS — avaliação médica e adaptação veicular",
+                "Estacionamento PcD: credencial via DETRAN/RS ou prefeitura"
+            ]
         },
         {
             "uf": "SC",
             "nome": "Secretaria de Estado da Assistência Social, Mulher e Família",
-            "url": "https://www.sas.sc.gov.br"
+            "url": "https://www.sas.sc.gov.br",
+            "sefaz": "https://www.sef.sc.gov.br/",
+            "detran": "https://www.detran.sc.gov.br",
+            "beneficios_destaque": [
+                "Isenção IPVA: consulte a SEFAZ/SC para condições e limites",
+                "Isenção ICMS: veículos PcD conforme Convênio ICMS 38/12 — solicitar na SEFAZ/SC",
+                "CNH Especial: DETRAN/SC — avaliação médica e adaptação veicular",
+                "Estacionamento PcD: credencial via DETRAN/SC ou prefeitura"
+            ]
         },
         {
             "uf": "SE",
             "nome": "Sec. de Estado da Assistência Social e Direitos Humanos",
-            "url": "https://assistenciasocial.se.gov.br"
+            "url": "https://assistenciasocial.se.gov.br",
+            "sefaz": "https://www.sefaz.se.gov.br/",
+            "detran": "https://www.detran.se.gov.br",
+            "beneficios_destaque": [
+                "Isenção IPVA: consulte a SEFAZ/SE para condições e limites",
+                "Isenção ICMS: veículos PcD conforme Convênio ICMS 38/12 — solicitar na SEFAZ/SE",
+                "CNH Especial: DETRAN/SE — avaliação médica e adaptação veicular",
+                "Estacionamento PcD: credencial via DETRAN/SE ou prefeitura"
+            ]
         },
         {
             "uf": "SP",
             "nome": "Secretaria de Estado dos Direitos da Pessoa com Deficiência",
-            "url": "https://pessoacomdeficiencia.sp.gov.br"
+            "url": "https://pessoacomdeficiencia.sp.gov.br",
+            "sefaz": "https://portal.fazenda.sp.gov.br/servicos/ipva/",
+            "detran": "https://www.detran.sp.gov.br",
+            "beneficios_destaque": [
+                "Isenção IPVA: consulte a SEFAZ/SP para condições e limites",
+                "Isenção ICMS: veículos PcD conforme Convênio ICMS 38/12 — solicitar na SEFAZ/SP",
+                "CNH Especial: DETRAN/SP — avaliação médica e adaptação veicular",
+                "Estacionamento PcD: credencial via DETRAN/SP ou prefeitura"
+            ]
         },
         {
             "uf": "TO",
             "nome": "Secretaria da Cidadania e Justiça (SECIJU)",
-            "url": "https://seciju.to.gov.br"
+            "url": "https://seciju.to.gov.br",
+            "sefaz": "https://www.sefaz.to.gov.br/",
+            "detran": "https://www.detran.to.gov.br",
+            "beneficios_destaque": [
+                "Isenção IPVA: consulte a SEFAZ/TO para condições e limites",
+                "Isenção ICMS: veículos PcD conforme Convênio ICMS 38/12 — solicitar na SEFAZ/TO",
+                "CNH Especial: DETRAN/TO — avaliação médica e adaptação veicular",
+                "Estacionamento PcD: credencial via DETRAN/TO ou prefeitura"
+            ]
         }
     ],
     "categorias": [
@@ -1571,7 +1877,7 @@
                 },
                 {
                     "titulo": "Painel de Monitoramento do BPC (SAGI/MDS)",
-                    "url": "https://aplicacoes.mds.gov.br/sagi/painel_bpc/"
+                    "url": "https://aplicacoes.mds.gov.br/sagi/vis/data3/"
                 }
             ],
             "tags": [
@@ -2089,11 +2395,11 @@
                 },
                 {
                     "titulo": "Acessibilidade no Transporte Aéreo — ANAC (PNAE)",
-                    "url": "https://www.gov.br/anac/pt-br/assuntos/passageiros/pnae"
+                    "url": "https://www.gov.br/anac/pt-br/assuntos/passageiros/acessibilidade"
                 },
                 {
                     "titulo": "Documentação Médica MEDIF/FREMEC — ANAC",
-                    "url": "https://www.gov.br/anac/pt-br/assuntos/passageiros/pnae/documentacao-medica"
+                    "url": "https://www.gov.br/anac/pt-br/assuntos/passageiros/acessibilidade"
                 },
                 {
                     "titulo": "Passe Livre Interestadual — Solicitar (gov.br)",
@@ -2492,6 +2798,7 @@
             "valor": "Gratuito para solicitar. Economia estimada: IPI 7–25% sobre valor do veículo, IOF ~1–3% sobre financiamento, ICMS 7–18% sobre valor do veículo, IPVA 1–4% ao ano (varia por estado).",
             "onde": "SISEN (sisen.receita.fazenda.gov.br) para IPI/IOF → SEFAZ do estado para ICMS/IPVA → Prefeitura para IPTU",
             "govbr_servico_id": 10783,
+            "govbr_url": "https://www.gov.br/pt-br/servicos/obter-isencao-de-impostos-para-comprar-carro",
             "ipva_estados": [
                 {
                     "uf": "AC",
@@ -2936,7 +3243,7 @@
                 },
                 {
                     "titulo": "SISEN — Sistema de Isenção IPI/IOF (Receita Federal)",
-                    "url": "https://sisen.receita.fazenda.gov.br/"
+                    "url": "https://www.sisen.receita.fazenda.gov.br/"
                 },
                 {
                     "titulo": "SEFAZ SP — Secretaria da Fazenda (IPVA/ICMS estadual)",
@@ -3716,11 +4023,11 @@
                 },
                 {
                     "titulo": "Perguntas e Respostas IRPF",
-                    "url": "https://www.gov.br/receitafederal/pt-br/assuntos/orientacao-tributaria/declaracoes-e-demonstrativos/dirpf/perguntas-e-respostas-irpf-2024"
+                    "url": "https://www.gov.br/receitafederal/pt-br/centrais-de-conteudo/publicacoes/perguntas-e-respostas"
                 },
                 {
                     "titulo": "Isenção IRPF por Moléstia Grave — Receita Federal",
-                    "url": "https://www.gov.br/receitafederal/pt-br/assuntos/orientacao-tributaria/isencoes/isencao-irpf-molestia-grave"
+                    "url": "https://www.gov.br/receitafederal/pt-br/assuntos/orientacao-tributaria/declaracoes-e-demonstrativos/dirpf"
                 }
             ],
             "tags": [
@@ -3893,7 +4200,7 @@
                 },
                 {
                     "titulo": "ANEEL — Tarifa Social de Energia Elétrica",
-                    "url": "https://www.gov.br/aneel/pt-br/assuntos/tarifas/tarifa-social-de-energia-eletrica"
+                    "url": "https://www.gov.br/aneel/pt-br/assuntos/tarifas"
                 },
                 {
                     "titulo": "Encontrar CRAS mais próximo",
@@ -4311,7 +4618,7 @@
                 "A companhia deve responder em até 48h sobre a assistência solicitada",
                 "No aeroporto, apresente-se para check-in com a mesma antecedência dos demais passageiros",
                 "A empresa deve prestar embarque PRIORITÁRIO ao PNAE — antes dos demais passageiros",
-                "Para hospedagem: consulte o Portal Turismo Acessível (turismoacessivel.gov.br) para encontrar hotéis e atrativos avaliados por acessibilidade",
+                "Para hospedagem: consulte o Portal do Ministério do Turismo (gov.br/turismo) para encontrar informações sobre hotéis e atrativos acessíveis",
                 "Em caso de extravio ou dano a cadeira de rodas/ajuda técnica, a empresa deve fornecer equipamento equivalente IMEDIATO e indenizar em até 14 dias"
             ],
             "dicas": [
@@ -4321,20 +4628,20 @@
                 "Cão-guia viaja gratuitamente na cabine, ao lado do dono, sem focinheira",
                 "Excesso de bagagem por equipamentos médicos: desconto mínimo de 80% na cobrança",
                 "Se a companhia se recusar a transportar PcD, deve justificar POR ESCRITO em até 10 dias — desconforto de outros passageiros NÃO é justificativa válida",
-                "Portal Turismo Acessível (turismoacessivel.gov.br) permite avaliar e pesquisar estabelecimentos por tipo de acessibilidade (auditiva, visual, física, mobilidade)",
+                "O Ministério do Turismo (gov.br/turismo) mantém informações sobre acessibilidade em estabelecimentos turísticos (auditiva, visual, física, mobilidade)",
                 "Ligue 163 (ANAC) para reclamar de empresa aérea ou Disque 100 para violações de direitos humanos",
                 "Sempre verifique se o site termina em .gov.br antes de fornecer dados pessoais"
             ],
             "valor": "Assistência especial em voo é GRATUITA. Acompanhante: máx. 20% do bilhete. Ajudas técnicas: transporte gratuito.",
-            "onde": "Portal Turismo Acessível (turismoacessivel.gov.br) / Companhias aéreas / ANAC (163) / Procon / Consumidor.gov.br",
+            "onde": "Portal do Turismo (gov.br/turismo) / Companhias aéreas / ANAC (163) / Procon / Consumidor.gov.br",
             "links": [
                 {
                     "titulo": "Portal Turismo Acessível — Ministério do Turismo",
-                    "url": "https://www.turismoacessivel.gov.br/"
+                    "url": "https://www.gov.br/turismo/pt-br"
                 },
                 {
                     "titulo": "Acessibilidade no Transporte Aéreo — ANAC (PNAE)",
-                    "url": "https://www.gov.br/anac/pt-br/assuntos/passageiros/pnae"
+                    "url": "https://www.gov.br/anac/pt-br/assuntos/passageiros/acessibilidade"
                 },
                 {
                     "titulo": "Resolução ANAC 280/2013 — Acessibilidade do PNAE",
@@ -4342,7 +4649,7 @@
                 },
                 {
                     "titulo": "Documentação Médica MEDIF/FREMEC — ANAC",
-                    "url": "https://www.gov.br/anac/pt-br/assuntos/passageiros/pnae/documentacao-medica"
+                    "url": "https://www.gov.br/anac/pt-br/assuntos/passageiros/acessibilidade"
                 },
                 {
                     "titulo": "Reclamar contra empresa aérea — ANAC",
@@ -4368,6 +4675,471 @@
                 "FREMEC",
                 "embarque prioritário",
                 "Resolução 280"
+            ]
+        },
+        {
+            "id": "acessibilidade_arquitetonica",
+            "titulo": "Acessibilidade — Edificações, Espaços Públicos e Serviços",
+            "icone": "♿",
+            "resumo": "Pessoas com deficiência têm direito a acessibilidade em edificações públicas e privadas, espaços urbanos, serviços e equipamentos públicos, conforme a LBI e a NBR 9050.",
+            "base_legal": [
+                {
+                    "lei": "Lei 13.146/2015 (Estatuto da Pessoa com Deficiência)",
+                    "artigo": "Art. 53 a 62",
+                    "link": "https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2015/lei/l13146.htm"
+                },
+                {
+                    "lei": "Lei 10.098/2000 — Normas Gerais de Acessibilidade",
+                    "artigo": "Art. 1º a 18",
+                    "link": "https://www.planalto.gov.br/ccivil_03/leis/l10098.htm"
+                },
+                {
+                    "lei": "Decreto 5.296/2004 — Regulamentação da Acessibilidade",
+                    "artigo": "Art. 10 a 22",
+                    "link": "https://www.planalto.gov.br/ccivil_03/_ato2004-2006/2004/decreto/d5296.htm"
+                },
+                {
+                    "lei": "NBR 9050:2020 (ABNT) — Acessibilidade em Edificações",
+                    "artigo": "Norma técnica completa",
+                    "link": "https://www.gov.br/governodigital/pt-br/acessibilidade-digital"
+                }
+            ],
+            "requisitos": [
+                "Ser pessoa com deficiência ou mobilidade reduzida",
+                "Identificar a barreira de acessibilidade na edificação ou espaço público",
+                "Registrar a denúncia junto ao órgão competente (Ministério Público, Defensoria, Procon ou Prefeitura)"
+            ],
+            "documentos": [
+                "Documento de identidade (RG) e CPF",
+                "Laudo médico com CID (quando necessário comprovar a deficiência)",
+                "Fotos ou registro da barreira de acessibilidade (recomendado)",
+                "Protocolo de reclamação anterior (se houver)"
+            ],
+            "passo_a_passo": [
+                "Identifique a barreira de acessibilidade (rampa ausente, banheiro inacessível, calçada irregular, falta de piso tátil, etc.)",
+                "Notifique o responsável pelo estabelecimento ou espaço público, solicitando adequação por escrito",
+                "Se não houver resposta, registre denúncia no Ministério Público (promotoria de acessibilidade), Defensoria Pública ou Procon",
+                "Para espaços públicos municipais, acione a Prefeitura pelo canal de ouvidoria (ex: SP156, 156, Fala.BR)",
+                "Acompanhe o andamento da denúncia pelo protocolo recebido",
+                "Em caso de obra nova ou reforma, exija que o projeto inclua acessibilidade conforme NBR 9050"
+            ],
+            "dicas": [
+                "Toda edificação nova (pública ou privada de uso coletivo) DEVE ser acessível desde o projeto — é obrigação legal, não favor",
+                "Edificações existentes devem ser adaptadas progressivamente — a falta de acessibilidade é infração (Art. 56 da LBI)",
+                "Banheiro acessível DEVE existir em todo estabelecimento de uso público — shopping, restaurante, cinema, hospital, escola",
+                "Rampas devem ter inclinação máxima de 8,33% (conforme NBR 9050) e corrimãos dos dois lados",
+                "Elevadores são obrigatórios em edificações com mais de um pavimento de uso público",
+                "Piso tátil (direcional e alerta) é obrigatório em calçadas e espaços públicos",
+                "Denuncie barreiras pelo Disque 100, Fala.BR (falabr.cgu.gov.br), ou diretamente ao MP",
+                "Sempre verifique se o site termina em .gov.br antes de fornecer dados pessoais"
+            ],
+            "valor": "Direito universal — não envolve custo para a PcD. Adequações são responsabilidade do proprietário/gestor do espaço.",
+            "onde": "Ministério Público / Defensoria Pública / Procon / Prefeitura (ouvidoria) / Disque 100",
+            "links": [
+                {
+                    "titulo": "Portal de Acessibilidade Digital — Governo Federal",
+                    "url": "https://www.gov.br/governodigital/pt-br/acessibilidade-digital"
+                },
+                {
+                    "titulo": "ONDH — Ouvidoria Nacional de Direitos Humanos (Disque 100)",
+                    "url": "https://www.gov.br/mdh/pt-br/ondh"
+                },
+                {
+                    "titulo": "Fala.BR — Plataforma de Ouvidoria e Acesso à Informação",
+                    "url": "https://falabr.cgu.gov.br/"
+                }
+            ],
+            "tags": [
+                "acessibilidade",
+                "edificação",
+                "rampa",
+                "elevador",
+                "banheiro acessível",
+                "piso tátil",
+                "calçada",
+                "NBR 9050",
+                "barreira",
+                "espaço público",
+                "obra",
+                "reforma",
+                "inclusão",
+                "mobilidade reduzida",
+                "cadeirante",
+                "urbanismo",
+                "prefeitura",
+                "Ministério Público",
+                "denúncia"
+            ]
+        },
+        {
+            "id": "capacidade_legal",
+            "titulo": "Capacidade Legal — Curatela e Tomada de Decisão Apoiada",
+            "icone": "⚖️",
+            "resumo": "A LBI garante que PcD tem plena capacidade civil. A curatela é medida excepcional, limitada a atos patrimoniais e negociais. A Tomada de Decisão Apoiada é alternativa que preserva a autonomia.",
+            "base_legal": [
+                {
+                    "lei": "Lei 13.146/2015 (Estatuto da Pessoa com Deficiência)",
+                    "artigo": "Art. 6º, Art. 84 a 87",
+                    "link": "https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2015/lei/l13146.htm"
+                },
+                {
+                    "lei": "Código de Processo Civil (Lei 13.105/2015)",
+                    "artigo": "Art. 747 a 763 (Curatela), Art. 1.783-A (TDA)",
+                    "link": "https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2015/lei/l13105.htm"
+                },
+                {
+                    "lei": "Código Civil (Lei 10.406/2002)",
+                    "artigo": "Art. 3º e 4º (alterados pela LBI)",
+                    "link": "https://www.planalto.gov.br/ccivil_03/leis/2002/l10406compilada.htm"
+                },
+                {
+                    "lei": "Decreto 6.949/2009 — Convenção da ONU sobre Direitos da PcD",
+                    "artigo": "Art. 12 (Reconhecimento legal em igualdade de condições)",
+                    "link": "https://www.planalto.gov.br/ccivil_03/_ato2007-2010/2009/decreto/d6949.htm"
+                }
+            ],
+            "requisitos": [
+                "Ser pessoa com deficiência que necessita de apoio para atos da vida civil",
+                "Para TDA: indicar ao menos 2 apoiadores de confiança",
+                "Para Curatela: decisão judicial é obrigatória — não pode ser imposta sem processo"
+            ],
+            "documentos": [
+                "Documento de identidade (RG) e CPF da pessoa curatelada e do curador/apoiador",
+                "Laudo médico com CID detalhando a deficiência e o grau de apoio necessário",
+                "Certidão de nascimento ou casamento",
+                "Petição inicial (para ação de curatela ou TDA, via Defensoria ou advogado)"
+            ],
+            "passo_a_passo": [
+                "Avalie se a pessoa realmente precisa de curatela ou se a Tomada de Decisão Apoiada (TDA) é suficiente — prefira sempre a TDA",
+                "Para TDA: a própria pessoa escolhe 2 apoiadores de confiança e apresenta pedido ao juiz com advogado ou Defensoria",
+                "Para Curatela: um familiar ou o Ministério Público ingressa com ação judicial de interdição (última opção)",
+                "O juiz realizará entrevista pessoal com a pessoa com deficiência — obrigatório (não pode ser decidido só com laudo)",
+                "A curatela define EXATAMENTE quais atos o curador pode praticar — NÃO pode abranger direito ao corpo, sexualidade, casamento, voto, trabalho, educação ou religião (Art. 85 LBI)",
+                "A curatela deve ser revisada periodicamente e pode ser levantada a qualquer momento"
+            ],
+            "dicas": [
+                "Desde 2016 (LBI), deficiência NÃO significa incapacidade civil — PcD pode casar, votar, trabalhar e decidir sobre tratamento médico",
+                "A curatela é medida EXCEPCIONAL e PROPORCIONAL — não remove todos os direitos; é limitada a atos patrimoniais e negociais",
+                "A Tomada de Decisão Apoiada (TDA) é a alternativa preferencial — a pessoa MANTÉM sua capacidade e recebe apoio de 2 pessoas de confiança",
+                "Ninguém pode ser internado contra sua vontade por ter deficiência — internação involuntária só com laudo médico e comunicação ao MP em 72h",
+                "Se um familiar está sendo curatelado de forma abusiva, denuncie à Defensoria Pública ou ao Disque 100",
+                "A esterilização forçada de PcD é CRIME (Art. 10 LBI) — pena de 2 a 5 anos de reclusão",
+                "Sempre verifique se o site termina em .gov.br antes de fornecer dados pessoais"
+            ],
+            "valor": "Gratuito pela Defensoria Pública. Se com advogado particular, custos variam.",
+            "onde": "Defensoria Pública (gratuito) / Vara de Família ou Vara Cível / Ministério Público",
+            "links": [
+                {
+                    "titulo": "DPU — Defensoria Pública da União (contatos)",
+                    "url": "https://www.dpu.def.br/contatos-dpu"
+                },
+                {
+                    "titulo": "Secretaria Nacional dos Direitos da PcD",
+                    "url": "https://www.gov.br/mdh/pt-br/navegue-por-temas/pessoa-com-deficiencia"
+                },
+                {
+                    "titulo": "ONDH — Disque 100 (denúncias)",
+                    "url": "https://www.gov.br/mdh/pt-br/ondh"
+                }
+            ],
+            "tags": [
+                "curatela",
+                "interdição",
+                "capacidade civil",
+                "tomada de decisão apoiada",
+                "TDA",
+                "autonomia",
+                "incapacidade",
+                "tutela",
+                "guardianship",
+                "casamento PcD",
+                "voto PcD",
+                "direitos civis",
+                "Defensoria Pública",
+                "Código Civil",
+                "LBI Art. 84",
+                "Art. 85"
+            ]
+        },
+        {
+            "id": "crimes_contra_pcd",
+            "titulo": "Crimes contra PcD — Discriminação, Denúncia e Penalidades",
+            "icone": "🚨",
+            "resumo": "Discriminar, abandonar, reter documentos ou apropriar-se de benefícios de PcD são crimes com pena de 1 a 5 anos de reclusão. Denuncie pelo Disque 100 ou delegacia.",
+            "base_legal": [
+                {
+                    "lei": "Lei 13.146/2015 (Estatuto da Pessoa com Deficiência)",
+                    "artigo": "Art. 88 a 91",
+                    "link": "https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2015/lei/l13146.htm"
+                },
+                {
+                    "lei": "Lei 7.853/1989 — Crimes contra PcD",
+                    "artigo": "Art. 8º",
+                    "link": "https://www.planalto.gov.br/ccivil_03/leis/l7853.htm"
+                },
+                {
+                    "lei": "Código Penal — Abandono (Art. 133), Maus-tratos (Art. 136)",
+                    "artigo": "Art. 133 e 136",
+                    "link": "https://www.planalto.gov.br/ccivil_03/decreto-lei/del2848compilado.htm"
+                }
+            ],
+            "requisitos": [
+                "Ser vítima ou testemunha de crime ou discriminação contra PcD",
+                "Identificar o tipo de violação: discriminação, abandono, retenção de documentos, apropriação de benefícios, violência",
+                "Reunir provas se possível (fotos, vídeos, mensagens, testemunhas)"
+            ],
+            "documentos": [
+                "Documento de identidade (RG) e CPF da vítima ou denunciante",
+                "Provas da violação (fotos, vídeos, prints de mensagens, gravações)",
+                "Dados do agressor (nome, local, empresa, se conhecidos)",
+                "Boletim de Ocorrência (lavrado na delegacia ou delegacia online)"
+            ],
+            "passo_a_passo": [
+                "Identifique o tipo de crime: discriminação (Art. 88), abandono (Art. 90), retenção de documentos (Art. 89), apropriação de benefício (Art. 91)",
+                "Reúna provas: gravações, fotos, prints de mensagens, testemunhas — tudo é válido",
+                "Registre Boletim de Ocorrência na delegacia mais próxima ou pela delegacia online do seu estado",
+                "Ligue para o Disque 100 (ligação gratuita, 24h) para denunciar violações de direitos humanos de PcD",
+                "Registre denúncia também no Fala.BR (falabr.cgu.gov.br) ou no Ministério Público",
+                "Se a violação envolve estabelecimento comercial, registre também no Procon"
+            ],
+            "dicas": [
+                "Discriminar PcD é CRIME: pena de 1 a 3 anos de reclusão + multa (Art. 88 LBI)",
+                "Recusar matrícula escolar de PcD: crime com pena de 2 a 5 anos e multa (Lei 7.853/1989 Art. 8º)",
+                "Apropriar-se de cartão de benefício, pensão ou provento de PcD: crime com pena de 1 a 4 anos (Art. 91 LBI)",
+                "Abandonar PcD em hospital, casa de saúde ou entidade de atendimento: crime com pena de 6 meses a 3 anos (Art. 90 LBI)",
+                "Reter cartão magnético, documento ou qualquer bem de PcD: crime com pena de 6 meses a 2 anos (Art. 89 LBI)",
+                "A denúncia pode ser ANÔNIMA pelo Disque 100 — seu nome não será revelado",
+                "Se a vítima for criança ou adolescente com deficiência, acione também o Conselho Tutelar",
+                "Sempre verifique se o site termina em .gov.br antes de fornecer dados pessoais"
+            ],
+            "valor": "Denúncia gratuita. Assistência jurídica gratuita pela Defensoria Pública.",
+            "onde": "Disque 100 / Delegacia de Polícia / Ministério Público / Defensoria Pública / Procon / Fala.BR",
+            "links": [
+                {
+                    "titulo": "ONDH — Ouvidoria Nacional de Direitos Humanos (Disque 100)",
+                    "url": "https://www.gov.br/mdh/pt-br/ondh"
+                },
+                {
+                    "titulo": "Fala.BR — Denúncia e Ouvidoria",
+                    "url": "https://falabr.cgu.gov.br/"
+                },
+                {
+                    "titulo": "MPF — Serviços ao Cidadão (denúncias e ouvidoria)",
+                    "url": "https://www.mpf.mp.br/mpf-servicos"
+                },
+                {
+                    "titulo": "DPU — Defensoria Pública da União",
+                    "url": "https://www.dpu.def.br/contatos-dpu"
+                }
+            ],
+            "tags": [
+                "crime",
+                "discriminação",
+                "denúncia",
+                "Disque 100",
+                "violência",
+                "abandono",
+                "maus-tratos",
+                "delegacia",
+                "boletim de ocorrência",
+                "Ministério Público",
+                "pena",
+                "reclusão",
+                "multa",
+                "Lei 7.853",
+                "Art. 88",
+                "Art. 89",
+                "Art. 90",
+                "Art. 91",
+                "Procon",
+                "Fala.BR"
+            ]
+        },
+        {
+            "id": "acessibilidade_digital",
+            "titulo": "Acessibilidade Digital — Comunicação, Libras e Tecnologias",
+            "icone": "💻",
+            "resumo": "Sites governamentais e de empresas devem ser acessíveis (eMAG/WCAG). PcD tem direito a intérprete de Libras em serviços públicos, legendas em TV, formatos acessíveis e planos telefônicos com desconto.",
+            "base_legal": [
+                {
+                    "lei": "Lei 13.146/2015 (Estatuto da Pessoa com Deficiência)",
+                    "artigo": "Art. 63 a 73",
+                    "link": "https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2015/lei/l13146.htm"
+                },
+                {
+                    "lei": "Lei 10.436/2002 — Libras como Língua Oficial",
+                    "artigo": "Art. 1º a 7º",
+                    "link": "https://www.planalto.gov.br/ccivil_03/leis/2002/l10436.htm"
+                },
+                {
+                    "lei": "Decreto 5.626/2005 — Regulamenta Libras",
+                    "artigo": "Art. 25 a 29 (saúde), Art. 14 (educação)",
+                    "link": "https://www.planalto.gov.br/ccivil_03/_ato2004-2006/2005/decreto/d5626.htm"
+                },
+                {
+                    "lei": "Lei 10.098/2000 — Acessibilidade (comunicação)",
+                    "artigo": "Art. 17 e 18",
+                    "link": "https://www.planalto.gov.br/ccivil_03/leis/l10098.htm"
+                }
+            ],
+            "requisitos": [
+                "Ser pessoa com deficiência (visual, auditiva, intelectual, motora ou outra que demande acessibilidade digital)",
+                "Identificar a barreira de comunicação ou de acesso digital",
+                "Para intérprete de Libras: solicitar com antecedência ao órgão público ou saúde"
+            ],
+            "documentos": [
+                "Documento de identidade (RG) e CPF",
+                "Laudo médico com CID (quando necessário para solicitar recursos de acessibilidade)",
+                "Solicitação formal ao órgão público (protocolo por escrito)"
+            ],
+            "passo_a_passo": [
+                "Para intérprete de Libras em serviço público: solicite por escrito ao órgão com antecedência mínima de 5 dias úteis",
+                "Para acessibilidade em site governamental: envie reclamação pelo Fala.BR informando a URL e a barreira encontrada",
+                "Para legendas/audiodescrição em TV: registre reclamação na ANATEL (ligando 1331 ou pelo site)",
+                "Para plano telefônico acessível: procure a operadora e solicite o plano com desconto para PcD (Resolução ANATEL 667/2016)",
+                "Para publicações em formato acessível (Braille, áudio, texto digital): solicite à editora ou biblioteca pública",
+                "Acompanhe o protocolo da solicitação e, se não atendido, acione o MP ou Defensoria"
+            ],
+            "dicas": [
+                "Todo site do governo federal DEVE seguir o eMAG (Modelo de Acessibilidade de Governo Eletrônico) — se não seguir, denuncie",
+                "Libras é língua oficial do Brasil (Lei 10.436/2002) — todo serviço público deve garantir comunicação em Libras quando solicitado",
+                "Canais de TV aberta são obrigados a ter legendagem oculta (closed caption) e audiodescrição progressiva",
+                "Pessoas surdas têm direito a videochamada com intérprete em órgãos públicos (Central de Libras)",
+                "A ANATEL obriga operadoras a oferecer planos acessíveis com desconto para PcD",
+                "Aplicativos bancários devem ser acessíveis — se não forem, registre reclamação no Banco Central",
+                "Sempre verifique se o site termina em .gov.br antes de fornecer dados pessoais"
+            ],
+            "valor": "Direito gratuito — interpretação em Libras, legendas e acessibilidade digital são obrigações do prestador de serviço.",
+            "onde": "Fala.BR / ANATEL (1331) / Ministério Público / Defensoria Pública / Portal eMAG (gov.br/governodigital)",
+            "links": [
+                {
+                    "titulo": "Portal de Acessibilidade Digital (eMAG) — Governo Digital",
+                    "url": "https://www.gov.br/governodigital/pt-br/acessibilidade-digital"
+                },
+                {
+                    "titulo": "Fala.BR — Denúncia e Ouvidoria",
+                    "url": "https://falabr.cgu.gov.br/"
+                },
+                {
+                    "titulo": "Secretaria Nacional dos Direitos da PcD",
+                    "url": "https://www.gov.br/mdh/pt-br/navegue-por-temas/pessoa-com-deficiencia"
+                }
+            ],
+            "tags": [
+                "acessibilidade digital",
+                "Libras",
+                "intérprete",
+                "eMAG",
+                "WCAG",
+                "audiodescrição",
+                "legenda",
+                "closed caption",
+                "deficiência auditiva",
+                "deficiência visual",
+                "leitor de tela",
+                "Braille",
+                "ANATEL",
+                "comunicação acessível",
+                "site acessível",
+                "app acessível",
+                "plano telefônico"
+            ]
+        },
+        {
+            "id": "reabilitacao",
+            "titulo": "Habilitação e Reabilitação — Programas e Órteses/Próteses pelo SUS",
+            "icone": "🏥",
+            "resumo": "PcD tem direito a programas de habilitação e reabilitação pelo SUS, incluindo órteses, próteses, meios auxiliares de locomoção, intervenção precoce e reabilitação profissional pelo INSS.",
+            "base_legal": [
+                {
+                    "lei": "Lei 13.146/2015 (Estatuto da Pessoa com Deficiência)",
+                    "artigo": "Art. 14 a 17",
+                    "link": "https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2015/lei/l13146.htm"
+                },
+                {
+                    "lei": "Lei 8.080/1990 — Lei Orgânica do SUS",
+                    "artigo": "Art. 6º, II (vigilância, prevenção e reabilitação)",
+                    "link": "https://www.planalto.gov.br/ccivil_03/leis/l8080.htm"
+                },
+                {
+                    "lei": "Portaria GM/MS nº 1.526/2023 — PNAISPD",
+                    "artigo": "Art. 1º",
+                    "link": "https://www.gov.br/saude/pt-br/assuntos/saude-de-a-a-z/s/saude-da-pessoa-com-deficiencia"
+                },
+                {
+                    "lei": "Decreto 3.298/1999 — Política Nacional para Integração da PcD",
+                    "artigo": "Art. 17 a 25",
+                    "link": "https://www.planalto.gov.br/ccivil_03/decreto/d3298.htm"
+                }
+            ],
+            "requisitos": [
+                "Ser pessoa com deficiência ou com risco de deficiência que necessite de habilitação/reabilitação",
+                "Estar cadastrado no SUS (Cartão Nacional de Saúde)",
+                "Encaminhamento médico da UBS ou especialista para o Centro Especializado em Reabilitação (CER)",
+                "Para reabilitação profissional INSS: estar em benefício por incapacidade ou ser segurado"
+            ],
+            "documentos": [
+                "Cartão Nacional de Saúde (CNS) — Cartão SUS",
+                "Documento de identidade (RG) e CPF",
+                "Laudo médico com CID e indicação de reabilitação",
+                "Encaminhamento da Unidade Básica de Saúde (UBS)",
+                "Para próteses/órteses: prescrição médica detalhada"
+            ],
+            "passo_a_passo": [
+                "Procure a Unidade Básica de Saúde (UBS) mais próxima e solicite encaminhamento para reabilitação",
+                "A UBS encaminhará ao Centro Especializado em Reabilitação (CER) mais próximo — são 4 modalidades: auditiva, física, intelectual e visual",
+                "No CER, será feita avaliação multidisciplinar (fisioterapia, fonoaudiologia, terapia ocupacional, psicologia, etc.)",
+                "Se necessário, será prescrita órtese, prótese ou meio auxiliar de locomoção (cadeira de rodas, muleta, andador) — tudo GRATUITO pelo SUS",
+                "Para intervenção precoce (crianças 0-3 anos): solicite encaminhamento direto ao serviço de estimulação precoce",
+                "Para reabilitação profissional: procure a agência do INSS e solicite inclusão no Programa de Reabilitação Profissional"
+            ],
+            "dicas": [
+                "O SUS fornece GRATUITAMENTE: cadeira de rodas, próteses auditivas (aparelho auditivo), próteses de membro, órteses, coletes, bengalas, andadores, muletas",
+                "A fila para próteses e órteses pode ser longa — insista e acompanhe seu protocolo; se demorar demais, acione a Defensoria Pública",
+                "CERs (Centros Especializados em Reabilitação) existem em todos os estados — consulte no CNES (cnes.datasus.gov.br)",
+                "Crianças com risco de atraso no desenvolvimento têm direito a estimulação precoce IMEDIATA — não espere diagnóstico definitivo",
+                "A reabilitação profissional do INSS inclui cursos, capacitação e até equipamentos para nova atividade laboral",
+                "Se o SUS negar órtese ou prótese prescrita, peça a negativa POR ESCRITO e procure a Defensoria — há jurisprudência consolidada",
+                "Sempre verifique se o site termina em .gov.br antes de fornecer dados pessoais"
+            ],
+            "valor": "Gratuito pelo SUS — órteses, próteses, reabilitação e terapias. Reabilitação profissional pelo INSS também gratuita.",
+            "onde": "UBS → CER (Centro Especializado em Reabilitação) / INSS (reabilitação profissional) / Mapa CNES (cnes.datasus.gov.br)",
+            "links": [
+                {
+                    "titulo": "Rede de Cuidados à Pessoa com Deficiência — SUS",
+                    "url": "https://www.gov.br/saude/pt-br/assuntos/saude-de-a-a-z/s/saude-da-pessoa-com-deficiencia"
+                },
+                {
+                    "titulo": "CNES — Cadastro de Estabelecimentos de Saúde (localizar CER)",
+                    "url": "https://cnes.datasus.gov.br/"
+                },
+                {
+                    "titulo": "Meu INSS — Reabilitação Profissional",
+                    "url": "https://meu.inss.gov.br/"
+                },
+                {
+                    "titulo": "Meu SUS Digital — App de Saúde",
+                    "url": "https://www.gov.br/saude/pt-br/composicao/seidigi/meususdigital"
+                }
+            ],
+            "tags": [
+                "reabilitação",
+                "habilitação",
+                "CER",
+                "prótese",
+                "órtese",
+                "cadeira de rodas",
+                "aparelho auditivo",
+                "fisioterapia",
+                "fonoaudiologia",
+                "terapia ocupacional",
+                "estimulação precoce",
+                "SUS",
+                "INSS",
+                "reabilitação profissional",
+                "intervenção precoce",
+                "muleta",
+                "andador"
             ]
         }
     ],

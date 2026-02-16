@@ -20,6 +20,8 @@ Arquivos atualizados:
     9. docs/ARCHITECTURE.md     → **Versão:** x.y.z
    10. master_compliance.py     → self.version = "x.y.z"
    11. CHANGELOG.md             → insere seção [x.y.z] (se não existir)
+   12. scripts Python           → docstrings/banners "NossoDireito vx.y.z"
+   13. docs/*.md consolidados   → **Versão:** x.y.z | **Atualizado:** data
 """
 
 import argparse
@@ -290,6 +292,66 @@ def bump_master_compliance(new: str, old: str, *, dry_run: bool) -> bool:
     return True
 
 
+def bump_python_docstrings(new: str, old: str, *, dry_run: bool) -> bool:
+    """Atualiza versão nos docstrings e banners dos scripts Python."""
+    files = [
+        ROOT / "scripts" / "validate_content.py",
+        ROOT / "scripts" / "test_analysis_scripts.py",
+        ROOT / "scripts" / "master_compliance.py",
+        ROOT / "tests" / "test_comprehensive.py",
+    ]
+    changed = False
+    old_pattern = f"NossoDireito v{old}"
+    new_pattern = f"NossoDireito v{new}"
+    for path in files:
+        if not path.exists():
+            print(f"  ⚠️  {path.name}: não encontrado")
+            continue
+        text = read_text(path)
+        if old_pattern not in text:
+            if new_pattern in text:
+                print(f"  ✅ {path.name} docstring já está em v{new}")
+            else:
+                print(f"  ⚠️  {path.name}: padrão '{old_pattern}' não encontrado")
+            continue
+        text = text.replace(old_pattern, new_pattern)
+        write_text(path, text, dry_run=dry_run)
+        print(f"  ✅ {path.name}: v{old} → v{new}")
+        changed = True
+    return changed
+
+
+def bump_doc_headers(new: str, old: str, *, dry_run: bool) -> bool:
+    """Atualiza versão e data nos headers dos docs/*.md consolidados."""
+    docs = [
+        ROOT / "docs" / "REFERENCE.md",
+        ROOT / "docs" / "ACCESSIBILITY.md",
+        ROOT / "docs" / "QUALITY_GUIDE.md",
+        ROOT / "docs" / "KNOWN_ISSUES.md",
+    ]
+    changed = False
+    ver_re = re.compile(
+        r'(\*\*Versão:\*\*\s*)\d+\.\d+\.\d+(\s*\|\s*\*\*Atualizado:\*\*\s*)\d{4}-\d{2}-\d{2}'
+    )
+    for path in docs:
+        if not path.exists():
+            print(f"  ⚠️  {path.name}: não encontrado")
+            continue
+        text = read_text(path)
+        match = ver_re.search(text)
+        if not match:
+            print(f"  ⚠️  {path.name}: padrão **Versão:** não encontrado")
+            continue
+        new_text = ver_re.sub(f'\\g<1>{new}\\g<2>{TODAY}', text, count=1)
+        if new_text == text:
+            print(f"  ✅ {path.name} já está em {new}")
+            continue
+        write_text(path, new_text, dry_run=dry_run)
+        print(f"  ✅ {path.name}: → {new} (data: {TODAY})")
+        changed = True
+    return changed
+
+
 # ── Detecção da versão atual ──────────────────────────────────────
 def detect_current_version() -> str:
     """Lê a versão atual de package.json."""
@@ -340,6 +402,8 @@ def main() -> None:
         bump_architecture_md(new_version, old_version, dry_run=args.dry_run),
         bump_master_compliance(new_version, old_version, dry_run=args.dry_run),
         bump_changelog(new_version, old_version, dry_run=args.dry_run),
+        bump_python_docstrings(new_version, old_version, dry_run=args.dry_run),
+        bump_doc_headers(new_version, old_version, dry_run=args.dry_run),
     ]
 
     print("─" * 50)

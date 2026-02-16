@@ -6,12 +6,12 @@
 ----------------------------------------------------------------------------------------------------
 
 📌 Master Compliance (scripts/master_compliance.py)
-   Cobertura: 21 categorias, 1055.4 pontos
+   Cobertura: 20 categorias, 984.9 pontos
    ✅ Dados (direitos.json): schema, estrutura, categorias
    ✅ Fontes: validação de URLs .gov.br
    ✅ Documentação: README, CHANGELOG, LICENSE
-   ✅ Acessibilidade: WCAG 2.1, eMAG 3.1, VLibras
-   ✅ SEO: meta tags, sitemap, robots.txt, JSON-LD schemas
+   ✅ Acessibilidade: WCAG 2.1, VLibras
+   ✅ SEO: meta tags, sitemap, robots.txt
    ✅ Performance: carregamento, métricas
    ✅ Segurança: HTTPS, CSP, SRI
    ✅ PWA: service worker, manifest
@@ -21,12 +21,11 @@
    ✅ Assets: imagens, ícones
    ✅ Mobile: responsividade
    ✅ Git: .gitignore, estrutura
-   ✅ Legal: LGPD, LBI, termos
+   ✅ Legal: LGPD, termos
    ✅ Testes: cobertura, E2E
    ✅ Dependências: requirements, package.json, SRI
    ✅ CHANGELOG: versionamento, formato
    ✅ ANÁLISE 360: cobertura, completude, IPVA
-   ✅ REF. ÓRFÃS: referências a scripts/docs removidos
 
 📌 Validação de Fontes (scripts/validate_sources.py)
    Cobertura: Parcial (não valida conteúdo)
@@ -39,26 +38,6 @@
    ✅ Cobertura: % implementados
    ✅ IPVA: mapeamento estadual
    ✅ Gaps: identificação automática
-
-📌 Avaliação 360° (scripts/avaliacao_360.py)
-   Cobertura: 807 verificações em 11 seções
-   ✅ SEO: meta tags, JSON-LD, sitemap, Open Graph
-   ✅ Segurança: CSP, HSTS, headers, SRI
-   ✅ Acessibilidade: WCAG 2.1, eMAG 3.1, ARIA, landmarks
-   ✅ Conteúdo: direitos.json, base legal, completude
-   ✅ Performance: cache, compressão, assets
-   ✅ Legal: LGPD, LBI, disclaimer
-   ✅ URLs: 318 URLs validadas (gov.br + internacionais)
-
-📌 Screenshots & Testes Visuais
-   ✅ capture_screenshots.py: 10 screenshots (desktop, mobile, dark mode)
-   ✅ test_visual_browser.py: 24 testes visuais (responsivo, fontes, contraste, layout)
-   ✅ test_high_contrast.py: 11 testes alto contraste (toggle, persistência, componentes)
-   ✅ Gerados em screenshots/ (gitignored, validação local)
-
-📌 Validação de URLs (scripts/validate_urls.py)
-   ✅ 318 URLs validadas (gov.br, legislação, internacionais)
-   ✅ Whitelist DOMINIOS_INTERNACIONAIS (icd.who.int, etc.)
 
 ====================================================================================================
 ❌ O QUE NÃO ESTÁ AUTOMATIZADO
@@ -98,7 +77,7 @@
    Impacto: ALTO - Bugs podem passar despercebidos
    ❌ Testes unitários de scripts Python
    ❌ Testes de integração (scripts + dados)
-   ✅ Testes de regressão visual (screenshots) — capture_screenshots.py + test_visual_browser.py (24 testes) + test_high_contrast.py (11 testes)
+   ❌ Testes de regressão visual (screenshots)
    ❌ Testes de carga (performance)
    ❌ CI/CD: execução automática em commits
 
@@ -190,15 +169,15 @@ P3 - BAIXO
 ====================================================================================================
 📊 RESUMO EXECUTIVO
 ----------------------------------------------------------------------------------------------------
-✅ Áreas automatizadas: 7 (Master Compliance, Fontes, Análise 360°, Avaliação 360°, Screenshots/Visuais, URLs, Alto Contraste)
-❌ Áreas sem automação: 5
+✅ Áreas automatizadas: 3
+❌ Áreas sem automação: 7
 ⚠️ Áreas parciais: 3
 💡 Recomendações: 8
 
-🎯 COBERTURA ATUAL: ~60% (12 de 20 áreas críticas)
+🎯 COBERTURA ATUAL: ~40% (8 de 20 áreas críticas)
 🎯 META RECOMENDADA: ≥80% (16 de 20 áreas)
 
-⏱️ ESFORÇO TOTAL ESTIMADO: ~60 horas para 100% de automação
+⏱️ ESFORÇO TOTAL ESTIMADO: ~100 horas para 100% de automação
 
 ====================================================================================================
 ✨ FIM DO RELATÓRIO

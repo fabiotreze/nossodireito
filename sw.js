@@ -9,7 +9,7 @@
 
 'use strict';
 
-const CACHE_VERSION = 'nossodireito-v1.12.4';
+const CACHE_VERSION = 'nossodireito-v1.13.1';
 const STATIC_ASSETS = [
     '/',
     '/index.html',
@@ -17,10 +17,13 @@ const STATIC_ASSETS = [
     '/js/app.js',
     '/data/direitos.json',
     '/data/matching_engine.json',
+    '/data/dicionario_pcd.json',
     '/manifest.json',
     '/images/favicon.ico',
     '/images/favicon-32x32.png',
     '/images/apple-touch-icon.png',
+    '/images/icon-192x192.png',
+    '/images/icon-512x512-maskable.png',
     '/images/nossodireito.png',
     '/images/nossodireito-200.webp',
     '/images/nossodireito-400.webp',

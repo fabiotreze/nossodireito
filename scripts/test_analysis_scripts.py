@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Teste Automatizado de Scripts de Análise - NossoDireito v1.9.0
+Teste Automatizado de Scripts de Análise - NossoDireito v1.13.1
 
 Valida todos os scripts Python de análise:
 - analise360.py
@@ -287,7 +287,7 @@ class ScriptTester:
             # Procura por referências a arquivos de dados
             data_patterns = [
                 'direitos.json',
-                'ipva_pcd_estados.json',
+                'dicionario_pcd.json',
                 'matching_engine.json',
                 'index.html',
                 'styles.css',
@@ -359,7 +359,7 @@ class ScriptTester:
 
         print(f"{BOLD}{BLUE}")
         print("=" * 71)
-        print("         TESTE DE SCRIPTS DE ANALISE - NossoDireito v1.9.0       ")
+        print("         TESTE DE SCRIPTS DE ANALISE - NossoDireito v1.13.1      ")
         print("                                                                   ")
         print("    Validacao de Sintaxe, Estrutura, Dependencias e Dados        ")
         print("=" * 71)

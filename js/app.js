@@ -11,6 +11,7 @@
     }
     const _earlyDireitos = _earlyFetch('data/direitos.json');
     const _earlyMatching = _earlyFetch('data/matching_engine.json');
+    const _earlyDicionario = _earlyFetch('data/dicionario_pcd.json');
     function safeJsonParse(str) {
         return JSON.parse(str, (key, value) => {
             if (key === '__proto__' || key === 'constructor' || key === 'prototype') {
@@ -60,6 +61,7 @@
     let UPPERCASE_ONLY_TERMS = new Set();
     let CID_RANGE_MAP = {};
     let KEYWORD_MAP = {};
+    let dicionarioData = null;  // dicionario_pcd.json deficiencies for search enrichment
     const STORAGE_PREFIX = 'nossodireito_';
     const DB_NAME = 'NossoDireitoDB';
     const DB_VERSION = 2;
@@ -524,6 +526,23 @@
         });
         window.addEventListener('hashchange', () => {
             if (ttsActive) stopReading();
+            /* SPA routing: navigate to detail view when hash changes to #direito/{id} */
+            const hash = location.hash;
+            if (hash.startsWith('#direito/')) {
+                try {
+                    const id = decodeURIComponent(hash.replace('#direito/', ''));
+                    if (id && direitosData) showDetalhe(id, true);
+                } catch (e) {
+                    console.warn('Hash inválido:', hash, e);
+                }
+            } else if (hash && !hash.startsWith('#direito/')) {
+                /* Navigating back to a section anchor — hide detail if visible */
+                if (dom.detalheSection && dom.detalheSection.style.display !== 'none') {
+                    dom.detalheSection.style.display = 'none';
+                    if (dom.categoriasSection) dom.categoriasSection.style.display = '';
+                    updateSectionAlternation();
+                }
+            }
         });
     }
 
@@ -553,7 +572,8 @@
         const toast = document.createElement('div');
         toast.className = `toast toast-${type}`;
         toast.textContent = message;
-        toast.setAttribute('role', 'alert');
+        toast.setAttribute('role', type === 'error' || type === 'warning' ? 'alert' : 'status');
+        toast.setAttribute('aria-live', type === 'error' || type === 'warning' ? 'assertive' : 'polite');
         document.body.appendChild(toast);
         setTimeout(() => { if (toast.parentNode) toast.remove(); }, 5000);
     }
@@ -687,6 +707,18 @@
         await safeRunAsync('cleanupExpiredFiles', cleanupExpiredFiles);
         await safeRunAsync('renderFileList', renderFileList);
         safeRun('updateSectionAlternation', updateSectionAlternation);
+        /* Deep-link: handle #direito/{id} on cold page load */
+        const initialHash = location.hash;
+        if (initialHash.startsWith('#direito/')) {
+            try {
+                const deepId = decodeURIComponent(initialHash.replace('#direito/', ''));
+                if (deepId && direitosData) {
+                    showDetalhe(deepId, true);
+                }
+            } catch (e) {
+                console.warn('Hash inicial inválido:', initialHash, e);
+            }
+        }
         // Remove SEO-only content from DOM to reduce DOM size (crawlers already parsed it)
         const seoContent = document.getElementById('seo-content');
         if (seoContent) seoContent.remove();
@@ -753,7 +785,7 @@
         window.addEventListener('popstate', (e) => {
             if (e.state && e.state.view === 'detalhe' && e.state.id) {
                 showDetalhe(e.state.id, true);
-            } else {
+            } else if (dom.detalheSection && dom.categoriasSection) {
                 dom.detalheSection.style.display = 'none';
                 dom.categoriasSection.style.display = '';
                 updateSectionAlternation();
@@ -780,11 +812,13 @@
             }
         } catch (err) {
             console.error('Erro ao carregar dados:', err);
-            dom.categoryGrid.innerHTML = `
+            if (dom.categoryGrid) {
+                dom.categoryGrid.innerHTML = `
 <div style="grid-column: 1/-1; text-align:center; padding:32px; color:var(--text-muted);">
 <p>⚠️ Não foi possível carregar os dados.</p>
 <p style="font-size:0.9rem;">Verifique se o arquivo <code>data/direitos.json</code> está acessível.</p>
 </div>`;
+            }
         }
         try {
             const meRes = (await _earlyMatching) || await resilientFetch('data/matching_engine.json');
@@ -795,8 +829,43 @@
         } catch (err) {
             console.warn('Motor de correspondência não carregou — análise de documentos pode ser limitada:', err.message);
         }
+        // Load dicionario_pcd.json and merge synonyms/keywords into KEYWORD_MAP
+        try {
+            const dicRes = (await _earlyDicionario) || await resilientFetch('data/dicionario_pcd.json');
+            const dic = await dicRes.json();
+            dicionarioData = dic.deficiencias || [];
+            // Enrich KEYWORD_MAP with dicionario synonyms and keywords
+            // KEYWORD_MAP is frozen, so build a mutable copy
+            const enriched = Object.assign({}, KEYWORD_MAP);
+            dicionarioData.forEach((def) => {
+                const allTerms = [
+                    ...(def.keywords_busca || []),
+                    ...(def.sinonimos || []),
+                    ...(def.cid10 || []),
+                    ...(Array.isArray(def.cid11) ? def.cid11 : (def.cid11 ? [def.cid11] : [])),
+                    def.nome,
+                ];
+                const cats = def.beneficios_elegiveis || [];
+                allTerms.forEach((term) => {
+                    const normTerm = normalizeText(term);
+                    if (!normTerm || normTerm.length < 2) return;
+                    if (enriched[normTerm]) {
+                        // Merge categories without duplicates, keep higher weight
+                        const existing = enriched[normTerm];
+                        const merged = new Set([...existing.cats, ...cats]);
+                        enriched[normTerm] = { cats: Array.from(merged), weight: Math.max(existing.weight, 5) };
+                    } else {
+                        enriched[normTerm] = { cats: [...cats], weight: 5 };
+                    }
+                });
+            });
+            KEYWORD_MAP = deepFreeze(enriched);
+        } catch (err) {
+            console.warn('Dicionário PcD não carregou — busca por sinônimos limitada:', err.message);
+        }
     }
     async function enrichGovBr() {
+        if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') return;
         try {
             const _gc = new AbortController();
             const _gt = setTimeout(() => _gc.abort(), 4000);
@@ -836,8 +905,8 @@ data-id="${cat.id}">
         });
     }
     function showDetalhe(id, skipHistory) {
-        const cat = direitosData.find((c) => c.id === id);
-        if (!cat) return;
+        const cat = direitosData && direitosData.find((c) => c.id === id);
+        if (!cat || !dom.categoriasSection || !dom.detalheSection) return;
         dom.categoriasSection.style.display = 'none';
         dom.detalheSection.style.display = '';
         updateSectionAlternation();
@@ -937,8 +1006,9 @@ ${cat.ipva_estados_detalhado.map(e =>
         }
         if (cat.govbr_servico_id) {
             const live = sessionStorage.getItem('govbr_' + cat.govbr_servico_id);
+            const govbrUrl = cat.govbr_url || `https://www.gov.br/pt-br/servicos/${cat.govbr_servico_id}`;
             html += `<div class="detalhe-section" style="text-align:center">
-<a href="https://www.gov.br/pt-br/servicos/obter-isencao-de-impostos-para-comprar-carro" target="_blank" rel="noopener noreferrer" class="btn-govbr${live ? ' live' : ''}">
+<a href="${escapeHtml(govbrUrl)}" target="_blank" rel="noopener noreferrer" class="btn-govbr${live ? ' live' : ''}">
 🇧🇷 ${live ? 'Serviço digital confirmado no gov.br' : 'Acessar serviço no gov.br'}
 </a></div>`;
         }
@@ -1030,6 +1100,7 @@ style="margin-top:16px;display:inline-block">
         if (h2) { h2.setAttribute('tabindex', '-1'); h2.focus({ preventScroll: true }); }
     }
     function setupSearch() {
+        if (!dom.searchInput || !dom.searchResults || !dom.searchBtn) return;
         const doSearch = () => {
             const query = dom.searchInput.value.trim().toLowerCase();
             if (!query || !direitosData) {
@@ -1220,6 +1291,26 @@ style="margin-top:16px;display:inline-block">
             : orgao
                 ? `<p class="search-orgao">🏢 Órgão estadual (${escapeHtml(ufLabel)}): <strong>${escapeHtml(orgao.nome)}</strong></p>`
                 : '';
+        /* ── Portais estaduais (SEFAZ / DETRAN) ── */
+        let portaisHtml = '';
+        if (orgao && (orgao.sefaz || orgao.detran)) {
+            const links = [];
+            if (orgao.sefaz && isSafeUrl(orgao.sefaz))
+                links.push(`<a href="${escapeHtml(orgao.sefaz)}" target="_blank" rel="noopener noreferrer" class="legal-link">💰 SEFAZ/${escapeHtml(ufLabel)}</a>`);
+            if (orgao.detran && isSafeUrl(orgao.detran))
+                links.push(`<a href="${escapeHtml(orgao.detran)}" target="_blank" rel="noopener noreferrer" class="legal-link">🚗 DETRAN/${escapeHtml(ufLabel)}</a>`);
+            portaisHtml = `<div class="search-portais" style="display:flex;gap:8px;flex-wrap:wrap;margin:8px 0;">${links.join('')}</div>`;
+        }
+        /* ── Benefícios destaque estaduais ── */
+        let beneficiosHtml = '';
+        if (orgao && orgao.beneficios_destaque && orgao.beneficios_destaque.length) {
+            beneficiosHtml = `<details class="search-beneficios-estado" style="margin:8px 0;">
+<summary style="cursor:pointer;font-weight:600;">📋 Benefícios específicos — ${escapeHtml(ufLabel)}</summary>
+<ul style="margin:8px 0 0 16px;padding:0;list-style:none;">
+${orgao.beneficios_destaque.map(b => `<li style="padding:4px 0;">✅ ${escapeHtml(b)}</li>`).join('')}
+</ul>
+</details>`;
+        }
         const filterNote = filteredCats
             ? `<p class="search-hint">🔎 Mostrando <strong>${filteredCats.length}</strong> resultado(s) filtrado(s) para sua busca em <strong>${escapeHtml(nomeDisplay)}</strong>.</p>`
             : '';
@@ -1227,6 +1318,8 @@ style="margin-top:16px;display:inline-block">
             `<div class="search-suggestion search-location">
 <p>📍 <strong>${escapeHtml(nomeDisplay)}</strong> ${location.type === 'cidade' ? `(${escapeHtml(ufLabel)})` : ''} — os direitos abaixo são <strong>federais</strong> e valem em todo o Brasil, incluindo na sua cidade/estado.</p>
 ${orgaoHtml}
+${portaisHtml}
+${beneficiosHtml}
 ${filterNote}
 <p class="search-hint">💡 Clique em qualquer direito para ver detalhes, documentos e passo a passo.</p>
 </div>` +
@@ -1249,7 +1342,7 @@ ${filterNote}
             .split(/\s+/)
             .filter(Boolean);
         // Keep stopwords for phrase matching / location detection but filter for scoring
-        const terms = raw.filter((t) => !STOPWORDS.has(t.toLowerCase()) || t.length > 3);
+        const terms = raw.filter((t) => !STOPWORDS.has(t.toLowerCase()));
         const queryNorm = raw.join(' ');
         const location = detectLocation(queryNorm);
         if (location) {
@@ -1466,7 +1559,7 @@ ${filterNote}
         const renderFonte = (f) => {
             const tipoIcon = f.tipo === 'legislacao' ? '📜' : f.tipo === 'servico' ? '🌐' : '📋';
             const artigos = f.artigos_referenciados
-                ? `<div class="fonte-artigos">Artigos: ${f.artigos_referenciados.join(', ')}</div>`
+                ? `<div class="fonte-artigos">Artigos: ${f.artigos_referenciados.map(a => escapeHtml(a)).join(', ')}</div>`
                 : '';
             return `
 <div class="fonte-item">
@@ -1495,7 +1588,7 @@ ${isSafeUrl(f.url) ? `<a href="${escapeHtml(f.url)}" target="_blank" rel="noopen
         }
     }
     function renderDocsChecklist() {
-        if (!docsMestreData || !direitosData) return;
+        if (!docsMestreData || !direitosData || !dom.docsChecklist) return;
         const saved = localGet('docs_checklist') || {};
         const catNameMap = {};
         direitosData.forEach((c) => {
@@ -1534,7 +1627,7 @@ ${doc.dica ? `<div class="doc-master-dica">💡 ${escapeHtml(doc.dica)}</div>` :
         });
     }
     function renderInstituicoes() {
-        if (!instituicoesData || !direitosData) return;
+        if (!instituicoesData || !direitosData || !dom.instituicoesGrid) return;
         const catNameMap = {};
         direitosData.forEach((c) => {
             catNameMap[c.id] = c.titulo.split('—')[0].trim();
@@ -1708,10 +1801,10 @@ Acessar ↗
 <tbody>
 ${classificacaoData.map((c) => `
 <tr>
-<td class="classif-tipo"><strong>${escapeHtml(c.tipo)}</strong></td>
-<td class="classif-cid"><code>${escapeHtml(c.cid10)}</code></td>
-<td class="classif-cid"><code>${escapeHtml(c.cid11)}</code></td>
-<td class="classif-criterio">${escapeHtml(c.criterio)}</td>
+<td class="classif-tipo" data-label="Tipo"><strong>${escapeHtml(c.tipo)}</strong></td>
+<td class="classif-cid" data-label="CID-10"><code>${escapeHtml(Array.isArray(c.cid10) ? c.cid10.join(', ') : (c.cid10 || ''))}</code></td>
+<td class="classif-cid" data-label="CID-11"><code>${escapeHtml(Array.isArray(c.cid11) ? c.cid11.join(', ') : (c.cid11 || ''))}</code></td>
+<td class="classif-criterio" data-label="Critério">${escapeHtml(c.criterio)}</td>
 </tr>`).join('')}
 </tbody>
 </table>
@@ -1750,6 +1843,7 @@ No Brasil, a maioria dos laudos ainda usa CID-10. O sistema aceita ambas as codi
         });
     })();
     function setupUpload() {
+        if (!dom.uploadZone || !dom.fileInput || !dom.deleteAllFiles) return;
         dom.uploadZone.addEventListener('click', () => dom.fileInput.click());
         dom.uploadZone.addEventListener('keydown', (e) => {
             if (e.key === 'Enter' || e.key === ' ') {
@@ -1930,7 +2024,7 @@ No Brasil, a maioria dos laudos ainda usa CID-10. O sistema aceita ambas as codi
                 const analysisTitle = document.querySelector('.analysis-results h3')?.textContent || 'Análise';
                 const matches = document.querySelectorAll('.analysis-match');
                 const matchList = Array.from(matches).map((m, i) => `${i + 1}. ${m.querySelector('.analysis-match-title h4')?.textContent || 'Direito'}`).join('%0A');
-                const text = `*${analysisTitle}*%0A%0A${matchList}%0A%0AVeja mais em: ${window.location.origin}`;
+                const text = `*${analysisTitle}*%0A%0A${matchList}%0A%0AVeja mais em: ${encodeURIComponent(window.location.origin)}`;
                 window.open(`https://wa.me/?text=${text}`, '_blank');
             });
         }
@@ -2575,6 +2669,7 @@ um advogado ou o <strong>CRAS</strong> da sua cidade.</p>
     const _escapeDiv = document.createElement('div');
     function escapeHtml(str) {
         if (!str) return '';
+        if (typeof str !== 'string') str = String(str);
         _escapeDiv.textContent = str;
         return _escapeDiv.innerHTML;
     }
@@ -2582,6 +2677,7 @@ um advogado ou o <strong>CRAS</strong> da sua cidade.</p>
         return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
     }
     function normalizeText(text) {
+        if (typeof text !== 'string') return '';
         return text
             .toLowerCase()
             .normalize('NFD')

@@ -1,7 +1,7 @@
 # Problemas Conhecidos e Limitações — NossoDireito
 
 > **Status:** 🟢 Ativo
-> **Versão:** 1.12.0 | **Atualizado:** 2026-02-15
+> **Versão:** 1.13.1 | **Atualizado:** 2026-02-16
 > **Escopo:** Bugs, limitações técnicas, workarounds e trade-offs conhecidos
 > **Absorve:** VLIBRAS_LIMITATIONS (mobile + CSP)
 
@@ -116,7 +116,7 @@ Site carrega lento em redes 3G/2G devido ao tamanho do JavaScript (115 KB).
 **Como Reportar:**
 Se encontrar link quebrado:
 1. **GitHub Issue:** https://github.com/fabiotreze/nossodireito/issues
-2. **Email:** fabiotreze@gmail.com (assunto: "Link Quebrado")
+2. **Email:** fabiotreze@hotmail.com (assunto: "Link Quebrado")
 
 **Tempo de Resposta:**
 - 🔥 **Crítico** (links gov.br principais): 24 horas
@@ -448,7 +448,7 @@ https://github.com/fabiotreze/nossodireito/issues/new
 ```
 
 **Opção 2: Email**
-fabiotreze@gmail.com (assunto: "Bug NossoDireito")
+fabiotreze@hotmail.com (assunto: "Bug NossoDireito")
 
 **Tempo de Resposta:**
 - 🔥 **Crítico** (site fora do ar): 4 horas
@@ -465,6 +465,6 @@ fabiotreze@gmail.com (assunto: "Bug NossoDireito")
 ---
 
 **Última Atualização:** 11 de fevereiro de 2026
-**Responsável:** Fábio Treze (fabiotreze@gmail.com)
+**Responsável:** Fábio Treze (fabiotreze@hotmail.com)
 **Licença:** MIT
 **Versão:** 1.0.0

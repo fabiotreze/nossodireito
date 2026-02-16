@@ -5,6 +5,47 @@ Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/)
 e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [1.13.1] - 2026-02-16
+
+### 🏗️ Arquitetura de Dados
+
+- **Remoção de `ipva_pcd_estados.json`** — Arquivo standalone com dados placeholder removido. Os dados reais de IPVA (27 estados com legislação, artigos e URLs SEFAZ) já existem inline em `direitos.json` → `isencoes_tributarias.ipva_estados` e `isencoes_tributarias.ipva_estados_detalhado`
+- **Expansão de `orgaos_estaduais`** — Cada estado agora inclui `sefaz` (URL SEFAZ), `detran` (URL DETRAN) e `beneficios_destaque` (benefícios fiscais e veiculares estaduais)
+- **Atualização de dependências** — Todos os scripts, testes e validações migrados para usar dados inline de `direitos.json` em vez do arquivo standalone
+
+### ✨ Funcionalidades
+
+- **Busca por estado expandida** — Ao buscar por estado/cidade, agora exibe portais SEFAZ e DETRAN com links diretos, além de benefícios estaduais em destaque
+- **`renderLocationResults()` enriquecido** — Mostra portais estaduais (SEFAZ/DETRAN) e lista de benefícios específicos por estado em formato expandível
+
+### 🔧 Correções
+
+- **`validate_content.py`** — Contagem de categorias atualizada de 25 → 30 (reflete 5 categorias adicionadas anteriormente)
+- **`validate_urls.py`** — Agora valida URLs de SEFAZ e DETRAN expandidas em `orgaos_estaduais`
+- **`analise360.py`** — Seção IPVA atualizada para ler dados inline de `direitos.json`
+
+### 📱 PWA
+
+- **Ícone 192×192** — Adicionado para conformidade com Android/Chrome PWA (antes só tinha 32, 180, 512)
+- **Ícones maskable separados** — `purpose: "any maskable"` dividido em duas entradas: `"any"` (192+512) e `"maskable"` (512) para renderização correta em Android
+- **`orientation: "any"`** — Adicionado ao manifest para suporte explícito a todas as orientações
+
+### 🧪 Testes
+
+- **`TestIPVA` reescrito** — Valida dados inline de `direitos.json` (11 testes: 27 estados simples + detalhado, estrutura, SEFAZ HTTPS, sem duplicatas, consistência)
+- **`TestOrgaosEstaduais` expandido** — 6 testes: campos obrigatórios, SEFAZ, DETRAN, benefícios destaque
+- **`TestEstadosMunicipios` atualizado** — Usa `direitos.json` inline em vez de arquivo standalone
+- **Validação standalone negativa** — Teste confirma que `ipva_pcd_estados.json` foi removido
+
+### 📊 Métricas
+
+- Testes: 140/140 PASS (100%)
+- Validação conteúdo: 195 checks, 0 erros
+- Órgãos estaduais: 27 UFs com sefaz + detran + benefícios
+- IPVA: 27 estados (simples) + 27 estados (detalhado) inline
+
+---
+
 ## [1.12.4] - 2026-02-15
 
 ### ⚡ Performance (LCP & DOM)

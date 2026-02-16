@@ -4,7 +4,7 @@
 
 # ⚖️ NossoDireito
 
-[![Master Compliance](https://img.shields.io/badge/Master%20Compliance-100.0%25%20(1055.4%2F1055.4)-brightgreen?style=flat-square)](CHANGELOG.md)
+[![Master Compliance](https://img.shields.io/badge/Master%20Compliance-100.0%25%20(1096.7%2F1096.7)-brightgreen?style=flat-square)](CHANGELOG.md)
 [![Quality Gate](https://img.shields.io/badge/Quality%20Gate-100.0%2F100-brightgreen?style=flat-square)](https://github.com/fabiotreze/nossodireito/actions)
 [![WAF 5 Pillars](https://img.shields.io/badge/WAF%205%20Pillars-100%25-success?style=flat-square)](docs/QUALITY_GUIDE.md)
 [![Deploy](https://img.shields.io/badge/Deploy-Azure%20App%20Service-0078D4?style=flat-square&logo=microsoft-azure)](https://nossodireito.fabiotreze.com)
@@ -12,7 +12,7 @@
 [![Accessibility](https://img.shields.io/badge/Accessibility-ARIA%20%7C%20VLibras%20%7C%20WCAG-blue?style=flat-square&logo=accessible-icon)](docs/ACCESSIBILITY.md)
 [![LGPD](https://img.shields.io/badge/LGPD-Zero%20Data%20Collection-blue?style=flat-square)](SECURITY.md)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow?style=flat-square)](LICENSE)
-[![Version](https://img.shields.io/badge/Version-1.12.4-informational?style=flat-square)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/Version-1.13.1-informational?style=flat-square)](CHANGELOG.md)
 
 **Recebeu um laudo? Vem que a gente te ajuda.**
 
@@ -43,17 +43,12 @@ Este projeto responde essa pergunta de forma clara, objetiva e validada.
    - Detecção automática de falhas/bugs
    - Modo `--fix` para auto-correção
 
-2. **`avaliacao_360.py`** — Avaliação completa (807 verificações)
+2. **`analise360.py`** — Avaliação completa (807 verificações)
    - 11 seções: SEO, segurança, acessibilidade, conteúdo, performance, legal
    - 318 URLs validadas (gov.br + internacionais)
    - Relatório detalhado com percentual por seção
 
-3. **Screenshots automatizados** — 3 scripts Playwright
-   - `capture_screenshots.py`: 10 screenshots (desktop, mobile, dark mode)
-   - `test_visual_browser.py`: 24 testes visuais + 4 screenshots responsivos
-   - `test_high_contrast.py`: 11 testes alto contraste + 5 screenshots comparativos
-
-4. **SEO overhaul** — Sitemap expandido de 1→34 URLs
+3. **SEO overhaul** — Sitemap expandido de 1→34 URLs
    - 4 novos schemas JSON-LD (Organization, BreadcrumbList, 2× ItemList)
    - Conteúdo SEO pré-renderizado, 45+ meta keywords
    - Rich `<noscript>` para navegadores sem JS
@@ -63,9 +58,9 @@ Este projeto responde essa pergunta de forma clara, objetiva e validada.
    - `target="_blank"` removido de links hardcoded
    - Painel de acessibilidade com shortcuts de teclado
 
-6. **ANÁLISE 360 @ 100%** — Métricas atualizadas:
+5. **ANÁLISE 360 @ 100%** — Métricas atualizadas:
    - ✅ Cobertura: 80.6% (≥75% meta)
-   - ✅ Completude: 22/25 benefícios completos (≥20 meta)
+   - ✅ Completude: 30/30 benefícios completos
    - ✅ IPVA: 27/27 estados mapeados
 
 ### 📚 Documentação completa:
@@ -87,12 +82,7 @@ python scripts/validate_all.py
 python scripts/master_compliance.py
 
 # Avaliação 360° (807 checks, 318 URLs)
-python scripts/avaliacao_360.py
-
-# Screenshots + testes visuais (requer node server.js)
-python scripts/capture_screenshots.py
-python scripts/test_visual_browser.py
-python scripts/test_high_contrast.py
+python scripts/analise360.py
 ```
 
 **Roadmap P0-P3:** Próximas implementações em [`docs/VALIDATION_STATUS.md`](docs/VALIDATION_STATUS.md)
@@ -101,7 +91,7 @@ python scripts/test_high_contrast.py
 
 ## ✨ Funcionalidades
 
-### 📋 **25 Categorias de Direitos**
+### 📋 **30 Categorias de Direitos**
 - **BPC/LOAS** — Benefício de Prestação Continuada (1 salário mínimo/mês)
 - **CIPTEA** — Carteira de Identificação da Pessoa com TEA
 - **Educação Inclusiva** — Matrícula obrigatória, acompanhante especializado
@@ -111,7 +101,7 @@ python scripts/test_high_contrast.py
 - **Trabalho** — Cotas PcD em empresas (2% a 5% das vagas)
 - **FGTS** — Saque para tratamento ou equipamentos
 - **Moradia** — Prioridade no Minha Casa Minha Vida, adaptações em condomínios
-- **+ 16 outras categorias** (Isenções tributárias, tecnologia assistiva, meia-entrada, ProUni/FIES/SISU, esporte paralímpico, turismo acessível, etc.)
+- **+ 21 outras categorias** (Isenções tributárias, tecnologia assistiva, meia-entrada, ProUni/FIES/SISU, esporte paralímpico, turismo acessível, curatela, lazer, etc.)
 
 ### 🔍 **Busca Inteligente**
 - **Matching Engine** com algoritmo de busca semântica
@@ -191,7 +181,7 @@ python3 -m http.server 3000
 - **Service Worker** — Cache inteligente, funcionalidade offline
 
 ### **Dados**
-- **JSON** — direitos.json (25 categorias, 216KB) + matching_engine.json (70KB)
+- **JSON** — direitos.json (30 categorias, 265KB) + matching_engine.json (106KB) + dicionario_pcd.json (72KB)
 - **Compressão** — Minificação de HTML/CSS/JS
 
 ### **Infraestrutura (IaC)**
@@ -278,9 +268,9 @@ nossodireito/
 ├── js/
 │   └── app.js              # Busca, navegação, TTS, VLibras, criptografia
 ├── data/
-│   ├── direitos.json       # Base de conhecimento (25 categorias)
-│   ├── matching_engine.json # Keywords de análise de documentos
-│   └── ipva_pcd_estados.json # Tabela IPVA PcD por estado
+│   ├── direitos.json       # Base de conhecimento (30 categorias + IPVA inline)
+│   ├── matching_engine.json # Keywords e motor de busca
+│   └── dicionario_pcd.json  # Dicionário PcD (deficiências, CIDs, leis)
 ├── images/                 # Favicons, OG image e logo
 ├── docs/
 │   ├── QUALITY_GUIDE.md    # Pipeline, scripts, testes (4→1)

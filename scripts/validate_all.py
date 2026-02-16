@@ -6,7 +6,7 @@ Executa TODAS as 16 verificações do projeto em sequência:
 
   FASE 1 — Pré-Validações (estrutura de arquivos + sintaxe JSON)
   FASE 2 — Schema (JSON Schema Draft 7)
-  FASE 3 — Conteúdo Profundo (25 categorias, matching engine, IPVA, semântica)
+  FASE 3 — Conteúdo Profundo (30 categorias, matching engine, IPVA, semântica)
   FASE 4 — Master Compliance (21 categorias, 993.9 pts)
   FASE 5 — Análise 360° (cobertura benefícios implementados vs pesquisados)
   FASE 6 — Análise Funcionalidades (app.js implementado vs testado)
@@ -125,7 +125,8 @@ class MasterValidator:
 
         required_files = [
             'data/direitos.json',
-            'data/ipva_pcd_estados.json',
+            'data/dicionario_pcd.json',
+            'data/matching_engine.json',
             'index.html',
             'manifest.json',
             'sw.js',
@@ -219,7 +220,7 @@ class MasterValidator:
 
         json_files = [
             'data/direitos.json',
-            'data/ipva_pcd_estados.json',
+            'data/dicionario_pcd.json',
             'data/matching_engine.json',
             'manifest.json'
         ]
@@ -256,7 +257,8 @@ class MasterValidator:
         import shutil
         critical_files = [
             'data/direitos.json',
-            'data/ipva_pcd_estados.json'
+            'data/dicionario_pcd.json',
+            'data/matching_engine.json'
         ]
 
         for file_path in critical_files:
@@ -402,7 +404,7 @@ class MasterValidator:
         ))
 
         # ====================
-        # FASE 3: CONTEÚDO PROFUNDO (25 categorias, matching, IPVA, semântica)
+        # FASE 3: CONTEÚDO PROFUNDO (30 categorias, matching, IPVA, semântica)
         # ====================
         print()
         print("=" * 100)

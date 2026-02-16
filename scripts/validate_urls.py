@@ -96,17 +96,22 @@ def extract_all_urls(data: dict) -> list[dict]:
         _add(inst.get("url"), f"instituição: {inst.get('nome', '?')}", f"instituicoes_apoio[{i}].url")
         _add(inst.get("contato"), f"instituição contato: {inst.get('nome', '?')}", f"instituicoes_apoio[{i}].contato")
 
-    # Órgãos estaduais
+    # Órgãos estaduais (expandidos: url, sefaz, detran)
     for i, uf_data in enumerate(data.get("orgaos_estaduais", [])):
         uf = uf_data.get("uf", "?")
         _add(uf_data.get("url"), f"órgão estadual: {uf}", f"orgaos_estaduais[{i}].url")
+        _add(uf_data.get("sefaz"), f"SEFAZ estadual: {uf}", f"orgaos_estaduais[{i}].sefaz")
+        _add(uf_data.get("detran"), f"DETRAN estadual: {uf}", f"orgaos_estaduais[{i}].detran")
 
-    # IPVA estados
-    ipva = data.get("ipva_pcd_estados")
-    if isinstance(ipva, list):
-        for i, est in enumerate(ipva):
+    # IPVA SEFAZ URLs (inline em isencoes_tributarias)
+    isencoes = next((c for c in data.get("categorias", []) if c.get("id") == "isencoes_tributarias"), None)
+    if isencoes:
+        for i, est in enumerate(isencoes.get("ipva_estados", [])):
             uf = est.get("uf", "?")
-            _add(est.get("sefaz_url"), f"IPVA SEFAZ: {uf}", f"ipva_pcd_estados[{i}].sefaz_url")
+            _add(est.get("sefaz"), f"IPVA SEFAZ: {uf}", f"isencoes_tributarias.ipva_estados[{i}].sefaz")
+        for i, est in enumerate(isencoes.get("ipva_estados_detalhado", [])):
+            uf = est.get("uf", "?")
+            _add(est.get("sefaz"), f"IPVA SEFAZ detalhado: {uf}", f"isencoes_tributarias.ipva_estados_detalhado[{i}].sefaz")
 
     return urls
 

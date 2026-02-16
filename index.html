@@ -53,8 +53,8 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{--primary:#1e40af;--primary-dark:#1e3a8a;--font:'Segoe UI',system-ui,-apple-system,sans-serif;--max-width:1100px;--surface:#ffffff;--text:#1e293b;--border:#e2e8f0;--shadow-sm:0 1px 3px rgba(0,0,0,.08)}
 @media(prefers-color-scheme:dark){:root{--primary:#60a5fa;--primary-dark:#3b82f6;--surface:#0f172a;--text:#f1f5f9;--border:#334155;--shadow-sm:0 1px 3px rgba(0,0,0,.3)}}
-html{scroll-behavior:smooth;scroll-padding-top:120px;font-size:16px;overflow-x:hidden}
-body{font-family:var(--font);color:var(--text);background:var(--surface);line-height:1.6;-webkit-font-smoothing:antialiased;min-height:100vh;overflow-x:hidden}
+html{scroll-behavior:smooth;scroll-padding-top:120px;font-size:16px}
+body{font-family:var(--font);color:var(--text);background:var(--surface);line-height:1.6;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;min-height:100vh;min-height:100dvh;overflow-x:hidden}
 .container{max-width:var(--max-width);margin:0 auto;padding:0 20px}
 .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
 .skip-link{position:absolute;top:-100%;left:16px;z-index:9999;padding:12px 24px;background:#1e3a8a;color:#fff;font-weight:700;border-radius:0 0 8px 8px;text-decoration:none}
@@ -242,7 +242,7 @@ body{font-family:var(--font);color:var(--text);background:var(--surface);line-he
 "@type": "PeopleAudience",
 "audienceType": "Pessoas com Deficiência (PcD), familiares e cuidadores"
 },
-"description": "Guia completo com 25 categorias de direitos e benefícios para pessoas com deficiência no Brasil: BPC/LOAS, CIPTEA, educação inclusiva, plano de saúde, SUS, transporte, trabalho, FGTS, moradia, isenções tributárias, aposentadoria especial, auxílio-inclusão e mais.",
+"description": "Guia completo com 30 categorias de direitos e benefícios para pessoas com deficiência no Brasil: BPC/LOAS, CIPTEA, educação inclusiva, plano de saúde, SUS, transporte, trabalho, FGTS, moradia, isenções tributárias, aposentadoria especial, auxílio-inclusão, acessibilidade arquitetônica, capacidade legal, crimes contra PcD, acessibilidade digital, reabilitação e mais.",
 "hasOfferCatalog": {
 "@type": "OfferCatalog",
 "name": "Benefícios e Direitos PcD",
@@ -271,7 +271,12 @@ body{font-family:var(--font);color:var(--text);background:var(--surface);line-he
 {"@type": "OfferCatalog", "name": "Proteção Social — CRAS, CREAS", "description": "Rede SUAS de serviços sociais para PcD"},
 {"@type": "OfferCatalog", "name": "Pensão Especial — Zika Vírus", "description": "Pensão vitalícia para crianças com Síndrome Congênita do Zika"},
 {"@type": "OfferCatalog", "name": "Esporte Paralímpico — Bolsa Atleta", "description": "Bolsa Atleta e incentivos para atletas paralímpicos"},
-{"@type": "OfferCatalog", "name": "Turismo Acessível", "description": "Hospedagem adaptada e assistência especial em voos"}
+{"@type": "OfferCatalog", "name": "Turismo Acessível", "description": "Hospedagem adaptada e assistência especial em voos"},
+{"@type": "OfferCatalog", "name": "Acessibilidade Arquitetônica", "description": "Edificações e espaços públicos acessíveis conforme NBR 9050 e NBR 16537"},
+{"@type": "OfferCatalog", "name": "Capacidade Legal — Curatela e Tomada de Decisão Apoiada", "description": "Exercício de direitos civis e suporte em decisões legais"},
+{"@type": "OfferCatalog", "name": "Crimes contra PcD — Discriminação e Denúncia", "description": "Proteção penal e canais de denúncia contra discriminação"},
+{"@type": "OfferCatalog", "name": "Acessibilidade Digital — Comunicação, Libras e Tecnologias", "description": "Comunicação acessível, Libras, legendas e tecnologias assistivas digitais"},
+{"@type": "OfferCatalog", "name": "Habilitação e Reabilitação — Órteses e Próteses", "description": "Reabilitação profissional, estimulação precoce, órteses e próteses pelo SUS"}
 ]
 },
 "inLanguage": "pt-BR"
@@ -347,7 +352,7 @@ body{font-family:var(--font);color:var(--text);background:var(--surface);line-he
 "name": "Benefícios e Direitos para PcD no Brasil",
 "description": "Lista completa de benefícios governo brasileiro para pessoas com deficiência: BPC, CIPTEA, isenções, aposentadoria, educação, saúde, transporte",
 "url": "https://nossodireito.fabiotreze.com/#categorias",
-"numberOfItems": 25,
+"numberOfItems": 30,
 "itemListElement": [
 {"@type": "ListItem", "position": 1, "name": "BPC/LOAS — Benefício de Prestação Continuada", "url": "https://nossodireito.fabiotreze.com/#direito/bpc"},
 {"@type": "ListItem", "position": 2, "name": "CIPTEA — Carteira de Identificação da Pessoa com TEA", "url": "https://nossodireito.fabiotreze.com/#direito/ciptea"},
@@ -373,7 +378,12 @@ body{font-family:var(--font);color:var(--text);background:var(--surface);line-he
 {"@type": "ListItem", "position": 22, "name": "Proteção Social — CRAS, CREAS", "url": "https://nossodireito.fabiotreze.com/#direito/protecao_social"},
 {"@type": "ListItem", "position": 23, "name": "Pensão Especial — Zika Vírus", "url": "https://nossodireito.fabiotreze.com/#direito/pensao_zika"},
 {"@type": "ListItem", "position": 24, "name": "Esporte Paralímpico — Bolsa Atleta", "url": "https://nossodireito.fabiotreze.com/#direito/esporte_paralimpico"},
-{"@type": "ListItem", "position": 25, "name": "Turismo Acessível", "url": "https://nossodireito.fabiotreze.com/#direito/turismo_acessivel"}
+{"@type": "ListItem", "position": 25, "name": "Turismo Acessível", "url": "https://nossodireito.fabiotreze.com/#direito/turismo_acessivel"},
+{"@type": "ListItem", "position": 26, "name": "Acessibilidade Arquitetônica — Edificações e Espaços Públicos", "url": "https://nossodireito.fabiotreze.com/#direito/acessibilidade_arquitetonica"},
+{"@type": "ListItem", "position": 27, "name": "Capacidade Legal — Curatela e Tomada de Decisão Apoiada", "url": "https://nossodireito.fabiotreze.com/#direito/capacidade_legal"},
+{"@type": "ListItem", "position": 28, "name": "Crimes contra PcD — Discriminação e Denúncia", "url": "https://nossodireito.fabiotreze.com/#direito/crimes_contra_pcd"},
+{"@type": "ListItem", "position": 29, "name": "Acessibilidade Digital — Comunicação, Libras e Tecnologias", "url": "https://nossodireito.fabiotreze.com/#direito/acessibilidade_digital"},
+{"@type": "ListItem", "position": 30, "name": "Habilitação e Reabilitação — Órteses e Próteses pelo SUS", "url": "https://nossodireito.fabiotreze.com/#direito/reabilitacao"}
 ]
 }
 </script>
@@ -408,7 +418,7 @@ body{font-family:var(--font);color:var(--text);background:var(--surface);line-he
         <div
             style="background:#fff;color:#333;padding:24px;text-align:left;font-size:1rem;max-width:800px;margin:0 auto;">
             <h2>NossoDireito — Direitos e Benefícios para Pessoas com Deficiência (PcD) no Brasil</h2>
-            <p>Guia gratuito e sem fins lucrativos com 25 categorias de direitos para PcD, autismo (TEA), Síndrome de Down, TDAH e todas as deficiências. Fontes oficiais do governo brasileiro.</p>
+            <p>Guia gratuito e sem fins lucrativos com 30 categorias de direitos para PcD, autismo (TEA), Síndrome de Down, TDAH e todas as deficiências. Fontes oficiais do governo brasileiro.</p>
             <h2>Principais Direitos PcD</h2>
             <ul>
                 <li><strong>BPC/LOAS</strong> — 1 salário mínimo/mês para PcD de baixa renda (Lei 8.742/1993)</li>
@@ -439,7 +449,7 @@ body{font-family:var(--font);color:var(--text);background:var(--surface);line-he
         <div id="seo-content" class="sr-only" aria-hidden="true" role="presentation">
             <article>
                 <h2>Direitos e Benefícios para Pessoas com Deficiência (PcD) no Brasil</h2>
-                <p>Guia completo e gratuito com 25 categorias de direitos para pessoas com deficiência, autismo (TEA), Síndrome de Down, TDAH, deficiência visual, auditiva, física e intelectual. Todas as informações são baseadas em fontes oficiais do governo brasileiro.</p>
+                <p>Guia completo e gratuito com 30 categorias de direitos para pessoas com deficiência, autismo (TEA), Síndrome de Down, TDAH, deficiência visual, auditiva, física e intelectual. Todas as informações são baseadas em fontes oficiais do governo brasileiro.</p>
 
                 <h3>BPC/LOAS — Benefício de Prestação Continuada</h3>
                 <p>O BPC é um benefício de 1 salário mínimo por mês para pessoa com deficiência de baixa renda. Previsto na Lei 8.742/1993 (LOAS). Agende pelo INSS (135) ou meu.inss.gov.br. Necessário CadÚnico e laudo médico com CID.</p>
@@ -530,10 +540,10 @@ body{font-family:var(--font);color:var(--text);background:var(--surface);line-he
             <div class="container">
                 <div class="hero-stats">
                     <div class="stat"><span class="stat-number">18,6M</span><span class="stat-label">Pessoas com
-                            deficiência no Brasil</span></div>
-                    <div class="stat"><span class="stat-number" id="heroCatCount">25</span><span
+                            deficiência no Brasil (Censo 2022 — IBGE)</span></div>
+                    <div class="stat"><span class="stat-number" id="heroCatCount">30</span><span
                             class="stat-label">Categorias de direitos mapeadas</span></div>
-                    <div class="stat"><span class="stat-number" id="heroFontesCount">50</span><span
+                    <div class="stat"><span class="stat-number" id="heroFontesCount">73</span><span
                             class="stat-label">Fontes oficiais verificadas</span></div>
                 </div>
             </div>
@@ -841,7 +851,7 @@ body{font-family:var(--font);color:var(--text);background:var(--surface);line-he
                         <li>Novos serviços e procedimentos governamentais</li>
                         <li>Atualização de links e fontes oficiais</li>
                     </ul>
-                    <p><strong>Última atualização:</strong><span id="transLastUpdateText">11 de
+                    <p><strong>Última atualização:</strong><span id="transLastUpdateText">16 de
                             fevereiro de 2026</span>
                     </p>
                     <p style="margin-bottom: 0;"><strong>⚠️ Encontrou informação desatualizada ou

@@ -1,7 +1,7 @@
 # Guia de Qualidade — NossoDireito
 
 > **Status:** 🟢 Ativo
-> **Versão:** 1.12.0 | **Atualizado:** 2026-02-15
+> **Versão:** 1.13.1 | **Atualizado:** 2026-02-16
 > **Escopo:** Pipeline de qualidade, execução de scripts, testes manuais e troubleshooting
 > **Consolida:** QUALITY_SYSTEM + QUALITY_TESTING_GUIDE + GUIA_RAPIDO_USO + OPCOES_EXECUCAO
 
@@ -29,7 +29,7 @@
 
 ### O que Validamos
 
-- ✅ 25 categorias completas (todos os campos obrigatórios)
+- ✅ 30 categorias completas (todos os campos obrigatórios)
 - ✅ 27 estados no dropdown IPVA (lei, artigo, SEFAZ)
 - ✅ Matching engine (keywords, sinônimos, termos uppercase)
 - ✅ Fontes oficiais (gov.br, planalto.gov.br)
@@ -77,9 +77,7 @@ chmod +x .git/hooks/pre-commit
 | Teste | Checks | Motivo |
 |-------|--------|--------|
 | `test_e2e_interactive.py` | 42 testes Playwright | Requer `node server.js` + Chromium |
-| `test_visual_browser.py` | 24 testes visuais + 4 screenshots | Requer `node server.js` + Chromium |
-| `test_high_contrast.py` | 11 testes contraste + 5 screenshots | Requer `node server.js` + Chromium |
-| `capture_screenshots.py` | 10 screenshots (desktop/mobile/dark) | Requer `node server.js` + Chromium |
+
 | `pytest tests/` | 9 testes unitários | Coberto por master_compliance (usar no CI/CD) |
 | `validate_all.py` | 16 fases completas | Inclui HTTP (usar manualmente/semanal) |
 
@@ -155,10 +153,10 @@ Preenche campos faltantes com templates (mín: 5 requisitos, 4 documentos, 6 pas
 python scripts/audit_automation.py
 ```
 
-### 2.8 `avaliacao_360.py` — Avaliação Completa (807 checks)
+### 2.8 `analise360.py` — Avaliação Completa (807 checks)
 
 ```bash
-python scripts/avaliacao_360.py
+python scripts/analise360.py
 ```
 
 807 verificações em 11 seções: SEO, segurança, acessibilidade, conteúdo, performance, legal, URLs (318). Gera relatório detalhado com percentual por seção.
@@ -171,16 +169,6 @@ python scripts/validate_urls.py
 
 Valida 318 URLs do projeto (gov.br, legislação, internacionais). Whitelist `DOMINIOS_INTERNACIONAIS` para domínios como icd.who.int.
 
-### 2.10 `capture_screenshots.py` — Capturas de Tela
-
-```bash
-python scripts/capture_screenshots.py
-```
-
-Captura 10 screenshots automáticos via Playwright: hero, busca, categorias, footer, fullpage (desktop), hero, categorias, footer (mobile @2x), hero e categorias (dark mode). Salvos em `screenshots/` (gitignored).
-
-> **Dica:** Para screenshots adicionais (responsivos + alto contraste), usar também `test_visual_browser.py` (24 testes + 4 screenshots) e `test_high_contrast.py` (11 testes + 5 screenshots).
-
 ### Quando Usar Cada Script
 
 | Situação | Script | Quando |
@@ -189,14 +177,11 @@ Captura 10 screenshots automáticos via Playwright: hero, busca, categorias, foo
 | Bump de versão | `bump_version.py <versao>` | Antes de release |
 | Verificar versão | `master_compliance.py --quick` | Automático (pre-commit) |
 | Verificação completa | `validate_all.py` | Semanal |
-| Avaliação 360° | `avaliacao_360.py` | Antes de release |
+| Avaliação 360° | `analise360.py` | Antes de release |
 | Após editar benefícios | `analise360.py` | Conforme necessário |
 | Completar parciais | `complete_beneficios.py` | Quando completude < 20 |
 | Validar links gov.br | `validate_sources.py` | Semanal |
 | Validar todas URLs | `validate_urls.py` | Antes de release |
-| Atualizar screenshots | `capture_screenshots.py` | Antes de release |
-| Testes visuais | `test_visual_browser.py` | Antes de release |
-| Testes alto contraste | `test_high_contrast.py` | Antes de release |
 | Planejar melhorias | `audit_automation.py` | Mensal |
 
 ---
@@ -241,11 +226,7 @@ cp data/direitos.json "backups/direitos_$(date +%Y%m%d).json"
 **Antes de release:**
 
 ```bash
-python scripts/avaliacao_360.py
-python scripts/capture_screenshots.py
-python scripts/test_visual_browser.py
-python scripts/test_high_contrast.py
-# Revisar screenshots em screenshots/
+python scripts/analise360.py
 ```
 
 **Mensal:**
@@ -280,7 +261,7 @@ Set-Alias n360 Analise360
 ### 4.1 Carregamento Inicial
 
 - [ ] Página carrega em <3s, nenhum erro no Console
-- [ ] 25 categorias visíveis, logo "NossoDireito" presente
+- [ ] 30 categorias visíveis, logo "NossoDireito" presente
 - [ ] Disclaimer visível no rodapé, VLibras widget no canto inferior direito
 
 ### 4.2 Busca e Matching Engine
@@ -291,7 +272,7 @@ Set-Alias n360 Analise360
 - [ ] Termo inexistente → "Nenhuma categoria encontrada"
 - [ ] Limpar busca → restaura todas, case-insensitive
 
-### 4.3 Categorias (25)
+### 4.3 Categorias (30)
 
 Para CADA categoria verificar:
 1. Modal abre suavemente
@@ -341,7 +322,7 @@ direitos_data.categorias.find(c => c.id === 'isencoes_tributarias').ipva_estados
 ### 4.8 Pre-Deploy Checklist
 
 - [ ] `python scripts/validate_all.py` → 100%
-- [ ] Todas 25 categorias testadas manualmente
+- [ ] Todas 30 categorias testadas manualmente
 - [ ] IPVA 10+ estados verificados
 - [ ] VLibras funcional, Lighthouse ≥90
 - [ ] CHANGELOG.md atualizado, versão bumped
@@ -478,7 +459,7 @@ python scripts/validate_all.py --quick  # pula validação de URLs
 
 | Data | Mudança |
 |------|---------|
-| 2026-02-15 | v1.11.0: Adicionados scripts avaliacao_360.py (807 checks), validate_urls.py (318 URLs), capture_screenshots.py (10 screenshots). Tabela "Quando Usar" expandida com 5 novos scripts. Workflow "Antes de release" adicionado. |
+| 2026-02-15 | v1.11.0: Adicionados scripts analise360.py (807 checks), validate_urls.py (318 URLs). Tabela "Quando Usar" expandida. Workflow "Antes de release" adicionado. Scripts capture_screenshots.py, test_visual_browser.py e test_high_contrast.py arquivados em _archive/dead_code/. |
 | 2026-02-13 | Criado por consolidação de QUALITY_SYSTEM + QUALITY_TESTING_GUIDE + GUIA_RAPIDO_USO + OPCOES_EXECUCAO |
 | 2026-02-13 | Pipeline simplificado: 4→3 estágios, removida duplicação versão/test_complete, docs atualizados |
 | 2026-02-13 | Pipeline mínimo: 3→2 estágios, removidos pytest (redundante c/ master_compliance) e fase 5 do quick (redundante c/ validate_analise_360) |

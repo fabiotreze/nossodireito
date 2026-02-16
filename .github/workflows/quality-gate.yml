@@ -14,7 +14,7 @@ on:
 jobs:
   quality-gate:
     runs-on: ubuntu-latest
-    name: Quality Gate (17 categorias)
+    name: Quality Gate (30 categorias)
     permissions:
       contents: read
 

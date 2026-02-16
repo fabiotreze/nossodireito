@@ -201,7 +201,7 @@ Encontrou um link quebrado, lei revogada ou informação incorreta?
 4. Envie!
 
 ### Opção 2: Email
-- **Para:** fabiotreze@gmail.com
+- **Para:** fabiotreze@hotmail.com
 - **Assunto:** `NossoDireito - Conteúdo Desatualizado`
 - **Corpo:** Descreva o problema com detalhes
 
@@ -779,7 +779,7 @@ jobs:
             📝 Abrir Issue no GitHub
         </a>
 
-        <a href="mailto:fabiotreze@gmail.com?subject=NossoDireito%20-%20Conteúdo%20Desatualizado&body=Por%20favor,%20descreva%20o%20problema%20encontrado:%0A%0ABenefício:%20%0AProblema:%20%0AFonte%20correta:%20"
+        <a href="mailto:fabiotreze@hotmail.com?subject=NossoDireito%20-%20Conteúdo%20Desatualizado&body=Por%20favor,%20descreva%20o%20problema%20encontrado:%0A%0ABenefício:%20%0AProblema:%20%0AFonte%20correta:%20"
            class="btn btn-outline">
             ✉️ Enviar Email
         </a>
@@ -924,5 +924,5 @@ jobs:
 
 **Documento gerado automaticamente em:** 2026-02-11
 **Próxima revisão:** Mensal (toda 1ª segunda-feira)
-**Responsável:** Fábio Treze (fabiotreze@gmail.com)
+**Responsável:** Fábio Treze (fabiotreze@hotmail.com)
 **Licença:** MIT

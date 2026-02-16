@@ -1,4 +1,4 @@
-# 🔒 NossoDireito — Auditoria de Segurança v1.12.4
+# 🔒 NossoDireito — Auditoria de Segurança v1.13.1
 
 **Data**: 2026-02-15
 **Escopo**: Aplicação client-side (HTML5 + CSS3 + Vanilla JS) + servidor Node.js (`server.js`)
@@ -141,7 +141,7 @@
 | Componente                | Versão    | Presente no CISA KEV? | Notas                                     |
 |---------------------------|-----------|------------------------|-------------------------------------------|
 | pdf.js (Mozilla)          | 3.11.174  | ❌ Não                 | Sem CVEs explorados ativamente            |
-| Node.js (server.js)       | 20 LTS    | ❌ Não                 | Apenas serve estáticos + headers          |
+| Node.js (server.js)       | 22 LTS    | ❌ Não                 | Apenas serve estáticos + headers          |
 | VLibras (gov.br)          | Última    | ❌ Não                 | CDN do governo federal brasileiro         |
 | IndexedDB (nativo)        | —         | ❌ Não                 | API nativa do navegador                   |
 | Web Crypto API (nativa)   | —         | ❌ Não                 | API nativa do navegador                   |
@@ -169,7 +169,7 @@ O servidor Node.js (`server.js`) serve apenas arquivos estáticos e headers de s
 
 ⚠️ **CVE-2024-4367**: A versão 3.11.174 do pdf.js é vulnerável ao CVE-2024-4367 que permite execução de JavaScript arbitrário via PDF malicioso. Entretanto:
 
-- **Mitigação via CSP**: O CSP `script-src 'self' https://cdnjs.cloudflare.com` (sem `'unsafe-eval'` nem `'unsafe-inline'`) bloqueia a execução de scripts injetados via PDF.
+- **Mitigação via CSP**: O CSP inclui `'unsafe-eval'` (necessário para VLibras Unity WebGL), porém `script-src` restringe origens a domínios confiáveis (`'self'`, `cdnjs.cloudflare.com`, `vlibras.gov.br`, `cdn.jsdelivr.net`), limitando a superfície de ataque. Scripts injetados via PDF não teriam origem permitida.
 - **Mitigação via SRI**: O SRI garante que o código pdf.js não foi modificado.
 - **Mitigação funcional**: O app apenas extrai texto do PDF, não renderiza visualmente.
 
@@ -257,9 +257,9 @@ NONE      :   □ (0)               ■■■■■■■■■■ (6)
 
 ## 13. Conclusão
 
-A aplicação NossoDireito v1.10.0 implementa um conjunto robusto de controles de segurança para uma aplicação client-side com servidor Node.js que processa dados sensíveis de saúde. O score de segurança evoluiu de **50%** (v1.0.0) para **100%** (v1.10.0) nos 15 controles aplicáveis.
+A aplicação NossoDireito v1.13.1 implementa um conjunto robusto de controles de segurança para uma aplicação client-side com servidor Node.js que processa dados sensíveis de saúde. O score de segurança evoluiu de **50%** (v1.0.0) para **100%** (v1.10.0) nos 15 controles aplicáveis.
 
-**Novidades v1.10.0**: Servidor Node.js com HSTS + rate limiting + CSP server-side, integração VLibras (Libras) via CSP allowlist, Web Speech API (TTS nativa), hospedagem Azure App Service com SSL via Key Vault.
+**Novidades v1.13.1**: 30 categorias de direitos PcD, IPVA/SEFAZ/DETRAN para 27 estados inline, Servidor Node.js 22 LTS com HSTS + rate limiting + CSP server-side, integração VLibras (Libras) via CSP allowlist, Web Speech API (TTS nativa), hospedagem Azure App Service com SSL via Key Vault.
 
 **Risco residual principal**: CVE-2024-4367 no pdf.js, mitigado via CSP mas não eliminado.
 
@@ -267,5 +267,5 @@ A aplicação NossoDireito v1.10.0 implementa um conjunto robusto de controles d
 
 ---
 
-*Documento atualizado em 2026-02-15 como parte do processo de Security Review do NossoDireito v1.10.0.*
+*Documento atualizado em 2026-02-16 como parte do processo de Security Review do NossoDireito v1.13.1.*
 *Para relatar vulnerabilidades: veja [SECURITY.md](SECURITY.md)*

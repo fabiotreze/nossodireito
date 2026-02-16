@@ -9,7 +9,12 @@
         "ultima_atualizacao",
         "aviso",
         "fontes",
-        "categorias"
+        "categorias",
+        "documentos_mestre",
+        "orgaos_estaduais",
+        "classificacao_deficiencia",
+        "instituicoes_apoio",
+        "dica_seguranca"
     ],
     "properties": {
         "versao": {
@@ -41,6 +46,47 @@
             "items": {
                 "$ref": "#/definitions/documento_mestre"
             }
+        },
+        "orgaos_estaduais": {
+            "type": "array",
+            "minItems": 27,
+            "maxItems": 27,
+            "description": "Órgãos estaduais PcD (todos os 27 estados brasileiros)",
+            "items": {
+                "$ref": "#/definitions/orgao_estadual"
+            }
+        },
+        "classificacao_deficiencia": {
+            "type": "array",
+            "minItems": 1,
+            "description": "Classificação de tipos de deficiência com CIDs",
+            "items": {
+                "$ref": "#/definitions/classificacao_item"
+            }
+        },
+        "instituicoes_apoio": {
+            "type": "array",
+            "minItems": 1,
+            "description": "Instituições de apoio à PcD",
+            "items": {
+                "$ref": "#/definitions/instituicao_apoio"
+            }
+        },
+        "dica_seguranca": {
+            "type": "object",
+            "required": ["mensagem", "icone"],
+            "properties": {
+                "mensagem": {
+                    "type": "string",
+                    "minLength": 10,
+                    "description": "Mensagem de segurança exibida ao usuário"
+                },
+                "icone": {
+                    "type": "string",
+                    "description": "Emoji do ícone de segurança"
+                }
+            },
+            "description": "Dica de segurança exibida na interface"
         },
         "categorias": {
             "type": "array",
@@ -255,8 +301,32 @@
                         "minLength": 2
                     },
                     "description": "Tags para busca (mínimo 3)"
+                },
+                "govbr_servico_id": {
+                    "type": "integer",
+                    "description": "ID do serviço gov.br vinculado"
+                },
+                "govbr_url": {
+                    "type": "string",
+                    "format": "uri",
+                    "description": "URL do serviço gov.br vinculado"
+                },
+                "ipva_estados": {
+                    "type": "array",
+                    "description": "Dados IPVA simplificados por estado (apenas em isencoes_tributarias)",
+                    "items": {
+                        "$ref": "#/definitions/ipva_estado"
+                    }
+                },
+                "ipva_estados_detalhado": {
+                    "type": "array",
+                    "description": "Dados IPVA detalhados por estado (apenas em isencoes_tributarias)",
+                    "items": {
+                        "$ref": "#/definitions/ipva_estado_detalhado"
+                    }
                 }
-            }
+            },
+            "additionalProperties": false
         },
         "base_legal_item": {
             "type": "object",
@@ -310,6 +380,195 @@
                     "description": "Tipo do link"
                 }
             }
+        },
+        "orgao_estadual": {
+            "type": "object",
+            "required": ["uf", "nome", "url", "sefaz", "detran", "beneficios_destaque"],
+            "properties": {
+                "uf": {
+                    "type": "string",
+                    "pattern": "^[A-Z]{2}$",
+                    "description": "Sigla do estado (2 letras maiúsculas)"
+                },
+                "nome": {
+                    "type": "string",
+                    "minLength": 3,
+                    "description": "Nome do órgão estadual PcD"
+                },
+                "url": {
+                    "type": "string",
+                    "format": "uri",
+                    "pattern": "^https://",
+                    "description": "URL do órgão estadual"
+                },
+                "sefaz": {
+                    "type": "string",
+                    "format": "uri",
+                    "pattern": "^https://",
+                    "description": "URL da SEFAZ estadual"
+                },
+                "detran": {
+                    "type": "string",
+                    "format": "uri",
+                    "pattern": "^https://",
+                    "description": "URL do DETRAN estadual"
+                },
+                "beneficios_destaque": {
+                    "type": "array",
+                    "minItems": 1,
+                    "items": {
+                        "type": "string",
+                        "minLength": 5
+                    },
+                    "description": "Benefícios estaduais em destaque para PcD"
+                }
+            },
+            "additionalProperties": false
+        },
+        "classificacao_item": {
+            "type": "object",
+            "required": ["tipo", "cid10", "cid11", "criterio", "detalhes"],
+            "properties": {
+                "tipo": {
+                    "type": "string",
+                    "minLength": 3,
+                    "description": "Tipo de deficiência"
+                },
+                "cid10": {
+                    "type": "string",
+                    "description": "Códigos CID-10 relacionados (pode ser faixa, ex: F84.0 a F84.9)"
+                },
+                "cid11": {
+                    "type": "string",
+                    "description": "Códigos CID-11 relacionados (pode ser faixa ou combinação)"
+                },
+                "criterio": {
+                    "type": "string",
+                    "minLength": 5,
+                    "description": "Critério de enquadramento"
+                },
+                "detalhes": {
+                    "type": "string",
+                    "minLength": 5,
+                    "description": "Detalhes sobre a classificação"
+                }
+            }
+        },
+        "instituicao_apoio": {
+            "type": "object",
+            "required": ["id", "nome", "tipo", "descricao", "url", "como_acessar", "categorias"],
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "pattern": "^[a-z0-9_]+$",
+                    "description": "ID único da instituição"
+                },
+                "nome": {
+                    "type": "string",
+                    "minLength": 3,
+                    "description": "Nome da instituição"
+                },
+                "tipo": {
+                    "type": "string",
+                    "description": "Tipo da instituição"
+                },
+                "descricao": {
+                    "type": "string",
+                    "minLength": 10,
+                    "description": "Descrição da instituição"
+                },
+                "servicos": {
+                    "type": "array",
+                    "minItems": 1,
+                    "items": { "type": "string" },
+                    "description": "Serviços oferecidos"
+                },
+                "url": {
+                    "type": "string",
+                    "format": "uri",
+                    "pattern": "^https?://",
+                    "description": "URL oficial"
+                },
+                "como_acessar": {
+                    "type": "string",
+                    "minLength": 5,
+                    "description": "Como acessar esta instituição"
+                },
+                "categorias": {
+                    "type": "array",
+                    "minItems": 1,
+                    "items": { "type": "string" },
+                    "description": "IDs das categorias de benefícios vinculadas"
+                }
+            }
+        },
+        "ipva_estado": {
+            "type": "object",
+            "required": ["uf", "lei", "art", "sefaz"],
+            "properties": {
+                "uf": {
+                    "type": "string",
+                    "pattern": "^[A-Z]{2}$",
+                    "description": "Sigla do estado"
+                },
+                "lei": {
+                    "type": "string",
+                    "minLength": 3,
+                    "description": "Lei estadual de isenção IPVA"
+                },
+                "art": {
+                    "type": "string",
+                    "description": "Artigo da lei"
+                },
+                "sefaz": {
+                    "type": "string",
+                    "format": "uri",
+                    "pattern": "^https://",
+                    "description": "URL da SEFAZ do estado"
+                }
+            },
+            "additionalProperties": false
+        },
+        "ipva_estado_detalhado": {
+            "type": "object",
+            "required": ["uf", "nome", "lei", "artigo", "condicoes", "limite_valor", "sefaz"],
+            "properties": {
+                "uf": {
+                    "type": "string",
+                    "pattern": "^[A-Z]{2}$",
+                    "description": "Sigla do estado"
+                },
+                "nome": {
+                    "type": "string",
+                    "minLength": 2,
+                    "description": "Nome do estado"
+                },
+                "lei": {
+                    "type": "string",
+                    "minLength": 3,
+                    "description": "Lei estadual completa"
+                },
+                "artigo": {
+                    "type": "string",
+                    "description": "Artigo específico da lei"
+                },
+                "condicoes": {
+                    "type": "string",
+                    "minLength": 5,
+                    "description": "Condições para isenção"
+                },
+                "limite_valor": {
+                    "type": "string",
+                    "description": "Limite de valor do veículo (se houver)"
+                },
+                "sefaz": {
+                    "type": "string",
+                    "format": "uri",
+                    "pattern": "^https://",
+                    "description": "URL da SEFAZ do estado"
+                }
+            },
+            "additionalProperties": false
         }
     }
 }

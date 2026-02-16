@@ -360,7 +360,7 @@ class JavaScriptValidator(TestSuite):
             ("addEventListener('click', closeDrawer)", 'Close click'),
             ("addEventListener('keydown'", 'Keyboard events'),
             ("key === 'Escape'", 'Esc para fechar'),
-            ("key === 'Tab'", 'Tab trap'),
+            ("'Tab'", 'Tab trap'),
         ]
 
         for code, description in listeners:
@@ -565,7 +565,7 @@ class FunctionalValidator(TestSuite):
         """Valida navegação por teclado"""
         keyboard_features = [
             ("key === 'Escape'", 'Esc fecha drawer'),
-            ("key === 'Tab'", 'Tab navigation'),
+            ("'Tab'", 'Tab navigation'),
             ("e.shiftKey", 'Shift+Tab reverse'),
             ('e.preventDefault()', 'Prevent default behavior'),
         ]

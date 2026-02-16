@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Master Compliance Validator - NossoDireito v1.12.0
+Master Compliance Validator - NossoDireito v1.13.1
 
 Ponto de entrada ÚNICO de qualidade do projeto.
 Usado pelo pre-commit hook e também como validador standalone.
@@ -111,7 +111,7 @@ class MasterComplianceValidator:
 
     def __init__(self, quick: bool = False):
         self.root = Path(__file__).parent.parent
-        self.version = "1.12.4"
+        self.version = "1.13.1"
         self.quick = quick
         self.errors = []
         self.warnings = []
@@ -207,12 +207,12 @@ class MasterComplianceValidator:
             else:
                 self.log_fail('dados', f"Campo obrigatório '{key}' ausente", 2)
 
-        # 2. Validar categorias (25 esperadas)
+        # 2. Validar categorias (30 esperadas)
         cats = self.direitos.get('categorias', [])
-        if len(cats) == 25:
-            self.log_pass('dados', f"25 categorias presentes ✓", 5)
+        if len(cats) == 30:
+            self.log_pass('dados', f"30 categorias presentes ✓", 5)
         else:
-            self.log_fail('dados', f"Esperado 25 categorias, encontrado {len(cats)}", 5)
+            self.log_fail('dados', f"Esperado 30 categorias, encontrado {len(cats)}", 5)
 
         # 3. Cada categoria deve ter campos obrigatórios
         required_cat_fields = ['id', 'titulo', 'resumo', 'base_legal', 'requisitos',
@@ -2048,7 +2048,7 @@ class MasterComplianceValidator:
                     self.metrics[cat]['max'] += 5
 
                 # ── 4. IPVA estados mapeados (5 pts) ──
-                ipva_match = re.search(r'Arquivo:\s*(\d+)\s+estados mapeados', output)
+                ipva_match = re.search(r'IPVA\s+(?:simples|detalhado)?:?\s*(\d+)\s+estados\s+mapeados', output) or re.search(r'Arquivo:\s*(\d+)\s+estados mapeados', output)
                 if ipva_match:
                     estados = int(ipva_match.group(1))
 

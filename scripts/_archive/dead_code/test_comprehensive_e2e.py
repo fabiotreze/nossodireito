@@ -26,7 +26,8 @@ Exhaustive automated tests for ALL site functionality:
  20. Responsive / Mobile Layout
 
 Requires: pip install playwright && playwright install chromium
-Usage:   python3 scripts/test_comprehensive_e2e.py [--headed]
+Usage:   python3 scripts/_archive/dead_code/test_comprehensive_e2e.py [--headed]
+(ARCHIVED — moved from scripts/test_comprehensive_e2e.py)
 """
 
 import json

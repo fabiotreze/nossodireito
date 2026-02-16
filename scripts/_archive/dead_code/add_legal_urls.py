@@ -16,9 +16,10 @@ FUNCIONALIDADES:
 4. Cria backup antes de modificar
 
 USO:
-    python scripts/add_legal_urls.py --list          # Listar sem URLs
-    python scripts/add_legal_urls.py --suggest       # Sugerir URLs
-    python scripts/add_legal_urls.py --dry-run       # Simular (não modificar)
+    python scripts/_archive/dead_code/add_legal_urls.py --list          # Listar sem URLs
+    python scripts/_archive/dead_code/add_legal_urls.py --suggest       # Sugerir URLs
+    python scripts/_archive/dead_code/add_legal_urls.py --dry-run       # Simular (não modificar)
+(ARCHIVED — moved from scripts/add_legal_urls.py)
 """
 
 import argparse

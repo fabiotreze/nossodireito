@@ -87,7 +87,6 @@ html {
     scroll-behavior: smooth;
     scroll-padding-top: 120px;
     font-size: 16px;
-    overflow-x: hidden;
 }
 
 body {
@@ -96,7 +95,11 @@ body {
     background: var(--surface);
     line-height: 1.6;
     -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-text-size-adjust: 100%;
+    -webkit-tap-highlight-color: transparent;
     min-height: 100vh;
+    min-height: 100dvh;
     overflow-x: hidden;
 }
 
@@ -255,6 +258,7 @@ input,
     right: 0;
     bottom: 0;
     background: rgba(0, 0, 0, 0.5);
+    -webkit-backdrop-filter: blur(4px);
     backdrop-filter: blur(4px);
     opacity: 0;
     visibility: hidden;
@@ -275,6 +279,7 @@ input,
     width: 400px;
     max-width: 90vw;
     height: 100vh;
+    height: 100dvh;
 
     background: #ffffff;
     box-shadow: -8px 0 24px rgba(0, 0, 0, 0.3);
@@ -347,6 +352,7 @@ input,
 .a11y-drawer-content {
     flex: 1;
     overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
     padding: 24px;
 }
 
@@ -646,11 +652,6 @@ html.high-contrast .tmeta-item,
 html.high-contrast .doc-master-item {
     background: #0a0a0a;
     border-color: #fbbf24;
-}
-
-html.high-contrast .modal-content {
-    background: #000;
-    border: 2px solid #fbbf24;
 }
 
 html.high-contrast .staleness-banner {
@@ -955,76 +956,6 @@ html.high-contrast ::selection {
 .btn-outline:hover {
     background: var(--primary);
     color: #fff;
-}
-
-/* ---------- Modal (reserved for future use) ---------- */
-.modal {
-    position: fixed;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    z-index: 9999;
-    background: rgba(0, 0, 0, 0.7);
-    -webkit-backdrop-filter: blur(4px);
-    backdrop-filter: blur(4px);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-    padding: max(20px, env(safe-area-inset-top)) max(20px, env(safe-area-inset-right)) max(20px, env(safe-area-inset-bottom)) max(20px, env(safe-area-inset-left));
-    opacity: 1;
-    transition: opacity 0.3s ease, visibility 0.3s;
-}
-
-.modal.hidden {
-    opacity: 0;
-    pointer-events: none;
-    visibility: hidden;
-}
-
-.modal-content {
-    background: var(--surface);
-    border-radius: var(--radius-lg);
-    padding: 32px;
-    max-width: 600px;
-    width: 100%;
-    max-height: 85vh;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-    box-shadow: var(--shadow-lg);
-}
-
-.modal-content h2,
-.modal-heading {
-    font-size: 1.5rem;
-    margin-bottom: 16px;
-    color: var(--warning);
-    font-weight: 700;
-}
-
-.disclaimer-text h3,
-.disclaimer-heading {
-    font-size: 1rem;
-    margin: 16px 0 8px;
-    color: var(--text);
-    font-weight: 700;
-}
-
-.disclaimer-text ul {
-    list-style: disc;
-    padding-left: 24px;
-    margin-bottom: 8px;
-}
-
-.disclaimer-text li {
-    margin-bottom: 4px;
-    color: var(--text-muted);
-}
-
-.modal-content .btn {
-    width: 100%;
-    margin-top: 20px;
 }
 
 /* ---------- Navbar ---------- */
@@ -2496,6 +2427,7 @@ html.high-contrast ::selection {
     border: 1px solid var(--border);
     border-radius: var(--radius);
     overflow: hidden;
+    table-layout: fixed;
 }
 
 .classif-table thead {
@@ -2504,20 +2436,21 @@ html.high-contrast ::selection {
 }
 
 .classif-table th {
-    padding: 12px 16px;
+    padding: 10px 12px;
     text-align: left;
     font-weight: 700;
-    font-size: 0.875rem;
+    font-size: 0.8125rem;
     text-transform: uppercase;
     letter-spacing: 0.3px;
-    white-space: nowrap;
 }
 
 .classif-table td {
-    padding: 10px 16px;
+    padding: 10px 12px;
     border-bottom: 1px solid var(--border);
     vertical-align: top;
     line-height: 1.5;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
 }
 
 .classif-table tbody tr:hover {
@@ -2528,14 +2461,18 @@ html.high-contrast ::selection {
     border-bottom: none;
 }
 
-.classif-tipo {
-    white-space: nowrap;
-    min-width: 140px;
-}
+/* Column widths — desktop: fixed layout for no horizontal scroll */
+.classif-table th:nth-child(1),
+.classif-table td:nth-child(1) { width: 22%; }
+.classif-table th:nth-child(2),
+.classif-table td:nth-child(2) { width: 18%; }
+.classif-table th:nth-child(3),
+.classif-table td:nth-child(3) { width: 15%; }
+.classif-table th:nth-child(4),
+.classif-table td:nth-child(4) { width: 45%; }
 
-.classif-cid {
-    white-space: nowrap;
-    min-width: 90px;
+.classif-tipo {
+    font-size: 0.875rem;
 }
 
 .classif-cid code {
@@ -2543,14 +2480,14 @@ html.high-contrast ::selection {
     color: var(--primary);
     padding: 2px 6px;
     border-radius: 4px;
-    font-size: 0.875rem;
+    font-size: 0.8125rem;
     font-weight: 600;
+    word-break: break-all;
 }
 
 .classif-criterio {
-    font-size: 0.875rem;
+    font-size: 0.8125rem;
     color: var(--text-muted);
-    min-width: 200px;
 }
 
 .classif-note {
@@ -2560,6 +2497,59 @@ html.high-contrast ::selection {
     padding: 12px 16px;
     border-radius: var(--radius-sm);
     line-height: 1.5;
+}
+
+/* ── CID table: card layout on mobile ── */
+@media (max-width: 768px) {
+    .classif-table {
+        table-layout: auto;
+    }
+    .classif-table thead {
+        display: none;
+    }
+    .classif-table,
+    .classif-table tbody,
+    .classif-table tr,
+    .classif-table td {
+        display: block;
+        width: 100%;
+    }
+    .classif-table th:nth-child(n),
+    .classif-table td:nth-child(n) { width: 100%; }
+    .classif-table tr {
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        margin-bottom: 12px;
+        padding: 4px 0;
+        background: var(--surface);
+    }
+    .classif-table td {
+        padding: 6px 14px;
+        border-bottom: none;
+        display: flex;
+        gap: 8px;
+        align-items: baseline;
+    }
+    .classif-table td::before {
+        content: attr(data-label);
+        font-weight: 700;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        color: var(--primary);
+        min-width: 80px;
+        flex-shrink: 0;
+    }
+    .classif-tipo {
+        font-size: 1rem;
+        padding-top: 10px !important;
+    }
+    .classif-tipo strong {
+        font-size: 1rem;
+    }
+    .classif-criterio {
+        font-size: 0.8125rem;
+        padding-bottom: 10px !important;
+    }
 }
 
 /* ---------- Órgãos Estaduais ---------- */

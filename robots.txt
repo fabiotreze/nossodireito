@@ -3,13 +3,69 @@
 
 User-agent: *
 Allow: /
+Allow: /data/direitos.json
+Allow: /data/matching_engine.json
+
+# Arquivos de desenvolvimento e infraestrutura
 Disallow: /terraform/
 Disallow: /scripts/
 Disallow: /tests/
-Disallow: /docs/v1/
+Disallow: /docs/
 Disallow: /__pycache__/
 Disallow: /schemas/
 Disallow: /screenshots/
 Disallow: /node_modules/
+Disallow: /.github/
+
+# Arquivos específicos que não devem ser indexados
+Disallow: /server.js
+Disallow: /package.json
+Disallow: /pytest.ini
+Disallow: /requirements*.txt
+Disallow: /*.py$
+
+# Google: não indexar arquivos de dados brutos como páginas
+Disallow: /data/dicionario_pcd.json
+
+# Googlebot específico — otimizações
+User-agent: Googlebot
+Allow: /
+Allow: /data/direitos.json
+Disallow: /terraform/
+Disallow: /scripts/
+Disallow: /tests/
+Disallow: /docs/
+Disallow: /__pycache__/
+Disallow: /schemas/
+Disallow: /screenshots/
+Disallow: /.github/
+
+# Bing
+User-agent: Bingbot
+Allow: /
+Disallow: /terraform/
+Disallow: /scripts/
+Disallow: /tests/
+Disallow: /__pycache__/
+Disallow: /schemas/
+
+# Bloquear crawlers de IA que consomem dados sem atribuição
+User-agent: GPTBot
+Disallow: /
+
+User-agent: ChatGPT-User
+Disallow: /
+
+User-agent: CCBot
+Disallow: /
+
+User-agent: anthropic-ai
+Disallow: /
+
+User-agent: Claude-Web
+Disallow: /
+
+User-agent: Google-Extended
+Disallow: /
 
 Sitemap: https://nossodireito.fabiotreze.com/sitemap.xml
