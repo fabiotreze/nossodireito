@@ -296,7 +296,15 @@ const server = http.createServer(async (req, res) => {
         `http://localhost:${PORT}`,
         `http://127.0.0.1:${PORT}`,
     ];
-    const corsOrigin = ALLOWED_ORIGINS.includes(origin) ? origin : '';
+    let corsOrigin = ALLOWED_ORIGINS.includes(origin) ? origin : '';
+    // Safari Service Worker compat: Safari enforces CORS checks on
+    // same-origin fetches routed through SW, yet may omit the Origin header.
+    // When no Origin is present and Host is a known host, infer same-origin.
+    if (!corsOrigin && !origin && host) {
+        const scheme = host.startsWith('localhost') || host.startsWith('127.') ? 'http' : 'https';
+        const inferred = `${scheme}://${host}`;
+        if (ALLOWED_ORIGINS.includes(inferred)) corsOrigin = inferred;
+    }
 
     // Handle CORS preflight (OPTIONS)
     if (req.method === 'OPTIONS') {
