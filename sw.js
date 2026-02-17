@@ -15,6 +15,7 @@ const STATIC_ASSETS = [
     '/index.html',
     '/css/styles.css',
     '/js/app.js',
+    '/js/sw-register.js',
     '/data/direitos.json',
     '/data/matching_engine.json',
     '/data/dicionario_pcd.json',
@@ -24,12 +25,12 @@ const STATIC_ASSETS = [
     '/images/apple-touch-icon.png',
     '/images/icon-192x192.png',
     '/images/icon-512x512-maskable.png',
-    '/images/nossodireito.png',
+    '/images/nossodireito-512.png',
     '/images/nossodireito-200.webp',
     '/images/nossodireito-400.webp',
-    '/images/nossodireito.webp',
     '/images/nossodireito-200.png',
     '/images/nossodireito-400.png',
+    '/images/og-image.png',
 ];
 
 const CDN_ASSETS = [
@@ -46,10 +47,8 @@ self.addEventListener('install', (event) => {
             await Promise.allSettled(allAssets.map(url =>
                 cache.add(url).catch(() => console.warn(`[SW] Asset not cached: ${url}`))
             ));
-        })
+        }).then(() => self.skipWaiting()) // Activate immediately after caching
     );
-    // Activate immediately (don't wait for old SW to finish)
-    self.skipWaiting();
 });
 
 // ── Activate: Clean old caches ──
@@ -61,10 +60,8 @@ self.addEventListener('activate', (event) => {
                     .filter((key) => key !== CACHE_VERSION)
                     .map((key) => caches.delete(key))
             )
-        )
+        ).then(() => self.clients.claim()) // Claim after old caches are deleted
     );
-    // Take control of all open tabs immediately
-    self.clients.claim();
 });
 
 // ── Fetch: Strategy per resource type ──
@@ -105,7 +102,7 @@ async function cacheFirst(request) {
         const response = await fetch(request);
         if (response.ok) {
             const cache = await caches.open(CACHE_VERSION);
-            cache.put(request, response.clone());
+            await cache.put(request, response.clone());
         }
         return response;
     } catch {
@@ -128,7 +125,7 @@ async function networkFirst(request) {
         const response = await fetch(fetchTarget);
         if (response.ok) {
             const cache = await caches.open(CACHE_VERSION);
-            cache.put(request, response.clone());
+            await cache.put(request, response.clone());
         }
         return response;
     } catch {

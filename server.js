@@ -259,7 +259,12 @@ const server = http.createServer(async (req, res) => {
     }
 
     // ── Rate limiting (CWE-770) ──
-    const clientIp = req.headers['x-forwarded-for']?.split(',')[0]?.trim() || req.socket.remoteAddress || '';
+    // Use X-Forwarded-For only when behind a trusted reverse proxy (Azure App Service).
+    // In local dev / direct exposure, fall back to socket address to prevent spoofing.
+    const TRUST_PROXY = process.env.TRUST_PROXY === '1' || process.env.WEBSITE_SITE_NAME; // Azure injects WEBSITE_SITE_NAME
+    const clientIp = TRUST_PROXY
+        ? (req.headers['x-forwarded-for']?.split(',')[0]?.trim() || req.socket.remoteAddress || '')
+        : (req.socket.remoteAddress || '');
     if (isRateLimited(clientIp)) {
         res.writeHead(429, {
             'Content-Type': 'text/plain',
@@ -371,9 +376,17 @@ const server = http.createServer(async (req, res) => {
             signal: controller.signal,
             headers: { 'User-Agent': 'NossoDireito-Proxy/1.0' }
         })
-            .then(r => r.text().then(body => ({ r, body })))
+            .then(r => {
+                // Limit response body size (1 MB) to prevent memory abuse
+                const contentLength = parseInt(r.headers.get('content-length') || '0', 10);
+                if (contentLength > 1_048_576) {
+                    throw new Error('Response too large');
+                }
+                return r.text().then(body => ({ r, body }));
+            })
             .then(({ r, body }) => {
                 clearTimeout(timeout);
+                if (res.destroyed) return; // client disconnected
                 const status = r.status;
                 const cacheControl = r.ok ? 'public, max-age=3600' : 'no-cache';
                 const proxyHeaders = {
@@ -395,11 +408,14 @@ const server = http.createServer(async (req, res) => {
             })
             .catch(() => {
                 clearTimeout(timeout);
-                res.writeHead(503, {
-                    'Content-Type': 'application/json',
-                    'Cache-Control': 'no-cache',
-                });
-                res.end(JSON.stringify({ error: 'Service unavailable' }));
+                if (res.destroyed) return; // client already disconnected
+                if (!res.headersSent) {
+                    res.writeHead(503, {
+                        'Content-Type': 'application/json',
+                        'Cache-Control': 'no-cache',
+                    });
+                }
+                if (!res.writableEnded) res.end(JSON.stringify({ error: 'Service unavailable' }));
             });
         return;
     }
@@ -458,9 +474,13 @@ const server = http.createServer(async (req, res) => {
 
     const stream = fs.createReadStream(fullPath);
     if (useBrotli) {
-        stream.pipe(zlib.createBrotliCompress()).pipe(res);
+        const compressor = zlib.createBrotliCompress();
+        compressor.on('error', () => { if (!res.writableEnded) res.end(); });
+        stream.pipe(compressor).pipe(res);
     } else if (useGzip) {
-        stream.pipe(zlib.createGzip()).pipe(res);
+        const compressor = zlib.createGzip();
+        compressor.on('error', () => { if (!res.writableEnded) res.end(); });
+        stream.pipe(compressor).pipe(res);
     } else {
         stream.pipe(res);
     }
@@ -480,6 +500,23 @@ server.requestTimeout = 30_000;    // 30s total request timeout
 server.keepAliveTimeout = 5_000;   // 5s keep-alive
 server.maxHeadersCount = 50;       // Limit header count
 server.maxRequestsPerSocket = 100; // Limit requests per keep-alive socket
+
+// ── Graceful shutdown ──
+function gracefulShutdown(signal) {
+    console.log(`\n${signal} received — closing server gracefully...`);
+    server.close(() => {
+        console.log('Server closed.');
+        process.exit(0);
+    });
+    // Force exit if close hangs after 5s
+    setTimeout(() => process.exit(1), 5000).unref();
+}
+process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
+process.on('SIGINT', () => gracefulShutdown('SIGINT'));
+// Windows: SIGBREAK is sent on Ctrl+Break and by Azure App Service for Windows
+if (process.platform === 'win32') {
+    process.on('SIGBREAK', () => gracefulShutdown('SIGBREAK'));
+}
 
 server.listen(PORT, () => {
     console.log(`NossoDireito server running on port ${PORT}`);

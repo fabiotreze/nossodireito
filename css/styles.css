@@ -221,6 +221,8 @@ input,
     cursor: pointer;
     z-index: 9999;
     transition: box-shadow 0.3s ease, padding-right 0.3s ease;
+    /* Respect safe area on iPhones with notch/Dynamic Island */
+    right: env(safe-area-inset-right, 0px);
 
     writing-mode: vertical-rl;
     text-orientation: mixed;
@@ -281,7 +283,7 @@ input,
     height: 100vh;
     height: 100dvh;
 
-    background: #ffffff;
+    background: var(--surface);
     box-shadow: -8px 0 24px rgba(0, 0, 0, 0.3);
 
     display: flex;
@@ -375,7 +377,7 @@ input,
     margin: 0 0 16px 0;
     font-size: 1rem;
     font-weight: 600;
-    color: #1f2937;
+    color: var(--text);
 }
 
 /* Button Group (Fonte) */
@@ -387,19 +389,19 @@ input,
 .a11y-drawer-btn {
     flex: 1;
     padding: 12px;
-    background: #f3f4f6;
-    border: 2px solid #d1d5db;
+    background: var(--surface-alt);
+    border: 2px solid var(--border);
     border-radius: 8px;
     font-size: 1.125rem;
     font-weight: 600;
-    color: #1f2937;
+    color: var(--text);
     cursor: pointer;
     transition: background-color 0.2s ease, border-color 0.2s ease;
     min-height: 44px;
 }
 
 .a11y-drawer-btn:hover {
-    background: #e5e7eb;
+    background: var(--surface-hover);
     border-color: #9ca3af;
 }
 
@@ -415,8 +417,8 @@ input,
     align-items: center;
     gap: 12px;
     padding: 16px;
-    background: #f3f4f6;
-    border: 2px solid #d1d5db;
+    background: var(--surface-alt);
+    border: 2px solid var(--border);
     border-radius: 8px;
     text-align: left;
     cursor: pointer;
@@ -425,7 +427,7 @@ input,
 }
 
 .a11y-toggle-btn:hover {
-    background: #e5e7eb;
+    background: var(--surface-hover);
     border-color: #9ca3af;
 }
 
@@ -460,8 +462,8 @@ input,
     align-items: center;
     gap: 8px;
     padding: 16px 12px;
-    background: #f3f4f6;
-    border: 2px solid #d1d5db;
+    background: var(--surface-alt);
+    border: 2px solid var(--border);
     border-radius: 8px;
     cursor: pointer;
     transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
@@ -469,7 +471,7 @@ input,
 }
 
 .a11y-action-btn:hover {
-    background: #e5e7eb;
+    background: var(--surface-hover);
     border-color: #9ca3af;
     transform: translateY(-2px);
 }
@@ -500,7 +502,8 @@ input,
     margin-top: 12px;
     padding: 12px;
     background: #fef3c7;
-    border-left: 4px solid #f59e0b;
+    background: color-mix(in srgb, var(--warning) 20%, var(--surface));
+    border-left: 4px solid var(--warning);
     border-radius: 4px;
     font-size: 0.875rem;
 }
@@ -511,8 +514,10 @@ input,
 
 /* Info Section */
 .a11y-section-info {
-    background: #f0f9ff;
+    background: #eff6ff;
+    background: color-mix(in srgb, var(--primary) 10%, var(--surface));
     border: 1px solid #bfdbfe;
+    border: 1px solid color-mix(in srgb, var(--primary) 30%, var(--border));
     border-radius: 8px;
     padding: 20px;
 }
@@ -521,14 +526,14 @@ input,
     margin: 0 0 12px 0;
     font-size: 0.875rem;
     line-height: 1.6;
-    color: #1e3a8a;
+    color: var(--text);
 }
 
 .a11y-compliance-list {
     margin: 8px 0 0 0;
     padding-left: 20px;
     font-size: 0.875rem;
-    color: #1e3a8a;
+    color: var(--text);
 }
 
 .a11y-compliance-list li {
@@ -752,7 +757,7 @@ html.high-contrast ::selection {
 
 .toast-warning {
     background: var(--warning);
-    color: var(--text);
+    color: #1e293b;
 }
 
 .toast-info {
@@ -921,7 +926,7 @@ html.high-contrast ::selection {
 }
 
 .btn-sm {
-    padding: 6px 14px;
+    padding: 8px 16px;
     font-size: 0.875rem;
 }
 
@@ -1000,7 +1005,7 @@ html.high-contrast ::selection {
 
 .nav-links a {
     display: block;
-    padding: 6px 10px;
+    padding: 10px 12px;
     border-radius: var(--radius-sm);
     font-size: 0.875rem;
     font-weight: 500;
@@ -1024,7 +1029,9 @@ html.high-contrast ::selection {
     background: none;
     border: none;
     cursor: pointer;
-    padding: 8px;
+    padding: 12px;
+    min-width: 44px;
+    min-height: 44px;
 }
 
 .menu-toggle span {
@@ -2790,7 +2797,8 @@ html.high-contrast ::selection {
 /* Disclaimer Box — Aviso Importante */
 .disclaimer-box {
     background-color: #fff3cd;
-    border-left: 4px solid #ffc107;
+    background-color: color-mix(in srgb, var(--warning) 20%, var(--surface));
+    border-left: 4px solid var(--warning);
     border-radius: var(--radius-sm);
     padding: 1.5rem;
     margin-top: 2rem;
@@ -2800,7 +2808,7 @@ html.high-contrast ::selection {
 .disclaimer-title {
     margin: 0 0 1rem 0;
     font-size: 1.1rem;
-    color: #856404;
+    color: var(--text);
     font-weight: 700;
 }
 
@@ -2835,6 +2843,7 @@ html.high-contrast ::selection {
     color: #f1f5f9;
     border-top: 3px solid var(--primary);
     padding: 48px 0 32px;
+    padding-bottom: calc(32px + env(safe-area-inset-bottom, 0px));
 }
 
 .footer a {
@@ -3056,9 +3065,7 @@ html.high-contrast ::selection {
     }
 
     a::after {
-        content: " (" attr(href) ")";
-        font-size: 0.8em;
-        color: #666;
+        content: none;
     }
 }
 
@@ -3737,7 +3744,9 @@ html.high-contrast ::selection {
 .back-to-top {
     position: fixed;
     bottom: 20px;
+    bottom: calc(20px + env(safe-area-inset-bottom, 0px));
     right: 20px;
+    right: calc(20px + env(safe-area-inset-right, 0px));
     width: 48px;
     height: 48px;
     background: var(--primary);

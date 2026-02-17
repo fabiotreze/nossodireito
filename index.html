@@ -13,7 +13,7 @@
     <meta name="author" content="NossoDireito — Projeto sem fins lucrativos">
     <meta name="robots" content="index, follow">
     <meta name="google-site-verification" content="NKr8hf2QLuBl8TrcDwcUxoH0OVWoLDE7Yi-rWsd-xUA" />
-    <link rel="canonical" href="https://nossodireito.fabiotreze.com">
+    <link rel="canonical" href="https://nossodireito.fabiotreze.com/">
     <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
     <link rel="dns-prefetch" href="https://vlibras.gov.br">
     <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
@@ -26,7 +26,7 @@
     <meta property="og:description"
         content="Recebeu um laudo de autismo ou deficiência? Guia gratuito com direitos, benefícios e passo a passo para famílias de PcD no Brasil.">
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://nossodireito.fabiotreze.com">
+    <meta property="og:url" content="https://nossodireito.fabiotreze.com/">
     <meta property="og:locale" content="pt_BR">
     <meta property="og:site_name" content="NossoDireito">
     <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
@@ -45,7 +45,7 @@
     <meta name="theme-color" content="#1e3a8a">
     <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0f172a">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="NossoDireito">
     <meta name="mobile-web-app-capable" content="yes">
     <link rel="manifest" href="/manifest.json">
@@ -307,15 +307,29 @@ body{font-family:var(--font);color:var(--text);background:var(--surface);line-he
     <script type="application/ld+json">
 {
 "@context": "https://schema.org",
+"@type": "WebSite",
+"name": "NossoDireito",
+"alternateName": "Direitos PcD Brasil",
+"url": "https://nossodireito.fabiotreze.com/",
+"description": "Guia gratuito de direitos e benefícios para pessoas com deficiência no Brasil. BPC, CIPTEA, escola inclusiva, isenções e mais.",
+"inLanguage": "pt-BR",
+"potentialAction": {
+"@type": "SearchAction",
+"target": {
+"@type": "EntryPoint",
+"urlTemplate": "https://nossodireito.fabiotreze.com/?q={search_term_string}"
+},
+"query-input": "required name=search_term_string"
+}
+}
+</script>
+    <script type="application/ld+json">
+{
+"@context": "https://schema.org",
 "@type": "BreadcrumbList",
 "itemListElement": [
 {"@type": "ListItem", "position": 1, "name": "Início", "item": "https://nossodireito.fabiotreze.com/"},
-{"@type": "ListItem", "position": 2, "name": "Buscar Direitos", "item": "https://nossodireito.fabiotreze.com/#busca"},
-{"@type": "ListItem", "position": 3, "name": "Categorias", "item": "https://nossodireito.fabiotreze.com/#categorias"},
-{"@type": "ListItem", "position": 4, "name": "Primeiros Passos", "item": "https://nossodireito.fabiotreze.com/#checklist"},
-{"@type": "ListItem", "position": 5, "name": "CID-10/11", "item": "https://nossodireito.fabiotreze.com/#classificacao"},
-{"@type": "ListItem", "position": 6, "name": "Estados", "item": "https://nossodireito.fabiotreze.com/#orgaos-estaduais"},
-{"@type": "ListItem", "position": 7, "name": "Fontes", "item": "https://nossodireito.fabiotreze.com/#transparencia"}
+{"@type": "ListItem", "position": 2, "name": "Direitos e Benefícios PcD", "item": "https://nossodireito.fabiotreze.com/"}
 ]
 }
 </script>
@@ -325,7 +339,7 @@ body{font-family:var(--font);color:var(--text);background:var(--surface);line-he
 "@type": "ItemList",
 "name": "Tipos de Deficiência — Classificação CID-10/CID-11",
 "description": "Classificação de deficiências com códigos CID-10 e CID-11 da OMS utilizados em laudos médicos no Brasil",
-"url": "https://nossodireito.fabiotreze.com/#classificacao",
+"url": "https://nossodireito.fabiotreze.com/",
 "numberOfItems": 14,
 "itemListElement": [
 {"@type": "ListItem", "position": 1, "name": "Transtorno do Espectro Autista (TEA)", "description": "CID-10: F84.0, F84.1, F84.2, F84.3, F84.4, F84.5, F84.8, F84.9 — CID-11: 6A02"},
@@ -351,7 +365,7 @@ body{font-family:var(--font);color:var(--text);background:var(--surface);line-he
 "@type": "ItemList",
 "name": "Benefícios e Direitos para PcD no Brasil",
 "description": "Lista completa de benefícios governo brasileiro para pessoas com deficiência: BPC, CIPTEA, isenções, aposentadoria, educação, saúde, transporte",
-"url": "https://nossodireito.fabiotreze.com/#categorias",
+"url": "https://nossodireito.fabiotreze.com/",
 "numberOfItems": 30,
 "itemListElement": [
 {"@type": "ListItem", "position": 1, "name": "BPC/LOAS — Benefício de Prestação Continuada", "url": "https://nossodireito.fabiotreze.com/#direito/bpc"},
@@ -445,8 +459,9 @@ body{font-family:var(--font);color:var(--text);background:var(--surface);line-he
         </div>
     </noscript>
     <main id="mainContent">
-        <!-- SEO: Conteúdo semântico pré-renderizado para indexação por buscadores -->
-        <div id="seo-content" class="sr-only" aria-hidden="true" role="presentation">
+        <!-- SEO: Conteúdo semântico pré-renderizado para indexação por buscadores.
+             Visually hidden (sr-only) mas SEM aria-hidden para que robôs indexem o texto. -->
+        <div id="seo-content" class="sr-only">
             <article>
                 <h2>Direitos e Benefícios para Pessoas com Deficiência (PcD) no Brasil</h2>
                 <p>Guia completo e gratuito com 30 categorias de direitos para pessoas com deficiência, autismo (TEA), Síndrome de Down, TDAH, deficiência visual, auditiva, física e intelectual. Todas as informações são baseadas em fontes oficiais do governo brasileiro.</p>

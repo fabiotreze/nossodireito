@@ -305,7 +305,7 @@
                 const timeout = setTimeout(() => {
                     speechSynthesis.onvoiceschanged = null;
                     resolve(speechSynthesis.getVoices());
-                }, 3000);
+                }, 6000); // 6s: iOS Safari can take 5s+ to enumerate voices
                 speechSynthesis.onvoiceschanged = () => {
                     clearTimeout(timeout);
                     const loadedVoices = speechSynthesis.getVoices();
@@ -319,19 +319,19 @@
             if (selection && selection.toString().trim().length > 0) {
                 const selectedText = selection.toString().trim();
                 const wordCount = selectedText.split(/\s+/).length;
-                if (wordCount < 3) {
-
-                } else {
-
+                if (wordCount >= 3) {
                     return selectedText;
                 }
             }
-            const sections = document.querySelectorAll('main section:not([style*="display:none"])');
+            // Use runtime visibility check instead of CSS attribute selector
+            // (covers display:none, hidden, programmatic visibility changes)
+            const allSections = document.querySelectorAll('main section');
             let bestSection = null;
             let bestDistance = Infinity;
-            for (const section of sections) {
+            for (const section of allSections) {
                 if (section.hidden) continue;
                 const rect = section.getBoundingClientRect();
+                if (rect.height === 0) continue; // skip display:none / collapsed
                 const distance = Math.abs(rect.top - 80);
                 if (distance < bestDistance) {
                     bestDistance = distance;
@@ -348,7 +348,8 @@
             return text;
         }
         function getBestPtBrVoice(voices) {
-            const savedVoiceName = localStorage.getItem(STORAGE_PREFIX + 'tts_voice');
+            let savedVoiceName = null;
+            try { savedVoiceName = localStorage.getItem(STORAGE_PREFIX + 'tts_voice'); } catch { /* private browsing */ }
             if (savedVoiceName) {
                 const savedVoice = voices.find(v => v.name === savedVoiceName);
                 if (savedVoice) {
@@ -421,7 +422,8 @@
             currentUtterance = utterance;
             if (chunk.length > 200 && currentChunks.length === 1) {
                 // Chrome TTS keepalive (pause/resume workaround) - skip on Safari/iOS where it breaks TTS
-                const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+                // Use vendor check instead of fragile UA regex (catches iPadOS desktop mode + Samsung Internet)
+                const isSafari = typeof navigator !== 'undefined' && navigator.vendor === 'Apple Computer, Inc.';
                 if (!isSafari) {
                     keepAliveInterval = setInterval(() => {
                         if (!ttsActive) return;
@@ -470,7 +472,7 @@
             };
             utterance.onend = handleEnd;
             utterance.onerror = handleError;
-            if (speechSynthesis.speaking || speechSynthesis.pending) {
+            if (speechSynthesis.speaking || (typeof speechSynthesis.pending !== 'undefined' && speechSynthesis.pending)) {
                 speechSynthesis.cancel();
             }
             speechSynthesis.speak(utterance);
@@ -490,7 +492,7 @@
                 clearInterval(keepAliveInterval);
                 keepAliveInterval = null;
             }
-            if (speechSynthesis.speaking || speechSynthesis.pending) {
+            if (speechSynthesis.speaking || (typeof speechSynthesis.pending !== 'undefined' && speechSynthesis.pending)) {
                 speechSynthesis.cancel();
             }
             currentUtterance = null;
@@ -1111,8 +1113,11 @@ style="margin-top:16px;display:inline-block">
         };
         dom.searchBtn.addEventListener('click', doSearch);
         dom.searchInput.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') doSearch();
+            if (e.key === 'Enter') { e.preventDefault(); doSearch(); }
         });
+        // Chromium fires a native 'search' event on Enter for <input type="search">,
+        // which clears the field.  Intercept to prevent clear and double-trigger.
+        dom.searchInput.addEventListener('search', (e) => { e.preventDefault(); });
         let timer;
         dom.searchInput.addEventListener('input', () => {
             clearTimeout(timer);
@@ -1122,20 +1127,23 @@ style="margin-top:16px;display:inline-block">
     function levenshtein(a, b) {
         if (a.length === 0) return b.length;
         if (b.length === 0) return a.length;
-        const matrix = [];
-        for (let i = 0; i <= b.length; i++) matrix[i] = [i];
-        for (let j = 0; j <= a.length; j++) matrix[0][j] = j;
-        for (let i = 1; i <= b.length; i++) {
-            for (let j = 1; j <= a.length; j++) {
-                const cost = b.charAt(i - 1) === a.charAt(j - 1) ? 0 : 1;
-                matrix[i][j] = Math.min(
-                    matrix[i - 1][j] + 1,
-                    matrix[i][j - 1] + 1,
-                    matrix[i - 1][j - 1] + cost
+        // Two-row optimization: O(min(m,n)) space instead of O(m*n)
+        if (a.length < b.length) { const t = a; a = b; b = t; }
+        let prev = Array.from({ length: b.length + 1 }, (_, i) => i);
+        let curr = new Array(b.length + 1);
+        for (let i = 1; i <= a.length; i++) {
+            curr[0] = i;
+            for (let j = 1; j <= b.length; j++) {
+                const cost = a.charAt(i - 1) === b.charAt(j - 1) ? 0 : 1;
+                curr[j] = Math.min(
+                    prev[j] + 1,
+                    curr[j - 1] + 1,
+                    prev[j - 1] + cost
                 );
             }
+            [prev, curr] = [curr, prev];
         }
-        return matrix[b.length][a.length];
+        return prev[b.length];
     }
     let _cachedDictionary = null;
     function buildSearchDictionary() {
@@ -1371,7 +1379,7 @@ ${filterNote}
             });
             const correctedQuery = corrected.join(' ');
             if (correctedQuery !== terms.join(' ')) {
-                const rescored = scoreSearch(corrected);
+                const rescored = scoreSearch(corrected, corrected);
                 if (rescored.length > 0) {
                     dom.searchResults.innerHTML =
                         `<div class="search-suggestion"><p>Mostrando resultados para "<strong>${escapeHtml(correctedQuery)}</strong>" <span class="search-original">(você pesquisou "${escapeHtml(query)}")</span></p></div>` +
@@ -1497,7 +1505,7 @@ ${filterNote}
             }
         }
         function checkDependencies(checkbox) {
-            const step = parseInt(checkbox.dataset.step);
+            const step = parseInt(checkbox.dataset.step, 10);
             if (step === 7 && checkbox.checked) {
                 const step4 = document.querySelector('[data-step="4"]');
                 if (step4 && !step4.checked) {
@@ -2023,9 +2031,11 @@ No Brasil, a maioria dos laudos ainda usa CID-10. O sistema aceita ambas as codi
             shareAnalysisBtn.addEventListener('click', () => {
                 const analysisTitle = document.querySelector('.analysis-results h3')?.textContent || 'Análise';
                 const matches = document.querySelectorAll('.analysis-match');
-                const matchList = Array.from(matches).map((m, i) => `${i + 1}. ${m.querySelector('.analysis-match-title h4')?.textContent || 'Direito'}`).join('%0A');
-                const text = `*${analysisTitle}*%0A%0A${matchList}%0A%0AVeja mais em: ${encodeURIComponent(window.location.origin)}`;
-                window.open(`https://wa.me/?text=${text}`, '_blank');
+                const matchList = Array.from(matches).map((m, i) => `${i + 1}. ${m.querySelector('.analysis-match-title h4')?.textContent || 'Direito'}`).join('\n');
+                const text = `*${analysisTitle}*\n\n${matchList}\n\nVeja mais em: ${window.location.origin}`;
+                const url = `https://wa.me/?text=${encodeURIComponent(text)}`;
+                const win = window.open(url, '_blank', 'noopener,noreferrer');
+                if (!win) location.href = url; // popup blocked fallback
             });
         }
         const exportChecklistBtn = document.getElementById('exportChecklistPdf');
@@ -2075,7 +2085,9 @@ No Brasil, a maioria dos laudos ainda usa CID-10. O sistema aceita ambas as codi
                     `🔗 Acesse: https://nossodireito.fabiotreze.com\n\n` +
                     `💡 100% gratuito | Zero coleta de dados | Baseado na legislação brasileira`
                 );
-                window.open(`https://wa.me/?text=${shareText}`, '_blank', 'noopener,noreferrer');
+                const url = `https://wa.me/?text=${shareText}`;
+                const win = window.open(url, '_blank', 'noopener,noreferrer');
+                if (!win) location.href = url; // popup blocked fallback
             });
         }
         const shareDocsBtn = document.getElementById('shareDocsWhatsApp');
@@ -2091,7 +2103,9 @@ No Brasil, a maioria dos laudos ainda usa CID-10. O sistema aceita ambas as codi
                     `🔗 Confira a lista completa: https://nossodireito.fabiotreze.com\n\n` +
                     `💡 100% gratuito | Zero coleta de dados | Baseado na legislação brasileira`
                 );
-                window.open(`https://wa.me/?text=${shareText}`, '_blank', 'noopener,noreferrer');
+                const url = `https://wa.me/?text=${shareText}`;
+                const win = window.open(url, '_blank', 'noopener,noreferrer');
+                if (!win) location.href = url; // popup blocked fallback
             });
         }
         const analyzeBtn = document.getElementById('analyzeSelected');
@@ -2589,7 +2603,16 @@ um advogado ou o <strong>CRAS</strong> da sua cidade.</p>
     }
     function openDB() {
         return new Promise((resolve, reject) => {
-            const req = indexedDB.open(DB_NAME, DB_VERSION);
+            // Firefox private browsing has 0-byte IndexedDB quota — detect & warn
+            if (typeof indexedDB === 'undefined') {
+                return reject(new Error('IndexedDB not available'));
+            }
+            let req;
+            try {
+                req = indexedDB.open(DB_NAME, DB_VERSION);
+            } catch (e) {
+                return reject(e); // SecurityError in some private-mode browsers
+            }
             req.onupgradeneeded = (e) => {
                 const db = e.target.result;
                 if (!db.objectStoreNames.contains(STORE_NAME)) {
