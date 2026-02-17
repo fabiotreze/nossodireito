@@ -38,7 +38,7 @@ Se você encontrar uma vulnerabilidade de segurança neste projeto, por favor re
 - `X-Content-Type-Options`: `nosniff`
 - `X-Frame-Options`: `DENY`
 - `Referrer-Policy`: `strict-origin-when-cross-origin`
-- `Permissions-Policy`: camera, microphone, geolocation desabilitados
+- `Permissions-Policy`: camera, microphone, geolocation desabilitados; accelerometer/gyroscope/magnetometer permitidos para same-origin (necessário para VLibras Unity/Emscripten no Chromium)
 - **SRI** (Subresource Integrity) em todos os scripts CDN
 
 ### Trade-off CSP: `unsafe-eval` para VLibras (decisão documentada)

@@ -61,7 +61,7 @@
 | Revogação de Blob URL            | ✅      | 15 segundos (reduzido de 60s)               |
 | X-Content-Type-Options            | ✅      | `nosniff`                                   |
 | Referrer-Policy                   | ✅      | `no-referrer`                               |
-| Permissions-Policy                | ✅      | Câmera, microfone, geolocalização negados   |
+| Permissions-Policy                | ✅      | Câmera, microfone, geolocalização negados; accelerometer/gyroscope/magnetometer=(self) para VLibras |
 | HSTS (server.js)                  | ✅      | `max-age=31536000; includeSubDomains`       |
 | Rate Limiting (server.js)         | ✅      | 100 req/15min por IP                        |
 | CSP server-side (server.js)       | ✅      | Sincronizado com meta tag do HTML           |

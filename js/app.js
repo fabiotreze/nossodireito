@@ -1383,7 +1383,7 @@ ${filterNote}
             dom.searchResults.innerHTML = `
 <div class="search-no-results">
 <p>Nenhum resultado para "<strong>${escapeHtml(query)}</strong>".</p>
-<p>Tente palavras como: BPC, escola, plano de saúde, transporte, TEA...</p>
+<p>Tente palavras como: BPC, sa\u00fade, escola, transporte, trabalho, TEA, IPVA, moradia, CRAS, FGTS, CID, Libras...</p>
 </div>`;
             return;
         }
@@ -1391,7 +1391,7 @@ ${filterNote}
             dom.searchResults.innerHTML = `
 <div class="search-no-results">
 <p>Nenhum resultado para "<strong>${escapeHtml(query)}</strong>".</p>
-<p>Tente palavras como: BPC, escola, plano de saúde, transporte, TEA...</p>
+<p>Tente palavras como: BPC, sa\u00fade, escola, transporte, trabalho, TEA, IPVA, moradia, CRAS, FGTS, CID, Libras...</p>
 </div>`;
             return;
         }
