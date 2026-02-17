@@ -138,9 +138,11 @@ const SECURITY_HEADERS = Object.freeze({
     'Referrer-Policy': 'no-referrer',
 
     // ── Feature Restrictions ──
-    // Note: accelerometer/gyroscope mantidos bloqueados — VLibras Unity WebGL
-    // usa WebGL/WASM para renderizar 3D, NÃO usa Generic Sensor API.
-    'Permissions-Policy': 'camera=(), microphone=(), geolocation=(), payment=(), usb=(), bluetooth=(), serial=(), hid=(), accelerometer=(), gyroscope=(), magnetometer=(), screen-wake-lock=()',
+    // Note: accelerometer/gyroscope/magnetometer allowed for self —
+    // VLibras Unity WebGL (Emscripten) calls _emscripten_set_devicemotion_callback
+    // which requires accelerometer permission. Chromium enforces this via
+    // Permissions-Policy; Safari does not. Blocking breaks VLibras on Windows.
+    'Permissions-Policy': 'camera=(), microphone=(), geolocation=(), payment=(), usb=(), bluetooth=(), serial=(), hid=(), accelerometer=(self), gyroscope=(self), magnetometer=(self), screen-wake-lock=()',
 
     // ── Cross-Origin Isolation ──
     'Cross-Origin-Opener-Policy': 'same-origin',
