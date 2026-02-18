@@ -82,7 +82,7 @@ jobs:
 
       - name: Criar issue com candidatos
         if: steps.discover.outputs.has_candidates == 'true' && inputs.dry_run != 'true'
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         env:
           TOTAL: ${{ steps.discover.outputs.total }}
           ALTA: ${{ steps.discover.outputs.alta }}

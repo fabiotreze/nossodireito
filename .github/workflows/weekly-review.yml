@@ -206,7 +206,7 @@ jobs:
           fi
 
       - name: Criar issue de revisão
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         env:
           VERSAO: ${{ steps.fontes.outputs.versao }}
           ULTIMA: ${{ steps.fontes.outputs.ultima }}
