@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-TESTES ABRANGENTES — NossoDireito v1.13.1
+TESTES ABRANGENTES — NossoDireito v1.13.2
 
 Cobertura completa:
   - direitos.json: categorias, fontes, classificações, estrutura, duplicidades

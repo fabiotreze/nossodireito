@@ -12,7 +12,7 @@
 [![Accessibility](https://img.shields.io/badge/Accessibility-ARIA%20%7C%20VLibras%20%7C%20WCAG-blue?style=flat-square&logo=accessible-icon)](docs/ACCESSIBILITY.md)
 [![LGPD](https://img.shields.io/badge/LGPD-Zero%20Data%20Collection-blue?style=flat-square)](SECURITY.md)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow?style=flat-square)](LICENSE)
-[![Version](https://img.shields.io/badge/Version-1.13.1-informational?style=flat-square)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/Version-1.13.2-informational?style=flat-square)](CHANGELOG.md)
 
 **Recebeu um laudo? Vem que a gente te ajuda.**
 

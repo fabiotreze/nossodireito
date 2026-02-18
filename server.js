@@ -86,15 +86,15 @@ const MIME = Object.freeze({
 
 // Cache policies (seconds)
 const CACHE = Object.freeze({
-    '.html': 'public, max-age=300',       // 5 min
-    '.json': 'public, max-age=3600',      // 1 hour
-    '.css': 'public, max-age=2592000',    // 30 days
-    '.js': 'public, max-age=2592000',     // 30 days
-    '.png': 'public, max-age=2592000',    // 30 days
-    '.ico': 'public, max-age=2592000',    // 30 days
-    '.svg': 'public, max-age=2592000',    // 30 days
-    '.webp': 'public, max-age=2592000',   // 30 days
-    '.xml': 'public, max-age=3600',       // 1 hour
+    '.html': 'public, max-age=300, stale-while-revalidate=300',  // 5 min + serve stale while revalidating
+    '.json': 'public, max-age=3600, stale-while-revalidate=600', // 1 hour + 10 min stale
+    '.css': 'public, max-age=2592000, immutable',    // 30 days — never revalidate
+    '.js': 'public, max-age=2592000, immutable',     // 30 days — never revalidate
+    '.png': 'public, max-age=2592000, immutable',    // 30 days — never revalidate
+    '.ico': 'public, max-age=2592000, immutable',    // 30 days — never revalidate
+    '.svg': 'public, max-age=2592000, immutable',    // 30 days — never revalidate
+    '.webp': 'public, max-age=2592000, immutable',   // 30 days — never revalidate
+    '.xml': 'public, max-age=3600, stale-while-revalidate=600', // 1 hour + 10 min stale
     '.txt': 'public, max-age=86400',      // 1 day
 });
 
@@ -495,9 +495,9 @@ const server = http.createServer(async (req, res) => {
 
 // ── Connection hardening ──
 server.timeout = 30_000;           // 30s request timeout (anti-Slowloris)
-server.headersTimeout = 15_000;    // 15s header timeout
+server.headersTimeout = 70_000;    // 70s header timeout (must exceed keepAliveTimeout)
 server.requestTimeout = 30_000;    // 30s total request timeout
-server.keepAliveTimeout = 5_000;   // 5s keep-alive
+server.keepAliveTimeout = 65_000;  // 65s keep-alive (must exceed Azure LB timeout)
 server.maxHeadersCount = 50;       // Limit header count
 server.maxRequestsPerSocket = 100; // Limit requests per keep-alive socket
 

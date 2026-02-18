@@ -1,6 +1,6 @@
 # NossoDireito — Arquitetura do Sistema V1 (Produção Atual)
 
-**Versão:** 1.13.1
+**Versão:** 1.13.2
 **Data:** Fevereiro 2026
 **Status:** Produção Estável (Quality Gate: 100.0/100)
 **URL:** https://nossodireito.fabiotreze.com
@@ -447,14 +447,16 @@ setInterval(() => {
 **Cache Policies:**
 ```javascript
 const CACHE = {
-    '.html': 'public, max-age=300',    // 5 min (atualização rápida)
-    '.json': 'public, max-age=3600',   // 1 hora (direitos.json)
-    '.css': 'public, max-age=86400',   // 1 dia
-    '.js': 'public, max-age=86400',    // 1 dia
-    '.png': 'public, max-age=604800',  // 1 semana
-    '.ico': 'public, max-age=604800',
-    '.svg': 'public, max-age=604800',
-    '.xml': 'public, max-age=3600',
+    '.html': 'public, max-age=300, stale-while-revalidate=300',  // 5 min + serve stale
+    '.json': 'public, max-age=3600, stale-while-revalidate=600', // 1 hora + 10 min stale
+    '.css': 'public, max-age=2592000, immutable',    // 30 dias — never revalidate
+    '.js': 'public, max-age=2592000, immutable',     // 30 dias — never revalidate
+    '.png': 'public, max-age=2592000, immutable',    // 30 dias — never revalidate
+    '.ico': 'public, max-age=2592000, immutable',    // 30 dias — never revalidate
+    '.svg': 'public, max-age=2592000, immutable',    // 30 dias — never revalidate
+    '.webp': 'public, max-age=2592000, immutable',   // 30 dias — never revalidate
+    '.xml': 'public, max-age=3600, stale-while-revalidate=600', // 1 hora + 10 min stale
+    '.txt': 'public, max-age=86400',      // 1 dia
 };
 
 // Service Worker exception: cache curto para update detection
@@ -513,12 +515,12 @@ function resolveFile(urlPath) {
 }
 ```
 
-**Connection Hardening (anti-Slowloris):**
+**Connection Hardening (anti-Slowloris + Azure LB compat):**
 ```javascript
 server.timeout = 30_000;           // 30s request timeout
-server.headersTimeout = 15_000;    // 15s header timeout
+server.headersTimeout = 70_000;    // 70s header timeout (must exceed keepAliveTimeout)
 server.requestTimeout = 30_000;    // 30s total request timeout
-server.keepAliveTimeout = 5_000;   // 5s keep-alive
+server.keepAliveTimeout = 65_000;  // 65s keep-alive (must exceed Azure LB 60s timeout)
 server.maxHeadersCount = 50;       // Limit header count
 server.maxRequestsPerSocket = 100; // Limit requests per socket
 ```

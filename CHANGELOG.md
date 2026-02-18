@@ -5,6 +5,34 @@ Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/)
 e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [1.13.2] - 2026-02-18
+
+### 🔍 SEO & Structured Data
+
+- **Remoção de BreadcrumbList inválido** — Dois itens apontavam para a mesma URL (`/`), gerando rich result sem valor. Removido do JSON-LD
+- **Remoção de SearchAction não implementado** — `potentialAction` declarava busca via `?q=` mas a SPA usa hash-routing (`#busca`). Removido para evitar erro de schema
+- **GovernmentService URL corrigida** — URL do serviço agora aponta para `gov.br/pessoa-com-deficiencia` (fonte oficial) em vez do próprio site. Adicionado `mainEntityOfPage`
+- **Remoção de `sameAs: []`** — Array vazio removido do bloco Organization (sem valor semântico)
+- **URLs padronizadas com trailing slash** — Todas as URLs em JSON-LD consistentes com canonical (`/`)
+- **Title otimizado** — `—` → `|` para reduzir largura de pixel (601px → ~575px, limite Google: 580px)
+- **Meta description encurtada** — De ~210 para ~155 caracteres (1397px → ~950px, limite: 1000px)
+- **sitemap.xml simplificado** — Removidos `<changefreq>` e `<priority>` (deprecated, ignorados pelo Google)
+
+### ⚡ Performance
+
+- **Cache `immutable`** — Assets estáticos (CSS, JS, imagens) agora incluem `immutable` no `Cache-Control`, eliminando revalidações desnecessárias
+- **`stale-while-revalidate`** — HTML, JSON e XML servem cache enquanto revalidam em background, reduzindo TTFB percebido
+- **`keepAliveTimeout` 5s → 65s** — Evita que o Azure Load Balancer feche/reabra conexões TCP a cada request (principal causa de latência 4s)
+- **`headersTimeout` 15s → 70s** — Ajustado para ser > `keepAliveTimeout` (requisito Node.js)
+
+### 🤖 CI/CD & Dependabot
+
+- **Dependabot habilitado** — Monitoramento semanal de npm, pip e GitHub Actions (`dependabot.yml`)
+- **Auto-merge Dependabot** — PRs de patch/minor são mergeadas automaticamente após Quality Gate passar. Major requer review manual
+- **Repo settings** — `allow_auto_merge` e `delete_branch_on_merge` habilitados
+
+---
+
 ## [1.13.1] - 2026-02-16
 
 ### 🏗️ Arquitetura de Dados

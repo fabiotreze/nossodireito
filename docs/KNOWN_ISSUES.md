@@ -1,7 +1,7 @@
 # Problemas Conhecidos e Limitações — NossoDireito
 
 > **Status:** 🟢 Ativo
-> **Versão:** 1.13.1 | **Atualizado:** 2026-02-16
+> **Versão:** 1.13.2 | **Atualizado:** 2026-02-18
 > **Escopo:** Bugs, limitações técnicas, workarounds e trade-offs conhecidos
 > **Absorve:** VLIBRAS_LIMITATIONS (mobile + CSP)
 

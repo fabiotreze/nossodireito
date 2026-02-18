@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Teste Automatizado de Scripts de Análise - NossoDireito v1.13.1
+Teste Automatizado de Scripts de Análise - NossoDireito v1.13.2
 
 Valida todos os scripts Python de análise:
 - analise360.py
@@ -359,7 +359,7 @@ class ScriptTester:
 
         print(f"{BOLD}{BLUE}")
         print("=" * 71)
-        print("         TESTE DE SCRIPTS DE ANALISE - NossoDireito v1.13.1      ")
+        print("         TESTE DE SCRIPTS DE ANALISE - NossoDireito v1.13.2      ")
         print("                                                                   ")
         print("    Validacao de Sintaxe, Estrutura, Dependencias e Dados        ")
         print("=" * 71)
