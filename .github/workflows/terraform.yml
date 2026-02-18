@@ -433,7 +433,7 @@ jobs:
 
       - name: Upload tfstate
         if: always() && steps.state_check.outputs.has_state == 'true'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: terraform-state
           path: |
