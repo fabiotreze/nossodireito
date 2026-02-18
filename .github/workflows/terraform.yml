@@ -308,7 +308,7 @@ jobs:
       # via azurerm_app_service_certificate_binding — não precisa de az rest.
       - name: Setup Node.js 22 LTS
         if: github.event.inputs.action == 'apply'
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: "22"
 
