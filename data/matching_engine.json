@@ -49,6 +49,8 @@
         "g12",
         "g20",
         "g40",
+        "8a60",
+        "8a61",
         "i69",
         "n18",
         "e84",
@@ -1631,6 +1633,20 @@
             "weight": 5
         },
         "g40": {
+            "cats": [
+                "bpc",
+                "sus_terapias"
+            ],
+            "weight": 4
+        },
+        "8a61": {
+            "cats": [
+                "bpc",
+                "sus_terapias"
+            ],
+            "weight": 4
+        },
+        "8a60": {
             "cats": [
                 "bpc",
                 "sus_terapias"
