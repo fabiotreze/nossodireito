@@ -4,7 +4,7 @@
 
 # ⚖️ NossoDireito
 
-[![Master Compliance](https://img.shields.io/badge/Master%20Compliance-100.0%25%20(1096.7%2F1096.7)-brightgreen?style=flat-square)](CHANGELOG.md)
+[![Master Compliance](https://img.shields.io/badge/Master%20Compliance-100.0%25%20(1099.4%2F1099.4)-brightgreen?style=flat-square)](CHANGELOG.md)
 [![Quality Gate](https://img.shields.io/badge/Quality%20Gate-100.0%2F100-brightgreen?style=flat-square)](https://github.com/fabiotreze/nossodireito/actions)
 [![WAF 5 Pillars](https://img.shields.io/badge/WAF%205%20Pillars-100%25-success?style=flat-square)](docs/QUALITY_GUIDE.md)
 [![Deploy](https://img.shields.io/badge/Deploy-Azure%20App%20Service-0078D4?style=flat-square&logo=microsoft-azure)](https://nossodireito.fabiotreze.com)
@@ -12,7 +12,7 @@
 [![Accessibility](https://img.shields.io/badge/Accessibility-ARIA%20%7C%20VLibras%20%7C%20WCAG-blue?style=flat-square&logo=accessible-icon)](docs/ACCESSIBILITY.md)
 [![LGPD](https://img.shields.io/badge/LGPD-Zero%20Data%20Collection-blue?style=flat-square)](SECURITY.md)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow?style=flat-square)](LICENSE)
-[![Version](https://img.shields.io/badge/Version-1.14.0-informational?style=flat-square)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/Version-1.14.1-informational?style=flat-square)](CHANGELOG.md)
 
 **Recebeu um laudo? Vem que a gente te ajuda.**
 

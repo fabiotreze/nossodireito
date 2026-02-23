@@ -5,6 +5,36 @@ Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/)
 e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [1.14.1] - 2026-02-24
+
+### Adicionado
+
+- **Retry com backoff exponencial em `validate_govbr_urls.py`** — `_fetch_with_retry()` com MAX_RETRIES=3, delay 4s × tentativa, retries em HTTP 5xx e erros transitórios (TimeoutError, OSError, ConnectionError). Timeout aumentado de 10s para 15s
+- **`BreadcrumbList` JSON-LD** — Structured data de navegação principal (5 itens) para rich snippets no Google
+- **`SiteNavigationElement` JSON-LD** — Declaração formal da navegação do site (10 seções) para crawlers
+- **`meta keywords`** — 18 termos de alta relevância PcD para complementar meta description
+
+### Corrigido
+
+- **20 URLs quebradas em `direitos.json`** — Lei 10.891 (3x), ENEM/INEP (3x), Passe Livre, MCMV, INSS aposentadoria, MDH/CNDH, Bolsa Família, CadÚnico, Bolsa Atleta (2x), Lei 10.891 base_legal. Maioria por reestruturação ministerial gov.br
+- **`sitemap.xml` lastmod atualizado** → 2026-02-23, adicionado `<changefreq>weekly</changefreq>` e `<priority>1.0</priority>`
+- **`robots.txt`** — Adicionado `Crawl-delay: 5` para controle de taxa de crawling
+
+### Segurança
+
+- **Versões mínimas de dependências atualizadas** — `requirements.txt`: requests≥2.32.0 (CVE fixes), lxml≥5.1.0, jsonschema≥4.23.0. `requirements-dev.txt`: pytest≥8.0.0, playwright≥1.50.0, pip-audit≥2.7.0. Python mínimo 3.10+
+- **pip-audit**: 0 vulnerabilidades em deps de produção, npm audit: 0 vulnerabilidades
+- **69 candidatos de benefícios avaliados** — 5 PcD-relevantes (nível municipal SP/Barueri), 64 rejeitados (não PcD-específicos). Nenhum adicionado — aguardando estrutura `servicos_municipais`
+
+### Validação
+
+- **Master Compliance: 100% (1080.9/1080.9)** — 21 categorias, todas ✅
+- **Schema validation: PASSED** — direitos.json vs direitos.schema.json (Draft 7)
+- **160 unit tests PASSED** — 2 failed + 40 errors são Playwright browser tests (requerem `localhost:8080`)
+- **URLs gov.br: 25/26 OK** — 1 falha persistente (PI 323/2020 no DOU retorna 403, proteção anti-bot)
+
+---
+
 ## [1.14.0] - 2026-02-23
 
 ### Adicionado

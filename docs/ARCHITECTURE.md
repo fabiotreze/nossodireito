@@ -1,6 +1,6 @@
 # NossoDireito — Arquitetura do Sistema V1 (Produção Atual)
 
-**Versão:** 1.14.0
+**Versão:** 1.14.1
 **Data:** Fevereiro 2026
 **Status:** Produção Estável (Quality Gate: 100.0/100)
 **URL:** https://nossodireito.fabiotreze.com
@@ -1895,7 +1895,7 @@ appInsights.trackEvent({
 
 ### Analytics Server-Side (Privacy-Respecting)
 
-**Novo em v1.14.0**: Sistema de contagem de visitantes únicos diários com privacidade total, integrado ao Application Insights.
+**Novo em v1.14.1**: Sistema de contagem de visitantes únicos diários com privacidade total, integrado ao Application Insights.
 
 **Funcionamento:**
 
@@ -2317,7 +2317,7 @@ if (req.url === '/healthz' || req.url === '/health') {
 
 ## Conclusão
 
-Este documento apresenta a arquitetura completa do sistema **NossoDireito V1** (versão 1.14.0) em produção. O portal atende ~1.000 famílias/mês com informações sobre direitos PcD, mantendo:
+Este documento apresenta a arquitetura completa do sistema **NossoDireito V1** (versão 1.14.1) em produção. O portal atende ~1.000 famílias/mês com informações sobre direitos PcD, mantendo:
 
 ✅ **Conformidade LGPD** (analytics anonimizado com SHA-256 + salt efêmero)
 ✅ **Acessibilidade WCAG 2.1 AA** (TTS, VLibras, alto contraste)

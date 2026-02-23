@@ -69,3 +69,6 @@ User-agent: Google-Extended
 Disallow: /
 
 Sitemap: https://nossodireito.fabiotreze.com/sitemap.xml
+
+# Crawl-delay to reduce server load
+Crawl-delay: 5

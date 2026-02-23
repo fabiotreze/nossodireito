@@ -4,8 +4,68 @@
 
 import ssl
 import sys
+import time
 import urllib.error
 import urllib.request
+
+MAX_RETRIES = 3
+RETRY_DELAY = 4  # seconds
+
+
+def _fetch_with_retry(url: str, ctx: ssl.SSLContext) -> int:
+    """Fetch URL with retry logic for transient errors.
+
+    Returns HTTP status code (200 = success).
+    Raises on permanent failure after all retries.
+    """
+    last_exc = None
+    for attempt in range(1, MAX_RETRIES + 1):
+        try:
+            req = urllib.request.Request(url, method="HEAD")
+            req.add_header(
+                "User-Agent",
+                "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)"
+            )
+            resp = urllib.request.urlopen(req, timeout=15, context=ctx)
+            return resp.getcode()
+        except urllib.error.HTTPError as e:
+            if e.code in (405, 403):
+                # Server rejects HEAD — try GET
+                try:
+                    req2 = urllib.request.Request(url, method="GET")
+                    req2.add_header(
+                        "User-Agent",
+                        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)"
+                    )
+                    resp2 = urllib.request.urlopen(req2, timeout=15, context=ctx)
+                    code = resp2.getcode()
+                    resp2.close()
+                    return code
+                except urllib.error.HTTPError as e2:
+                    if e2.code >= 500 and attempt < MAX_RETRIES:
+                        last_exc = e2
+                        time.sleep(RETRY_DELAY * attempt)
+                        continue
+                    raise
+                except (TimeoutError, OSError) as e2:
+                    last_exc = e2
+                    if attempt < MAX_RETRIES:
+                        time.sleep(RETRY_DELAY * attempt)
+                        continue
+                    raise
+            elif e.code >= 500 and attempt < MAX_RETRIES:
+                last_exc = e
+                time.sleep(RETRY_DELAY * attempt)
+                continue
+            else:
+                raise
+        except (TimeoutError, OSError, ConnectionError) as e:
+            last_exc = e
+            if attempt < MAX_RETRIES:
+                time.sleep(RETRY_DELAY * attempt)
+                continue
+            raise
+    raise last_exc  # type: ignore[misc]
 
 
 def main():
@@ -80,14 +140,12 @@ def main():
     fail_count = 0
     results = []
 
-    print(f"Validando {len(urls)} URLs...\n")
+    print(f"Validando {len(urls)} URLs (max {MAX_RETRIES} tentativas, "
+          f"intervalo {RETRY_DELAY}s)...\n")
 
     for i, (label, url) in enumerate(urls, 1):
         try:
-            req = urllib.request.Request(url, method="HEAD")
-            req.add_header("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)")
-            resp = urllib.request.urlopen(req, timeout=10, context=ctx)
-            code = resp.getcode()
+            code = _fetch_with_retry(url, ctx)
             if code == 200:
                 status = "OK"
                 ok_count += 1
@@ -96,35 +154,11 @@ def main():
                 fail_count += 1
             results.append((status, label, url))
         except urllib.error.HTTPError as e:
-            # Some servers reject HEAD, retry with GET
-            if e.code == 405 or e.code == 403:
-                try:
-                    req2 = urllib.request.Request(url, method="GET")
-                    req2.add_header("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)")
-                    resp2 = urllib.request.urlopen(req2, timeout=10, context=ctx)
-                    code2 = resp2.getcode()
-                    resp2.close()
-                    if code2 == 200:
-                        status = "OK"
-                        ok_count += 1
-                    else:
-                        status = f"WARN {code2}"
-                        fail_count += 1
-                    results.append((status, label, url))
-                except urllib.error.HTTPError as e2:
-                    fail_count += 1
-                    results.append((f"FAIL {e2.code}", label, url))
-                except Exception as e2:
-                    fail_count += 1
-                    results.append((f"FAIL {type(e2).__name__}", label, url))
-            else:
-                fail_count += 1
-                status = f"FAIL {e.code}"
-                results.append((status, label, url))
+            fail_count += 1
+            results.append((f"FAIL {e.code}", label, url))
         except Exception as e:
             fail_count += 1
-            status = f"FAIL {type(e).__name__}"
-            results.append((status, label, url))
+            results.append((f"FAIL {type(e).__name__}", label, url))
 
         icon = "." if status == "OK" else "X"
         sys.stdout.write(f"  [{i:2d}/{len(urls)}] {icon} {label}\n")

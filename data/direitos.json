@@ -1,6 +1,6 @@
 {
-    "versao": "1.14.0",
-    "ultima_atualizacao": "2026-02-23",
+    "versao": "1.14.1",
+    "ultima_atualizacao": "2026-02-24",
     "aviso": "Informações compiladas de fontes oficiais do governo brasileiro (gov.br). Podem estar desatualizadas. Verifique sempre as fontes originais.",
     "fontes": [
         {
@@ -393,7 +393,7 @@
         {
             "nome": "Lei 10.891/2004 — Bolsa-Atleta",
             "tipo": "legislacao",
-            "url": "https://www.planalto.gov.br/ccivil_03/_ato2004-2006/2004/lei/l10891.htm",
+            "url": "https://www.planalto.gov.br/ccivil_03/_ato2004-2006/2004/lei/l10.891.htm",
             "orgao": "Presidência da República",
             "consultado_em": "2026-02-12",
             "artigos_referenciados": [
@@ -531,7 +531,7 @@
         {
             "nome": "ENEM — Acessibilidade na Prova (INEP)",
             "tipo": "servico",
-            "url": "https://www.gov.br/inep/pt-br/areas-de-atuacao/avaliacao-e-exames-educacionais/enem/acessibilidade",
+            "url": "https://www.gov.br/inep/pt-br/areas-de-atuacao/avaliacao-e-exames-educacionais/enem",
             "orgao": "INEP / Ministério da Educação",
             "consultado_em": "2026-02-12"
         },
@@ -2072,7 +2072,7 @@
                 },
                 {
                     "titulo": "ENEM — Acessibilidade na Prova (INEP)",
-                    "url": "https://www.gov.br/inep/pt-br/areas-de-atuacao/avaliacao-e-exames-educacionais/enem/acessibilidade"
+                    "url": "https://www.gov.br/inep/pt-br/areas-de-atuacao/avaliacao-e-exames-educacionais/enem"
                 }
             ],
             "tags": [
@@ -2403,7 +2403,7 @@
                 },
                 {
                     "titulo": "Passe Livre Interestadual — Solicitar (gov.br)",
-                    "url": "https://www.gov.br/transportes/pt-br/assuntos/transporte-terrestre/passe-livre"
+                    "url": "https://www.gov.br/antt/pt-br/assuntos/passageiros/passe-livre"
                 }
             ],
             "tags": [
@@ -2681,8 +2681,8 @@
                     "url": "https://www.gov.br/cidades/pt-br/acesso-a-informacao/acoes-e-programas/habitacao/programa-minha-casa-minha-vida"
                 },
                 {
-                    "titulo": "Acessibilidade no Minha Casa, Minha Vida (gov.br)",
-                    "url": "https://www.gov.br/cidades/pt-br/assuntos/habitacao/minha-casa-minha-vida/acessibilidade"
+                    "titulo": "Minha Casa, Minha Vida — Programa Nacional (gov.br)",
+                    "url": "https://www.gov.br/cidades/pt-br/acesso-a-informacao/acoes-e-programas/habitacao/programa-minha-casa-minha-vida"
                 },
                 {
                     "titulo": "Secretaria Nacional de Habitação — Diretrizes (gov.br)",
@@ -3564,7 +3564,7 @@
                 },
                 {
                     "titulo": "INSS — Aposentadoria da Pessoa com Deficiência",
-                    "url": "https://www.gov.br/inss/pt-br/saiba-mais/seus-direitos-e-deveres/aposentadoria-da-pessoa-com-deficiencia"
+                    "url": "https://www.gov.br/inss/pt-br/saiba-mais/aposentadoria/aposentadoria-da-pessoa-com-deficiencia-por-tempo-de-contribuicao"
                 }
             ],
             "tags": [
@@ -3638,8 +3638,8 @@
                     "url": "https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2015/lei/l13105.htm"
                 },
                 {
-                    "titulo": "Defensoria Pública — Atendimento Gratuito",
-                    "url": "https://www.gov.br/mdh/pt-br/acesso-a-informacao/participacao-social/old/cndh/onde-denunciar"
+                    "titulo": "Ouvidoria e Denúncias — Plataforma Fala.BR (CGU)",
+                    "url": "https://falabr.cgu.gov.br/"
                 },
                 {
                     "titulo": "DPU — Assistência Jurídica Gratuita",
@@ -3927,7 +3927,7 @@
                 },
                 {
                     "titulo": "ENEM — Acessibilidade na Prova (INEP)",
-                    "url": "https://www.gov.br/inep/pt-br/areas-de-atuacao/avaliacao-e-exames-educacionais/enem/acessibilidade"
+                    "url": "https://www.gov.br/inep/pt-br/areas-de-atuacao/avaliacao-e-exames-educacionais/enem"
                 }
             ],
             "tags": [
@@ -4108,12 +4108,12 @@
             "onde": "CRAS mais próximo (Centro de Referência de Assistência Social) — buscar no site do MDS",
             "links": [
                 {
-                    "titulo": "Bolsa Família — Portal Oficial",
-                    "url": "https://www.gov.br/bolsafamilia"
+                    "titulo": "Bolsa Família — Portal Oficial (MDS)",
+                    "url": "https://www.gov.br/mds/pt-br/acoes-e-programas/bolsa-familia"
                 },
                 {
-                    "titulo": "CadÚnico — Cadastro Único",
-                    "url": "https://www.gov.br/cidadania/pt-br/cadunico"
+                    "titulo": "CadÚnico — Cadastro Único (MDS)",
+                    "url": "https://www.gov.br/mds/pt-br/acoes-e-programas/cadastro-unico"
                 },
                 {
                     "titulo": "Encontrar CRAS mais próximo",
@@ -4487,7 +4487,7 @@
                 {
                     "lei": "Lei 10.891/2004 — Bolsa-Atleta",
                     "artigo": "Art. 1º, Art. 3º-A",
-                    "link": "https://www.planalto.gov.br/ccivil_03/_ato2004-2006/2004/lei/l10891.htm"
+                    "link": "https://www.planalto.gov.br/ccivil_03/_ato2004-2006/2004/lei/l10.891.htm"
                 },
                 {
                     "lei": "Lei 13.146/2015 — LBI / Estatuto da Pessoa com Deficiência",
@@ -4537,11 +4537,11 @@
             "links": [
                 {
                     "titulo": "Bolsa Atleta — Ministério do Esporte (gov.br)",
-                    "url": "https://www.gov.br/esporte/pt-br/acoes-e-programas/bolsa-atleta"
+                    "url": "https://www.gov.br/esporte/pt-br/acoes-e-programas/ProgramaBolsaAtleta"
                 },
                 {
                     "titulo": "Lei 10.891/2004 — Programa Bolsa-Atleta (planalto.gov.br)",
-                    "url": "https://www.planalto.gov.br/ccivil_03/_ato2004-2006/2004/lei/l10891.htm"
+                    "url": "https://www.planalto.gov.br/ccivil_03/_ato2004-2006/2004/lei/l10.891.htm"
                 },
                 {
                     "titulo": "Esporte Paralímpico — Ministério do Esporte (gov.br)",
@@ -4552,8 +4552,8 @@
                     "url": "https://novoviversemlimite.mdh.gov.br/"
                 },
                 {
-                    "titulo": "Programas e Ações — Ministério do Esporte (gov.br)",
-                    "url": "https://www.gov.br/esporte/pt-br/acoes-e-programas/bolsa-atleta"
+                    "titulo": "Programa Bolsa Atleta — Ministério do Esporte (gov.br)",
+                    "url": "https://www.gov.br/esporte/pt-br/acoes-e-programas/ProgramaBolsaAtleta"
                 }
             ],
             "tags": [
