@@ -30,6 +30,7 @@ Objetivo: Score 100% — Somente fontes oficiais + segurança máxima
 
 import argparse
 import json
+import os
 import re
 import subprocess
 import sys
@@ -185,6 +186,24 @@ class MasterComplianceValidator:
         self.metrics[category]['max'] += points
         self.log_error(category, message)
 
+    def _find_files(self, *extensions: str) -> list:
+        """Busca recursiva segura por extensão, ignorando .git e node_modules.
+
+        Usa os.walk com onerror para evitar crash em paths longos (Windows
+        MAX_PATH 260 chars) que pathlib.glob não trata.
+        """
+        skip_dirs = {'.git', 'node_modules', '__pycache__', 'venv', '.venv'}
+        results: list[Path] = []
+        for dirpath, dirnames, filenames in os.walk(
+            self.root, onerror=lambda e: None
+        ):
+            # Podar diretórios que nunca devem ser percorridos
+            dirnames[:] = [d for d in dirnames if d not in skip_dirs]
+            for fname in filenames:
+                if any(fname.endswith(ext) for ext in extensions):
+                    results.append(Path(dirpath) / fname)
+        return results
+
     # =========================================================================
     # CATEGORIA 1: VALIDAÇÃO DE DADOS
     # =========================================================================
@@ -295,10 +314,8 @@ class MasterComplianceValidator:
             self.log_fail('codigo', f"Erro ao executar validate_content.py: {e}", 20)
 
         # 2. Validar arquivos Python
-        python_files = list(self.root.glob('**/*.py'))
+        python_files = self._find_files('.py')
         for py_file in python_files:
-            if 'venv' in str(py_file) or '__pycache__' in str(py_file):
-                continue
 
             # Verificar sintaxe
             try:
@@ -543,12 +560,10 @@ class MasterComplianceValidator:
             r'token\s*=\s*["\'][^"\']+["\']'
         ]
 
-        code_files = list(self.root.glob('**/*.py')) + list(self.root.glob('**/*.js'))
+        code_files = self._find_files('.py', '.js')
         found_secrets = False
 
         for file in code_files:
-            if 'venv' in str(file) or 'node_modules' in str(file):
-                continue
 
             try:
                 content = file.read_text(encoding='utf-8')
@@ -1090,6 +1105,7 @@ class MasterComplianceValidator:
         cleanup_count = 0
 
         # --- 1) Padrões glob de arquivos órfãos clássicos ---
+        # Padrões rasos (sem traversal em diretórios profundos)
         orphan_patterns = [
             '**/*.backup',
             '**/*.tmp',
@@ -1098,12 +1114,54 @@ class MasterComplianceValidator:
             '**/*.swp',
             '**/.DS_Store',
             '**/*.log',
-            '**/__pycache__/**',
-            '**/node_modules/**',
         ]
 
+        # Diretórios que devem ser detectados como órfãos inteiros
+        # (não percorrer recursivamente — evita crash em paths longos no Windows)
+        orphan_dirs = {'node_modules', '__pycache__'}
+        # Diretórios que devem ser completamente ignorados (nunca entrar)
+        skip_dirs = {'.git', '.venv', 'venv', '.terraform'}
+
+        for dirpath, dirnames, filenames in os.walk(
+            self.root, onerror=lambda e: None
+        ):
+            # Podar diretórios que nunca devem ser percorridos
+            dirnames[:] = [
+                d for d in dirnames
+                if d not in skip_dirs
+            ]
+            # Detectar diretórios órfãos e não descer neles
+            found = [d for d in dirnames if d in orphan_dirs]
+            for d in found:
+                target = Path(dirpath) / d
+                try:
+                    first_file = next(target.iterdir(), None)
+                except OSError:
+                    first_file = None
+                if first_file and first_file.is_file():
+                    orphaned_files.append(first_file)
+                dirnames.remove(d)
+
+        def _safe_glob(root: Path, pattern: str):
+            """Glob seguro que ignora OSError em paths longos (Windows MAX_PATH)."""
+            try:
+                return list(root.glob(pattern))
+            except OSError:
+                # Fallback: os.walk com tratamento de erro
+                results = []
+                suffix = pattern.replace('**/', '').replace('*', '')
+                for dirpath, _, filenames in os.walk(
+                    root, onerror=lambda e: None
+                ):
+                    if '.git' in dirpath or 'node_modules' in dirpath:
+                        continue
+                    for fname in filenames:
+                        if fname.endswith(suffix):
+                            results.append(Path(dirpath) / fname)
+                return results
+
         for pattern in orphan_patterns:
-            matches = list(self.root.glob(pattern))
+            matches = _safe_glob(self.root, pattern)
             for match in matches:
                 if match.is_file() and '.git' not in str(match):
                     orphaned_files.append(match)
@@ -1197,11 +1255,21 @@ class MasterComplianceValidator:
 
         # Verificar arquivos grandes não rastreados (>10MB)
         large_files = []
-        for ext in ['.zip', '.tar.gz', '.mp4', '.mov', '.pdf']:
-            matches = list(self.root.glob(f'**/*{ext}'))
-            for match in matches:
-                if match.is_file() and match.stat().st_size > 10 * 1024 * 1024:
-                    large_files.append((match, match.stat().st_size))
+        large_exts = {'.zip', '.gz', '.mp4', '.mov', '.pdf'}
+        for dirpath, _, filenames in os.walk(
+            self.root, onerror=lambda e: None
+        ):
+            if '.git' in dirpath or 'node_modules' in dirpath:
+                continue
+            for fname in filenames:
+                if any(fname.endswith(ext) for ext in large_exts):
+                    fpath = Path(dirpath) / fname
+                    try:
+                        fsize = fpath.stat().st_size
+                        if fsize > 10 * 1024 * 1024:
+                            large_files.append((fpath, fsize))
+                    except OSError:
+                        pass
 
         if len(large_files) == 0:
             self.log_pass('orfaos', "Nenhum arquivo grande (>10MB) detectado", 5)
@@ -2279,48 +2347,49 @@ class MasterComplianceValidator:
         }
 
         scanned_files = 0
-        for file_path in self.root.rglob('*'):
-            # Ignorar diretórios e arquivos fora do escopo
-            if not file_path.is_file():
-                continue
-            if file_path.suffix.lower() not in scan_extensions:
-                continue
-            if any(skip_dir in file_path.parts for skip_dir in skip_dirs):
-                continue
-            if file_path.name in skip_files:
-                continue
+        for dirpath, dirnames, filenames in os.walk(
+            self.root, onerror=lambda e: None
+        ):
+            # Podar diretórios que nunca devem ser percorridos
+            dirnames[:] = [d for d in dirnames if d not in skip_dirs]
+            for fname in filenames:
+                file_path = Path(dirpath) / fname
+                if file_path.suffix.lower() not in scan_extensions:
+                    continue
+                if file_path.name in skip_files:
+                    continue
 
-            try:
-                content = file_path.read_text(encoding='utf-8', errors='ignore')
-                scanned_files += 1
-            except Exception:
-                continue
+                try:
+                    content = file_path.read_text(encoding='utf-8', errors='ignore')
+                    scanned_files += 1
+                except Exception:
+                    continue
 
-            file_refs = []
-            for pattern, description in removed_patterns:
-                # Contar apenas referências que NÃO estão em contexto resolvido
-                resolved_markers = [
-                    'removido', 'concluído', 'concluido',
-                    'duplicado', 'deletar', 'deletado',
-                    'excluído', 'excluido', 'resolvido',
-                    '~~', '✅', 'deprecated', 'migrado',
-                ]
-                count = 0
-                for line in content.splitlines():
-                    if re.search(pattern, line):
-                        # Ignorar linhas com marcadores de ação concluída
-                        line_lower = line.lower()
-                        if any(marker in line_lower for marker in resolved_markers):
-                            continue
-                        count += 1
-                if count > 0:
-                    file_refs.append((description, count))
+                file_refs = []
+                for pattern, description in removed_patterns:
+                    # Contar apenas referências que NÃO estão em contexto resolvido
+                    resolved_markers = [
+                        'removido', 'concluído', 'concluido',
+                        'duplicado', 'deletar', 'deletado',
+                        'excluído', 'excluido', 'resolvido',
+                        '~~', '✅', 'deprecated', 'migrado',
+                    ]
+                    count = 0
+                    for line in content.splitlines():
+                        if re.search(pattern, line):
+                            # Ignorar linhas com marcadores de ação concluída
+                            line_lower = line.lower()
+                            if any(marker in line_lower for marker in resolved_markers):
+                                continue
+                            count += 1
+                    if count > 0:
+                        file_refs.append((description, count))
 
-            if file_refs:
-                rel_path = file_path.relative_to(self.root)
-                files_with_refs.append((rel_path, file_refs))
-                for desc, count in file_refs:
-                    total_refs += count
+                if file_refs:
+                    rel_path = file_path.relative_to(self.root)
+                    files_with_refs.append((rel_path, file_refs))
+                    for desc, count in file_refs:
+                        total_refs += count
 
         # ── 2. Verificar caminhos relativos em código que não existem ──
         # Detecta padrões como: python3 some/path.py, python some/script.py
@@ -2344,35 +2413,37 @@ class MasterComplianceValidator:
             'ACHIEVEMENT_100_PERCENT_FINAL.md',
         }
 
-        for file_path in self.root.rglob('*'):
-            if not file_path.is_file():
-                continue
-            if file_path.suffix.lower() not in {'.md', '.sh', '.yml', '.yaml', '.py'}:
-                continue
-            if any(skip_dir in file_path.parts for skip_dir in skip_dirs):
-                continue
-            if file_path.name in skip_files:
-                continue
-            if file_path.name in plan_docs:
-                continue
-
-            try:
-                content = file_path.read_text(encoding='utf-8', errors='ignore')
-            except Exception:
-                continue
-
-            for m in code_ref_pattern.finditer(content):
-                ref_path = m.group(1).replace('\\', '/')
-                # Ignorar caminhos de exemplo/placeholder
-                if ref_path.startswith('/path/') or ref_path == 'script.py':
+        ref_extensions = {'.md', '.sh', '.yml', '.yaml', '.py'}
+        for dirpath, dirnames, filenames in os.walk(
+            self.root, onerror=lambda e: None
+        ):
+            dirnames[:] = [d for d in dirnames if d not in skip_dirs]
+            for fname in filenames:
+                file_path = Path(dirpath) / fname
+                if file_path.suffix.lower() not in ref_extensions:
                     continue
-                # Ignorar scripts planejados
-                if Path(ref_path).name in planned_scripts:
+                if file_path.name in skip_files:
                     continue
-                target = self.root / ref_path
-                if not target.exists():
-                    rel_path = file_path.relative_to(self.root)
-                    broken_script_refs.append((rel_path, ref_path))
+                if file_path.name in plan_docs:
+                    continue
+
+                try:
+                    content = file_path.read_text(encoding='utf-8', errors='ignore')
+                except Exception:
+                    continue
+
+                for m in code_ref_pattern.finditer(content):
+                    ref_path = m.group(1).replace('\\', '/')
+                    # Ignorar caminhos de exemplo/placeholder
+                    if ref_path.startswith('/path/') or ref_path == 'script.py':
+                        continue
+                    # Ignorar scripts planejados
+                    if Path(ref_path).name in planned_scripts:
+                        continue
+                    target = self.root / ref_path
+                    if not target.exists():
+                        rel_path = file_path.relative_to(self.root)
+                        broken_script_refs.append((rel_path, ref_path))
 
         # ── 3. Reportar resultados ──
         if total_refs == 0 and not broken_script_refs:
