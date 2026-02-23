@@ -40,7 +40,7 @@ jobs:
     name: Quality Gate
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Setup Python
         uses: actions/setup-python@v5
@@ -73,7 +73,7 @@ jobs:
     name: Deploy to App Service
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Setup Node.js 22 LTS
         uses: actions/setup-node@v4
@@ -237,7 +237,7 @@ jobs:
     if: needs.deploy.result == 'success' || needs.deploy.result == 'skipped'
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Setup Python
         uses: actions/setup-python@v5
