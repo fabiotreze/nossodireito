@@ -1,6 +1,6 @@
 # NossoDireito — Documento Único de Compliance
 
-**Versão:** 1.14.1 (consolidado de múltiplos documentos)
+**Versão:** 1.14.2 (consolidado de múltiplos documentos)
 **Data:** 15 de fevereiro de 2026
 **Responsável:** Fabio Treze (fabiotreze@hotmail.com)
 **Tipo:** Compliance Legal, Técnico, Segurança, Privacidade, Acessibilidade, Qualidade

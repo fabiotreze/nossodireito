@@ -236,12 +236,14 @@
                 if (!await ensureVL()) { showToast('VLibras indisponível. Tente novamente mais tarde.', 'error'); return; }
                 /* Poll for VLibras DOM: look for img[src] (preferred) or any img child
                    inside [vw-access-button], then programmatically click to open panel. */
-                await new Promise(r => { let c = 0; const iv = setInterval(() => {
-                    const ab = document.querySelector('[vw-access-button]');
-                    const img = ab && (ab.querySelector('img[src]') || ab.querySelector('img'));
-                    if (img) { clearInterval(iv); ab.click(); r(); }
-                    else if (++c > 40) { clearInterval(iv); showToast('VLibras carregou mas o painel não apareceu. Recarregue a página.', 'warning'); r(); }
-                }, 200); });
+                await new Promise(r => {
+                    let c = 0; const iv = setInterval(() => {
+                        const ab = document.querySelector('[vw-access-button]');
+                        const img = ab && (ab.querySelector('img[src]') || ab.querySelector('img'));
+                        if (img) { clearInterval(iv); ab.click(); r(); }
+                        else if (++c > 40) { clearInterval(iv); showToast('VLibras carregou mas o painel não apareceu. Recarregue a página.', 'warning'); r(); }
+                    }, 200);
+                });
             } finally { btnLibras.disabled = false; btnLibras.textContent = '🤟 Libras'; }
         });
         const btnReadAloud = document.getElementById('a11yReadAloud');
@@ -724,6 +726,16 @@
         // Remove SEO-only content from DOM to reduce DOM size (crawlers already parsed it)
         const seoContent = document.getElementById('seo-content');
         if (seoContent) seoContent.remove();
+        // Handle ?q= URL parameter (SearchAction schema support)
+        try {
+            const urlQ = new URLSearchParams(window.location.search).get('q');
+            if (urlQ && dom.searchInput) {
+                dom.searchInput.value = urlQ;
+                dom.searchInput.dispatchEvent(new Event('input'));
+                const busca = document.getElementById('busca');
+                if (busca) busca.scrollIntoView({ behavior: 'smooth' });
+            }
+        } catch (_qErr) { /* ignore invalid URL params */ }
         setInterval(async () => {
             const removed = await cleanupExpiredFiles();
             if (removed > 0) await renderFileList();

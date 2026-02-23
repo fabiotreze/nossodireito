@@ -617,7 +617,11 @@ const server = http.createServer(async (req, res) => {
 
     // Early hints — push critical sub-resources for HTML pages
     if (ext === '.html') {
-        headers['Link'] = '</css/styles.css>; rel=preload; as=style';
+        headers['Link'] = '</css/styles.css>; rel=preload; as=style, </js/app.js>; rel=preload; as=script';
+        headers['Content-Language'] = 'pt-BR';
+        headers['X-Robots-Tag'] = 'index, follow';
+    } else if (ext === '.json') {
+        headers['X-Robots-Tag'] = 'noindex';
     }
 
     // Compression for text-based content (Brotli > Gzip > None)

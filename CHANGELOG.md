@@ -5,6 +5,26 @@ Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/)
 e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [1.14.2] - 2026-02-24
+
+### Adicionado
+
+- **SEO: `<meta name="robots">` com `max-snippet:-1, max-image-preview:large`** — permite snippets maiores e imagens grandes no Google
+- **SEO: Schema `WebPage`** com `dateModified`, `datePublished`, `speakable` e linkagem `@id` ao FAQPage e BreadcrumbList
+- **SEO: `hreflang="pt-BR"` e `x-default`** — sinal de idioma/região para buscadores
+- **SEO: `og:image:type` e `og:updated_time`** — metadados Open Graph completos
+- **SEO: `Content-Language: pt-BR`** — header HTTP para páginas HTML
+- **SEO: `X-Robots-Tag`** — `index, follow` para HTML; `noindex` para JSON data files
+- **SEO: Link preload `app.js`** — early hints para recurso crítico
+- **SEO: Organization `sameAs` e `foundingDate`** — linkagem ao GitHub no knowledge graph
+- **SEO: `?q=` URL param handling** — SearchAction schema agora funcional no app.js
+
+### Corrigido
+
+- **Title otimizado para CTR** — adicionado "2026" e "Guia Gratuito" para destaque na posição 8+
+- **Hero image alt text** — descritivo com keywords em vez de apenas "NossoDireito"
+- **Removido `Crawl-delay: 5`** do robots.txt — permitir Bing indexar mais rápido
+
 ## [1.14.1] - 2026-02-24
 
 ### Adicionado
