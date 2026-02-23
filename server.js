@@ -14,6 +14,7 @@ const fs = require('node:fs');
 const fsPromises = require('node:fs/promises');
 const path = require('node:path');
 const zlib = require('node:zlib');
+const crypto = require('node:crypto');
 
 const PORT = process.env.PORT || 8080;
 
@@ -38,6 +39,121 @@ if (AI_CONN) {
     } catch (err) {
         console.log('ℹ️ applicationinsights package not available — telemetry disabled');
         appInsights = null;
+    }
+}
+
+// ── Privacy-Respecting Visitor Analytics ──
+// LGPD-compliant: zero cookies, zero fingerprinting, zero PII stored.
+// IPs are anonymized via SHA-256 with a daily-rotating random salt.
+// Only aggregated counters are kept in-memory (reset daily).
+// Metrics are forwarded to Application Insights as custom events.
+const analytics = {
+    salt: crypto.randomBytes(32).toString('hex'),
+    date: new Date().toISOString().slice(0, 10),
+    pageViews: 0,
+    uniqueVisitors: new Set(),
+    byDevice: { desktop: 0, mobile: 0, tablet: 0 },
+    byPath: new Map(),
+    hourly: new Array(24).fill(0),
+    history: [],            // last 30 days of {date, views, visitors}
+};
+
+/**
+ * Rotate daily salt and archive yesterday's stats.
+ * Called on every request — cheap Date comparison.
+ */
+function analyticsRotateIfNeeded() {
+    const today = new Date().toISOString().slice(0, 10);
+    if (today === analytics.date) return;
+
+    // Archive previous day
+    analytics.history.push({
+        date: analytics.date,
+        views: analytics.pageViews,
+        visitors: analytics.uniqueVisitors.size,
+        devices: { ...analytics.byDevice },
+        topPages: [...analytics.byPath.entries()]
+            .sort((a, b) => b[1] - a[1])
+            .slice(0, 10)
+            .map(([p, c]) => ({ path: p, views: c })),
+    });
+    // Keep only last 30 days
+    if (analytics.history.length > 30) analytics.history.shift();
+
+    // Send summary to Application Insights (if available)
+    if (appInsights) {
+        const client = appInsights.defaultClient;
+        if (client) {
+            client.trackMetric({ name: 'daily_unique_visitors', value: analytics.uniqueVisitors.size });
+            client.trackMetric({ name: 'daily_page_views', value: analytics.pageViews });
+            client.trackMetric({ name: 'daily_desktop', value: analytics.byDevice.desktop });
+            client.trackMetric({ name: 'daily_mobile', value: analytics.byDevice.mobile });
+            client.trackMetric({ name: 'daily_tablet', value: analytics.byDevice.tablet });
+        }
+    }
+
+    // Reset for new day with fresh salt (prevents cross-day correlation)
+    analytics.salt = crypto.randomBytes(32).toString('hex');
+    analytics.date = today;
+    analytics.pageViews = 0;
+    analytics.uniqueVisitors = new Set();
+    analytics.byDevice = { desktop: 0, mobile: 0, tablet: 0 };
+    analytics.byPath = new Map();
+    analytics.hourly = new Array(24).fill(0);
+}
+
+/**
+ * Detect device type from User-Agent (broad categories only — no fingerprinting).
+ */
+function detectDevice(ua) {
+    if (!ua) return 'desktop';
+    if (/tablet|ipad|playbook|silk/i.test(ua)) return 'tablet';
+    if (/mobile|iphone|ipod|android.*mobile|windows phone|blackberry/i.test(ua)) return 'mobile';
+    return 'desktop';
+}
+
+/**
+ * Record a page view with privacy-preserving visitor dedup.
+ * @param {string} ip - Raw client IP (never stored)
+ * @param {string} ua - User-Agent header
+ * @param {string} urlPath - Requested path
+ */
+function analyticsTrack(ip, ua, urlPath) {
+    analyticsRotateIfNeeded();
+
+    // Anonymize: SHA-256(salt + ip) — irreversible, non-correlatable across days
+    const hash = crypto.createHash('sha256').update(analytics.salt + ip).digest('hex').slice(0, 16);
+    const isNew = !analytics.uniqueVisitors.has(hash);
+    analytics.uniqueVisitors.add(hash);
+
+    analytics.pageViews++;
+
+    // Device category
+    const device = detectDevice(ua);
+    if (isNew) analytics.byDevice[device]++;
+
+    // Path tracking (top pages)
+    const safePath = urlPath.split('?')[0].slice(0, 100); // strip query, limit length
+    analytics.byPath.set(safePath, (analytics.byPath.get(safePath) || 0) + 1);
+    // Cap map size to prevent memory abuse
+    if (analytics.byPath.size > 500) {
+        const sorted = [...analytics.byPath.entries()].sort((a, b) => b[1] - a[1]).slice(0, 100);
+        analytics.byPath = new Map(sorted);
+    }
+
+    // Hourly distribution
+    const hour = new Date().getHours();
+    analytics.hourly[hour]++;
+
+    // Real-time metric to App Insights (sampled — only on new visitors)
+    if (isNew && appInsights) {
+        const client = appInsights.defaultClient;
+        if (client) {
+            client.trackEvent({
+                name: 'unique_visit',
+                properties: { device, path: safePath },
+            });
+        }
     }
 }
 
@@ -135,7 +251,9 @@ const SECURITY_HEADERS = Object.freeze({
     'Strict-Transport-Security': 'max-age=31536000; includeSubDomains; preload',
 
     // ── Privacy / Referrer ──
-    'Referrer-Policy': 'no-referrer',
+    // strict-origin-when-cross-origin: sends origin on cross-origin requests
+    // (privacy-preserving) while allowing same-origin referral data for analytics.
+    'Referrer-Policy': 'strict-origin-when-cross-origin',
 
     // ── Feature Restrictions ──
     // Note: accelerometer/gyroscope/magnetometer allowed for self —
@@ -255,6 +373,49 @@ const server = http.createServer(async (req, res) => {
             'Cache-Control': 'no-cache, no-store',
         });
         res.end(JSON.stringify({ status: 'healthy', version: PKG_VERSION }));
+        return;
+    }
+
+    // ── Privacy Analytics Stats Endpoint ──
+    // Returns aggregated, anonymous visitor statistics.
+    // No PII is ever exposed. Protected by optional STATS_KEY env var.
+    if (req.url === '/api/stats' || req.url === '/api/stats/') {
+        // Optional auth: if STATS_KEY is set, require ?key= parameter
+        const statsKey = process.env.STATS_KEY || '';
+        if (statsKey) {
+            let requestKey = '';
+            try {
+                requestKey = new URL(req.url, `http://${req.headers.host || 'localhost'}`).searchParams.get('key') || '';
+            } catch { /* ignore */ }
+            if (requestKey !== statsKey) {
+                res.writeHead(403, { 'Content-Type': 'text/plain', ...SECURITY_HEADERS });
+                res.end('Forbidden');
+                return;
+            }
+        }
+        analyticsRotateIfNeeded();
+        const topPages = [...analytics.byPath.entries()]
+            .sort((a, b) => b[1] - a[1])
+            .slice(0, 10)
+            .map(([p, c]) => ({ path: p, views: c }));
+        const stats = {
+            date: analytics.date,
+            today: {
+                pageViews: analytics.pageViews,
+                uniqueVisitors: analytics.uniqueVisitors.size,
+                devices: { ...analytics.byDevice },
+                topPages,
+                hourly: [...analytics.hourly],
+            },
+            history: analytics.history,
+            privacy: 'Nenhum dado pessoal é coletado. IPs são anonimizados via SHA-256 com salt rotativo diário.',
+        };
+        res.writeHead(200, {
+            'Content-Type': 'application/json',
+            'Cache-Control': 'no-cache, no-store',
+            ...SECURITY_HEADERS,
+        });
+        res.end(JSON.stringify(stats, null, 2));
         return;
     }
 
@@ -429,6 +590,13 @@ const server = http.createServer(async (req, res) => {
         });
         res.end('Not Found');
         return;
+    }
+
+    // ── Track page view (privacy-preserving) ──
+    // Only track HTML page loads (not static assets like CSS/JS/images)
+    const reqExt = path.extname(fullPath).toLowerCase();
+    if (reqExt === '.html' || reqExt === '') {
+        analyticsTrack(clientIp, req.headers['user-agent'] || '', urlPath);
     }
 
     const ext = path.extname(fullPath).toLowerCase();

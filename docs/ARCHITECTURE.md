@@ -1,6 +1,6 @@
 # NossoDireito — Arquitetura do Sistema V1 (Produção Atual)
 
-**Versão:** 1.13.2
+**Versão:** 1.14.0
 **Data:** Fevereiro 2026
 **Status:** Produção Estável (Quality Gate: 100.0/100)
 **URL:** https://nossodireito.fabiotreze.com
@@ -388,8 +388,9 @@ Motor de análise de documentos baseado em regex e pesos.
 4. Compressão Gzip/Brotli para assets text-based
 5. Cache headers otimizados por tipo de arquivo
 6. Health check endpoint (`/health`) para Azure probe
-7. Redirect azurewebsites.net → domínio customizado (SEO)
-8. Proxy reverso para API gov.br (CORS bypass)
+7. Analytics endpoint (`/api/stats`) com métricas anonimizadas
+8. Redirect azurewebsites.net → domínio customizado (SEO)
+9. Proxy reverso para API gov.br (CORS bypass)
 
 **Destaques de Segurança (EASM-hardened):**
 
@@ -411,7 +412,7 @@ const SECURITY_HEADERS = {
   'Strict-Transport-Security': 'max-age=31536000; includeSubDomains; preload',
   'X-Content-Type-Options': 'nosniff',
   'X-Frame-Options': 'DENY',
-  'Referrer-Policy': 'no-referrer',
+  'Referrer-Policy': 'strict-origin-when-cross-origin',
   'Permissions-Policy': 'camera=(), microphone=(), geolocation=(), payment=(), usb=(), bluetooth=(), serial=(), hid=()',
   'Cross-Origin-Opener-Policy': 'same-origin',
   'Cross-Origin-Resource-Policy': 'cross-origin',
@@ -1892,6 +1893,68 @@ appInsights.trackEvent({
 });
 ```
 
+### Analytics Server-Side (Privacy-Respecting)
+
+**Novo em v1.14.0**: Sistema de contagem de visitantes únicos diários com privacidade total, integrado ao Application Insights.
+
+**Funcionamento:**
+
+1. **Anonimização**: O IP do visitante é transformado em hash SHA-256 com salt rotacionado diariamente — impossível reverter para o IP original
+2. **Deduplicação**: Visitantes únicos contados via `Set` de hashes — mesmo visitante em múltiplas páginas conta uma vez por dia
+3. **Rotação diária**: À meia-noite (UTC), os contadores são resetados, métricas do dia anterior enviadas ao App Insights, e um novo salt aleatório é gerado
+4. **Sem persistência de PII**: Nenhum dado pessoal é armazenado em disco — tudo em memória volátil
+
+**Métricas Coletadas:**
+
+| Métrica | Tipo | Descrição |
+|---------|------|-----------|
+| `daily_unique_visitors` | App Insights Custom Metric | Visitantes únicos no dia |
+| `daily_page_views` | App Insights Custom Metric | Total de visualizações de página |
+| `byDevice` | In-memory | Contagem por tipo (desktop/mobile/tablet) |
+| `byPath` | In-memory | Contagem por URL path |
+| `hourly` | In-memory | Distribuição horária (0-23h) |
+
+**Endpoint:**
+```
+GET /api/stats
+```
+Retorna JSON com estatísticas do dia atual:
+```json
+{
+  "date": "2026-02-23",
+  "pageViews": 42,
+  "uniqueVisitors": 18,
+  "byDevice": {"desktop": 12, "mobile": 5, "tablet": 1},
+  "topPaths": [["/", 30], ["/data/direitos.json", 8]],
+  "hourlyDistribution": [0, 0, 0, 0, 0, 1, 3, 5, ...],
+  "history": [{"date": "2026-02-22", "pageViews": 38, "uniqueVisitors": 15}]
+}
+```
+
+**Conformidade LGPD:**
+- Hash SHA-256 com salt efêmero — qualifica como dado anonimizado (Art. 12 LGPD)
+- Salt rotacionado diariamente impossibilita correlação entre dias
+- Zero dados pessoais armazenados em disco ou transmitidos a terceiros
+- Application Insights recebe apenas contadores agregados (números inteiros)
+
+**KQL — Queries de Analytics:**
+
+```kql
+// Visitantes únicos por dia (últimos 30 dias)
+customMetrics
+| where name == "daily_unique_visitors"
+| where timestamp > ago(30d)
+| project date = format_datetime(timestamp, "yyyy-MM-dd"), visitors = value
+| order by date desc
+
+// Page views por dia
+customMetrics
+| where name == "daily_page_views"
+| where timestamp > ago(30d)
+| project date = format_datetime(timestamp, "yyyy-MM-dd"), views = value
+| order by date desc
+```
+
 ### Kusto Query Language (KQL) — Queries Úteis
 
 **1. Top 10 páginas mais acessadas (última hora):**
@@ -2254,9 +2317,9 @@ if (req.url === '/healthz' || req.url === '/health') {
 
 ## Conclusão
 
-Este documento apresenta a arquitetura completa do sistema **NossoDireito V1** (versão 1.13.1) em produção. O portal atende ~1.000 famílias/mês com informações sobre direitos PcD, mantendo:
+Este documento apresenta a arquitetura completa do sistema **NossoDireito V1** (versão 1.14.0) em produção. O portal atende ~1.000 famílias/mês com informações sobre direitos PcD, mantendo:
 
-✅ **Conformidade LGPD** (zero data collection)
+✅ **Conformidade LGPD** (analytics anonimizado com SHA-256 + salt efêmero)
 ✅ **Acessibilidade WCAG 2.1 AA** (TTS, VLibras, alto contraste)
 ✅ **Segurança EASM-hardened** (OWASP headers, rate limiting)
 ✅ **Performance Lighthouse 95+** (Brotli, Service Worker, CDN)

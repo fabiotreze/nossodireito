@@ -5,6 +5,24 @@ Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/)
 e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [1.14.0] - 2026-02-23
+
+### Adicionado
+
+- **Analytics com privacidade (LGPD-compliant)** — Contador de visitantes únicos e page views em `server.js` usando SHA-256 com salt diário rotativo. Zero cookies, zero fingerprinting, zero PII armazenado
+- **Endpoint `/api/stats`** — Retorna estatísticas agregadas anônimas (visitantes, dispositivos desktop/mobile/tablet, top pages, distribuição por hora, histórico 30 dias). Protegido opcionalmente por `STATS_KEY` env var
+- **Métricas customizadas no Application Insights** — `daily_unique_visitors`, `daily_page_views`, `daily_desktop/mobile/tablet` enviadas automaticamente na virada do dia. Evento `unique_visit` em tempo real
+- **`SearchAction` no WebSite schema (JSON-LD)** — Habilitação de Sitelinks Searchbox no Google Search Results
+
+### Corrigido
+
+- **`meta keywords` removido** — Tag ignorada pelo Google desde 2009, eliminando ~850 bytes desnecessários no `<head>`
+- **`meta robots: index, follow` removido** — Comportamento padrão, tag redundante
+- **`Referrer-Policy` alterada para `strict-origin-when-cross-origin`** — Substitui `no-referrer` (que bloqueava dados de referral no Google Search Console e analytics) mantendo privacidade cross-origin. Atualizado em `index.html` e `server.js`
+- **Navbar brand `href="#"` → `href="#inicio"`** — Link morto corrigido para destino semântico correto
+
+---
+
 ## [1.13.2] - 2026-02-18
 
 ### 🔍 SEO & Structured Data

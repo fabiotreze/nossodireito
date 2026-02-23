@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 Content Validation - Validação Semântica e Estrutural
-NossoDireito v1.13.2
+NossoDireito v1.14.0
 
 Valida:
 - 30 categorias com todos os campos obrigatórios
@@ -455,7 +455,7 @@ class ContentValidator:
     def run(self):
         """Executar todas validações"""
         self.log("=" * 70, 'PASS')
-        self.log("CONTENT VALIDATION - NossoDireito v1.13.2", 'PASS')
+        self.log("CONTENT VALIDATION - NossoDireito v1.14.0", 'PASS')
         self.log(f"Timestamp: {datetime.now().isoformat()}", 'PASS')
         self.log("=" * 70, 'PASS')
 
