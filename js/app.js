@@ -283,7 +283,7 @@
                 return [text];
             }
 
-            const sentences = text.match(/[^.!?\n]+[.!?\n]+/g) || [text];
+            const sentences = text.match(/[^.!?\n]+(?:[.!?\n]+|$)/g) || [text];
             const chunks = [];
             let currentChunk = '';
             for (const sentence of sentences) {
@@ -300,8 +300,10 @@
             }
             return chunks.length > 0 ? chunks : [text];
         }
+        let _voicePromise = null;
         function waitForVoices() {
-            return new Promise((resolve) => {
+            if (_voicePromise) return _voicePromise;
+            _voicePromise = new Promise((resolve) => {
                 const voices = speechSynthesis.getVoices();
                 if (voices.length) return resolve(voices);
                 const timeout = setTimeout(() => {
@@ -315,6 +317,7 @@
                     resolve(loadedVoices);
                 };
             });
+            return _voicePromise;
         }
         function getTextToRead() {
             const selection = window.getSelection();
@@ -593,7 +596,8 @@
         d.innerHTML = '<p>' + escapeHtml(msg) + '</p><div class="confirm-actions"><button>Cancelar</button><button class="btn-confirm">Confirmar</button></div>';
         document.body.appendChild(d);
         d.showModal();
-        d.onclick = e => { if (e.target.tagName === 'BUTTON') { const ok = e.target.classList.contains('btn-confirm'); d.close(); d.remove(); if (ok) cb(); } };
+        d.addEventListener('close', () => { if (d.parentNode) d.remove(); });
+        d.onclick = e => { const btn = e.target.closest('button'); if (btn) { const ok = btn.classList.contains('btn-confirm'); d.close(); d.remove(); if (ok) cb(); } };
     }
     const $ = (sel) => document.querySelector(sel);
     const $$ = (sel) => document.querySelectorAll(sel);
@@ -664,7 +668,7 @@
         safeRun('setupFooter', setupFooter);
         safeRun('setupBackToTop', setupBackToTop);
         await safeRunAsync('loadData', loadData);
-        safeRun('enrichGovBr', enrichGovBr);
+        safeRunAsync('enrichGovBr', enrichGovBr);
         safeRun('setupFooterVersion', setupFooterVersion);
         safeRun('renderCategories', renderCategories);
         safeRun('renderTransparency', renderTransparency);
@@ -1980,6 +1984,7 @@ No Brasil, a maioria dos laudos ainda usa CID-10. O sistema aceita ambas as codi
                     const file = await getFile(btn.dataset.id);
                     if (file) {
                         const plainData = await decryptFileData(file);
+                        if (!plainData) return;
                         const blob = new Blob([plainData], { type: file.type });
                         const url = URL.createObjectURL(blob);
                         const a = document.createElement('a');
@@ -2047,7 +2052,11 @@ No Brasil, a maioria dos laudos ainda usa CID-10. O sistema aceita ambas as codi
                 const text = `*${analysisTitle}*\n\n${matchList}\n\nVeja mais em: ${window.location.origin}`;
                 const url = `https://wa.me/?text=${encodeURIComponent(text)}`;
                 const win = window.open(url, '_blank', 'noopener,noreferrer');
-                if (!win) location.href = url; // popup blocked fallback
+                if (!win) {
+                    const a = document.createElement('a');
+                    a.href = url; a.target = '_blank'; a.rel = 'noopener noreferrer';
+                    document.body.appendChild(a); a.click(); a.remove();
+                }
             });
         }
         const exportChecklistBtn = document.getElementById('exportChecklistPdf');
@@ -2099,7 +2108,11 @@ No Brasil, a maioria dos laudos ainda usa CID-10. O sistema aceita ambas as codi
                 );
                 const url = `https://wa.me/?text=${shareText}`;
                 const win = window.open(url, '_blank', 'noopener,noreferrer');
-                if (!win) location.href = url; // popup blocked fallback
+                if (!win) {
+                    const a = document.createElement('a');
+                    a.href = url; a.target = '_blank'; a.rel = 'noopener noreferrer';
+                    document.body.appendChild(a); a.click(); a.remove();
+                }
             });
         }
         const shareDocsBtn = document.getElementById('shareDocsWhatsApp');
@@ -2117,7 +2130,11 @@ No Brasil, a maioria dos laudos ainda usa CID-10. O sistema aceita ambas as codi
                 );
                 const url = `https://wa.me/?text=${shareText}`;
                 const win = window.open(url, '_blank', 'noopener,noreferrer');
-                if (!win) location.href = url; // popup blocked fallback
+                if (!win) {
+                    const a = document.createElement('a');
+                    a.href = url; a.target = '_blank'; a.rel = 'noopener noreferrer';
+                    document.body.appendChild(a); a.click(); a.remove();
+                }
             });
         }
         const analyzeBtn = document.getElementById('analyzeSelected');
@@ -2171,6 +2188,7 @@ No Brasil, a maioria dos laudos ainda usa CID-10. O sistema aceita ambas as codi
                 }
                 try {
                     const plainData = await decryptFileData(file);
+                    if (!plainData) throw new Error('Decryption failed');
                     let text = '';
                     if (file.type === 'application/pdf') {
                         text = await extractPdfText(plainData);
@@ -2590,7 +2608,8 @@ um advogado ou o <strong>CRAS</strong> da sua cidade.</p>
             );
         } catch (err) {
             console.error('Decryption failed:', err);
-            return fileObj.data;
+            showToast('Falha ao descriptografar arquivo. O arquivo pode estar corrompido.', 'error');
+            return null;
         }
     }
     async function cleanupExpiredFiles() {
@@ -2636,6 +2655,7 @@ um advogado ou o <strong>CRAS</strong> da sua cidade.</p>
             };
             req.onsuccess = () => resolve(req.result);
             req.onerror = () => reject(req.error);
+            req.onblocked = () => reject(new Error('IndexedDB blocked by another tab'));
         });
     }
     async function dbOp(mode, fn) {

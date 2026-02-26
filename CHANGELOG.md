@@ -5,6 +5,19 @@ Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/)
 e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [1.14.4] - 2026-02-25
+
+### Corrigido
+
+- **Bug crítico: WhatsApp share navegava a página atual** — ao clicar nos botões de compartilhar no WhatsApp (Primeiros Passos, Análise de Documentos, Documentos Necessários), quando o popup era bloqueado pelo navegador, o fallback `location.href = url` sobrescrevia a página NossoDireito com o link do WhatsApp, resultando em duas abas WhatsApp e perda do site. Corrigido: fallback agora usa `<a>` programático com `target="_blank"`, garantindo que a página original nunca é afetada
+- **TTS: texto final sem pontuação era ignorado** — `splitIntoChunks` usava regex que exigia `.!?\n` ao final de cada sentença; texto após a última pontuação era silenciosamente descartado na leitura em voz alta. Corrigido com `(?:[.!?\n]+|$)`
+- **Dialog `confirmAction` vazava no DOM ao pressionar Escape** — ao fechar com Escape, o `<dialog>` era ocultado mas o elemento permanecia no DOM. Adicionado listener `close` para cleanup automático
+- **Dialog `confirmAction` não respondia a cliques em filhos de botão** — `e.target.tagName === 'BUTTON'` substituído por `e.target.closest('button')` para robustez
+- **`decryptFileData` retornava dados criptografados em caso de falha** — agora retorna `null` com toast de erro, e callers fazem null-check
+- **`waitForVoices` race condition** — chamadas concorrentes sobrescreviam `onvoiceschanged`, causando promises pendentes. Promise agora é cacheada
+- **`enrichGovBr` (async) chamado via `safeRun` (sync)** — corrigido para `safeRunAsync`
+- **`openDB` travava indefinidamente se IndexedDB bloqueado** — adicionado handler `onblocked`
+
 ## [1.14.3] - 2026-02-25
 
 ### Adicionado
