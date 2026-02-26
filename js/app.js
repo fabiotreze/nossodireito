@@ -1,6 +1,9 @@
 
 (function () {
     'use strict';
+    // Swap deferred CSS from media="print" to "all" (avoids inline onload blocked by CSP)
+    var _css = document.getElementById('deferredCSS');
+    if (_css) _css.media = 'all';
     // Fetch JSON data eagerly at module scope (before DOMContentLoaded).
     // Replaces <link rel="preload"> which had credential-mode mismatch.
     // AbortController prevents ERR_TIMED_OUT on cold starts.
