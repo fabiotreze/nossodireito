@@ -60,10 +60,10 @@
 | Validação de arquivo             | ✅      | Tipo + tamanho (5MB max)                    |
 | Revogação de Blob URL            | ✅      | 15 segundos (reduzido de 60s)               |
 | X-Content-Type-Options            | ✅      | `nosniff`                                   |
-| Referrer-Policy                   | ✅      | `no-referrer`                               |
+| Referrer-Policy                   | ✅      | `strict-origin-when-cross-origin`           |
 | Permissions-Policy                | ✅      | Câmera, microfone, geolocalização negados; accelerometer/gyroscope/magnetometer=(self) para VLibras |
 | HSTS (server.js)                  | ✅      | `max-age=31536000; includeSubDomains`       |
-| Rate Limiting (server.js)         | ✅      | 100 req/15min por IP                        |
+| Rate Limiting (server.js)         | ✅      | 120 req/min por IP                          |
 | CSP server-side (server.js)       | ✅      | Sincronizado com meta tag do HTML           |
 | VLibras CSP allowlist             | ✅      | frame-src + script-src + media-src + font-src |
 
@@ -113,7 +113,7 @@
 | **A07:2021** | Identification and Auth Failures           | N/A        | Sem autenticação (app local offline)                 | ✅ N/A |
 | **A08:2021** | Software and Data Integrity Failures       | ALTA       | SRI sha384 no CDN; CSP bloqueia scripts não-autorizados | ✅  |
 | **A09:2021** | Security Logging and Monitoring Failures   | BAIXA      | `console.info/warn/error` para eventos de segurança  | ✅     |
-| **A10:2021** | Server-Side Request Forgery                | N/A        | server.js serve apenas estáticos, sem proxy/fetch    | ✅ N/A |
+| **A10:2021** | Server-Side Request Forgery                | BAIXA      | Proxy `/api/govbr-servico/:id` restrito a IDs numéricos (≤10 dígitos), URL fixa `servicos.gov.br`, timeout 5s, body limit 1MB | ✅     |
 
 **Cobertura OWASP**: 7/7 itens aplicáveis mitigados.
 

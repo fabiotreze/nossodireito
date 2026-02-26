@@ -4,7 +4,9 @@
   "description": "NossoDireito — Portal de direitos PcD (server)",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "test": "python -m pytest tests/ -v --tb=short --ignore=tests/test_browser.py",
+    "validate": "python scripts/validate_all.py --quick"
   },
   "dependencies": {
     "applicationinsights": "^3.4.0"

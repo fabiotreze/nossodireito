@@ -6,7 +6,7 @@
 #   - Security: BYOC (PFX via Key Vault), SNI SSL, HTTPS Only
 #   - Reliability: 99.95% SLA, always_on, health check
 #   - Operational Excellence: IaC + CI/CD auto-deploy
-#   - Performance: Node.js 20 LTS, HTTP/2, gzip
+#   - Performance: Node.js 22 LTS, HTTP/2, Brotli + gzip
 # ============================================================
 
 terraform {

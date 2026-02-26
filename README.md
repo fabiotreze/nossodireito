@@ -13,6 +13,9 @@
 [![LGPD](https://img.shields.io/badge/LGPD-Zero%20Data%20Collection-blue?style=flat-square)](SECURITY.md)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow?style=flat-square)](LICENSE)
 [![Version](https://img.shields.io/badge/Version-1.14.4-informational?style=flat-square)](CHANGELOG.md)
+[![Quality Gate](https://github.com/fabiotreze/nossodireito/actions/workflows/quality-gate.yml/badge.svg)](https://github.com/fabiotreze/nossodireito/actions/workflows/quality-gate.yml)
+[![Deploy](https://github.com/fabiotreze/nossodireito/actions/workflows/deploy.yml/badge.svg)](https://github.com/fabiotreze/nossodireito/actions/workflows/deploy.yml)
+[![Python Tests](https://img.shields.io/badge/Python%20Tests-370%20passed-brightgreen?style=flat-square&logo=pytest)](tests/)
 
 **Recebeu um laudo? Vem que a gente te ajuda.**
 
@@ -107,7 +110,7 @@ python scripts/analise360.py
 - **Matching Engine** com algoritmo de busca semântica
 - Reconhece sinônimos e variações (ex: "autismo" → "TEA", "pessoa com deficiência" → "PcD")
 - Sistema de pesos para priorizar resultados mais relevantes
-- Busca por keywords em 609 termos mapeados
+- Busca por keywords em 751+ termos mapeados (cobre 6 segmentos: visão, audição, mobilidade, saúde mental, neurodiversidade e fala)
 
 ### ♿ **Acessibilidade Máxima**
 - **50+ atributos ARIA** (WCAG 2.1 AA/AAA)
@@ -128,7 +131,7 @@ python scripts/analise360.py
 ### 📚 **Documentação Oficial**
 - 40+ leis federais referenciadas com artigos específicos
 - URLs verificadas de fontes oficiais (planalto.gov.br, gov.br, inss.gov.br)
-- Última atualização: 12 de fevereiro de 2026
+- Última atualização: 25 de fevereiro de 2026
 - Revisões periódicas
 
 ---
@@ -158,7 +161,7 @@ git clone https://github.com/fabiotreze/nossodireito.git
 cd nossodireito
 
 # Instale Python (se necessário para validação)
-python3 --version  # Requer 3.11+
+python3 --version  # Requer 3.10+
 
 # Execute validações
 python3 scripts/validate_content.py
@@ -191,7 +194,7 @@ python3 -m http.server 3000
 - **GitHub Actions** — CI/CD automatizado
 
 ### **Validação e Qualidade**
-- **Python 3.11+** — Scripts de validação
+- **Python 3.10+** — Scripts de validação
 - **validate_content.py** — 147 verificações de dados e código
 - **validate_sources.py** — Teste de HTTP status de 40+ URLs
 - **validate_legal_sources.py** — Extração automática de artigos de leis

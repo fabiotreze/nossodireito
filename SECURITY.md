@@ -4,9 +4,9 @@
 
 | Versão | Suportada |
 |--------|-----------|
+| 1.14.x | ✅        |
 | 1.13.x | ✅        |
-| 1.12.x | ✅        |
-| < 1.12 | ❌        |
+| < 1.13 | ❌        |
 
 ## Reportando Vulnerabilidades
 

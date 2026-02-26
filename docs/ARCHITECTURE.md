@@ -78,7 +78,7 @@
    └─ Upload de laudo PDF (análise local)
        ↓
 4. Análise de Documento:
-   ├─ Upload → IndexedDB com AES-GCM-256 (TTL 30 min)
+   ├─ Upload → IndexedDB com AES-GCM-256 (TTL 15 min)
    ├─ PDF.js extrai texto
    ├─ Regex matching com data/matching_engine.json
    └─ Exibe direitos identificados (score + peso)
@@ -117,10 +117,10 @@
         │                                                  │
         │  Assets Servidos:                                │
         │  ├─ index.html (568 linhas, SPA shell)          │
-        │  ├─ css/styles.css (2.862 linhas)               │
-        │  ├─ js/app.js (2.682 linhas, lógica principal)  │
+        │  ├─ css/styles.css (3.326 linhas)               │
+        │  ├─ js/app.js (2.764 linhas, lógica principal)  │
         │  ├─ js/sw-register.js (Service Worker loader)   │
-        │  ├─ sw.js (158 linhas, cache-first strategy)    │
+        │  ├─ sw.js (159 linhas, network-first strategy)    │
         │  ├─ data/direitos.json (30 categorias, ~265KB)  │
         │  ├─ data/matching_engine.json (keywords, ~106KB) │
         │  └─ data/dicionario_pcd.json (glossário, ~72KB)  │
@@ -160,7 +160,7 @@
 │  └──────────────┬──────────────────────────────┘    │
 │                 │                                    │
 │  ┌──────────────▼──────────────────────────────┐    │
-│  │  app.js (2.682 linhas)                      │    │
+│  │  app.js (2.764 linhas)                      │    │
 │  │  ┌───────────────────────────────────────┐  │    │
 │  │  │  1. TTS Engine (Web Speech API)      │  │    │
 │  │  │     - Síntese de voz em pt-BR        │  │    │
@@ -180,7 +180,7 @@
 │  │  │  4. IndexedDB Manager                │  │    │
 │  │  │     - Armazenamento local de PDFs    │  │    │
 │  │  │     - AES-GCM-256 encryption         │  │    │
-│  │  │     - TTL 30 minutos (auto-delete)   │  │    │
+│  │  │     - TTL 15 minutos (auto-delete)   │  │    │
 │  │  ├───────────────────────────────────────┤  │    │
 │  │  │  5. UI Renderer                      │  │    │
 │  │  │     - Renderização de cards dinâmica │  │    │
@@ -196,17 +196,17 @@
 │                                                      │
 │  ┌─────────────────────────────────────────────┐    │
 │  │  Service Worker (sw.js)                     │    │
-│  │  - Cache-first: HTML, CSS, JS, images       │    │
-│  │  - Network-first: direitos.json             │    │
+│  │  - Network-first: HTML, CSS, JS, images, JSON │    │
+│  │  - Cache-first: CDN externas apenas           │    │
 │  │  - Offline fallback                          │    │
 │  └─────────────────────────────────────────────┘    │
 │                                                      │
 │  ┌─────────────────────────────────────────────┐    │
-│  │  IndexedDB (nossoDireitoDB)                 │    │
+│  │  IndexedDB (NossoDireitoDB)                 │    │
 │  │  - Store: pdfFiles                          │    │
 │  │  - Schema: {id, name, data: ArrayBuffer,    │    │
 │  │             encryptionKey, uploadDate}       │    │
-│  │  - TTL: 30 minutos (sweep a cada 60s)       │    │
+│  │  - TTL: 15 minutos (sweep a cada 60s)       │    │
 │  └─────────────────────────────────────────────┘    │
 │                                                      │
 │  ┌─────────────────────────────────────────────┐    │
@@ -227,8 +227,8 @@ Fonte de verdade para as 30 categorias de direitos PcD, 27 órgãos estaduais (S
 
 ```json
 {
-  "versao": "1.13.1",
-  "ultima_atualizacao": "2026-02-16",
+  "versao": "1.14.4",
+  "ultima_atualizacao": "2026-02-25",
   "categorias": [
     {
       "id": "bpc_loas",
@@ -270,7 +270,7 @@ Motor de análise de documentos baseado em regex e pesos.
 
 ```json
 {
-  "version": "1.13.1",
+  "version": "1.14.4",
   "cid_mappings": {
     "F84.0": {
       "disease": "Autismo Infantil",
@@ -329,12 +329,12 @@ Motor de análise de documentos baseado em regex e pesos.
 | Tecnologia | Versão | Uso |
 |------------|--------|-----|
 | **HTML5** | - | SPA shell (index.html 568 linhas) |
-| **CSS3** | - | styles.css (2.862 linhas), variáveis CSS, dark mode `@media (prefers-color-scheme: dark)` |
-| **JavaScript (Vanilla)** | ES2022 | app.js (2.682 linhas), zero frameworks/libraries |
+| **CSS3** | - | styles.css (3.326 linhas), variáveis CSS, dark mode `@media (prefers-color-scheme: dark)` |
+| **JavaScript (Vanilla)** | ES2022 | app.js (2.764 linhas), zero frameworks/libraries |
 | **Web Speech API** | - | Text-to-speech (TTS) síntese de voz pt-BR |
 | **PDF.js** | 3.11.174 | Extração de texto de PDFs (CDN cloudflare.com) |
 | **VLibras** | 3.2 | Widget gov.br para tradução Libras (Unity WebGL) |
-| **Service Worker API** | - | Cache-first strategy (sw.js 158 linhas) |
+| **Service Worker API** | - | Network-first strategy (sw.js 159 linhas) |
 | **IndexedDB API** | - | Armazenamento local de PDFs com AES-GCM-256 |
 | **Web Crypto API** | - | Criptografia client-side (AES-GCM-256) |
 
@@ -360,7 +360,7 @@ Motor de análise de documentos baseado em regex e pesos.
 |------------|--------|-----|
 | **Terraform** | 1.9+ | Infrastructure as Code (main.tf 370 linhas) |
 | **GitHub Actions** | - | CI/CD (deploy.yml, quality-gate.yml) |
-| **Python** | 3.12+ | Scripts de validação (validate_sources.py, bump_version.py) |
+| **Python** | 3.10+ | Scripts de validação (validate_sources.py, bump_version.py) |
 
 ### Dependências NPM
 ```json
@@ -526,7 +526,7 @@ server.maxHeadersCount = 50;       // Limit header count
 server.maxRequestsPerSocket = 100; // Limit requests per socket
 ```
 
-### app.js — Lógica Client-Side Principal (2.682 linhas)
+### app.js — Lógica Client-Side Principal (2.764 linhas)
 
 **Módulos Principais:**
 
@@ -1010,7 +1010,7 @@ function renderCategoryCards(categories, container) {
 ### Service Worker (sw.js) — Offline-First Strategy
 
 ```javascript
-const CACHE_VERSION = 'nossodireito-v1.13.1';
+const CACHE_VERSION = 'nossodireito-v1.14.4';
 const STATIC_ASSETS = [
     '/', '/index.html', '/css/styles.css', '/js/app.js',
     '/data/direitos.json', '/data/matching_engine.json', '/data/dicionario_pcd.json',
@@ -1039,35 +1039,19 @@ self.addEventListener('activate', (event) => {
     self.clients.claim();
 });
 
-// Fetch: Cache-first for static, Network-first for JSON
+// Fetch: Network-first for same-origin, Cache-first for CDN
 self.addEventListener('fetch', (event) => {
     const url = new URL(event.request.url);
 
-    // Network-first para direitos.json (dados dinâmicos)
-    if (url.pathname.endsWith('direitos.json') || url.pathname.endsWith('matching_engine.json')) {
-        event.respondWith(
-            fetch(event.request)
-                .then(response => {
-                    const clone = response.clone();
-                    caches.open(CACHE_VERSION).then(cache => cache.put(event.request, clone));
-                    return response;
-                })
-                .catch(() => caches.match(event.request))  // Fallback para cache
-        );
+    // External CDN assets (versioned/immutable): Cache-first
+    if (url.origin !== self.location.origin) {
+        event.respondWith(cacheFirst(event.request));
         return;
     }
 
-    // Cache-first para tudo (HTML, CSS, JS, images)
-    event.respondWith(
-        caches.match(event.request)
-            .then(cached => cached || fetch(event.request))
-            .catch(() => {
-                // Offline fallback
-                if (event.request.mode === 'navigate') {
-                    return caches.match('/index.html');
-                }
-            })
-    );
+    // All same-origin assets: Network-first
+    // Garante conteúdo fresco após deploy; cai no cache apenas offline.
+    event.respondWith(networkFirst(event.request));
 });
 ```
 
@@ -1331,9 +1315,9 @@ upgrade-insecure-requests;  ← Força HTTPS para todos recursos
 ┌────────────────────────────────────────────────────┐
 │  CLIENT (Browser - 100% Local Processing)         │
 │  ┌──────────────────────────────────────────────┐ │
-│  │  IndexedDB (nossoDireitoDB)                  │ │
+│  │  IndexedDB (NossoDireitoDB)                  │ │
 │  │  - PDFs: AES-GCM-256 encrypted               │ │
-│  │  - TTL: 30 minutos auto-delete               │ │
+│  │  - TTL: 15 minutos auto-delete               │ │
 │  │  - Nunca sai do dispositivo                  │ │
 │  └──────────────────────────────────────────────┘ │
 │  ┌──────────────────────────────────────────────┐ │
@@ -1566,15 +1550,14 @@ const CACHE = {
 
 #### Layer 2: Service Worker Cache
 ```javascript
-// Cache-first para assets estáticos
-caches.match(request).then(cached => cached || fetch(request))
+// Network-first para assets do mesmo domínio
+fetch(request).then(response => {
+    cache.put(request, response.clone());
+    return response;
+}).catch(() => caches.match(request))
 
-// Network-first para direitos.json (dados atualizados)
-fetch(request)
-    .then(response => {
-        cache.put(request, response.clone());
-        return response;
-    })
+// Cache-first apenas para CDN externas (versioned/immutable)
+caches.match(request).then(cached => cached || fetch(request))
     .catch(() => caches.match(request))  // Fallback offline
 ```
 
@@ -1836,9 +1819,9 @@ if __name__ == '__main__':
 
 **Uso:**
 ```bash
-python scripts/bump_version.py patch  # 1.13.1 → 1.13.2
-python scripts/bump_version.py minor  # 1.13.1 → 1.14.0
-python scripts/bump_version.py major  # 1.13.1 → 2.0.0
+python scripts/bump_version.py patch  # 1.14.4 → 1.14.5
+python scripts/bump_version.py minor  # 1.14.4 → 1.15.0
+python scripts/bump_version.py major  # 1.14.4 → 2.0.0
 ```
 
 ---

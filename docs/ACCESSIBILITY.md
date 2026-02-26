@@ -18,7 +18,7 @@
 
 ## 1. Estado Atual
 
-**Data da última auditoria:** 12/02/2026
+**Data da última auditoria:** 26/02/2026
 **Normas avaliadas:** WCAG 2.1/2.2 AA, ABNT NBR 17060, eMAG 3.1
 
 ### Scores dos Validadores
@@ -256,3 +256,19 @@ Implementação para 100% eMAG 6.2 (recursos agrupados). Estimativa: ~5.5h. Espe
 | Data | Mudança |
 |------|---------|
 | 2026-02-13 | Criado por consolidação de 6 docs de acessibilidade |
+| 2026-02-26 | Adicionado mapeamento dos 6 segmentos de deficiência, atualização de auditoria |
+
+---
+
+## 7. Cobertura por Segmento de Deficiência
+
+A deficiência pode se apresentar em 6 segmentos (permanente, temporária ou situacional). Cada segmento é atendido por funcionalidades específicas do site:
+
+| Segmento | Recursos de Navegação | Keywords de Busca |
+|----------|----------------------|-------------------|
+| **Visão** | Landmarks semânticos (`<nav>`, `<main>`, `<header>`, `<footer>`), `alt` em imagens, classe `.sr-only`, TTS (Web Speech API), skip-links com accesskey, foco visível (`:focus-visible`), alto contraste (`html.high-contrast`) | cegueira, baixa visão, daltonismo, braille, dosvox, nvda, cego |
+| **Audição** | VLibras integrado (tradução em Libras), `aria-live="polite"` (feedback visual), sem conteúdo dependente de áudio | surdez, deficiência auditiva, implante coclear, libras, perda auditiva, audiometria |
+| **Mobilidade** | Navegação completa por teclado, skip-links (accesskey 1/2/3), foco trap no drawer de acessibilidade, `Escape` fecha menus, `setupSkipLinks()` para macOS, botão voltar ao topo | cadeirante, paraplegia, tetraplegia, cadeira de rodas, lesão medular, mobilidade reduzida |
+| **Saúde Mental** | Sem conteúdo piscante/flashing, `prefers-reduced-motion: reduce` desabilita animações, layout previsível e consistente, sem pop-ups intrusivos | depressão, ansiedade, esquizofrenia, transtorno bipolar, saúde mental, psicossocial |
+| **Neurodiversidade** | Hierarquia clara com headings (h1-h3), estrutura consistente de 11 seções, controles de tamanho de fonte (6 níveis), animações desligáveis, `prefers-reduced-motion` | autismo, TEA, TDAH, dislexia, síndrome de Down, neurodivergente, déficit de atenção |
+| **Fala** | Input de texto (campo de busca, upload de arquivo), sem dependência de entrada por voz, comunicação alternativa via WhatsApp (compartilhamento por texto) | mudez, afasia, gagueira, mutismo, disfonia, disartria, fonoaudiologia |

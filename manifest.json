@@ -4,6 +4,8 @@
     "version": "1.14.4",
     "description": "Guia gratuito de direitos e benefícios para pessoas com deficiência no Brasil. Informações oficiais do governo brasileiro.",
     "start_url": "/",
+    "scope": "/",
+    "id": "/",
     "display": "standalone",
     "orientation": "any",
     "background_color": "#ffffff",

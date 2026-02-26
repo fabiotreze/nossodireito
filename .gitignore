@@ -40,6 +40,9 @@ _temp_*
 
 # Build artifacts
 index.min.html
+.coverage
+htmlcov/
+.pytest_cache/
 
 # Generated reports (re-created by scripts)
 quality_report.json

@@ -1,11 +1,11 @@
 # NossoDireito — Documento Único de Compliance
 
 **Versão:** 1.14.4 (consolidado de múltiplos documentos)
-**Data:** 15 de fevereiro de 2026
+**Data:** 26 de fevereiro de 2026
 **Responsável:** Fabio Treze (fabiotreze@hotmail.com)
 **Tipo:** Compliance Legal, Técnico, Segurança, Privacidade, Acessibilidade, Qualidade
 **Framework:** ISO 27001 + SOC 2 + LGPD + LBI
-**Próxima Auditoria:** 18 de fevereiro de 2026
+**Próxima Auditoria:** 26 de março de 2026
 
 ---
 
@@ -100,7 +100,7 @@
 
 **Direitos dos Titulares (Art. 18):**
 - ✅ **Eliminação de dados**: Botão "Apagar Todos os Meus Dados" (localStorage + IndexedDB clear)
-- ✅ **Anonimização**: TTL 30 minutos para PDFs em IndexedDB
+- ✅ **Anonimização**: TTL 15 minutos para PDFs em IndexedDB
 - ❌ Outros direitos N/A (sem dados coletados)
 
 **Evidência:**
@@ -108,7 +108,7 @@
 // Implementação: index.html + app.js
 function clearUserData() {
     localStorage.clear();
-    indexedDB.deleteDatabase('nossoDireitoDB');
+    indexedDB.deleteDatabase('NossoDireitoDB');
     caches.keys().then(keys => keys.forEach(key => caches.delete(key)));
     alert('✅ Todos os dados locais foram apagados.');
 }
@@ -216,14 +216,14 @@ const encrypted = await crypto.subtle.encrypt(
     pdfArrayBuffer
 );
 
-// TTL 30 minutos
-setTimeout(() => deleteFromIndexedDB(pdfId), 30 * 60 * 1000);
+// TTL 15 minutos
+setTimeout(() => deleteFromIndexedDB(pdfId), 15 * 60 * 1000);
 ```
 
 **Evidência de Conformidade:**
 - ✅ Chave não exportável (não pode ser extraída do browser)
 - ✅ IV (Initialization Vector) aleatório por criptografia
-- ✅ TTL automático (30 minutos)
+- ✅ TTL automático (15 minutos)
 
 **Última Auditoria:** 11/02/2026
 **Documentos de Referência:** [SECURITY_AUDIT.md](../SECURITY_AUDIT.md)
@@ -327,7 +327,7 @@ setTimeout(() => deleteFromIndexedDB(pdfId), 30 * 60 * 1000);
 2. Gera chave AES-GCM-256 (crypto.subtle.generateKey)
 3. Encripta ArrayBuffer (crypto.subtle.encrypt)
 4. Armazena IndexedDB local (não persiste em servidor)
-5. TTL 30 minutos (auto-delete sweep 60s)
+5. TTL 15 minutos (auto-delete sweep 60s)
 6. PDF.js extrai texto SOMENTE no browser
 7. Regex matching local (data/matching_engine.json)
 8. Exibe resultados (não persiste)
@@ -377,7 +377,7 @@ setTimeout(() => deleteFromIndexedDB(pdfId), 30 * 60 * 1000);
 
 **Efeito da Ação:**
 1. `localStorage.clear()` → Remove checkboxes, preferências
-2. `indexedDB.deleteDatabase('nossoDireitoDB')` → Remove PDFs encriptados
+2. `indexedDB.deleteDatabase('NossoDireitoDB')` → Remove PDFs encriptados
 3. `caches.delete()` → Limpa Service Worker cache
 
 **Compliance:**
@@ -661,39 +661,48 @@ setTimeout(() => deleteFromIndexedDB(pdfId), 30 * 60 * 1000);
 | 2026-02-11 | 1.4.3 | LGPD | Zero-data, anonimização | 0 | ✅ Conforme |
 | 2026-02-11 | 1.4.3 | Acessibilidade | WCAG 2.1 AA, VLibras | 0 | ✅ Conforme |
 | 2026-02-10 | 1.4.2 | Integração | Meia-entrada + Tarifa Social | 0 | ✅ Concluído |
+| 2026-02-25 | 1.14.4 | Completa | 549 testes automatizados, 751+ keywords, 6 segmentos PcD, WCAG POUR AA | 0 | ✅ 100% OK |
 
-**Próxima Auditoria Completa:** 18/02/2026 (periódica)
+**Próxima Auditoria Completa:** 26/03/2026 (periódica mensal)
 
 ---
 
 ### 6.2 Métricas de Qualidade
 
-#### Dados (direitos.json v1.4.3)
+#### Dados (direitos.json v1.14.4)
 | Métrica | Valor |
 |---------|-------|
-| **Total de categorias** | 13 |
+| **Total de categorias** | 30 |
 | **Total de benefícios** | 30+ (em REFERENCE.md) |
-| **Benefícios integrados** | 13 |
-| **Benefícios pendentes integração** | ~17 |
-| **Fontes legislativas catalogadas** | 29 leis/decretos/normativas |
-| **Instituições mapeadas** | 15 organizações |
+| **Benefícios integrados** | 30 |
+| **Keywords no matching_engine** | 751+ termos mapeados |
+| **Deficiências no dicionário** | 15 tipos (6 segmentos: visão, audição, mobilidade, saúde mental, neurodiversidade, fala) |
+| **Fontes legislativas catalogadas** | 73+ leis/decretos/normativas |
+| **Instituições mapeadas** | 15+ organizações |
 | **Documentos mestres catalogados** | 18 tipos |
 | **Estados mapeados (IPVA)** | 27 UFs |
+
+#### Testes Automatizados
+| Métrica | Valor |
+|---------|-------|
+| **Total de testes pytest** | 549 |
+| **Taxa de sucesso** | 100% (0 falhas) |
+| **Arquivos de teste** | test_cross_browser.py + test_comprehensive_validation.py |
+| **Áreas cobertas** | URLs, WhatsApp, PDF, busca, estados, categorias, fontes, a11y, WCAG POUR, segurança, PWA, versões |
+| **CI/CD** | quality-gate.yml + deploy.yml (pytest obrigatório) |
 
 #### Links
 | Métrica | Valor |
 |---------|-------|
-| **Taxa de sucesso de links** | 92.6% (75/81) |
+| **Taxa de sucesso de links** | 100% |
 | **Links quebrados** | 0 (0%) — TODOS CORRIGIDOS ✅ |
-| **Links com avisos** | 6 (7.4%) |
-| **Links corrigidos** | 5 (CONFAZ, MPT, COFFITO, CNMP, Autistas Brasil) |
 
 #### Código
 | Métrica | Valor |
 |---------|-------|
-| **Linhas de JSON** | 2.541 (direitos.json) |
-| **Linhas de JS** | ~3.000 (app.js) |
-| **Linhas de CSS** | ~2.000 (styles.css) |
+| **Linhas de JSON** | 5.218 (direitos.json) |
+| **Linhas de JS** | ~2.821 (app.js) |
+| **Linhas de CSS** | ~3.890 (styles.css) |
 | **Conformidade HTML** | ✅ W3C Validator (0 erros) |
 
 #### Performance
@@ -769,7 +778,7 @@ git commit -m "a11y: Melhora contraste (WCAG 2.1 AA 1.4.3)"
 | **Informações desatualizadas** | MÉDIA | MÉDIO | 🟡 **MÉDIO** | Script `validate_sources.py`, disclaimer | ⚠️ Monitorar |
 | **Links quebrados** | MUITO BAIXA | BAIXO | 🟢 **BAIXO** | Script `validate_sources.py` (periódica) | ✅ 0 links quebrados |
 | **Interpretação incorreta de lei** | BAIXA | MÉDIO | 🟡 **MÉDIO** | Cita fontes oficiais, direciona Defensoria | ✅ Mitigado |
-| **Vazamento de dados** | MUITO BAIXA | ALTO | 🟢 **BAIXO** | Zero-data, AES-GCM-256, TTL 30 min | ✅ Mitigado |
+| **Vazamento de dados** | MUITO BAIXA | ALTO | 🟢 **BAIXO** | Zero-data, AES-GCM-256, TTL 15 min | ✅ Mitigado |
 | **Ataque DDoS** | BAIXA | MÉDIO | 🟡 **MÉDIO** | Azure DDoS Protection (Basic tier) | ✅ Mitigado |
 | **XSS (Cross-Site Scripting)** | BAIXA | ALTO | 🟡 **MÉDIO** | CSP, sanitização de input, VLibras exceção controlada | ✅ Mitigado |
 | **Responsabilidade civil** | BAIXA | ALTO | 🟡 **MÉDIO** | Disclaimer explícito (sem seguro E&O) | ⚠️ Considerar E&O se escalar |

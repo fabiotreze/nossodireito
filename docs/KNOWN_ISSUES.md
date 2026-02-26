@@ -164,25 +164,25 @@ https://www.planalto.gov.br/ccivil_03/constituicao/emendas/emc.htm
 
 ## 🔍 3. BUSCA
 
-### ❌ Alguns Termos Não Encontram Benefícios
+### ⚠️ Cobertura de Sinônimos em Evolução
 
-**Problema:**
-O motor de busca (`matching_engine.json`) não cobre **TODOS** os sinônimos possíveis.
+**Contexto:**
+O motor de busca (`matching_engine.json` + `dicionario_pcd.json`) cobre ~1.300 termos mas não todos os sinônimos regionais.
 
-**Exemplos:**
-- ❌ "Aposentadoria PcD" → **NÃO encontra** (use "LOAS" ou "BPC")
-- ❌ "Cadeirante" → **NÃO encontra** (use "mobilidade reduzida")
-- ❌ "Autista" → **Acha**, mas poderia achar mais (faltam sinônimos)
+**Exemplos corrigidos em v1.14.4:**
+- ✅ "Aposentadoria PcD" → encontra Aposentadoria Especial PcD
+- ✅ "Cadeirante" → encontra BPC, Transporte, Isenção IPVA/IPI, Tecnologia Assistiva
+- ✅ "Desconto carro" → encontra Isenção IPI e IPVA
+- ✅ "Transporte gratuito" → encontra Transporte
+- ✅ "Cadeira de rodas" → encontra Tecnologia Assistiva, SUS, Transporte
 
-**Workaround:**
-Use **termos oficiais** das leis:
-- ✅ "LOAS" em vez de "aposentadoria PcD"
-- ✅ "Passe Livre" em vez de "transporte gratuito"
-- ✅ "Isenção IPI" em vez de "desconto carro"
+**Ainda limitado:**
+- ⚠️ Sinônimos regionais muito específicos (gírias locais)
+- ⚠️ Busca por UF não filtra geograficamente
 
 **Melhoria Contínua:**
 - 🆕 v1.5.0: +60 keywords (prouni, irpf, bolsa família)
-- 🔜 v1.6.0: +100 keywords planejados (sinônimos regionais)
+- 🆕 v1.14.4: +40 keywords (cadeirante, paraplégico, deficiente visual, prótese, etc.)
 
 **Como Sugerir Keywords:**
 1. **GitHub Issue:** https://github.com/fabiotreze/nossodireito/issues
@@ -239,26 +239,15 @@ Service Worker tem limite de **10 MB** em alguns navegadores (especialmente iOS)
 
 ---
 
-### ❌ Service Worker Não Atualiza Imediatamente
+### ✅ Service Worker Atualização Automática
 
-**Problema:**
-Após deploy, usuários podem ver **versão antiga** do site por até 24 horas.
+**Status:**
+🟢 **Implementado** — v1.14.0+
 
-**Causa:**
-Service Worker usa estratégia **Cache First** (offline-first).
-
-**Workaround Temporário:**
-1. Ctrl+Shift+R (hard reload)
-2. Ou: F12 → Application → Service Workers → "Unregister"
-
-**Solução Permanente (v1.6.0):**
-```javascript
-// sw.js — Update notification
-self.addEventListener('controllerchange', () => {
-  if (confirm('Nova versão disponível! Recarregar?')) {
-    window.location.reload();
-  }
-});
+- Service Worker usa estratégia **Network-First** para assets do mesmo domínio
+- `sw-register.js` monitora `controllerchange` e faz `location.reload()` automático
+- Polling de atualização a cada 60 segundos via `reg.update()`
+- Guard contra reload infinito (`_swReloading` flag)
 ```
 
 **Status:**
@@ -311,13 +300,12 @@ document.cookie
 
 ## ⚙️ 6. FUNCIONALIDADES AUSENTES
 
-### ❌ Compartilhamento Social (Facebook, Twitter, WhatsApp)
+### ✅ Compartilhamento Social (WhatsApp)
 
 **Status:**
-🔜 **Planejado**
+🟢 **Implementado** — v1.14.4
 
-**Workaround:**
-Copie URL manualmente e cole em rede social.
+Compartilhamento via WhatsApp disponível em cards de direitos, análise de documentos e checklist.
 
 ---
 
@@ -334,28 +322,21 @@ Use busca textual: "educação", "saúde", etc.
 
 ---
 
-### ❌ Print-Friendly View (Versão Impressão)
-
-**Problema:**
-Imprimir (Ctrl+P) inclui cabeçalho, rodapé e toolbar (desperdício papel).
-
-**Workaround:**
-Use "Salvar como PDF" no navegador (mais econômico).
+### ✅ Print-Friendly View (Versão Impressão)
 
 **Status:**
-🔜 **Planejado**
+🟢 **Implementado** — v1.14.0+
+
+Estilos `@media print` otimizam layout para impressão com 4 modos de exportação.
 
 ---
 
-### ❌ Modo Escuro (Dark Mode)
+### ✅ Modo Escuro (Dark Mode)
 
 **Status:**
-🔜 **Planejado**
+🟢 **Implementado** — v1.14.0+
 
-**Workaround:**
-Use extensão de navegador:
-- Chrome: [Dark Reader](https://chrome.google.com/webstore/detail/dark-reader/eimadpbcbfnmbkopoojfekhnkhdbieeh)
-- Firefox: [Dark Reader](https://addons.mozilla.org/pt-BR/firefox/addon/darkreader/)
+Dark mode automático via `@media (prefers-color-scheme: dark)` respeita configuração do sistema operacional.
 
 ---
 
@@ -377,25 +358,13 @@ Use Chrome iOS ou Edge iOS (suporte melhor a PDFs).
 
 ---
 
-### 🐛 Alto Contraste Não Aplica em Imagens
+### ✅ Alto Contraste Aplica Filter em Imagens
 
-**Problema:**
-Modo alto contraste muda cores de texto/fundo, mas **não** inverte cores de images.
-
-**Impacto:**
-- ⚠️ Emojis permanecem com cores originais
-- ⚠️ Logos ficam visualmente desconexos do fundo preto
-
-**Workaround:**
-```css
-/* Se virar problema, adicionar: */
-html.high-contrast img {
-  filter: invert(1) hue-rotate(180deg);
-}
-```
+**Resolvido em v1.14.4:**
+CSS inclui `html.high-contrast img { filter: brightness(1.1) contrast(1.2); }` — melhora legibilidade de imagens sem inverter cores (que tornaria fotos ilegíveis).
 
 **Status:**
-🔵 **Baixa prioridade** — Emojis ainda legíveis
+🟢 **Resolvido** — Implementado via CSS filter
 
 ---
 
@@ -407,10 +376,10 @@ html.high-contrast img {
 Motor de busca atual é **O(n)** linear (percorre todos benefícios).
 
 **Impacto Projetado:**
-- ✅ 20 benefícios: ~5 ms
-- ✅ 50 benefícios: ~12 ms (OK)
-- ⚠️ 100 benefícios: ~25 ms (perceptível)
-- ❌ 500 benefícios: ~120 ms (lento)
+- ✅ 30 categorias: ~8 ms
+- ✅ 50 categorias: ~12 ms (OK)
+- ⚠️ 100 categorias: ~25 ms (perceptível)
+- ❌ 500 categorias: ~120 ms (lento)
 
 **Solução Futura:**
 - Índice invertido (keyword → benefício ID)
@@ -418,7 +387,7 @@ Motor de busca atual é **O(n)** linear (percorre todos benefícios).
 - Web Workers para busca paralela
 
 **Status:**
-🟢 **Não é problema agora** (apenas 20 benefícios)
+🟢 **Não é problema agora** (30 categorias)
 
 ---
 

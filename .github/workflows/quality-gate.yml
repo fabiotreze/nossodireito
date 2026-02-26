@@ -28,7 +28,15 @@ jobs:
           python-version: "3.11"
 
       - name: Instalar dependências
-        run: pip install -r requirements.txt
+        run: |
+          pip install -r requirements.txt
+          pip install -r requirements-dev.txt
+
+      # ── Testes Python (pytest) ──
+      - name: Executar testes Python
+        run: |
+          echo "🧪 Executando testes Python..."
+          python -m pytest tests/ -v --tb=short --ignore=tests/test_browser.py -q
 
       # ── Sensitive Data Scan (pre-check rápido) ──
       - name: Scan para dados sensíveis

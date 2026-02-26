@@ -41,7 +41,7 @@
     <meta property="og:image:alt"
         content="NossoDireito — Guia gratuito de direitos para pessoas com deficiência no Brasil">
     <meta property="og:image:type" content="image/png">
-    <meta property="og:updated_time" content="2026-02-23T00:00:00-03:00">
+    <meta property="og:updated_time" content="2026-02-26T00:00:00-03:00">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Direitos PcD 2026: BPC, CIPTEA, Escola Inclusiva, TEA | Guia Gratuito">
     <meta name="twitter:description"
@@ -346,7 +346,7 @@
             }
         }
     </style>
-    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/styles.css?v=1.14.4">
     <script type="application/ld+json">
 {
 "@context": "https://schema.org",
@@ -355,7 +355,7 @@
 "url": "https://nossodireito.fabiotreze.com/",
 "description": "Guia gratuito e completo de direitos e benefícios para pessoas com deficiência no Brasil. 30 categorias com fontes oficiais.",
 "datePublished": "2025-01-01",
-"dateModified": "2026-02-23",
+"dateModified": "2026-02-26",
 "inLanguage": "pt-BR",
 "isPartOf": { "@type": "WebSite", "name": "NossoDireito", "url": "https://nossodireito.fabiotreze.com/" },
 "publisher": { "@type": "Organization", "name": "NossoDireito", "url": "https://nossodireito.fabiotreze.com/", "logo": { "@type": "ImageObject", "url": "https://nossodireito.fabiotreze.com/images/nossodireito-400.png" } },
@@ -605,7 +605,7 @@
     },
     "query-input": "required name=search_term_string"
 },
-"copyrightYear": 2025
+"copyrightYear": 2026
 }
 </script>
     <script type="application/ld+json">
@@ -897,7 +897,7 @@
                     <em>moradia</em>, <em>CRAS</em>, <em>FGTS</em>, <em>CID</em>, <em>Libras</em>...
                 </p>
                 <div class="search-box"><label for="searchInput" class="sr-only">Buscar direitos</label>
-                    <input type="search" id="searchInput" class="search-input"
+                    <input type="search" id="searchInput" class="search-input" maxlength="200"
                         placeholder="Ex: BPC, saúde, escola, trabalho, IPVA..." autocomplete="off">
                     <button id="searchBtn" class="btn btn-primary" type="button" aria-label="Buscar">Buscar</button>
                 </div>
@@ -1295,7 +1295,8 @@
                 </div>
             </div>
         </div>
-    </footer><button id="backToTop" class="back-to-top" aria-label="Voltar ao topo" title="Voltar ao topo">
+    </footer><button id="backToTop" type="button" class="back-to-top" aria-label="Voltar ao topo"
+        title="Voltar ao topo">
         ↑
     </button>
 
@@ -1412,9 +1413,10 @@
                     <strong>Atalhos de teclado (eMAG 4.1):</strong>
                 </p>
                 <ul class="a11y-compliance-list">
-                    <li>Alt + 1 — Ir para o conteúdo</li>
-                    <li>Alt + 2 — Ir para o menu principal</li>
-                    <li>Alt + 3 — Ir para a busca</li>
+                    <li><strong>Windows/Linux:</strong> Alt + 1/2/3</li>
+                    <li><strong>macOS Chrome/Safari:</strong> Ctrl + Option + 1/2/3</li>
+                    <li><strong>macOS Firefox:</strong> Ctrl + 1/2/3</li>
+                    <li>1 — Conteúdo &nbsp; 2 — Menu &nbsp; 3 — Busca</li>
                 </ul>
                 <p class="a11y-info-text" style="margin-top:8px;">
                     <strong>Compliance:</strong>
@@ -1440,8 +1442,8 @@
             </div>
         </div>
     </aside>
-    <script src="js/app.js" defer></script>
-    <script src="js/sw-register.js" defer></script>
+    <script src="js/app.js?v=1.14.4" defer></script>
+    <script src="js/sw-register.js?v=1.14.4" defer></script>
 </body>
 
 </html>

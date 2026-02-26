@@ -662,6 +662,7 @@
             try { await fn(); } catch (e) { console.error(`[init] ${name} falhou:`, e); }
         };
         safeRun('setupAccessibilityPanel', setupAccessibilityPanel);
+        safeRun('setupSkipLinks', setupSkipLinks);
         safeRun('setupNavigation', setupNavigation);
         safeRun('setupSearch', setupSearch);
         safeRun('setupChecklist', setupChecklist);
@@ -746,6 +747,34 @@
         }, 60000);
     }
 
+    /**
+     * setupSkipLinks — eMAG 4.1 accesskey focus fix.
+     * HTML accesskey on <a href="#target"> just follows the link (scroll).
+     * On macOS (Ctrl+Opt+key) and some browsers the target element never
+     * receives keyboard focus. This handler intercepts skip-link clicks
+     * (which the browser fires after the accesskey combo) and explicitly
+     * calls .focus() on the destination element.
+     */
+    function setupSkipLinks() {
+        document.querySelectorAll('a.skip-link[accesskey]').forEach(link => {
+            link.addEventListener('click', (e) => {
+                const href = link.getAttribute('href');
+                if (!href || !href.startsWith('#')) return;
+                const targetId = href.slice(1);
+                const target = document.getElementById(targetId);
+                if (!target) return;
+                e.preventDefault();
+                // Make non-focusable elements focusable temporarily
+                if (!target.hasAttribute('tabindex') &&
+                    !['INPUT', 'TEXTAREA', 'SELECT', 'BUTTON', 'A'].includes(target.tagName)) {
+                    target.setAttribute('tabindex', '-1');
+                }
+                target.focus({ preventScroll: false });
+                target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            });
+        });
+    }
+
     function setupNavigation() {
         if (!dom.menuToggle || !dom.navLinks) return;
         dom.menuToggle.addEventListener('click', () => {
@@ -780,10 +809,13 @@
                     if (entry.isIntersecting) {
                         const id = entry.target.id;
                         navAnchors.forEach((a) => {
-                            a.classList.toggle(
-                                'active',
-                                a.getAttribute('href') === `#${id}`
-                            );
+                            const isActive = a.getAttribute('href') === `#${id}`;
+                            a.classList.toggle('active', isActive);
+                            if (isActive) {
+                                a.setAttribute('aria-current', 'true');
+                            } else {
+                                a.removeAttribute('aria-current');
+                            }
                         });
                     }
                 });
