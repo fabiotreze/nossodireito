@@ -5,6 +5,26 @@ Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/)
 e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [1.14.3] - 2026-02-25
+
+### Adicionado
+
+- **Farmácia Popular 100% gratuito (fev/2025)** — atualizado resumo, passo a passo e dicas com informação oficial de que desde 14/02/2025 todos os medicamentos do programa são 100% gratuitos (Portaria GM/MS nº 264/2025)
+- **CEAF — Componente Especializado da Assistência Farmacêutica** — 105 condições clínicas, 173 fármacos, passo a passo detalhado para acesso via LME e farmácia estadual
+- **RENAME — Relação Nacional de Medicamentos Essenciais** — link direto e orientação para consulta
+- **Fraldas geriátricas gratuitas para PcD** — qualquer idade, na Farmácia Popular com laudo médico + CID
+- **TDAH: metilfenidato e Venvanse** — orientação sobre disponibilidade no SUS e caminho de judicialização via Defensoria Pública
+- **10 novos links oficiais gov.br** em `sus_terapias`: Farmácia Popular, CEAF, CEAF por UF, RENAME, elenco de medicamentos (PDF), condições clínicas CEAF (PDF), lista de medicamentos CEAF (PDF), painel de endereços Farmácia Popular, telecuidado farmacêutico, SNDPD/MDHC
+- **22 novas keywords** no matching_engine: fralda geriátrica, fralda PcD, CEAF, RENAME, metilfenidato, Ritalina, Venvanse, lisdexanfetamina, medicamento gratuito, desconto medicamento, doença rara, epilepsia refratária, entre outras
+- **Expansão do dicionário PcD** — novos termos de saúde: Farmácia Popular, CEAF, PCDT, LME, metilfenidato, Ritalina, telecuidado farmacêutico, judicialização, fralda geriátrica, medicamento especializado
+- **TDAH no dicionário** — adicionados keywords: metilfenidato, Ritalina, lisdexanfetamina, Venvanse, transtorno do neurodesenvolvimento
+- **Base legal expandida** — Portaria GM/MS nº 264/2025 (Farmácia Popular 100% gratuito) adicionada à seção sus_terapias
+
+### Corrigido
+
+- **Passo a passo numeração** — removido "6." duplicado no passo a passo de sus_terapias 
+- **Texto desatualizado** — "gratuitos ou com desconto" corrigido para "100% gratuitos" conforme nova legislação
+
 ## [1.14.2] - 2026-02-24
 
 ### Adicionado

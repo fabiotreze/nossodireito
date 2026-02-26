@@ -4847,6 +4847,132 @@
                 "reabilitacao"
             ],
             "weight": 8
+        },
+        "fralda geriátrica": {
+            "cats": [
+                "sus_terapias"
+            ],
+            "weight": 9
+        },
+        "fralda PcD": {
+            "cats": [
+                "sus_terapias"
+            ],
+            "weight": 9
+        },
+        "fralda gratuita": {
+            "cats": [
+                "sus_terapias"
+            ],
+            "weight": 9
+        },
+        "CEAF": {
+            "cats": [
+                "sus_terapias"
+            ],
+            "weight": 10
+        },
+        "componente especializado": {
+            "cats": [
+                "sus_terapias"
+            ],
+            "weight": 10
+        },
+        "RENAME": {
+            "cats": [
+                "sus_terapias"
+            ],
+            "weight": 9
+        },
+        "relação nacional medicamentos": {
+            "cats": [
+                "sus_terapias"
+            ],
+            "weight": 9
+        },
+        "telecuidado farmacêutico": {
+            "cats": [
+                "sus_terapias"
+            ],
+            "weight": 8
+        },
+        "metilfenidato": {
+            "cats": [
+                "sus_terapias"
+            ],
+            "weight": 9
+        },
+        "Ritalina": {
+            "cats": [
+                "sus_terapias"
+            ],
+            "weight": 9
+        },
+        "Venvanse": {
+            "cats": [
+                "sus_terapias"
+            ],
+            "weight": 9
+        },
+        "lisdexanfetamina": {
+            "cats": [
+                "sus_terapias"
+            ],
+            "weight": 9
+        },
+        "desconto medicamento": {
+            "cats": [
+                "sus_terapias"
+            ],
+            "weight": 8
+        },
+        "medicamento gratuito": {
+            "cats": [
+                "sus_terapias"
+            ],
+            "weight": 10
+        },
+        "farmácia estadual": {
+            "cats": [
+                "sus_terapias"
+            ],
+            "weight": 8
+        },
+        "medicamento alto custo": {
+            "cats": [
+                "sus_terapias"
+            ],
+            "weight": 9
+        },
+        "judicialização medicamento": {
+            "cats": [
+                "sus_terapias"
+            ],
+            "weight": 8
+        },
+        "doença rara": {
+            "cats": [
+                "sus_terapias"
+            ],
+            "weight": 8
+        },
+        "epilepsia refratária": {
+            "cats": [
+                "sus_terapias"
+            ],
+            "weight": 8
+        },
+        "Portaria 264/2025": {
+            "cats": [
+                "sus_terapias"
+            ],
+            "weight": 7
+        },
+        "100% gratuito": {
+            "cats": [
+                "sus_terapias"
+            ],
+            "weight": 8
         }
     }
 }

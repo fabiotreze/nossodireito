@@ -832,7 +832,12 @@
                 "F90",
                 "6A05",
                 "dislexia",
-                "Lei 14.254"
+                "Lei 14.254",
+                "metilfenidato",
+                "Ritalina",
+                "lisdexanfetamina",
+                "Venvanse",
+                "transtorno do neurodesenvolvimento"
             ]
         }
     ],
@@ -1945,7 +1950,19 @@
             "hemodiálise",
             "RENAME",
             "cadeira de rodas",
-            "implante coclear"
+            "implante coclear",
+            "Farmácia Popular",
+            "CEAF",
+            "componente especializado",
+            "fralda geriátrica",
+            "medicamento gratuito",
+            "medicamento especializado",
+            "LME",
+            "PCDT",
+            "metilfenidato",
+            "Ritalina",
+            "telecuidado farmacêutico",
+            "judicialização"
         ],
         "educacao": [
             "escola",

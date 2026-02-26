@@ -1,5 +1,5 @@
 {
-    "versao": "1.14.2",
+    "versao": "1.14.3",
     "ultima_atualizacao": "2026-02-23",
     "aviso": "Informações compiladas de fontes oficiais do governo brasileiro (gov.br). Podem estar desatualizadas. Verifique sempre as fontes originais.",
     "fontes": [
@@ -2183,7 +2183,7 @@
             "id": "sus_terapias",
             "titulo": "SUS — Terapias e Medicamentos Gratuitos",
             "icone": "💊",
-            "resumo": "O SUS oferece atendimento multiprofissional, terapias e medicamentos gratuitos para pessoas com deficiência.",
+            "resumo": "O SUS oferece atendimento multiprofissional, terapias e medicamentos gratuitos para pessoas com deficiência. Desde fev/2025, o Programa Farmácia Popular disponibiliza 100% dos medicamentos gratuitamente. O CEAF (Componente Especializado) atende 105 condições clínicas com 173 fármacos. PcD também tem direito a fraldas geriátricas gratuitas.",
             "base_legal": [
                 {
                     "lei": "Lei 12.764/2012 (Lei Berenice Piana)",
@@ -2204,6 +2204,11 @@
                     "lei": "Decreto 6.949/2009 — Convenção da ONU sobre Direitos da PcD",
                     "artigo": "Tratado internacional com força constitucional",
                     "link": "https://www.planalto.gov.br/ccivil_03/_ato2007-2010/2009/decreto/d6949.htm"
+                },
+                {
+                    "lei": "Portaria GM/MS nº 264/2025 — Farmácia Popular 100% gratuito",
+                    "artigo": "Art. 1º",
+                    "link": "https://www.gov.br/saude/pt-br/composicao/sectics/daf/farmacia-popular"
                 }
             ],
             "requisitos": [
@@ -2224,12 +2229,19 @@
                 "Faça o Cartão SUS (se ainda não tiver)",
                 "Peça encaminhamento para o CER (Centro Especializado em Reabilitação) ou CAPS (Centro de Atenção Psicossocial)",
                 "Aguarde agendamento para avaliação multiprofissional",
-                "Para medicamentos, apresente a receita médica na Farmácia Popular ou na farmácia da UBS",
-                "6. Acompanhe o andamento pelo protocolo fornecido e aguarde retorno oficial"
+                "Para medicamentos básicos (12 indicações), vá à Farmácia Popular com receita médica — desde fev/2025 são 100% gratuitos",
+                "Para medicamentos especializados (CEAF): peça ao médico o preenchimento do formulário LME e entregue na farmácia estadual de referência",
+                "Para fraldas geriátricas (PcD de qualquer idade): apresente laudo médico com CID + receita na Farmácia Popular",
+                "Acompanhe o andamento pelo protocolo fornecido e aguarde retorno oficial"
             ],
             "dicas": [
-                "O Programa Farmácia Popular oferece medicamentos gratuitos ou com desconto — pergunte na UBS",
-                "O CAPS (Centro de Atenção Psicossocial) oferece atendimento de saúde mental gratuito",
+                "NOVIDADE fev/2025: o Programa Farmácia Popular agora oferece 100% dos medicamentos gratuitamente para toda a população — não precisa ser PcD, basta receita médica e CPF",
+                "São 12 indicações gratuitas na Farmácia Popular: hipertensão, diabetes, asma, osteoporose, colesterol, rinite, Parkinson, glaucoma, anticoncepção e diabetes cardiovascular",
+                "PcD de qualquer idade tem direito a fraldas geriátricas gratuitas na Farmácia Popular — basta laudo médico com CID + receita",
+                "O CEAF (Componente Especializado da Assistência Farmacêutica) fornece medicamentos para 105 condições clínicas de maior complexidade (doenças raras, autoimunes, epilepsia refratária etc.) — são 173 fármacos gratuitos pelo SUS",
+                "Para acessar o CEAF: médico preenche o LME (Laudo de Medicamentos Especializados) → entrega na farmácia estadual de referência → avaliação técnica → dispensação",
+                "Consulte a RENAME (Relação Nacional de Medicamentos Essenciais) para verificar se o medicamento está na lista do SUS: gov.br/saude/pt-br/composicao/sectics/rename",
+                "O CAPS (Centro de Atenção Psicossocial) oferece atendimento de saúde mental gratuito e pode dispensar medicamentos psiquiátricos diretamente",
                 "Se a fila de espera for muito longa, procure a Defensoria Pública para garantir o atendimento",
                 "Alguns municípios têm CER (Centro Especializado em Reabilitação) com equipe completa: fono, TO, psicólogo, fisioterapeuta",
                 "Medicamentos não disponíveis no SUS podem ser solicitados judicialmente — a Defensoria Pública ajuda gratuitamente",
@@ -2238,14 +2250,41 @@
                 "Para medicamentos especializados pelo SUS, peça ao médico o preenchimento do formulário LME (Laudo de Medicamentos Especializados) — disponível em gov.br/saude",
                 "Consulte os PCDT (Protocolos Clínicos e Diretrizes Terapêuticas) para saber os tratamentos e medicamentos garantidos pelo SUS para cada condição: gov.br/saude/pt-br/assuntos/pcdt",
                 "Use o CNES (cnes.datasus.gov.br) para encontrar CER, CAPS, UBS e centros de reabilitação perto de você",
-                "Programa Caregiver Skills Training (CST/OMS): treinamento GRATUITO para famílias de crianças com TEA no SUS — já em 2026, com meta de 72 mil famílias até 2027"
+                "Programa Caregiver Skills Training (CST/OMS): treinamento GRATUITO para famílias de crianças com TEA no SUS — já em 2026, com meta de 72 mil famílias até 2027",
+                "Cada estado tem sua farmácia de referência para o CEAF — consulte por UF em gov.br/saude/pt-br/composicao/sectics/daf/ceaf/medicamentos",
+                "TDAH: metilfenidato (Ritalina) está disponível em alguns CAPS e UBS municipais. Lisdexanfetamina (Venvanse) não está na RENAME — se prescrito, pode ser solicitado via judicialização pela Defensoria Pública",
+                "Pacientes acamados ou impossibilitados podem ter representante legal para retirar medicamentos na Farmácia Popular — basta procuração"
             ],
-            "valor": "Gratuito",
-            "onde": "UBS → CER ou CAPS → Farmácia Popular",
+            "valor": "Gratuito (100% na Farmácia Popular desde fev/2025 | CEAF: 173 fármacos gratuitos pelo SUS)",
+            "onde": "UBS → CER ou CAPS → Farmácia Popular → Farmácia Estadual (CEAF)",
             "links": [
                 {
                     "titulo": "Encontrar UBS mais próxima",
                     "url": "https://www.gov.br/saude/pt-br"
+                },
+                {
+                    "titulo": "Programa Farmácia Popular — 100% gratuito (gov.br/saude)",
+                    "url": "https://www.gov.br/saude/pt-br/composicao/sectics/daf/farmacia-popular"
+                },
+                {
+                    "titulo": "Elenco de medicamentos e insumos — Farmácia Popular (PDF)",
+                    "url": "https://www.gov.br/saude/pt-br/composicao/sectics/farmacia-popular/arquivos/elenco-de-medicamentos-e-insumos.pdf"
+                },
+                {
+                    "titulo": "Encontrar Farmácia Popular credenciada — Painel de endereços",
+                    "url": "https://infoms.saude.gov.br/extensions/SEIDIGI_DEMAS_PFPB_ENDERECOS/index.html"
+                },
+                {
+                    "titulo": "CEAF — Componente Especializado da Assistência Farmacêutica (gov.br/saude)",
+                    "url": "https://www.gov.br/saude/pt-br/composicao/sectics/daf/ceaf"
+                },
+                {
+                    "titulo": "CEAF — Como obter medicamentos por UF (gov.br/saude)",
+                    "url": "https://www.gov.br/saude/pt-br/composicao/sectics/daf/ceaf/medicamentos"
+                },
+                {
+                    "titulo": "RENAME — Relação Nacional de Medicamentos Essenciais (gov.br/saude)",
+                    "url": "https://www.gov.br/saude/pt-br/composicao/sectics/rename"
                 },
                 {
                     "titulo": "Saúde da Pessoa com Deficiência — PNAISPD (gov.br/saude)",
@@ -2274,6 +2313,22 @@
                 {
                     "titulo": "CNES — Cadastro Nacional de Estabelecimentos de Saúde (buscar CER, CAPS, UBS)",
                     "url": "https://cnes.datasus.gov.br/"
+                },
+                {
+                    "titulo": "Condições clínicas contempladas pelo CEAF (PDF)",
+                    "url": "https://www.gov.br/saude/pt-br/composicao/sectics/daf/ceaf/publicacoes/condicoes-clinicas-contempladas-pelo-ceaf.pdf"
+                },
+                {
+                    "titulo": "Lista de medicamentos disponibilizados pelo CEAF (PDF)",
+                    "url": "https://www.gov.br/saude/pt-br/composicao/sectics/daf/ceaf/publicacoes/lista-de-medicamentos-disponibilizados-pelo-ceaf.pdf"
+                },
+                {
+                    "titulo": "Telecuidado Farmacêutico — acompanhamento remoto CEAF (gov.br/saude)",
+                    "url": "https://www.gov.br/saude/pt-br/composicao/sectics/daf/ceaf/telecuidado-farmaceutico"
+                },
+                {
+                    "titulo": "Secretaria Nacional dos Direitos da Pessoa com Deficiência (MDHC)",
+                    "url": "https://www.gov.br/mdh/pt-br/navegue-por-temas/pessoa-com-deficiencia"
                 },
                 {
                     "titulo": "Programa Agora Tem Especialistas — TEA e reabilitação (gov.br/saude)",
@@ -2305,6 +2360,7 @@
                 "aparelho auditivo",
                 "RENAME",
                 "componente especializado",
+                "CEAF",
                 "hemodiálise",
                 "PNAISPD",
                 "RCPD",
@@ -2321,7 +2377,19 @@
                 "Caregiver Skills Training",
                 "paralisia cerebral",
                 "Meu SUS Digital",
-                "Agora Tem Especialistas"
+                "Agora Tem Especialistas",
+                "fralda geriátrica",
+                "fralda PcD",
+                "metilfenidato",
+                "Ritalina",
+                "TDAH",
+                "lisdexanfetamina",
+                "Venvanse",
+                "telecuidado farmacêutico",
+                "desconto medicamento",
+                "remédio gratuito",
+                "100% gratuito",
+                "Portaria 264/2025"
             ]
         },
         {
