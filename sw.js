@@ -95,7 +95,7 @@ self.addEventListener('fetch', (event) => {
  * Used only for external CDN assets (versioned/immutable URLs).
  */
 async function cacheFirst(request) {
-    const cached = await caches.match(request);
+    const cached = await caches.match(request, { ignoreSearch: true });
     if (cached) return cached;
 
     try {
@@ -129,7 +129,7 @@ async function networkFirst(request) {
         }
         return response;
     } catch {
-        const cached = await caches.match(request);
+        const cached = await caches.match(request, { ignoreSearch: true });
         if (cached) return cached;
 
         // If navigating and no cache, return offline page
