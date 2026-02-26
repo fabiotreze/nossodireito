@@ -38,20 +38,23 @@ const CDN_ASSETS = [
     'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js',
 ];
 
-// ── Install: Pre-cache static assets ──
+// ── Install: Pre-cache only critical assets ──
+// Same-origin assets are cached lazily via networkFirst() on first visit.
+// This avoids competing with the page load and eliminates Chrome preload warnings.
 self.addEventListener('install', (event) => {
     event.waitUntil(
         caches.open(CACHE_VERSION).then(async (cache) => {
-            // Cache all assets in parallel (best-effort — don't fail install if any is missing)
-            const allAssets = [...STATIC_ASSETS, ...CDN_ASSETS];
-            await Promise.allSettled(allAssets.map(url =>
+            // Only pre-cache the offline fallback page and external CDN assets
+            // (CDN assets won't be fetched by normal page navigation)
+            const criticalAssets = ['/', '/index.html', ...CDN_ASSETS];
+            await Promise.allSettled(criticalAssets.map(url =>
                 cache.add(url).catch(() => console.warn(`[SW] Asset not cached: ${url}`))
             ));
         }).then(() => self.skipWaiting()) // Activate immediately after caching
     );
 });
 
-// ── Activate: Clean old caches ──
+// ── Activate: Clean old caches, then background-cache remaining assets ──
 self.addEventListener('activate', (event) => {
     event.waitUntil(
         caches.keys().then((keys) =>
@@ -61,6 +64,19 @@ self.addEventListener('activate', (event) => {
                     .map((key) => caches.delete(key))
             )
         ).then(() => self.clients.claim()) // Claim after old caches are deleted
+            .then(() => {
+                // Background pre-cache remaining static assets (non-blocking).
+                // These were NOT cached during install to avoid competing with page load.
+                caches.open(CACHE_VERSION).then(cache => {
+                    const alreadyCached = new Set(['/', '/index.html']);
+                    const remaining = STATIC_ASSETS.filter(u => !alreadyCached.has(u));
+                    remaining.forEach(url => {
+                        cache.match(url, { ignoreSearch: true }).then(hit => {
+                            if (!hit) cache.add(url).catch(() => { });
+                        });
+                    });
+                });
+            })
     );
 });
 

@@ -616,6 +616,15 @@
         });
     }
 
+    /**
+     * Yield control to the main thread so the browser can paint and handle
+     * input between initialization phases.  Keeps each task under ~50 ms
+     * (Long Task threshold), improving TBT and INP.
+     */
+    function yieldToMain() {
+        return new Promise(resolve => setTimeout(resolve, 0));
+    }
+
     async function init() {
         // Initialize DOM references after DOM is loaded
         dom = {
@@ -661,17 +670,29 @@
         const safeRunAsync = async (name, fn) => {
             try { await fn(); } catch (e) { console.error(`[init] ${name} falhou:`, e); }
         };
-        safeRun('setupAccessibilityPanel', setupAccessibilityPanel);
-        safeRun('setupSkipLinks', setupSkipLinks);
+        // ── Phase 1: Critical above-fold (nav, search, data) ──
         safeRun('setupNavigation', setupNavigation);
         safeRun('setupSearch', setupSearch);
+        await safeRunAsync('loadData', loadData);
+        safeRun('renderCategories', renderCategories);
+        safeRun('renderHeroStats', renderHeroStats);
+
+        // Yield to main thread so browser can paint above-fold content
+        await yieldToMain();
+
+        // ── Phase 2: Interactive features ──
+        safeRun('setupAccessibilityPanel', setupAccessibilityPanel);
+        safeRun('setupSkipLinks', setupSkipLinks);
         safeRun('setupChecklist', setupChecklist);
         safeRun('setupFooter', setupFooter);
         safeRun('setupBackToTop', setupBackToTop);
-        await safeRunAsync('loadData', loadData);
         safeRunAsync('enrichGovBr', enrichGovBr);
         safeRun('setupFooterVersion', setupFooterVersion);
-        safeRun('renderCategories', renderCategories);
+
+        // Yield again before heavy DOM rendering
+        await yieldToMain();
+
+        // ── Phase 3: Below-fold rendering ──
         safeRun('renderTransparency', renderTransparency);
         safeRun('renderDocsChecklist', renderDocsChecklist);
         /* Defer below-fold sections to reduce initial DOM size (~500 fewer elements).
@@ -709,8 +730,12 @@
         /* If page loaded with a hash pointing to a deferred section, render it now */
         const hashTarget = location.hash.replace('#', '');
         if (hashTarget) renderDeferred(hashTarget);
-        safeRun('renderHeroStats', renderHeroStats);
         safeRun('checkStaleness', checkStaleness);
+
+        // Yield before upload/file operations (IndexedDB access)
+        await yieldToMain();
+
+        // ── Phase 4: Upload, analysis, file management ──
         safeRun('setupUpload', setupUpload);
         safeRun('setupAnalysis', setupAnalysis);
         await safeRunAsync('cleanupExpiredFiles', cleanupExpiredFiles);
