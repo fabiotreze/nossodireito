@@ -615,9 +615,10 @@ const server = http.createServer(async (req, res) => {
     // CORS header for same-origin (Safari SW compat)
     if (corsOrigin) headers['Access-Control-Allow-Origin'] = corsOrigin;
 
-    // Early hints — push critical sub-resources for HTML pages
+    // HTML-specific headers (no Link preload — resources are discovered
+    // directly from HTML; preload hints cause Chrome "unused preload" warnings
+    // because styles.css uses media=print defer and app.js uses defer)
     if (ext === '.html') {
-        headers['Link'] = '</css/styles.css>; rel=preload; as=style, </js/app.js>; rel=preload; as=script';
         headers['Content-Language'] = 'pt-BR';
         headers['X-Robots-Tag'] = 'index, follow';
     } else if (ext === '.json') {
