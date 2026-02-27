@@ -3767,7 +3767,7 @@ body.high-contrast .disclaimer-alert {
     .a11y-panel-trigger {
         writing-mode: horizontal-tb;
         top: auto;
-        bottom: 90px;
+        bottom: 140px;
         right: 16px;
         border-radius: 50%;
         width: 64px;
