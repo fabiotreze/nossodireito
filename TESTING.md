@@ -41,7 +41,10 @@ pip install -r requirements-dev.txt
 pytest tests/ -v
 ```
 
-Resultado esperado: **710+ testes passando** (0 falhas).
+Resultado esperado: **709 testes passando** (0 falhas).
+
+> **Nota:** os testes E2E do Playwright rodam em arquivo separado. Para rodar apenas os unitários:
+> `pytest tests/ --ignore=tests/test_e2e_playwright.py -v`
 
 ## Passo 5 — Rode os testes E2E (navegador)
 
@@ -59,7 +62,7 @@ playwright install chromium
 pytest tests/test_e2e_playwright.py -v
 ```
 
-Resultado esperado: **74+ testes passando**.
+Resultado esperado: **137 testes passando**.
 
 > **Nota:** os testes E2E iniciam automaticamente um servidor local na porta 9876.
 
@@ -116,15 +119,17 @@ python scripts/master_compliance.py     # Auditoria completa
 
 ```
 tests/
-├── test_analysis_scripts.py     # Scripts de análise
-├── test_complete_validation.py  # Validação completa dos dados
-├── test_e2e_automated.py        # E2E automatizado (pytest)
-├── test_e2e_playwright.py       # E2E com navegador real
-└── test_cross_browser.py        # Compatibilidade cross-browser
+├── test_comprehensive.py            # Testes unitários abrangentes
+├── test_comprehensive_validation.py  # Validação completa dos dados
+├── test_cross_browser.py            # Compatibilidade cross-browser
+├── test_e2e_playwright.py           # E2E com navegador real (137 testes)
+└── test_master_compliance.py        # Validação de compliance
 
 scripts/
-├── validate_content.py          # Validação de conteúdo JSON
-├── master_compliance.py         # Auditoria de conformidade
-├── validate_all.py              # Validação geral
-└── validate_govbr_urls.py       # Verificação de URLs gov.br
+├── master_compliance.py             # Auditoria de conformidade (1104.7/1104.7)
+├── validate_all.py                  # Quality Gate agregado
+├── validate_content.py              # Validação de conteúdo JSON
+├── validate_govbr_urls.py           # Verificação de URLs gov.br
+├── validate_schema.py               # Validação JSON Schema
+└── validate_sources.py              # Validação de fontes oficiais
 ```

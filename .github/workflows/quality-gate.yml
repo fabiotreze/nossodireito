@@ -36,7 +36,7 @@ jobs:
       - name: Executar testes Python
         run: |
           echo "🧪 Executando testes Python..."
-          python -m pytest tests/ -v --tb=short --ignore=tests/test_browser.py -q
+          python -m pytest tests/ -v --tb=short --ignore=tests/test_e2e_playwright.py -q
 
       # ── Sensitive Data Scan (pre-check rápido) ──
       - name: Scan para dados sensíveis

@@ -1,6 +1,6 @@
 # NossoDireito — Arquitetura do Sistema V1 (Produção Atual)
 
-**Versão:** 1.14.4
+**Versão:** 1.14.5
 **Data:** Fevereiro 2026
 **Status:** Produção Estável (Quality Gate: 100.0/100)
 **URL:** https://nossodireito.fabiotreze.com
@@ -34,6 +34,9 @@
 **NossoDireito** é um portal web gratuito que fornece informações sobre direitos e benefícios para pessoas com deficiência (PcD) no Brasil. Criado para famílias que recebem laudos médicos (TEA, deficiência física, intelectual, sensorial), o portal oferece:
 
 - **30 categorias de direitos**: BPC/LOAS, CIPTEA, Educação Inclusiva, Terapias SUS, Planos de Saúde, Transporte, Trabalho, FGTS, Habitação, IPVA PcD, Isenção IR, Prioridade em Filas, Tecnologia Assistiva, Aposentadoria PcD, entre outras
+- **Protocolos de Emergência**: 30 protocolos (1 por categoria) com conflito, base legal, ação imediata, modelo de notificação e órgão de denúncia
+- **Dicas colapsáveis**: "Mostrar mais" toggle (DICAS_LIMIT=5, aria-expanded) com revelação automática em modo print/PDF
+- **Ícone de acessibilidade ABNT**: SVG conforme NBR 9050:2020 (pessoa ativa em cadeira de rodas) substituindo emoji ♿
 - **Análise de documentos**: Upload de laudos médicos em PDF para identificação automática de direitos relacionados (regex-based matching)
 - **Recursos de acessibilidade**: TTS (Text-to-Speech), VLibras (Libras em vídeo), ajuste de fonte, alto contraste, navegação por teclado
 - **Totalmente offline-first**: Service Worker com cache, dados JSON estáticos, zero backend dinâmico
@@ -58,6 +61,8 @@
 | **Keywords Matching** | ~1.218 termos + CID-10/11 ranges |
 | **Acurácia de Análise** | ~70% (limitação regex) |
 | **Lighthouse Score** | Performance: 95+, Accessibility: 100, Best Practices: 100, SEO: 100 |
+| **Testes Automatizados** | 846 (709 unit + 137 Playwright E2E) |
+| **Master Compliance** | 100.00% (1104.7/1104.7) |
 | **Tamanho Total** | 2.78 MB (52 arquivos) |
 
 ---
@@ -1653,36 +1658,48 @@ jobs:
 name: Quality Gate
 
 on:
-  pull_request:
   push:
-    branches: [main, develop]
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
 
 jobs:
-  validate:
+  quality-gate:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Setup Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
+          python-version: '3.11'
 
-      - name: Validate sources (scripts/validate_sources.py)
-        run: python scripts/validate_sources.py
-
-      - name: Check JSON syntax
+      - name: Instalar dependências
         run: |
-          jq empty data/direitos.json
-          jq empty data/matching_engine.json
-          jq empty manifest.json
+          pip install -r requirements.txt
+          pip install -r requirements-dev.txt
 
-      - name: Lint JavaScript
-        run: npx eslint js/app.js || true  # Warnings não falham CI
+      - name: Executar testes Python
+        run: python -m pytest tests/ -v --tb=short --ignore=tests/test_e2e_playwright.py -q
 
-      - name: Security scan (npm audit)
-        run: npm audit --audit-level=high
+      - name: Scan dados sensíveis
+        run: |  # Verifica padrões de chaves privadas, tokens, extensões sensíveis
+
+      - name: Validar Conteúdo
+        run: python3 scripts/validate_content.py
+
+      - name: Executar Quality Gate
+        run: python scripts/validate_all.py --quick
+
+      - name: Upload relatório
+        uses: actions/upload-artifact@v4
+        with:
+          name: quality-gate-report
+          path: quality-gate-report.json
 ```
+
+**Nota:** O workflow `deploy.yml` inclui uma cópia inline do quality-gate como job pré-deploy, garantindo que nenhum deploy ocorra sem validação.
 
 ### Terraform Workflow
 
@@ -1716,6 +1733,55 @@ az login
 terraform init
 terraform apply -auto-approve
 ```
+
+### Infraestrutura de Testes
+
+**Estrutura:**
+```
+tests/                              # Testes pytest (709 unit + 137 E2E)
+├── test_comprehensive.py           # Testes unitários abrangentes (categorias, keywords, UFs)
+├── test_comprehensive_validation.py # Validação completa de dados e estrutura
+├── test_cross_browser.py           # Testes de compatibilidade cross-browser
+├── test_e2e_playwright.py          # 132 testes E2E com Playwright (26 classes)
+└── test_master_compliance.py       # Validação de compliance (Master Score)
+
+scripts/                            # Scripts de validação e automação
+├── analise360.py                   # Análise 360° do projeto
+├── audit_automation.py             # Automação de auditoria
+├── bump_version.py                 # Incremento de versão (package.json, sw.js, direitos.json)
+├── complete_beneficios.py          # Enriquecimento de benefícios
+├── discover_benefits.py            # Descoberta de benefícios gov.br
+├── master_compliance.py            # Master Compliance Score (1104.7/1104.7)
+├── pre-commit                      # Hook git pre-commit
+├── test_analysis_scripts.py        # Testes dos scripts de análise
+├── test_complete_validation.py     # Testes completos de validação
+├── test_e2e_automated.py           # E2E automatizado (headless)
+├── validate_all.py                 # Quality Gate agregado (--quick mode)
+├── validate_content.py             # Validação de conteúdo (categorias, IPVA)
+├── validate_govbr_urls.py          # Verificação de URLs gov.br
+├── validate_legal_compliance.py    # Conformidade legal
+├── validate_legal_sources.py       # Fontes legais
+├── validate_schema.py              # Validação JSON Schema
+├── validate_sources.py             # Validação de fontes oficiais
+└── validate_urls.py                # Verificação de URLs ativas
+```
+
+**Execução:**
+```bash
+# Testes unitários (709 tests, ~8s)
+python -m pytest tests/ --ignore=tests/test_e2e_playwright.py -v -q
+
+# E2E Playwright (132 tests, ~45s — requer browser binaries)
+python -m pytest tests/test_e2e_playwright.py -v
+
+# Master Compliance Score
+python scripts/master_compliance.py
+
+# Quality Gate rápido (usado no CI)
+python scripts/validate_all.py --quick
+```
+
+---
 
 ### Scripts Python (scripts/)
 
@@ -2300,7 +2366,7 @@ if (req.url === '/healthz' || req.url === '/health') {
 
 ## Conclusão
 
-Este documento apresenta a arquitetura completa do sistema **NossoDireito V1** (versão 1.14.1) em produção. O portal atende ~1.000 famílias/mês com informações sobre direitos PcD, mantendo:
+Este documento apresenta a arquitetura completa do sistema **NossoDireito V1** (versão 1.14.4) em produção. O portal atende ~1.000 famílias/mês com informações sobre direitos PcD, mantendo:
 
 ✅ **Conformidade LGPD** (analytics anonimizado com SHA-256 + salt efêmero)
 ✅ **Acessibilidade WCAG 2.1 AA** (TTS, VLibras, alto contraste)

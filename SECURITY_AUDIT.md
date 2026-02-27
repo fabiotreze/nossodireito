@@ -1,6 +1,6 @@
-# 🔒 NossoDireito — Auditoria de Segurança v1.14.4
+# 🔒 NossoDireito — Auditoria de Segurança v1.14.5
 
-**Data**: 2026-02-25
+**Data**: 2026-02-26
 **Escopo**: Aplicação client-side (HTML5 + CSS3 + Vanilla JS) + servidor Node.js (`server.js`)
 **Domínio**: `nossodireito.fabiotreze.com` (HTTPS via Azure App Service + Key Vault PFX)
 **Classificação de dados**: Dados pessoais sensíveis de saúde (laudos médicos com CID)
@@ -259,7 +259,7 @@ NONE      :   □ (0)               ■■■■■■■■■■ (6)
 
 A aplicação NossoDireito v1.13.1 implementa um conjunto robusto de controles de segurança para uma aplicação client-side com servidor Node.js que processa dados sensíveis de saúde. O score de segurança evoluiu de **50%** (v1.0.0) para **100%** (v1.10.0) nos 15 controles aplicáveis.
 
-**Novidades v1.14.4**: 30 categorias de direitos PcD, IPVA/SEFAZ/DETRAN para 27 estados inline, Servidor Node.js 22 LTS com HSTS + rate limiting + CSP server-side, integração VLibras (Libras) via CSP allowlist, Web Speech API (TTS nativa), hospedagem Azure App Service com SSL via Key Vault.
+**Novidades v1.14.5**: 30 categorias de direitos PcD, IPVA/SEFAZ/DETRAN para 27 estados inline, Servidor Node.js 22 LTS com HSTS + rate limiting + CSP server-side, integração VLibras (Libras) via CSP allowlist, Web Speech API (TTS nativa), hospedagem Azure App Service com SSL via Key Vault.
 
 **Risco residual principal**: CVE-2024-4367 no pdf.js, mitigado via CSP mas não eliminado.
 
@@ -267,5 +267,5 @@ A aplicação NossoDireito v1.13.1 implementa um conjunto robusto de controles d
 
 ---
 
-*Documento atualizado em 2026-02-25 como parte do processo de Security Review do NossoDireito v1.14.4.*
+*Documento atualizado em 2026-02-26 como parte do processo de Security Review do NossoDireito v1.14.5.*
 *Para relatar vulnerabilidades: veja [SECURITY.md](SECURITY.md)*

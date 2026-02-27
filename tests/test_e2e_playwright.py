@@ -843,7 +843,7 @@ class TestHashRouting:
 # ════════════════════════════════════════════════════════════════
 
 class TestExport:
-    """Valida botão de exportação/impressão."""
+    """Valida botão de exportação/impressão e compartilhamento."""
 
     def test_export_button_in_detail(self, page, direitos_data):
         cat = direitos_data["categorias"][0]
@@ -851,8 +851,98 @@ class TestExport:
         page.goto(f"{base}#direito/{cat['id']}", wait_until="networkidle")
         page.wait_for_timeout(500)
         # Look for export/print button
-        btn = page.locator("#exportDetalheBtn, .btn-export-pdf, button:has-text('PDF'), button:has-text('Imprimir')")
+        btn = page.locator("#exportDetalheBtn, #exportDetalhePdf, .btn-export-pdf, button:has-text('PDF'), button:has-text('Imprimir')")
         assert btn.count() >= 1
+
+    def test_export_button_adds_print_class(self, page, direitos_data):
+        """Ao clicar em 'Salvar PDF', body recebe classe printing-detalhe."""
+        cat = direitos_data["categorias"][0]
+        base = page.url.split("#")[0]
+        page.goto(f"{base}#direito/{cat['id']}", wait_until="networkidle")
+        page.wait_for_timeout(500)
+        # Intercept window.print to prevent actual dialog
+        page.evaluate("window.print = () => {}")
+        btn = page.locator("#exportDetalhePdf")
+        if btn.count() > 0:
+            btn.click()
+            page.wait_for_timeout(300)
+            has_class = page.evaluate("document.body.classList.contains('printing-detalhe')")
+            assert has_class, "Body deve ter classe printing-detalhe após click em PDF"
+
+    def test_whatsapp_share_link_present(self, page, direitos_data):
+        """Detalhe deve ter link WhatsApp com URL correta."""
+        cat = direitos_data["categorias"][0]
+        base = page.url.split("#")[0]
+        page.goto(f"{base}#direito/{cat['id']}", wait_until="networkidle")
+        page.wait_for_timeout(500)
+        wa = page.locator("a.btn-whatsapp, a[href*='wa.me']")
+        assert wa.count() >= 1, "Link de compartilhamento WhatsApp ausente"
+        href = wa.first.get_attribute("href")
+        assert "wa.me" in href
+        assert "nossodireito.fabiotreze.com" in href
+
+    def test_whatsapp_share_opens_new_tab(self, page, direitos_data):
+        """Link WhatsApp deve abrir em nova aba (target=_blank, rel=noopener)."""
+        cat = direitos_data["categorias"][0]
+        base = page.url.split("#")[0]
+        page.goto(f"{base}#direito/{cat['id']}", wait_until="networkidle")
+        page.wait_for_timeout(500)
+        wa = page.locator("a.btn-whatsapp, a[href*='wa.me']")
+        if wa.count() > 0:
+            assert wa.first.get_attribute("target") == "_blank"
+            rel = wa.first.get_attribute("rel") or ""
+            assert "noopener" in rel
+
+    def test_print_css_reveals_hidden_dicas(self, page, direitos_data):
+        """No modo print, dicas ocultas pelo toggle devem ficar visíveis via CSS."""
+        # Find category with >5 dicas
+        cat_many = None
+        for cat in direitos_data["categorias"]:
+            if len(cat.get("dicas", [])) > 5:
+                cat_many = cat
+                break
+        if cat_many is None:
+            pytest.skip("Nenhuma categoria com >5 dicas")
+        base = page.url.split("#")[0]
+        page.goto(f"{base}#direito/{cat_many['id']}", wait_until="networkidle")
+        page.wait_for_timeout(500)
+        # Verify dicas are hidden initially
+        hidden_id = f"dicasHidden_{cat_many['id']}"
+        hidden = page.locator(f"#{hidden_id}")
+        assert not hidden.is_visible(), "Dicas extras devem estar ocultas por padrão"
+        # Simulate print mode: add printing-detalhe + emulateMedia print
+        page.evaluate("document.body.classList.add('printing-detalhe')")
+        page.emulate_media(media="print")
+        page.wait_for_timeout(200)
+        # Check CSS makes .dicas-hidden visible in print
+        display = page.evaluate(f"""() => {{
+            const el = document.getElementById('{hidden_id}');
+            if (!el) return 'not-found';
+            return window.getComputedStyle(el).display;
+        }}""")
+        assert display != "none", f"Dicas ocultas devem aparecer em modo print (display={display})"
+
+    def test_print_css_hides_toggle_button(self, page, direitos_data):
+        """No modo print, botão 'Mostrar mais' deve ficar oculto."""
+        cat_many = None
+        for cat in direitos_data["categorias"]:
+            if len(cat.get("dicas", [])) > 5:
+                cat_many = cat
+                break
+        if cat_many is None:
+            pytest.skip("Nenhuma categoria com >5 dicas")
+        base = page.url.split("#")[0]
+        page.goto(f"{base}#direito/{cat_many['id']}", wait_until="networkidle")
+        page.wait_for_timeout(500)
+        page.evaluate("document.body.classList.add('printing-detalhe')")
+        page.emulate_media(media="print")
+        page.wait_for_timeout(200)
+        display = page.evaluate(f"""() => {{
+            const el = document.getElementById('dicasToggle_{cat_many["id"]}');
+            if (!el) return 'not-found';
+            return window.getComputedStyle(el).display;
+        }}""")
+        assert display == "none", f"Botão toggle deve sumir em modo print (display={display})"
 
 
 # ════════════════════════════════════════════════════════════════

@@ -3676,9 +3676,15 @@ body.high-contrast .disclaimer-alert {
         visibility: visible !important;
     }
 
+    /* Reveal hidden dicas in print mode so PDF includes all tips */
+    body.printing-detalhe .dicas-hidden {
+        display: block !important;
+    }
+
     body.printing-detalhe #voltarBtn,
     body.printing-detalhe .btn,
     body.printing-detalhe button,
+    body.printing-detalhe .btn-ver-mais,
     body.printing-detalhe a.btn {
         display: none !important;
     }

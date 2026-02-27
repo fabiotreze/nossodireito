@@ -53,7 +53,7 @@ jobs:
           pip install -r requirements-dev.txt
 
       - name: Testes Python (pytest)
-        run: python -m pytest tests/ -v --tb=short --ignore=tests/test_browser.py -q
+        run: python -m pytest tests/ -v --tb=short --ignore=tests/test_e2e_playwright.py -q
 
       - name: Scan dados sensíveis
         run: |

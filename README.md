@@ -1,21 +1,19 @@
 <p align="center">
-  <img src="images/nossodireito.png" alt="NossoDireito" width="120">
+  <img src="images/nossodireito-400.png" alt="NossoDireito" width="120">
 </p>
 
 # ⚖️ NossoDireito
 
 [![Master Compliance](https://img.shields.io/badge/Master%20Compliance-100.0%25%20(1104.7%2F1104.7)-brightgreen?style=flat-square)](CHANGELOG.md)
-[![Quality Gate](https://img.shields.io/badge/Quality%20Gate-100.0%2F100-brightgreen?style=flat-square)](https://github.com/fabiotreze/nossodireito/actions)
 [![WAF 5 Pillars](https://img.shields.io/badge/WAF%205%20Pillars-100%25-success?style=flat-square)](docs/QUALITY_GUIDE.md)
-[![Deploy](https://img.shields.io/badge/Deploy-Azure%20App%20Service-0078D4?style=flat-square&logo=microsoft-azure)](https://nossodireito.fabiotreze.com)
 [![Security](https://img.shields.io/badge/Security-HTTPS%20%7C%20CSP%20%7C%20Zero%20Tracking-green?style=flat-square&logo=letsencrypt)](SECURITY.md)
 [![Accessibility](https://img.shields.io/badge/Accessibility-ARIA%20%7C%20VLibras%20%7C%20WCAG-blue?style=flat-square&logo=accessible-icon)](docs/ACCESSIBILITY.md)
 [![LGPD](https://img.shields.io/badge/LGPD-Zero%20Data%20Collection-blue?style=flat-square)](SECURITY.md)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow?style=flat-square)](LICENSE)
-[![Version](https://img.shields.io/badge/Version-1.14.4-informational?style=flat-square)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/Version-1.14.5-informational?style=flat-square)](CHANGELOG.md)
 [![Quality Gate](https://github.com/fabiotreze/nossodireito/actions/workflows/quality-gate.yml/badge.svg)](https://github.com/fabiotreze/nossodireito/actions/workflows/quality-gate.yml)
 [![Deploy](https://github.com/fabiotreze/nossodireito/actions/workflows/deploy.yml/badge.svg)](https://github.com/fabiotreze/nossodireito/actions/workflows/deploy.yml)
-[![Python Tests](https://img.shields.io/badge/Python%20Tests-370%20passed-brightgreen?style=flat-square&logo=pytest)](tests/)
+[![Tests](https://img.shields.io/badge/Tests-846%20passed%20(709%20unit%20%2B%20137%20E2E)-brightgreen?style=flat-square&logo=pytest)](TESTING.md)
 
 **Recebeu um laudo? Vem que a gente te ajuda.**
 

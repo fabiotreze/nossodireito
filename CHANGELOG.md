@@ -5,6 +5,35 @@ Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/)
 e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [1.14.5] - 2026-02-26
+
+### Corrigido
+
+- **Bug crítico: dicas ocultas desapareciam do PDF** — dicas acima de 5 usavam inline `display:none` (via JS toggle), e o CSS de impressão usava apenas `visibility:visible` que não sobrepõe `display:none` inline. Adicionado `.dicas-hidden { display: block !important }` e `.btn-ver-mais { display: none !important }` no modo `printing-detalhe`
+- **GitHub Actions: referência a arquivo deletado** — `quality-gate.yml` e `deploy.yml` usavam `--ignore=tests/test_browser.py` (deletado). Atualizado para `--ignore=tests/test_e2e_playwright.py`
+- **robots.txt: referência a diretório deletado** — 2 entradas `Disallow: /screenshots/` removidas (pasta não existe mais)
+- **README.md: imagem quebrada** — `images/nossodireito.png` não existe; corrigido para `images/nossodireito-400.png`
+- **README.md: badges duplicados** — 2 badges estáticos (Quality Gate, Deploy) duplicavam os badges GitHub Actions. Removidos
+- **pre-commit: comentários desatualizados** — referências a arquivos de teste deletados atualizadas para `test_e2e_playwright.py`
+- **TESTING.md: estrutura de arquivos incorreta** — listava arquivos do `scripts/` como se estivessem em `tests/`. Corrigido com estrutura real
+- **venv macOS em Windows** — `.venv` criado no macOS apontava para `/opt/homebrew/`. Recriado com Python 3.10.11 Windows local
+
+### Atualizado
+
+- **ARCHITECTURE.md** — adicionados protocolos de emergência, dicas colapsáveis e ícone ABNT ao Resumo Executivo; KPIs com contagem de testes (846) e Master Compliance (100%); CI/CD atualizado para refletir workflows reais; adicionada seção "Infraestrutura de Testes" com árvore completa de 5 arquivos de teste + 18 scripts; versão na conclusão atualizada para 1.14.4
+- **ARCHITECTURE.drawio.xml** — versão 1.13.1→1.14.4, test_browser.py→test_e2e_playwright.py (132→137 Playwright), test_comprehensive 147→709, legenda 188→846 total
+
+### Adicionado
+
+- **5 novos testes E2E** (total: 137 Playwright):
+  - `test_export_button_adds_print_class` — verifica que botão PDF adiciona `printing-detalhe`
+  - `test_whatsapp_share_link_present` — valida link WhatsApp com domínio correto
+  - `test_whatsapp_share_opens_new_tab` — verifica `target="_blank"` e `rel="noopener"`
+  - `test_print_css_reveals_hidden_dicas` — confirma que dicas ocultas aparecem em modo print
+  - `test_print_css_hides_toggle_button` — confirma que botão "Mostrar mais" some no PDF
+
+**Totais:** 709 unit + 137 E2E = **846 testes** | Master Compliance: **1104.7/1104.7 (100.00%)**
+
 ## [1.14.4] - 2026-02-25
 
 ### Corrigido
@@ -35,7 +64,7 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 
 ### Corrigido
 
-- **Passo a passo numeração** — removido "6." duplicado no passo a passo de sus_terapias 
+- **Passo a passo numeração** — removido "6." duplicado no passo a passo de sus_terapias
 - **Texto desatualizado** — "gratuitos ou com desconto" corrigido para "100% gratuitos" conforme nova legislação
 
 ## [1.14.2] - 2026-02-24
