@@ -257,7 +257,7 @@ NONE      :   □ (0)               ■■■■■■■■■■ (6)
 
 ## 13. Conclusão
 
-A aplicação NossoDireito v1.13.1 implementa um conjunto robusto de controles de segurança para uma aplicação client-side com servidor Node.js que processa dados sensíveis de saúde. O score de segurança evoluiu de **50%** (v1.0.0) para **100%** (v1.10.0) nos 15 controles aplicáveis.
+A aplicação NossoDireito v1.14.5 implementa um conjunto robusto de controles de segurança para uma aplicação client-side com servidor Node.js que processa dados sensíveis de saúde. O score de segurança evoluiu de **50%** (v1.0.0) para **100%** (v1.10.0) nos 15 controles aplicáveis.
 
 **Novidades v1.14.5**: 30 categorias de direitos PcD, IPVA/SEFAZ/DETRAN para 27 estados inline, Servidor Node.js 22 LTS com HSTS + rate limiting + CSP server-side, integração VLibras (Libras) via CSP allowlist, Web Speech API (TTS nativa), hospedagem Azure App Service com SSL via Key Vault.
 

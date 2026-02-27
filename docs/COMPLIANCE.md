@@ -1088,8 +1088,8 @@ git commit -m "a11y: Melhora contraste (WCAG 2.1 AA 1.4.3)"
 |----------------|--------|------------|------------------|
 | IPVA Estadual — dropdown por UF | ✅ Implementado | — | v1.13.1 |
 | Filtros por categoria/tag | ❌ Não implementado | MÉDIA | v1.5.0 |
-| Compartilhamento social | ❌ Não implementado | BAIXA | v1.7.0 |
-| Print-friendly view | ❌ Não implementado | BAIXA | v1.7.0 |
+| Compartilhamento social (WhatsApp) | ✅ Implementado | — | v1.14.0 |
+| Print-friendly view (PDF export) | ✅ Implementado | — | v1.14.0 |
 | Busca por tipo de deficiência | ❌ Não implementado | ALTA | v1.5.0 |
 | Calculadora BPC (renda per capita) | ❌ Não implementado | MÉDIA | v1.6.0 |
 

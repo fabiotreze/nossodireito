@@ -112,7 +112,7 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 
 - **Master Compliance: 100% (1080.9/1080.9)** — 21 categorias, todas ✅
 - **Schema validation: PASSED** — direitos.json vs direitos.schema.json (Draft 7)
-- **160 unit tests PASSED** — 2 failed + 40 errors são Playwright browser tests (requerem `localhost:8080`)
+- **160 unit tests PASSED** — 2 failed + 40 errors são Playwright browser tests (requerem `localhost:9876`)
 - **URLs gov.br: 25/26 OK** — 1 falha persistente (PI 323/2020 no DOU retorna 403, proteção anti-bot)
 
 ---

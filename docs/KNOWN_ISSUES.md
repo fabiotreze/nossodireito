@@ -88,10 +88,10 @@ Site carrega lento em redes 3G/2G devido ao tamanho do JavaScript (115 KB).
 - ✅ Lazy load de PDF preview
 
 **Roadmap:**
-- 🔜 v1.6.0: Minificação app.js com Terser (-35 KB)
-- 🔜 v1.6.0: Critical CSS inline (-15 KB primeira carga)
+- ⏳ Futuro: Minificação app.js com Terser (-35 KB)
+- ⏳ Futuro: Critical CSS inline (-15 KB primeira carga)
 **Status:**
-🟡 **Em melhoria** — v1.6.0 trará otimizações
+🟡 **Aceitável** — otimizações planejadas para versões futuras
 
 ---
 
@@ -251,7 +251,7 @@ Service Worker tem limite de **10 MB** em alguns navegadores (especialmente iOS)
 ```
 
 **Status:**
-🔜 **Planejado** — v1.6.0 (mar 2026)
+� **Implementado** — v1.14.0+
 
 ---
 
@@ -318,7 +318,7 @@ Não há como filtrar benefícios por tag (ex: "educação", "saúde", "transpor
 Use busca textual: "educação", "saúde", etc.
 
 **Status:**
-🔜 **Planejado** — v1.6.0
+⏳ **Futuro** — sem versão definida
 
 ---
 

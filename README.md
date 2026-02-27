@@ -60,7 +60,7 @@ Este projeto responde essa pergunta de forma clara, objetiva e validada.
    - Painel de acessibilidade com shortcuts de teclado
 
 5. **ANÁLISE 360 @ 100%** — Métricas atualizadas:
-   - ✅ Cobertura: 80.6% (≥75% meta)
+   - ✅ Cobertura: 88.2% (≥75% meta)
    - ✅ Completude: 30/30 benefícios completos
    - ✅ IPVA: 27/27 estados mapeados
 
@@ -166,8 +166,8 @@ python3 scripts/validate_content.py
 python3 scripts/master_compliance.py
 
 # Inicie servidor local
-python3 -m http.server 3000
-# Acesse: http://localhost:3000
+node server.js
+# Acesse: http://localhost:8080
 ```
 
 ---
@@ -267,27 +267,39 @@ nossodireito/
 ├── css/
 │   └── styles.css          # CSS responsivo + dark mode
 ├── js/
-│   └── app.js              # Busca, navegação, TTS, VLibras, criptografia
+│   ├── app.js              # Busca, navegação, TTS, VLibras, criptografia
+│   └── sw-register.js      # Registro do Service Worker
 ├── data/
 │   ├── direitos.json       # Base de conhecimento (30 categorias + IPVA inline)
 │   ├── matching_engine.json # Keywords e motor de busca
 │   └── dicionario_pcd.json  # Dicionário PcD (deficiências, CIDs, leis)
 ├── images/                 # Favicons, OG image e logo
+├── schemas/
+│   └── direitos.schema.json # JSON Schema (Draft 7) para direitos.json
 ├── docs/
-│   ├── QUALITY_GUIDE.md    # Pipeline, scripts, testes (4→1)
-│   ├── ACCESSIBILITY.md    # WCAG/eMAG, correções, widgets (6→1)
-│   ├── VALIDATION_STATUS.md # Automação, E2E, roadmap (4→1)
-│   ├── REFERENCE.md        # 31+ benefícios PcD, dependências (3→1)
-│   ├── COMPLIANCE.md       # LGPD, LBI, ISO, Azure
-│   ├── KNOWN_ISSUES.md     # Bugs, VLibras, limitações
-│   ├── CONTRIBUTING.md     # Guia de contribuição
 │   ├── ARCHITECTURE.md     # Arquitetura completa do sistema
-│   └── v1/                 # Arquivo histórico
+│   ├── ARCHITECTURE.drawio.xml # Diagrama visual (draw.io)
+│   ├── ACCESSIBILITY.md    # WCAG/eMAG, correções, widgets
+│   ├── COMPLIANCE.md       # LGPD, LBI, ISO, Azure
+│   ├── CONTRIBUTING.md     # Guia de contribuição
+│   ├── KNOWN_ISSUES.md     # Bugs, VLibras, limitações
+│   ├── QUALITY_GUIDE.md    # Pipeline, scripts, testes
+│   ├── REFERENCE.md        # 31+ benefícios PcD, dependências
+│   ├── VALIDATION_STATUS.md # Automação, E2E, roadmap
+│   └── v1/                 # Arquivo histórico (versões 1.2–1.9)
+├── tests/
+│   ├── test_comprehensive.py           # Testes unitários abrangentes
+│   ├── test_comprehensive_validation.py # Validação completa de dados
+│   ├── test_cross_browser.py           # Compatibilidade cross-browser
+│   ├── test_e2e_playwright.py          # 137 testes E2E (Playwright)
+│   └── test_master_compliance.py       # Validação de compliance
 ├── scripts/
-│   ├── validate_sources.py # Validação de URLs + legislação + CID
+│   ├── master_compliance.py # Compliance 360° (21 categorias, score 100%)
+│   ├── validate_all.py     # Quality Gate agregado (--quick)
 │   ├── validate_content.py # Validação de conteúdo (147 checks)
-│   ├── master_compliance.py # Compliance 360° (21 categorias)
-│   ├── validate_all.py     # Orquestrador (16 fases)
+│   ├── validate_sources.py # Validação de URLs gov.br
+│   ├── validate_schema.py  # Validação JSON Schema
+│   ├── analise360.py       # Análise 360° de cobertura
 │   ├── bump_version.py     # Semver automático
 │   └── pre-commit          # Hook de pré-commit
 ├── terraform/              # Infraestrutura como código
@@ -296,12 +308,15 @@ nossodireito/
 │   ├── outputs.tf          # Outputs pós-apply
 │   └── providers.tf        # Provider azurerm ~>4.0
 ├── .github/workflows/
-│   ├── deploy.yml          # CI/CD push → deploy
-│   ├── quality-gate.yml    # Quality Gate PR check
-│   ├── terraform.yml       # IaC manual dispatch
-│   └── weekly-review.yml   # Issue automática periódica
+│   ├── deploy.yml              # CI/CD push → deploy Azure
+│   ├── quality-gate.yml        # Quality Gate PR/push check
+│   ├── discover-benefits.yml   # Descoberta de benefícios gov.br
+│   ├── dependabot-auto-merge.yml # Auto-merge Dependabot PRs
+│   ├── terraform.yml           # IaC manual dispatch
+│   └── weekly-review.yml       # Issue automática periódica
 ├── CHANGELOG.md
 ├── GOVERNANCE.md
+├── TESTING.md
 ├── SECURITY.md
 ├── SECURITY_AUDIT.md
 ├── LICENSE

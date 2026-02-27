@@ -76,8 +76,6 @@ def main():
     faltam = [
         ("Táxis Acessíveis e Descontos", "MÉDIA", "Mobilidade urbana"),
         ("Locadoras de Veículos Adaptados", "BAIXA", "Nicho específico"),
-        ("Acompanhante Gratuito Transporte Aéreo", "MÉDIA", "Mobilidade - direito essencial"),
-        ("Desconto Internet/Telefonia", "MÉDIA", "Inclusão digital"),
         ("Atendimento Domiciliar (SAD)", "MÉDIA", "Saúde - casos graves"),
         ("Cestas Básicas e Alimentação", "MÉDIA", "Vulnerabilidade social"),
     ]
