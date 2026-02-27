@@ -244,7 +244,7 @@ fabiotreze@hotmail.com (assunto: "Código de Conduta")
 
 | Contribuidor | Contribuições | Desde |
 |--------------|---------------|-------|
-| **Fábio Treze** | Criador e mantenedor | dez/2025 |
+| **Fabio Costa** | Criador e mantenedor | dez/2025 |
 | _(seu nome aqui)_ | _(suas contribuições)_ | _(data)_ |
 
 **Como aparecer aqui:**
@@ -298,7 +298,7 @@ https://github.com/fabiotreze/nossodireito/issues?q=is%3Aissue
 ## 📞 Contato
 
 **Mantenedor Principal:**
-Fábio Treze — fabiotreze@hotmail.com
+Fabio Costa — fabiotreze@hotmail.com
 
 **GitHub:**
 https://github.com/fabiotreze/nossodireito

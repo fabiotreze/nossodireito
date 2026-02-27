@@ -1195,8 +1195,8 @@ class TestCrossOSCommands:
     executados no windows ou mac os? linux?'"""
 
     def test_python_scripts_have_shebang(self):
-        """Python scripts should have #!/usr/bin/env python3 (Unix) or be
-        invocable via 'python scripts/X.py' (all OS)."""
+        """Python scripts should have shebang (Unix) or be
+        invocable via 'python scripts/<name>.py' (all OS)."""
         scripts_dir = ROOT / "scripts"
         for py_file in scripts_dir.glob("*.py"):
             content = py_file.read_text(encoding="utf-8")

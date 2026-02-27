@@ -74,7 +74,10 @@
         },
         "dica_seguranca": {
             "type": "object",
-            "required": ["mensagem", "icone"],
+            "required": [
+                "mensagem",
+                "icone"
+            ],
             "properties": {
                 "mensagem": {
                     "type": "string",
@@ -324,6 +327,10 @@
                     "items": {
                         "$ref": "#/definitions/ipva_estado_detalhado"
                     }
+                },
+                "emergencia": {
+                    "$ref": "#/definitions/emergencia_protocolo",
+                    "description": "Protocolo de emerg\u00eancia para conflitos e negativas de direitos"
                 }
             },
             "additionalProperties": false
@@ -383,7 +390,14 @@
         },
         "orgao_estadual": {
             "type": "object",
-            "required": ["uf", "nome", "url", "sefaz", "detran", "beneficios_destaque"],
+            "required": [
+                "uf",
+                "nome",
+                "url",
+                "sefaz",
+                "detran",
+                "beneficios_destaque"
+            ],
             "properties": {
                 "uf": {
                     "type": "string",
@@ -427,7 +441,13 @@
         },
         "classificacao_item": {
             "type": "object",
-            "required": ["tipo", "cid10", "cid11", "criterio", "detalhes"],
+            "required": [
+                "tipo",
+                "cid10",
+                "cid11",
+                "criterio",
+                "detalhes"
+            ],
             "properties": {
                 "tipo": {
                     "type": "string",
@@ -456,7 +476,15 @@
         },
         "instituicao_apoio": {
             "type": "object",
-            "required": ["id", "nome", "tipo", "descricao", "url", "como_acessar", "categorias"],
+            "required": [
+                "id",
+                "nome",
+                "tipo",
+                "descricao",
+                "url",
+                "como_acessar",
+                "categorias"
+            ],
             "properties": {
                 "id": {
                     "type": "string",
@@ -480,7 +508,9 @@
                 "servicos": {
                     "type": "array",
                     "minItems": 1,
-                    "items": { "type": "string" },
+                    "items": {
+                        "type": "string"
+                    },
                     "description": "Serviços oferecidos"
                 },
                 "url": {
@@ -497,14 +527,21 @@
                 "categorias": {
                     "type": "array",
                     "minItems": 1,
-                    "items": { "type": "string" },
+                    "items": {
+                        "type": "string"
+                    },
                     "description": "IDs das categorias de benefícios vinculadas"
                 }
             }
         },
         "ipva_estado": {
             "type": "object",
-            "required": ["uf", "lei", "art", "sefaz"],
+            "required": [
+                "uf",
+                "lei",
+                "art",
+                "sefaz"
+            ],
             "properties": {
                 "uf": {
                     "type": "string",
@@ -531,7 +568,15 @@
         },
         "ipva_estado_detalhado": {
             "type": "object",
-            "required": ["uf", "nome", "lei", "artigo", "condicoes", "limite_valor", "sefaz"],
+            "required": [
+                "uf",
+                "nome",
+                "lei",
+                "artigo",
+                "condicoes",
+                "limite_valor",
+                "sefaz"
+            ],
             "properties": {
                 "uf": {
                     "type": "string",
@@ -569,6 +614,79 @@
                 }
             },
             "additionalProperties": false
+        },
+        "emergencia_protocolo": {
+            "type": "object",
+            "required": [
+                "titulo",
+                "conflito",
+                "base_legal_resgate",
+                "acao_imediata",
+                "modelo_notificacao",
+                "orgao_denuncia"
+            ],
+            "properties": {
+                "titulo": {
+                    "type": "string",
+                    "minLength": 5,
+                    "description": "Título curto do conflito (ex: Matrícula Negada?)"
+                },
+                "conflito": {
+                    "type": "string",
+                    "minLength": 10,
+                    "description": "Descrição do gatilho de conflito (negação comum)"
+                },
+                "base_legal_resgate": {
+                    "type": "string",
+                    "minLength": 10,
+                    "description": "Artigos específicos da lei que protegem o cidadão"
+                },
+                "acao_imediata": {
+                    "type": "array",
+                    "minItems": 1,
+                    "items": {
+                        "type": "string",
+                        "minLength": 10
+                    },
+                    "description": "Passos imediatos que o usuário deve tomar no momento do conflito"
+                },
+                "modelo_notificacao": {
+                    "type": "string",
+                    "minLength": 20,
+                    "description": "Texto formal para enviar à instituição infratora (WhatsApp/E-mail)"
+                },
+                "orgao_denuncia": {
+                    "type": "object",
+                    "required": [
+                        "nome",
+                        "contato"
+                    ],
+                    "properties": {
+                        "nome": {
+                            "type": "string",
+                            "minLength": 3,
+                            "description": "Nome do órgão de denúncia"
+                        },
+                        "contato": {
+                            "type": "string",
+                            "minLength": 3,
+                            "description": "Telefone ou URL oficial de denúncia"
+                        },
+                        "url": {
+                            "type": "string",
+                            "format": "uri",
+                            "pattern": "^https://",
+                            "description": "URL oficial do órgão (.gov.br ou regulador)"
+                        }
+                    },
+                    "description": "Órgão oficial para denúncia direta"
+                },
+                "aviso": {
+                    "type": "string",
+                    "description": "Aviso adicional (disclaimer do protocolo)"
+                }
+            },
+            "description": "Protocolo de emergência para quando um direito é negado"
         }
     }
 }

@@ -864,8 +864,8 @@
                 </div>
                 <div class="hero-content">
                     <h1>Direitos e Benefícios para Pessoas com Deficiência no Brasil</h1>
-                    <p class="hero-tagline">Recebeu um laudo?<br><span class="hero-highlight">Vem que a gente te
-                            ajuda.</span></p>
+                    <h2 class="hero-tagline">Recebeu um laudo?<br><span class="hero-highlight">Vem que a gente te
+                            ajuda.</span></h2>
                     <p class="hero-sub">
                         Descubra os direitos e benefícios da sua família, passo a passo,
                         com informações de fontes oficiais do governo brasileiro.
@@ -1171,7 +1171,7 @@
                 </ul>
                 <p class="section-desc"><strong>Encontrou alguma informação desatualizada ou
                         imprecisa?</strong>
-                    Avise-nos pelo e-mail <a href="mailto:fabiotreze@hotmail.com">fabiotreze@hotmail.com</a>.
+                    Avise-nos pelo <a href="#compromissoAtualizacao">formulário de contato</a> abaixo.
                 </p>
                 <div class="transparency-meta">
                     <div class="tmeta-item"><span class="tmeta-label">Última atualização</span><span class="tmeta-value"
@@ -1186,7 +1186,8 @@
                 <h3 class="trans-subtitle">📋 Normativas</h3>
                 <div id="fontesNormativas" class="fontes-list"></div>
                 <div class="transparency-note">
-                    <h3 style="margin-top: 0; font-size: 1rem; color: var(--text);">📅 Compromisso com
+                    <h3 id="compromissoAtualizacao" style="margin-top: 0; font-size: 1rem; color: var(--text);">📅
+                        Compromisso com
                         a Atualização
                     </h3>
                     <p>
@@ -1198,7 +1199,7 @@
                         <li>Novos serviços e procedimentos governamentais</li>
                         <li>Atualização de links e fontes oficiais</li>
                     </ul>
-                    <p><strong>Última atualização:</strong><span id="transLastUpdateText">16 de
+                    <p><strong>Última atualização:</strong><span id="transLastUpdateText">26 de
                             fevereiro de 2026</span>
                     </p>
                     <p style="margin-bottom: 0;"><strong>⚠️ Encontrou informação desatualizada ou
@@ -1210,17 +1211,20 @@
                 </div>
                 <div class="disclaimer-box" id="disclaimerInline">
                     <h3 class="disclaimer-title">⚠️ Aviso Importante — Limitações do Serviço</h3>
-                    <p class="disclaimer-intro"><strong>Este site NÃO substitui orientação
-                            profissional.</strong> As
-                        informações aqui apresentadas são de caráter <em>educacional e informativo</em>,
-                        compiladas de
-                        fontes públicas oficiais.
-                    </p>
-                    <p>
-                        Elas <strong>não constituem</strong> assessoria jurídica, médica, psicológica ou
-                        assistencial
-                        personalizada.
-                    </p>
+                    <div class="disclaimer-alert" role="alert">
+                        <p class="disclaimer-intro"><strong>⚠️ Este site NÃO substitui orientação
+                                profissional.</strong> As
+                            informações aqui apresentadas são de caráter <em>educacional e informativo</em>,
+                            compiladas de
+                            fontes públicas oficiais.
+                        </p>
+                        <p>
+                            Elas <strong>não constituem</strong> assessoria jurídica, médica, psicológica ou
+                            assistencial
+                            personalizada. <strong>Sempre procure um profissional qualificado antes de tomar
+                                decisões sobre seus direitos.</strong>
+                        </p>
+                    </div>
                     <div class="disclaimer-section">
                         <p class="disclaimer-subtitle">🏛️ Para ajuda profissional especializada e
                             gratuita:</p>
@@ -1306,7 +1310,15 @@
     <!-- Botão Trigger -->
     <button id="a11yPanelTrigger" class="a11y-panel-trigger" type="button" aria-label="Abrir painel de acessibilidade"
         aria-expanded="false" aria-controls="a11yDrawer">
-        <span class="a11y-trigger-icon" aria-hidden="true">♿</span>
+        <span class="a11y-trigger-icon" aria-hidden="true"><svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"
+                role="img" aria-hidden="true">
+                <circle cx="38" cy="8" r="7" fill="currentColor" />
+                <path
+                    d="M48 58c-8.8 0-16-7.2-16-16s7.2-16 16-16c2 0 3.9.4 5.7 1l-2.4 5.6c-1-.4-2.1-.6-3.3-.6-5.5 0-10 4.5-10 10s4.5 10 10 10c3.2 0 6-1.5 7.8-3.8l4.8 3.4C58.2 55.4 53.4 58 48 58z"
+                    fill="currentColor" />
+                <path d="M24 26h16l4 14h12l3 8H43l-6-18H24v-4z" fill="currentColor" />
+                <path d="M28 22l-4 20h-6l5-24h10v4H28z" fill="currentColor" />
+            </svg></span>
         <span class="a11y-trigger-label">Acessibilidade</span>
     </button>
 
@@ -1320,7 +1332,15 @@
         <!-- Header -->
         <div class="a11y-drawer-header">
             <h2 id="a11yDrawerTitle">
-                <span class="a11y-drawer-icon" aria-hidden="true">♿</span>
+                <span class="a11y-drawer-icon" aria-hidden="true"><svg viewBox="0 0 64 64"
+                        xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true" width="24" height="24">
+                        <circle cx="38" cy="8" r="7" fill="currentColor" />
+                        <path
+                            d="M48 58c-8.8 0-16-7.2-16-16s7.2-16 16-16c2 0 3.9.4 5.7 1l-2.4 5.6c-1-.4-2.1-.6-3.3-.6-5.5 0-10 4.5-10 10s4.5 10 10 10c3.2 0 6-1.5 7.8-3.8l4.8 3.4C58.2 55.4 53.4 58 48 58z"
+                            fill="currentColor" />
+                        <path d="M24 26h16l4 14h12l3 8H43l-6-18H24v-4z" fill="currentColor" />
+                        <path d="M28 22l-4 20h-6l5-24h10v4H28z" fill="currentColor" />
+                    </svg></span>
                 Acessibilidade
             </h2>
             <button id="a11yDrawerClose" class="a11y-close-btn" type="button"

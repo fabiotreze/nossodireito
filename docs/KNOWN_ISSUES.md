@@ -1,7 +1,7 @@
 # Problemas Conhecidos e Limitações — NossoDireito
 
 > **Status:** 🟢 Ativo
-> **Versão:** 1.14.4 | **Atualizado:** 2026-02-25
+> **Versão:** 1.14.4 | **Atualizado:** 2026-02-26
 > **Escopo:** Bugs, limitações técnicas, workarounds e trade-offs conhecidos
 > **Absorve:** VLIBRAS_LIMITATIONS (mobile + CSP)
 
@@ -426,14 +426,8 @@ fabiotreze@hotmail.com (assunto: "Bug NossoDireito")
 
 ---
 
-## 🔄 CRONOGRAMA DE ATUALIZAÇÕES
-
-**Revisão deste documento:** **Mensal** (toda 1ª segunda-feira)
-**Próxima revisão:** 03 de março de 2026
-
 ---
 
-**Última Atualização:** 11 de fevereiro de 2026
-**Responsável:** Fábio Treze (fabiotreze@hotmail.com)
+**Última Atualização:** 26 de fevereiro de 2026
+**Responsável:** Fabio Costa (fabiotreze@hotmail.com)
 **Licença:** MIT
-**Versão:** 1.0.0

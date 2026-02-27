@@ -2,10 +2,9 @@
 
 **Versão:** 1.14.4 (consolidado de múltiplos documentos)
 **Data:** 26 de fevereiro de 2026
-**Responsável:** Fabio Treze (fabiotreze@hotmail.com)
+**Responsável:** Fabio Costa (fabiotreze@hotmail.com)
 **Tipo:** Compliance Legal, Técnico, Segurança, Privacidade, Acessibilidade, Qualidade
 **Framework:** ISO 27001 + SOC 2 + LGPD + LBI
-**Próxima Auditoria:** 26 de março de 2026
 
 ---
 
@@ -62,7 +61,7 @@
 > "Esta Lei não se aplica ao tratamento de dados pessoais realizado por pessoa natural para fins exclusivamente particulares e não econômicos."
 
 **Análise:**
-- ✅ **Pessoa Natural**: Fábio Treze (pessoa física) é o responsável
+- ✅ **Pessoa Natural**: Fabio Costa (pessoa física) é o responsável
 - ✅ **Fins Particulares**: Projeto sem fins lucrativos
 - ✅ **Não Econômicos**: Zero monetização (sem ads, sem venda de dados, sem freemium)
 
@@ -114,10 +113,9 @@ function clearUserData() {
 }
 ```
 
-**Última Auditoria:** 11/02/2026
-**Próxima Revisão:** 11/03/2026 (mensal)
+**Última Auditoria:** 26/02/2026
 **Documentos de Referência:**
-- [docs/v1/LEGAL_COMPLIANCE.md](v1/LEGAL_COMPLIANCE.md) (detalhamento completo)
+- [docs/v1/COMPLIANCE_MASTER_v1.7.0_CHANGELOG.md](v1/COMPLIANCE_MASTER_v1.7.0_CHANGELOG.md) (histórico de conformidade)
 
 ---
 
@@ -136,8 +134,7 @@ function clearUserData() {
 
 **Conformidade WCAG 2.1 Nível AA:** Ver [§4 COMPLIANCE DE ACESSIBILIDADE](#4-compliance-de-acessibilidade)
 
-**Última Auditoria:** 11/02/2026
-**Próxima Revisão:** 11/03/2026
+**Última Auditoria:** 26/02/2026
 
 ---
 
@@ -426,8 +423,7 @@ setTimeout(() => deleteFromIndexedDB(pdfId), 15 * 60 * 1000);
 - ✅ [axe DevTools](https://www.deque.com/axe/devtools/) (browser extension)
 - ✅ Lighthouse Accessibility Audit (Chrome DevTools)
 
-**Última Auditoria:** 11/02/2026
-**Próxima Revisão:** 11/03/2026
+**Última Auditoria:** 26/02/2026
 
 ---
 
@@ -505,8 +501,7 @@ setTimeout(() => deleteFromIndexedDB(pdfId), 15 * 60 * 1000);
 - ✅ **13 categorias** de benefícios validadas
 - ✅ **100% das fontes** têm URL oficial gov.br/planalto.gov.br
 
-**Última Auditoria:** 11/02/2026
-**Próxima Revisão:** 18/02/2026
+**Última Auditoria:** 26/02/2026
 
 ---
 
@@ -616,7 +611,7 @@ setTimeout(() => deleteFromIndexedDB(pdfId), 15 * 60 * 1000);
 
 **Procedimento de Correção:** Ver [REFERENCE.md](REFERENCE.md) Procedimento 6️⃣
 
-**Próxima Validação Automática:** Implementar GitHub Actions (periódica)
+**Próxima Validação Automática:** ✅ Implementado via GitHub Actions (weekly-review.yml)
 
 ---
 
@@ -662,8 +657,7 @@ setTimeout(() => deleteFromIndexedDB(pdfId), 15 * 60 * 1000);
 | 2026-02-11 | 1.4.3 | Acessibilidade | WCAG 2.1 AA, VLibras | 0 | ✅ Conforme |
 | 2026-02-10 | 1.4.2 | Integração | Meia-entrada + Tarifa Social | 0 | ✅ Concluído |
 | 2026-02-25 | 1.14.4 | Completa | 549 testes automatizados, 751+ keywords, 6 segmentos PcD, WCAG POUR AA | 0 | ✅ 100% OK |
-
-**Próxima Auditoria Completa:** 26/03/2026 (periódica mensal)
+| 2026-02-26 | 1.14.4 | Completa | 710 testes, perf Lighthouse, CSP fix, audit cleanup | 0 | ✅ 100% OK |
 
 ---
 
@@ -812,7 +806,7 @@ git commit -m "a11y: Melhora contraste (WCAG 2.1 AA 1.4.3)"
 
 1. ✅ **Corrigir links quebrados** (5 links) — **CONCLUÍDO 11/02/2026**
    - Prioridade: ALTA
-   - Responsável: Fabio Treze
+   - Responsável: Fabio Costa
    - Status: ✅ 5 links corrigidos (CONFAZ, MPT, COFFITO, CNMP, Autistas Brasil)
 
 2. ⏳ **Integrar benefícios pendentes** (~28 novos)
@@ -870,7 +864,7 @@ git commit -m "a11y: Melhora contraste (WCAG 2.1 AA 1.4.3)"
 
 ## 📞 Contato para Compliance
 
-**Responsável:** Fabio Treze
+**Responsável:** Fabio Costa
 **E-mail:** fabiotreze@hotmail.com
 **Função:** Maintainer & Compliance Officer (informal)
 
@@ -883,13 +877,13 @@ git commit -m "a11y: Melhora contraste (WCAG 2.1 AA 1.4.3)"
 
 ## 📅 Calendário de Auditorias
 
-| Tipo de Auditoria | Frequência | Próxima Data | Responsável |
-|-------------------|------------|--------------|-------------|
-| **Validação de Links** | Periódica | 18/02/2026 | Script automático |
-| **Fontes Legislativas** | Mensal | 11/03/2026 | Fabio Treze |
-| **Acessibilidade (WCAG)** | Mensal | 11/03/2026 | Fabio Treze |
-| **Segurança (OWASP)** | Trimestral | 11/05/2026 | Fabio Treze |
-| **Compliance Geral** | Semestral | 11/08/2026 | Fabio Treze |
+| Tipo de Auditoria | Frequência | Responsável |
+|-------------------|------------|-------------|
+| **Validação de Links** | Automática (CI) | Script automático |
+| **Fontes Legislativas** | Sob demanda | Fabio Costa |
+| **Acessibilidade (WCAG)** | Sob demanda | Fabio Costa |
+| **Segurança (OWASP)** | Sob demanda | Fabio Costa |
+| **Compliance Geral** | Sob demanda | Fabio Costa |
 
 ---
 
@@ -918,7 +912,7 @@ git commit -m "a11y: Melhora contraste (WCAG 2.1 AA 1.4.3)"
 ### Documentação Interna
 - [REFERENCE.md](REFERENCE.md) — Mapa de dependências, decisões UX/IA, pesquisa de benefícios
 - [VALIDATION_STATUS.md](VALIDATION_STATUS.md) — Validação legal de benefícios
-- [v1/LEGAL_COMPLIANCE.md](v1/LEGAL_COMPLIANCE.md) — Detalhamento legal completo (866 linhas)
+- [v1/COMPLIANCE_MASTER_v1.7.0_CHANGELOG.md](v1/COMPLIANCE_MASTER_v1.7.0_CHANGELOG.md) — Histórico de conformidade
 - [SECURITY_AUDIT.md](../SECURITY_AUDIT.md) — Auditoria de segurança técnica
 
 ---

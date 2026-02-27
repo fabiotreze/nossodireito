@@ -190,7 +190,7 @@ input,
     top: 12px;
 }
 
-.skip-link:focus ~ .skip-link:focus {
+.skip-link:focus~.skip-link:focus {
     top: 56px;
 }
 
@@ -244,6 +244,22 @@ input,
 
 .a11y-trigger-icon {
     font-size: 1.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.a11y-trigger-icon svg {
+    width: 1.75rem;
+    height: 1.75rem;
+    fill: currentColor;
+}
+
+.a11y-drawer-icon svg {
+    width: 1.5rem;
+    height: 1.5rem;
+    fill: currentColor;
+    vertical-align: middle;
 }
 
 .a11y-trigger-label {
@@ -1452,6 +1468,170 @@ html.high-contrast ::selection {
     line-height: 1.6;
 }
 
+/* ── Protocolo de Emergência ── */
+.emergencia-section {
+    background: linear-gradient(135deg, rgba(220, 38, 38, 0.06), rgba(245, 158, 11, 0.06));
+    border: 2px solid #dc2626;
+    border-radius: var(--radius);
+    padding: 24px;
+    margin-top: 24px;
+}
+
+.emergencia-section h3 {
+    color: #dc2626;
+    font-size: 1.3rem;
+    margin-bottom: 16px;
+}
+
+.emergencia-conflito {
+    background: rgba(220, 38, 38, 0.08);
+    padding: 12px 16px;
+    border-radius: var(--radius-sm);
+    margin-bottom: 16px;
+    border-left: 4px solid #dc2626;
+}
+
+.emergencia-legal {
+    background: rgba(37, 99, 235, 0.08);
+    padding: 12px 16px;
+    border-radius: var(--radius-sm);
+    margin-bottom: 16px;
+    border-left: 4px solid var(--primary);
+    font-size: 0.95rem;
+}
+
+.emergencia-passos {
+    margin-bottom: 16px;
+}
+
+.emergencia-passos h4,
+.emergencia-modelo h4,
+.emergencia-denuncia h4 {
+    font-size: 1rem;
+    margin-bottom: 8px;
+    color: var(--text);
+}
+
+.emergencia-passos ol {
+    padding-left: 1.5em;
+    margin: 0;
+}
+
+.emergencia-passos li {
+    margin-bottom: 8px;
+    line-height: 1.6;
+}
+
+.emergencia-modelo {
+    margin-bottom: 16px;
+}
+
+.emergencia-modelo h4 {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.btn-copy-notif {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 12px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    background: var(--primary);
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background var(--transition);
+    font-family: var(--font);
+}
+
+.btn-copy-notif:hover {
+    background: var(--primary-dark);
+}
+
+.notificacao-text {
+    background: var(--surface-alt);
+    border-left: 4px solid var(--primary);
+    padding: 16px;
+    margin: 8px 0;
+    font-style: italic;
+    line-height: 1.7;
+    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    user-select: all;
+    font-size: 0.95rem;
+}
+
+.emergencia-denuncia {
+    background: rgba(22, 163, 74, 0.08);
+    padding: 16px;
+    border-radius: var(--radius-sm);
+    border-left: 4px solid #16a34a;
+    margin-bottom: 12px;
+}
+
+.emergencia-aviso {
+    text-align: center;
+    color: var(--text-muted);
+    padding: 8px 0 0;
+    font-size: 0.85rem;
+}
+
+/* Dark mode overrides for emergency */
+@media (prefers-color-scheme: dark) {
+    .emergencia-section {
+        background: linear-gradient(135deg, rgba(220, 38, 38, 0.1), rgba(245, 158, 11, 0.08));
+        border-color: #ef4444;
+    }
+
+    .emergencia-section h3 {
+        color: #f87171;
+    }
+
+    .emergencia-conflito {
+        background: rgba(220, 38, 38, 0.15);
+    }
+
+    .emergencia-legal {
+        background: rgba(37, 99, 235, 0.15);
+    }
+
+    .emergencia-denuncia {
+        background: rgba(22, 163, 74, 0.15);
+    }
+}
+
+/* High contrast overrides for emergency */
+body.high-contrast .emergencia-section {
+    border-color: #ff0;
+    background: #000;
+}
+
+body.high-contrast .emergencia-section h3 {
+    color: #ff0;
+}
+
+body.high-contrast .emergencia-conflito,
+body.high-contrast .emergencia-legal,
+body.high-contrast .emergencia-denuncia {
+    background: #111;
+    border-color: #ff0;
+}
+
+body.high-contrast .notificacao-text {
+    background: #111;
+    border-color: #ff0;
+    color: #fff;
+}
+
+body.high-contrast .btn-copy-notif {
+    background: #ff0;
+    color: #000;
+}
+
 .detalhe-tags {
     display: flex;
     flex-wrap: wrap;
@@ -1505,6 +1685,32 @@ html.high-contrast ::selection {
     border-radius: var(--radius-sm);
     margin-bottom: 8px;
     font-size: 0.95rem;
+    line-height: 1.6;
+}
+
+.btn-ver-mais {
+    display: block;
+    width: 100%;
+    padding: 10px 16px;
+    margin-top: 8px;
+    background: transparent;
+    border: 2px dashed var(--border);
+    border-radius: var(--radius-sm);
+    color: var(--primary);
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background var(--transition), border-color var(--transition);
+}
+
+.btn-ver-mais:hover {
+    background: var(--primary-bg);
+    border-color: var(--primary);
+}
+
+.btn-ver-mais:focus-visible {
+    outline: 3px solid var(--focus-ring);
+    outline-offset: 2px;
 }
 
 /* ---------- Checklist ---------- */
@@ -2470,13 +2676,24 @@ html.high-contrast ::selection {
 
 /* Column widths — desktop: fixed layout for no horizontal scroll */
 .classif-table th:nth-child(1),
-.classif-table td:nth-child(1) { width: 22%; }
+.classif-table td:nth-child(1) {
+    width: 22%;
+}
+
 .classif-table th:nth-child(2),
-.classif-table td:nth-child(2) { width: 18%; }
+.classif-table td:nth-child(2) {
+    width: 18%;
+}
+
 .classif-table th:nth-child(3),
-.classif-table td:nth-child(3) { width: 15%; }
+.classif-table td:nth-child(3) {
+    width: 15%;
+}
+
 .classif-table th:nth-child(4),
-.classif-table td:nth-child(4) { width: 45%; }
+.classif-table td:nth-child(4) {
+    width: 45%;
+}
 
 .classif-tipo {
     font-size: 0.875rem;
@@ -2511,9 +2728,11 @@ html.high-contrast ::selection {
     .classif-table {
         table-layout: auto;
     }
+
     .classif-table thead {
         display: none;
     }
+
     .classif-table,
     .classif-table tbody,
     .classif-table tr,
@@ -2521,8 +2740,12 @@ html.high-contrast ::selection {
         display: block;
         width: 100%;
     }
+
     .classif-table th:nth-child(n),
-    .classif-table td:nth-child(n) { width: 100%; }
+    .classif-table td:nth-child(n) {
+        width: 100%;
+    }
+
     .classif-table tr {
         border: 1px solid var(--border);
         border-radius: var(--radius-sm);
@@ -2530,6 +2753,7 @@ html.high-contrast ::selection {
         padding: 4px 0;
         background: var(--surface);
     }
+
     .classif-table td {
         padding: 6px 14px;
         border-bottom: none;
@@ -2537,6 +2761,7 @@ html.high-contrast ::selection {
         gap: 8px;
         align-items: baseline;
     }
+
     .classif-table td::before {
         content: attr(data-label);
         font-weight: 700;
@@ -2546,13 +2771,16 @@ html.high-contrast ::selection {
         min-width: 80px;
         flex-shrink: 0;
     }
+
     .classif-tipo {
         font-size: 1rem;
         padding-top: 10px !important;
     }
+
     .classif-tipo strong {
         font-size: 1rem;
     }
+
     .classif-criterio {
         font-size: 0.8125rem;
         padding-bottom: 10px !important;
@@ -2837,6 +3065,19 @@ html.high-contrast ::selection {
     margin-top: 1rem;
 }
 
+.disclaimer-alert {
+    background: linear-gradient(135deg, rgba(220, 38, 38, 0.06), rgba(245, 158, 11, 0.06));
+    border: 2px solid #dc2626;
+    border-radius: var(--radius);
+    padding: 20px 24px;
+    margin-top: 1.5rem;
+}
+
+body.high-contrast .disclaimer-alert {
+    border-color: #ff0;
+    background: #000;
+}
+
 /* ---------- Footer ---------- */
 .footer {
     background: #1e293b;
@@ -2907,7 +3148,7 @@ html.high-contrast ::selection {
 /* ---------- Responsivo ---------- */
 @media (max-width: 768px) {
     html {
-        font-size: 15px;
+        font-size: 16px;
     }
 
     .hero {
@@ -3473,6 +3714,28 @@ html.high-contrast ::selection {
         color: #666;
         border-top: 1px solid #ccc;
         padding-top: 8pt;
+    }
+
+    /* Print: Emergency protocol section */
+    body.printing-detalhe .emergencia-section {
+        border: 2px solid #dc2626 !important;
+        background: #fff !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+        page-break-inside: avoid;
+    }
+
+    body.printing-detalhe .emergencia-conflito,
+    body.printing-detalhe .emergencia-legal,
+    body.printing-detalhe .emergencia-denuncia {
+        border-left: 3px solid #333 !important;
+        background: #f8f8f8 !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+
+    body.printing-detalhe .btn-copy-notif {
+        display: none !important;
     }
 }
 

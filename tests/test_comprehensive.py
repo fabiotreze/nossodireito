@@ -1156,8 +1156,7 @@ class TestScriptsPostCleanup:
         "validate_sources.py", "validate_urls.py", "validate_govbr_urls.py",
         "validate_legal_compliance.py", "validate_legal_sources.py",
         "master_compliance.py", "bump_version.py", "discover_benefits.py",
-        "analise360.py", "analise_funcionalidades.py", "audit_content.py",
-        "audit_automation.py", "test_analysis_scripts.py",
+        "analise360.py", "audit_automation.py", "test_analysis_scripts.py",
         "test_complete_validation.py", "test_e2e_automated.py",
         "complete_beneficios.py"
     ]
@@ -1167,11 +1166,8 @@ class TestScriptsPostCleanup:
         for s in self.ACTIVE_SCRIPTS:
             assert (scripts_dir / s).exists(), f"Script ativo '{s}' ausente"
 
-    def test_archive_exists(self):
-        assert (ROOT / "scripts" / "_archive").is_dir()
-
     def test_no_orphan_underscore_scripts(self):
-        """Scripts com prefixo _ devem estar no _archive"""
+        """Scripts com prefixo _ não devem existir no diretório principal"""
         scripts_dir = ROOT / "scripts"
         orphans = [f.name for f in scripts_dir.glob("_*.py")]
-        assert not orphans, f"Scripts _ órfãos fora do _archive: {orphans}"
+        assert not orphans, f"Scripts _ órfãos: {orphans}"

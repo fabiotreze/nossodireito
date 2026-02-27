@@ -2320,7 +2320,7 @@ Melhorias futuras consideráveis:
 
 ---
 
-**Autoria:** Fábio Treze
+**Autoria:** Fabio Costa
 **Contato:** fabiotreze@hotmail.com
 **Licença:** Projeto sem fins lucrativos — código disponível para auditoria
 **Última Atualização:** Fevereiro 2026

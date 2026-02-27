@@ -5450,6 +5450,534 @@
         "sus_terapias"
       ],
       "weight": 4
+    },
+    "home care": {
+      "cats": [
+        "plano_saude",
+        "sus_terapias"
+      ],
+      "weight": 9
+    },
+    "internação domiciliar": {
+      "cats": [
+        "plano_saude",
+        "sus_terapias"
+      ],
+      "weight": 8
+    },
+    "internacao domiciliar": {
+      "cats": [
+        "plano_saude",
+        "sus_terapias"
+      ],
+      "weight": 8
+    },
+    "sad atendimento domiciliar": {
+      "cats": [
+        "sus_terapias"
+      ],
+      "weight": 7
+    },
+    "emad": {
+      "cats": [
+        "sus_terapias"
+      ],
+      "weight": 5
+    },
+    "emap": {
+      "cats": [
+        "sus_terapias"
+      ],
+      "weight": 5
+    },
+    "rn 428": {
+      "cats": [
+        "plano_saude"
+      ],
+      "weight": 7
+    },
+    "cordão de girassol": {
+      "cats": [
+        "atendimento_prioritario"
+      ],
+      "weight": 10
+    },
+    "cordao de girassol": {
+      "cats": [
+        "atendimento_prioritario"
+      ],
+      "weight": 10
+    },
+    "cordão girassol": {
+      "cats": [
+        "atendimento_prioritario"
+      ],
+      "weight": 10
+    },
+    "cordao girassol": {
+      "cats": [
+        "atendimento_prioritario"
+      ],
+      "weight": 10
+    },
+    "deficiência oculta": {
+      "cats": [
+        "atendimento_prioritario"
+      ],
+      "weight": 9
+    },
+    "deficiencia oculta": {
+      "cats": [
+        "atendimento_prioritario"
+      ],
+      "weight": 9
+    },
+    "deficiência invisível": {
+      "cats": [
+        "atendimento_prioritario"
+      ],
+      "weight": 8
+    },
+    "deficiencia invisivel": {
+      "cats": [
+        "atendimento_prioritario"
+      ],
+      "weight": 8
+    },
+    "lei 14.624": {
+      "cats": [
+        "atendimento_prioritario"
+      ],
+      "weight": 8
+    },
+    "sunflower lanyard": {
+      "cats": [
+        "atendimento_prioritario"
+      ],
+      "weight": 4
+    },
+    "cin deficiência": {
+      "cats": [
+        "atendimento_prioritario"
+      ],
+      "weight": 7
+    },
+    "cin deficiencia": {
+      "cats": [
+        "atendimento_prioritario"
+      ],
+      "weight": 7
+    },
+    "carteira identidade deficiência": {
+      "cats": [
+        "atendimento_prioritario"
+      ],
+      "weight": 6
+    },
+    "rg símbolo deficiência": {
+      "cats": [
+        "atendimento_prioritario"
+      ],
+      "weight": 6
+    },
+    "rg simbolo deficiencia": {
+      "cats": [
+        "atendimento_prioritario"
+      ],
+      "weight": 6
+    },
+    "decreto 10.977": {
+      "cats": [
+        "atendimento_prioritario"
+      ],
+      "weight": 5
+    },
+    "terapia aba": {
+      "cats": [
+        "plano_saude",
+        "sus_terapias"
+      ],
+      "weight": 10
+    },
+    "aba autismo": {
+      "cats": [
+        "plano_saude",
+        "sus_terapias"
+      ],
+      "weight": 9
+    },
+    "análise do comportamento aplicada": {
+      "cats": [
+        "plano_saude",
+        "sus_terapias"
+      ],
+      "weight": 9
+    },
+    "analise do comportamento aplicada": {
+      "cats": [
+        "plano_saude",
+        "sus_terapias"
+      ],
+      "weight": 9
+    },
+    "stj tema 1.055": {
+      "cats": [
+        "plano_saude"
+      ],
+      "weight": 8
+    },
+    "rn 539": {
+      "cats": [
+        "plano_saude"
+      ],
+      "weight": 7
+    },
+    "prioridade restituição ir": {
+      "cats": [
+        "isencao_ir"
+      ],
+      "weight": 9
+    },
+    "prioridade restituicao ir": {
+      "cats": [
+        "isencao_ir"
+      ],
+      "weight": 9
+    },
+    "lote restituição": {
+      "cats": [
+        "isencao_ir"
+      ],
+      "weight": 7
+    },
+    "in rfb 2.055": {
+      "cats": [
+        "isencao_ir"
+      ],
+      "weight": 6
+    },
+    "mediador escolar": {
+      "cats": [
+        "educacao"
+      ],
+      "weight": 9
+    },
+    "acompanhante terapêutico escolar": {
+      "cats": [
+        "educacao"
+      ],
+      "weight": 9
+    },
+    "acompanhante terapeutico escolar": {
+      "cats": [
+        "educacao"
+      ],
+      "weight": 9
+    },
+    "at escolar": {
+      "cats": [
+        "educacao"
+      ],
+      "weight": 8
+    },
+    "profissional de apoio escolar": {
+      "cats": [
+        "educacao"
+      ],
+      "weight": 8
+    },
+    "cirurgia reparadora": {
+      "cats": [
+        "plano_saude",
+        "sus_terapias"
+      ],
+      "weight": 9
+    },
+    "cirurgia reconstrutiva": {
+      "cats": [
+        "plano_saude",
+        "sus_terapias"
+      ],
+      "weight": 8
+    },
+    "reconstrução mamária": {
+      "cats": [
+        "plano_saude"
+      ],
+      "weight": 7
+    },
+    "quitação imóvel": {
+      "cats": [
+        "moradia"
+      ],
+      "weight": 9
+    },
+    "quitacao imovel": {
+      "cats": [
+        "moradia"
+      ],
+      "weight": 9
+    },
+    "seguro habitacional": {
+      "cats": [
+        "moradia"
+      ],
+      "weight": 8
+    },
+    "mip seguro": {
+      "cats": [
+        "moradia"
+      ],
+      "weight": 7
+    },
+    "invalidez permanente financiamento": {
+      "cats": [
+        "moradia"
+      ],
+      "weight": 8
+    },
+    "sfh quitação": {
+      "cats": [
+        "moradia"
+      ],
+      "weight": 7
+    },
+    "tarifa bancária pcd": {
+      "cats": [
+        "isencoes_tributarias"
+      ],
+      "weight": 8
+    },
+    "tarifa bancaria pcd": {
+      "cats": [
+        "isencoes_tributarias"
+      ],
+      "weight": 8
+    },
+    "conta social": {
+      "cats": [
+        "isencoes_tributarias"
+      ],
+      "weight": 7
+    },
+    "isenção tarifa banco": {
+      "cats": [
+        "isencoes_tributarias"
+      ],
+      "weight": 7
+    },
+    "isencao tarifa banco": {
+      "cats": [
+        "isencoes_tributarias"
+      ],
+      "weight": 7
+    },
+    "previdência privada pcd": {
+      "cats": [
+        "isencoes_tributarias"
+      ],
+      "weight": 8
+    },
+    "previdencia privada pcd": {
+      "cats": [
+        "isencoes_tributarias"
+      ],
+      "weight": 8
+    },
+    "seguro discriminação pcd": {
+      "cats": [
+        "isencoes_tributarias",
+        "crimes_contra_pcd"
+      ],
+      "weight": 7
+    },
+    "susep deficiência": {
+      "cats": [
+        "isencoes_tributarias"
+      ],
+      "weight": 6
+    },
+    "redução jornada servidor": {
+      "cats": [
+        "trabalho"
+      ],
+      "weight": 9
+    },
+    "reducao jornada servidor": {
+      "cats": [
+        "trabalho"
+      ],
+      "weight": 9
+    },
+    "horário especial servidor": {
+      "cats": [
+        "trabalho"
+      ],
+      "weight": 9
+    },
+    "horario especial servidor": {
+      "cats": [
+        "trabalho"
+      ],
+      "weight": 9
+    },
+    "lei 13.370": {
+      "cats": [
+        "trabalho"
+      ],
+      "weight": 8
+    },
+    "plano celular surdo": {
+      "cats": [
+        "acessibilidade_digital"
+      ],
+      "weight": 9
+    },
+    "plano telefone surdo": {
+      "cats": [
+        "acessibilidade_digital"
+      ],
+      "weight": 8
+    },
+    "resolução anatel 667": {
+      "cats": [
+        "acessibilidade_digital"
+      ],
+      "weight": 7
+    },
+    "resolucao anatel 667": {
+      "cats": [
+        "acessibilidade_digital"
+      ],
+      "weight": 7
+    },
+    "ecoterapia": {
+      "cats": [
+        "sus_terapias"
+      ],
+      "weight": 7
+    },
+    "práticas integrativas sus": {
+      "cats": [
+        "sus_terapias"
+      ],
+      "weight": 8
+    },
+    "praticas integrativas sus": {
+      "cats": [
+        "sus_terapias"
+      ],
+      "weight": 8
+    },
+    "pnpic": {
+      "cats": [
+        "sus_terapias"
+      ],
+      "weight": 6
+    },
+    "arteterapia": {
+      "cats": [
+        "sus_terapias"
+      ],
+      "weight": 6
+    },
+    "musicoterapia": {
+      "cats": [
+        "sus_terapias"
+      ],
+      "weight": 6
+    },
+    "horticultura terapêutica": {
+      "cats": [
+        "sus_terapias"
+      ],
+      "weight": 5
+    },
+    "cirurgia bariátrica": {
+      "cats": [
+        "plano_saude",
+        "sus_terapias"
+      ],
+      "weight": 8
+    },
+    "cirurgia bariatrica": {
+      "cats": [
+        "plano_saude",
+        "sus_terapias"
+      ],
+      "weight": 8
+    },
+    "bariátrica sus": {
+      "cats": [
+        "sus_terapias"
+      ],
+      "weight": 7
+    },
+    "bariatrica sus": {
+      "cats": [
+        "sus_terapias"
+      ],
+      "weight": 7
+    },
+    "franquia internet pcd": {
+      "cats": [
+        "acessibilidade_digital"
+      ],
+      "weight": 8
+    },
+    "banda larga pcd": {
+      "cats": [
+        "acessibilidade_digital"
+      ],
+      "weight": 7
+    },
+    "internet acessível": {
+      "cats": [
+        "acessibilidade_digital"
+      ],
+      "weight": 6
+    },
+    "internet acessivel": {
+      "cats": [
+        "acessibilidade_digital"
+      ],
+      "weight": 6
+    },
+    "fatura braille": {
+      "cats": [
+        "acessibilidade_digital"
+      ],
+      "weight": 5
+    },
+    "cordão identificação": {
+      "cats": [
+        "atendimento_prioritario"
+      ],
+      "weight": 8
+    },
+    "cordao identificacao": {
+      "cats": [
+        "atendimento_prioritario"
+      ],
+      "weight": 8
+    },
+    "cordão azul tea": {
+      "cats": [
+        "atendimento_prioritario"
+      ],
+      "weight": 7
+    },
+    "cordão zebrado": {
+      "cats": [
+        "atendimento_prioritario"
+      ],
+      "weight": 7
+    },
+    "cordao zebrado": {
+      "cats": [
+        "atendimento_prioritario"
+      ],
+      "weight": 7
     }
   }
 }
