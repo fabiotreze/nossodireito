@@ -158,13 +158,13 @@ Pós-revisão ──────────→ Atualizar campos do JSON
 
 | O que verificar | Onde | Frequência |
 |----------------|------|------------|
-| Novas leis PcD | planalto.gov.br → Legislação → Pesquisa | Periódica |
-| Alterações no BPC | gov.br/inss → Notícias | Periódica |
+| Novas leis PcD | planalto.gov.br → Legislação → Pesquisa | Sob demanda |
+| Alterações no BPC | gov.br/inss → Notícias | Sob demanda |
 | Valor salário mínimo | gov.br → Salário mínimo | Anual (jan) |
-| Mudanças ANS | gov.br/ans → Notícias | Periódica |
+| Mudanças ANS | gov.br/ans → Notícias | Sob demanda |
 | NBR 9050 atualizações | abnt.org.br | Quando publicada |
-| Programas habitacionais | gov.br/cidades → MCMV | Periódica |
-| Diário Oficial da União | dou.gov.br | Periódica |
+| Programas habitacionais | gov.br/cidades → MCMV | Sob demanda |
+| Diário Oficial da União | dou.gov.br | Sob demanda |
 
 ### 5.2. Alertas que demandam ação imediata
 

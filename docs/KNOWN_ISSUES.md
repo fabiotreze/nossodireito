@@ -118,9 +118,8 @@ Se encontrar link quebrado:
 1. **GitHub Issue:** https://github.com/fabiotreze/nossodireito/issues
 2. **Email:** fabiotreze@hotmail.com (assunto: "Link Quebrado")
 
-**Tempo de Resposta:**
-- 🔥 **Crítico** (links gov.br principais): 24 horas
-- ⚠️ **Médio** (links secundários): 48-72 horas
+**Resposta:**
+Reports serão analisados assim que possível. Não há SLA formal — projeto mantido por uma pessoa.
 
 **Status:**
 🟢 **Monitorado** — Validação automática ativa
@@ -419,10 +418,8 @@ https://github.com/fabiotreze/nossodireito/issues/new
 **Opção 2: Email**
 fabiotreze@hotmail.com (assunto: "Bug NossoDireito")
 
-**Tempo de Resposta:**
-- 🔥 **Crítico** (site fora do ar): 4 horas
-- ⚠️ **Alto** (funcionalidade quebrada): 24 horas
-- 🔵 **Médio/Baixo**: 48-72 horas
+**Resposta:**
+Todo report será analisado assim que possível. Não há SLA formal — este é um projeto open source mantido por uma pessoa.
 
 ---
 

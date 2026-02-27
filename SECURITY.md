@@ -17,7 +17,7 @@ Se você encontrar uma vulnerabilidade de segurança neste projeto, por favor re
    - Descrição da vulnerabilidade
    - Passos para reproduzir
    - Impacto potencial
-3. Você receberá uma resposta em até **48 horas**
+3. Seu report será analisado assim que possível (sem SLA formal — projeto mantido individualmente)
 
 ## Práticas de Segurança
 

@@ -784,19 +784,19 @@ git commit -m "a11y: Melhora contraste (WCAG 2.1 AA 1.4.3)"
 - ✅ **Detecção**: Script `validate_sources.py` alerta mudanças (planejado)
 - ✅ **Resposta**: Atualizar `direitos.json > categorias[]`, `ultima_atualizacao`
 - ✅ **Comunicação**: Disclaimer já avisa "informações podem estar desatualizadas"
-- ⏱️ **RTO (Recovery Time Objective)**: 48 horas
+- ⏱️ **RTO**: Assim que possível (sem SLA formal)
 
 **Cenário 2: Vazamento de dados (improvável)**
 - ✅ **Detecção**: Application Insights alertas (pico de requests)
 - ✅ **Resposta**: Revisar logs Azure, verificar exploits XSS
 - ❌ **Notificação ANPD**: Não obrigatória (LGPD Art. 4º, I)
-- ⏱️ **RTO**: 24 horas
+- ⏱️ **RTO**: Assim que possível (sem SLA formal)
 
 **Cenário 3: Site indisponível**
 - ✅ **Detecção**: Azure Monitor (alerta >5 min downtime)
 - ✅ **Resposta**: Rollback git, redeploy automático (GitHub Actions)
 - ✅ **Contingência**: Cache Service Worker mantém site funcional offline
-- ⏱️ **RTO**: <1 hora
+- ⏱️ **RTO**: Assim que possível (sem SLA formal)
 
 ---
 
@@ -879,11 +879,11 @@ git commit -m "a11y: Melhora contraste (WCAG 2.1 AA 1.4.3)"
 
 | Tipo de Auditoria | Frequência | Responsável |
 |-------------------|------------|-------------|
-| **Validação de Links** | Automática (CI) | Script automático |
-| **Fontes Legislativas** | Sob demanda | Fabio Costa |
-| **Acessibilidade (WCAG)** | Sob demanda | Fabio Costa |
-| **Segurança (OWASP)** | Sob demanda | Fabio Costa |
-| **Compliance Geral** | Sob demanda | Fabio Costa |
+| **Validação de Links** | Automática (CI/CD) | Script automático |
+| **Fontes Legislativas** | Sob demanda (sem periodicidade fixa) | Fabio Costa |
+| **Acessibilidade (WCAG)** | Sob demanda (sem periodicidade fixa) | Fabio Costa |
+| **Segurança (OWASP)** | Sob demanda (sem periodicidade fixa) | Fabio Costa |
+| **Compliance Geral** | Sob demanda (sem periodicidade fixa) | Fabio Costa |
 
 ---
 
