@@ -1669,13 +1669,25 @@ body.high-contrast .btn-copy-notif {
 
 .valor-destaque {
     display: inline-block;
-    background: var(--accent);
+    background: #047857;
     color: #fff;
     padding: 8px 16px;
     border-radius: var(--radius-sm);
     font-weight: 700;
     font-size: 1.1rem;
     margin: 8px 0;
+}
+
+@media (prefers-color-scheme: dark) {
+    .valor-destaque {
+        background: #065f46;
+    }
+}
+
+html.high-contrast .valor-destaque {
+    background: #064e3b;
+    color: #ffff00;
+    border: 2px solid #ffff00;
 }
 
 .dica-item {
@@ -3769,6 +3781,11 @@ body.high-contrast .disclaimer-alert {
 
     .a11y-trigger-icon {
         font-size: 2rem;
+    }
+
+    .a11y-trigger-icon svg {
+        width: 2.25rem;
+        height: 2.25rem;
     }
 
 }

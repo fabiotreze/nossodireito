@@ -4,7 +4,7 @@
 
 # ⚖️ NossoDireito
 
-[![Master Compliance](https://img.shields.io/badge/Master%20Compliance-100.0%25%20(1104.7%2F1104.7)-brightgreen?style=flat-square)](CHANGELOG.md)
+[![Master Compliance](https://img.shields.io/badge/Master%20Compliance-100.0%25%20(1103.2%2F1103.2)-brightgreen?style=flat-square)](CHANGELOG.md)
 [![WAF 5 Pillars](https://img.shields.io/badge/WAF%205%20Pillars-100%25-success?style=flat-square)](docs/QUALITY_GUIDE.md)
 [![Security](https://img.shields.io/badge/Security-HTTPS%20%7C%20CSP%20%7C%20Zero%20Tracking-green?style=flat-square&logo=letsencrypt)](SECURITY.md)
 [![Accessibility](https://img.shields.io/badge/Accessibility-ARIA%20%7C%20VLibras%20%7C%20WCAG-blue?style=flat-square&logo=accessible-icon)](docs/ACCESSIBILITY.md)
@@ -296,10 +296,17 @@ nossodireito/
 ├── scripts/
 │   ├── master_compliance.py # Compliance 360° (21 categorias, score 100%)
 │   ├── validate_all.py     # Quality Gate agregado (--quick)
-│   ├── validate_content.py # Validação de conteúdo (147 checks)
-│   ├── validate_sources.py # Validação de URLs gov.br
+│   ├── validate_content.py # Validação de conteúdo JSON
+│   ├── validate_govbr_urls.py # Verificação de URLs gov.br
 │   ├── validate_schema.py  # Validação JSON Schema
+│   ├── validate_sources.py # Validação de fontes oficiais
+│   ├── validate_urls.py    # Whitelist de domínios
+│   ├── validate_legal_compliance.py # Auditoria legal profunda
+│   ├── validate_legal_sources.py # Extração de artigos de leis
 │   ├── analise360.py       # Análise 360° de cobertura
+│   ├── audit_automation.py # Auditoria de automação
+│   ├── complete_beneficios.py # Auto-completar benefícios
+│   ├── discover_benefits.py # Descob. de benefícios gov.br
 │   ├── bump_version.py     # Semver automático
 │   └── pre-commit          # Hook de pré-commit
 ├── terraform/              # Infraestrutura como código

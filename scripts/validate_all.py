@@ -2,27 +2,29 @@
 # -*- coding: utf-8 -*-
 """
 VALIDATE ALL — Validação Completa e Profunda do NossoDireito
-Executa TODAS as 16 verificações do projeto em sequência:
+Executa TODAS as 11 verificações do projeto em sequência:
 
-  FASE 1 — Pré-Validações (estrutura de arquivos + sintaxe JSON)
-  FASE 2 — Schema (JSON Schema Draft 7)
-  FASE 3 — Conteúdo Profundo (30 categorias, matching engine, IPVA, semântica)
-  FASE 4 — Master Compliance (21 categorias, 993.9 pts)
-  FASE 5 — Análise 360° (cobertura benefícios implementados vs pesquisados)
-  FASE 6 — Análise Funcionalidades (app.js implementado vs testado)
-  FASE 7 — Fontes Oficiais (URLs gov.br, planalto)
-  FASE 8 — URLs gov.br PcD (serviços específicos)
-  FASE 9 — Base Legal (compliance, leis vigentes/revogadas)
-  FASE 10 — Fontes Legais (acesso HTTP fontes oficiais)
-  FASE 11 — Auditoria de Conteúdo (domínios, escopo)
-  FASE 12 — Auditoria de Automação (gaps, recomendações)
-  FASE 13 — Pytest (unit tests: JSON, campos, base_legal, versão)
-  FASE 14 — Análise de Scripts (syntax, imports, compilação de 10 scripts)
-  FASE 15 — Validação Completa (HTML, CSS, JS, integração, funcional)
-  FASE 16 — E2E Automatizado (PWA, search, crypto, segurança, LGPD, ARIA)
+  FASE 1  — Pré-Validações (estrutura de arquivos + sintaxe JSON)
+  FASE 2  — Schema (JSON Schema Draft 7)
+  FASE 3  — Conteúdo Profundo (30 categorias, matching engine, IPVA, semântica)
+  FASE 4  — Master Compliance (21 categorias, 1104.7 pts)
+  FASE 5  — Análise 360° (cobertura benefícios implementados vs pesquisados)
+  FASE 6  — Fontes Oficiais (URLs gov.br, planalto)
+  FASE 7  — URLs gov.br PcD (serviços específicos)
+  FASE 8  — Base Legal (compliance, leis vigentes/revogadas)
+  FASE 9  — Fontes Legais (acesso HTTP fontes oficiais)
+  FASE 10 — Auditoria de Automação (gaps, recomendações)
+  FASE 11 — Pytest (unit tests: JSON, campos, base_legal, versão)
+
+Nota: FASEs removidas (scripts deletados — cobertura migrada para tests/):
+  - analise_funcionalidades.py → tests/test_comprehensive.py
+  - audit_content.py → tests/test_comprehensive_validation.py
+  - test_analysis_scripts.py → tests/test_comprehensive.py
+  - test_complete_validation.py → tests/test_comprehensive_validation.py
+  - test_e2e_automated.py → tests/test_e2e_playwright.py
 
 Uso:
-    python scripts/validate_all.py                    # Validação completa (16 fases)
+    python scripts/validate_all.py                    # Validação completa (11 fases)
     python scripts/validate_all.py --quick            # Apenas fases críticas (1-4)
     python scripts/validate_all.py --fix              # Auto-corrige problemas
     python scripts/validate_all.py --notify           # Envia notificações
@@ -382,7 +384,7 @@ class MasterValidator:
         # FASE 1: PRÉ-VALIDAÇÕES (Estrutura & Sintaxe)
         # ====================
         print("=" * 100)
-        print("📋 FASE 1/16: PRÉ-VALIDAÇÕES (Estrutura & Sintaxe)")
+        print("📋 FASE 1/11: PRÉ-VALIDAÇÕES (Estrutura & Sintaxe)")
         print("=" * 100)
 
         self.results.append(self.validate_structure())
@@ -394,7 +396,7 @@ class MasterValidator:
         # ====================
         print()
         print("=" * 100)
-        print("📐 FASE 2/16: VALIDAÇÃO DE SCHEMA (JSON Schema Draft 7)")
+        print("📐 FASE 2/11: VALIDAÇÃO DE SCHEMA (JSON Schema Draft 7)")
         print("=" * 100)
 
         self.results.append(self.run_script(
@@ -408,7 +410,7 @@ class MasterValidator:
         # ====================
         print()
         print("=" * 100)
-        print("🔬 FASE 3/16: VALIDAÇÃO DE CONTEÚDO PROFUNDO (147 checks)")
+        print("🔬 FASE 3/11: VALIDAÇÃO DE CONTEÚDO PROFUNDO (147 checks)")
         print("=" * 100)
 
         self.results.append(self.run_script(
@@ -418,11 +420,11 @@ class MasterValidator:
         ))
 
         # ====================
-        # FASE 4: MASTER COMPLIANCE (21 categorias, 993.9 pts)
+        # FASE 4: MASTER COMPLIANCE (21 categorias, 1104.7 pts)
         # ====================
         print()
         print("=" * 100)
-        print("🏆 FASE 4/16: MASTER COMPLIANCE (21 categorias, 993.9 pts)")
+        print("🏆 FASE 4/11: MASTER COMPLIANCE (21 categorias, 1104.7 pts)")
         print("=" * 100)
 
         self.results.append(self.run_script(
@@ -444,7 +446,7 @@ class MasterValidator:
         # para gerar relatório detalhado (é mais verbose que o embutido no master).
         print()
         print("=" * 100)
-        print("🌐 FASE 5/16: ANÁLISE 360° (Cobertura de Benefícios)")
+        print("🌐 FASE 5/11: ANÁLISE 360° (Cobertura de Benefícios)")
         print("=" * 100)
 
         self.results.append(self.run_script(
@@ -454,28 +456,11 @@ class MasterValidator:
         ))
 
         # ====================
-        # FASE 6: ANÁLISE DE FUNCIONALIDADES (implementado vs testado)
+        # FASE 6: FONTES OFICIAIS (URLs gov.br, planalto)
         # ====================
         print()
         print("=" * 100)
-        print("🧩 FASE 6/16: ANÁLISE DE FUNCIONALIDADES (app.js vs E2E)")
-        print("=" * 100)
-
-        if (self.root / "scripts" / "analise_funcionalidades.py").exists():
-            self.results.append(self.run_script(
-                "Funcionalidades (implementadas vs testadas)",
-                self.root / "scripts" / "analise_funcionalidades.py",
-                timeout=30
-            ))
-        else:
-            self.log("   ⚠️ analise_funcionalidades.py: NÃO ENCONTRADO")
-
-        # ====================
-        # FASE 7: FONTES OFICIAIS (URLs gov.br, planalto)
-        # ====================
-        print()
-        print("=" * 100)
-        print("🔗 FASE 7/16: VALIDAÇÃO DE FONTES OFICIAIS (URLs)")
+        print("🔗 FASE 6/11: VALIDAÇÃO DE FONTES OFICIAIS (URLs)")
         print("=" * 100)
 
         if (self.root / "scripts" / "validate_sources.py").exists():
@@ -489,11 +474,11 @@ class MasterValidator:
             self.log("   ⚠️ validate_sources.py: NÃO ENCONTRADO")
 
         # ====================
-        # FASE 8: URLs GOV.BR PcD (Serviços específicos)
+        # FASE 7: URLs GOV.BR PcD (Serviços específicos)
         # ====================
         print()
         print("=" * 100)
-        print("🏛️ FASE 8/16: URLS GOV.BR PcD (Serviços Específicos)")
+        print("🏠️ FASE 7/11: URLS GOV.BR PcD (Serviços Específicos)")
         print("=" * 100)
 
         if (self.root / "scripts" / "validate_govbr_urls.py").exists():
@@ -506,11 +491,11 @@ class MasterValidator:
             self.log("   ⚠️ validate_govbr_urls.py: NÃO ENCONTRADO")
 
         # ====================
-        # FASE 9: BASE LEGAL (Compliance, leis vigentes)
+        # FASE 8: BASE LEGAL (Compliance, leis vigentes)
         # ====================
         print()
         print("=" * 100)
-        print("⚖️ FASE 9/16: BASE LEGAL (Compliance, Vigência)")
+        print("⚖️ FASE 8/11: BASE LEGAL (Compliance, Vigência)")
         print("=" * 100)
 
         if (self.root / "scripts" / "validate_legal_compliance.py").exists():
@@ -524,11 +509,11 @@ class MasterValidator:
             self.log("   ⚠️ validate_legal_compliance.py: NÃO ENCONTRADO")
 
         # ====================
-        # FASE 10: FONTES LEGAIS (acesso HTTP)
+        # FASE 9: FONTES LEGAIS (acesso HTTP)
         # ====================
         print()
         print("=" * 100)
-        print("📜 FASE 10/16: FONTES LEGAIS (Acesso HTTP)")
+        print("📜 FASE 9/11: FONTES LEGAIS (Acesso HTTP)")
         print("=" * 100)
 
         if (self.root / "scripts" / "validate_legal_sources.py").exists():
@@ -541,28 +526,11 @@ class MasterValidator:
             self.log("   ⚠️ validate_legal_sources.py: NÃO ENCONTRADO")
 
         # ====================
-        # FASE 11: AUDITORIA DE CONTEÚDO (domínios, escopo)
+        # FASE 10: AUDITORIA DE AUTOMAÇÃO (Gaps & Recomendações)
         # ====================
         print()
         print("=" * 100)
-        print("🔍 FASE 11/16: AUDITORIA DE CONTEÚDO (Domínios, Escopo)")
-        print("=" * 100)
-
-        if (self.root / "scripts" / "audit_content.py").exists():
-            self.results.append(self.run_script(
-                "Auditoria de Conteúdo (domínios, escopo)",
-                self.root / "scripts" / "audit_content.py",
-                timeout=30
-            ))
-        else:
-            self.log("   ⚠️ audit_content.py: NÃO ENCONTRADO")
-
-        # ====================
-        # FASE 12: AUDITORIA DE AUTOMAÇÃO (Gaps & Recomendações)
-        # ====================
-        print()
-        print("=" * 100)
-        print("📈 FASE 12/16: AUDITORIA DE AUTOMAÇÃO (Gaps & Recomendações)")
+        print("📈 FASE 10/11: AUDITORIA DE AUTOMAÇÃO (Gaps & Recomendações)")
         print("=" * 100)
 
         if (self.root / "scripts" / "audit_automation.py").exists():
@@ -575,68 +543,17 @@ class MasterValidator:
             self.log("   ⚠️ audit_automation.py: NÃO ENCONTRADO")
 
         # ====================
-        # FASE 13: PYTEST (Unit Tests)
+        # FASE 11: PYTEST (Unit Tests)
         # ====================
         print()
         print("=" * 100)
-        print("🧪 FASE 13/16: PYTEST (Unit Tests — JSON, campos, base_legal)")
+        print("🧪 FASE 11/11: PYTEST (Unit Tests — JSON, campos, base_legal)")
         print("=" * 100)
 
         self.results.append(self.run_pytest(
             "Pytest (tests/test_master_compliance.py)",
             "tests/"
         ))
-
-        # ====================
-        # FASE 14: ANÁLISE DE SCRIPTS (syntax, imports, compilação)
-        # ====================
-        print()
-        print("=" * 100)
-        print("📝 FASE 14/16: ANÁLISE DE SCRIPTS (90 checks em 10 scripts)")
-        print("=" * 100)
-
-        if (self.root / "scripts" / "test_analysis_scripts.py").exists():
-            self.results.append(self.run_script(
-                "Análise de Scripts (syntax, imports, compilação)",
-                self.root / "scripts" / "test_analysis_scripts.py",
-                timeout=60
-            ))
-        else:
-            self.log("   ⚠️ test_analysis_scripts.py: NÃO ENCONTRADO")
-
-        # ====================
-        # FASE 15: VALIDAÇÃO COMPLETA (HTML, CSS, JS, integração, funcional)
-        # ====================
-        print()
-        print("=" * 100)
-        print("✅ FASE 15/16: VALIDAÇÃO COMPLETA (HTML, CSS, JS, Integração, Funcional)")
-        print("=" * 100)
-
-        if (self.root / "scripts" / "test_complete_validation.py").exists():
-            self.results.append(self.run_script(
-                "Validação Completa (HTML 26, CSS 18, JS 25, Integração 12, Funcional 16)",
-                self.root / "scripts" / "test_complete_validation.py",
-                timeout=60
-            ))
-        else:
-            self.log("   ⚠️ test_complete_validation.py: NÃO ENCONTRADO")
-
-        # ====================
-        # FASE 16: E2E AUTOMATIZADO (PWA, search, segurança, LGPD, ARIA)
-        # ====================
-        print()
-        print("=" * 100)
-        print("🚀 FASE 16/16: E2E AUTOMATIZADO (PWA, Search, Segurança, LGPD)")
-        print("=" * 100)
-
-        if (self.root / "scripts" / "test_e2e_automated.py").exists():
-            self.results.append(self.run_script(
-                "E2E Automatizado (PWA, search, crypto, segurança, LGPD, ARIA)",
-                self.root / "scripts" / "test_e2e_automated.py",
-                timeout=60
-            ))
-        else:
-            self.log("   ⚠️ test_e2e_automated.py: NÃO ENCONTRADO")
 
         # ====================
         # FASE BÔNUS: AUTO-CORREÇÃO (SE --fix)

@@ -1742,7 +1742,7 @@ tests/                              # Testes pytest (709 unit + 137 E2E)
 ├── test_comprehensive.py           # Testes unitários abrangentes (categorias, keywords, UFs)
 ├── test_comprehensive_validation.py # Validação completa de dados e estrutura
 ├── test_cross_browser.py           # Testes de compatibilidade cross-browser
-├── test_e2e_playwright.py          # 132 testes E2E com Playwright (26 classes)
+├── test_e2e_playwright.py          # 137 testes E2E com Playwright
 └── test_master_compliance.py       # Validação de compliance (Master Score)
 
 scripts/                            # Scripts de validação e automação
@@ -1753,9 +1753,6 @@ scripts/                            # Scripts de validação e automação
 ├── discover_benefits.py            # Descoberta de benefícios gov.br
 ├── master_compliance.py            # Master Compliance Score (1104.7/1104.7)
 ├── pre-commit                      # Hook git pre-commit
-├── test_analysis_scripts.py        # Testes dos scripts de análise
-├── test_complete_validation.py     # Testes completos de validação
-├── test_e2e_automated.py           # E2E automatizado (headless)
 ├── validate_all.py                 # Quality Gate agregado (--quick mode)
 ├── validate_content.py             # Validação de conteúdo (categorias, IPVA)
 ├── validate_govbr_urls.py          # Verificação de URLs gov.br
@@ -1763,7 +1760,7 @@ scripts/                            # Scripts de validação e automação
 ├── validate_legal_sources.py       # Fontes legais
 ├── validate_schema.py              # Validação JSON Schema
 ├── validate_sources.py             # Validação de fontes oficiais
-└── validate_urls.py                # Verificação de URLs ativas
+└── validate_urls.py                # Whitelist de domínios
 ```
 
 **Execução:**

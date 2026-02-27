@@ -1156,8 +1156,7 @@ class TestScriptsPostCleanup:
         "validate_sources.py", "validate_urls.py", "validate_govbr_urls.py",
         "validate_legal_compliance.py", "validate_legal_sources.py",
         "master_compliance.py", "bump_version.py", "discover_benefits.py",
-        "analise360.py", "audit_automation.py", "test_analysis_scripts.py",
-        "test_complete_validation.py", "test_e2e_automated.py",
+        "analise360.py", "audit_automation.py",
         "complete_beneficios.py"
     ]
 

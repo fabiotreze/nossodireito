@@ -128,7 +128,7 @@
         </mxCell>
 
         <!-- Row 2 of validation -->
-        <mxCell id="test-e2e" value="test_e2e_automated.py&#xa;(Playwright E2E)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#76608a;fontColor=#ffffff;strokeColor=#432D57;fontSize=11;fontStyle=1;" vertex="1" parent="1">
+        <mxCell id="test-e2e" value="test_e2e_playwright.py&#xa;(137 Playwright E2E)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#76608a;fontColor=#ffffff;strokeColor=#432D57;fontSize=11;fontStyle=1;" vertex="1" parent="1">
           <mxGeometry x="60" y="760" width="160" height="30" as="geometry" />
         </mxCell>
 

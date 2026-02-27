@@ -64,19 +64,6 @@ self.addEventListener('activate', (event) => {
                     .map((key) => caches.delete(key))
             )
         ).then(() => self.clients.claim()) // Claim after old caches are deleted
-            .then(() => {
-                // Background pre-cache remaining static assets (non-blocking).
-                // These were NOT cached during install to avoid competing with page load.
-                caches.open(CACHE_VERSION).then(cache => {
-                    const alreadyCached = new Set(['/', '/index.html']);
-                    const remaining = STATIC_ASSETS.filter(u => !alreadyCached.has(u));
-                    remaining.forEach(url => {
-                        cache.match(url, { ignoreSearch: true }).then(hit => {
-                            if (!hit) cache.add(url).catch(() => { });
-                        });
-                    });
-                });
-            })
     );
 });
 

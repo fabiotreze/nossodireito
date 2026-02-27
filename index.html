@@ -232,6 +232,78 @@
             min-height: 52px
         }
 
+        .hero-stats {
+            display: flex;
+            gap: 32px;
+            justify-content: center;
+            flex-wrap: wrap;
+            padding-top: 32px;
+            margin-top: 32px;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            text-align: center
+        }
+
+        .stat {
+            display: flex;
+            flex-direction: column;
+            align-items: center
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 800
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            opacity: 0.8;
+            max-width: 180px;
+            text-align: center
+        }
+
+        .section {
+            padding: 64px 0;
+            background-color: var(--surface)
+        }
+
+        .section h2 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+            text-align: center;
+            color: var(--text)
+        }
+
+        .section-desc {
+            text-align: center;
+            max-width: 600px;
+            margin: 0 auto 32px;
+            font-size: 1.05rem
+        }
+
+        .search-box {
+            display: flex;
+            gap: 12px;
+            max-width: 600px;
+            margin: 0 auto 24px
+        }
+
+        .search-box input {
+            flex: 1;
+            padding: 14px 18px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-size: 1rem;
+            background: var(--surface);
+            color: var(--text);
+            font-family: var(--font)
+        }
+
+        .search-results {
+            max-width: 600px;
+            margin: 0 auto
+        }
+
         .btn {
             display: inline-flex;
             align-items: center;
@@ -306,6 +378,22 @@
 
             .hero-actions {
                 justify-content: center
+            }
+
+            .hero-stats {
+                gap: 20px
+            }
+
+            .stat-number {
+                font-size: 1.5rem
+            }
+
+            .section {
+                padding: 40px 0
+            }
+
+            .section h2 {
+                font-size: 1.4rem
             }
 
             .hero h1 {
@@ -1171,7 +1259,7 @@
                 </ul>
                 <p class="section-desc"><strong>Encontrou alguma informação desatualizada ou
                         imprecisa?</strong>
-                    Avise-nos pelo <a href="#compromissoAtualizacao">formulário de contato</a> abaixo.
+                    <a href="#compromissoAtualizacao">Entre em contato</a> para nos avisar.
                 </p>
                 <div class="transparency-meta">
                     <div class="tmeta-item"><span class="tmeta-label">Última atualização</span><span class="tmeta-value"
@@ -1310,7 +1398,7 @@
     <!-- Botão Trigger -->
     <button id="a11yPanelTrigger" class="a11y-panel-trigger" type="button" aria-label="Abrir painel de acessibilidade"
         aria-expanded="false" aria-controls="a11yDrawer">
-        <span class="a11y-trigger-icon" aria-hidden="true"><svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg"
+        <span class="a11y-trigger-icon" aria-hidden="true"><svg viewBox="8 -3 64 64" xmlns="http://www.w3.org/2000/svg"
                 role="img" aria-hidden="true">
                 <circle cx="38" cy="8" r="7" fill="currentColor" />
                 <path
@@ -1332,7 +1420,7 @@
         <!-- Header -->
         <div class="a11y-drawer-header">
             <h2 id="a11yDrawerTitle">
-                <span class="a11y-drawer-icon" aria-hidden="true"><svg viewBox="0 0 64 64"
+                <span class="a11y-drawer-icon" aria-hidden="true"><svg viewBox="8 -3 64 64"
                         xmlns="http://www.w3.org/2000/svg" role="img" aria-hidden="true" width="24" height="24">
                         <circle cx="38" cy="8" r="7" fill="currentColor" />
                         <path

@@ -296,7 +296,6 @@ def bump_python_docstrings(new: str, old: str, *, dry_run: bool) -> bool:
     """Atualiza versão nos docstrings e banners dos scripts Python."""
     files = [
         ROOT / "scripts" / "validate_content.py",
-        ROOT / "scripts" / "test_analysis_scripts.py",
         ROOT / "scripts" / "master_compliance.py",
         ROOT / "tests" / "test_comprehensive.py",
     ]
