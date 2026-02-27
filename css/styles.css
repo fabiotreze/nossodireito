@@ -3783,11 +3783,6 @@ body.high-contrast .disclaimer-alert {
         font-size: 2rem;
     }
 
-    .a11y-trigger-icon svg {
-        width: 2.25rem;
-        height: 2.25rem;
-    }
-
 }
 
 /* ---------- Footer Version Badge ---------- */
