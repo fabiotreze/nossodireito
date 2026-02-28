@@ -162,9 +162,10 @@ function analyticsTrack(ip, ua, urlPath) {
     }
 
     // Track page view → populates `pageViews` table in App Insights.
-    // tagOverrides sets real client IP for geo-lookup (country/state/city).
-    // LGPD-safe: Azure masks IP at ingestion (last octet → 0) before storage.
-    // Geo metadata (country/state) is NOT personal data under LGPD.
+    // NO raw IP sent — Azure auto-collects from the HTTP request and applies
+    // IP masking at ingestion (stores 0.0.0.0 by default, DisableIpMasking=false).
+    // Only anonymous aggregates (country/state) are derived and stored.
+    // LGPD-safe: no PII transmitted, no PII stored.
     if (appInsights) {
         const client = appInsights.defaultClient;
         if (client) {
@@ -172,9 +173,6 @@ function analyticsTrack(ip, ua, urlPath) {
                 name: safePath,
                 url: safePath,
                 properties: { device },
-                tagOverrides: {
-                    [client.context.keys.locationIp]: ip,
-                },
             });
         }
     }

@@ -22,10 +22,11 @@ Se você encontrar uma vulnerabilidade de segurança neste projeto, por favor re
 ## Práticas de Segurança
 
 ### Dados do Usuário
-- **Zero coleta de dados pessoais** — nenhuma informação é enviada a servidores
-- Todo processamento ocorre **localmente no navegador** do usuário
+- **Zero coleta de dados pessoais** — nenhum dado identificável é armazenado
+- Todo processamento de conteúdo ocorre **localmente no navegador** do usuário
 - **Nenhum cookie** de rastreamento, analytics ou fingerprinting
-- Conformidade com LGPD Art. 4º, I
+- **Telemetria anônima (server-side):** Azure Application Insights coleta métricas operacionais (page views, performance, erros). IPs são mascarados na ingestão (armazenados como `0.0.0.0`). Apenas agregados geográficos (país/estado) são derivados. Retenção: 30 dias. Zero PII.
+- Conformidade voluntária com LGPD (Lei 13.709/2018) — Art. 4º, I (não aplicabilidade para pessoa natural sem fins econômicos)
 
 ### Criptografia
 - **AES-GCM-256** via Web Crypto API para documentos no IndexedDB
@@ -40,6 +41,10 @@ Se você encontrar uma vulnerabilidade de segurança neste projeto, por favor re
 - `Referrer-Policy`: `strict-origin-when-cross-origin`
 - `Permissions-Policy`: camera, microphone, geolocation desabilitados; accelerometer/gyroscope/magnetometer permitidos para same-origin (necessário para VLibras Unity/Emscripten no Chromium)
 - **SRI** (Subresource Integrity) em todos os scripts CDN
+
+### SRI (Subresource Integrity)
+- **PDF.js**: SRI hash `sha384-...` verificado em cada carregamento
+- **VLibras**: Script oficial do governo (vlibras.gov.br) — sem SRI disponível (URLs não versionadas). Risco mitigado por ser CDN governamental e CSP restritivo.
 
 ### Trade-off CSP: `unsafe-eval` para VLibras (decisão documentada)
 

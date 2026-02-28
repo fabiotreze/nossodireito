@@ -126,8 +126,10 @@ resource "azurerm_log_analytics_workspace" "main" {
 }
 
 # --- Application Insights ---
-# Rastreia: page views, IPs de origem, geolocalização, tempos de resposta,
-# erros, e métricas de performance. Portal: portal.azure.com > App Insights.
+# Telemetria anônima: page views, tempos de resposta, erros, métricas de
+# performance. IPs mascarados na ingestão (armazenados como 0.0.0.0).
+# Geolocalização derivada apenas em nível país/estado. Zero PII armazenado.
+# Portal: portal.azure.com > App Insights.
 resource "azurerm_application_insights" "main" {
   name                = local.app_insights_name
   location            = azurerm_resource_group.main.location

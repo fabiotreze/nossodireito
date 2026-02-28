@@ -65,11 +65,13 @@
 - ✅ **Fins Particulares**: Projeto sem fins lucrativos
 - ✅ **Não Econômicos**: Zero monetização (sem ads, sem venda de dados, sem freemium)
 
-**Consequência:** LGPD não se aplica. Não há obrigatoriedade de:
+**Consequência:** LGPD formalmente não se aplica. Não há obrigatoriedade de:
 - Nomear DPO (Encarregado)
 - Elaborar RIPD (Relatório de Impacto)
 - Manter Registro de Operações de Tratamento
 - Notificar ANPD em caso de incidente
+
+**Compromisso Voluntário:** Mesmo sem obrigação legal, este projeto adota **voluntariamente** as melhores práticas de privacidade da LGPD como princípio ético. Todas as medidas abaixo são adotadas por escolha, não por exigência.
 
 **Dados Pessoais NÃO Coletados:**
 - ❌ Nome, CPF, RG, CNS, laudo médico
@@ -77,12 +79,13 @@
 - ❌ Checkboxes marcados (localStorage local apenas)
 - ❌ Cookies de sessão ou tracking
 - ❌ Fingerprinting de dispositivo
+- ❌ Endereço IP (mascarado → armazenado como `0.0.0.0`)
 
-**Dados Técnicos Coletados (Application Insights — Legítimo Interesse, Art. 10):**
-- ✅ Page views (URL path)
-- ✅ IP anonimizado (últimos 2 octets mascarados: 203.0.113.*)
-- ✅ Geolocalização agregada (país/estado, não cidade)
-- ✅ User-Agent (browser/OS para detecção de bots)
+**Dados Técnicos Coletados (Azure Application Insights — telemetria anônima):**
+- ✅ Page views (URL path, sem query strings)
+- ✅ IP mascarado na ingestão Azure (armazenado como `0.0.0.0`, `DisableIpMasking=false`)
+- ✅ Geolocalização agregada derivada do IP (país/estado — derivados antes do mascaramento, armazenados sem IP)
+- ✅ User-Agent (categorizado em desktop/mobile/tablet — sem armazenamento do UA completo)
 - ✅ Response time (performance)
 
 **Finalidades Legítimas:**
@@ -344,9 +347,11 @@ setTimeout(() => deleteFromIndexedDB(pdfId), 15 * 60 * 1000);
 #### Status: ✅ **CONFORME** (GDPR Art. 4(5))
 
 **Application Insights (Telemetria):**
-- ✅ **IP Masking**: Últimos 2 octets zerados (203.0.113.0)
-  - Exemplo: `201.10.45.123` → `201.10.0.0`
-- ✅ **Geolocalização Agregada**: Apenas país/estado (não cidade/CEP)
+- ✅ **IP Masking**: Azure armazena `0.0.0.0` por padrão (`DisableIpMasking=false`)
+  - Exemplo: `201.10.45.123` → `0.0.0.0` (mascaramento completo na ingestão)
+  - IP real existe apenas em trânsito (TLS) até o pipeline Azure — nunca armazenado
+- ✅ **Geolocalização Derivada**: País/estado derivados do IP antes do mascaramento
+  - Geolocalização isolada (sem IP, sem nome, sem cookie) **não** constitui dado pessoal
 - ✅ **Sessão Anônima**: Sem cookie persistente (sessionId aleatório por sessão)
 
 **Definição GDPR:**
