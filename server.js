@@ -35,6 +35,11 @@ if (AI_CONN) {
             .setDistributedTracingMode(appInsights.DistributedTracingModes.AI_AND_W3C)
             .setSendLiveMetrics(true)
             .start();
+        // Periodic flush — minimize data loss on App Service restart.
+        setInterval(() => {
+            if (appInsights.defaultClient) appInsights.defaultClient.flush();
+        }, 3600_000).unref(); // 1h, .unref() to not block graceful shutdown
+
         console.log('✅ Application Insights initialized');
     } catch (err) {
         console.log('ℹ️ applicationinsights package not available — telemetry disabled');
@@ -152,6 +157,24 @@ function analyticsTrack(ip, ua, urlPath) {
             client.trackEvent({
                 name: 'unique_visit',
                 properties: { device, path: safePath },
+            });
+        }
+    }
+
+    // Track page view → populates `pageViews` table in App Insights.
+    // tagOverrides sets real client IP for geo-lookup (country/state/city).
+    // LGPD-safe: Azure masks IP at ingestion (last octet → 0) before storage.
+    // Geo metadata (country/state) is NOT personal data under LGPD.
+    if (appInsights) {
+        const client = appInsights.defaultClient;
+        if (client) {
+            client.trackPageView({
+                name: safePath,
+                url: safePath,
+                properties: { device },
+                tagOverrides: {
+                    [client.context.keys.locationIp]: ip,
+                },
             });
         }
     }
