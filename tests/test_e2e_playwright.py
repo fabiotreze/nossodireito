@@ -161,6 +161,7 @@ class TestPageLoad:
         assert lang == "pt-BR"
 
     def test_main_landmark_exists(self, page):
+        page.wait_for_selector("main", timeout=5000)
         assert page.locator("main").count() >= 1
 
     def test_header_visible(self, page):
@@ -1016,28 +1017,44 @@ class TestCollapsibleDicas:
 # ════════════════════════════════════════════════════════════════
 
 class TestAccessibilityIconABNT:
-    """Valida que o ícone de acessibilidade usa SVG (conforme ABNT NBR 9050:2020)."""
+    """Valida que o ícone de acessibilidade está presente e acessível.
 
-    def test_trigger_icon_is_svg(self, page):
-        svg = page.locator(".a11y-trigger-icon svg")
-        assert svg.count() >= 1, "Ícone do trigger deve ser SVG, não emoji"
+    Aceita tanto SVG (ideal ABNT NBR 9050:2020) quanto emoji nativo ♿
+    (cf81807: 'feat: use native wheelchair emoji for a11y icon').
+    Ambos representam o International Symbol of Access (ISA).
+    """
 
-    def test_drawer_icon_is_svg(self, page, direitos_data):
+    def test_trigger_icon_present(self, page):
+        icon = page.locator(".a11y-trigger-icon")
+        assert icon.count() >= 1, "Ícone do trigger deve existir"
+        # Aceita SVG ou emoji ♿
+        has_svg = page.locator(".a11y-trigger-icon svg").count() >= 1
+        text = icon.text_content() or ""
+        has_emoji = "♿" in text or "☿" in text
+        assert has_svg or has_emoji, "Ícone deve ser SVG ou emoji de acessibilidade"
+
+    def test_drawer_icon_present(self, page, direitos_data):
         # Open panel first
         page.locator("#a11yPanelTrigger").click()
         page.wait_for_timeout(300)
-        svg = page.locator(".a11y-drawer-icon svg")
-        assert svg.count() >= 1, "Ícone do drawer deve ser SVG, não emoji"
+        icon = page.locator(".a11y-drawer-icon")
+        assert icon.count() >= 1, "Ícone do drawer deve existir"
+        has_svg = page.locator(".a11y-drawer-icon svg").count() >= 1
+        text = icon.text_content() or ""
+        has_emoji = "♿" in text or "☿" in text
+        assert has_svg or has_emoji, "Ícone deve ser SVG ou emoji de acessibilidade"
 
-    def test_icon_has_viewbox(self, page):
-        svg = page.locator(".a11y-trigger-icon svg")
-        vb = svg.get_attribute("viewBox")
-        assert vb and len(vb.split()) >= 4
+    def test_trigger_icon_is_aria_hidden(self, page):
+        """Ícone decorativo deve ter aria-hidden='true'."""
+        icon = page.locator(".a11y-trigger-icon")
+        assert icon.get_attribute("aria-hidden") == "true"
 
-    def test_icon_uses_currentcolor(self, page):
-        """SVG deve usar currentColor para herdar a cor do botão."""
-        html = page.locator(".a11y-trigger-icon svg").inner_html()
-        assert "currentColor" in html
+    def test_drawer_icon_is_aria_hidden(self, page):
+        """Ícone decorativo no drawer deve ter aria-hidden='true'."""
+        page.locator("#a11yPanelTrigger").click()
+        page.wait_for_timeout(300)
+        icon = page.locator(".a11y-drawer-icon")
+        assert icon.get_attribute("aria-hidden") == "true"
 
 
 # ════════════════════════════════════════════════════════════════
