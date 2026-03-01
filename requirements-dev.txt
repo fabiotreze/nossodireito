@@ -9,4 +9,4 @@ playwright~=1.51
 
 # Security audit tools
 pip-audit~=2.7
-safety~=3.0
+safety~=3.7
