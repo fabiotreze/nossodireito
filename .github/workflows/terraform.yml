@@ -109,7 +109,7 @@ jobs:
 
       # ── Restaurar state de run anterior (se existir) ──
       - name: Baixar tfstate anterior
-        uses: dawidd6/action-download-artifact@bf251b5aa9c2f7eeb574a96ee720e24f801b7c11 # v6
+        uses: dawidd6/action-download-artifact@2536c51d3d126276eb39f74d6bc9c72ac6ef30d3 # v16
         with:
           name: terraform-state
           path: terraform/
