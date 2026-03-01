@@ -214,6 +214,8 @@ const MIME = Object.freeze({
     '.js': 'application/javascript; charset=utf-8',
     '.json': 'application/json; charset=utf-8',
     '.png': 'image/png',
+    '.jpg': 'image/jpeg',
+    '.jpeg': 'image/jpeg',
     '.ico': 'image/x-icon',
     '.svg': 'image/svg+xml',
     '.webp': 'image/webp',
@@ -228,6 +230,8 @@ const CACHE = Object.freeze({
     '.css': 'public, max-age=2592000, immutable',    // 30 days — never revalidate
     '.js': 'public, max-age=2592000, immutable',     // 30 days — never revalidate
     '.png': 'public, max-age=2592000, immutable',    // 30 days — never revalidate
+    '.jpg': 'public, max-age=2592000, immutable',    // 30 days — never revalidate
+    '.jpeg': 'public, max-age=2592000, immutable',   // 30 days — never revalidate
     '.ico': 'public, max-age=2592000, immutable',    // 30 days — never revalidate
     '.svg': 'public, max-age=2592000, immutable',    // 30 days — never revalidate
     '.webp': 'public, max-age=2592000, immutable',   // 30 days — never revalidate

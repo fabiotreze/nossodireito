@@ -47,6 +47,8 @@ textarea:focus {
     --bar-high: #15803d;
     --bar-medium: #b45309;
     --bar-low: #64748b;
+    --primary-bg: rgba(30, 64, 175, 0.08);
+    --focus-ring: #1e40af;
 }
 
 /* ---------- Dark Mode ---------- */
@@ -1596,30 +1598,30 @@ html.high-contrast ::selection {
     }
 }
 
-/* High contrast overrides for emergency */
-body.high-contrast .emergencia-section {
+/* High contrast overrides for emergency (class is on <html>) */
+html.high-contrast .emergencia-section {
     border-color: #ff0;
     background: #000;
 }
 
-body.high-contrast .emergencia-section h3 {
+html.high-contrast .emergencia-section h3 {
     color: #ff0;
 }
 
-body.high-contrast .emergencia-conflito,
-body.high-contrast .emergencia-legal,
-body.high-contrast .emergencia-denuncia {
+html.high-contrast .emergencia-conflito,
+html.high-contrast .emergencia-legal,
+html.high-contrast .emergencia-denuncia {
     background: #111;
     border-color: #ff0;
 }
 
-body.high-contrast .notificacao-text {
+html.high-contrast .notificacao-text {
     background: #111;
     border-color: #ff0;
     color: #fff;
 }
 
-body.high-contrast .btn-copy-notif {
+html.high-contrast .btn-copy-notif {
     background: #ff0;
     color: #000;
 }
@@ -3077,7 +3079,7 @@ html.high-contrast .valor-destaque {
     margin-top: 1.5rem;
 }
 
-body.high-contrast .disclaimer-alert {
+html.high-contrast .disclaimer-alert {
     border-color: #ff0;
     background: #000;
 }

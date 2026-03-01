@@ -4,16 +4,16 @@
 
 # ⚖️ NossoDireito
 
-[![Master Compliance](https://img.shields.io/badge/Master%20Compliance-100.0%25%20(1103.2%2F1103.2)-brightgreen?style=flat-square)](CHANGELOG.md)
+[![Master Compliance](https://img.shields.io/badge/Master%20Compliance-100.0%25%20(1104.7%2F1104.7)-brightgreen?style=flat-square)](CHANGELOG.md)
 [![WAF 5 Pillars](https://img.shields.io/badge/WAF%205%20Pillars-100%25-success?style=flat-square)](docs/QUALITY_GUIDE.md)
 [![Security](https://img.shields.io/badge/Security-HTTPS%20%7C%20CSP%20%7C%20Zero%20Tracking-green?style=flat-square&logo=letsencrypt)](SECURITY.md)
 [![Accessibility](https://img.shields.io/badge/Accessibility-ARIA%20%7C%20VLibras%20%7C%20WCAG-blue?style=flat-square&logo=accessible-icon)](docs/ACCESSIBILITY.md)
 [![LGPD](https://img.shields.io/badge/LGPD-Zero%20Data%20Collection-blue?style=flat-square)](SECURITY.md)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow?style=flat-square)](LICENSE)
-[![Version](https://img.shields.io/badge/Version-1.14.5-informational?style=flat-square)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/Version-1.14.7-informational?style=flat-square)](CHANGELOG.md)
 [![Quality Gate](https://github.com/fabiotreze/nossodireito/actions/workflows/quality-gate.yml/badge.svg)](https://github.com/fabiotreze/nossodireito/actions/workflows/quality-gate.yml)
 [![Deploy](https://github.com/fabiotreze/nossodireito/actions/workflows/deploy.yml/badge.svg)](https://github.com/fabiotreze/nossodireito/actions/workflows/deploy.yml)
-[![Tests](https://img.shields.io/badge/Tests-846%20passed%20(709%20unit%20%2B%20137%20E2E)-brightgreen?style=flat-square&logo=pytest)](TESTING.md)
+[![Tests](https://img.shields.io/badge/Tests-846%20passed%20(709%20unit%20%2B%20137%20E2E)-brightgreen?style=flat-square&logo=pytest)](docs/QUALITY_GUIDE.md)
 
 **Recebeu um laudo? Vem que a gente te ajuda.**
 
@@ -33,60 +33,38 @@ Este projeto responde essa pergunta de forma clara, objetiva e validada.
 
 ---
 
-## 🎉 NOVIDADES (15/02/2026) — 100% COMPLIANCE ALCANÇADO!
+## 🚀 Quick Start
 
-**🏆 Conquista:** Master Compliance v1.12.0 @ **1055.4/1055.4 pontos (100.00%)**
+```bash
+git clone https://github.com/fabiotreze/nossodireito.git
+cd nossodireito
+python -m venv .venv && .venv\Scripts\activate   # Windows
+pip install -r requirements.txt -r requirements-dev.txt
+node server.js                                    # → http://localhost:8080
+```
 
-### ✅ O que foi implementado:
+Para rodar testes: veja [`docs/QUALITY_GUIDE.md`](docs/QUALITY_GUIDE.md)
 
-1. **`validate_all.py`** — Rotina geral de revalidação automática
-   - Executa 7 fases de validação em sequência
-   - Detecção automática de falhas/bugs
-   - Modo `--fix` para auto-correção
+---
 
-2. **`analise360.py`** — Avaliação completa (807 verificações)
-   - 11 seções: SEO, segurança, acessibilidade, conteúdo, performance, legal
-   - 318 URLs validadas (gov.br + internacionais)
-   - Relatório detalhado com percentual por seção
+## 🎉 NOVIDADES v1.14.7 (28/02/2026) — Otimização & Simplificação
 
-3. **SEO overhaul** — Sitemap expandido de 1→34 URLs
-   - 4 novos schemas JSON-LD (Organization, BreadcrumbList, 2× ItemList)
-   - Conteúdo SEO pré-renderizado, 45+ meta keywords
-   - Rich `<noscript>` para navegadores sem JS
+**🏆 Master Compliance:** 1104.7/1104.7 pontos **(100.00%)**
 
-5. **eMAG 3.1 compliance** — Modelo de Acessibilidade Gov.br
-   - Atalhos `accesskey="1/2/3"` (conteúdo, menu, busca)
-   - `target="_blank"` removido de links hardcoded
-   - Painel de acessibilidade com shortcuts de teclado
+### ✅ O que mudou:
 
-5. **ANÁLISE 360 @ 100%** — Métricas atualizadas:
-   - ✅ Cobertura: 88.2% (≥75% meta)
-   - ✅ Completude: 30/30 benefícios completos
-   - ✅ IPVA: 27/27 estados mapeados
+1. **Documentação simplificada** — consolidada de 14 para 8 arquivos .md
+2. **Testes otimizados** — classes e métodos duplicados removidos
+3. **Scripts consolidados** — validação gov.br unificada em `validate_urls.py`
+4. **README prático** — Quick Start no topo
 
-### 📚 Documentação completa:
+### 📚 Documentação:
 
-- [`docs/QUALITY_GUIDE.md`](docs/QUALITY_GUIDE.md) ⭐ — Pipeline, scripts, testes, troubleshooting
+- [`docs/QUALITY_GUIDE.md`](docs/QUALITY_GUIDE.md) ⭐ — Quick Start, pipeline, scripts, troubleshooting
 - [`docs/ACCESSIBILITY.md`](docs/ACCESSIBILITY.md) — Auditoria WCAG/eMAG, correções, widgets
-- [`docs/VALIDATION_STATUS.md`](docs/VALIDATION_STATUS.md) — Automação, E2E, roadmap
 - [`docs/REFERENCE.md`](docs/REFERENCE.md) — 31+ benefícios PcD, dependências, ordenação
 - [`docs/COMPLIANCE.md`](docs/COMPLIANCE.md) — LGPD, LBI, ISO, Azure
 - [`docs/KNOWN_ISSUES.md`](docs/KNOWN_ISSUES.md) — Bugs, VLibras, limitações
-
-### 🚀 Como usar:
-
-```bash
-# Validação completa (recomendado antes de commitar)
-python scripts/validate_all.py
-
-# Master Compliance (21 categorias)
-python scripts/master_compliance.py
-
-# Avaliação 360° (807 checks, 318 URLs)
-python scripts/analise360.py
-```
-
-**Roadmap P0-P3:** Próximas implementações em [`docs/VALIDATION_STATUS.md`](docs/VALIDATION_STATUS.md)
 
 ---
 
@@ -275,7 +253,9 @@ nossodireito/
 │   └── dicionario_pcd.json  # Dicionário PcD (deficiências, CIDs, leis)
 ├── images/                 # Favicons, OG image e logo
 ├── schemas/
-│   └── direitos.schema.json # JSON Schema (Draft 7) para direitos.json
+│   ├── direitos.schema.json # JSON Schema (Draft 7) para direitos.json
+│   ├── matching_engine.schema.json
+│   └── dicionario_pcd.schema.json
 ├── docs/
 │   ├── ARCHITECTURE.md     # Arquitetura completa do sistema
 │   ├── ARCHITECTURE.drawio.xml # Diagrama visual (draw.io)
@@ -283,24 +263,22 @@ nossodireito/
 │   ├── COMPLIANCE.md       # LGPD, LBI, ISO, Azure
 │   ├── CONTRIBUTING.md     # Guia de contribuição
 │   ├── KNOWN_ISSUES.md     # Bugs, VLibras, limitações
-│   ├── QUALITY_GUIDE.md    # Pipeline, scripts, testes
-│   ├── REFERENCE.md        # 31+ benefícios PcD, dependências
-│   ├── VALIDATION_STATUS.md # Automação, E2E, roadmap
-│   └── v1/                 # Arquivo histórico (versões 1.2–1.9)
+│   ├── QUALITY_GUIDE.md    # Quick Start, pipeline, scripts, testes
+│   └── REFERENCE.md        # 31+ benefícios PcD, dependências
 ├── tests/
 │   ├── test_comprehensive.py           # Testes unitários abrangentes
 │   ├── test_comprehensive_validation.py # Validação completa de dados
 │   ├── test_cross_browser.py           # Compatibilidade cross-browser
-│   ├── test_e2e_playwright.py          # 137 testes E2E (Playwright)
-│   └── test_master_compliance.py       # Validação de compliance
+│   ├── test_e2e_playwright.py          # Testes E2E (Playwright)
+│   ├── test_master_compliance.py       # Validação de compliance
+│   └── conftest.py                     # Fixtures compartilhadas
 ├── scripts/
 │   ├── master_compliance.py # Compliance 360° (21 categorias, score 100%)
 │   ├── validate_all.py     # Quality Gate agregado (--quick)
 │   ├── validate_content.py # Validação de conteúdo JSON
-│   ├── validate_govbr_urls.py # Verificação de URLs gov.br
 │   ├── validate_schema.py  # Validação JSON Schema
 │   ├── validate_sources.py # Validação de fontes oficiais
-│   ├── validate_urls.py    # Whitelist de domínios
+│   ├── validate_urls.py    # URLs gov.br + whitelist de domínios
 │   ├── validate_legal_compliance.py # Auditoria legal profunda
 │   ├── validate_legal_sources.py # Extração de artigos de leis
 │   ├── analise360.py       # Análise 360° de cobertura
@@ -323,7 +301,6 @@ nossodireito/
 │   └── weekly-review.yml       # Issue automática periódica
 ├── CHANGELOG.md
 ├── GOVERNANCE.md
-├── TESTING.md
 ├── SECURITY.md
 ├── SECURITY_AUDIT.md
 ├── LICENSE

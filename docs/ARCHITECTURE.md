@@ -1,6 +1,6 @@
 # NossoDireito — Arquitetura do Sistema V1 (Produção Atual)
 
-**Versão:** 1.14.5
+**Versão:** 1.14.7
 **Data:** Fevereiro 2026
 **Status:** Produção Estável (Quality Gate: 100.0/100)
 **URL:** https://nossodireito.fabiotreze.com
@@ -1460,7 +1460,7 @@ Como não há tratamento de dados pessoais (LGPD Art. 4º, I), não é necessár
    - CSS: `html { font-size: calc(16px * var(--font-multiplier)); }`
 
 2. **Alto Contraste**:
-   - Toggle classe `.high-contrast` no `<body>`
+   - Toggle classe `.high-contrast` no `<html>` (via `document.documentElement`)
    - Override CSS variables: `--text: #000`, `--surface: #fff`, `--primary: #00f`
    - Contraste: 7:1 (AAA level)
 
@@ -1635,9 +1635,12 @@ jobs:
         run: npm ci
 
       - name: Login to Azure
-        uses: azure/login@v1
+        uses: azure/login@v2
         with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          # OIDC — sem client secret
 
       - name: Deploy to App Service
         uses: azure/webapps-deploy@v2
@@ -1651,7 +1654,9 @@ jobs:
 ```
 
 **Secrets Requeridos:**
-- `AZURE_CREDENTIALS`: Service Principal JSON (az ad sp create-for-rbac)
+- `AZURE_CLIENT_ID`: Application (client) ID do App Registration
+- `AZURE_TENANT_ID`: Directory (tenant) ID do Azure AD
+- `AZURE_SUBSCRIPTION_ID`: Subscription ID da Azure
 
 #### 2. quality-gate.yml (Validation)
 ```yaml
@@ -1725,8 +1730,12 @@ terraform output
 
 **Production Deploy:**
 ```bash
-# Via GitHub Actions (terraform.yml — não implementado ainda)
+# Via GitHub Actions (terraform.yml — OIDC authentication)
 git push origin main  # Trigger deploy workflow
+
+# Authenticação via OIDC (id-token: write) — sem ARM_CLIENT_SECRET
+# azure/login@v2 com federated credential
+# State local: salvo como GitHub Artifact (90 dias)
 
 # Manual via Azure Cloud Shell
 az login
@@ -1738,12 +1747,18 @@ terraform apply -auto-approve
 
 **Estrutura:**
 ```
-tests/                              # Testes pytest (709 unit + 137 E2E)
+tests/                              # Testes pytest (709 unit + 137 E2E = 846)
+├── conftest.py                     # Fixtures compartilhadas (direitos, matching, dicionario, schema, html, css, etc.)
 ├── test_comprehensive.py           # Testes unitários abrangentes (categorias, keywords, UFs)
 ├── test_comprehensive_validation.py # Validação completa de dados e estrutura
 ├── test_cross_browser.py           # Testes de compatibilidade cross-browser
 ├── test_e2e_playwright.py          # 137 testes E2E com Playwright
 └── test_master_compliance.py       # Validação de compliance (Master Score)
+
+schemas/                            # JSON Schemas de validação
+├── direitos.schema.json            # Schema para direitos.json
+├── matching_engine.schema.json     # Schema para matching_engine.json (draft-07)
+└── dicionario_pcd.schema.json      # Schema para dicionario_pcd.json (draft-07)
 
 scripts/                            # Scripts de validação e automação
 ├── analise360.py                   # Análise 360° do projeto
@@ -1755,7 +1770,6 @@ scripts/                            # Scripts de validação e automação
 ├── pre-commit                      # Hook git pre-commit
 ├── validate_all.py                 # Quality Gate agregado (--quick mode)
 ├── validate_content.py             # Validação de conteúdo (categorias, IPVA)
-├── validate_govbr_urls.py          # Verificação de URLs gov.br
 ├── validate_legal_compliance.py    # Conformidade legal
 ├── validate_legal_sources.py       # Fontes legais
 ├── validate_schema.py              # Validação JSON Schema
@@ -1768,7 +1782,7 @@ scripts/                            # Scripts de validação e automação
 # Testes unitários (709 tests, ~8s)
 python -m pytest tests/ --ignore=tests/test_e2e_playwright.py -v -q
 
-# E2E Playwright (132 tests, ~45s — requer browser binaries)
+# E2E Playwright (137 tests, ~155s — requer browser binaries)
 python -m pytest tests/test_e2e_playwright.py -v
 
 # Master Compliance Score
@@ -1882,9 +1896,9 @@ if __name__ == '__main__':
 
 **Uso:**
 ```bash
-python scripts/bump_version.py patch  # 1.14.4 → 1.14.5
-python scripts/bump_version.py minor  # 1.14.4 → 1.15.0
-python scripts/bump_version.py major  # 1.14.4 → 2.0.0
+python scripts/bump_version.py patch  # 1.14.5 → 1.14.6
+python scripts/bump_version.py minor  # 1.14.5 → 1.15.0
+python scripts/bump_version.py major  # 1.14.5 → 2.0.0
 ```
 
 ---

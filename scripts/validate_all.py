@@ -83,13 +83,18 @@ class MasterValidator:
             print(message)
 
     def run_script(self, name: str, script_path: str, timeout: int = 60,
-                   timeout_as_warning: bool = False) -> ValidationResult:
+                   timeout_as_warning: bool = False,
+                   extra_args: list[str] | None = None) -> ValidationResult:
         """Executa um script Python e retorna resultado"""
         self.log(f"▶️  {name}...")
 
+        cmd = [sys.executable, str(script_path)]
+        if extra_args:
+            cmd.extend(extra_args)
+
         try:
             result = subprocess.run(
-                [sys.executable, str(script_path)],
+                cmd,
                 cwd=self.root,
                 capture_output=True,
                 text=True,
@@ -478,17 +483,15 @@ class MasterValidator:
         # ====================
         print()
         print("=" * 100)
-        print("🏠️ FASE 7/11: URLS GOV.BR PcD (Serviços Específicos)")
+        print("🏠️ FASE 7/11: URLS GOV.BR PcD (via validate_urls --check-live)")
         print("=" * 100)
 
-        if (self.root / "scripts" / "validate_govbr_urls.py").exists():
-            self.results.append(self.run_script(
-                "URLs gov.br PcD (serviços específicos)",
-                self.root / "scripts" / "validate_govbr_urls.py",
-                timeout=120
-            ))
-        else:
-            self.log("   ⚠️ validate_govbr_urls.py: NÃO ENCONTRADO")
+        self.results.append(self.run_script(
+            "URLs gov.br PcD (validate_urls --check-live)",
+            self.root / "scripts" / "validate_urls.py",
+            extra_args=["--check-live"],
+            timeout=120
+        ))
 
         # ====================
         # FASE 8: BASE LEGAL (Compliance, leis vigentes)

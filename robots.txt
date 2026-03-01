@@ -66,4 +66,22 @@ Disallow: /
 User-agent: Google-Extended
 Disallow: /
 
+User-agent: Bytespider
+Disallow: /
+
+User-agent: PetalBot
+Disallow: /
+
+User-agent: Meta-ExternalAgent
+Disallow: /
+
+User-agent: PerplexityBot
+Disallow: /
+
+User-agent: Applebot-Extended
+Disallow: /
+
+User-agent: FacebookBot
+Disallow: /
+
 Sitemap: https://nossodireito.fabiotreze.com/sitemap.xml

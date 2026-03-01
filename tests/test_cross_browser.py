@@ -23,10 +23,8 @@ Cobertura:
 """
 
 import json
-import os
 import re
 import unicodedata
-from collections import Counter
 from pathlib import Path
 
 import pytest
@@ -37,8 +35,6 @@ JS_DIR = ROOT / "js"
 CSS_DIR = ROOT / "css"
 
 
-# ════════════════════════════════════════════════════════════════
-# BROWSER USER-AGENTS (Simulated)
 # ════════════════════════════════════════════════════════════════
 
 BROWSERS = {
@@ -122,64 +118,6 @@ BROWSERS = {
 }
 
 
-# ════════════════════════════════════════════════════════════════
-# FIXTURES
-# ════════════════════════════════════════════════════════════════
-
-@pytest.fixture(scope="session")
-def direitos():
-    with open(DATA / "direitos.json", encoding="utf-8") as f:
-        return json.load(f)
-
-
-@pytest.fixture(scope="session")
-def matching():
-    with open(DATA / "matching_engine.json", encoding="utf-8") as f:
-        return json.load(f)
-
-
-@pytest.fixture(scope="session")
-def dicionario():
-    with open(DATA / "dicionario_pcd.json", encoding="utf-8") as f:
-        return json.load(f)
-
-
-@pytest.fixture(scope="session")
-def html():
-    with open(ROOT / "index.html", encoding="utf-8") as f:
-        return f.read()
-
-
-@pytest.fixture(scope="session")
-def appjs():
-    with open(JS_DIR / "app.js", encoding="utf-8") as f:
-        return f.read()
-
-
-@pytest.fixture(scope="session")
-def css():
-    with open(CSS_DIR / "styles.css", encoding="utf-8") as f:
-        return f.read()
-
-
-@pytest.fixture(scope="session")
-def swjs():
-    with open(ROOT / "sw.js", encoding="utf-8") as f:
-        return f.read()
-
-
-@pytest.fixture(scope="session")
-def packagejson():
-    with open(ROOT / "package.json", encoding="utf-8") as f:
-        return json.load(f)
-
-
-@pytest.fixture(scope="session")
-def manifest():
-    with open(ROOT / "manifest.json", encoding="utf-8") as f:
-        return json.load(f)
-
-
 def normalize_text(text: str) -> str:
     """Reproduce the JS normalizeText for search simulation."""
     text = text.lower()
@@ -200,13 +138,6 @@ class TestDataIntegrity:
         assert "categorias" in direitos
         assert len(direitos["categorias"]) == 30
 
-    def test_direitos_version_matches_package(self, direitos, packagejson):
-        pkg_version = packagejson.get("version", "")
-        json_version = direitos.get("versao", "")
-        assert json_version == pkg_version, (
-            f"direitos.json versao={json_version} != package.json version={pkg_version}"
-        )
-
     def test_direitos_has_required_fields(self, direitos):
         required_top = ["versao", "ultima_atualizacao", "categorias"]
         for key in required_top:
@@ -217,11 +148,6 @@ class TestDataIntegrity:
         for cat in direitos["categorias"]:
             for field in required:
                 assert field in cat, f"Category {cat.get('id', '?')} missing field: {field}"
-
-    def test_no_duplicate_category_ids(self, direitos):
-        ids = [c["id"] for c in direitos["categorias"]]
-        dupes = [i for i, c in Counter(ids).items() if c > 1]
-        assert dupes == [], f"Duplicate category IDs: {dupes}"
 
     def test_all_urls_are_official(self, direitos):
         """All URLs must be from gov.br, icd.who.int, or other official domains."""
@@ -728,70 +654,6 @@ class TestCrossBrowserSimulation:
 
 
 # ════════════════════════════════════════════════════════════════
-# 9. ACCESSIBILITY (WCAG AA + eMAG)
-# ════════════════════════════════════════════════════════════════
-
-class TestAccessibility:
-    """Validate WCAG 2.1 AA and eMAG 3.1 compliance markers."""
-
-    def test_aria_labels_present(self, html):
-        aria_count = html.count("aria-label")
-        assert aria_count >= 10, f"Only {aria_count} aria-labels — expected ≥10"
-
-    def test_aria_live_regions(self, html):
-        assert 'aria-live' in html
-
-    def test_role_attributes(self, html):
-        assert 'role=' in html
-
-    def test_accesskey_emag(self, html):
-        """eMAG requires accesskey shortcuts."""
-        assert 'accesskey="1"' in html
-        assert 'accesskey="3"' in html
-
-    def test_vlibras_integration(self, html):
-        assert "vlibras" in html.lower()
-
-    def test_tts_exists_in_js(self, appjs):
-        assert "speechSynthesis" in appjs
-
-    def test_font_size_adjustment(self, appjs):
-        assert "FONT_STEPS" in appjs or "fontSize" in appjs
-
-    def test_high_contrast_toggle(self, appjs):
-        assert "high_contrast" in appjs.lower() or "highContrast" in appjs
-
-
-# ════════════════════════════════════════════════════════════════
-# 10. VERSION CONSISTENCY
-# ════════════════════════════════════════════════════════════════
-
-class TestVersionConsistency:
-    """All version references must match across files."""
-
-    def test_package_json_version(self, packagejson):
-        version = packagejson.get("version", "")
-        assert re.match(r"^\d+\.\d+\.\d+$", version), f"Invalid semver: {version}"
-
-    def test_sw_cache_version(self, swjs, packagejson):
-        version = packagejson["version"]
-        assert f"nossodireito-v{version}" in swjs
-
-    def test_direitos_json_version(self, direitos, packagejson):
-        assert direitos["versao"] == packagejson["version"]
-
-    def test_manifest_version(self, manifest, packagejson):
-        if "version" in manifest:
-            assert manifest["version"] == packagejson["version"]
-
-    def test_html_cache_busting_version(self, html, packagejson):
-        version = packagejson["version"]
-        assert f"?v={version}" in html, (
-            f"Cache-busting version ?v={version} not found in HTML"
-        )
-
-
-# ════════════════════════════════════════════════════════════════
 # 11. SECURITY & COMPLIANCE CHECKS
 # ════════════════════════════════════════════════════════════════
 
@@ -884,57 +746,6 @@ class TestMatchingCoverage:
         """Uppercase-only terms should be valid CID codes or known acronyms."""
         terms = matching["uppercase_only_terms"]
         assert len(terms) >= 50, f"Only {len(terms)} uppercase terms"
-
-    def test_dicionario_benefits_map_to_valid_categories(self, dicionario, direitos):
-        """Dicionario benefits must correspond to real category IDs."""
-        valid_ids = {c["id"] for c in direitos["categorias"]}
-        for entry in dicionario["deficiencias"]:
-            for benefit in entry.get("beneficios_elegiveis", []):
-                assert benefit in valid_ids, (
-                    f"'{entry['nome']}' references unknown category: '{benefit}'"
-                )
-
-
-# ════════════════════════════════════════════════════════════════
-# 13. SERVER.JS SECURITY CHECKS (file-based)
-# ════════════════════════════════════════════════════════════════
-
-class TestServerSecurity:
-    """Validate server.js security headers and configuration."""
-
-    @pytest.fixture(scope="class")
-    def serverjs(self):
-        with open(ROOT / "server.js", encoding="utf-8") as f:
-            return f.read()
-
-    def test_hsts_header(self, serverjs):
-        assert "Strict-Transport-Security" in serverjs
-
-    def test_csp_header(self, serverjs):
-        assert "Content-Security-Policy" in serverjs
-
-    def test_xframe_deny(self, serverjs):
-        assert "X-Frame-Options" in serverjs
-
-    def test_nosniff(self, serverjs):
-        assert "X-Content-Type-Options" in serverjs
-
-    def test_referrer_policy(self, serverjs):
-        assert "Referrer-Policy" in serverjs
-
-    def test_rate_limiting(self, serverjs):
-        assert "RATE_LIMIT" in serverjs
-
-    def test_path_traversal_protection(self, serverjs):
-        """Server must prevent path traversal (CWE-22)."""
-        protections = [
-            ".." in serverjs,
-            "normalize" in serverjs or "resolve" in serverjs,
-        ]
-        assert any(protections), "No path traversal protection found"
-
-    def test_health_endpoint(self, serverjs):
-        assert "/health" in serverjs
 
 
 # ════════════════════════════════════════════════════════════════

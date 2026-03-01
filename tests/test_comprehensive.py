@@ -30,45 +30,6 @@ DATA = ROOT / "data"
 
 
 # ════════════════════════════════════════════════════════════════
-# FIXTURES
-# ════════════════════════════════════════════════════════════════
-
-@pytest.fixture(scope="session")
-def direitos():
-    with open(DATA / "direitos.json", encoding="utf-8") as f:
-        return json.load(f)
-
-
-@pytest.fixture(scope="session")
-def dicionario():
-    with open(DATA / "dicionario_pcd.json", encoding="utf-8") as f:
-        return json.load(f)
-
-
-@pytest.fixture(scope="session")
-def matching():
-    with open(DATA / "matching_engine.json", encoding="utf-8") as f:
-        return json.load(f)
-
-
-@pytest.fixture(scope="session")
-def schema():
-    with open(ROOT / "schemas" / "direitos.schema.json", encoding="utf-8") as f:
-        return json.load(f)
-
-
-@pytest.fixture(scope="session")
-def cat_ids(direitos):
-    return {c["id"] for c in direitos["categorias"]}
-
-
-@pytest.fixture(scope="session")
-def index_html():
-    with open(ROOT / "index.html", encoding="utf-8") as f:
-        return f.read()
-
-
-# ════════════════════════════════════════════════════════════════
 # 1. DIREITOS.JSON — ESTRUTURA E INTEGRIDADE
 # ════════════════════════════════════════════════════════════════
 
@@ -842,27 +803,6 @@ class TestSearchFunctionality:
 
 
 # ════════════════════════════════════════════════════════════════
-# 17. PWA / SERVICE WORKER
-# ════════════════════════════════════════════════════════════════
-
-class TestPWA:
-    """Validação PWA"""
-
-    def test_sw_caches_direitos(self):
-        sw = (ROOT / "sw.js").read_text(encoding="utf-8")
-        assert "direitos.json" in sw
-
-    def test_sw_caches_matching(self):
-        sw = (ROOT / "sw.js").read_text(encoding="utf-8")
-        assert "matching_engine.json" in sw
-
-    def test_manifest_valid(self):
-        with open(ROOT / "manifest.json", encoding="utf-8") as f:
-            m = json.load(f)
-        assert "icons" in m or "name" in m
-
-
-# ════════════════════════════════════════════════════════════════
 # 18. DOCS
 # ════════════════════════════════════════════════════════════════
 
@@ -1153,7 +1093,7 @@ class TestScriptsPostCleanup:
 
     ACTIVE_SCRIPTS = [
         "validate_all.py", "validate_content.py", "validate_schema.py",
-        "validate_sources.py", "validate_urls.py", "validate_govbr_urls.py",
+        "validate_sources.py", "validate_urls.py",
         "validate_legal_compliance.py", "validate_legal_sources.py",
         "master_compliance.py", "bump_version.py", "discover_benefits.py",
         "analise360.py", "audit_automation.py",

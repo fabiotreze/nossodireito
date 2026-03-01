@@ -72,7 +72,7 @@ class AutomationAudit:
             },
             {
                 'area': 'Validação de Fontes',
-                'script': 'scripts/validate_sources.py + validate_govbr_urls.py',
+                'script': 'scripts/validate_sources.py + validate_urls.py --check-live',
                 'validacoes': [
                     '✅ URLs .gov.br: conectividade, status HTTP',
                     '✅ Formato de links: estrutura JSON',
@@ -325,13 +325,9 @@ def main():
     # Exibir no terminal
     print(auditor.generate_report())
 
-    # Salvar em arquivo
-    output_file = Path('docs/VALIDATION_STATUS.md')
-    output_file.parent.mkdir(exist_ok=True)
-    saved_file = auditor.save_report(output_file)
-
+    # Output is informational only (consolidado em QUALITY_GUIDE.md)
     print()
-    print(f"📄 Relatório salvo em: {saved_file}")
+    print("📄 Relatório exibido acima (consolidado em QUALITY_GUIDE.md)")
 
 
 if __name__ == '__main__':

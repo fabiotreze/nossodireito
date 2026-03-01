@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <mxfile host="app.diagrams.net" modified="2026-02-16T00:00:00.000Z" agent="NossoDireito Architecture" version="21.0.0">
-  <diagram name="NossoDireito v1.14.4 — Arquitetura Completa" id="architecture">
+  <diagram name="NossoDireito v1.14.6 — Arquitetura Completa" id="architecture">
     <mxGraphModel dx="1522" dy="894" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1269" pageHeight="1027" math="0" shadow="0">
       <root>
         <mxCell id="0" />
@@ -136,7 +136,7 @@
           <mxGeometry x="240" y="760" width="160" height="30" as="geometry" />
         </mxCell>
 
-        <mxCell id="test-browser" value="test_e2e_playwright.py&#xa;(132 Playwright)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#76608a;fontColor=#ffffff;strokeColor=#432D57;fontSize=11;fontStyle=1;" vertex="1" parent="1">
+        <mxCell id="test-browser" value="conftest.py&#xa;(15 fixtures)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#76608a;fontColor=#ffffff;strokeColor=#432D57;fontSize=11;fontStyle=1;" vertex="1" parent="1">
           <mxGeometry x="420" y="760" width="160" height="30" as="geometry" />
         </mxCell>
 
@@ -202,7 +202,7 @@
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
 
-        <mxCell id="legend" value="LEGENDA v1.14.4&#xa;─── Fluxo de Dados&#xa;╌╌╌ Validação&#xa;&#xa;🔵 Azure / Infra&#xa;🟢 Dados (3 JSON)&#xa;🟡 Aplicação SPA&#xa;🔴 Validação / Compliance&#xa;🟣 Testes (841 total)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;fontColor=#333333;strokeColor=#666666;align=left;fontSize=10;verticalAlign=top;" vertex="1" parent="1">
+        <mxCell id="legend" value="LEGENDA v1.14.6&#xa;─── Fluxo de Dados&#xa;╌╌╌ Validação&#xa;&#xa;🔵 Azure / Infra&#xa;🟢 Dados (3 JSON)&#xa;🟡 Aplicação SPA&#xa;🔴 Validação / Compliance&#xa;🟣 Testes (846 total)" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#f5f5f5;fontColor=#333333;strokeColor=#666666;align=left;fontSize=10;verticalAlign=top;" vertex="1" parent="1">
           <mxGeometry x="1280" y="40" width="170" height="180" as="geometry" />
         </mxCell>
 

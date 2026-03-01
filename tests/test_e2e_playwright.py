@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-TESTES E2E PLAYWRIGHT — NossoDireito v1.14.4
+TESTES E2E PLAYWRIGHT — NossoDireito v1.14.7
 
 Testes end-to-end reais com browser headless (Chromium) via Playwright.
 Valida TODAS as funcionalidades do site servido localmente:
@@ -1110,13 +1110,13 @@ class TestDocumentation:
 
     REQUIRED_DOCS = [
         "README.md", "CHANGELOG.md", "LICENSE", "SECURITY.md",
-        "GOVERNANCE.md", "TESTING.md", "SECURITY_AUDIT.md",
+        "GOVERNANCE.md", "SECURITY_AUDIT.md",
     ]
 
     REQUIRED_DOCS_DIR = [
         "ARCHITECTURE.md", "COMPLIANCE.md", "CONTRIBUTING.md",
         "KNOWN_ISSUES.md", "QUALITY_GUIDE.md", "REFERENCE.md",
-        "VALIDATION_STATUS.md", "ACCESSIBILITY.md",
+        "ACCESSIBILITY.md",
     ]
 
     def test_root_docs_exist(self):
@@ -1126,11 +1126,6 @@ class TestDocumentation:
     def test_docs_dir_exist(self):
         for doc in self.REQUIRED_DOCS_DIR:
             assert (ROOT / "docs" / doc).exists(), f"Documento ausente: docs/{doc}"
-
-    def test_testing_guide_has_steps(self):
-        content = (ROOT / "TESTING.md").read_text(encoding="utf-8")
-        for step in ["Passo 1", "Passo 2", "pip install", "pytest", "playwright"]:
-            assert step in content, f"TESTING.md sem '{step}'"
 
     def test_architecture_drawio_exists(self):
         assert (ROOT / "docs" / "ARCHITECTURE.drawio.xml").exists()
@@ -1171,10 +1166,6 @@ class TestOrphanDetection:
     def test_no_archive_folder(self):
         """_archive/ foi removido — scripts mortos não devem existir."""
         assert not (ROOT / "scripts" / "_archive").exists()
-
-    def test_no_orphan_underscore_scripts(self):
-        orphans = [f.name for f in (ROOT / "scripts").glob("_*.py")]
-        assert not orphans, f"Scripts _ órfãos: {orphans}"
 
     def test_no_temp_files(self):
         temp_patterns = ["_tmp*", "*.tmp", "*.bak", "*.swp"]

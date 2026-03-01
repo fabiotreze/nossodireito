@@ -1,6 +1,6 @@
 {
-  "versao": "1.14.5",
-  "ultima_atualizacao": "2026-02-26",
+  "versao": "1.14.7",
+  "ultima_atualizacao": "2026-02-28",
   "aviso": "Informações compiladas de fontes oficiais do governo brasileiro (gov.br). Podem estar desatualizadas. Verifique sempre as fontes originais.",
   "fontes": [
     {
@@ -1848,6 +1848,7 @@
         "Se negado, você pode recorrer administrativamente ou judicialmente (Defensoria Pública ajuda gratuitamente)",
         "O BPC é revisado a cada 2 anos — mantenha o CadÚnico sempre atualizado",
         "O beneficiário de BPC pode trabalhar e receber o Auxílio-Inclusão (50% do BPC) ao mesmo tempo",
+        "IMPORTANTE: a avaliação biopsicossocial unificada (Decreto 11.063/2022) será o modelo único para comprovar deficiência em programas federais — acompanhe as atualizações no gov.br",
         "Crianças e adolescentes com deficiência que recebem BPC têm direito ao programa BPC na Escola, que garante acesso e permanência escolar",
         "Se seus direitos forem negados, denuncie pelo Disque 100 (24h, gratuito) ou WhatsApp (61) 99611-0100",
         "Use o app Meu INSS (iOS/Android) ou meu.inss.gov.br para solicitar BPC, agendar perícia e acompanhar o processo — a assistente virtual Helô tira dúvidas 24h"
@@ -2787,14 +2788,16 @@
       ],
       "passo_a_passo": [
         "Reúna os documentos listados acima",
-        "Vá a uma agência da Caixa Econômica Federal",
+        "Acesse o FGTS Digital (fgts.trabalho.gov.br) ou o app FGTS da Caixa para consultar saldo e iniciar o pedido",
+        "Vá a uma agência da Caixa Econômica Federal (ou use o app FGTS para agendamento)",
         "Solicite o saque do FGTS por motivo de deficiência",
         "O saque é liberado após análise dos documentos",
         "5. Aguarde análise do pedido (prazo geralmente de 30 a 60 dias)",
-        "6. Acompanhe o andamento pelo protocolo fornecido e aguarde retorno oficial"
+        "6. Acompanhe o andamento pelo app FGTS ou pelo protocolo fornecido na agência"
       ],
       "dicas": [
         "Pode sacar para o trabalhador OU para dependente com deficiência (filho, por exemplo)",
+        "FGTS Digital (fgts.trabalho.gov.br): nova plataforma oficial do governo para consulta e movimentação — substitui os sistemas antigos",
         "Também pode ser usado para compra de próteses, equipamentos de acessibilidade e adaptações",
         "O saque é do valor total da conta FGTS",
         "Fique atento aos prazos de validade de laudos médicos (geralmente 12 meses)"
@@ -2802,6 +2805,10 @@
       "valor": "Valor integral da conta FGTS",
       "onde": "Caixa Econômica Federal (agência)",
       "links": [
+        {
+          "titulo": "FGTS Digital — Governo Federal",
+          "url": "https://fgts.trabalho.gov.br/"
+        },
         {
           "titulo": "FGTS — Caixa",
           "url": "https://www.caixa.gov.br/beneficios-trabalhador/fgts/"
@@ -3005,6 +3012,12 @@
           "nota": "Elevou limite do veículo para R$ 200.000,00 e prorrogou até 31/12/2026."
         },
         {
+          "lei": "Lei 14.902/2024 (Programa Mover — Mobilidade Verde)",
+          "artigo": "Arts. 1º a 5º",
+          "link": "https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2024/lei/L14902.htm",
+          "nota": "Novo regime tributário de IPI para veículos (2024-2028). Mantém isenção para PcD conforme Lei 8.989. Consulte regras atualizadas no SISEN."
+        },
+        {
           "lei": "Lei 8.383/1991 (Isenção de IOF para PcD)",
           "artigo": "Art. 72, IV",
           "link": "https://www.planalto.gov.br/ccivil_03/leis/l8383.htm",
@@ -3058,7 +3071,7 @@
       ],
       "dicas": [
         "SOLICITE AS ISENÇÕES ANTES DE COMPRAR O VEÍCULO (IPI e IOF precisam ser aprovadas antes da compra)",
-        "IPI: válida até 31/12/2026, renovável a cada 3 anos (Lei 14.287/2021)",
+        "IPI: válida até 31/12/2026, renovável a cada 3 anos (Lei 14.287/2021). O Programa Mover (Lei 14.902/2024) altera regime de IPI veicular — isenção para PcD continua vigente; verifique regras no SISEN",
         "IOF: uso ÚNICO na vida — vale apenas para PcD condutor, motor até 127 HP",
         "ICMS: limite de valor ~R$ 120.000 (Convênio CONFAZ) — NÃO é o mesmo limite do IPI (R$ 200.000)",
         "IPVA: TODOS os 27 estados concedem isenção, mas condições e limites variam — consulte a tabela abaixo",

@@ -1,0 +1,576 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "https://nossodireito.com.br/schemas/dicionario_pcd.schema.json",
+    "title": "NossoDireito - Dicionário PcD",
+    "description": "Schema de validação formal para data/dicionario_pcd.json — dicionário de deficiências, leis, benefícios e direitos PcD com fontes governamentais",
+    "type": "object",
+    "required": [
+        "versao",
+        "atualizado_em",
+        "descricao",
+        "deficiencias",
+        "leis",
+        "beneficios",
+        "documentos_comuns",
+        "orgaos_denuncia",
+        "elegibilidade_cruzada",
+        "keywords_master",
+        "fontes_oficiais_validacao"
+    ],
+    "additionalProperties": false,
+    "properties": {
+        "versao": {
+            "type": "string",
+            "pattern": "^\\d+\\.\\d+\\.\\d+$",
+            "description": "Versão do dicionário (semantic versioning)"
+        },
+        "atualizado_em": {
+            "type": "string",
+            "format": "date",
+            "description": "Data da última atualização (YYYY-MM-DD)"
+        },
+        "descricao": {
+            "type": "string",
+            "minLength": 10,
+            "description": "Descrição geral do dicionário e suas fontes"
+        },
+        "deficiencias": {
+            "type": "array",
+            "minItems": 1,
+            "description": "Lista de deficiências e condições catalogadas",
+            "items": {
+                "$ref": "#/definitions/deficiencia"
+            }
+        },
+        "leis": {
+            "type": "array",
+            "minItems": 1,
+            "description": "Lista de leis e normas relevantes para PcD",
+            "items": {
+                "$ref": "#/definitions/lei"
+            }
+        },
+        "beneficios": {
+            "type": "array",
+            "minItems": 1,
+            "description": "Lista de benefícios disponíveis para PcD",
+            "items": {
+                "$ref": "#/definitions/beneficio"
+            }
+        },
+        "documentos_comuns": {
+            "type": "array",
+            "minItems": 1,
+            "description": "Documentos frequentemente exigidos para obter benefícios PcD",
+            "items": {
+                "$ref": "#/definitions/documento_comum"
+            }
+        },
+        "orgaos_denuncia": {
+            "type": "array",
+            "minItems": 1,
+            "description": "Órgãos oficiais para denúncia de violação de direitos PcD",
+            "items": {
+                "$ref": "#/definitions/orgao_denuncia"
+            }
+        },
+        "elegibilidade_cruzada": {
+            "$ref": "#/definitions/elegibilidade_cruzada",
+            "description": "Mapa de elegibilidade cruzada entre condições e benefícios"
+        },
+        "keywords_master": {
+            "$ref": "#/definitions/keywords_master",
+            "description": "Lista mestre de palavras-chave agrupadas por categoria semântica"
+        },
+        "fontes_oficiais_validacao": {
+            "$ref": "#/definitions/fontes_oficiais_validacao",
+            "description": "Domínios oficiais aceitos para validação de fontes"
+        }
+    },
+    "definitions": {
+        "deficiencia": {
+            "type": "object",
+            "required": [
+                "id",
+                "nome",
+                "sinonimos",
+                "cid10",
+                "cid11",
+                "descricao",
+                "niveis",
+                "leis_especificas",
+                "beneficios_elegiveis",
+                "keywords_busca"
+            ],
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "pattern": "^[a-z0-9_]+$",
+                    "description": "ID único da deficiência (snake_case)"
+                },
+                "nome": {
+                    "type": "string",
+                    "minLength": 3,
+                    "description": "Nome completo da deficiência ou condição"
+                },
+                "sinonimos": {
+                    "type": "array",
+                    "minItems": 1,
+                    "items": {
+                        "type": "string",
+                        "minLength": 2
+                    },
+                    "description": "Sinônimos e termos alternativos para busca"
+                },
+                "cid10": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "pattern": "^[A-Z]\\d",
+                        "description": "Código CID-10 (ex: F84.0, H54)"
+                    },
+                    "description": "Códigos CID-10 relacionados (pode ser vazio para condições sem CID específico)"
+                },
+                "cid11": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "minLength": 2,
+                        "description": "Código CID-11 (ex: 6A02, LD40.0)"
+                    },
+                    "description": "Códigos CID-11 relacionados (pode ser vazio)"
+                },
+                "descricao": {
+                    "type": "string",
+                    "minLength": 20,
+                    "description": "Descrição clínica e funcional da deficiência"
+                },
+                "niveis": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "minLength": 3
+                    },
+                    "description": "Níveis ou subtipos da deficiência (pode ser vazio)"
+                },
+                "leis_especificas": {
+                    "type": "array",
+                    "minItems": 1,
+                    "items": {
+                        "type": "string",
+                        "minLength": 5
+                    },
+                    "description": "Leis específicas que cobrem esta deficiência"
+                },
+                "beneficios_elegiveis": {
+                    "type": "array",
+                    "minItems": 1,
+                    "items": {
+                        "type": "string",
+                        "pattern": "^[a-z_]+$"
+                    },
+                    "description": "IDs das categorias de benefícios elegíveis"
+                },
+                "keywords_busca": {
+                    "type": "array",
+                    "minItems": 1,
+                    "items": {
+                        "type": "string",
+                        "minLength": 1
+                    },
+                    "description": "Palavras-chave para motor de busca"
+                }
+            },
+            "additionalProperties": false
+        },
+        "lei": {
+            "type": "object",
+            "required": [
+                "id",
+                "nome",
+                "numero",
+                "tipo",
+                "artigos_relevantes",
+                "descricao",
+                "url",
+                "beneficios_relacionados"
+            ],
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "pattern": "^[a-z0-9_]+$",
+                    "description": "ID único da lei (snake_case)"
+                },
+                "nome": {
+                    "type": "string",
+                    "minLength": 5,
+                    "description": "Nome completo da lei ou norma"
+                },
+                "numero": {
+                    "type": "string",
+                    "minLength": 3,
+                    "description": "Número oficial da lei (ex: Lei 13.146/2015, LC 142/2013)"
+                },
+                "tipo": {
+                    "type": "string",
+                    "enum": [
+                        "constituicao",
+                        "lei_federal",
+                        "lei_complementar",
+                        "decreto",
+                        "resolucao"
+                    ],
+                    "description": "Tipo da legislação"
+                },
+                "artigos_relevantes": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "Artigos específicos relevantes para PcD"
+                },
+                "descricao": {
+                    "type": "string",
+                    "minLength": 10,
+                    "description": "Descrição resumida da lei e sua importância para PcD"
+                },
+                "url": {
+                    "type": "string",
+                    "format": "uri",
+                    "pattern": "^https?://",
+                    "description": "URL oficial da lei (planalto.gov.br ou portal oficial)"
+                },
+                "beneficios_relacionados": {
+                    "type": "array",
+                    "minItems": 1,
+                    "items": {
+                        "type": "string",
+                        "pattern": "^[a-z_]+$"
+                    },
+                    "description": "IDs das categorias de benefícios vinculadas a esta lei"
+                }
+            },
+            "additionalProperties": false
+        },
+        "beneficio": {
+            "type": "object",
+            "required": [
+                "id",
+                "nome",
+                "tipo",
+                "valor",
+                "orgao",
+                "url",
+                "requisitos_resumo",
+                "keywords_busca"
+            ],
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "pattern": "^[a-z0-9_]+$",
+                    "description": "ID único do benefício (snake_case)"
+                },
+                "nome": {
+                    "type": "string",
+                    "minLength": 5,
+                    "description": "Nome completo do benefício"
+                },
+                "tipo": {
+                    "type": "string",
+                    "enum": [
+                        "assistencia_social",
+                        "identificacao",
+                        "tributario",
+                        "transporte",
+                        "trabalho",
+                        "previdencia",
+                        "transferencia_renda",
+                        "servico_publico",
+                        "cultura_lazer",
+                        "financeiro",
+                        "esporte"
+                    ],
+                    "description": "Tipo/categoria do benefício"
+                },
+                "valor": {
+                    "type": "string",
+                    "minLength": 3,
+                    "description": "Valor ou economia proporcionada pelo benefício"
+                },
+                "orgao": {
+                    "type": "string",
+                    "minLength": 3,
+                    "description": "Órgão responsável pela concessão"
+                },
+                "url": {
+                    "type": "string",
+                    "format": "uri",
+                    "pattern": "^https?://",
+                    "description": "URL oficial do serviço ou informação"
+                },
+                "requisitos_resumo": {
+                    "type": "string",
+                    "minLength": 10,
+                    "description": "Resumo dos requisitos para obter o benefício"
+                },
+                "keywords_busca": {
+                    "type": "array",
+                    "minItems": 1,
+                    "items": {
+                        "type": "string",
+                        "minLength": 1
+                    },
+                    "description": "Palavras-chave para motor de busca"
+                }
+            },
+            "additionalProperties": false
+        },
+        "documento_comum": {
+            "type": "object",
+            "required": [
+                "id",
+                "nome",
+                "descricao",
+                "validade",
+                "categorias_que_exigem",
+                "dica"
+            ],
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "pattern": "^[a-z0-9_á-ú]+$",
+                    "description": "ID único do documento"
+                },
+                "nome": {
+                    "type": "string",
+                    "minLength": 3,
+                    "description": "Nome do documento"
+                },
+                "descricao": {
+                    "type": "string",
+                    "minLength": 10,
+                    "description": "Descrição detalhada do documento e quando é necessário"
+                },
+                "validade": {
+                    "type": "string",
+                    "minLength": 5,
+                    "description": "Prazo de validade ou periodicidade de atualização"
+                },
+                "categorias_que_exigem": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "description": "Número de categorias de benefícios que exigem este documento"
+                },
+                "dica": {
+                    "type": "string",
+                    "minLength": 10,
+                    "description": "Dica prática sobre o documento"
+                }
+            },
+            "additionalProperties": false
+        },
+        "orgao_denuncia": {
+            "type": "object",
+            "required": [
+                "id",
+                "nome",
+                "tipo",
+                "url",
+                "para_que",
+                "horario"
+            ],
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "pattern": "^[a-z0-9_]+$",
+                    "description": "ID único do órgão"
+                },
+                "nome": {
+                    "type": "string",
+                    "minLength": 3,
+                    "description": "Nome do órgão de denúncia"
+                },
+                "tipo": {
+                    "type": "string",
+                    "enum": [
+                        "federal",
+                        "estadual",
+                        "municipal"
+                    ],
+                    "description": "Abrangência do órgão"
+                },
+                "telefone": {
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "description": "Telefone de contato (pode ser null se apenas online)"
+                },
+                "url": {
+                    "type": "string",
+                    "format": "uri",
+                    "pattern": "^https?://",
+                    "description": "URL oficial do órgão"
+                },
+                "para_que": {
+                    "type": "string",
+                    "minLength": 10,
+                    "description": "Tipos de denúncias/reclamações aceitas"
+                },
+                "horario": {
+                    "type": "string",
+                    "minLength": 3,
+                    "description": "Horário de atendimento"
+                }
+            },
+            "additionalProperties": false
+        },
+        "elegibilidade_cruzada": {
+            "type": "object",
+            "required": [
+                "descricao",
+                "condicoes_universais_pcd",
+                "beneficios_condicionados"
+            ],
+            "properties": {
+                "descricao": {
+                    "type": "string",
+                    "minLength": 10,
+                    "description": "Descrição do mapa de elegibilidade"
+                },
+                "condicoes_universais_pcd": {
+                    "type": "object",
+                    "required": [
+                        "descricao",
+                        "beneficios"
+                    ],
+                    "properties": {
+                        "descricao": {
+                            "type": "string",
+                            "minLength": 10,
+                            "description": "Descrição dos benefícios universais"
+                        },
+                        "beneficios": {
+                            "type": "array",
+                            "minItems": 1,
+                            "items": {
+                                "type": "string",
+                                "pattern": "^[a-z_]+$"
+                            },
+                            "description": "IDs dos benefícios acessíveis a todas as PcD"
+                        }
+                    },
+                    "description": "Benefícios universais para qualquer tipo de deficiência"
+                },
+                "beneficios_condicionados": {
+                    "type": "array",
+                    "minItems": 1,
+                    "items": {
+                        "$ref": "#/definitions/beneficio_condicionado"
+                    },
+                    "description": "Benefícios que dependem do tipo específico de deficiência"
+                }
+            },
+            "additionalProperties": false
+        },
+        "beneficio_condicionado": {
+            "type": "object",
+            "required": [
+                "beneficio",
+                "condicao",
+                "deficiencias"
+            ],
+            "properties": {
+                "beneficio": {
+                    "type": "string",
+                    "pattern": "^[a-z_]+$",
+                    "description": "ID da categoria de benefício"
+                },
+                "condicao": {
+                    "type": "string",
+                    "minLength": 10,
+                    "description": "Descrição da condição de elegibilidade"
+                },
+                "deficiencias": {
+                    "type": "array",
+                    "minItems": 1,
+                    "items": {
+                        "type": "string",
+                        "pattern": "^[a-z0-9_]+$"
+                    },
+                    "description": "IDs das deficiências elegíveis"
+                },
+                "nota": {
+                    "type": "string",
+                    "description": "Observação adicional sobre elegibilidade"
+                }
+            },
+            "additionalProperties": false
+        },
+        "keywords_master": {
+            "type": "object",
+            "required": [
+                "descricao"
+            ],
+            "properties": {
+                "descricao": {
+                    "type": "string",
+                    "minLength": 10,
+                    "description": "Descrição da lista mestre de palavras-chave"
+                }
+            },
+            "additionalProperties": {
+                "type": "array",
+                "items": {
+                    "type": "string",
+                    "minLength": 1
+                },
+                "description": "Lista de palavras-chave da categoria"
+            },
+            "description": "Objeto com categorias semânticas como chave e arrays de palavras-chave como valor"
+        },
+        "fontes_oficiais_validacao": {
+            "type": "object",
+            "required": [
+                "descricao",
+                "dominios_aceitos",
+                "exemplos",
+                "dominios_rejeitados_motivo"
+            ],
+            "properties": {
+                "descricao": {
+                    "type": "string",
+                    "minLength": 10,
+                    "description": "Descrição da política de validação de fontes"
+                },
+                "dominios_aceitos": {
+                    "type": "array",
+                    "minItems": 1,
+                    "items": {
+                        "type": "string",
+                        "pattern": "^\\.",
+                        "description": "Domínio aceito (ex: .gov.br)"
+                    },
+                    "description": "Domínios oficiais permitidos como fonte"
+                },
+                "exemplos": {
+                    "type": "array",
+                    "minItems": 1,
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "Exemplos de sites oficiais aceitos"
+                },
+                "dominios_rejeitados_motivo": {
+                    "type": "array",
+                    "minItems": 1,
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "Domínios rejeitados com justificativa"
+                }
+            },
+            "additionalProperties": false
+        }
+    }
+}

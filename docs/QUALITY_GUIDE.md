@@ -1,18 +1,58 @@
 # Guia de Qualidade — NossoDireito
 
 > **Status:** 🟢 Ativo
-> **Versão:** 1.14.5 | **Atualizado:** 2026-02-26
-> **Escopo:** Pipeline de qualidade, execução de scripts, testes manuais e troubleshooting
-> **Consolida:** QUALITY_SYSTEM + QUALITY_TESTING_GUIDE + GUIA_RAPIDO_USO + OPCOES_EXECUCAO
+> **Versão:** 1.14.7 | **Atualizado:** 2026-02-28
+> **Escopo:** Quick-start, pipeline de qualidade, scripts, testes e troubleshooting
+> **Consolida:** QUALITY_SYSTEM + QUALITY_TESTING_GUIDE + GUIA_RAPIDO_USO + OPCOES_EXECUCAO + TESTING + VALIDATION_STATUS
 
 ## Sumário
 
+- [0. Quick Start — Do Zero aos Testes](#0-quick-start--do-zero-aos-testes)
 - [1. Visão Geral do Pipeline](#1-visão-geral-do-pipeline)
 - [2. Referência de Scripts](#2-referência-de-scripts)
 - [3. Guia de Execução](#3-guia-de-execução)
 - [4. Testes Manuais de Browser](#4-testes-manuais-de-browser)
 - [5. Troubleshooting](#5-troubleshooting)
 - [6. Métricas e Interpretação](#6-métricas-e-interpretação)
+
+---
+
+## 0. Quick Start — Do Zero aos Testes
+
+### Pré-requisitos
+
+| Ferramenta | Versão mínima | Verificar |
+|---|---|---|
+| Python | 3.10+ | `python --version` |
+| Node.js | 22+ | `node --version` |
+| Git | qualquer | `git --version` |
+
+### Copiar e colar (tudo de uma vez)
+
+```bash
+git clone https://github.com/fabiotreze/nossodireito.git
+cd nossodireito
+python -m venv .venv
+.venv\Scripts\activate          # Windows
+# source .venv/bin/activate     # Mac/Linux
+pip install -r requirements.txt -r requirements-dev.txt
+playwright install chromium
+pytest tests/ -v                         # Testes unitários (~709)
+pytest tests/test_e2e_playwright.py -v   # Testes E2E (~137)
+python scripts/validate_content.py       # Validação de conteúdo
+python scripts/master_compliance.py      # Auditoria completa (100%)
+node server.js                           # Servidor local → http://localhost:8080
+```
+
+### Problemas comuns
+
+| Problema | Solução |
+|---|---|
+| `ModuleNotFoundError: No module named 'pytest'` | `pip install -r requirements-dev.txt` |
+| `playwright install` falha | Verifique conexão com internet |
+| Testes E2E: "porta em uso" | Feche servidores na porta 9876 |
+| `python` não encontrado | Use `python3` (Mac/Linux) |
+| `UnicodeDecodeError` (Windows) | `$env:PYTHONIOENCODING='utf-8'; python script.py` |
 
 ---
 

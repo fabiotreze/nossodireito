@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 Content Validation - Validação Semântica e Estrutural
-NossoDireito v1.14.0
+NossoDireito v1.14.7
 
 Valida:
 - 30 categorias com todos os campos obrigatórios

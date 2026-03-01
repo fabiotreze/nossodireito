@@ -1,7 +1,7 @@
 # NossoDireito — Documento Único de Compliance
 
-**Versão:** 1.14.5 (consolidado de múltiplos documentos)
-**Data:** 26 de fevereiro de 2026
+**Versão:** 1.14.7 (consolidado de múltiplos documentos)
+**Data:** 28 de fevereiro de 2026
 **Responsável:** Fabio Costa (fabiotreze@hotmail.com)
 **Tipo:** Compliance Legal, Técnico, Segurança, Privacidade, Acessibilidade, Qualidade
 **Framework:** ISO 27001 + SOC 2 + LGPD + LBI
@@ -118,7 +118,7 @@ function clearUserData() {
 
 **Última Auditoria:** 26/02/2026
 **Documentos de Referência:**
-- [docs/v1/COMPLIANCE_MASTER_v1.7.0_CHANGELOG.md](v1/COMPLIANCE_MASTER_v1.7.0_CHANGELOG.md) (histórico de conformidade)
+- Histórico de conformidade consolidado neste documento (docs/v1 arquivado)
 
 ---
 
@@ -486,10 +486,10 @@ setTimeout(() => deleteFromIndexedDB(pdfId), 15 * 60 * 1000);
 
 #### Status: ✅ **ATIVO** (Processo Contínuo)
 
-**Documento de Referência:** [VALIDATION_STATUS.md](VALIDATION_STATUS.md)
+**Documento de Referência:** Gerado por `python scripts/audit_automation.py`
 
 **Processo de Validação:**
-1. Cada benefício em `direitos.json` tem entrada em VALIDATION_STATUS.md
+1. Cada benefício em `direitos.json` é validado por `validate_content.py`
 2. Base legal citada (Lei X/Ano, Decreto Y)
 3. Link oficial verificado (planalto.gov.br, gov.br)
 4. Requisitos documentados com fonte governamental
@@ -916,8 +916,7 @@ git commit -m "a11y: Melhora contraste (WCAG 2.1 AA 1.4.3)"
 
 ### Documentação Interna
 - [REFERENCE.md](REFERENCE.md) — Mapa de dependências, decisões UX/IA, pesquisa de benefícios
-- [VALIDATION_STATUS.md](VALIDATION_STATUS.md) — Validação legal de benefícios
-- [v1/COMPLIANCE_MASTER_v1.7.0_CHANGELOG.md](v1/COMPLIANCE_MASTER_v1.7.0_CHANGELOG.md) — Histórico de conformidade
+- [QUALITY_GUIDE.md](QUALITY_GUIDE.md) — Pipeline de qualidade, scripts, troubleshooting
 - [SECURITY_AUDIT.md](../SECURITY_AUDIT.md) — Auditoria de segurança técnica
 
 ---

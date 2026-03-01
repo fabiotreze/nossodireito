@@ -23,7 +23,8 @@
     <!-- CSP enforced via HTTP header in server.js -->
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
     <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
-    <meta http-equiv="Permissions-Policy" content="camera=(), microphone=(), geolocation=(), payment=()">
+    <!-- Permissions-Policy enforced via HTTP header in server.js (meta tag not supported by browsers) -->
+    <meta name="color-scheme" content="light dark">
     <meta property="og:title" content="Direitos PcD 2026: BPC, CIPTEA, Escola Inclusiva, TEA | Guia Gratuito">
     <meta property="og:description"
         content="Recebeu um laudo de autismo ou deficiência? Guia gratuito com direitos, benefícios e passo a passo para famílias de PcD no Brasil.">
@@ -433,9 +434,9 @@
             }
         }
     </style>
-    <link rel="stylesheet" href="css/styles.css?v=1.14.5" media="print" id="deferredCSS">
+    <link rel="stylesheet" href="css/styles.css?v=1.14.7" media="print" id="deferredCSS">
     <noscript>
-        <link rel="stylesheet" href="css/styles.css?v=1.14.5">
+        <link rel="stylesheet" href="css/styles.css?v=1.14.7">
     </noscript>
     <script type="application/ld+json">
 {
@@ -1540,8 +1541,8 @@
             </div>
         </div>
     </aside>
-    <script src="js/app.js?v=1.14.5" defer></script>
-    <script src="js/sw-register.js?v=1.14.5" defer></script>
+    <script src="js/app.js?v=1.14.7" defer></script>
+    <script src="js/sw-register.js?v=1.14.7" defer></script>
 </body>
 
 </html>

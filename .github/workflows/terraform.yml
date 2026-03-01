@@ -1,13 +1,24 @@
 # NossoDireito — Terraform via GitHub Actions
 # Provisiona e gerencia infraestrutura Azure (App Service + Key Vault + SSL).
 # State local — salvo como GitHub Artifact para persistencia entre runs.
+# Autenticação: OIDC (Workload Identity Federation) — sem client secret.
 #
-# Secrets necessarios no GitHub (Settings > Secrets > Actions):
-#   ARM_CLIENT_ID        — Service Principal (App ID)
-#   ARM_CLIENT_SECRET    — Service Principal password
+# Pré-requisitos:
+#   Federated Credential no Entra ID (App Registration):
+#     az ad app federated-credential create --id <APP_OBJECT_ID> --parameters '{
+#       "name": "github-nossodireito-main",
+#       "issuer": "https://token.actions.githubusercontent.com",
+#       "subject": "repo:<OWNER>/nossodireito:ref:refs/heads/main",
+#       "audiences": ["api://AzureADTokenExchange"]
+#     }'
+#     Também adicionar subject para workflow_dispatch:
+#       "subject": "repo:<OWNER>/nossodireito:environment:production"
+#
+# Secrets necessários no GitHub (Settings > Secrets > Actions):
+#   ARM_CLIENT_ID        — App Registration (Application/Client ID)
 #   ARM_TENANT_ID        — Azure AD Tenant ID
 #   ARM_SUBSCRIPTION_ID  — Azure Subscription ID
-#   TF_VAR_pfx_password  — Senha do PFX
+#   TF_VAR_pfx_password  — Senha do PFX (para SSL)
 #   PFX_BASE64           — Certificado PFX codificado em base64
 
 name: Terraform
@@ -38,12 +49,13 @@ on:
 permissions:
   contents: read
   actions: read
+  id-token: write # Necessário para OIDC (Workload Identity Federation)
 
 env:
   ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
-  ARM_CLIENT_SECRET: ${{ secrets.ARM_CLIENT_SECRET }}
   ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
   ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+  ARM_USE_OIDC: "true"
   # Terraform le TF_VAR_* automaticamente — sem necessidade de -var flags
   TF_VAR_subscription_id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
   TF_VAR_pfx_password: ${{ secrets.TF_VAR_PFX_PASSWORD }}
@@ -87,6 +99,14 @@ jobs:
         with:
           terraform_wrapper: false
 
+      # ── Azure Login via OIDC (Workload Identity Federation) ──
+      - name: Azure Login (OIDC)
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.ARM_CLIENT_ID }}
+          tenant-id: ${{ secrets.ARM_TENANT_ID }}
+          subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+
       # ── Restaurar state de run anterior (se existir) ──
       - name: Baixar tfstate anterior
         uses: dawidd6/action-download-artifact@bf251b5aa9c2f7eeb574a96ee720e24f801b7c11 # v6
@@ -122,10 +142,7 @@ jobs:
           SUB="${ARM_SUBSCRIPTION_ID}"
           BASE="/subscriptions/${SUB}/resourceGroups/rg-nossodireito"
 
-          # ── Descobrir OIDs via az CLI (antes dos imports) ──
-          az login --service-principal \
-            -u "${ARM_CLIENT_ID}" -p "${ARM_CLIENT_SECRET}" \
-            --tenant "${ARM_TENANT_ID}" --output none 2>/dev/null || true
+          # ── Descobrir OIDs via az CLI (OIDC já logado no step anterior) ──
 
           # Web RP OID — necessário para count > 0 em web_rp resource
           WEB_RP_OID="${{ secrets.WEB_RP_OBJECT_ID }}"
@@ -223,9 +240,7 @@ jobs:
       - name: Grant Microsoft.Web RP access to Key Vault
         if: github.event.inputs.action != 'destroy' && github.event.inputs.enable_keyvault == 'true'
         run: |
-          az login --service-principal \
-            -u "${ARM_CLIENT_ID}" -p "${ARM_CLIENT_SECRET}" \
-            --tenant "${ARM_TENANT_ID}" --output none 2>/dev/null || true
+          # OIDC já logado no step "Azure Login (OIDC)"
 
           # Método 1: az ad sp show (requer Graph permissions)
           WEB_RP_OID=$(az ad sp show --id "abfa0a7c-a6b6-4736-8310-5855508787cd" \
@@ -315,9 +330,7 @@ jobs:
       - name: Deploy site to App Service
         if: github.event.inputs.action == 'apply'
         run: |
-          az login --service-principal \
-            -u "${ARM_CLIENT_ID}" -p "${ARM_CLIENT_SECRET}" \
-            --tenant "${ARM_TENANT_ID}" --output none
+          # OIDC já logado no step "Azure Login (OIDC)"
 
           APP_NAME=$(terraform output -raw app_service_name 2>/dev/null || true)
           if [ -z "$APP_NAME" ]; then

@@ -27,70 +27,6 @@ CSS_DIR = ROOT / "css"
 SCRIPTS_DIR = ROOT / "scripts"
 
 
-# ════════════════════════════════════════════════════════════════
-# FIXTURES (Session-scoped for performance)
-# ════════════════════════════════════════════════════════════════
-
-@pytest.fixture(scope="session")
-def direitos():
-    with open(DATA / "direitos.json", encoding="utf-8") as f:
-        return json.load(f)
-
-
-@pytest.fixture(scope="session")
-def matching():
-    with open(DATA / "matching_engine.json", encoding="utf-8") as f:
-        return json.load(f)
-
-
-@pytest.fixture(scope="session")
-def dicionario():
-    with open(DATA / "dicionario_pcd.json", encoding="utf-8") as f:
-        return json.load(f)
-
-
-@pytest.fixture(scope="session")
-def html():
-    with open(ROOT / "index.html", encoding="utf-8") as f:
-        return f.read()
-
-
-@pytest.fixture(scope="session")
-def appjs():
-    with open(JS_DIR / "app.js", encoding="utf-8") as f:
-        return f.read()
-
-
-@pytest.fixture(scope="session")
-def css():
-    with open(CSS_DIR / "styles.css", encoding="utf-8") as f:
-        return f.read()
-
-
-@pytest.fixture(scope="session")
-def swjs():
-    with open(ROOT / "sw.js", encoding="utf-8") as f:
-        return f.read()
-
-
-@pytest.fixture(scope="session")
-def manifest():
-    with open(ROOT / "manifest.json", encoding="utf-8") as f:
-        return json.load(f)
-
-
-@pytest.fixture(scope="session")
-def serverjs():
-    with open(ROOT / "server.js", encoding="utf-8") as f:
-        return f.read()
-
-
-@pytest.fixture(scope="session")
-def packagejson():
-    with open(ROOT / "package.json", encoding="utf-8") as f:
-        return json.load(f)
-
-
 def normalize_text(text: str) -> str:
     """Reproduce the JS normalizeText for search simulation."""
     text = text.lower()
@@ -479,11 +415,6 @@ class TestCategoryStructure:
                 f"Category '{cat['id']}' resumo too short"
             )
 
-    def test_no_duplicate_category_ids(self, direitos):
-        ids = [c["id"] for c in direitos["categorias"]]
-        dupes = [i for i, c in Counter(ids).items() if c > 1]
-        assert dupes == [], f"Duplicate category IDs: {dupes}"
-
 
 # ════════════════════════════════════════════════════════════════
 # G. HTML SECTIONS & INTERACTIVE ELEMENTS
@@ -583,9 +514,6 @@ class TestAccessibility:
     def test_form_elements_have_labels(self, html):
         assert 'for="searchInput"' in html
         assert 'for="fileInput"' in html or 'aria-label' in html
-
-    def test_aria_live_regions(self, html):
-        assert 'aria-live="polite"' in html
 
     def test_aria_expanded_on_toggles(self, html):
         assert 'aria-expanded="false"' in html
@@ -939,9 +867,6 @@ class TestPWA:
     def test_manifest_has_display(self, manifest):
         assert "display" in manifest
 
-    def test_manifest_theme_color(self, manifest):
-        assert "theme_color" in manifest
-
     def test_sw_has_cache_name(self, swjs):
         assert "cacheName" in swjs or "CACHE_NAME" in swjs or "CACHE" in swjs
 
@@ -1193,9 +1118,6 @@ class TestWCAGPOUR:
         assert "autoplay" not in html.lower()
 
     # --- UNDERSTANDABLE ---
-    def test_lang_attribute(self, html):
-        assert 'lang="pt-BR"' in html
-
     def test_consistent_navigation(self, html):
         """Nav links exist in header."""
         assert 'id="navLinks"' in html

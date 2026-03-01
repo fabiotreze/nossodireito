@@ -9,7 +9,7 @@
 
 'use strict';
 
-const CACHE_VERSION = 'nossodireito-v1.14.5';
+const CACHE_VERSION = 'nossodireito-v1.14.7';
 const STATIC_ASSETS = [
     '/',
     '/index.html',
@@ -54,7 +54,7 @@ self.addEventListener('install', (event) => {
     );
 });
 
-// ── Activate: Clean old caches, then background-cache remaining assets ──
+// ── Activate: Clean old caches, then background-cache remaining static assets ──
 self.addEventListener('activate', (event) => {
     event.waitUntil(
         caches.keys().then((keys) =>
@@ -64,6 +64,14 @@ self.addEventListener('activate', (event) => {
                     .map((key) => caches.delete(key))
             )
         ).then(() => self.clients.claim()) // Claim after old caches are deleted
+            .then(() => {
+                // Background-cache remaining static assets (non-blocking)
+                caches.open(CACHE_VERSION).then((cache) =>
+                    Promise.allSettled(STATIC_ASSETS.map(url =>
+                        cache.match(url).then(hit => hit || cache.add(url).catch(() => { }))
+                    ))
+                );
+            })
     );
 });
 

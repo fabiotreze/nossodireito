@@ -116,20 +116,65 @@ def extract_all_urls(data: dict) -> list[dict]:
     return urls
 
 
+MAX_RETRIES = 3
+RETRY_DELAY = 4  # seconds
+
+
 def check_url_live(url: str) -> tuple[int, str]:
-    """Verifica se URL responde (status 200). Retorna (status_code, mensagem)."""
-    try:
-        req = urllib.request.Request(url, method="HEAD", headers={
-            "User-Agent": USER_AGENT,
-        })
-        with urllib.request.urlopen(req, timeout=10) as resp:
-            return resp.status, "OK"
-    except urllib.error.HTTPError as e:
-        return e.code, f"HTTP {e.code}"
-    except urllib.error.URLError as e:
-        return 0, f"Erro: {e.reason}"
-    except Exception as e:
-        return 0, f"Erro: {e}"
+    """Verifica se URL responde (status 200).
+
+    Inclui retry com backoff exponencial e fallback HEAD→GET.
+
+    Returns (status_code, mensagem).
+    """
+    last_exc: Exception | None = None
+    for attempt in range(1, MAX_RETRIES + 1):
+        try:
+            req = urllib.request.Request(url, method="HEAD", headers={
+                "User-Agent": USER_AGENT,
+            })
+            with urllib.request.urlopen(req, timeout=15) as resp:
+                return resp.status, "OK"
+        except urllib.error.HTTPError as e:
+            if e.code in (405, 403):
+                # Server rejects HEAD — try GET
+                try:
+                    req2 = urllib.request.Request(url, method="GET", headers={
+                        "User-Agent": USER_AGENT,
+                    })
+                    with urllib.request.urlopen(req2, timeout=15) as resp2:
+                        return resp2.status, "OK"
+                except urllib.error.HTTPError as e2:
+                    if e2.code >= 500 and attempt < MAX_RETRIES:
+                        last_exc = e2
+                        time.sleep(RETRY_DELAY * attempt)
+                        continue
+                    return e2.code, f"HTTP {e2.code}"
+                except (TimeoutError, OSError, ConnectionError) as e2:
+                    last_exc = e2
+                    if attempt < MAX_RETRIES:
+                        time.sleep(RETRY_DELAY * attempt)
+                        continue
+                    return 0, f"Erro: {e2}"
+            elif e.code >= 500 and attempt < MAX_RETRIES:
+                last_exc = e
+                time.sleep(RETRY_DELAY * attempt)
+                continue
+            else:
+                return e.code, f"HTTP {e.code}"
+        except urllib.error.URLError as e:
+            last_exc = e
+            if attempt < MAX_RETRIES:
+                time.sleep(RETRY_DELAY * attempt)
+                continue
+            return 0, f"Erro: {e.reason}"
+        except (TimeoutError, OSError, ConnectionError) as e:
+            last_exc = e
+            if attempt < MAX_RETRIES:
+                time.sleep(RETRY_DELAY * attempt)
+                continue
+            return 0, f"Erro: {e}"
+    return 0, f"Erro: {last_exc}"
 
 
 def main():

@@ -1,6 +1,6 @@
 {
-    "versao": "1.14.5",
-    "atualizado_em": "2026-02-26",
+    "versao": "1.14.7",
+    "atualizado_em": "2026-02-28",
     "descricao": "Dicionário validado de deficiências, condições, leis, benefícios e direitos PcD — fontes exclusivamente governamentais (.gov.br, .leg.br, .jus.br, .def.br, .mp.br, .mil.br)",
     "deficiencias": [
         {
@@ -523,7 +523,12 @@
             ],
             "cid10": [
                 "F20",
-                "F31"
+                "F31",
+                "F32",
+                "F33",
+                "F41",
+                "F42",
+                "F43.1"
             ],
             "cid11": [
                 "6A20",
@@ -701,7 +706,9 @@
                 "P35.4",
                 "Q02"
             ],
-            "cid11": [],
+            "cid11": [
+                "LD2F"
+            ],
             "descricao": "Conjunto de malformações congênitas (microcefalia e outras) causadas pelo Zika vírus durante a gestação.",
             "niveis": [],
             "leis_especificas": [
@@ -880,11 +887,11 @@
                 "6A01"
             ],
             "descricao": "Condições que afetam a capacidade de produzir ou compreender a fala e a linguagem, incluindo mudez, afasia, disfluência, disartria, apraxia de fala e mutismo seletivo.",
-            "niveis": {
-                "leve": "Disfluência leve, disfonia funcional, dificuldade articulatória parcial",
-                "moderado": "Afasia parcial, gagueira moderada, disartria que dificulta comunicação",
-                "grave": "Mudez, afasia global, laringectomia total, mutismo"
-            },
+            "niveis": [
+                "Leve: disfluência leve, disfonia funcional, dificuldade articulatória parcial",
+                "Moderado: afasia parcial, gagueira moderada, disartria que dificulta comunicação",
+                "Grave: mudez, afasia global, laringectomia total, mutismo"
+            ],
             "leis_especificas": [
                 "Lei 13.146/2015 (LBI) — Art. 2º inclui impedimento de comunicação",
                 "Decreto 5.296/2004 — Art. 5º, I, d: deficiência que compromete a comunicação",

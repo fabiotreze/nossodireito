@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Master Compliance Validator - NossoDireito v1.14.5
+Master Compliance Validator - NossoDireito v1.14.7
 
 Ponto de entrada ÚNICO de qualidade do projeto.
 Usado pelo pre-commit hook e também como validador standalone.
@@ -112,7 +112,7 @@ class MasterComplianceValidator:
 
     def __init__(self, quick: bool = False):
         self.root = Path(__file__).parent.parent
-        self.version = "1.14.5"
+        self.version = "1.14.7"
         self.quick = quick
         self.errors = []
         self.warnings = []
@@ -2304,10 +2304,13 @@ class MasterComplianceValidator:
             (r'MELHORES_PRATICAS_RECURSOS_FLUTUANTES\.md', "MELHORES_PRATICAS_RECURSOS_FLUTUANTES.md (consolidado em ACCESSIBILITY.md)"),
             (r'MOTOR_ACCESSIBILITY_IMPACT_ANALYSIS\.md', "MOTOR_ACCESSIBILITY_IMPACT_ANALYSIS.md (consolidado em ACCESSIBILITY.md)"),
             (r'WHATSAPP_AUDIO_WIDGET_COMPLIANCE\.md', "WHATSAPP_AUDIO_WIDGET_COMPLIANCE.md (consolidado em ACCESSIBILITY.md)"),
-            (r'AUTOMATION_AUDIT\.md', "AUTOMATION_AUDIT.md (consolidado em VALIDATION_STATUS.md)"),
-            (r'VALIDATION_ROUTINES_STATUS\.md', "VALIDATION_ROUTINES_STATUS.md (consolidado em VALIDATION_STATUS.md)"),
-            (r'TESTES_E2E_STATUS\.md', "TESTES_E2E_STATUS.md (consolidado em VALIDATION_STATUS.md)"),
-            (r'CHECKLIST_VALIDATIONS\.md', "CHECKLIST_VALIDATIONS.md (consolidado em VALIDATION_STATUS.md)"),
+            (r'AUTOMATION_AUDIT\.md', "AUTOMATION_AUDIT.md (consolidado em QUALITY_GUIDE.md)"),
+            (r'VALIDATION_ROUTINES_STATUS\.md', "VALIDATION_ROUTINES_STATUS.md (consolidado em QUALITY_GUIDE.md)"),
+            (r'TESTES_E2E_STATUS\.md', "TESTES_E2E_STATUS.md (consolidado em QUALITY_GUIDE.md)"),
+            (r'CHECKLIST_VALIDATIONS\.md', "CHECKLIST_VALIDATIONS.md (consolidado em QUALITY_GUIDE.md)"),
+            (r'VALIDATION_STATUS\.md', "VALIDATION_STATUS.md (consolidado em QUALITY_GUIDE.md)"),
+            (r'TESTING\.md', "TESTING.md (consolidado em QUALITY_GUIDE.md)"),
+            (r'validate_govbr_urls\.py', "validate_govbr_urls.py (absorvido em validate_urls.py)"),
             (r'BENEFICIOS_COMPLETOS_PCD\.md', "BENEFICIOS_COMPLETOS_PCD.md (consolidado em REFERENCE.md)"),
             (r'DEPENDENCY_CONTROL\.md', "DEPENDENCY_CONTROL.md (consolidado em REFERENCE.md)"),
             (r'SITE_ORDERING_CRITERIA\.md', "SITE_ORDERING_CRITERIA.md (consolidado em REFERENCE.md)"),

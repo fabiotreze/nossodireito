@@ -5,6 +5,66 @@ Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/)
 e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [1.14.7] - 2026-02-28
+
+### Removido
+
+- **docs/v1/ inteiro** — 11 arquivos órfãos (zero referências em código/testes/compliance)
+- **TESTING.md** — conteúdo absorvido em `docs/QUALITY_GUIDE.md` (§0 Quick Start)
+- **docs/VALIDATION_STATUS.md** — conteúdo absorvido em `docs/QUALITY_GUIDE.md`
+- **scripts/validate_govbr_urls.py** — lógica de retry/backoff absorvida em `validate_urls.py`
+- **33 testes duplicados** — deduplicação: TestPWA (×4→×3), TestAccessibility, TestVersionConsistency, TestServerSecurity removidos de test_cross_browser.py; métodos duplicados removidos de comprehensive/validation/e2e
+
+### Alterado
+
+- **README.md** — Quick Start no topo, seção NOVIDADES atualizada para v1.14.7, referências a arquivos deletados removidas
+- **docs/QUALITY_GUIDE.md** — adicionada §0 Quick Start (pré-requisitos + copiar/colar), consolida TESTING + VALIDATION_STATUS
+- **docs/COMPLIANCE.md** — referências a docs/v1 e VALIDATION_STATUS.md atualizadas
+- **scripts/validate_urls.py** — `check_url_live()` agora com retry exponencial + fallback HEAD→GET (ex-validate_govbr_urls.py)
+- **scripts/validate_all.py** — `run_script()` aceita `extra_args`; Fase 7 usa `validate_urls.py --check-live`
+- **scripts/audit_automation.py** — referência atualizada para validate_urls.py; output consolidado em QUALITY_GUIDE.md
+- **scripts/master_compliance.py** — dead references atualizadas para TESTING.md, VALIDATION_STATUS.md, validate_govbr_urls.py
+
+---
+
+## [1.14.6] - 2026-02-28
+
+### Corrigido
+
+- **B1: CSS alto contraste inoperante** — 8 seletores `body.high-contrast` alterados para `html.high-contrast` (JS aplica classe em `<html>`, não `<body>`)
+- **B2: Variáveis CSS ausentes** — adicionadas `--primary-bg` e `--focus-ring` ao `:root`
+- **B3: MIME types faltantes** — `.jpg`/`.jpeg` adicionados a `server.js` com cache imutável 30d
+- **B4: `deficiencia_fala.niveis` era dict em vez de list** — corrigido para manter consistência com demais categorias
+- **B5: `STATIC_ASSETS` morto no sw.js** — convertido para background caching no evento `activate`
+- **B6: `Permissions-Policy` via meta tag** — substituído por comentário HTML (deve ser enforced via HTTP header); adicionado `<meta name="color-scheme" content="light dark">`
+
+### Atualizado
+
+- **W1: validate_content.py header** v1.14.0 → v1.14.5
+- **W2: TESTING.md** Node.js 18+ → 22+
+- **W3: pytest.ini** minversion 3.8 → 7.0
+- **W6: robots.txt** — 7 bloqueios de crawlers AI (Bytespider, PetalBot, Meta-ExternalAgent, PerplexityBot, Applebot-Extended, FacebookBot, ClaudeBot)
+- **W7: playwright** ~1.50 → ~1.51
+- **W8: dependabot.yml** — adicionado ecossistema Terraform para `/terraform`
+- **D1: Programa Mover / Lei 14.902/2024** — adicionado a `isencoes_tributarias` (base_legal + dica integrada)
+- **D2: FGTS Digital** — plataforma, links e dicas atualizadas em `fgts`
+- **D3: BPC** — dica de avaliação biopsicossocial adicionada
+- **D4: +25 keywords** — estacionamento_especial, pensao_zika, capacidade_legal, meia_entrada, aposentadoria PcD, IRPF PcD, viagem PcD
+- **D5: dicionario_pcd.json** — `deficiencia_fala.niveis` dict→list, `sindrome_zika.cid11` → `["LD2F"]`
+- **D6: deficiencia_psicossocial** — CID-10 expandido de 2 para 7 códigos (F20, F31, F32, F33, F41, F42, F43.1)
+- **S4: terraform.yml OIDC** — removido `ARM_CLIENT_SECRET`, adicionado `id-token: write`, `azure/login@v2` com federated credential, `ARM_USE_OIDC=true`
+- **ARCHITECTURE.md** — corrigido `.high-contrast` `<body>`→`<html>`, terraform.yml OIDC, test tree + conftest + schemas
+- **ARCHITECTURE.drawio.xml** — versão 1.14.4→1.14.5, legenda 841→846 testes
+
+### Adicionado
+
+- **tests/conftest.py** — fixtures compartilhadas (15 fixtures: direitos, matching, dicionario, schema, html, css, etc.), eliminando duplicações entre 3 arquivos de teste
+- **schemas/matching_engine.schema.json** — JSON Schema draft-07 para matching_engine.json
+- **schemas/dicionario_pcd.schema.json** — JSON Schema draft-07 para dicionario_pcd.json
+- **.editorconfig** — padronização de encoding (UTF-8), line endings (LF), indentação (2 espaços JS/HTML, 4 Python)
+
+**Totais:** 709 unit + 137 E2E = **846 testes** | Master Compliance: **1104.7/1104.7 (100.00%)**
+
 ## [1.14.5] - 2026-02-26
 
 ### Corrigido

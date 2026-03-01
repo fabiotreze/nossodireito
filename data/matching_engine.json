@@ -798,6 +798,63 @@
       ],
       "weight": 3
     },
+    "FGTS Digital": {
+      "cats": [
+        "fgts"
+      ],
+      "weight": 8
+    },
+    "fgts digital": {
+      "cats": [
+        "fgts"
+      ],
+      "weight": 8
+    },
+    "app FGTS": {
+      "cats": [
+        "fgts"
+      ],
+      "weight": 6
+    },
+    "Programa Mover": {
+      "cats": [
+        "isencoes_tributarias"
+      ],
+      "weight": 8
+    },
+    "programa mover": {
+      "cats": [
+        "isencoes_tributarias"
+      ],
+      "weight": 8
+    },
+    "lei 14.902": {
+      "cats": [
+        "isencoes_tributarias"
+      ],
+      "weight": 9
+    },
+    "avaliação biopsicossocial": {
+      "cats": [
+        "bpc",
+        "aposentadoria_especial_pcd"
+      ],
+      "weight": 7
+    },
+    "avaliacao biopsicossocial": {
+      "cats": [
+        "bpc",
+        "aposentadoria_especial_pcd"
+      ],
+      "weight": 7
+    },
+    "decreto 11.063": {
+      "cats": [
+        "bpc",
+        "aposentadoria_especial_pcd"
+      ],
+      "weight": 8
+    },
     "certidão de nascimento": {
       "cats": [
         "bpc",
@@ -2633,7 +2690,13 @@
       "cats": [
         "aposentadoria_especial_pcd"
       ],
-      "weight": 5
+      "weight": 10
+    },
+    "aposentadoria pcd": {
+      "cats": [
+        "aposentadoria_especial_pcd"
+      ],
+      "weight": 10
     },
     "lc 142": {
       "cats": [
@@ -2812,6 +2875,18 @@
       ],
       "weight": 5
     },
+    "irpf": {
+      "cats": [
+        "isencao_ir"
+      ],
+      "weight": 8
+    },
+    "irpf pcd": {
+      "cats": [
+        "isencao_ir"
+      ],
+      "weight": 10
+    },
     "imposto renda": {
       "cats": [
         "isencao_ir"
@@ -2904,9 +2979,10 @@
     },
     "aposentadoria": {
       "cats": [
+        "aposentadoria_especial_pcd",
         "isencao_ir"
       ],
-      "weight": 3
+      "weight": 5
     },
     "pensão": {
       "cats": [
@@ -3381,6 +3457,36 @@
       ],
       "weight": 4
     },
+    "zika bebê": {
+      "cats": [
+        "pensao_zika"
+      ],
+      "weight": 5
+    },
+    "zika bebe": {
+      "cats": [
+        "pensao_zika"
+      ],
+      "weight": 5
+    },
+    "malformação congênita": {
+      "cats": [
+        "pensao_zika"
+      ],
+      "weight": 4
+    },
+    "malformacao congenita": {
+      "cats": [
+        "pensao_zika"
+      ],
+      "weight": 4
+    },
+    "lei 13.985": {
+      "cats": [
+        "pensao_zika"
+      ],
+      "weight": 8
+    },
     "bolsa atleta": {
       "cats": [
         "esporte_paralimpico"
@@ -3672,6 +3778,12 @@
         "turismo_acessivel"
       ],
       "weight": 5
+    },
+    "viagem pcd": {
+      "cats": [
+        "turismo_acessivel"
+      ],
+      "weight": 10
     },
     "viajar": {
       "cats": [
@@ -4361,6 +4473,36 @@
       ],
       "weight": 7
     },
+    "vaga deficiente": {
+      "cats": [
+        "estacionamento_especial"
+      ],
+      "weight": 6
+    },
+    "estacionar PcD": {
+      "cats": [
+        "estacionamento_especial"
+      ],
+      "weight": 5
+    },
+    "carteirinha estacionamento": {
+      "cats": [
+        "estacionamento_especial"
+      ],
+      "weight": 5
+    },
+    "vaga reservada PcD": {
+      "cats": [
+        "estacionamento_especial"
+      ],
+      "weight": 6
+    },
+    "credencial PcD": {
+      "cats": [
+        "estacionamento_especial"
+      ],
+      "weight": 6
+    },
     "meu INSS": {
       "cats": [
         "bpc",
@@ -4585,6 +4727,42 @@
       ],
       "weight": 10
     },
+    "tutela PcD": {
+      "cats": [
+        "capacidade_legal"
+      ],
+      "weight": 7
+    },
+    "guarda PcD": {
+      "cats": [
+        "capacidade_legal"
+      ],
+      "weight": 6
+    },
+    "procuração PcD": {
+      "cats": [
+        "capacidade_legal"
+      ],
+      "weight": 6
+    },
+    "procuracao PcD": {
+      "cats": [
+        "capacidade_legal"
+      ],
+      "weight": 6
+    },
+    "atos da vida civil": {
+      "cats": [
+        "capacidade_legal"
+      ],
+      "weight": 7
+    },
+    "interdição": {
+      "cats": [
+        "capacidade_legal"
+      ],
+      "weight": 7
+    },
     "crime PcD": {
       "cats": [
         "crimes_contra_pcd"
@@ -4719,6 +4897,30 @@
         "meia_entrada"
       ],
       "weight": 9
+    },
+    "desconto ingresso": {
+      "cats": [
+        "meia_entrada"
+      ],
+      "weight": 5
+    },
+    "ingresso PcD": {
+      "cats": [
+        "meia_entrada"
+      ],
+      "weight": 6
+    },
+    "cinema PcD": {
+      "cats": [
+        "meia_entrada"
+      ],
+      "weight": 5
+    },
+    "show PcD": {
+      "cats": [
+        "meia_entrada"
+      ],
+      "weight": 5
     },
     "closed caption": {
       "cats": [

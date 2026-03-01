@@ -1,0 +1,82 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "$id": "https://nossodireito.com.br/schemas/matching_engine.schema.json",
+    "title": "NossoDireito - Motor de Correspondência de Palavras-Chave",
+    "description": "Schema de validação formal para data/matching_engine.json — mapeia termos, CIDs e palavras-chave a categorias de benefícios PcD",
+    "type": "object",
+    "required": [
+        "uppercase_only_terms",
+        "cid_range_map",
+        "keyword_map"
+    ],
+    "additionalProperties": false,
+    "properties": {
+        "uppercase_only_terms": {
+            "type": "array",
+            "minItems": 1,
+            "description": "Termos que devem ser exibidos em MAIÚSCULAS na interface (siglas, CIDs, abreviações)",
+            "items": {
+                "type": "string",
+                "minLength": 1,
+                "description": "Termo em minúsculas que será convertido para maiúsculas"
+            }
+        },
+        "cid_range_map": {
+            "type": "object",
+            "minProperties": 1,
+            "description": "Mapa de letras iniciais CID para categorias de benefícios (ex: F → bpc, educacao)",
+            "patternProperties": {
+                "^[A-Z]$": {
+                    "$ref": "#/definitions/cid_range_entry"
+                }
+            },
+            "additionalProperties": false
+        },
+        "keyword_map": {
+            "type": "object",
+            "minProperties": 1,
+            "description": "Mapa de palavras-chave para categorias e pesos de relevância",
+            "additionalProperties": {
+                "$ref": "#/definitions/keyword_entry"
+            }
+        }
+    },
+    "definitions": {
+        "cid_range_entry": {
+            "type": "array",
+            "minItems": 1,
+            "description": "Lista de IDs de categorias vinculadas à letra CID",
+            "items": {
+                "type": "string",
+                "pattern": "^[a-z_]+$",
+                "description": "ID da categoria de benefício (snake_case)"
+            }
+        },
+        "keyword_entry": {
+            "type": "object",
+            "required": [
+                "cats",
+                "weight"
+            ],
+            "properties": {
+                "cats": {
+                    "type": "array",
+                    "minItems": 1,
+                    "description": "IDs das categorias de benefícios vinculadas a esta palavra-chave",
+                    "items": {
+                        "type": "string",
+                        "pattern": "^[a-z_]+$",
+                        "description": "ID da categoria de benefício (snake_case)"
+                    }
+                },
+                "weight": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 10,
+                    "description": "Peso de relevância (1 = baixo, 10 = máximo)"
+                }
+            },
+            "additionalProperties": false
+        }
+    }
+}
