@@ -4,16 +4,16 @@
 
 # ⚖️ NossoDireito
 
-[![Master Compliance](https://img.shields.io/badge/Master%20Compliance-100.0%25%20(1104.7%2F1104.7)-brightgreen?style=flat-square)](CHANGELOG.md)
-[![WAF 5 Pillars](https://img.shields.io/badge/WAF%205%20Pillars-100%25-success?style=flat-square)](docs/QUALITY_GUIDE.md)
+[![Master Compliance](https://img.shields.io/badge/Master%20Compliance-100.0%25%20(1087.7%2F1087.7)-brightgreen?style=flat-square)](docs/COMPLIANCE.md)
+[![WAF 5 Pillars](https://img.shields.io/badge/WAF%205%20Pillars-100%25-success?style=flat-square)](docs/ARCHITECTURE.md)
 [![Security](https://img.shields.io/badge/Security-HTTPS%20%7C%20CSP%20%7C%20Zero%20Tracking-green?style=flat-square&logo=letsencrypt)](SECURITY.md)
 [![Accessibility](https://img.shields.io/badge/Accessibility-ARIA%20%7C%20VLibras%20%7C%20WCAG-blue?style=flat-square&logo=accessible-icon)](docs/ACCESSIBILITY.md)
-[![LGPD](https://img.shields.io/badge/LGPD-Zero%20Data%20Collection-blue?style=flat-square)](SECURITY.md)
+[![LGPD](https://img.shields.io/badge/LGPD-Zero%20Data%20Collection-blue?style=flat-square)](docs/COMPLIANCE.md)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow?style=flat-square)](LICENSE)
 [![Version](https://img.shields.io/badge/Version-1.14.7-informational?style=flat-square)](CHANGELOG.md)
 [![Quality Gate](https://github.com/fabiotreze/nossodireito/actions/workflows/quality-gate.yml/badge.svg)](https://github.com/fabiotreze/nossodireito/actions/workflows/quality-gate.yml)
-[![Deploy](https://github.com/fabiotreze/nossodireito/actions/workflows/deploy.yml/badge.svg)](https://github.com/fabiotreze/nossodireito/actions/workflows/deploy.yml)
-[![Tests](https://img.shields.io/badge/Tests-846%20passed%20(709%20unit%20%2B%20137%20E2E)-brightgreen?style=flat-square&logo=pytest)](docs/QUALITY_GUIDE.md)
+[![Deploy Azure App Service](https://github.com/fabiotreze/nossodireito/actions/workflows/deploy.yml/badge.svg)](https://github.com/fabiotreze/nossodireito/actions/workflows/deploy.yml)
+[![Tests](https://img.shields.io/badge/Tests-813%20passed%20(678%20unit%20%2B%20135%20E2E)-brightgreen?style=flat-square&logo=pytest)](docs/QUALITY_GUIDE.md)
 
 **Recebeu um laudo? Vem que a gente te ajuda.**
 
