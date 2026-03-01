@@ -5,7 +5,7 @@
 pytest~=8.0
 
 # Browser automation for E2E testing (optional)
-playwright~=1.51
+playwright~=1.58
 
 # Security audit tools
 pip-audit~=2.7
