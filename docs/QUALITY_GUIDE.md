@@ -1,7 +1,7 @@
 # Guia de Qualidade — NossoDireito
 
 > **Status:** 🟢 Ativo
-> **Versão:** 1.14.7 | **Atualizado:** 2026-02-28
+> **Versão:** 1.14.8 | **Atualizado:** 2026-03-01
 > **Escopo:** Quick-start, pipeline de qualidade, scripts, testes e troubleshooting
 > **Consolida:** QUALITY_SYSTEM + QUALITY_TESTING_GUIDE + GUIA_RAPIDO_USO + OPCOES_EXECUCAO + TESTING + VALIDATION_STATUS
 

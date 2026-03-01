@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Master Compliance Validator - NossoDireito v1.14.7
+Master Compliance Validator - NossoDireito v1.14.8
 
 Ponto de entrada ÚNICO de qualidade do projeto.
 Usado pelo pre-commit hook e também como validador standalone.
@@ -112,7 +112,7 @@ class MasterComplianceValidator:
 
     def __init__(self, quick: bool = False):
         self.root = Path(__file__).parent.parent
-        self.version = "1.14.7"
+        self.version = "1.14.8"
         self.quick = quick
         self.errors = []
         self.warnings = []

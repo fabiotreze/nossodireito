@@ -52,6 +52,9 @@ permissions:
   id-token: write # Necessário para OIDC (Workload Identity Federation)
 
 env:
+  # ── Nome base do projeto — fonte única de verdade para nomes Azure ──
+  # Todos os resources derivam: rg-${PROJECT}, app-${PROJECT}, kv-${PROJECT}, etc.
+  PROJECT: "nossodireito-br"
   ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
   ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
   ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
@@ -140,7 +143,7 @@ jobs:
           }
 
           SUB="${ARM_SUBSCRIPTION_ID}"
-          BASE="/subscriptions/${SUB}/resourceGroups/rg-nossodireito"
+          BASE="/subscriptions/${SUB}/resourceGroups/rg-${PROJECT}"
 
           # ── Descobrir OIDs via az CLI (OIDC já logado no step anterior) ──
 
@@ -160,52 +163,52 @@ jobs:
           import_if_missing "azurerm_resource_group.main" "${BASE}"
 
           import_if_missing "azurerm_service_plan.main" \
-            "${BASE}/providers/Microsoft.Web/serverFarms/plan-nossodireito"
+            "${BASE}/providers/Microsoft.Web/serverFarms/plan-${PROJECT}"
 
           import_if_missing "azurerm_linux_web_app.main" \
-            "${BASE}/providers/Microsoft.Web/sites/app-nossodireito"
+            "${BASE}/providers/Microsoft.Web/sites/app-${PROJECT}"
 
           import_if_missing "azurerm_log_analytics_workspace.main" \
-            "${BASE}/providers/Microsoft.OperationalInsights/workspaces/log-nossodireito"
+            "${BASE}/providers/Microsoft.OperationalInsights/workspaces/log-${PROJECT}"
 
           import_if_missing "azurerm_application_insights.main" \
-            "${BASE}/providers/Microsoft.Insights/components/appi-nossodireito"
+            "${BASE}/providers/Microsoft.Insights/components/appi-${PROJECT}"
 
           import_if_missing "azurerm_key_vault.main[0]" \
-            "${BASE}/providers/Microsoft.KeyVault/vaults/kv-nossodireito"
+            "${BASE}/providers/Microsoft.KeyVault/vaults/kv-${PROJECT}"
 
           # Access Policies
           DEPLOYER_OID=$(az ad sp show --id "${ARM_CLIENT_ID}" \
             --query "id" -o tsv 2>/dev/null || true)
           if [ -n "$DEPLOYER_OID" ]; then
             import_if_missing "azurerm_key_vault_access_policy.deployer[0]" \
-              "${BASE}/providers/Microsoft.KeyVault/vaults/kv-nossodireito/objectId/${DEPLOYER_OID}"
+              "${BASE}/providers/Microsoft.KeyVault/vaults/kv-${PROJECT}/objectId/${DEPLOYER_OID}"
           fi
 
-          APP_PID=$(az webapp identity show -n app-nossodireito \
-            -g rg-nossodireito --query "principalId" \
+          APP_PID=$(az webapp identity show -n "app-${PROJECT}" \
+            -g "rg-${PROJECT}" --query "principalId" \
             -o tsv 2>/dev/null || true)
           if [ -n "$APP_PID" ]; then
             import_if_missing "azurerm_key_vault_access_policy.app_service[0]" \
-              "${BASE}/providers/Microsoft.KeyVault/vaults/kv-nossodireito/objectId/${APP_PID}"
+              "${BASE}/providers/Microsoft.KeyVault/vaults/kv-${PROJECT}/objectId/${APP_PID}"
           fi
 
           # Microsoft.Web RP access policy
           if [ -n "$WEB_RP_OID" ]; then
             import_if_missing "azurerm_key_vault_access_policy.web_rp[0]" \
-              "${BASE}/providers/Microsoft.KeyVault/vaults/kv-nossodireito/objectId/${WEB_RP_OID}"
+              "${BASE}/providers/Microsoft.KeyVault/vaults/kv-${PROJECT}/objectId/${WEB_RP_OID}"
           fi
 
           # User access policy
           USER_OID="${{ secrets.USER_OBJECT_ID }}"
           if [ -n "$USER_OID" ]; then
             import_if_missing "azurerm_key_vault_access_policy.user[0]" \
-              "${BASE}/providers/Microsoft.KeyVault/vaults/kv-nossodireito/objectId/${USER_OID}"
+              "${BASE}/providers/Microsoft.KeyVault/vaults/kv-${PROJECT}/objectId/${USER_OID}"
           fi
 
           # ── Certificate (descobrir ID via az CLI) ──
           CERT_ID=$(az keyvault certificate show \
-            --vault-name kv-nossodireito --name fabiotreze-wildcard \
+            --vault-name "kv-${PROJECT}" --name fabiotreze-wildcard \
             --query "id" -o tsv 2>/dev/null || true)
           if [ -n "$CERT_ID" ]; then
             import_if_missing "azurerm_key_vault_certificate.wildcard[0]" "$CERT_ID"
@@ -213,15 +216,15 @@ jobs:
 
           # ── Custom hostname binding ──
           import_if_missing "azurerm_app_service_custom_hostname_binding.main[0]" \
-            "${BASE}/providers/Microsoft.Web/sites/app-nossodireito/hostNameBindings/nossodireito.fabiotreze.com"
+            "${BASE}/providers/Microsoft.Web/sites/app-${PROJECT}/hostNameBindings/nossodireito.fabiotreze.com"
 
           # ── App Service Certificate (from Key Vault) ──
           import_if_missing "azurerm_app_service_certificate.main[0]" \
-            "${BASE}/providers/Microsoft.Web/certificates/cert-app-nossodireito"
+            "${BASE}/providers/Microsoft.Web/certificates/cert-app-${PROJECT}"
 
           # ── SSL Binding (SNI) — composite ID: hostNameBinding|certificate ──
-          CERT_RES_ID="${BASE}/providers/Microsoft.Web/certificates/cert-app-nossodireito"
-          BINDING_COMPOSITE="${BASE}/providers/Microsoft.Web/sites/app-nossodireito/hostNameBindings/nossodireito.fabiotreze.com|${CERT_RES_ID}"
+          CERT_RES_ID="${BASE}/providers/Microsoft.Web/certificates/cert-app-${PROJECT}"
+          BINDING_COMPOSITE="${BASE}/providers/Microsoft.Web/sites/app-${PROJECT}/hostNameBindings/nossodireito.fabiotreze.com|${CERT_RES_ID}"
           import_if_missing "azurerm_app_service_certificate_binding.main[0]" \
             "$BINDING_COMPOSITE"
 
@@ -261,10 +264,10 @@ jobs:
 
           # Método 3: az keyvault set-policy --spn (resolve internamente)
           # Idempotente: se já existe, apenas atualiza. Cobre o caso onde Graph falha.
-          KV_EXISTS=$(az keyvault show --name kv-nossodireito --query name -o tsv 2>/dev/null || true)
+          KV_EXISTS=$(az keyvault show --name "kv-${PROJECT}" --query name -o tsv 2>/dev/null || true)
           if [ -n "$KV_EXISTS" ]; then
             az keyvault set-policy \
-              --name kv-nossodireito \
+              --name "kv-${PROJECT}" \
               --spn "abfa0a7c-a6b6-4736-8310-5855508787cd" \
               --certificate-permissions get \
               --secret-permissions get \
@@ -279,10 +282,10 @@ jobs:
         run: |
           USER_OID="${{ secrets.USER_OBJECT_ID }}"
           if [ -n "$USER_OID" ]; then
-            KV_EXISTS=$(az keyvault show --name kv-nossodireito --query name -o tsv 2>/dev/null || true)
+            KV_EXISTS=$(az keyvault show --name "kv-${PROJECT}" --query name -o tsv 2>/dev/null || true)
             if [ -n "$KV_EXISTS" ]; then
               az keyvault set-policy \
-                --name kv-nossodireito \
+                --name "kv-${PROJECT}" \
                 --object-id "$USER_OID" \
                 --certificate-permissions get list create delete import update purge recover \
                 --secret-permissions get list set delete purge recover \
@@ -386,7 +389,7 @@ jobs:
 
           # Deploy via zip deploy
           az webapp deploy \
-            --resource-group rg-nossodireito \
+            --resource-group "rg-${PROJECT}" \
             --name "$APP_NAME" \
             --src-path site.zip \
             --type zip \
@@ -408,7 +411,7 @@ jobs:
           for i in $(seq 1 $MAX_RETRIES); do
             HZ_STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
               --connect-timeout 10 --max-time 15 \
-              "https://app-nossodireito.azurewebsites.net/health" || true)
+              "https://app-${PROJECT}.azurewebsites.net/health" || true)
             echo "🏥 Tentativa ${i}/${MAX_RETRIES}: /health → HTTP ${HZ_STATUS}"
             if [ "$HZ_STATUS" = "200" ]; then
               HEALTH_OK=true

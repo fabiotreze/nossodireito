@@ -44,7 +44,7 @@ subscription_id = "YOUR_AZURE_SUBSCRIPTION_ID"
 # app_service_sku = "B1"         # Necessário para SSL próprio ($13/mês)
 
 # --- Região ---
-# location = "eastus2"
+# location = "brazilsouth"
 
 # --- Tags extras ---
 # extra_tags = {

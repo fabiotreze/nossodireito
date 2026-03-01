@@ -470,9 +470,12 @@ const server = http.createServer(async (req, res) => {
     // ── Host header validation (CWE-644) ──
     const host = req.headers.host || '';
     const CANONICAL_HOST = 'nossodireito.fabiotreze.com';
+    // WEBSITE_HOSTNAME é injetado automaticamente pelo Azure App Service
+    // (ex: "app-nossodireito-br.azurewebsites.net") — zero hardcoding.
+    const AZURE_HOSTNAME = process.env.WEBSITE_HOSTNAME || '';
     const ALLOWED_HOSTS = [
         CANONICAL_HOST,
-        'app-nossodireito.azurewebsites.net',  // Azure default domain
+        ...(AZURE_HOSTNAME ? [AZURE_HOSTNAME] : []),  // Azure default domain (dinâmico)
         `localhost:${PORT}`,
         `127.0.0.1:${PORT}`
     ];
@@ -483,7 +486,7 @@ const server = http.createServer(async (req, res) => {
     const origin = req.headers.origin || '';
     const ALLOWED_ORIGINS = [
         `https://${CANONICAL_HOST}`,
-        `https://app-nossodireito.azurewebsites.net`,
+        ...(AZURE_HOSTNAME ? [`https://${AZURE_HOSTNAME}`] : []),  // Azure (dinâmico)
         `http://localhost:${PORT}`,
         `http://127.0.0.1:${PORT}`,
     ];
@@ -513,7 +516,7 @@ const server = http.createServer(async (req, res) => {
 
     // Redirect default Azure domain → canonical custom domain (SEO + security)
     // Only redirect browser requests (with Accept: text/html), not health probes
-    if (host === 'app-nossodireito.azurewebsites.net' && req.headers.accept?.includes('text/html')) {
+    if (AZURE_HOSTNAME && host === AZURE_HOSTNAME && req.headers.accept?.includes('text/html')) {
         const location = `https://${CANONICAL_HOST}${req.url}`;
         res.writeHead(301, {
             'Location': location,

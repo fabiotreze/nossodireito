@@ -1,6 +1,6 @@
 # NossoDireito — Arquitetura do Sistema V1 (Produção Atual)
 
-**Versão:** 1.14.7
+**Versão:** 1.14.8
 **Data:** Fevereiro 2026
 **Status:** Produção Estável (Quality Gate: 100.0/100)
 **URL:** https://nossodireito.fabiotreze.com
@@ -106,7 +106,7 @@
                  │
         ┌────────▼──────────┐
         │   GoDaddy DNS     │  ← CNAME: nossodireito.fabiotreze.com
-        │   (Registrar)     │     aponta para app-nossodireito.azurewebsites.net
+        │   (Registrar)     │     aponta para app-nossodireito-br.azurewebsites.net
         └────────┬──────────┘
                  │
         ┌────────▼────────────────────────────────────────┐
@@ -1068,17 +1068,17 @@ self.addEventListener('fetch', (event) => {
 
 **Recursos Provisionados:**
 
-1. **Resource Group** (`rg-nossodireito-prod`)
+1. **Resource Group** (`rg-nossodireito-br-prod`)
    - Location: `brazilsouth` (São Paulo)
    - Tags: Environment, Project, ManagedBy
 
-2. **App Service Plan** (`plan-nossodireito-prod`)
+2. **App Service Plan** (`plan-nossodireito-br-prod`)
    - OS: Linux
    - SKU: B1 (Basic)
    - Specs: 1 vCore, 1.75 GB RAM, 10 GB storage
    - SLA: 99.95%
 
-3. **Linux Web App** (`app-nossodireito`)
+3. **Linux Web App** (`app-nossodireito-br`)
    - Runtime: Node.js 22 LTS
    - Always On: Enabled (sem cold starts)
    - HTTPS Only: Enabled
@@ -1087,19 +1087,19 @@ self.addEventListener('fetch', (event) => {
    - HTTP/2: Enabled
    - Managed Identity: System-Assigned (acesso ao Key Vault)
 
-4. **Key Vault** (`kv-nossodireito-prod`)
+4. **Key Vault** (`kv-nossodireito-br-prod`)
    - SKU: Standard (~$0.03/10k operations)
    - Soft Delete: 7 dias
    - Purge Protection: Disabled (dev/test friendly)
    - Certificado: PFX wildcard (`*.fabiotreze.com`)
 
-5. **Application Insights** (`appi-nossodireito-prod`)
+5. **Application Insights** (`appi-nossodireito-br-prod`)
    - Type: Node.JS
    - Workspace: Log Analytics (30 dias)
    - Metrics coletadas: Page views, IPs, geo, response time, errors
 
 6. **Custom Domain** (`nossodireito.fabiotreze.com`)
-   - CNAME GoDaddy → `app-nossodireito.azurewebsites.net`
+   - CNAME GoDaddy → `app-nossodireito-br.azurewebsites.net`
    - SSL Binding: SNI Enabled
    - Certificado: Key Vault PFX
 
@@ -1119,7 +1119,7 @@ Internet (HTTPS)
 └─────────────┬───────────────┘
               ↓
 ┌─────────────────────────────┐
-│  App Service (app-nossodireito)│
+│  App Service (app-nossodireito-br)│
 │  ┌─────────────────────────┐│
 │  │  Kudu SCM (disabled)    ││  ← SCM basic auth disabled
 │  └─────────────────────────┘│
@@ -1645,7 +1645,7 @@ jobs:
       - name: Deploy to App Service
         uses: azure/webapps-deploy@v2
         with:
-          app-name: 'app-nossodireito'
+          app-name: 'app-${{ env.PROJECT }}'  # PROJECT = "nossodireito-br"
           package: .
 
       - name: Verify deployment
@@ -2219,7 +2219,7 @@ Configurados via Terraform (`azurerm_monitor_metric_alert`):
 ```
 Type   Host                      Value                                    TTL
 ────────────────────────────────────────────────────────────────────────────
-CNAME  nossodireito              app-nossodireito.azurewebsites.net       1 Hour
+CNAME  nossodireito              app-nossodireito-br.azurewebsites.net       1 Hour
 TXT    asuid.nossodireito        <Azure verification token>               1 Hour
 ```
 
@@ -2230,12 +2230,12 @@ TXT    asuid.nossodireito        <Azure verification token>               1 Hour
    - Validate ownership via TXT record (`asuid.<subdomain>`)
 
 2. **GoDaddy → DNS Management**
-   - Adicionar CNAME: `nossodireito` → `app-nossodireito.azurewebsites.net`
+   - Adicionar CNAME: `nossodireito` → `app-nossodireito-br.azurewebsites.net`
    - Adicionar TXT (verification): `asuid.nossodireito` → (valor do Azure)
 
 3. **Aguardar Propagação** (DNS TTL: 1 hora)
    - Verificar: `nslookup nossodireito.fabiotreze.com`
-   - Deve apontar para `app-nossodireito.azurewebsites.net`
+   - Deve apontar para `app-nossodireito-br.azurewebsites.net`
 
 4. **Azure → Certificado SSL (Key Vault PFX)**
    - Terraform importa PFX para Key Vault
@@ -2244,7 +2244,9 @@ TXT    asuid.nossodireito        <Azure verification token>               1 Hour
 
 5. **Redirect azurewebsites.net → Custom Domain** (server.js)
 ```javascript
-if (host === 'app-nossodireito.azurewebsites.net' && req.headers.accept?.includes('text/html')) {
+// WEBSITE_HOSTNAME é injetado automaticamente pelo Azure App Service
+const AZURE_HOSTNAME = process.env.WEBSITE_HOSTNAME || '';
+if (AZURE_HOSTNAME && host === AZURE_HOSTNAME && req.headers.accept?.includes('text/html')) {
     const location = `https://nossodireito.fabiotreze.com${req.url}`;
     res.writeHead(301, { 'Location': location, 'Cache-Control': 'public, max-age=86400' });
     res.end();
@@ -2314,8 +2316,8 @@ if (host === 'app-nossodireito.azurewebsites.net' && req.headers.accept?.include
 2. Ou: Deploy manual via Azure CLI
    ```bash
    az webapp deployment source config-zip \
-     --resource-group rg-nossodireito-prod \
-     --name app-nossodireito \
+     --resource-group rg-nossodireito-br-prod \
+     --name app-nossodireito-br \
      --src deploy.zip
    ```
 
@@ -2324,8 +2326,8 @@ if (host === 'app-nossodireito.azurewebsites.net' && req.headers.accept?.include
 **Restore:**
 1. Re-import recursos existentes:
    ```bash
-   terraform import azurerm_resource_group.main /subscriptions/{id}/resourceGroups/rg-nossodireito-prod
-   terraform import azurerm_linux_web_app.main /subscriptions/{id}/resourceGroups/rg-nossodireito-prod/providers/Microsoft.Web/sites/app-nossodireito
+   terraform import azurerm_resource_group.main /subscriptions/{id}/resourceGroups/rg-nossodireito-br-prod
+   terraform import azurerm_linux_web_app.main /subscriptions/{id}/resourceGroups/rg-nossodireito-br-prod/providers/Microsoft.Web/sites/app-nossodireito-br
    # ... repeat for all resources
    ```
 2. Ou: Gerenciar via Azure Portal manualmente

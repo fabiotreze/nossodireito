@@ -13,7 +13,8 @@ Arquivos atualizados:
     2. data/direitos.json       → "versao": "x.y.z"
     3. manifest.json            → "version": "x.y.z"
     4. sw.js                    → CACHE_VERSION = 'nossodireito-vx.y.z'
-    5. README.md                → badge Version-x.y.z
+    5. index.html               → cache-bust ?v=x.y.z (CSS + JS refs)
+    6. README.md                → badge Version-x.y.z
     6. GOVERNANCE.md            → **Versão:** x.y.z
     7. SECURITY_AUDIT.md        → título + referências
     8. docs/COMPLIANCE.md       → **Versão:** x.y.z
@@ -100,6 +101,26 @@ def bump_direitos_json(new: str, old: str, *, dry_run: bool) -> bool:
     return True
 
 
+def bump_dicionario_pcd_json(new: str, old: str, *, dry_run: bool) -> bool:
+    """Atualiza versao e atualizado_em no dicionario_pcd.json."""
+    path = ROOT / "data" / "dicionario_pcd.json"
+    text = read_text(path)
+    old_pattern = f'"versao": "{old}"'
+    new_pattern = f'"versao": "{new}"'
+    if old_pattern not in text:
+        if f'"versao": "{new}"' in text:
+            print(f"  ✅ dicionario_pcd.json já está em {new}")
+            return False
+        print(f"  ⚠️  dicionario_pcd.json: padrão '{old_pattern}' não encontrado")
+        return False
+    text = text.replace(old_pattern, new_pattern)
+    old_date_re = re.compile(r'"atualizado_em":\s*"\d{4}-\d{2}-\d{2}"')
+    text = old_date_re.sub(f'"atualizado_em": "{TODAY}"', text)
+    write_text(path, text, dry_run=dry_run)
+    print(f"  ✅ dicionario_pcd.json: {old} → {new} (data: {TODAY})")
+    return True
+
+
 def bump_sw_js(new: str, old: str, *, dry_run: bool) -> bool:
     path = ROOT / "sw.js"
     text = read_text(path)
@@ -114,6 +135,25 @@ def bump_sw_js(new: str, old: str, *, dry_run: bool) -> bool:
     text = text.replace(old_cache, new_cache)
     write_text(path, text, dry_run=dry_run)
     print(f"  ✅ sw.js: CACHE_VERSION → nossodireito-v{new}")
+    return True
+
+
+def bump_index_html(new: str, old: str, *, dry_run: bool) -> bool:
+    """Atualiza cache-bust query strings ?v=x.y.z no index.html."""
+    path = ROOT / "index.html"
+    text = read_text(path)
+    old_qs = f"?v={old}"
+    new_qs = f"?v={new}"
+    if old_qs not in text:
+        if new_qs in text:
+            print(f"  ✅ index.html já está em {new}")
+            return False
+        print(f"  ⚠️  index.html: padrão '{old_qs}' não encontrado")
+        return False
+    text = text.replace(old_qs, new_qs)
+    write_text(path, text, dry_run=dry_run)
+    count = text.count(new_qs)
+    print(f"  ✅ index.html: cache-bust ?v={old} → ?v={new} ({count} refs)")
     return True
 
 
@@ -392,8 +432,10 @@ def main() -> None:
     results = [
         bump_package_json(new_version, old_version, dry_run=args.dry_run),
         bump_direitos_json(new_version, old_version, dry_run=args.dry_run),
+        bump_dicionario_pcd_json(new_version, old_version, dry_run=args.dry_run),
         bump_manifest_json(new_version, old_version, dry_run=args.dry_run),
         bump_sw_js(new_version, old_version, dry_run=args.dry_run),
+        bump_index_html(new_version, old_version, dry_run=args.dry_run),
         bump_readme(new_version, old_version, dry_run=args.dry_run),
         bump_governance(new_version, old_version, dry_run=args.dry_run),
         bump_security_audit(new_version, old_version, dry_run=args.dry_run),

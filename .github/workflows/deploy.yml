@@ -33,6 +33,10 @@ concurrency:
   group: deploy-nossodireito
   cancel-in-progress: false
 
+env:
+  # Nome base do projeto — fonte única de verdade para nomes Azure
+  PROJECT: "nossodireito-br"
+
 jobs:
   # ── Quality Gate (obrigatório antes do deploy) ──
   quality-gate:
@@ -145,10 +149,10 @@ jobs:
       - name: Verificar infraestrutura
         id: infra_check
         run: |
-          EXISTS=$(az group exists --name rg-nossodireito)
+          EXISTS=$(az group exists --name "rg-${PROJECT}")
           echo "rg_exists=${EXISTS}" >> $GITHUB_OUTPUT
           if [ "$EXISTS" != "true" ]; then
-            echo "::warning::Resource group 'rg-nossodireito' não encontrado. Execute Terraform apply primeiro."
+            echo "::warning::Resource group 'rg-${PROJECT}' não encontrado. Execute Terraform apply primeiro."
             echo "ℹ️ Vá em Actions > Terraform > Run workflow > action=apply"
           else
             echo "✅ Resource group existe."
@@ -162,8 +166,8 @@ jobs:
           # || true evita falha se o polling expirar (deploy continua no Azure)
           echo "📦 Iniciando deploy..."
           az webapp deploy \
-            --resource-group rg-nossodireito \
-            --name app-nossodireito \
+            --resource-group "rg-${PROJECT}" \
+            --name "app-${PROJECT}" \
             --src-path site.zip \
             --type zip \
             --async true \
@@ -184,7 +188,7 @@ jobs:
           for i in $(seq 1 $MAX_RETRIES); do
             HZ_STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
               --connect-timeout 10 --max-time 15 \
-              "https://app-nossodireito.azurewebsites.net/health" || true)
+              "https://app-${PROJECT}.azurewebsites.net/health" || true)
             echo "🏥 Tentativa ${i}/${MAX_RETRIES}: /health → HTTP ${HZ_STATUS}"
             if [ "$HZ_STATUS" = "200" ]; then
               HEALTH_OK=true
@@ -214,7 +218,7 @@ jobs:
           # 3. Redirect do domínio Azure (deve dar 301 para browsers)
           AZ_STATUS=$(curl -s -o /dev/null -w "%{http_code}" --max-redirs 0 --connect-timeout 10 \
             -H "Accept: text/html" \
-            "https://app-nossodireito.azurewebsites.net/" || true)
+            "https://app-${PROJECT}.azurewebsites.net/" || true)
           echo "🔀 Azure domain redirect (browser) → HTTP ${AZ_STATUS}"
           if [ "$AZ_STATUS" != "301" ]; then
             echo "::warning::Azure domain não redirecionou browser (esperado 301, recebeu ${AZ_STATUS})"

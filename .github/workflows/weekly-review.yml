@@ -16,6 +16,9 @@ jobs:
     permissions:
       contents: read
       issues: write
+    env:
+      # Nome base do projeto — fonte única de verdade para nomes Azure
+      PROJECT: "nossodireito-br"
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -45,9 +48,9 @@ jobs:
         id: health
         continue-on-error: true
         run: |
-          HZ=$(curl -s -o /dev/null -w "%{http_code}" --max-time 10 "https://app-nossodireito.azurewebsites.net/health" 2>/dev/null || echo "ERRO")
+          HZ=$(curl -s -o /dev/null -w "%{http_code}" --max-time 10 "https://app-${PROJECT}.azurewebsites.net/health" 2>/dev/null || echo "ERRO")
           CD=$(curl -s -o /dev/null -w "%{http_code}" --max-time 10 "https://nossodireito.fabiotreze.com/" 2>/dev/null || echo "ERRO")
-          RD=$(curl -s -o /dev/null -w "%{http_code}" --max-time 10 --max-redirs 0 "https://app-nossodireito.azurewebsites.net/" 2>/dev/null || echo "ERRO")
+          RD=$(curl -s -o /dev/null -w "%{http_code}" --max-time 10 --max-redirs 0 "https://app-${PROJECT}.azurewebsites.net/" 2>/dev/null || echo "ERRO")
 
           echo "health=$HZ" >> "$GITHUB_OUTPUT"
           echo "custom_domain=$CD" >> "$GITHUB_OUTPUT"

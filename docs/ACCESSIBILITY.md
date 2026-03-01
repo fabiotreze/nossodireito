@@ -1,7 +1,7 @@
 # Acessibilidade — NossoDireito
 
 > **Status:** 🟢 Ativo
-> **Versão:** 1.14.7 | **Atualizado:** 2026-02-28
+> **Versão:** 1.14.8 | **Atualizado:** 2026-03-01
 > **Escopo:** Auditoria WCAG/eMAG, correções aplicadas, melhores práticas, análise de widgets
 > **Consolida:** ACCESSIBILITY_AUDIT_REPORT + ACCESSIBILITY_FIXES_REPORT + EMAG_BEST_PRACTICES_ANALYSIS + MELHORES_PRATICAS_RECURSOS_FLUTUANTES + MOTOR_ACCESSIBILITY_IMPACT_ANALYSIS + WHATSAPP_AUDIO_WIDGET_COMPLIANCE
 

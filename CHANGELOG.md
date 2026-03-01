@@ -5,6 +5,21 @@ Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/)
 e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [1.14.8] - 2026-03-01
+
+### Alterado
+
+- **Migração de tenant Azure** — novo tenant (`f1856a79`), subscription MSDN-online (`3acb7300`), SP `sp-nossodireito-deploy` com OIDC
+- **Região brazilsouth** — todos os recursos migrados de `eastus2` para `brazilsouth` (conformidade LGPD — dados em território nacional)
+- **Renomeação de recursos** — sufixo `-br` em todos os recursos Azure: `app-nossodireito-br`, `rg-nossodireito-br`, `kv-nossodireito-br`, etc.
+- **Centralização de nomes (zero hardcoding):**
+  - `terraform/variables.tf` — novo `var.project_name` (default `"nossodireito-br"`) com `locals` derivando todos os nomes via interpolação
+  - `.github/workflows/*.yml` — `env.PROJECT` centralizado; todos os comandos `az` usam `${PROJECT}`
+  - `server.js` — `process.env.WEBSITE_HOSTNAME` (injetado pelo Azure) substitui hostname hardcoded em ALLOWED_HOSTS, ALLOWED_ORIGINS e redirect 301
+- **docs/ARCHITECTURE.md** — snippets de código atualizados para refletir padrão dinâmico (`WEBSITE_HOSTNAME`, `${{ env.PROJECT }}`)
+
+---
+
 ## [1.14.7] - 2026-02-28
 
 ### Removido

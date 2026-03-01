@@ -22,6 +22,17 @@ variable "environment" {
   }
 }
 
+variable "project_name" {
+  description = "Nome base do projeto. Todos os recursos Azure derivam deste nome (rg-<name>, app-<name>, etc.)."
+  type        = string
+  default     = "nossodireito-br"
+
+  validation {
+    condition     = can(regex("^[a-z0-9-]+$", var.project_name)) && length(var.project_name) <= 20
+    error_message = "project_name deve conter apenas letras minúsculas, números e hífens (max 20 chars para respeitar limites do Key Vault)."
+  }
+}
+
 variable "location" {
   description = "Região Azure Brasil (LGPD — dados devem permanecer em território nacional)"
   type        = string
@@ -97,13 +108,17 @@ variable "alert_email" {
 
 # --- Locals: nomes derivados do ambiente ---
 locals {
+  # Base do projeto — alterando aqui, todos os nomes mudam automaticamente
+  project = var.project_name
+
   # prod usa nomes limpos, outros ambientes ganham sufixo
-  resource_group_name   = var.environment == "prod" ? "rg-nossodireito" : "rg-nossodireito-${var.environment}"
-  app_service_plan_name = var.environment == "prod" ? "plan-nossodireito" : "plan-nossodireito-${var.environment}"
-  web_app_name          = var.environment == "prod" ? "app-nossodireito" : "app-nossodireito-${var.environment}"
-  key_vault_name        = var.environment == "prod" ? "kv-nossodireito" : "kv-nossodireito-${var.environment}"
-  app_insights_name     = var.environment == "prod" ? "appi-nossodireito" : "appi-nossodireito-${var.environment}"
-  log_analytics_name    = var.environment == "prod" ? "log-nossodireito" : "log-nossodireito-${var.environment}"
+  suffix                = var.environment == "prod" ? "" : "-${var.environment}"
+  resource_group_name   = "rg-${local.project}${local.suffix}"
+  app_service_plan_name = "plan-${local.project}${local.suffix}"
+  web_app_name          = "app-${local.project}${local.suffix}"
+  key_vault_name        = "kv-${local.project}${local.suffix}"
+  app_insights_name     = "appi-${local.project}${local.suffix}"
+  log_analytics_name    = "log-${local.project}${local.suffix}"
 
   tags = merge(
     {
