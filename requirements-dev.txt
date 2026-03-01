@@ -2,7 +2,7 @@
 # Python 3.10+
 
 # Test framework
-pytest~=8.0
+pytest~=9.0
 
 # Browser automation for E2E testing (optional)
 playwright~=1.58
