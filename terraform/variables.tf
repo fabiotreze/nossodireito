@@ -23,9 +23,9 @@ variable "environment" {
 }
 
 variable "location" {
-  description = "Região Azure (conteúdo distribuído globalmente via CDN)"
+  description = "Região Azure Brasil (LGPD — dados devem permanecer em território nacional)"
   type        = string
-  default     = "eastus2"
+  default     = "brazilsouth"
 }
 
 variable "app_service_sku" {
