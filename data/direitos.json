@@ -1,6 +1,6 @@
 {
   "versao": "1.14.8",
-  "ultima_atualizacao": "2026-03-01",
+  "ultima_atualizacao": "2026-04-20",
   "aviso": "Informações compiladas de fontes oficiais do governo brasileiro (gov.br). Podem estar desatualizadas. Verifique sempre as fontes originais.",
   "fontes": [
     {
@@ -510,9 +510,9 @@
     {
       "nome": "Sisen — Isenção de IPI e IOF para PcD (Solicitação Online)",
       "tipo": "servico",
-      "url": "https://www.gov.br/pt-br/servicos/isencao-do-ipi-e-iof-para-compra-de-veiculos-por-pessoa-com-deficiencia-ou-autista",
+      "url": "https://www.gov.br/pt-br/servicos/obter-isencao-de-impostos-para-comprar-carro",
       "orgao": "Receita Federal do Brasil",
-      "consultado_em": "2026-02-12"
+      "consultado_em": "2026-04-20"
     },
     {
       "nome": "CAPS — Centro de Atenção Psicossocial (Ministério da Saúde)",
@@ -580,9 +580,23 @@
     {
       "nome": "CIPTEA SP — Portal de Emissão da Carteira TEA (São Paulo)",
       "tipo": "servico",
-      "url": "https://ciptea.sp.gov.br/",
+      "url": "https://www.pessoacomdeficiencia.sp.gov.br/",
       "orgao": "Governo do Estado de São Paulo",
-      "consultado_em": "2026-02-12"
+      "consultado_em": "2026-04-20"
+    },
+    {
+      "nome": "Secretaria Municipal da Pessoa com Deficiência — São Paulo",
+      "tipo": "servico",
+      "url": "https://capital.sp.gov.br/web/pessoa_com_deficiencia/w/acesso_a_informacao/189608",
+      "orgao": "Prefeitura de São Paulo",
+      "consultado_em": "2026-04-20"
+    },
+    {
+      "nome": "Conselho Municipal da Pessoa com Deficiência (CMPD) — São Paulo",
+      "tipo": "servico",
+      "url": "https://capital.sp.gov.br/web/pessoa_com_deficiencia/conselho/",
+      "orgao": "Prefeitura de São Paulo",
+      "consultado_em": "2026-04-20"
     },
     {
       "nome": "SISEN — Sistema de Isenção IPI/IOF para Veículos PcD (Receita Federal)",
@@ -1570,7 +1584,7 @@
     {
       "uf": "MA",
       "nome": "Sec. de Estado de Direitos Humanos e Participação Popular (SEDIHPOP)",
-      "url": "https://sedihpop.ma.gov.br",
+      "url": "https://portaldatransparencia.gov.br/convenios/685504/pessoa-juridica/09556140000115-secretaria-de-estado--de-direitos-humanos-e-participacao-popular-sedihpop-",
       "sefaz": "https://www.sefaz.ma.gov.br/",
       "detran": "https://www.detran.ma.gov.br",
       "beneficios_destaque": [
@@ -1962,7 +1976,7 @@
         "Em alguns estados, pode ser solicitada online (verifique o site da prefeitura)",
         "A CIPTEA garante prioridade em filas de bancos, supermercados, hospitais e escolas",
         "Se seus direitos forem negados, denuncie pelo Disque 100 (24h, gratuito) ou WhatsApp (61) 99611-0100",
-        "Em São Paulo, solicite a CIPTEA pelo portal ciptea.sp.gov.br — outros estados podem ter portais próprios ou emitir pelo município",
+        "Em São Paulo, consulte a Secretaria de Estado dos Direitos da Pessoa com Deficiência para localizar o canal vigente de emissão da CIPTEA — outros estados podem ter portais próprios ou emitir pelo município",
         "Programa Caregiver Skills Training (CST/OMS): treinamento GRATUITO pelo SUS para pais e cuidadores de crianças com TEA — pergunte no CER ou CAPS da sua cidade",
         "A CIPTEA garante atendimento PRIORITÁRIO em saúde, educação, bancos, mercados e todos os serviços públicos e privados (Lei 13.977/2020 — Lei Romeo Mion)"
       ],
@@ -1974,8 +1988,8 @@
           "url": "https://www.planalto.gov.br/ccivil_03/_ato2019-2022/2020/lei/l13977.htm"
         },
         {
-          "titulo": "CIPTEA SP — Solicitar Carteira de Identificação TEA (São Paulo)",
-          "url": "https://ciptea.sp.gov.br/"
+          "titulo": "Secretaria de Estado dos Direitos da Pessoa com Deficiência — SP",
+          "url": "https://www.pessoacomdeficiencia.sp.gov.br/"
         },
         {
           "titulo": "Autismo — Saúde de A a Z (gov.br/saude)",
@@ -2788,7 +2802,7 @@
       ],
       "passo_a_passo": [
         "Reúna os documentos listados acima",
-        "Acesse o FGTS Digital (fgts.trabalho.gov.br) ou o app FGTS da Caixa para consultar saldo e iniciar o pedido",
+        "Acesse o app FGTS da Caixa ou o portal oficial do FGTS para consultar saldo e iniciar o pedido",
         "Vá a uma agência da Caixa Econômica Federal (ou use o app FGTS para agendamento)",
         "Solicite o saque do FGTS por motivo de deficiência",
         "O saque é liberado após análise dos documentos",
@@ -2797,7 +2811,7 @@
       ],
       "dicas": [
         "Pode sacar para o trabalhador OU para dependente com deficiência (filho, por exemplo)",
-        "FGTS Digital (fgts.trabalho.gov.br): nova plataforma oficial do governo para consulta e movimentação — substitui os sistemas antigos",
+        "Para trabalhador, priorize o app FGTS e os canais oficiais da Caixa — o FGTS Digital é voltado principalmente a empregadores",
         "Também pode ser usado para compra de próteses, equipamentos de acessibilidade e adaptações",
         "O saque é do valor total da conta FGTS",
         "Fique atento aos prazos de validade de laudos médicos (geralmente 12 meses)"
@@ -2806,8 +2820,8 @@
       "onde": "Caixa Econômica Federal (agência)",
       "links": [
         {
-          "titulo": "FGTS Digital — Governo Federal",
-          "url": "https://fgts.trabalho.gov.br/"
+          "titulo": "App FGTS — CAIXA",
+          "url": "https://www.caixa.gov.br/appfgts"
         },
         {
           "titulo": "FGTS — Caixa",
@@ -3525,7 +3539,7 @@
         },
         {
           "titulo": "Sisen — Isenção IPI/IOF para Veículos PcD (serviço online gov.br)",
-          "url": "https://www.gov.br/pt-br/servicos/isencao-do-ipi-e-iof-para-compra-de-veiculos-por-pessoa-com-deficiencia-ou-autista"
+          "url": "https://www.gov.br/pt-br/servicos/obter-isencao-de-impostos-para-comprar-carro"
         },
         {
           "titulo": "SISEN — Sistema de Isenção IPI/IOF (Receita Federal)",
@@ -3677,16 +3691,12 @@
           "url": "https://www.dpu.def.br/"
         },
         {
-          "titulo": "Defensoria Pública SP",
-          "url": "https://www.defensoriapublica.sp.def.br/"
-        },
-        {
           "titulo": "Defensoria Pública RJ",
           "url": "https://www.defensoria.rj.def.br/"
         },
         {
           "titulo": "Defensoria Pública MG",
-          "url": "https://www.defensoriapublica.mg.def.br/"
+          "url": "https://www.defensoria.mg.def.br/"
         },
         {
           "titulo": "Defensoria Pública da União (DPU)",
@@ -3833,7 +3843,7 @@
         },
         {
           "titulo": "SP156 — Solicitar Cartão DEFIS em São Paulo",
-          "url": "https://sp156.prefeitura.sp.gov.br/portal/servicos/informacao?t=NTcz&a=NTgx&servico=3315"
+          "url": "https://sp156.prefeitura.sp.gov.br/portal/servicos"
         }
       ],
       "tags": [
@@ -3936,7 +3946,7 @@
         },
         {
           "titulo": "INSS — Aposentadoria da Pessoa com Deficiência",
-          "url": "https://www.gov.br/inss/pt-br/saiba-mais/aposentadoria/aposentadoria-da-pessoa-com-deficiencia-por-tempo-de-contribuicao"
+          "url": "https://www.gov.br/inss/pt-br/servicos/aposentadorias"
         }
       ],
       "tags": [
