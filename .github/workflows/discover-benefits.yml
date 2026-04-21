@@ -77,8 +77,16 @@ jobs:
       - name: Gerar relatório Markdown
         if: steps.discover.outputs.has_candidates == 'true'
         run: |
-          python scripts/discover_benefits.py \
-            --since "${{ inputs.since_days || '60' }}" > discovery_report.md 2>/dev/null || true
+          python - <<'PY'
+          import json
+          from scripts.discover_benefits import generate_markdown
+
+          with open('discovery_output.json', 'r', encoding='utf-8') as f:
+              report = json.load(f)
+
+          with open('discovery_report.md', 'w', encoding='utf-8') as f:
+              f.write(generate_markdown(report))
+          PY
 
       - name: Criar issue com candidatos
         if: steps.discover.outputs.has_candidates == 'true' && inputs.dry_run != 'true'
@@ -108,11 +116,24 @@ jobs:
               candidates = json.candidates || [];
             } catch (e) {}
 
-            // Monta checklist
+            // Monta checklist priorizando itens acionáveis (ALTA/MÉDIA)
+            const highPriorityCandidates = candidates.filter(
+              (c) => c.priority === 'ALTA' || c.priority === 'MÉDIA'
+            );
+            const lowPriorityCount = candidates.length - highPriorityCandidates.length;
+
             let checklist = '\n## ✅ Checklist de Revisão\n\n';
-            for (const c of candidates) {
+            if (highPriorityCandidates.length === 0) {
+              checklist += '- [ ] Sem itens ALTA/MÉDIA nesta execução; revisar apenas se houver contexto novo.\n';
+            }
+
+            for (const c of highPriorityCandidates) {
               const icon = c.priority === 'ALTA' ? '🔴' : c.priority === 'MÉDIA' ? '🟡' : '🟢';
               checklist += `- [ ] ${icon} **${c.title.substring(0, 80)}** (${c.source}) → \`${c.suggested_category}\`\n`;
+            }
+
+            if (lowPriorityCount > 0) {
+              checklist += `\nℹ️ ${lowPriorityCount} item(ns) de prioridade BAIXA ficaram fora do checklist para reduzir ruído operacional.\n`;
             }
 
             const body = `${report}\n${checklist}\n---\n*Issue criada automaticamente pelo workflow de descoberta de benefícios PcD.*\n*Consulte GOVERNANCE.md para critérios de adição de novas categorias.*`;

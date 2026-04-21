@@ -181,7 +181,7 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 
 - **Versões mínimas de dependências atualizadas** — `requirements.txt`: requests≥2.32.0 (CVE fixes), lxml≥5.1.0, jsonschema≥4.23.0. `requirements-dev.txt`: pytest≥8.0.0, playwright≥1.50.0, pip-audit≥2.7.0. Python mínimo 3.10+
 - **pip-audit**: 0 vulnerabilidades em deps de produção, npm audit: 0 vulnerabilidades
-- **69 candidatos de benefícios avaliados** — 5 PcD-relevantes (nível municipal SP/Barueri), 64 rejeitados (não PcD-específicos). Nenhum adicionado — aguardando estrutura `servicos_municipais`
+- **69 candidatos de benefícios avaliados** — 5 PcD-relevantes (nível municipal SP/Barueri), 64 rejeitados (não PcD-específicos). Estrutura municipal incorporada via `cobertura_municipal_prioritaria`; pendência residual passou a ser triagem contínua de ruído municipal
 
 ### Validação
 
