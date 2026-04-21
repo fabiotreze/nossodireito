@@ -599,6 +599,27 @@
       "consultado_em": "2026-04-20"
     },
     {
+      "nome": "Centro TEA — Secretaria Municipal da Pessoa com Deficiência (São Paulo)",
+      "tipo": "servico",
+      "url": "https://prefeitura.sp.gov.br/web/pessoa_com_deficiencia/centro_tea",
+      "orgao": "Prefeitura de São Paulo",
+      "consultado_em": "2026-04-20"
+    },
+    {
+      "nome": "CPA — Comissão Permanente de Acessibilidade (Barueri/SP)",
+      "tipo": "servico",
+      "url": "https://portal.barueri.sp.gov.br/cidadao/pessoa-com-deficiencia",
+      "orgao": "Prefeitura de Barueri",
+      "consultado_em": "2026-04-20"
+    },
+    {
+      "nome": "SATRANS — Transporte Municipal (Santo André/SP)",
+      "tipo": "servico",
+      "url": "https://www2.santoandre.sp.gov.br/hotsites/satrans/index.php",
+      "orgao": "Prefeitura de Santo André",
+      "consultado_em": "2026-04-20"
+    },
+    {
       "nome": "SISEN — Sistema de Isenção IPI/IOF para Veículos PcD (Receita Federal)",
       "tipo": "servico",
       "url": "https://www.sisen.receita.fazenda.gov.br/",
@@ -1992,6 +2013,10 @@
           "url": "https://www.pessoacomdeficiencia.sp.gov.br/"
         },
         {
+          "titulo": "Centro TEA — Secretaria Municipal da Pessoa com Deficiência (São Paulo)",
+          "url": "https://prefeitura.sp.gov.br/web/pessoa_com_deficiencia/centro_tea"
+        },
+        {
           "titulo": "Autismo — Saúde de A a Z (gov.br/saude)",
           "url": "https://www.gov.br/saude/pt-br/assuntos/saude-de-a-a-z/a/autismo"
         },
@@ -2585,6 +2610,7 @@
         "Muitos estados oferecem isenção de IPVA para veículo de PcD — consulte o Detran do seu estado",
         "PcD tem direito a isenção de IPI e IOF na compra de carro (com CNH especial ou como passageiro)",
         "Se seus direitos forem negados, denuncie pelo Disque 100 (24h, gratuito) ou WhatsApp (61) 99611-0100",
+        "Canais municipais úteis para começar: São Paulo (Secretaria Municipal PcD), Barueri (CPA) e Santo André (SATRANS)",
         "Em voos, PcD tem direito a embarque PRIORITÁRIO, cadeira de rodas transportada GRATUITAMENTE e acompanhante com passagem a 20% do valor (ANAC Resolução 280/2013)",
         "Para reclamar de empresa aérea, ligue 163 (ANAC) ou acesse consumidor.gov.br"
       ],
@@ -2610,6 +2636,18 @@
         {
           "titulo": "Passe Livre Interestadual — Solicitar (gov.br)",
           "url": "https://www.gov.br/antt/pt-br/assuntos/passageiros/passe-livre"
+        },
+        {
+          "titulo": "São Paulo — Secretaria Municipal da Pessoa com Deficiência",
+          "url": "https://capital.sp.gov.br/web/pessoa_com_deficiencia/w/acesso_a_informacao/189608"
+        },
+        {
+          "titulo": "Barueri — Comissão Permanente de Acessibilidade (CPA)",
+          "url": "https://portal.barueri.sp.gov.br/cidadao/pessoa-com-deficiencia"
+        },
+        {
+          "titulo": "Santo André — SATRANS (transporte municipal)",
+          "url": "https://www2.santoandre.sp.gov.br/hotsites/satrans/index.php"
         }
       ],
       "tags": [
@@ -5254,7 +5292,7 @@
         },
         {
           "titulo": "Reclamar contra empresa aérea — ANAC",
-          "url": "https://www.gov.br/anac/pt-br/canais_atendimento/consumidor/reclamacao-de-passageiro-contra-empresas-aereas"
+          "url": "https://www.gov.br/anac/pt-br/canais_atendimento"
         }
       ],
       "tags": [
