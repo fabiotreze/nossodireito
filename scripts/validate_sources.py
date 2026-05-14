@@ -77,11 +77,15 @@ SENADO_API = "https://legis.senado.leg.br/dadosabertos"
 ICD_TOKEN_URL = "https://icdaccessmanagement.who.int/connect/token"
 ICD_API_BASE = "https://id.who.int/icd"
 
-# Timeout padrão para HTTP (8s = balanceado: rápido mas confiável)
-HTTP_TIMEOUT = 8
+# Timeout padrão para HTTP (15s — portais gov.br estaduais podem ser lentos)
+HTTP_TIMEOUT = 15
 
 # Rate limiting
 RATE_LIMIT_DELAY = 0.3  # segundos entre requests
+
+# Retry para erros transitórios de conexão (timeout, reset, unreachable)
+MAX_RETRIES = 3
+RETRY_BACKOFF = 2  # segundos (multiplicado pelo número da tentativa)
 
 # User-Agent mais compatível (planalto.gov.br bloqueia bots)
 BROWSER_UA = (
@@ -218,30 +222,47 @@ def _make_request(url: str, method: str = "GET", headers: dict | None = None,
 
 
 def _http_head(url: str, timeout: int = HTTP_TIMEOUT) -> tuple[int, str]:
-    """HEAD request — mais rápido para checar se URL existe."""
+    """HEAD request — mais rápido para checar se URL existe.
+
+    Inclui retry com backoff para erros transitórios de conexão
+    (timeout, connection reset, network unreachable) comuns em
+    portais gov.br estaduais.
+    """
     ctx = ssl.create_default_context()
-    req = urllib.request.Request(url, method="HEAD")
-    req.add_header("User-Agent", BROWSER_UA)
-    req.add_header("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8")
-    req.add_header("Accept-Language", "pt-BR,pt;q=0.9,en;q=0.8")
-    try:
-        with urllib.request.urlopen(req, timeout=timeout, context=ctx) as resp:
-            return resp.status, ""
-    except urllib.error.HTTPError as e:
-        # Alguns sites bloqueiam HEAD — tenta GET como fallback
-        if e.code in (403, 405, 406):
+    last_err: str = ""
+    for attempt in range(1, MAX_RETRIES + 1):
+        req = urllib.request.Request(url, method="HEAD")
+        req.add_header("User-Agent", BROWSER_UA)
+        req.add_header("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8")
+        req.add_header("Accept-Language", "pt-BR,pt;q=0.9,en;q=0.8")
+        try:
+            with urllib.request.urlopen(req, timeout=timeout, context=ctx) as resp:
+                return resp.status, ""
+        except urllib.error.HTTPError as e:
+            # Alguns sites bloqueiam HEAD — tenta GET como fallback
+            if e.code in (403, 405, 406):
+                return _make_request(url, timeout=timeout)
+            return e.code, ""
+        except urllib.error.URLError as url_err:
+            # SSL certificate error: retry com GET (que tem fallback SSL integrado)
+            if "CERTIFICATE_VERIFY_FAILED" in str(url_err):
+                return _make_request(url, timeout=timeout)
+            # Connection reset — retry com GET (planalto.gov.br bloqueia HEAD)
+            if "Connection reset" in str(url_err) or "Errno 54" in str(url_err):
+                return _make_request(url, timeout=timeout)
+            last_err = str(url_err)
+            if attempt < MAX_RETRIES:
+                time.sleep(RETRY_BACKOFF * attempt)
+                continue
+            # Última tentativa: fallback para GET (alguns servidores aceitam GET mas não HEAD)
             return _make_request(url, timeout=timeout)
-        return e.code, ""
-    except urllib.error.URLError as url_err:
-        # SSL certificate error: retry com GET (que tem fallback SSL integrado)
-        if "CERTIFICATE_VERIFY_FAILED" in str(url_err):
+        except (TimeoutError, OSError) as e:
+            last_err = str(e)
+            if attempt < MAX_RETRIES:
+                time.sleep(RETRY_BACKOFF * attempt)
+                continue
             return _make_request(url, timeout=timeout)
-        # Connection reset — retry com GET (planalto.gov.br bloqueia HEAD)
-        if "Connection reset" in str(url_err) or "Errno 54" in str(url_err):
-            return _make_request(url, timeout=timeout)
-        return 0, str(url_err)
-    except (TimeoutError, OSError) as e:
-        return 0, str(e)
+    return 0, last_err
 
 
 # ─── Extração de URLs ──────────────────────────────────────────────
