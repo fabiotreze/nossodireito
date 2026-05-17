@@ -49,7 +49,7 @@ if (AI_CONN) {
 
     // ── LGPD: Zero IP Collection telemetry processor ──
     // Strips IP, User-Agent, Referer, and query strings before ingestion.
-    // Doc reference: nossodireito-private-docs/07-LGPD-ZERO-IP-COLLECTION.md
+    // See SECURITY.md ("Telemetria anônima") and docs/COMPLIANCE.md §3.
     appInsights.defaultClient.addTelemetryProcessor((envelope) => {
       if (envelope.tags) {
         envelope.tags["ai.location.ip"] = "0.0.0.0";
