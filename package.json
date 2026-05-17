@@ -1,6 +1,6 @@
 {
   "name": "nossodireito",
-  "version": "1.14.8",
+  "version": "1.15.0",
   "description": "NossoDireito — Portal de direitos PcD (server)",
   "main": "server.js",
   "scripts": {

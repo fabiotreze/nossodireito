@@ -5,6 +5,28 @@ Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/)
 e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [1.15.0] - 2026-05-17
+
+### Adicionado
+
+- **POC IA — Azure AI Document Intelligence (opt-in)** — análise de documentos por OCR/layout via SDK Azure. Autenticação por **Managed System Identity** (DefaultAzureCredential), sem chaves no código. Recurso `cog-nossodireito-br` em tier F0 (free), região `brazilsouth`. Flag `AI_ANALYSIS_ENABLED=false` por default — endpoint só ativa via toggle explícito. Documentos anonimizados duas vezes antes do envio (cliente + servidor); zero PII bruta sai do servidor. Pendente `terraform apply`.
+- **Workflow CodeQL** — análise estática de segurança semanal + on-push em JS/Python. Resultados em Security tab do GitHub.
+- **Workflow concurrency** — `quality-gate.yml` agora cancela runs redundantes do mesmo branch (economia de minutos de CI).
+
+### Alterado
+
+- **`azure/login` action SHA-pinned** em `terraform.yml` (paridade com `deploy.yml`) — mitigação contra supply-chain attacks em tags mutáveis.
+- **Anonimizador (`utils/anonymizer.js`)** — 23 testes adicionados cobrindo CPF, CNPJ, RG, e-mail, telefone, CEP, endereço e nomes próprios. Edge cases (formatos parciais, com/sem máscara, falsos positivos) cobertos.
+- **Privacidade de e-mail** — todas as referências públicas (README, SECURITY, CONTRIBUTING, docs) migradas para alias GitHub `38567767+fabiotreze@users.noreply.github.com` (esconde e-mail pessoal mantendo notificações).
+- **SEO** — `<title>` reduzido para 55 caracteres ("Direitos PcD 2026 — BPC, CIPTEA, Escola | NossoDireito"), `og:title`/`twitter:title` alinhados, `dateModified` Schema.org atualizado para 2026-05-17.
+
+### Segurança
+
+- **Vetor #14** adicionado ao SECURITY_AUDIT.md: Azure Doc Intelligence opt-in com MSI + dupla anonimização (0 PII bruta transmitida).
+- Workflow permissions já estavam em escopo mínimo (job-level `contents:read`); auditoria confirmou conformidade.
+
+---
+
 ## [1.14.8] - 2026-03-01
 
 ### Alterado
@@ -317,9 +339,11 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 ## [1.12.2] - 2026-02-15
 
 ### 🚮 Removido
+
 - **Disclaimer modal removido** — Modal de disclaimer eliminado completamente do DOM, JS e scripts de teste; conteúdo mantido como disclaimer inline no footer com âncora `#disclaimerInline`
 
 ### ✨ Novo
+
 - **Busca combinada doença + cidade** — Pesquisas como "TEA Barueri", "autismo São Paulo", "F84 Curitiba" agora filtram resultados por tema dentro do contexto de localização
 - **220+ cidades brasileiras** — Expandido de ~100 para ~220+ cidades cobrindo todas as 27 UFs (capitais, regiões metropolitanas e cidades do interior)
 - **Busca inteligente com stopwords** — Palavras comuns PT-BR ("e", "de", "do", "da", "para", "com") filtradas da pontuação; pontuação removida automaticamente
@@ -328,11 +352,13 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 - **CID + cidade combinados** — "F84 Barueri" retorna 4 categorias TEA filtradas em contexto de Barueri (SP)
 
 ### 🔧 Compatibilidade
+
 - **Safari < 15.4 dialog fallback** — `dialog.showModal()` substituído por `window.confirm()` quando API não disponível
 - **iOS TTS fix** — Workaround de keepalive do Chrome desativado no Safari (causava parada permanente do TTS)
 - **iOS format-detection** — `<meta name="format-detection" content="telephone=no">` previne auto-link de números
 
 ### 🧪 Testes
+
 - **E2E atualizado: 196/196 PASS** — Modal tests substituídos por inline disclaimer tests (7 tests); 6 testes de busca combinada adicionados
 - **CSP test corrigido** — `test_e2e_automated.py` agora verifica CSP tanto em HTML quanto em `server.js`
 - **Screenshots versionados** — Script `capture_screenshots.py` agora salva em `screenshots/v{VERSION}/`
@@ -342,6 +368,7 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 ## [1.12.1] - 2026-02-15
 
 ### 🐛 Corrigido
+
 - **`resilientFetch()` podia retornar `undefined`** — 5xx sem retries restantes não fazia backoff; agora faz delay+retry e lança exceção ao esgotar tentativas
 - **Null-dereference em `setupDisclaimer()`/`setupNavigation()`** — Adicionados null guards para `acceptBtn`, `showDisclaimer`, `menuToggle`, `navLinks`, `voltarBtn`
 - **`AbortSignal.timeout()` incompatível** — Substituído por `AbortController` + `setTimeout` em `enrichGovBr()` para compatibilidade com Safari < 16
@@ -353,6 +380,7 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 - **SPA fallback mascarava 404** — Requests com extensão de arquivo que não existem retornam 404 em vez de `index.html`
 
 ### ⚡ Performance
+
 - **Scroll listener throttled** — `backToTop` usa `requestAnimationFrame` + `passive: true` (era 60fps sem throttle)
 - **Search dictionary cacheada** — `buildSearchDictionary()` não reconstrói a cada busca
 - **Regex pre-compilada em `scoreSearch()`** — Regexes criadas uma vez por termo, não por categoria × termo
@@ -362,6 +390,7 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 - **LCP image preload** — Adicionado `<link rel="preload">` para hero image WebP no `<head>`
 
 ### 🔒 Segurança
+
 - **Rate limit map cap** — Limite de 50.000 entradas para evitar crescimento sem limite sob ataque distribuído
 
 ---
@@ -369,6 +398,7 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 ## [1.12.0] - 2026-02-15
 
 ### 🐛 Corrigido
+
 - **TTS `stopReading()` duplicada** — Removida primeira definição morta de `stopReading()` que causava conflito de escopo
 - **TTS `textContent` destruía child spans** — `btnReadAloud.textContent` substituía todo o conteúdo do botão, removendo `.a11y-toggle-icon`, `.a11y-toggle-label` e `.a11y-toggle-state`; agora atualiza cada span individualmente
 - **TTS `getBestPtBrVoice()` resetava chunks** — Removia `currentChunks = []` e `currentChunkIndex = 0` que zeravam os chunks antes da leitura iniciar
@@ -379,6 +409,7 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 - **Estastísticas do hero hardcoded** — Valores `9` e `20` causavam flash de conteúdo incorreto (FOUC); atualizados para `25` e `50` (mais próximos dos dados reais)
 
 ### 🔄 Melhorado
+
 - **Dark mode: painel de acessibilidade** — Drawer, botões, seções, notas e info agora com cores adaptadas para dark mode
 - **Dark mode: disclaimer box** — Caixa de aviso com cores ajustadas para dark mode (fundo âmbar escuro)
 - **Dark mode: search suggestions** — `.search-suggestion` e `.search-location` com cores adaptadas para dark mode
@@ -390,6 +421,7 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 ## [1.11.0] - 2026-02-15
 
 ### ✨ Adicionado
+
 - **`avaliacao_360.py`** — Script de avaliação completa com 807 verificações em 11 seções (SEO, segurança, acessibilidade, conteúdo, performance, legal)
 - **Whitelist `DOMINIOS_INTERNACIONAIS`** — icd.who.int restaurado como domínio válido para referências CID/ICD
 - **Conteúdo SEO pré-renderizado** — `<div id="seo-content">` com texto acessível a crawlers sem JavaScript
@@ -399,10 +431,12 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 - **Meta keywords expandidas** — De ~15 para 45+ termos relevantes para SEO
 
 ### 🐛 Corrigido
+
 - **icd.who.int restaurado** — URL da OMS para classificação CID/ICD removida indevidamente, agora na whitelist
 - **"eMAG 1.0" → "eMAG 3.1"** — Versão correta do Modelo de Acessibilidade corrigida em todos os docs ativos
 
 ### 🔄 Melhorado
+
 - **robots.txt** — Limpeza conforme padrões web (removidos comentários keyword-stuffing, Crawl-delay, Allow redundantes)
 - **eMAG 4.1 — Atalhos de teclado** — `accesskey="1"` (conteúdo), `accesskey="2"` (menu), `accesskey="3"` (busca)
 - **eMAG 1.9 — Links externos** — Removido `target="_blank"` de links hardcoded no HTML
@@ -412,6 +446,7 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 ## [1.10.0] - 2026-02-13
 
 ### ✨ Adicionado
+
 - **Testes E2E interativos com Playwright** — 24 testes cobrindo navegação, filtros, busca, modais e acessibilidade
 - **Cobertura WAVE completa** — 42 testes de acessibilidade cobrindo todos os 135 itens WAVE
 - **Testes visuais de browser** — 23 testes de renderização visual (overflow, fontes, contraste, layout responsivo)
@@ -419,12 +454,14 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 - **SEO expandido** — FAQPage (14 perguntas), GovernmentService schema, Google site verification
 
 ### 🐛 Corrigido
+
 - **Contraste de botões de filtro ativos** — Ratio era 2.5:1 (white/blue), agora 12.6:1 (amber/black) em alto contraste
 - **CSS overflow-x** — Corrigido para evitar scroll horizontal indesejado
 - **Codificação cp1252** — 7 scripts corrigidos para funcionar em terminal Windows
 - **9 importações Python não usadas** — Removidas de 7 arquivos
 
 ### 🔄 Melhorado
+
 - **Pipeline unificado** — Pre-commit agora executa apenas `master_compliance.py --quick` (comando único)
 - **`check_version_consistency.py` absorvido** — Função `check_versions()` embutida no master_compliance.py
 - **`validate_schema.py` absorvido** — Método `validate_json_schema()` embutido no master_compliance.py
@@ -433,6 +470,7 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 - **`reduced-motion`** — Media query para desabilitar animações conforme preferência do usuário
 
 ### 🗑️ Removido
+
 - **`check_version_consistency.py`** — Absorvido como função inline no master_compliance.py
 - **`validate_all.py` do pre-commit** — Roda apenas manualmente (16 fases completas)
 - **Referências órfãs** — Limpeza de docs com referências a scripts removidos/consolidados
@@ -440,23 +478,27 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 ## [1.9.0] - 2026-02-12
 
 ### ✨ Adicionado
+
 - **Pipeline de qualidade** — `scripts/quality_pipeline.py` substitui `codereview/codereview.py`
 - **Detecção de referências órfãs** — Categoria 21 no master_compliance.py
 - **Terraform IaC** — Infraestrutura Azure como código (App Service, Key Vault, CDN)
 
 ### 🔄 Melhorado
+
 - **Remoção de docs/v2/** — Eliminadas todas as referências v2 obsoletas
 - **Remoção de codereview/** — ~50 referências substituídas para quality_pipeline
 
 ## [1.8.1] - 2026-02-12
 
 ### 🐛 Corrigido
+
 - **Exportação PDF em branco** — CSS do modo de impressão corrigido para exibir corretamente os resultados da análise de documentos
   - Bug: `body.printing-analysis > *:not(.analysis-results)` escondia `<main>`, mas `.analysis-results` está aninhado em `<main> > <section#documentos> > <div.container>`
   - Solução: CSS de impressão reestruturado para ocultar seletivamente apenas elementos não relacionados à análise
   - Print agora preserva cores (badges, barras de progresso), adiciona cabeçalho e rodapé, e evita quebra de página no meio de itens
 
 ### ✨ Adicionado
+
 - **Botão "📥 Salvar PDF" no Checklist** — Seção "Primeiros Passos Após o Laudo" agora pode ser exportada como PDF
   - Inclui progresso (X de 10 concluídos) e estado dos checkboxes marcados
   - Cabeçalho: "NossoDireito — Primeiros Passos Após o Laudo"
@@ -467,6 +509,7 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
   - Rodapé: data de geração, URL, aviso legal
 
 ### 🗑️ Removido
+
 - **Botão "📲 Compartilhar no WhatsApp"** — Removido da página de detalhes de cada direito
   - Motivo: funcionalidade nativa do WhatsApp (wa.me) removida por decisão de design
 
@@ -475,12 +518,14 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 ### ✨ Adicionado
 
 #### Links Completos para Família PcD (Paralisia Cerebral + TEA Grau 3) — Saúde, Isenções, DEFIS, CIPTEA
+
 - **10 novas fontes**: PCDT (Protocolos Clínicos SUS), Formulário LME (medicamentos especializados), Programa Agora Tem Especialistas, CST/OMS (Caregiver Skills Training para famílias TEA), DPU Contatos, MPF Serviços, Lei 10.048/2000, CIPTEA SP, SISEN Receita Federal, Meu SUS Digital
 - **1 nova instituição**: MPF — Ministério Público Federal (denúncias, SAC, ouvidoria, tel 61 3105-5100)
 - **47 novos keywords** no matching_engine.json (paralisia cerebral, TEA grau 3, LME, PCDT, DEFIS, Zona Azul, Meu INSS, passe livre, etc.)
 - **10 novos termos uppercase_only**: LME, PCDT, CNES, CST, DEFIS, SENATRAN, MPF, DPU, SEFAZ, CER
 
 ### 🔄 Enriquecido
+
 - **`sus_terapias`** — +6 links (LME formulário, PCDT protocolos clínicos, CNES busca, Agora Tem Especialistas, CST/OMS para TEA, Meu SUS Digital), +4 dicas, +12 tags (LME, PCDT, CNES, paralisia cerebral, CER, CST)
 - **`ciptea`** — +5 links (CIPTEA SP portal, Autismo A-Z gov.br, CST/OMS, PCDT, Novo Viver sem Limite), +3 dicas (CIPTEA SP, CST programa, Lei Romeo Mion), +9 tags (TEA grau 3, paralisia cerebral, CST)
 - **`isencoes_tributarias`** — +3 links (SISEN receita.fazenda, SEFAZ SP, DEFIS SENATRAN), +6 dicas (IPI teto R$ 200.000/2026, ICMS ~R$ 120.000, IPVA total, isenção rodízio, Zona Azul grátis, SEFAZ), +11 tags (SISEN, SEFAZ, IPVA, ICMS, rodízio, Zona Azul, DEFIS)
@@ -494,6 +539,7 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 - DPU instituição enriquecida com link contatos-dpu
 
 ### 📊 Métricas
+
 - 📊 25 categorias, 68 fontes, 25 instituições, 352 tags únicos, 609 keywords, 116 uppercase terms
 - E2E: 18/18 (100%)
 - Quality Pipeline: 221 PASS, 100.0/100
@@ -505,6 +551,7 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 ### ✨ Adicionado
 
 #### Turismo Acessível, ANAC/PNAE, Convenção ONU e Enriquecimentos Massivos
+
 - **Nova categoria `turismo_acessivel`** — Turismo Acessível, Hospedagem e Transporte Aéreo para PcD
   - Resolução ANAC 280/2013 — direitos completos do PNAE (Passageiro com Necessidade de Assistência Especial)
   - Acompanhante aéreo: máx. 20% do bilhete; cão-guia: gratuito na cabine
@@ -520,6 +567,7 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 - **11 novos termos uppercase_only**: ANAC, PNAE, MEDIF, FREMEC, CAPS, CPB, MCMV, SISEN, NAPNE, INEP, eMAG
 
 ### 🔄 Enriquecido
+
 - **`transporte`** — Resolução ANAC 280/2013, embarque prioritário, cão-guia, acompanhante 20%, dicas ANAC
 - **`trabalho`** — Lei 8.112/90 (concursos públicos: 5-20% vagas PcD), guia contratação PcD
 - **`educacao`** — ENEM acessibilidade (INEP), NAPNE (Institutos Federais), prova ampliada/Libras/ledor
@@ -534,6 +582,7 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 - 📊 25 categorias, 58 fontes, 24 instituições, 334 tags únicos, 562 keywords, 106 uppercase terms
 
 ### 📊 Métricas
+
 - E2E: 18/18 (100%)
 - Quality Pipeline: 210 PASS, 97.4/100
 - WAF Score: 96% (Seg=100%, Conf=100%, Perf=80%, Custo=100%, Ops=100%)
@@ -543,6 +592,7 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 ### ✨ Adicionado
 
 #### Validação contra 15 URLs gov.br — Expansão de Cobertura
+
 - **Nova categoria `esporte_paralimpico`** — Bolsa Atleta e Esporte Paralímpico para PcD
   - Lei 10.891/2004, Decreto 5.342/2005
   - Categorias da Bolsa: Base (R$ 410) a Pódio (R$ 16.629/mês), equiparadas para paralímpicos
@@ -560,11 +610,12 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 ### ✨ Adicionado (anterior)
 
 #### Sistema de Compliance Total (15 Categorias)
+
 - **`scripts/master_compliance.py`** — Expandido para validação completa (v1.6.0)
   - ✅ 15 categorias de validação (era 10)
   - ✅ 11. **Testes Automatizados E2E**: Executa test_e2e_automated.py, verifica cobertura de funções críticas
   - ✅ 12. **Dead Code Detection**: Detecta funções JS não usadas, importações Python órfãs, console.log() esquecidos
-  - ✅ 13. **Arquivos Órfãos**: Detecta .backup, .tmp, .bak, .old, .swp, .DS_Store, __pycache__, node_modules
+  - ✅ 13. **Arquivos Órfãos**: Detecta .backup, .tmp, .bak, .old, .swp, .DS_Store, **pycache**, node_modules
   - ✅ 14. **Lógica de Negócio**: Valida vinculação bidirecional, documentos_mestre, classificação de dados, URLs HTTPS
   - ✅ 15. **Regulatory Compliance**: LGPD, disclaimer, finance, GitHub security, dados sensíveis, versões consistentes
   - 📊 Score atual: **93.42%** (568.1/608.1 pontos)
@@ -579,6 +630,7 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
   - Preparado para Playwright (testes cross-browser futuros)
 
 #### Análise Avançada de Código
+
 - **Dead Code Detection:** Identifica automaticamente:
   - Funções JavaScript não usadas (regex de declarações vs chamadas)
   - Importações Python órfãs (import/from vs uso no código)
@@ -586,17 +638,19 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 
 - **Orphaned Files Cleanup:** Detecta:
   - Arquivos temporários (.tmp, .bak, .backup, .old, .swp)
-  - Cache de sistema (.DS_Store, __pycache__)
+  - Cache de sistema (.DS_Store, **pycache**)
   - Arquivos grandes (>10MB)
   - Flag para auto-cleanup (desabilitado por padrão)
 
 #### Validação de Lógica de Negócio
+
 - **Vinculação Bidirecional:** Valida relacionamento categorias ↔ documentos_mestre
 - **Classificação de Dados:** Detecta menções a dados sensíveis (CPF, RG, senha, etc.) para alertar sobre LGPD
 - **Integridade de Base Legal:** Verifica artigos, URLs HTTPS, campos obrigatórios
 - **Cobertura de Documentos:** Garante que toda categoria tem ≥1 documento vinculado e ≥3 passos
 
 #### Regulatory & Compliance
+
 - **LGPD (Lei 13.709/2018):** 6 checks automáticos
   - Menção à LGPD e Lei 13.709
   - Declaração de não coleta de dados
@@ -611,12 +665,14 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 ### 🔧 Melhorado
 
 #### Documentação Atualizada
+
 - **SECURITY.md:** Versões suportadas atualizadas para 1.6.x, 1.5.x (removido <1.5)
 - **SECURITY_AUDIT.md:** Atualizado para v1.6.0 (era v1.1.0)
   - Data atualizada: 2026-02-12
   - Adicionado compliance: LGPD, WCAG 2.1 AAA, e-MAG
 
 #### Score de Qualidade
+
 - **Score Total: 93.42%** (568.1/608.1 pontos) - 15 categorias
 - **13 categorias a 100%**:
   - DADOS, CODIGO, FONTES, ARQUITETURA, DOCUMENTACAO, SEGURANCA, PERFORMANCE, ACESSIBILIDADE, SEO, INFRAESTRUTURA, ORFAOS, LOGICA, REGULATORY
@@ -625,15 +681,17 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
   - DEAD_CODE: 0% (5 funções JS não usadas, 8 console.log() detectados)
 
 ### 🐛 Para Corrigir (Próximas Versões)
+
 - ❌ **Testes E2E:** Cobertura de funções críticas baixa (1/6)
 - ❌ **Dead Code:** 5 funções JavaScript não usadas detectadas
 - ❌ **Console.log:** 8 ocorrências esquecidas no código
-- ⚠️  **Órfão:** backup/.commit_msg.tmp
-- ⚠️  **Versões:** Inconsistências entre documentos (README: v98.7, SECURITY: v1.6, CHANGELOG: v241.126)
+- ⚠️ **Órfão:** backup/.commit_msg.tmp
+- ⚠️ **Versões:** Inconsistências entre documentos (README: v98.7, SECURITY: v1.6, CHANGELOG: v241.126)
 
 ### 📊 Estatísticas v1.6.0
 
 #### Validações
+
 - **Total de validações:** 804 (era 787 na v1.5.0) - **+17 validações**
 - **Aprovadas:** 804 ✅
 - **Avisos:** 11 ⚠️
@@ -641,6 +699,7 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 - **Tempo de execução:** 0.52s (era 0.27s) - **+0.25s** devido a 5 categorias novas
 
 #### Arquivos Alterados
+
 - **3 arquivos adicionados:**
   - scripts/test_e2e_automated.py (15 testes estruturais)
   - (master_compliance.py expandido +500 linhas)
@@ -656,6 +715,7 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 ### ✨ Adicionado
 
 #### Infraestrutura de Qualidade
+
 - **`scripts/quality_pipeline.py`** — Pipeline automatizado de validação com 10 passos
   - Suporte a 3 modos: `--full` (produção), `--quick` (pre-commit), `--ci` (CI/CD)
   - Geração de relatório JSON detalhado (quality_report.json)
@@ -683,6 +743,7 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
   - Troubleshooting com 7 cenários comuns
 
 #### GitHub Actions
+
 - **`.github/workflows/quality-gate.yml`** — Atualizado com validação de conteúdo
   - Step adicional: validação de categorias, IPVA, matching engine
   - Executa antes do quality gate principal
@@ -691,11 +752,13 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 ### 🔧 Melhorado
 
 #### Qualidade de Código
+
 - **Score Quality Gate: 97.3 → 98.7/100** (+1.4 melhoria)
 - **WAF 5 Pilares: 100%** (Security, Reliability, Performance, Cost, Operations)
 - **Performance: 40% → 100%** (+60% melhoria)
 
 #### Otimizações
+
 - **HTTP → HTTPS:** 3 URLs corrigidas (prouni_fies_sisu)
 - **showToast() replaces alert():** 2 chamadas modernizadas (melhor UX)
 - **Keywords expandidas:** +26 palavras-chave
@@ -704,28 +767,34 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 - **documentos_mestre:** +3 categorias vinculadas
 
 #### Minificação
+
 - HTML: 40KB → 29KB (-10.8KB, -27%)
 - JS: 118KB → 71KB (-46.9KB, -41%)
 - JSON: ~150KB → 102KB (~-48KB, -33%)
 - **Total: -107KB economia de banda**
 
 ### 🐛 Corrigido
+
 - **quality_pipeline.py:** Validação de campo `link` → `url` em base_legal
 - **Backup files:** Remoção automática de arquivos .backup (303KB liberados)
 
 ### 🧹 Removido
+
 - `scripts/validate_links.py` — Duplicado (funcionalidade em validate_sources.py)
 - Arquivos .backup — Cleanup automático no pipeline
 
 ### 📁 Movido
+
 - `analise360.py` → `scripts/analise360.py` (organização)
 
 ### 📊 Estatísticas
 
 #### Arquivos Alterados
+
 - **29 arquivos:** 8 adicionados, 2 deletados, 19 modificados
 
 #### Quality Metrics
+
 - **Quality Gate:** 98.7/100
 - **WAF 5 Pillars:** 100%
 - **Validações:** 0 CRITICAL, 0 ERROR, 17 WARNING, 184 PASS
@@ -733,6 +802,7 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 - **Segurança:** 100% URLs HTTPS, nenhum dado sensível exposto
 
 #### Pipeline Execution
+
 - **Total de passos:** 21
 - **Taxa de sucesso:** 85.7% (18/21)
 - **Duração:** ~154s (modo full)
@@ -745,6 +815,7 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 ### Adicionado
 
 #### Documentos Mestres — Meia-Entrada e Tarifa Social Energia
+
 - **Novos documentos em `documentos_mestre[]`:**
   - `comprovante_deficiencia`: Carteira PcD, CIPTEA, laudo médico ou carteira de transporte especial
   - `comprovante_bpc`: Extrato INSS ou carta de concessão do BPC/LOAS
@@ -757,6 +828,7 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 ### Atualizado
 
 #### Sincronização Bidirecional de Documentos
+
 - **Documentos existentes atualizados** com novas categorias:
   - `rg.categorias[]` → adicionado `meia_entrada`, `tarifa_social_energia`
   - `cpf.categorias[]` → adicionado `meia_entrada`, `tarifa_social_energia`
@@ -765,6 +837,7 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
   - `nis.categorias[]` → adicionado `tarifa_social_energia`
 
 #### Padronização de Estrutura
+
 - Array `documentos[]` dos benefícios convertido de texto livre para IDs
 - Permite renderização automática na seção "Documentos Necessários por Direito"
 - Habilita persistência de checkboxes no localStorage
@@ -772,6 +845,7 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 ### Documentado
 
 #### DEPENDENCY_CONTROL.md
+
 - Nova seção **7️⃣ ADICIONAR/ATUALIZAR DOCUMENTOS MESTRES**
 - Explica sincronização bidirecional entre `documentos_mestre[]` e `categorias[].documentos[]`
 - Checklist completo de 10 itens para adição de documentos
@@ -781,6 +855,7 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 ### Validado
 
 #### Controle de Qualidade
+
 - ✅ JSON sintaxe validada (Python json.load)
 - ✅ Versão sincronizada em 3 arquivos (direitos.json, package.json, sw.js)
 - ✅ Cache invalidado (novo sw.js v1.4.3)
@@ -794,6 +869,7 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 ### Corrigido
 
 #### Interface do Usuário
+
 - **Aviso Importante** reformatado com melhor hierarquia visual e espaçamento
   - Removidos estilos inline, migrados para classes CSS reutilizáveis
   - Seções separadas: Limitações do Serviço + Onde buscar ajuda + LGPD
@@ -815,6 +891,7 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
   - Método `body.printing-analysis > *:not(.analysis-results)` elimina elementos desnecessários sem criar espaço vazio
 
 #### Versionamento
+
 - Versão sincronizada **v1.4.2** em todos os arquivos:
   - `direitos.json`: versao "1.4.2"
   - `package.json`: version "1.4.2"
@@ -824,6 +901,7 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 ### Adicionado
 
 #### CSS
+
 - Novas classes para disclaimer estruturado:
   - `.disclaimer-box`: Container principal do aviso
   - `.disclaimer-title`: Título do aviso
@@ -844,15 +922,18 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 ### Adicionado
 
 #### Benefícios PcD Completos — Educação, Trabalho, Habitação
+
 - **`docs/CHECKLIST_VALIDATIONS.md`** — Seções expandidas com pesquisa exaustiva:
 
 **📚 EDUCAÇÃO**
+
 - **FIES 50% Cotas** — Resolução 58/2024 CES/CNE reserva **50% das vagas** para política de cotas (inclui PcD)
 - **ProUni** — Lei 11.096/2005 (não específico PcD, mas acessível com renda até 3 SM)
 - **SISU** — Lei 13.409/2016 (cotas PcD confirmadas)
 - **Pé-de-Meia** — Universal (CadÚnico + ensino médio)
 
 **💼 TRABALHO**
+
 - **Lei 8.213/1991 Art. 93** — Cotas setor privado (2%-5% empresas com 100+ funcionários)
   - Proteção demissão (§1º): empresas não podem demitir PcD sem contratar substituto PcD
   - Fiscalização MTb (§2º): multa R$ 2.411,28 a R$ 241.126,88 por vaga não preenchida
@@ -865,6 +946,7 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
   - Comparação completa setor público vs. privado documentada
 
 **🏠 HABITAÇÃO**
+
 - **Lei 11.977/2009 Art. 3º V (Lei 12.424/2011)** — Minha Casa Minha Vida
   - ✅ **PRIORIDADE** para famílias com PcD
   - **3% unidades adaptadas** (Art. 73) + acessibilidade obrigatória (rampas)
@@ -873,13 +955,16 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
   - Registro preferencialmente em nome da mulher (Art. 35)
 
 **📊 RESUMO EXECUTIVO**
+
 - Tabela consolidada de todos os benefícios PcD (9 benefícios documentados)
 - 10 referências oficiais adicionadas (planalto.gov.br, gov.br/mec, CNE)
 
 ### Documentado
 
 #### Validação com Fontes Primárias
+
 Todas as leis foram consultadas nos textos consolidados do Planalto.gov.br:
+
 - Lei 8.213/1991 (~15.000 tokens): Benefícios da Previdência Social + Cotas PcD
 - Lei 8.112/1990 (~70.000 tokens): Regime Jurídico dos Servidores Públicos Federais
 - Lei 11.977/2009 (~66.000 tokens): Programa Minha Casa Minha Vida completo
@@ -887,6 +972,7 @@ Todas as leis foram consultadas nos textos consolidados do Planalto.gov.br:
 - Resolução 58/2024 CES/CNE: FIES 50% cotas
 
 #### Comparações e Insights
+
 - **Setor Público vs. Privado**: Concursos federais oferecem quota 20% (vs. 2%-5% empresas privadas)
 - **Educação**: FIES agora reserva 50% das vagas para cotas (inclui PcD) — política recente
 - **Habitação**: MCMV prioriza PcD desde 2011 (Lei 12.424)
@@ -896,6 +982,7 @@ Todas as leis foram consultadas nos textos consolidados do Planalto.gov.br:
 ### Adicionado
 
 #### Validação Oficial do Checklist
+
 - **`docs/CHECKLIST_VALIDATIONS.md`** — Documento completo validando ordem do checklist com fontes oficiais
   - ✅ **BPC requer CadÚnico CONFIRMADO** — Lei 8.742/1993 Art. 20 §12 (Lei 13.846/2019)
   - ✅ **Cotas PcD SISU** — Lei 13.409/2016 (reserva de vagas em universidades federais)
@@ -905,6 +992,7 @@ Todas as leis foram consultadas nos textos consolidados do Planalto.gov.br:
   - 🔍 **Licenças trabalhistas** — Dependem de CCT (Convenção Coletiva de Trabalho)
 
 #### Checklist 10 Passos com Dependências Validadas
+
 - **Ordem validada com legislação federal:**
   1. Gov.br OURO (recomendado para BPC digital)
   2. Dossiê PcD organizado (boas práticas)
@@ -922,7 +1010,9 @@ Todas as leis foram consultadas nos textos consolidados do Planalto.gov.br:
   - Itens 4,6,7,8 requerem Item 3 (laudo validado) — alerta + desmarca
 
 #### Reorganização da Documentação
+
 - **Estrutura V1 padronizada:**
+
   ```
   docs/
   ├── v1/                              # Versão atual em produção
@@ -943,11 +1033,13 @@ Todas as leis foram consultadas nos textos consolidados do Planalto.gov.br:
 ### Documentado
 
 #### Novos Benefícios Pesquisados
+
 - **Lei 13.409/2016** — Cotas PcD no ensino superior (SISU + institutos federais)
 - **Pé-de-Meia** — Poupança estudantil para ensino médio (até R$ 9.200 total)
 - **FGTS** — Saque integral para titular ou dependente PcD (já em direitos.json)
 
 #### Referências Oficiais Validadas
+
 - **Planalto.gov.br:** Lei 8.742/1993 (LOAS), Lei 13.409/2016, Lei 13.977/2020
 - **MEC:** https://www.gov.br/mec/pt-br/acesso-a-informacao/acoes-e-programas/pe-de-meia
 - **SISU:** https://acessounico.mec.gov.br/sisu
@@ -955,10 +1047,10 @@ Todas as leis foram consultadas nos textos consolidados do Planalto.gov.br:
 ### Alterado
 
 #### Padrão de Nomenclatura de Arquivos
+
 - **Antes:** `SYSTEM_ARCHITECTURE_V1.md`, `SYSTEM_DIAGRAMS.md`
 - **Depois:** `v1/ARCHITECTURE.md`, `v1/DIAGRAMS.md`
 - **Razão:** Facilita versionamento por pastas
-
 
 ---
 
@@ -967,6 +1059,7 @@ Todas as leis foram consultadas nos textos consolidados do Planalto.gov.br:
 ### Adicionado
 
 #### 5 Novas Categorias de Direitos
+
 - **Atendimento Prioritário** — Filas preferenciais em estabelecimentos (Lei 10.048/2000)
 - **Estacionamento Vaga Especial** — Cartão Defis e vagas reservadas (LBI Art. 47)
 - **Aposentadoria Especial PcD** — Tempo reduzido para aposentadoria (LC 142/2013)
@@ -978,6 +1071,7 @@ Todas as leis foram consultadas nos textos consolidados do Planalto.gov.br:
 ### Alterado
 
 #### Quality Gate — Exceção CSP para VLibras
+
 - **Relaxamento de regra:** `unsafe-eval` em CSP não é mais CRITICAL quando VLibras presente
 - **Lógica:** Script detecta `vlibras.gov.br` no HTML → muda severidade para WARNING
 - **Justificativa documentada:** Lei 13.146/2015 (LBI) exige acessibilidade governamental
@@ -989,6 +1083,7 @@ Todas as leis foram consultadas nos textos consolidados do Planalto.gov.br:
 ### Adicionado
 
 #### Botão Voltar ao Topo
+
 - **Botão flutuante** — ícone ↑ no canto inferior direito (posição fixa)
 - **Aparecimento automático** — torna-se visível após 300px de scroll
 - **Scroll suave** — animação suave ao retornar ao topo da página
@@ -998,6 +1093,7 @@ Todas as leis foram consultadas nos textos consolidados do Planalto.gov.br:
 - **Line height**: 1 para centralização vertical perfeita do caractere ↑
 
 #### Documentação VLibras
+
 - **`docs/VLIBRAS_LIMITATIONS.md`** — análise técnica de compatibilidade VLibras com CSP
 - Documenta trade-off acessibilidade vs. segurança (decisão: priorizar acessibilidade)
 - Explica mudança de CSP rígido para flexibilizado com `'unsafe-eval'`
@@ -1007,6 +1103,7 @@ Todas as leis foram consultadas nos textos consolidados do Planalto.gov.br:
 ### Alterado
 
 #### VLibras — CSP Flexibilizado para Funcionalidade Completa
+
 **🔄 Mudança de decisão**: De segurança prioritária → acessibilidade governamental prioritária
 
 - **CSP `'unsafe-eval'` adicionado** — permite VLibras Unity funcionar 100% sem erros
@@ -1051,6 +1148,7 @@ Todas as leis foram consultadas nos textos consolidados do Planalto.gov.br:
 ### Corrigido
 
 #### Refatoração Defensiva do Proxy Gov.br — Arquitetura Mais Robusta
+
 - **Problema**: Handler `async (req, res) => {}` com `await` pode causar SyntaxError se proxy movido para contexto errado (bugs anteriores: commits 9b6e52b, b376074)
 - **Solução**: Refatorado para `.then()` chains (mais defensivo) — proxy funciona independente de contexto async
 - **Mudanças**:
@@ -1071,6 +1169,7 @@ Todas as leis foram consultadas nos textos consolidados do Planalto.gov.br:
 ### Corrigido
 
 #### Proxy Gov.br API — Contornar CORS para Enriquecimento de Dados
+
 - **Problema**: Requisição direta do navegador para `https://servicos.gov.br/api/v1/servicos/10783` bloqueada por CORS (`No 'Access-Control-Allow-Origin'`)
 - **Solução**: Endpoint proxy `/api/govbr-servico/:id` no server.js (linhas 238-273) que busca dados server-side
 - **Timeout**: 5 segundos com AbortController (anti-Slowloris)
@@ -1086,6 +1185,7 @@ Todas as leis foram consultadas nos textos consolidados do Planalto.gov.br:
 ### Corrigido
 
 #### Content Security Policy (CSP) — Suporte Completo ao CDN Fallback do VLibras
+
 - **`style-src`** — Adicionado `https://cdn.jsdelivr.net` para permitir estilos CSS do VLibras via CDN fallback (jsdelivr espelha repositório GitHub oficial)
 - **`img-src`** — Adicionado `https://cdn.jsdelivr.net` para permitir imagens do VLibras via CDN fallback
 - **`Cross-Origin-Resource-Policy`** — Mudado de `same-origin` para `cross-origin` no server.js (linha 132) para permitir que VLibras e outros serviços acessem recursos do site
@@ -1098,6 +1198,7 @@ Todas as leis foram consultadas nos textos consolidados do Planalto.gov.br:
 ### Adicionado
 
 #### Nova Categoria: Isenções Tributárias (IPI, IOF, ICMS, IPVA, IPTU)
+
 - **10ª categoria** — “Isenções Tributárias” cobrindo todos os benefícios fiscais PcD para veículos e imóveis
 - **Base legal completa** — Lei 8.989/1995 (IPI), Lei 14.287/2021 (atualização IPI R\$ 200k), Lei 8.383/1991 Art. 72 (IOF), Convênio CONFAZ ICMS 38/2012, LBI Art. 46
 - **Tabela IPVA 27 UFs** — legislação específica de cada estado com link direto para SEFAZ (colapsável `<details>`)
@@ -1106,24 +1207,29 @@ Todas as leis foram consultadas nos textos consolidados do Planalto.gov.br:
 - **4 novas fontes** — Lei 8.989/1995, Lei 14.287/2021, Lei 8.383/1991, Convênio CONFAZ ICMS 38/2012 (total: 29 fontes)
 
 #### Integração Gov.br API
+
 - **Serviço 10783** (SISEN) — enriquecimento via `servicos.gov.br/api/v1/servicos/10783` com fallback gracioso
 - **Badge gov.br** — indicador visual "Serviço digital confirmado no gov.br" quando API responde
 - **sessionStorage cache** — evita requisições repetidas à API
 
 #### Motor de Correspondência
+
 - **15 novos keywords** mapeados para `isencoes_tributarias`: iof, icms, iptu, tributo, tributária, imposto, sisen, confaz, rodízio, etc.
 - Keywords existentes (ipva, ipi, isenção) agora mapeiam para ambas `transporte` + `isencoes_tributarias`
 
 #### Dados
+
 - `data/ipva_pcd_estados.json` — referência detalhada com 27 leis estaduais de isenção IPVA PcD
 - `documentos_mestre` atualizado — RG, CPF, comprovante de residência e laudo médico agora incluem `isencoes_tributarias`
 - Versão dos dados: 1.1.0 → 1.2.0
 
 #### CSS
+
 - Estilos para tabela IPVA (`.ipva-table`, `.table-wrapper`)
 - Estilos para `<details>/<summary>` colapsável
 
 ### Qualidade
+
 - **QG 99.6/100** — 164 PASS, 2 warnings (pré-existentes: inline script + VLibras)
 - **Schema/Governança 100%** — todas as 10 categorias cobertas por documentos mestre e keyword map
 
@@ -1132,6 +1238,7 @@ Todas as leis foram consultadas nos textos consolidados do Planalto.gov.br:
 ### Corrigido
 
 #### Acessibilidade — ABNT NBR 17225:2024
+
 - **54 font-sizes corrigidos** — todas as fontes abaixo de 0.875rem (14px) ajustadas para conformidade ABNT NBR 17225 / WCAG 2.1 AA / eMAG 3.1
   - 8 críticos (0.65-0.72rem → 0.75rem): badges, tags, bar-labels
   - 26 avisos (0.75-0.82rem → 0.8-0.875rem): botões, links, metadata
@@ -1140,22 +1247,27 @@ Todas as leis foram consultadas nos textos consolidados do Planalto.gov.br:
 - **Contraste dark mode corrigido** — removido inline `style="color:#64748b"` no footer que falhava 4.5:1 em dark mode
 
 #### VLibras
+
 - **Integração VLibras reescrita** — removido lazy-loading via createElement (incompatível com VLibras); integração direta via HTML `<script>` conforme documentação oficial gov.br
 - **CSP atualizado** — adicionados `https://vlibras.gov.br` em script-src, style-src, img-src, connect-src, frame-src, media-src, font-src
 
 #### UI — Interface
+
 - **Badges de análise com cores sólidas** — `.analysis-badge.high/medium/low` agora usam background sólido `var(--bar-*)` com texto branco (legibilidade melhorada)
 - **Labels textuais nas barras** — adicionados "Alta", "Média", "Baixa" como texto acima das barras de análise
 
 #### Deploy
+
 - **Timeout de deploy aumentado** — `--timeout 900` (era 600) para acomodar cold start do B1
 - **Health check resiliente** — retry loop (12 tentativas × 15s) com `always()` condicional
 
 #### Segurança / Privacidade
+
 - **Email pessoal removido** — `alert_email` default vazio em terraform/variables.tf
 - **Git email anonimizado** — commits com `noreply@github.com`
 
 ### Adicionado
+
 - **Disclaimer de marcas** — avisos em LICENSE, README.md e ambos HTML sobre marcas registradas de terceiros
 - **Pool Scout** e **Historical Analyzer** no CLI DeFi (projetos adjacentes)
 
@@ -1164,6 +1276,7 @@ Todas as leis foram consultadas nos textos consolidados do Planalto.gov.br:
 ### Adicionado
 
 #### SEO — Otimização para Motores de Busca
+
 - **robots.txt** + **sitemap.xml** — diretivas de rastreamento e mapa do site para Google/Bing
 - **FAQPage JSON-LD** — 5 perguntas frequentes com schema.org (potencial para featured snippets)
 - **Twitter Card** — tags `twitter:card`, `twitter:title`, `twitter:description`, `twitter:image`
@@ -1175,6 +1288,7 @@ Todas as leis foram consultadas nos textos consolidados do Planalto.gov.br:
 - **Keywords expandidas** — "CIPTEA como tirar", "plano de saúde autismo", "FGTS deficiência", "passe livre"
 
 #### UX — Experiência do Usuário
+
 - **Botão voltar do navegador** — `history.pushState` + `popstate` listener, URL muda para `#direito/{id}`
 - **Toast notifications** — substitui todos os `alert()` por notificações inline com animação (error/warning/info/success)
 - **Checklist com barra de progresso** — "X de 8 concluídos" com barra visual animada
@@ -1182,15 +1296,18 @@ Todas as leis foram consultadas nos textos consolidados do Planalto.gov.br:
 - **Skip-to-content** — link oculto "Pular para o conteúdo principal" (acessibilidade a11y)
 
 #### Performance
+
 - **pdf.js lazy-loading** — ~400KB carregado sob demanda (não mais no `<head>`), via `IntersectionObserver` + dynamic `<script>`
 - `ensurePdfJs()` com fallback e SRI hash
 
 #### CI/CD — Automação de Deploy
+
 - **deploy.yml** — adicionados `robots.txt`, `sitemap.xml`, `sw.js`, `manifest.json` aos paths trigger
 - **sitemap.xml lastmod auto-update** — atualizado automaticamente no deploy com data do dia
 - **deploy package** — inclui `robots.txt`, `sitemap.xml`, `sw.js`, `manifest.json` no ZIP
 
 #### Code Review — 9 novos checks (151 → 160 PASS)
+
 - **OG image dimensions** — verifica `og:image:width` + `og:image:height` no HTML
 - **og:site_name** — verifica tag presente
 - **og-image.png** — verifica arquivo existe em `images/`
@@ -1203,18 +1320,21 @@ Todas as leis foram consultadas nos textos consolidados do Planalto.gov.br:
 - **deploy.yml paths** — verifica cobertura de todos os arquivos deployáveis
 
 #### Tabela de Classificação CID
+
 - Nova seção "Classificação CID" com tabela de referência de 10 tipos de deficiência
 - Colunas: Tipo, CID-10, CID-11, Critério, Detalhes
 - 10 categorias: TEA, Intelectual, Visual, Auditiva, Física, Amputação, Nanismo, Psicossocial, Múltipla, Reabilitados
 - Tabela responsiva com header fixo, hover, badges de código
 
 #### Órgãos Estaduais (27 estados)
+
 - Nova seção "Órgãos Estaduais" com grid filtrável por região
 - 27 URLs oficiais .gov.br validadas (todas as UFs brasileiras)
 - Filtros: Todos, Norte, Nordeste, Centro-Oeste, Sudeste, Sul
 - Cards com badge da UF, nome do órgão e link direto
 
 #### Motor de Correspondência — CIDs e CRM
+
 - **CRM Detection (Pass 0b)**: Detecção de CRM médico em documentos analisados (CRM/SP 123456, CRM-12345/SP, etc.) — boost +2 em 6 categorias que exigem laudo médico
 - **CID-11 Two-Letter Regex**: Captura códigos CID-11 no formato MA10/AB00 (blocos de 2 letras)
 - **30+ novos CIDs no KEYWORD_MAP**:
@@ -1225,6 +1345,7 @@ Todas as leis foram consultadas nos textos consolidados do Planalto.gov.br:
 - **UPPERCASE_ONLY_TERMS**: 23 novos termos adicionados (CIDs + siglas TDAH/TAG)
 
 #### Links de Referência — CID, CRM e Conselhos Profissionais
+
 - **4 novas fontes/serviços** no "Links Úteis":
   - DATASUS — Departamento de Informática do SUS (`datasus.saude.gov.br`)
   - OMS — CID-11 Browser em Português (`icd.who.int/browse/pt`)
@@ -1238,6 +1359,7 @@ Todas as leis foram consultadas nos textos consolidados do Planalto.gov.br:
 - Ícones dedicados para conselhos profissionais (👨‍⚕️ CFM, 🧠 CFP, 🌐 OMS)
 
 ### Corrigido
+
 - Alternância de seções (section-alt) corrigida para manter padrão visual zebrado
 - Valor do BPC atualizado para R$ 1.621,00 (2026)
 - Lei 15.131 adicionada
@@ -1245,6 +1367,7 @@ Todas as leis foram consultadas nos textos consolidados do Planalto.gov.br:
 - NBR 9050 referenciada
 
 #### Acessibilidade — Leitura em Voz Alta (TTS)
+
 - **🔊 Ouvir** — botão nativo na barra de acessibilidade usando Web Speech API (`speechSynthesis`)
 - Lê a seção visível em pt-BR, sem dependência externa (100% browser nativo)
 - Seleção inteligente de voz: prioriza Google/Microsoft pt-BR por qualidade
@@ -1253,11 +1376,13 @@ Todas as leis foram consultadas nos textos consolidados do Planalto.gov.br:
 - Graceful degradation: botão escondido se navegador não suporta TTS
 
 #### Acessibilidade — VLibras (Libras)
+
 - **🤟 Libras** — integração com VLibras (governo federal) para tradução em Libras
 - Carregamento lazy com polling robusto (`waitForVLibrasButton`) em vez de `setTimeout`
 - CSP atualizado: `frame-src`, `media-src`, `font-src` para domínios `vlibras.gov.br`
 
 #### Segurança — CSP e Headers
+
 - CSP sincronizado entre `index.html`, `index.min.html` e `server.js`
 - Adicionados: `frame-ancestors 'none'`, `manifest-src 'self'`
 - `media-src 'self'` adicionado para suporte a áudio nativo (Web Speech API)
@@ -1265,22 +1390,26 @@ Todas as leis foram consultadas nos textos consolidados do Planalto.gov.br:
 - Remoção de todas as referências ao GitHub nos arquivos públicos (privacidade)
 
 #### Bug Fixes — Motor de Análise
+
 - **CRÍTICO**: `matchRights()` recebia texto em lowercase, destruindo detecção de CID (F84, G80, 6A02) e siglas (TEA, BPC, SUS). Corrigido com `originalText` preservando case
 - Falso positivo "receita" removido — mantido apenas "receita médica"/"receita medica"
 - Termos médicos expandidos com variantes sem acento para PDFs
 - Correção ortográfica: "Avise-nos" → "avise-nos" (minúscula em meio de frase)
 
 #### Quality Gate — quality_pipeline.py
+
 - Regex de `rel="noopener"` atualizado para aceitar `rel="noopener noreferrer"`
 - Contagem de links `target="_blank"` agora inclui links gerados por JS
 - Comentários HTML removidos para reduzir tamanho (36.390 → 34.156 bytes, limite 35.000)
 
 ### Segurança
+
 - `isSafeUrl()` aplicado em 4 locais adicionais
 - Modal focus trap implementado
 - Nav roles (aria) adicionados
 
 #### Motor de Correspondência — Externalização
+
 - **KEYWORD_MAP**, **CID_RANGE_MAP** e **UPPERCASE_ONLY_TERMS** movidos de `app.js` para `data/matching_engine.json` (53 KB)
 - `app.js` reduzido de 105 KB → 78 KB (abaixo do limite de 100 KB)
 - Dados carregados via `fetch()` assíncrono em `loadData()`, com `deepFreeze()` para imutabilidade
@@ -1288,6 +1417,7 @@ Todas as leis foram consultadas nos textos consolidados do Planalto.gov.br:
 - Domínio `who.int` adicionado à whitelist `OFFICIAL_DOMAINS` do quality pipeline
 
 #### PWA — Progressive Web App
+
 - **manifest.json** criado — nome, ícones (32/180/512), `display: standalone`, `theme_color: #1e3a8a`
 - **sw.js** (Service Worker) criado — cache-first para assets estáticos, network-first para JSON/HTML
   - Pre-cache de 10 assets estáticos + CDN (pdf.js)
@@ -1297,11 +1427,13 @@ Todas as leis foram consultadas nos textos consolidados do Planalto.gov.br:
 - `server.js`: header `no-cache` para `/sw.js` (spec W3C requer cache curto para detecção de atualização)
 
 #### SEO e Metadados
+
 - `<link rel="canonical" href="https://nossodireito.fabiotreze.com">` — URL canônica para Google
 - `<link rel="preconnect">` + `<link rel="dns-prefetch">` para `cdnjs.cloudflare.com`
 - JSON-LD (`@type: WebApplication`) — dados estruturados schema.org no `<head>`
 
 #### Resiliência e Performance
+
 - **`resilientFetch()`** — retry com exponential backoff (2 tentativas, 500ms delay inicial, não retenta 4xx)
 - `loadData()` separado em 2 try/catch independentes:
   - Falha no `direitos.json` → exibe mensagem de erro na UI
@@ -1309,13 +1441,16 @@ Todas as leis foram consultadas nos textos consolidados do Planalto.gov.br:
 - `escapeHtml()` otimizado — elemento DOM reutilizável (`_escapeDiv`) em vez de criar novo por chamada
 
 #### UX / Footer
+
 - Badge de versão no footer (`v1.1.0`) populado dinamicamente de `jsonMeta.versao`
 - `setupFooterVersion()` chamado após `loadData()` para garantir dados disponíveis
 
 ### Corrigido
+
 - Links do GitHub corrigidos de `fabiorodrigues` → `fabiotreze/nossodireito` (2 locais)
 
 #### Quality Pipeline — Novos Checks
+
 - Regex de inline JS exclui `<script type="application/ld+json">` (JSON-LD não é JS executável)
 - Registro de Service Worker excluído do check de inline JS (padrão de bootstrap válido)
 - WAF Segurança: reconhece `sw.js` como indicador de HTTPS (SW requer HTTPS)
@@ -1325,6 +1460,7 @@ Todas as leis foram consultadas nos textos consolidados do Planalto.gov.br:
 - WAF 5 Pilares: **100%** em todos (Seg/Conf/Perf/Custo/Ops)
 
 ### Dados
+
 - `direitos.json` versão 1.1.0 (data: 2026-02-10, próx. revisão: 2026-02-17)
 - Quality Gate: **100.0/100** (151 PASS, 0 WARNING, 0 ERROR)
 
@@ -1333,6 +1469,7 @@ Todas as leis foram consultadas nos textos consolidados do Planalto.gov.br:
 ### Segurança — EASM Hardening
 
 #### server.js — Reescrita completa com defesa em profundidade
+
 - HSTS com `max-age=31536000; includeSubDomains; preload`
 - Cross-Origin isolation completo: COOP (`same-origin`), CORP (`same-origin`), COEP (`credentialless`)
 - Rate limiting in-memory por IP (120 req/min, 429 + Retry-After)
@@ -1347,6 +1484,7 @@ Todas as leis foram consultadas nos textos consolidados do Planalto.gov.br:
 - Permissions-Policy expandida: `usb`, `bluetooth`, `serial`, `hid`, `ambient-light-sensor`, `accelerometer`, `gyroscope`, `magnetometer`, `screen-wake-lock`
 
 #### js/app.js — Proteção contra prototype pollution e open redirect
+
 - `Object.freeze(Object.prototype)` + `Object.freeze(Array.prototype)` — CWE-1321
 - `safeJsonParse()` com reviver que filtra `__proto__`, `constructor`, `prototype`
 - `deepFreeze()` recursivo em todos os dados carregados (`direitosData`, `fontesData`, etc.) — CWE-471
@@ -1354,9 +1492,11 @@ Todas as leis foram consultadas nos textos consolidados do Planalto.gov.br:
 - `localGet()` agora usa `safeJsonParse()` em vez de `JSON.parse()`
 
 #### index.html
+
 - CSP atualizado com `upgrade-insecure-requests`
 
 #### quality_pipeline.py — 12 novos checks EASM (checks 11–21)
+
 - HSTS, COOP/CORP/COEP, rate limiting, host validation, connection timeouts
 - Server identity suppression, upgrade-insecure-requests
 - Prototype pollution guard, open redirect guard, safe JSON parse, deep freeze
@@ -1367,6 +1507,7 @@ Todas as leis foram consultadas nos textos consolidados do Planalto.gov.br:
 ### Adicionado
 
 #### Portal de Direitos PcD
+
 - 9 categorias: BPC, CIPTEA, Educação, Plano de Saúde, SUS/Terapias, Transporte, Trabalho, FGTS, Moradia
 - Base de conhecimento JSON com 20 fontes oficiais do governo brasileiro (gov.br)
 - 12 instituições de apoio (governamentais, ONGs, profissionais)
@@ -1378,6 +1519,7 @@ Todas as leis foram consultadas nos textos consolidados do Planalto.gov.br:
 - Links úteis dinâmicos, hero stats dinâmicos, banner de conteúdo desatualizado
 
 #### Segurança & Privacidade
+
 - Criptografia AES-GCM-256 via Web Crypto API para documentos no IndexedDB
 - TTL de 15 minutos com auto-expiração e limpeza automática
 - CryptoKey com `extractable: false` (não-exportável)
@@ -1392,6 +1534,7 @@ Todas as leis foram consultadas nos textos consolidados do Planalto.gov.br:
 - Conformidade com LGPD Art. 4º, I
 
 #### Infraestrutura (Azure App Service)
+
 - Azure App Service B1 Linux + Key Vault + PFX SSL (BYOC, SNI)
 - Application Insights com geolocalização de usuários e Live Metrics
 - Log Analytics Workspace (30 dias de retenção)
@@ -1402,6 +1545,7 @@ Todas as leis foram consultadas nos textos consolidados do Planalto.gov.br:
 - server.js — Node.js 20 LTS com gzip, cache headers, security headers
 
 #### Quality Gate
+
 - quality_pipeline.py — 17 categorias de verificação automática
 - Score mínimo de 75 para deploy (score atual: 99.9/100)
 - Scan automático de segredos (chaves, tokens, certificados)
@@ -1410,6 +1554,7 @@ Todas as leis foram consultadas nos textos consolidados do Planalto.gov.br:
 - Modo CI (`--ci`, `--min-score`) com exit code para pipelines
 
 #### Interface & Acessibilidade
+
 - Design responsivo com dark mode automático (prefers-color-scheme)
 - Modal de disclaimer legal (obrigatório na 1ª visita)
 - 15+ atributos ARIA, aria-live, tabindex, :focus-visible
@@ -1418,6 +1563,7 @@ Todas as leis foram consultadas nos textos consolidados do Planalto.gov.br:
 - Favicons (favicon.ico, favicon-32x32.png, apple-touch-icon.png)
 
 #### Documentação & Governança
+
 - GOVERNANCE.md — critérios para fontes, categorias, revisão periódica
 - SECURITY.md — política de divulgação de vulnerabilidades e boas práticas
 - SECURITY_AUDIT.md — auditoria de segurança documentada

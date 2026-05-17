@@ -1,6 +1,6 @@
 # NossoDireito — Documento Único de Compliance
 
-**Versão:** 1.14.8 (consolidado de múltiplos documentos)
+**Versão:** 1.15.0 (consolidado de múltiplos documentos)
 **Data:** 28 de fevereiro de 2026
 **Responsável:** Fabio Costa (38567767+fabiotreze@users.noreply.github.com)
 **Tipo:** Compliance Legal, Técnico, Segurança, Privacidade, Acessibilidade, Qualidade
