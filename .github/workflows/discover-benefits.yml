@@ -1,5 +1,5 @@
 # NossoDireito — Descoberta Automática de Novos Benefícios PcD
-# Executa a cada 15 dias (1º e 15 de cada mês) + manual.
+# Executa mensalmente (dia 1º de cada mês) + manual.
 # Busca em fontes oficiais (DOU, Senado, gov.br, LexML) por novos
 # direitos, leis e serviços para PcD que ainda não estão no sistema.
 # Se encontrar candidatos, cria uma issue para revisão humana.
@@ -8,8 +8,8 @@ name: Descoberta de Novos Benefícios PcD
 
 on:
   schedule:
-    # 1º e 15 de cada mês às 10:00 UTC (07:00 BRT)
-    - cron: "0 10 1,15 * *"
+    # 1º de cada mês às 10:00 UTC (07:00 BRT)
+    - cron: "0 10 1 * *"
   workflow_dispatch:
     inputs:
       since_days:
