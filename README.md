@@ -30,6 +30,10 @@ Quando uma família recebe um laudo médico de deficiência — seja TEA (Transt
 
 Este projeto responde essa pergunta de forma clara, objetiva e validada.
 
+### 🌐 About (English)
+
+**NossoDireito — Rights Portal for People with Disabilities.** Regional project — interface and content in Portuguese (pt-BR) for Brazilian citizens. Web portal with **30 rights categories**, 68 official sources, keyword-based document analysis (609 mapped terms), accessibility tools (VLibras sign language, TTS, high contrast, font scaling), PWA offline support, and encrypted storage via Web Crypto API. **Zero data collection (LGPD compliant).** Master Compliance 100% (1059.9/1059.9 — 21 validation categories). Infrastructure as Code with Terraform on Azure App Service (region `brazilsouth`), CI/CD via GitHub Actions with automated Quality Gate.
+
 ---
 
 ## 🚀 Quick Start

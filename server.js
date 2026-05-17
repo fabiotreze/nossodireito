@@ -773,6 +773,51 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
+  // ── Dynamic sitemap.xml — lastmod = current date (build-free) ──
+  if (urlPath === "/sitemap.xml") {
+    const today = new Date().toISOString().split("T")[0];
+    const xml = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://${CANONICAL_HOST}/</loc>
+    <lastmod>${today}</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+</urlset>
+`;
+    res.writeHead(200, {
+      "Content-Type": "application/xml; charset=utf-8",
+      "Cache-Control": "public, max-age=3600",
+      ...SECURITY_HEADERS,
+    });
+    res.end(req.method === "HEAD" ? "" : xml);
+    return;
+  }
+
+  // ── /.well-known/security.txt (RFC 9116) ──
+  // resolveFile rejeita paths começando com "." por segurança, então
+  // servimos via rota explícita.
+  if (urlPath === "/.well-known/security.txt") {
+    const expires = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString();
+    const txt = `# NossoDireito — Security Policy
+# RFC 9116: https://www.rfc-editor.org/rfc/rfc9116
+
+Contact: mailto:38567767+fabiotreze@users.noreply.github.com
+Expires: ${expires}
+Preferred-Languages: pt-BR, en
+Canonical: https://${CANONICAL_HOST}/.well-known/security.txt
+Policy: https://github.com/fabiotreze/nossodireito/security/policy
+`;
+    res.writeHead(200, {
+      "Content-Type": "text/plain; charset=utf-8",
+      "Cache-Control": "public, max-age=86400",
+      ...SECURITY_HEADERS,
+    });
+    res.end(req.method === "HEAD" ? "" : txt);
+    return;
+  }
+
   const fullPath = await resolveFile(urlPath);
 
   if (!fullPath) {

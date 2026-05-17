@@ -28,6 +28,9 @@ subscription_id = "YOUR_AZURE_SUBSCRIPTION_ID"
 
 # --- Domínio customizado (2 etapas) ---
 # Etapa 1: Deploy sem domínio → copie o default_hostname → configure CNAME no DNS
+#   DNS de fabiotreze.com está no Cloudflare (não no registrar).
+#   Criar CNAME: nossodireito → app-nossodireito-br.azurewebsites.net
+#   Proxy status: DNS only (cinza) para validação inicial.
 # Etapa 2: Habilite as linhas abaixo e faça terraform apply novamente
 #
 # custom_domain        = "nossodireito.fabiotreze.com"

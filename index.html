@@ -138,6 +138,38 @@
         border: 0;
       }
 
+      /* SEO summary block — visible, collapsible, fully indexable.
+         Content stays in DOM regardless of <details> open state. */
+      .seo-resumo {
+        max-width: 920px;
+        margin: 2.5rem auto 1.5rem;
+        padding: 1rem 1.25rem;
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        font-size: 0.95rem;
+        line-height: 1.55;
+      }
+      .seo-resumo > summary {
+        cursor: pointer;
+        font-weight: 700;
+        font-size: 1.05rem;
+        color: #1e3a8a;
+        padding: 0.5rem 0;
+        list-style: none;
+      }
+      .seo-resumo > summary::-webkit-details-marker { display: none; }
+      .seo-resumo > summary::before {
+        content: "▶";
+        display: inline-block;
+        margin-right: 0.5rem;
+        transition: transform 0.2s;
+      }
+      .seo-resumo[open] > summary::before { transform: rotate(90deg); }
+      .seo-resumo h2,
+      .seo-resumo h3 { color: #1e3a8a; margin-top: 1.25rem; }
+      .seo-resumo p { margin: 0.5rem 0; }
+
       .skip-link {
         position: absolute;
         top: -100%;
@@ -477,6 +509,93 @@
           "@type": "SpeakableSpecification",
           "cssSelector": [".hero-content h1", ".hero-tagline", ".hero-sub"]
         }
+      }
+    </script>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Article",
+        "headline": "Direitos PcD 2026 — Guia Completo BPC, CIPTEA, Escola Inclusiva",
+        "description": "Guia atualizado de 30 categorias de direitos e benefícios para pessoas com deficiência no Brasil — BPC/LOAS, CIPTEA, educação inclusiva, plano de saúde, cotas, isenções, aposentadoria especial.",
+        "image": "https://nossodireito.fabiotreze.com/images/nossodireito-1200.png",
+        "datePublished": "2025-01-01",
+        "dateModified": "2026-05-17",
+        "inLanguage": "pt-BR",
+        "mainEntityOfPage": { "@type": "WebPage", "@id": "https://nossodireito.fabiotreze.com/" },
+        "author": { "@type": "Organization", "name": "NossoDireito", "url": "https://nossodireito.fabiotreze.com/" },
+        "publisher": {
+          "@type": "Organization",
+          "name": "NossoDireito",
+          "url": "https://nossodireito.fabiotreze.com/",
+          "logo": { "@type": "ImageObject", "url": "https://nossodireito.fabiotreze.com/images/nossodireito-400.png" }
+        },
+        "about": [
+          { "@type": "Thing", "name": "Benefício de Prestação Continuada (BPC/LOAS)" },
+          { "@type": "Thing", "name": "Carteira de Identificação da Pessoa com TEA (CIPTEA)" },
+          { "@type": "Thing", "name": "Educação Inclusiva" },
+          { "@type": "Thing", "name": "Cotas PcD no Mercado de Trabalho" },
+          { "@type": "Thing", "name": "Aposentadoria Especial PcD" }
+        ],
+        "keywords": "direitos PcD, BPC, CIPTEA, autismo, TEA, deficiência, educação inclusiva, cotas, isenção IPI, aposentadoria especial, LBI, Lei 13.146"
+      }
+    </script>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "HowTo",
+        "name": "Como solicitar o BPC/LOAS (Benefício de Prestação Continuada) para PcD",
+        "description": "Passo a passo para solicitar o BPC — benefício de 1 salário mínimo mensal para pessoa com deficiência de baixa renda, previsto na Lei 8.742/1993 (LOAS).",
+        "inLanguage": "pt-BR",
+        "totalTime": "P30D",
+        "estimatedCost": { "@type": "MonetaryAmount", "currency": "BRL", "value": "0" },
+        "supply": [
+          { "@type": "HowToSupply", "name": "Documento de identidade (RG ou CNH)" },
+          { "@type": "HowToSupply", "name": "CPF" },
+          { "@type": "HowToSupply", "name": "Comprovante de residência" },
+          { "@type": "HowToSupply", "name": "Laudo médico com CID e descrição da deficiência" },
+          { "@type": "HowToSupply", "name": "Comprovantes de renda familiar" }
+        ],
+        "tool": [
+          { "@type": "HowToTool", "name": "Aplicativo Meu INSS (Android/iOS) ou site meu.inss.gov.br" },
+          { "@type": "HowToTool", "name": "Telefone 135 (central INSS)" }
+        ],
+        "step": [
+          {
+            "@type": "HowToStep",
+            "position": 1,
+            "name": "Inscrever a família no CadÚnico",
+            "text": "Procure o CRAS (Centro de Referência de Assistência Social) mais próximo e faça a inscrição no Cadastro Único. A renda familiar per capita deve ser inferior a 1/4 do salário mínimo.",
+            "url": "https://nossodireito.fabiotreze.com/#cadunico"
+          },
+          {
+            "@type": "HowToStep",
+            "position": 2,
+            "name": "Reunir documentação e laudo médico",
+            "text": "Obtenha laudo médico atualizado com CID da deficiência e descrição funcional. Reúna documentos pessoais, comprovante de residência e de renda de todos os membros da família.",
+            "url": "https://nossodireito.fabiotreze.com/#documentos"
+          },
+          {
+            "@type": "HowToStep",
+            "position": 3,
+            "name": "Agendar perícia no INSS",
+            "text": "Pelo Meu INSS (app ou meu.inss.gov.br) ou ligando 135, solicite o BPC para Pessoa com Deficiência. Será agendada perícia biopsicossocial.",
+            "url": "https://nossodireito.fabiotreze.com/#agendamento"
+          },
+          {
+            "@type": "HowToStep",
+            "position": 4,
+            "name": "Comparecer à perícia biopsicossocial",
+            "text": "A avaliação é feita por médico e assistente social do INSS. Leve todos os laudos, exames e relatórios. A perícia analisa impedimentos físicos, sensoriais, mentais ou intelectuais de longo prazo.",
+            "url": "https://nossodireito.fabiotreze.com/#pericia"
+          },
+          {
+            "@type": "HowToStep",
+            "position": 5,
+            "name": "Acompanhar resultado no Meu INSS",
+            "text": "Resultado sai em até 45 dias. Em caso de negativa, é possível recorrer administrativamente em 30 dias ou pela via judicial via Defensoria Pública.",
+            "url": "https://nossodireito.fabiotreze.com/#resultado"
+          }
+        ]
       }
     </script>
     <script type="application/ld+json">
@@ -1248,8 +1367,9 @@
     </noscript>
     <main id="mainContent">
       <!-- SEO: Conteúdo semântico pré-renderizado para indexação por buscadores.
-             Visually hidden (sr-only) mas SEM aria-hidden para que robôs indexem o texto. -->
-      <div id="seo-content" class="sr-only">
+             Visível via <details>, totalmente indexado (DOM estático). -->
+      <details id="seo-content" class="seo-resumo">
+        <summary>📑 Resumo em texto — todos os direitos PcD (BPC, CIPTEA, Educação, Saúde, Cotas...)</summary>
         <article>
           <h2>Direitos e Benefícios para Pessoas com Deficiência (PcD) no Brasil</h2>
           <p>
@@ -1373,7 +1493,7 @@
             municipais específicos para pessoas com deficiência.
           </p>
         </article>
-      </div>
+      </details>
       <div id="stalenessBanner" class="staleness-banner" hidden role="alert">
         <div class="container">
           <p>

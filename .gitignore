@@ -21,16 +21,29 @@ venv/
 *.pem
 *.key
 *.p12
+*.crt
+*.cer
+*.jks
 *.env
 .env*
+secrets/
+credentials/
+*.secret
+auth.json
+service-principal*.json
+azure-credentials*.json
 
 # Terraform
 terraform/.terraform/
 terraform/*.tfstate
-terraform/*.tfstate.backup
+terraform/*.tfstate.*
 terraform/*.tfvars
+!terraform/*.tfvars.example
 terraform/.terraform.lock.hcl
 terraform/crash.log
+terraform/.terraform.tfstate.lock.info
+*.tfplan
+*.tfplan.json
 
 # Temporary
 *.tmp
@@ -55,9 +68,6 @@ screenshots/
 # Node.js
 node_modules/
 package-lock.json
-
-# Documentos internos (não publicar)
-docs/GOOGLE_SEARCH_CONSOLE.md
 
 # Backups temporários
 backup/
