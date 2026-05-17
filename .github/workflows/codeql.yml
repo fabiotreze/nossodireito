@@ -1,0 +1,62 @@
+name: CodeQL
+
+# CodeQL Advanced — análise estática de segurança para JavaScript + Python.
+# Por que custom (não default): cobre 2 linguagens, custom queries de security-extended,
+# e schedule semanal para detectar CVEs novos em padrões antigos.
+#
+# Conformidade:
+#  - LGPD: ajuda a detectar vazamento de PII em logs (security-and-quality suite).
+#  - SECURITY.md: alimenta o canal de Private Vulnerability Reporting com sinais reais.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  schedule:
+    # Segunda-feira 03:00 UTC — pega CVEs publicados no fim de semana
+    - cron: "0 3 * * 1"
+
+# Cancela runs antigos do mesmo branch para economizar minutos
+concurrency:
+  group: codeql-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  security-events: write # publica alertas na aba Security
+  actions: read
+  packages: read
+
+jobs:
+  analyze:
+    name: Analyze (${{ matrix.language }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - language: javascript-typescript
+            build-mode: none
+          - language: python
+            build-mode: none
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: ${{ matrix.language }}
+          build-mode: ${{ matrix.build-mode }}
+          # security-and-quality = security-extended + maintainability + reliability.
+          # Inclui detectores de PII, SSRF, XSS, prototype pollution, path traversal.
+          queries: security-and-quality
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3
+        with:
+          category: "/language:${{ matrix.language }}"
