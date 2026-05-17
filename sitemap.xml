@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Sitemap NossoDireito
+  NOTA: Google ignora fragmentos (#) em URLs. Como o site é uma SPA (Single Page Application)
+  com hash-based routing, apenas a URL principal é indexável.
+  O conteúdo de cada seção é indexado via structured data (Schema.org) e conteúdo
+  pré-renderizado no HTML estático (SEO content block).
+-->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <!-- Página principal — contém todo o conteúdo (SPA) -->
+  <url>
+    <loc>https://nossodireito.fabiotreze.com/</loc>
+    <lastmod>2026-05-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+  </url>
+</urlset>

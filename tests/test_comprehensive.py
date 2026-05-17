@@ -565,8 +565,8 @@ class TestHTMLIntegrity:
 
     def test_seo_content_not_aria_hidden(self, index_html):
         """Bloco #seo-content NÃO deve ter aria-hidden (robôs devem indexar)"""
-        # Procura o div seo-content e verifica que NÃO tem aria-hidden
-        seo_match = re.search(r'<div[^>]*id="seo-content"[^>]*>', index_html)
+        # Aceita <div> ou <details> como container do bloco SEO.
+        seo_match = re.search(r'<(?:div|details)[^>]*id="seo-content"[^>]*>', index_html)
         assert seo_match, "Bloco #seo-content não encontrado"
         tag = seo_match.group(0)
         assert 'aria-hidden' not in tag, \
