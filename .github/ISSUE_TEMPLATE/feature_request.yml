@@ -1,0 +1,25 @@
+name: 💡 Sugestão de melhoria
+description: Sugira novo conteúdo, direito não coberto, correção legal
+labels: [enhancement]
+body:
+  - type: textarea
+    id: idea
+    attributes:
+      label: Qual a sugestão?
+      placeholder: Ex. faltou citar a Lei XYZ no benefício de transporte.
+    validations:
+      required: true
+  - type: textarea
+    id: source
+    attributes:
+      label: Fonte oficial (lei, decreto, portaria, site .gov.br)
+      placeholder: Cole o link da fonte oficial. Sugestões sem fonte verificável não são aceitas.
+    validations:
+      required: true
+  - type: checkboxes
+    id: scope
+    attributes:
+      label: Escopo
+      options:
+        - label: Sei que este projeto NÃO substitui orientação profissional e é educacional
+          required: true

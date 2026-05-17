@@ -1,0 +1,33 @@
+name: gitleaks
+
+# Scan de secrets vazados em código + histórico git.
+# Roda em todo push/PR para main e semanalmente.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  schedule:
+    - cron: "0 6 * * 1" # toda segunda 06:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  security-events: write # upload SARIF
+  pull-requests: write # comentar achados em PR
+
+jobs:
+  scan:
+    name: gitleaks scan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # histórico completo
+
+      - name: gitleaks
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # GITLEAKS_LICENSE só é necessária para orgs > 25 users; este é um repo pessoal

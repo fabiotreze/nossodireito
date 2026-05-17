@@ -198,6 +198,25 @@ resource "azurerm_linux_web_app" "main" {
     http2_enabled                     = true
   }
 
+  # ── Diagnostic logs (CKV_AZURE_63, CKV_AZURE_65, CKV_AZURE_66) ──
+  # HTTP logs + failed request tracing + detailed errors
+  # Retenção curta (3 dias) por ser ambiente DEV — sem PII (IPs anonimizados pelo server.js)
+  logs {
+    detailed_error_messages = true
+    failed_request_tracing  = true
+
+    application_logs {
+      file_system_level = "Information"
+    }
+
+    http_logs {
+      file_system {
+        retention_in_days = 3
+        retention_in_mb   = 35
+      }
+    }
+  }
+
   app_settings = merge(
     {
       WEBSITE_REDIRECT_ALL_TRAFFIC_TO_HTTPS = "1"

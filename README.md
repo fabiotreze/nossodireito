@@ -13,6 +13,10 @@
 [![Version](https://img.shields.io/github/v/tag/fabiotreze/nossodireito?style=flat-square&label=version)](CHANGELOG.md)
 [![Quality Gate](https://github.com/fabiotreze/nossodireito/actions/workflows/quality-gate.yml/badge.svg)](https://github.com/fabiotreze/nossodireito/actions/workflows/quality-gate.yml)
 [![Tests](https://img.shields.io/github/actions/workflow/status/fabiotreze/nossodireito/quality-gate.yml?label=tests&style=flat-square&logo=pytest)](docs/QUALITY_GUIDE.md)
+[![CodeQL](https://github.com/fabiotreze/nossodireito/actions/workflows/codeql.yml/badge.svg)](https://github.com/fabiotreze/nossodireito/actions/workflows/codeql.yml)
+[![gitleaks](https://github.com/fabiotreze/nossodireito/actions/workflows/gitleaks.yml/badge.svg)](https://github.com/fabiotreze/nossodireito/actions/workflows/gitleaks.yml)
+[![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/fabiotreze/nossodireito/badge)](https://securityscorecards.dev/viewer/?uri=github.com/fabiotreze/nossodireito)
+[![npm audit](https://img.shields.io/badge/npm%20audit-0%20vulnerabilities-brightgreen?style=flat-square&logo=npm)](package.json)
 
 **Recebeu um laudo? Vem que a gente te ajuda.**
 

@@ -237,6 +237,30 @@ jobs:
       - name: Terraform Validate
         run: terraform validate
 
+      # ── tflint (provider-aware lint, deprecated args, SKU validation) ──
+      - name: Setup tflint
+        uses: terraform-linters/setup-tflint@v4
+        with:
+          tflint_version: v0.55.1
+
+      - name: tflint init
+        run: tflint --init
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: tflint recursive
+        run: tflint --recursive --format compact
+
+      # ── checkov (security/compliance: LGPD, CIS, NIST) ──
+      # Skips documentados em .checkov.yaml
+      - name: checkov
+        uses: bridgecrewio/checkov-action@v12
+        with:
+          directory: terraform/
+          config_file: .checkov.yaml
+          quiet: true
+          soft_fail: false # quebra o build em vulns HIGH/CRITICAL não-skippadas
+
       # ── Garantir acesso do Microsoft.Web RP ao Key Vault (via az CLI) ──
       # O RP precisa de acesso para ler o certificado do KV.
       # Usa az keyvault set-policy --spn que resolve o app ID internamente.

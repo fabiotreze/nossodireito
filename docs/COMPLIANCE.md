@@ -1,10 +1,28 @@
 # NossoDireito — Documento Único de Compliance
 
-**Versão:** 1.15.0 (consolidado de múltiplos documentos)
-**Data:** 28 de fevereiro de 2026
-**Responsável:** Fabio Costa (38567767+fabiotreze@users.noreply.github.com)
+**Versão:** 1.16.0
+**Data:** 17 de maio de 2026
+**Responsável (Titular / DPO de facto):** Fabio Costa — `38567767+fabiotreze@users.noreply.github.com`
 **Tipo:** Compliance Legal, Técnico, Segurança, Privacidade, Acessibilidade, Qualidade
 **Framework:** ISO 27001 + SOC 2 + LGPD + LBI
+
+> ## §0 — Natureza do Ambiente (LEIA PRIMEIRO)
+>
+> Este projeto é **mantido por pessoa física** (sem CNPJ, sem fins econômicos),
+> hospedado em **infraestrutura Azure de desenvolvimento/POC** (App Service B1,
+> região única `brazilsouth`, sem alta disponibilidade multi-região).
+>
+> Embora aplique práticas equivalentes a produção corporativa (HTTPS-only,
+> CSP, telemetria sem PII, IPs anonimizados via SHA-256, criptografia
+> AES-GCM-256 no IndexedDB do usuário, SRI nos CDNs, scans automatizados de
+> dependências e secrets em CI/CD), **o serviço é oferecido "AS-IS"**, sem
+> SLA, sem garantia de disponibilidade contínua e sem responsabilidade do
+> mantenedor pelo uso da informação.
+>
+> **LGPD Art. 4º, I** — o tratamento não-econômico realizado por pessoa
+> natural está fora do escopo regulamentar; ainda assim, este projeto adota
+> voluntariamente o princípio da **minimização** (não coleta) e da
+> **anonimização** (telemetria operacional sem IP/identificadores).
 
 ---
 
