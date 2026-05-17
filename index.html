@@ -101,8 +101,23 @@
 
       html {
         scroll-behavior: smooth;
-        scroll-padding-top: 120px;
+        /* Compensa AMBOS os elementos sticky no topo: #legalBanner (~70-140px, varia c/ wrap em mobile) + .navbar (64px).
+           Antes era 120px (só navbar) e causava bug de "primeiro clique não pula" em âncoras como #disclaimerInline. */
+        scroll-padding-top: 220px;
         font-size: 16px;
+      }
+
+      /* Defesa extra: alvos de âncora explícitos garantem offset correto mesmo se a altura do banner mudar (ex.: wrap em mobile). */
+      :target,
+      #disclaimerInline,
+      [id^="benefit-"],
+      section[id] {
+        scroll-margin-top: 220px;
+      }
+
+      @media (max-width: 600px) {
+        html { scroll-padding-top: 260px; }
+        :target, #disclaimerInline, [id^="benefit-"], section[id] { scroll-margin-top: 260px; }
       }
 
       body {
