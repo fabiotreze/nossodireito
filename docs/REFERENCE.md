@@ -1,7 +1,7 @@
 # Referência — NossoDireito
 
 > **Status:** 🟢 Ativo
-> **Versão:** 1.15.0 | **Atualizado:** 2026-05-17
+> **Versão:** 1.16.0 | **Atualizado:** 2026-05-17
 > **Escopo:** Guia completo de benefícios PcD, mapa de dependências, lógica de ordenação
 > **Consolida:** BENEFICIOS_COMPLETOS_PCD + DEPENDENCY_CONTROL + SITE_ORDERING_CRITERIA
 
