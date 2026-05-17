@@ -126,9 +126,11 @@ resource "azurerm_log_analytics_workspace" "main" {
 }
 
 # --- Application Insights ---
-# Telemetria anônima: page views, tempos de resposta, erros, métricas de
-# performance. IPs mascarados na ingestão (armazenados como 0.0.0.0).
-# Geolocalização derivada apenas em nível país/estado. Zero PII armazenado.
+# Telemetria 100% anônima (LGPD Zero IP Collection):
+#   - disable_ip_masking = false  → IPs armazenados como 0.0.0.0 na ingestão
+#   - Telemetry processor no server.js remove ai.location.ip + User-Agent + query strings
+#   - Geolocalização desabilitada (sem país/estado derivado de IP)
+#   - Retenção mínima (30d) + daily cap para limitar exposição
 # Portal: portal.azure.com > App Insights.
 resource "azurerm_application_insights" "main" {
   name                = local.app_insights_name
@@ -137,7 +139,25 @@ resource "azurerm_application_insights" "main" {
   workspace_id        = azurerm_log_analytics_workspace.main.id
   application_type    = "Node.JS"
 
-  tags = local.tags
+  # LGPD: mantém o IP masking ATIVO (false = não desabilita masking → IP vira 0.0.0.0).
+  # Microsoft API contra-intuitiva: o nome é "disable_ip_masking" mas false = masking ON.
+  # Ref: https://learn.microsoft.com/azure/azure-monitor/app/ip-collection
+  disable_ip_masking = false
+
+  # Retenção mínima necessária para troubleshooting (LGPD: princípio da necessidade — Art. 6º III).
+  retention_in_days = 30
+
+  # Daily cap previne explosão de custos e limita superficie de dados retidos.
+  daily_data_cap_in_gb                  = 1
+  daily_data_cap_notifications_disabled = false
+
+  # Sampling reduz volume sem comprometer análise estatística.
+  sampling_percentage = 100
+
+  tags = merge(local.tags, {
+    "LGPDClassification" = "no-pii"
+    "DataCollection"     = "anonymous-only"
+  })
 }
 
 # --- App Service Plan (Linux) ---
@@ -178,15 +198,18 @@ resource "azurerm_linux_web_app" "main" {
     http2_enabled                     = true
   }
 
-  app_settings = {
-    WEBSITE_REDIRECT_ALL_TRAFFIC_TO_HTTPS = "1"
-    NODE_ENV                              = "production"
-    SCM_DO_BUILD_DURING_DEPLOYMENT        = "false"
-    APPLICATIONINSIGHTS_CONNECTION_STRING = azurerm_application_insights.main.connection_string
-    # Codeless agent DESABILITADO — o server.js já usa o SDK applicationinsights manualmente.
-    # Ter ambos causa: "Attempted duplicate registration of API: propagation"
-    ApplicationInsightsAgent_EXTENSION_VERSION = "disabled"
-  }
+  app_settings = merge(
+    {
+      WEBSITE_REDIRECT_ALL_TRAFFIC_TO_HTTPS = "1"
+      NODE_ENV                              = "production"
+      SCM_DO_BUILD_DURING_DEPLOYMENT        = "false"
+      APPLICATIONINSIGHTS_CONNECTION_STRING = azurerm_application_insights.main.connection_string
+      # Codeless agent DESABILITADO — o server.js já usa o SDK applicationinsights manualmente.
+      # Ter ambos causa: "Attempted duplicate registration of API: propagation"
+      ApplicationInsightsAgent_EXTENSION_VERSION = "disabled"
+    },
+    local.doc_intelligence_app_settings, # Endpoint Doc Intelligence (vazio se desabilitado)
+  )
 
   tags = local.tags
 }

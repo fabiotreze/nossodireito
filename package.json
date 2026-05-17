@@ -6,9 +6,12 @@
   "scripts": {
     "start": "node server.js",
     "test": "python -m pytest tests/ -v --tb=short --ignore=tests/test_browser.py",
+    "test:js": "node --test tests/*.test.mjs",
     "validate": "python scripts/validate_all.py --quick"
   },
   "dependencies": {
+    "@azure/ai-form-recognizer": "^5.0.0",
+    "@azure/identity": "^4.5.0",
     "applicationinsights": "^3.4.0"
   },
   "engines": {
