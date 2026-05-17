@@ -4,16 +4,15 @@
 
 # ⚖️ NossoDireito
 
-[![Master Compliance](https://img.shields.io/badge/Master%20Compliance-100.0%25%20(1104.2%2F1104.2)-brightgreen?style=flat-square)](docs/COMPLIANCE.md)
-[![WAF 5 Pillars](https://img.shields.io/badge/WAF%205%20Pillars-100%25-success?style=flat-square)](docs/ARCHITECTURE.md)
+[![Compliance](https://img.shields.io/badge/Compliance-100%25-brightgreen?style=flat-square)](docs/COMPLIANCE.md)
+[![Azure WAF](https://img.shields.io/badge/Azure%20WAF-Aligned-success?style=flat-square&logo=microsoftazure)](docs/ARCHITECTURE.md)
 [![Security](https://img.shields.io/badge/Security-HTTPS%20%7C%20CSP%20%7C%20Zero%20Tracking-green?style=flat-square&logo=letsencrypt)](SECURITY.md)
 [![Accessibility](https://img.shields.io/badge/Accessibility-ARIA%20%7C%20VLibras%20%7C%20WCAG-blue?style=flat-square&logo=accessible-icon)](docs/ACCESSIBILITY.md)
 [![LGPD](https://img.shields.io/badge/LGPD-Zero%20Data%20Collection-blue?style=flat-square)](docs/COMPLIANCE.md)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow?style=flat-square)](LICENSE)
-[![Version](https://img.shields.io/badge/Version-1.14.8-informational?style=flat-square)](CHANGELOG.md)
+[![Version](https://img.shields.io/github/v/tag/fabiotreze/nossodireito?style=flat-square&label=version)](CHANGELOG.md)
 [![Quality Gate](https://github.com/fabiotreze/nossodireito/actions/workflows/quality-gate.yml/badge.svg)](https://github.com/fabiotreze/nossodireito/actions/workflows/quality-gate.yml)
-[![Deploy Azure App Service](https://github.com/fabiotreze/nossodireito/actions/workflows/deploy.yml/badge.svg)](https://github.com/fabiotreze/nossodireito/actions/workflows/deploy.yml)
-[![Tests](https://img.shields.io/badge/Tests-813%20passed%20(678%20unit%20%2B%20135%20E2E)-brightgreen?style=flat-square&logo=pytest)](docs/QUALITY_GUIDE.md)
+[![Tests](https://img.shields.io/github/actions/workflow/status/fabiotreze/nossodireito/quality-gate.yml?label=tests&style=flat-square&logo=pytest)](docs/QUALITY_GUIDE.md)
 
 **Recebeu um laudo? Vem que a gente te ajuda.**
 
@@ -72,6 +71,7 @@ Para rodar testes: veja [`docs/QUALITY_GUIDE.md`](docs/QUALITY_GUIDE.md)
 ## ✨ Funcionalidades
 
 ### 📋 **30 Categorias de Direitos**
+
 - **BPC/LOAS** — Benefício de Prestação Continuada (1 salário mínimo/mês)
 - **CIPTEA** — Carteira de Identificação da Pessoa com TEA
 - **Educação Inclusiva** — Matrícula obrigatória, acompanhante especializado
@@ -84,12 +84,14 @@ Para rodar testes: veja [`docs/QUALITY_GUIDE.md`](docs/QUALITY_GUIDE.md)
 - **+ 21 outras categorias** (Isenções tributárias, tecnologia assistiva, meia-entrada, ProUni/FIES/SISU, esporte paralímpico, turismo acessível, curatela, lazer, etc.)
 
 ### 🔍 **Busca Inteligente**
+
 - **Matching Engine** com algoritmo de busca semântica
 - Reconhece sinônimos e variações (ex: "autismo" → "TEA", "pessoa com deficiência" → "PcD")
 - Sistema de pesos para priorizar resultados mais relevantes
 - Busca por keywords em 751+ termos mapeados (cobre 6 segmentos: visão, audição, mobilidade, saúde mental, neurodiversidade e fala)
 
 ### ♿ **Acessibilidade Máxima**
+
 - **50+ atributos ARIA** (WCAG 2.1 AA/AAA)
 - **VLibras** integrado (tradução em Libras do governo federal)
 - **Leitura em voz alta** (Web Speech API nativa)
@@ -99,6 +101,7 @@ Para rodar testes: veja [`docs/QUALITY_GUIDE.md`](docs/QUALITY_GUIDE.md)
 - **Design responsivo** (mobile-first)
 
 ### 🔒 **100% Privado**
+
 - **Zero coleta de dados** (LGPD total)
 - **Sem cookies de rastreamento**
 - **Sem anúncios**
@@ -106,6 +109,7 @@ Para rodar testes: veja [`docs/QUALITY_GUIDE.md`](docs/QUALITY_GUIDE.md)
 - Processamento local (navegador do usuário)
 
 ### 📚 **Documentação Oficial**
+
 - 40+ leis federais referenciadas com artigos específicos
 - URLs verificadas de fontes oficiais (planalto.gov.br, gov.br, inss.gov.br)
 - Última atualização: 25 de fevereiro de 2026
@@ -154,6 +158,7 @@ node server.js
 ## 🛠️ Tecnologias
 
 ### **Frontend**
+
 - **HTML5** — Estrutura semântica (nav, main, section, header, footer)
 - **CSS3** — Design responsivo, mobile-first, variáveis CSS
 - **JavaScript (Vanilla)** — Zero dependências externas
@@ -161,16 +166,19 @@ node server.js
 - **Service Worker** — Cache inteligente, funcionalidade offline
 
 ### **Dados**
+
 - **JSON** — direitos.json (30 categorias, 265KB) + matching_engine.json (106KB) + dicionario_pcd.json (72KB)
 - **Compressão** — Minificação de HTML/CSS/JS
 
 ### **Infraestrutura (IaC)**
+
 - **Terraform** — Provisionamento automático Azure
 - **Azure App Service** — Hospedagem (Linux, Node.js 22 LTS)
 - **Azure Blob Storage** — Armazenamento de assets
 - **GitHub Actions** — CI/CD automatizado
 
 ### **Validação e Qualidade**
+
 - **Python 3.10+** — Scripts de validação
 - **validate_content.py** — 147 verificações de dados e código
 - **validate_sources.py** — Teste de HTTP status de 40+ URLs
@@ -179,12 +187,14 @@ node server.js
 - **Pre-commit Hook** — Validação automática antes de cada commit
 
 ### **Segurança**
+
 - **HTTPS** obrigatório (Let's Encrypt)
 - **CSP** (Content Security Policy) configurado
 - **No tracking** (zero cookies de terceiros)
 - **LGPD compliant**
 
 ### **Acessibilidade**
+
 - **ARIA roles, labels, descriptions** (50+ atributos)
 - **VLibras** (gov.br/vlibras)
 - **Semântica HTML5**
@@ -192,6 +202,7 @@ node server.js
 - **Contraste WCAG AAA**
 
 ### **SEO**
+
 - **Meta tags** completas (description, keywords, og:title, og:description)
 - **sitemap.xml** atualizado automaticamente
 - **robots.txt** configurado
@@ -215,21 +226,21 @@ node server.js
 
 ## 🛠 Tecnologia
 
-| Componente | Tecnologia |
-|---|---|
-| Frontend | HTML5 + CSS3 + Vanilla JavaScript |
-| Acessibilidade | Web Speech API (TTS) + VLibras (Libras) |
-| PWA | Service Worker + manifest.json (offline) |
-| Server | Node.js 22 LTS (`server.js`) |
-| Base de dados | JSON estático (`data/direitos.json`) |
-| Criptografia | AES-GCM-256 via Web Crypto API |
-| Hospedagem | Azure App Service B1 Linux |
-| SSL | PFX próprio via Azure Key Vault (SNI) |
-| IaC | Terraform (azurerm ~>4.0) |
-| CI/CD | GitHub Actions (Quality Gate + zip deploy) |
-| Monitoramento | Azure Application Insights |
-| Analytics de usuário | Nenhum (client-side) |
-| Cookies | Nenhum |
+| Componente           | Tecnologia                                 |
+| -------------------- | ------------------------------------------ |
+| Frontend             | HTML5 + CSS3 + Vanilla JavaScript          |
+| Acessibilidade       | Web Speech API (TTS) + VLibras (Libras)    |
+| PWA                  | Service Worker + manifest.json (offline)   |
+| Server               | Node.js 22 LTS (`server.js`)               |
+| Base de dados        | JSON estático (`data/direitos.json`)       |
+| Criptografia         | AES-GCM-256 via Web Crypto API             |
+| Hospedagem           | Azure App Service B1 Linux                 |
+| SSL                  | PFX próprio via Azure Key Vault (SNI)      |
+| IaC                  | Terraform (azurerm ~>4.0)                  |
+| CI/CD                | GitHub Actions (Quality Gate + zip deploy) |
+| Monitoramento        | Azure Application Insights                 |
+| Analytics de usuário | Nenhum (client-side)                       |
+| Cookies              | Nenhum                                     |
 
 ## 📁 Estrutura
 
@@ -322,6 +333,7 @@ Acesse `http://localhost:8080` (Node) ou `http://localhost:8000` (Python)
 ## ⚠️ Aviso Legal
 
 Este site é um **guia informacional** e **NÃO constitui**:
+
 - Assessoria ou consultoria jurídica
 - Orientação médica ou de saúde
 - Substituição a profissionais qualificados
@@ -348,4 +360,4 @@ Este é um projeto **open source, gratuito e sem fins lucrativos**, de caráter 
 
 ---
 
-*Feito com 💙 para as famílias que precisam de informação acessível.*
+_Feito com 💙 para as famílias que precisam de informação acessível._

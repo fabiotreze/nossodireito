@@ -116,7 +116,7 @@ Site carrega lento em redes 3G/2G devido ao tamanho do JavaScript (115 KB).
 **Como Reportar:**
 Se encontrar link quebrado:
 1. **GitHub Issue:** https://github.com/fabiotreze/nossodireito/issues
-2. **Email:** fabiotreze@hotmail.com (assunto: "Link Quebrado")
+2. **Email:** 38567767+fabiotreze@users.noreply.github.com (assunto: "Link Quebrado")
 
 **Resposta:**
 Reports serão analisados assim que possível. Não há SLA formal — projeto mantido por uma pessoa.
@@ -416,7 +416,7 @@ https://github.com/fabiotreze/nossodireito/issues/new
 ```
 
 **Opção 2: Email**
-fabiotreze@hotmail.com (assunto: "Bug NossoDireito")
+38567767+fabiotreze@users.noreply.github.com (assunto: "Bug NossoDireito")
 
 **Resposta:**
 Todo report será analisado assim que possível. Não há SLA formal — este é um projeto open source mantido por uma pessoa.
@@ -426,5 +426,5 @@ Todo report será analisado assim que possível. Não há SLA formal — este é
 ---
 
 **Última Atualização:** 26 de fevereiro de 2026
-**Responsável:** Fabio Costa (fabiotreze@hotmail.com)
+**Responsável:** Fabio Costa (38567767+fabiotreze@users.noreply.github.com)
 **Licença:** MIT

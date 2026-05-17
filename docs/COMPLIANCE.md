@@ -2,7 +2,7 @@
 
 **Versão:** 1.14.8 (consolidado de múltiplos documentos)
 **Data:** 28 de fevereiro de 2026
-**Responsável:** Fabio Costa (fabiotreze@hotmail.com)
+**Responsável:** Fabio Costa (38567767+fabiotreze@users.noreply.github.com)
 **Tipo:** Compliance Legal, Técnico, Segurança, Privacidade, Acessibilidade, Qualidade
 **Framework:** ISO 27001 + SOC 2 + LGPD + LBI
 
@@ -98,7 +98,7 @@
 - ✅ Modal disclaimer obrigatório no primeiro acesso
 - ✅ Explica zero-data collection em linguagem simples
 - ✅ Informa sobre Application Insights (anonimização)
-- ✅ Contact: fabiotreze@hotmail.com
+- ✅ Contact: 38567767+fabiotreze@users.noreply.github.com
 
 **Direitos dos Titulares (Art. 18):**
 - ✅ **Eliminação de dados**: Botão "Apagar Todos os Meus Dados" (localStorage + IndexedDB clear)
@@ -870,12 +870,12 @@ git commit -m "a11y: Melhora contraste (WCAG 2.1 AA 1.4.3)"
 ## 📞 Contato para Compliance
 
 **Responsável:** Fabio Costa
-**E-mail:** fabiotreze@hotmail.com
+**E-mail:** 38567767+fabiotreze@users.noreply.github.com
 **Função:** Maintainer & Compliance Officer (informal)
 
 **Para questões específicas:**
-- 🔒 **Privacidade/LGPD**: fabiotreze@hotmail.com
-- ♿ **Acessibilidade**: fabiotreze@hotmail.com
+- 🔒 **Privacidade/LGPD**: 38567767+fabiotreze@users.noreply.github.com
+- ♿ **Acessibilidade**: 38567767+fabiotreze@users.noreply.github.com
 - 📜 **Questões Legais**: Consultar Defensoria Pública (site não presta consultoria jurídica)
 
 ---

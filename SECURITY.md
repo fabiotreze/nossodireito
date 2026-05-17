@@ -13,7 +13,7 @@
 Se você encontrar uma vulnerabilidade de segurança neste projeto, por favor reporte de forma **responsável**:
 
 1. **NÃO** abra uma issue pública
-2. Envie um email para **fabiotreze@hotmail.com** com:
+2. Envie um email para **38567767+fabiotreze@users.noreply.github.com** com:
    - Descrição da vulnerabilidade
    - Passos para reproduzir
    - Impacto potencial

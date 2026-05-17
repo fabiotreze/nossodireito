@@ -44,7 +44,7 @@ Encontrou um link quebrado, lei revogada ou informação incorreta?
 
 ##### Opção B: Email (Alternativa)
 
-- **Para:** fabiotreze@hotmail.com
+- **Para:** 38567767+fabiotreze@users.noreply.github.com
 - **Assunto:** `NossoDireito — Conteúdo Desatualizado`
 - **Corpo:**
 
@@ -95,7 +95,7 @@ Conhece um benefício PcD que NÃO está no site?
 https://github.com/fabiotreze/nossodireito/issues/new?template=novo_beneficio.md
 
 **Email:**
-Envie as informações acima para fabiotreze@hotmail.com (assunto: "Novo Benefício")
+Envie as informações acima para 38567767+fabiotreze@users.noreply.github.com (assunto: "Novo Benefício")
 
 ---
 
@@ -208,7 +208,7 @@ Documentação never is enough! Ajude a documentar:
 **Planejado:** Suporte a Espanhol e Inglês (sem data definida).
 
 Se você fala esses idiomas e quer ajudar, entre em contato:
-fabiotreze@hotmail.com (assunto: "Tradução")
+38567767+fabiotreze@users.noreply.github.com (assunto: "Tradução")
 
 ---
 
@@ -234,7 +234,7 @@ Este projeto segue o [Contributor Covenant 2.1](https://www.contributor-covenant
 - ❌ Não tolere assédio, discriminação ou linguagem ofensiva
 
 **Reportar violações:**
-fabiotreze@hotmail.com (assunto: "Código de Conduta")
+38567767+fabiotreze@users.noreply.github.com (assunto: "Código de Conduta")
 
 ---
 
@@ -298,7 +298,7 @@ https://github.com/fabiotreze/nossodireito/issues?q=is%3Aissue
 ## 📞 Contato
 
 **Mantenedor Principal:**
-Fabio Costa — fabiotreze@hotmail.com
+Fabio Costa — 38567767+fabiotreze@users.noreply.github.com
 
 **GitHub:**
 https://github.com/fabiotreze/nossodireito

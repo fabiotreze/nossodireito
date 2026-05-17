@@ -803,7 +803,7 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
   - Compromisso com atualização agora destaca que o processo é **MANUAL**
   - Data da última atualização exibida de forma proeminente
   - Próxima revisão prevista informada claramente
-  - Call-to-action para reportar informações desatualizadas (e-mail fabiotreze@hotmail.com)
+  - Call-to-action para reportar informações desatualizadas (e-mail 38567767+fabiotreze@users.noreply.github.com)
 
 - **Síntese de voz (TTS)** agora alerta usuário quando não há voz em português
   - Mensagem: "⚠️ Seu navegador pode não suportar português. A leitura pode estar em outro idioma."

@@ -1282,7 +1282,7 @@ upgrade-insecure-requests;  ← Força HTTPS para todos recursos
 - **Latency > 5s**: Severity 2 (degradação performance)
 - **4xx Spike > 50/5min**: Severity 3 (possível scan/ataque)
 
-**Action Group:** Email para `fabiotreze@hotmail.com` (Common Alert Schema)
+**Action Group:** Email para `38567767+fabiotreze@users.noreply.github.com` (Common Alert Schema)
 
 ### Vulnerabilidades Conhecidas Aceitas
 
@@ -2070,7 +2070,7 @@ Configurados via Terraform (`azurerm_monitor_metric_alert`):
 | **4xx Spike** | Total > 50 em 5 min | Email (severity 3) | Não — possível ataque |
 
 **Action Group:**
-- Recipient: `fabiotreze@hotmail.com`
+- Recipient: `38567767+fabiotreze@users.noreply.github.com`
 - Common Alert Schema: Enabled (JSON estruturado)
 - Retry: 3 attempts com backoff exponencial
 
@@ -2373,7 +2373,7 @@ if (req.url === '/healthz' || req.url === '/health') {
 - Timeout: 30 segundos
 - Unhealthy threshold: 3 consecutive failures
 
-**Alert:** Email para `fabiotreze@hotmail.com` quando health check falha.
+**Alert:** Email para `38567767+fabiotreze@users.noreply.github.com` quando health check falha.
 
 ---
 
@@ -2400,6 +2400,6 @@ Melhorias futuras consideráveis:
 ---
 
 **Autoria:** Fabio Costa
-**Contato:** fabiotreze@hotmail.com
+**Contato:** 38567767+fabiotreze@users.noreply.github.com
 **Licença:** Projeto sem fins lucrativos — código disponível para auditoria
 **Última Atualização:** Fevereiro 2026
