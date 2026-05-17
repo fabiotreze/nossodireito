@@ -1,7 +1,7 @@
 {
   "name": "nossodireito",
   "version": "1.15.0",
-  "description": "NossoDireito — Portal de direitos PcD (server)",
+  "description": "NossoDireito \u2014 Portal de direitos PcD (server)",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
@@ -10,15 +10,19 @@
     "validate": "python scripts/validate_all.py --quick"
   },
   "dependencies": {
-    "@azure/ai-form-recognizer": "^5.0.0",
-    "@azure/identity": "^4.5.0",
-    "applicationinsights": "^3.4.0"
+    "@azure/ai-form-recognizer": "^5.1.0",
+    "@azure/identity": "^4.13.1",
+    "@azure/monitor-opentelemetry": "^1.18.0",
+    "applicationinsights": "^3.14.0"
   },
   "engines": {
     "node": ">=22"
   },
   "private": true,
   "devDependencies": {
-    "playwright": "^1.58.2"
+    "playwright": "^1.60.0"
+  },
+  "overrides": {
+    "protobufjs": "^7.5.4"
   }
 }
