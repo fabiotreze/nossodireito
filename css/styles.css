@@ -930,6 +930,18 @@ html.high-contrast ::selection {
     color: #fff;
 }
 
+.btn-secondary {
+    background: var(--surface-alt);
+    color: var(--text);
+    border-color: var(--border);
+}
+
+.btn-secondary:hover {
+    background: var(--surface-hover);
+    border-color: var(--primary);
+    color: var(--primary);
+}
+
 .btn-lg {
     padding: 14px 28px;
     font-size: 1.1rem;
@@ -1884,6 +1896,33 @@ html.high-contrast .valor-destaque {
 .upload-hint {
     font-size: 0.875rem;
     color: var(--text-light);
+}
+
+.ai-consent-quick-actions {
+    max-width: 600px;
+    margin: 10px auto 16px;
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--primary);
+    border-radius: var(--radius-sm);
+    background: var(--surface-alt);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.ai-consent-quick-text {
+    margin: 0;
+    font-size: 0.88rem;
+    color: var(--text-muted);
+    flex: 1;
+    min-width: 240px;
+}
+
+.btn-consent-quick {
+    min-width: 250px;
+    font-weight: 700;
 }
 
 /* File list */
