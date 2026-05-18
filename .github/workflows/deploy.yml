@@ -186,6 +186,9 @@ jobs:
           # cf-cache-status: DYNAMIC, então a sonda via CDN é real.
           HEALTH_URL: "https://nossodireito.fabiotreze.com/health"
           ROOT_URL: "https://nossodireito.fabiotreze.com/"
+          # Cloudflare bloqueia UA `curl/*` vindo de IPs do GitHub Actions
+          # (bot management). Usar UA browser-like para passar pelo edge.
+          UA: "Mozilla/5.0 (compatible; GitHubActions-HealthCheck/1.0)"
         run: |
           echo "⏳ Aguardando estabilização do deploy..."
           MAX_RETRIES=12
@@ -196,6 +199,7 @@ jobs:
           for i in $(seq 1 $MAX_RETRIES); do
             HZ_STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
               --connect-timeout 10 --max-time 15 \
+              -A "$UA" \
               -H "Cache-Control: no-cache" -H "Pragma: no-cache" \
               "$HEALTH_URL" || true)
             echo "🏥 Tentativa ${i}/${MAX_RETRIES}: /health (custom domain) → HTTP ${HZ_STATUS}"
@@ -217,6 +221,7 @@ jobs:
 
           # 2. Custom domain root (deve servir conteúdo)
           CD_STATUS=$(curl -s -o /dev/null -w "%{http_code}" --connect-timeout 10 \
+            -A "$UA" \
             "$ROOT_URL" || true)
           echo "🌐 Custom domain root → HTTP ${CD_STATUS}"
           if [ "$CD_STATUS" != "200" ]; then
@@ -227,6 +232,7 @@ jobs:
           # 3. Origem Azure deve continuar BLOQUEADA por Access Restriction
           # (esperado 403 — qualquer 200/30x indica regressão de access policy).
           AZ_STATUS=$(curl -s -o /dev/null -w "%{http_code}" --max-redirs 0 --connect-timeout 10 \
+            -A "$UA" \
             -H "Accept: text/html" \
             "https://app-${PROJECT}.azurewebsites.net/" || true)
           echo "🔒 Azure domain (esperado 403 por Access Restriction) → HTTP ${AZ_STATUS}"
