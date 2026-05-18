@@ -3116,6 +3116,38 @@ um advogado ou o <strong>CRAS</strong> da sua cidade.</p>
             });
         });
     }
+    // v1.18.2 — Gerenciador permanente de consentimento IA (LGPD Art. 8º §5).
+    // Botão sempre visível na seção LGPD; revoga consentimento armazenado.
+    function setupAIConsentManager() {
+        const btn = document.getElementById('aiConsentRevokeInline');
+        const status = document.getElementById('aiConsentStatus');
+        if (!btn || !status) return;
+        const render = () => {
+            const granted = getStoredAIConsent();
+            if (granted) {
+                status.textContent = 'ativo (lembrado por 30 dias)';
+                status.style.color = '#0f5132';
+                btn.disabled = false;
+            } else {
+                status.textContent = 'não armazenado (será solicitado ao analisar laudo)';
+                status.style.color = '#664d03';
+                btn.disabled = true;
+            }
+        };
+        btn.addEventListener('click', () => {
+            const ok = window.revokeAIConsent && window.revokeAIConsent();
+            if (typeof showToast === 'function') {
+                showToast(
+                    ok
+                        ? 'Consentimento de IA revogado. Será solicitado novamente na próxima análise.'
+                        : 'Não foi possível revogar (localStorage indisponível).',
+                    ok ? 'info' : 'warning'
+                );
+            }
+            render();
+        });
+        render();
+    }
     // v1.18.0 — Link "Aviso" no menu: garante scroll na 1a clicada
     // (sem isso, com lazy content abaixo, o browser as vezes mede altura errada).
     function setupNavAvisoScroll() {
@@ -3138,9 +3170,10 @@ um advogado ou o <strong>CRAS</strong> da sua cidade.</p>
         });
     }
     if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', () => { init(); setupNavAvisoScroll(); });
+        document.addEventListener('DOMContentLoaded', () => { init(); setupNavAvisoScroll(); setupAIConsentManager(); });
     } else {
         init();
         setupNavAvisoScroll();
+        setupAIConsentManager();
     }
 })();
