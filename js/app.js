@@ -2699,7 +2699,8 @@ um advogado ou o <strong>CRAS</strong> da sua cidade.</p>
                 const isOpen = panel.style.display === 'block';
                 panel.style.display = isOpen ? 'none' : 'block';
                 btn.textContent = isOpen ? '🗓️ Gerar plano de 7 dias' : '🗓️ Ocultar plano de 7 dias';
-                if (!isOpen) updateWeekPlanCompletedStyles(panel);
+                btn.setAttribute('aria-expanded', isOpen ? 'false' : 'true');
+                if (!isOpen) refreshWeekPlanPanel(panel);
             });
         });
         dom.analysisContent.querySelectorAll('.analysis-week-plan-day').forEach((input) => {
@@ -2709,7 +2710,7 @@ um advogado ou o <strong>CRAS</strong> da sua cidade.</p>
                 if (!day || !planKey) return;
                 setWeekPlanState(planKey, day, !!input.checked);
                 const panel = input.closest('.analysis-week-plan');
-                if (panel) updateWeekPlanCompletedStyles(panel);
+                refreshWeekPlanPanel(panel);
             });
         });
         dom.analysisContent.querySelectorAll('.analysis-week-plan-reset').forEach((btn) => {
@@ -2722,9 +2723,31 @@ um advogado ou o <strong>CRAS</strong> da sua cidade.</p>
                 panel.querySelectorAll('.analysis-week-plan-day').forEach((input) => {
                     input.checked = false;
                 });
-                updateWeekPlanCompletedStyles(panel);
+                refreshWeekPlanPanel(panel);
                 if (typeof showToast === 'function') {
                     showToast('Plano de 7 dias reiniciado.', 'info');
+                }
+            });
+        });
+        // Day 3: documents checklist persistence + reset.
+        dom.analysisContent.querySelectorAll('.analysis-ai-docs-item').forEach((input) => {
+            input.addEventListener('change', () => {
+                const id = input.dataset.docId;
+                if (!id) return;
+                setDocsChecklistState(id, !!input.checked);
+            });
+        });
+        dom.analysisContent.querySelectorAll('.analysis-ai-docs-reset').forEach((btn) => {
+            btn.addEventListener('click', () => {
+                resetDocsChecklistState();
+                const list = btn.closest('.analysis-ai-docs');
+                if (list) {
+                    list.querySelectorAll('.analysis-ai-docs-item').forEach((input) => {
+                        input.checked = false;
+                    });
+                }
+                if (typeof showToast === 'function') {
+                    showToast('Checklist de documentos reiniciada.', 'info');
                 }
             });
         });
@@ -2763,16 +2786,23 @@ um advogado ou o <strong>CRAS</strong> da sua cidade.</p>
         const label = (id, fallback) => escapeHtml((id && titleById[id]) ? titleById[id] : fallback);
         const checkbox = (day) => state[String(day)] ? 'checked' : '';
 
+        const safeKey = sanitizePlanKey(planKey);
         return `
-<div class="analysis-week-plan" style="display:none;" aria-live="polite" data-plan-key="${escapeHtml(planKey)}">
+<div class="analysis-week-plan" style="display:none;" role="group" aria-label="Plano de 7 dias" aria-live="polite" data-plan-key="${escapeHtml(safeKey)}">
+  <header class="analysis-week-plan-header">
+    <span class="analysis-week-plan-counter" aria-live="polite">0/7 dias concluídos</span>
+    <div class="analysis-week-plan-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-label="Progresso do plano de 7 dias">
+      <div class="analysis-week-plan-bar-fill"></div>
+    </div>
+  </header>
   <ol>
-    <li><label><input type="checkbox" class="analysis-week-plan-day" data-day="1" data-plan-key="${escapeHtml(planKey)}" ${checkbox(1)}><span class="analysis-week-plan-text"><strong>Organize</strong> laudo, exames e documentos pessoais em uma pasta única.</span></label></li>
-    <li><label><input type="checkbox" class="analysis-week-plan-day" data-day="2" data-plan-key="${escapeHtml(planKey)}" ${checkbox(2)}><span class="analysis-week-plan-text"><strong>Revise</strong> requisitos e próximos passos de <strong>${label(first, '1ª prioridade')}</strong>.</span></label></li>
-    <li><label><input type="checkbox" class="analysis-week-plan-day" data-day="3" data-plan-key="${escapeHtml(planKey)}" ${checkbox(3)}><span class="analysis-week-plan-text"><strong>Separe</strong> comprovantes e links oficiais para <strong>${label(first, '1ª prioridade')}</strong>.</span></label></li>
-    <li><label><input type="checkbox" class="analysis-week-plan-day" data-day="4" data-plan-key="${escapeHtml(planKey)}" ${checkbox(4)}><span class="analysis-week-plan-text"><strong>Inicie</strong> a solicitação principal de <strong>${label(second, '2ª prioridade')}</strong>.</span></label></li>
-    <li><label><input type="checkbox" class="analysis-week-plan-day" data-day="5" data-plan-key="${escapeHtml(planKey)}" ${checkbox(5)}><span class="analysis-week-plan-text"><strong>Faça follow-up</strong> dos protocolos e pendências em <strong>${label(second, '2ª prioridade')}</strong>.</span></label></li>
-    <li><label><input type="checkbox" class="analysis-week-plan-day" data-day="6" data-plan-key="${escapeHtml(planKey)}" ${checkbox(6)}><span class="analysis-week-plan-text"><strong>Avance</strong> no processo de <strong>${label(third, '3ª prioridade')}</strong>.</span></label></li>
-    <li><label><input type="checkbox" class="analysis-week-plan-day" data-day="7" data-plan-key="${escapeHtml(planKey)}" ${checkbox(7)}><span class="analysis-week-plan-text"><strong>Revise</strong> resultados, pendências e planeje a próxima semana.</span></label></li>
+    <li data-day="1"><label><input type="checkbox" class="analysis-week-plan-day" data-day="1" data-plan-key="${escapeHtml(safeKey)}" aria-label="Dia 1" ${checkbox(1)}><span class="analysis-week-plan-text"><strong>Organize</strong> laudo, exames e documentos pessoais em uma pasta única.</span></label></li>
+    <li data-day="2"><label><input type="checkbox" class="analysis-week-plan-day" data-day="2" data-plan-key="${escapeHtml(safeKey)}" aria-label="Dia 2" ${checkbox(2)}><span class="analysis-week-plan-text"><strong>Revise</strong> requisitos e próximos passos de <strong>${label(first, '1ª prioridade')}</strong>.</span></label></li>
+    <li data-day="3"><label><input type="checkbox" class="analysis-week-plan-day" data-day="3" data-plan-key="${escapeHtml(safeKey)}" aria-label="Dia 3" ${checkbox(3)}><span class="analysis-week-plan-text"><strong>Separe</strong> comprovantes e links oficiais para <strong>${label(first, '1ª prioridade')}</strong>.</span></label></li>
+    <li data-day="4"><label><input type="checkbox" class="analysis-week-plan-day" data-day="4" data-plan-key="${escapeHtml(safeKey)}" aria-label="Dia 4" ${checkbox(4)}><span class="analysis-week-plan-text"><strong>Inicie</strong> a solicitação principal de <strong>${label(second, '2ª prioridade')}</strong>.</span></label></li>
+    <li data-day="5"><label><input type="checkbox" class="analysis-week-plan-day" data-day="5" data-plan-key="${escapeHtml(safeKey)}" aria-label="Dia 5" ${checkbox(5)}><span class="analysis-week-plan-text"><strong>Faça follow-up</strong> dos protocolos e pendências em <strong>${label(second, '2ª prioridade')}</strong>.</span></label></li>
+    <li data-day="6"><label><input type="checkbox" class="analysis-week-plan-day" data-day="6" data-plan-key="${escapeHtml(safeKey)}" aria-label="Dia 6" ${checkbox(6)}><span class="analysis-week-plan-text"><strong>Avance</strong> no processo de <strong>${label(third, '3ª prioridade')}</strong>.</span></label></li>
+    <li data-day="7"><label><input type="checkbox" class="analysis-week-plan-day" data-day="7" data-plan-key="${escapeHtml(safeKey)}" aria-label="Dia 7" ${checkbox(7)}><span class="analysis-week-plan-text"><strong>Revise</strong> resultados, pendências e planeje a próxima semana.</span></label></li>
   </ol>
   <div class="analysis-week-plan-actions">
     <button class="btn btn-sm btn-outline analysis-week-plan-copy" type="button">📋 Copiar plano</button>
@@ -2825,10 +2855,12 @@ Abrir passo a passo: ${escapeHtml(titleById[id] || id)}
 
         const weekPlanHtml = priorityOrder.length
             ? `
-<button class="btn btn-sm btn-secondary analysis-generate-week-plan" type="button">
+<button class="btn btn-sm btn-secondary analysis-generate-week-plan" type="button" aria-expanded="false">
 🗓️ Gerar plano de 7 dias
 </button>
-${renderWeekPlan(priorityOrder, titleById)}`
+${renderAIDocsChecklist()}
+${renderWeekPlan(priorityOrder, titleById)}
+<p class="analysis-ai-disclaimer"><strong>⚠️ Importante:</strong> esta sugestão de IA é informativa e <strong>não substitui</strong> orientação jurídica. Procure a <strong>Defensoria Pública</strong> ou o <strong>CRAS</strong> da sua cidade para confirmar elegibilidade.</p>`
             : '';
 
         return `
@@ -2873,12 +2905,31 @@ ${renderWeekPlan(priorityOrder, titleById)}`
         return allPlans[planKey] || {};
     }
 
+    // Day 6: hard cap to prevent unbounded growth of localStorage entries.
+    const WEEK_PLAN_MAX_KEYS = 20;
+    function sanitizePlanKey(planKey) {
+        if (typeof planKey !== 'string') return 'default';
+        // Allow only category-id chars + the pipe separator used by priorityOrder.join('|').
+        const clean = planKey.replace(/[^a-zA-Z0-9_\-|]/g, '').slice(0, 200);
+        return clean || 'default';
+    }
+    function pruneStoredWeekPlans(allPlans) {
+        const keys = Object.keys(allPlans);
+        if (keys.length <= WEEK_PLAN_MAX_KEYS) return allPlans;
+        // Drop oldest insertion-order keys (object key order is insertion-ordered in JS).
+        const toDrop = keys.slice(0, keys.length - WEEK_PLAN_MAX_KEYS);
+        toDrop.forEach((k) => { delete allPlans[k]; });
+        return allPlans;
+    }
+
     function setWeekPlanState(planKey, day, done) {
         try {
+            const safeKey = sanitizePlanKey(planKey);
             const allPlans = getStoredWeekPlans();
-            const current = allPlans[planKey] || {};
+            const current = allPlans[safeKey] || {};
             current[String(day)] = !!done;
-            allPlans[planKey] = current;
+            allPlans[safeKey] = current;
+            pruneStoredWeekPlans(allPlans);
             localStorage.setItem(WEEK_PLAN_STORAGE_KEY, JSON.stringify(allPlans));
         } catch {
             // localStorage indisponível
@@ -2900,7 +2951,87 @@ ${renderWeekPlan(priorityOrder, titleById)}`
             const item = input.closest('li');
             if (!item) return;
             item.classList.toggle('completed', !!input.checked);
+            input.setAttribute('aria-checked', input.checked ? 'true' : 'false');
         });
+    }
+
+    // Day 2: progress counter + bar reflecting completed/total days.
+    function updateWeekPlanProgress(panel) {
+        const inputs = panel.querySelectorAll('.analysis-week-plan-day');
+        const total = inputs.length || 7;
+        let done = 0;
+        inputs.forEach((i) => { if (i.checked) done += 1; });
+        const pct = Math.round((done / total) * 100);
+        const counter = panel.querySelector('.analysis-week-plan-counter');
+        if (counter) counter.textContent = `${done}/${total} dias concluídos`;
+        const bar = panel.querySelector('.analysis-week-plan-bar-fill');
+        if (bar) {
+            bar.style.width = `${pct}%`;
+            const barWrap = panel.querySelector('.analysis-week-plan-bar');
+            if (barWrap) barWrap.setAttribute('aria-valuenow', String(pct));
+        }
+    }
+
+    // Day 2: highlight the first unchecked day as "focus now".
+    function updateWeekPlanCurrentDay(panel) {
+        const items = panel.querySelectorAll('li[data-day]');
+        let marked = false;
+        items.forEach((li) => {
+            const input = li.querySelector('.analysis-week-plan-day');
+            const isCurrent = !marked && input && !input.checked;
+            li.classList.toggle('current', !!isCurrent);
+            if (isCurrent) marked = true;
+        });
+    }
+
+    function refreshWeekPlanPanel(panel) {
+        if (!panel) return;
+        updateWeekPlanCompletedStyles(panel);
+        updateWeekPlanProgress(panel);
+        updateWeekPlanCurrentDay(panel);
+    }
+
+    // Day 3: "Documentos essenciais" checklist (independent persistence).
+    const DOCS_CHECKLIST_KEY = 'nd_ai_docs_checklist_v1';
+    const DOCS_CHECKLIST_ITEMS = [
+        { id: 'laudo',     label: 'Laudo médico atualizado (≤2 anos) com CID descrito' },
+        { id: 'cpf_rg',    label: 'CPF e RG (cópia legível)' },
+        { id: 'residencia',label: 'Comprovante de residência recente (≤3 meses)' },
+        { id: 'renda',     label: 'Comprovante de renda familiar (últimos 3 meses)' },
+        { id: 'ciptea',    label: 'Carteirinha CIPTEA, quando aplicável' },
+        { id: 'responsavel', label: 'Documentos do responsável legal, se aplicável' },
+    ];
+    function getDocsChecklistState() {
+        try {
+            const raw = localStorage.getItem(DOCS_CHECKLIST_KEY);
+            return raw ? JSON.parse(raw) : {};
+        } catch { return {}; }
+    }
+    function setDocsChecklistState(id, done) {
+        try {
+            const cur = getDocsChecklistState();
+            cur[id] = !!done;
+            localStorage.setItem(DOCS_CHECKLIST_KEY, JSON.stringify(cur));
+        } catch { /* noop */ }
+    }
+    function resetDocsChecklistState() {
+        try { localStorage.setItem(DOCS_CHECKLIST_KEY, '{}'); } catch { /* noop */ }
+    }
+    function renderAIDocsChecklist() {
+        const state = getDocsChecklistState();
+        const items = DOCS_CHECKLIST_ITEMS.map((it) => {
+            const checked = state[it.id] ? 'checked' : '';
+            return `<li><label><input type="checkbox" class="analysis-ai-docs-item" data-doc-id="${escapeHtml(it.id)}" ${checked}><span class="analysis-ai-docs-text">${escapeHtml(it.label)}</span></label></li>`;
+        }).join('');
+        return `
+<details class="analysis-ai-docs" role="group" aria-label="Documentos essenciais para pedir benefícios">
+  <summary>📁 Documentos essenciais (clique para abrir)</summary>
+  <ul>${items}</ul>
+  <div class="analysis-ai-docs-actions">
+    <button class="btn btn-sm btn-outline analysis-ai-docs-reset" type="button">↺ Reiniciar lista</button>
+  </div>
+  <p class="analysis-hint">💡 Salvo no seu navegador (LGPD: nada é enviado). Reaproveite em todos os pedidos.</p>
+</details>`;
     }
     function emitAIConsentChanged() {
         document.dispatchEvent(new Event('ai-consent-changed'));
