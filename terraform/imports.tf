@@ -8,3 +8,12 @@ import {
   to = azurerm_cognitive_account.doc_intelligence[0]
   id = "/subscriptions/${var.subscription_id}/resourceGroups/${local.resource_group_name}/providers/Microsoft.CognitiveServices/accounts/cog-${local.project}-docint${local.suffix}"
 }
+
+# Role Assignment App MSI -> Doc Intelligence também já existe no Azure.
+# O SP do GitHub OIDC tem apenas Contributor (sem permissão de criar role
+# assignments), então importamos a atribuição existente em vez de tentar
+# recriar (que falharia com 403 AuthorizationFailed).
+import {
+  to = azurerm_role_assignment.app_to_doc_intelligence[0]
+  id = "/subscriptions/${var.subscription_id}/resourceGroups/${local.resource_group_name}/providers/Microsoft.CognitiveServices/accounts/cog-${local.project}-docint${local.suffix}/providers/Microsoft.Authorization/roleAssignments/1f47605c-655e-c325-96cd-1794fbc58d43"
+}
