@@ -813,11 +813,13 @@ const server = http.createServer(async (req, res) => {
     const txt = `# NossoDireito — Security Policy
 # RFC 9116: https://www.rfc-editor.org/rfc/rfc9116
 
+Contact: mailto:dpo@fabiotreze.com
 Contact: mailto:38567767+fabiotreze@users.noreply.github.com
 Expires: ${expires}
 Preferred-Languages: pt-BR, en
 Canonical: https://${CANONICAL_HOST}/.well-known/security.txt
 Policy: https://github.com/fabiotreze/nossodireito/security/policy
+Acknowledgments: https://github.com/fabiotreze/nossodireito/security/advisories
 `;
     res.writeHead(200, {
       "Content-Type": "text/plain; charset=utf-8",
