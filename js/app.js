@@ -2669,7 +2669,8 @@ Ver detalhes e passo a passo →
 </div>`;
         });
         html += `</div>
-${aiResult ? renderAIResult(aiResult) : ''}
+    ${aiResult ? renderAIPracticalSummary(aiResult, results) : ''}
+    ${aiResult ? renderAIResult(aiResult) : ''}
 <div class="analysis-footer">
 <p>⚠️ <strong>Atenção:</strong> Esta análise é uma <strong>orientação preliminar</strong>
 baseada em correspondência de palavras-chave. <strong>Não substitui</strong> orientação
@@ -2683,6 +2684,115 @@ um advogado ou o <strong>CRAS</strong> da sua cidade.</p>
                 dom.analysisResults.style.display = 'none';
             });
         });
+        dom.analysisContent.querySelectorAll('.analysis-jump-category').forEach((btn) => {
+            btn.addEventListener('click', () => {
+                showDetalhe(btn.dataset.id);
+                dom.analysisResults.style.display = 'none';
+            });
+        });
+        dom.analysisContent.querySelectorAll('.analysis-generate-week-plan').forEach((btn) => {
+            btn.addEventListener('click', () => {
+                const root = btn.closest('.analysis-ai-practical-next');
+                if (!root) return;
+                const panel = root.querySelector('.analysis-week-plan');
+                if (!panel) return;
+                const isOpen = panel.style.display === 'block';
+                panel.style.display = isOpen ? 'none' : 'block';
+                btn.textContent = isOpen ? '🗓️ Gerar plano de 7 dias' : '🗓️ Ocultar plano de 7 dias';
+            });
+        });
+    }
+    function renderWeekPlan(priorityOrder, titleById) {
+        const first = priorityOrder[0] || null;
+        const second = priorityOrder[1] || first;
+        const third = priorityOrder[2] || second || first;
+
+        const label = (id, fallback) => escapeHtml((id && titleById[id]) ? titleById[id] : fallback);
+
+        return `
+<div class="analysis-week-plan" style="display:none;" aria-live="polite">
+  <ol>
+    <li><strong>Dia 1:</strong> Organize laudo, exames e documentos pessoais em uma pasta única.</li>
+    <li><strong>Dia 2:</strong> Revise requisitos e próximos passos de <strong>${label(first, '1ª prioridade')}</strong>.</li>
+    <li><strong>Dia 3:</strong> Separe comprovantes e links oficiais para <strong>${label(first, '1ª prioridade')}</strong>.</li>
+    <li><strong>Dia 4:</strong> Inicie a solicitação principal de <strong>${label(second, '2ª prioridade')}</strong>.</li>
+    <li><strong>Dia 5:</strong> Faça follow-up dos protocolos e pendências em <strong>${label(second, '2ª prioridade')}</strong>.</li>
+    <li><strong>Dia 6:</strong> Avance no processo de <strong>${label(third, '3ª prioridade')}</strong>.</li>
+    <li><strong>Dia 7:</strong> Revise resultados, pendências e planeje a próxima semana.</li>
+  </ol>
+  <p class="analysis-hint">💡 Dica: mantenha número de protocolo, data e órgão em uma checklist para acelerar retornos.</p>
+</div>`;
+    }
+    function renderAIPracticalSummary(ai, localResults) {
+        const aiRights = Array.isArray(ai?.direitos_sugeridos) ? ai.direitos_sugeridos : [];
+        const localIds = new Set((Array.isArray(localResults) ? localResults : []).map((r) => r?.category?.id).filter(Boolean));
+        const aiIds = [];
+        aiRights.forEach((r) => {
+            const catId = String(r?.categoria_id || '').trim();
+            if (!catId || aiIds.includes(catId)) return;
+            aiIds.push(catId);
+        });
+        const reinforced = aiIds.filter((id) => localIds.has(id));
+        const newFromAI = aiIds.filter((id) => !localIds.has(id));
+        const localTop = (Array.isArray(localResults) ? localResults : [])
+            .slice(0, 3)
+            .map((r) => r?.category?.id)
+            .filter(Boolean);
+        const priorityOrder = [...newFromAI, ...reinforced, ...localTop]
+            .filter((id, idx, arr) => arr.indexOf(id) === idx)
+            .slice(0, 3);
+
+        const titleById = {};
+        if (Array.isArray(direitosData)) {
+            direitosData.forEach((cat) => {
+                if (cat?.id) titleById[cat.id] = cat?.titulo || cat.id;
+            });
+        }
+
+        const renderIdList = (ids, emptyText) => {
+            if (!ids.length) return `<p class="analysis-hint">${emptyText}</p>`;
+            return `<div class="analysis-ai-chip-list">${ids
+                .map((id) => `<span class="kw-tag mid">${escapeHtml(titleById[id] || id)}</span>`)
+                .join('')}</div>`;
+        };
+
+        const actionsHtml = priorityOrder.length
+            ? `<div class="analysis-ai-actions">${priorityOrder
+                .map((id) => `
+<button class="btn btn-sm btn-primary analysis-jump-category" data-id="${escapeHtml(id)}" type="button">
+Abrir passo a passo: ${escapeHtml(titleById[id] || id)}
+</button>`)
+                .join('')}</div>`
+            : `<p class="analysis-hint">Nenhuma ação adicional sugerida no momento.</p>`;
+
+        const weekPlanHtml = priorityOrder.length
+            ? `
+<button class="btn btn-sm btn-secondary analysis-generate-week-plan" type="button">
+🗓️ Gerar plano de 7 dias
+</button>
+${renderWeekPlan(priorityOrder, titleById)}`
+            : '';
+
+        return `
+<div class="analysis-ai-practical" role="region" aria-label="Resumo prático do que mudou com IA">
+  <h3>🎯 O que mudou com IA</h3>
+  <p class="analysis-ai-practical-intro">Resumo para decisão rápida no dia a dia, combinando análise local e IA.</p>
+  <div class="analysis-ai-practical-grid">
+    <div>
+      <strong>✅ Direitos confirmados pela IA</strong>
+      ${renderIdList(reinforced, 'A IA não trouxe confirmações adicionais sobre os direitos já detectados localmente.')}
+    </div>
+    <div>
+      <strong>🆕 Novos direitos sugeridos pela IA</strong>
+      ${renderIdList(newFromAI, 'A IA não sugeriu novos direitos além dos já detectados localmente.')}
+    </div>
+  </div>
+  <div class="analysis-ai-practical-next">
+    <strong>📌 Próximas ações sugeridas</strong>
+    ${actionsHtml}
+        ${weekPlanHtml}
+  </div>
+</div>`;
     }
     // ── Análise IA: consentimento LGPD + chamada ao backend + renderização ──
     // v2: chave bumpada na migração para Azure OpenAI (v1.18.0) — invalida consentimentos
