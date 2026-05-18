@@ -24,6 +24,12 @@ Guia gratuito, sem fins lucrativos, com direitos, benefícios e passo a passo pa
 
 🌐 **[nossodireito.fabiotreze.com](https://nossodireito.fabiotreze.com)**
 
+O site continua público para o usuário final, mas o App Service aceita tráfego direto apenas da Cloudflare; o restante da comunicação do app com Azure segue por Private Endpoint e VNet.
+
+O Key Vault agora roda em modo privado por padrão; o apply do Terraform precisa acontecer a partir de um contexto com acesso à VNet para operações de data-plane (ex.: importar PFX e leitura/escrita de segredos).
+
+Por padrão, o segredo `redis-primary-key` não é mais gerenciado pelo Terraform (`manage_redis_secret_with_terraform=false`) para evitar erro 403 em runners fora da VNet quando o Key Vault está fechado.
+
 ---
 
 ## 📖 Descrição

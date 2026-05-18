@@ -43,10 +43,10 @@ resource "azurerm_subnet" "app_service_integration" {
 resource "azurerm_subnet" "openai_private_endpoint" {
   count = var.enable_openai_private_network ? 1 : 0
 
-  name                                      = local.openai_pe_subnet_name
-  resource_group_name                       = azurerm_resource_group.main.name
-  virtual_network_name                      = azurerm_virtual_network.private[0].name
-  address_prefixes                          = [var.openai_private_endpoint_subnet_cidr]
+  name                              = local.openai_pe_subnet_name
+  resource_group_name               = azurerm_resource_group.main.name
+  virtual_network_name              = azurerm_virtual_network.private[0].name
+  address_prefixes                  = [var.openai_private_endpoint_subnet_cidr]
   private_endpoint_network_policies = "Disabled"
 }
 
