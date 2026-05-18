@@ -44,7 +44,7 @@ Este projeto responde essa pergunta de forma clara, objetiva e validada.
 
 ### 🌐 About (English)
 
-**NossoDireito — Rights Portal for People with Disabilities.** Regional project — interface and content in Portuguese (pt-BR) for Brazilian citizens. Web portal with **30 rights categories**, 68 official sources, keyword-based document analysis (609 mapped terms), accessibility tools (VLibras sign language, TTS, high contrast, font scaling), PWA offline support, and encrypted storage via Web Crypto API. **Zero data collection (LGPD compliant).** Master Compliance score 1077.7/1082.7 (99.54%) across 21 validation categories. Infrastructure as Code with Terraform on Azure App Service (region `brazilsouth`), CI/CD via GitHub Actions with automated Quality Gate.
+**NossoDireito — Rights Portal for People with Disabilities.** Regional project — interface and content in Portuguese (pt-BR) for Brazilian citizens. Web portal with **30 rights categories**, official-source references, keyword-based document analysis, accessibility tools (VLibras sign language, TTS, high contrast, font scaling), PWA offline support, and encrypted storage via Web Crypto API. **Zero data collection (LGPD compliant).** Master Compliance score 1118.7/1118.7 (100.00%) across 21 validation categories. Infrastructure as Code with Terraform on Azure App Service (region `brazilsouth`), CI/CD via GitHub Actions with automated Quality Gate.
 
 ---
 
@@ -114,7 +114,7 @@ Para rodar testes: veja [`docs/OPERATIONS.md`](docs/OPERATIONS.md)
 - **Matching Engine** com algoritmo de busca semântica
 - Reconhece sinônimos e variações (ex: "autismo" → "TEA", "pessoa com deficiência" → "PcD")
 - Sistema de pesos para priorizar resultados mais relevantes
-- Busca por keywords em 751+ termos mapeados (cobre 6 segmentos: visão, audição, mobilidade, saúde mental, neurodiversidade e fala)
+- Busca por keywords em mapeamento semântico validado (matching engine + dicionário PcD)
 
 ### ♿ **Acessibilidade Máxima**
 
@@ -138,7 +138,7 @@ Para rodar testes: veja [`docs/OPERATIONS.md`](docs/OPERATIONS.md)
 
 - 40+ leis federais referenciadas com artigos específicos
 - URLs verificadas de fontes oficiais (planalto.gov.br, gov.br, inss.gov.br)
-- Última atualização: 25 de fevereiro de 2026
+- Última atualização: 18 de maio de 2026
 - Revisões periódicas
 
 ---
