@@ -2401,8 +2401,10 @@ para encontrar seus direitos manualmente.
             const results = matchRights(originalText, combinedNames);
             const anyPdf = hasPdf.some(Boolean);
             let aiResult = null;
+            let aiAttempted = false;
             if (useAI) {
                 try {
+                    aiAttempted = true;
                     const consent = await getAIConsent();
                     if (!consent) {
                         errors.push({ name: 'Análise IA', reason: 'Consentimento LGPD não concedido.' });
@@ -2416,9 +2418,12 @@ para encontrar seus direitos manualmente.
                 } catch (aiErr) {
                     console.error('Erro análise IA:', aiErr);
                     errors.push({ name: 'Análise IA', reason: aiErr.message || 'Falha no servidor.' });
+                    if (typeof showToast === 'function') {
+                        showToast('IA indisponível no momento. Resultado exibido com análise local.', 'warning');
+                    }
                 }
             }
-            renderAnalysisResults(results, fileNames, anyPdf, errors, aiResult);
+            renderAnalysisResults(results, fileNames, anyPdf, errors, aiResult, aiAttempted);
             for (const id of successIds) {
                 try {
                     await deleteFile(id);
@@ -2579,7 +2584,7 @@ para encontrar seus direitos manualmente.
             .filter((r) => r.score > 0)
             .sort((a, b) => b.score - a.score);
     }
-    function renderAnalysisResults(results, fileNames, hasPdf, errors = [], aiResult = null) {
+    function renderAnalysisResults(results, fileNames, hasPdf, errors = [], aiResult = null, aiAttempted = false) {
         const names = Array.isArray(fileNames) ? fileNames : [fileNames];
         const fileCount = names.length;
         const filesLabel = fileCount === 1
@@ -2602,10 +2607,15 @@ seus direitos manualmente, ou use a <a href="#busca">busca</a>.</p>
             return;
         }
         const maxScore = results[0].score;
+        const privacyLine = aiResult
+            ? '🔒 Análise local + IA opcional (texto anonimizado antes do envio).'
+            : aiAttempted
+            ? '🔒 Análise local concluída. IA indisponível/sem consentimento, nenhum dado adicional enviado.'
+            : '🔒 Análise 100% local — nenhum dado foi enviado para servidores.';
         let html = `
 <div class="analysis-file-info">
 <p>${filesLabel}</p>
-<p class="analysis-privacy">🔒 Análise 100% local — nenhum dado foi enviado para servidores.</p>
+    <p class="analysis-privacy">${privacyLine}</p>
 ${errors.length ? `<p class="analysis-errors-inline">⚠️ ${errors.length} arquivo(s) com erro: ${errors.map((e) => escapeHtml(e.name)).join(', ')}</p>` : ''}
 </div>
 <div class="analysis-legend" aria-label="Legenda da precisão">
@@ -2743,11 +2753,24 @@ um advogado ou o <strong>CRAS</strong> da sua cidade.</p>
         try { localStorage.removeItem(AI_CONSENT_KEY); return true; } catch { return false; }
     };
     async function callServerAnalysis(anonymizedText) {
-        const resp = await fetch('/api/analyze-document', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-            body: JSON.stringify({ text: anonymizedText }),
-        });
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 15000);
+        let resp;
+        try {
+            resp = await fetch('/api/analyze-document', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+                body: JSON.stringify({ text: anonymizedText }),
+                signal: controller.signal,
+            });
+        } catch (err) {
+            if (err && err.name === 'AbortError') {
+                throw new Error('Tempo limite excedido na análise IA.');
+            }
+            throw err;
+        } finally {
+            clearTimeout(timeout);
+        }
         const ctype = resp.headers.get('content-type') || '';
         const body = ctype.includes('application/json') ? await resp.json().catch(() => ({})) : { error: await resp.text().catch(() => '') };
         if (!resp.ok) {
@@ -2755,7 +2778,7 @@ um advogado ou o <strong>CRAS</strong> da sua cidade.</p>
             if (resp.status === 503) throw new Error('Análise IA indisponível no servidor (AI_ANALYSIS_ENABLED desativado).');
             if (resp.status === 413) throw new Error('Texto muito grande para análise (máx. 200KB).');
             if (resp.status === 422) throw new Error('Detectado PII residual no texto anonimizado — envio bloqueado por segurança.');
-            if (resp.status === 502) throw new Error('Falha na comunicação com o Azure OpenAI.');
+            if (resp.status === 502 || resp.status === 504) throw new Error('Falha na comunicação com o Azure OpenAI.');
             throw new Error(msg);
         }
         return body;

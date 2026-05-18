@@ -17,8 +17,8 @@ Arquivos atualizados:
     6. README.md                → badge Version-x.y.z
     6. GOVERNANCE.md            → **Versão:** x.y.z
     7. SECURITY_AUDIT.md        → título + referências
-    8. docs/COMPLIANCE.md       → **Versão:** x.y.z
-    9. docs/ARCHITECTURE.md     → **Versão:** x.y.z
+    8. docs/SECURITY-LGPD.md    → **Version:** x.y.z
+    9. docs/ARCHITECTURE.md     → Versao: x.y.z
    10. master_compliance.py     → self.version = "x.y.z"
    11. CHANGELOG.md             → insere seção [x.y.z] (se não existir)
    12. scripts Python           → docstrings/banners "NossoDireito vx.y.z"
@@ -267,22 +267,22 @@ def bump_manifest_json(new: str, old: str, *, dry_run: bool) -> bool:
 
 
 def bump_compliance_md(new: str, old: str, *, dry_run: bool) -> bool:
-    path = ROOT / "docs" / "COMPLIANCE.md"
+    path = ROOT / "docs" / "SECURITY-LGPD.md"
     if not path.exists():
-        print("  ⚠️  docs/COMPLIANCE.md: não encontrado")
+        print("  ⚠️  docs/SECURITY-LGPD.md: não encontrado")
         return False
     text = read_text(path)
-    # Atualiza padrão **Versão:** X.Y.Z
-    old_re = re.compile(r'(\*\*Versão:\*\*\s*)\d+\.\d+\.\d+')
+    # Atualiza padrão **Version:** X.Y.Z
+    old_re = re.compile(r'(\*\*Version:\*\*\s*)\d+\.\d+\.\d+')
     if not old_re.search(text):
-        print("  ⚠️  docs/COMPLIANCE.md: padrão **Versão:** não encontrado")
+        print("  ⚠️  docs/SECURITY-LGPD.md: padrão **Version:** não encontrado")
         return False
     new_text = old_re.sub(f'\\g<1>{new}', text, count=1)
     if new_text == text:
-        print(f"  ✅ docs/COMPLIANCE.md já está em {new}")
+        print(f"  ✅ docs/SECURITY-LGPD.md já está em {new}")
         return False
     write_text(path, new_text, dry_run=dry_run)
-    print(f"  ✅ docs/COMPLIANCE.md: → {new}")
+    print(f"  ✅ docs/SECURITY-LGPD.md: → {new}")
     return True
 
 
@@ -292,9 +292,9 @@ def bump_architecture_md(new: str, old: str, *, dry_run: bool) -> bool:
         print("  ⚠️  docs/ARCHITECTURE.md: não encontrado")
         return False
     text = read_text(path)
-    old_re = re.compile(r'(\*\*Versão:\*\*\s*)\d+\.\d+\.\d+')
+    old_re = re.compile(r'(Versao:\s*)\d+\.\d+\.\d+')
     if not old_re.search(text):
-        print("  ⚠️  docs/ARCHITECTURE.md: padrão **Versão:** não encontrado")
+        print("  ⚠️  docs/ARCHITECTURE.md: padrão Versao: não encontrado")
         return False
     new_text = old_re.sub(f'\\g<1>{new}', text, count=1)
     if new_text == text:
@@ -363,15 +363,12 @@ def bump_python_docstrings(new: str, old: str, *, dry_run: bool) -> bool:
 def bump_doc_headers(new: str, old: str, *, dry_run: bool) -> bool:
     """Atualiza versão e data nos headers dos docs/*.md consolidados."""
     docs = [
-        ROOT / "docs" / "REFERENCE.md",
-        ROOT / "docs" / "ACCESSIBILITY.md",
-        ROOT / "docs" / "QUALITY_GUIDE.md",
-        ROOT / "docs" / "KNOWN_ISSUES.md",
+        ROOT / "docs" / "OPERATIONS.md",
+        ROOT / "docs" / "REPLICATION.md",
     ]
     changed = False
-    ver_re = re.compile(
-        r'(\*\*Versão:\*\*\s*)\d+\.\d+\.\d+(\s*\|\s*\*\*Atualizado:\*\*\s*)\d{4}-\d{2}-\d{2}'
-    )
+    ver_re = re.compile(r'(\*\*Version:\*\*\s*)\d+\.\d+\.\d+')
+    updated_re = re.compile(r'(\*\*Updated:\*\*\s*)\d{4}-\d{2}-\d{2}')
     for path in docs:
         if not path.exists():
             print(f"  ⚠️  {path.name}: não encontrado")
@@ -379,9 +376,10 @@ def bump_doc_headers(new: str, old: str, *, dry_run: bool) -> bool:
         text = read_text(path)
         match = ver_re.search(text)
         if not match:
-            print(f"  ⚠️  {path.name}: padrão **Versão:** não encontrado")
+            print(f"  ⚠️  {path.name}: padrão **Version:** não encontrado")
             continue
-        new_text = ver_re.sub(f'\\g<1>{new}\\g<2>{TODAY}', text, count=1)
+        new_text = ver_re.sub(f'\\g<1>{new}', text, count=1)
+        new_text = updated_re.sub(f'\\g<1>{TODAY}', new_text, count=1)
         if new_text == text:
             print(f"  ✅ {path.name} já está em {new}")
             continue

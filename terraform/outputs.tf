@@ -103,3 +103,13 @@ output "alert_email" {
   description = "E-mail que recebe alertas de monitoramento"
   value       = var.alert_email
 }
+
+output "openai_network_mode" {
+  description = "Modo de rede do Azure OpenAI"
+  value       = var.enable_openai_private_network ? "private_endpoint" : "public"
+}
+
+output "openai_private_endpoint_ip" {
+  description = "IP privado atribuído ao Private Endpoint do OpenAI (se habilitado)"
+  value       = var.enable_openai_private_network && var.enable_ai_openai ? azurerm_private_endpoint.openai[0].private_service_connection[0].private_ip_address : null
+}
