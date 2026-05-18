@@ -384,7 +384,7 @@ Motor de análise de documentos baseado em regex e pesos.
 
 ## 4. Arquitetura de Aplicação
 
-### server.js — Servidor Estático Endurecido (420 linhas)
+### server.js — Servidor Endurecido + Endpoint IA Opt-in (937 linhas)
 
 **Responsabilidades:**
 1. Servir arquivos estáticos (HTML, CSS, JS, JSON, imagens)
@@ -1064,7 +1064,7 @@ self.addEventListener('fetch', (event) => {
 
 ## 5. Infraestrutura Azure
 
-### Terraform IaC (main.tf — 370 linhas)
+### Terraform IaC (main.tf + módulos)
 
 **Recursos Provisionados:**
 
@@ -1110,6 +1110,18 @@ self.addEventListener('fetch', (event) => {
    - Health Check failures (severity 0 — criticalidade máxima)
    - Response time > 5s (severity 2 — performance)
    - HTTP 4xx spike > 50 (severity 3 — possível scan/ataque)
+
+8. **Azure AI Document Intelligence** (`cog-nossodireito-br-docint`) — _opt-in, v1.16.0+_
+   - SKU: **F0** (free tier, 500 páginas/mês, custo $0)
+   - Location: `brazilsouth` (mesma região do App Service)
+   - Custom subdomain habilitado (requerido para Entra ID auth)
+   - Provisionamento condicional: `var.enable_ai_doc_intelligence = true` em `terraform/ai-doc-intelligence.tf`
+   - **Autenticação:** Managed System Identity do App Service (sem chaves no código). Role `Cognitive Services User` atribuída via `azurerm_role_assignment.app_to_doc_intelligence`.
+   - App Setting `AZURE_DOC_INTELLIGENCE_ENDPOINT` injetada via TF; `AI_ANALYSIS_ENABLED=true` ativa o endpoint server-side `/api/analyze-document`.
+
+9. **Consumption Budgets** (`terraform/budget.tf`) — proteção de custo
+   - **Budget primário** (`budget-nossodireitobr`): $105/mês, alertas em **80% (Actual)** e **100% (Forecasted)** para `fabiotreze@hotmail.com`
+   - **Budget de early-warning** (`budget-nossodireitobr-70pct`, v1.17.0): $105/mês, alertas em **70% Actual + Forecasted** para detecção precoce de drift de custo (especialmente útil com tier F0 da Doc Intelligence que pode escalar inadvertidamente para S0 se a flag mudar)
 
 **Diagrama de Rede:**
 
@@ -1299,7 +1311,16 @@ upgrade-insecure-requests;  ← Força HTTPS para todos recursos
 
 ## 7. Conformidade LGPD
 
-### Arquitetura Zero-Data Collection
+### Dois caminhos, duas bases legais
+
+A partir da v1.16.0 o sistema tem **dois caminhos de processamento** com bases legais distintas:
+
+| Caminho | Base legal | Tratamento? |
+|---|---|---|
+| **Análise local** (default, 100% offline) | LGPD Art. 4º, I — não aplicável | ❌ Não há tratamento server-side |
+| **Análise por IA** (opt-in, v1.16.0+) | LGPD Art. 7º, I — consentimento livre, informado e específico | ✅ Tratamento de dados **anonimizados** (Art. 12 LGPD) |
+
+### Arquitetura Zero-Data Collection (caminho default)
 
 **Princípio:** LGPD Art. 4º, I — "Não se aplica a dados pessoais que não são objeto de tratamento."
 
@@ -1308,8 +1329,11 @@ upgrade-insecure-requests;  ← Força HTTPS para todos recursos
 │  SERVIDOR (Azure App Service)                      │
 │  ┌──────────────────────────────────────────────┐ │
 │  │  server.js                                   │ │
-│  │  - Serve SOMENTE arquivos estáticos          │ │
-│  │  - Não aceita POST/PUT (somente GET/HEAD)   │ │
+│  │  - Serve arquivos estáticos                  │ │
+│  │  - POST APENAS em /api/analyze-document      │ │
+│  │    (IA opt-in; texto anonimizado client-side)│ │
+│  │  - PII guard server-side: containsPII() →    │ │
+│  │    422 se vazar PII (defesa em profundidade) │ │
 │  │  - Não persiste upload de PDFs              │ │
 │  │  - Não armazena checkboxes/preferências     │ │
 │  │  - Não usa cookies                           │ │
@@ -1361,9 +1385,40 @@ upgrade-insecure-requests;  ← Força HTTPS para todos recursos
 - ❌ Cookies de tracking
 - ❌ Fingerprinting de dispositivo
 
-### Base Legal (Não Aplicável)
+### Caminho IA Opt-in (v1.16.0+) — LGPD Art. 7º, I + Art. 12
 
-Como não há tratamento de dados pessoais (LGPD Art. 4º, I), não é necessário:
+**Fluxo end-to-end:**
+
+```
+1. Usuário clica "🧠 Analisar com IA" → #aiConsentModal abre
+2. Modal exibe finalidade, dados tratados, base legal, prazo de retenção (0s server-side)
+3. Usuário CLICA EXPLICITAMENTE "Concordo" (consentimento específico, Art. 7º §2)
+   → nd_ai_consent_v1 em localStorage com TTL de 30 dias (revogabilidade Art. 8º §5)
+4. shared/anonymizer.js (window.Anonymizer) anonimiza no NAVEGADOR:
+   - CPF, RG, CNS, CNPJ, telefone, e-mail, CEP → [CPF_REMOVIDO], [EMAIL_REMOVIDO], etc.
+   - Substituições determinísticas via regex; auditadas em stats
+5. POST /api/analyze-document (application/json, body ≤200KB)
+6. server.js executa containsPII() de novo (defesa em profundidade) → 422 se vazar PII
+7. services/doc-intelligence.js usa DefaultAzureCredential (MSI) → Azure Doc Intelligence F0
+8. Resposta: {cids[], dates[], pages, paragraphs[], contentHash, durationMs}
+   - CIDs validados client-side contra ^[A-Z]\d{2}(\.\d{1,2})?$
+   - Datas validadas contra parser real (dd[/.-]mm[/.-]yy[yy], range pláusivel)
+   - Badges ✅ "alta confiança" vs ⚠ "baixa confiança" no render
+9. Resposta não é persistida server-side; cliente decide armazenar ou não
+```
+
+**Garantias LGPD do caminho IA:**
+
+- ✅ **Art. 7º, I** (consentimento) — modal explícito, "Concordo" como ação positiva
+- ✅ **Art. 8º §4** (finalidade específica) — modal informa: extração de CIDs/datas para sugerir direitos
+- ✅ **Art. 8º §5** (revogação) — TTL 30 dias + botão "Apagar Dados" limpa `nd_ai_consent_v1`
+- ✅ **Art. 12** (anonimização) — PII removida client-side antes de sair do navegador
+- ✅ **Art. 46** (segurança) — MSI sem chaves, TLS 1.2+ obrigatório, payload ≤200KB
+- ✅ **Art. 48** (incidentes) — falhas mapeadas para erros PT-BR; logs server-side sem PII
+
+### Base Legal (caminho default — Não Aplicável)
+
+No caminho default (análise local), como não há tratamento de dados pessoais (LGPD Art. 4º, I), não é necessário:
 - ✅ Consentimento (Art. 7º, I) — N/A
 - ✅ DPO (Encarregado) — N/A
 - ✅ RIPD (Relatório de Impacto) — N/A
