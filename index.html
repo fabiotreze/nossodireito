@@ -436,18 +436,22 @@
         text-decoration: none;
       }
 
-      /* Link "Aviso" — destaque âmbar, alinhado à direita do menu (margin-left:auto no <li>). */
+      /* Link "Aviso" — fundo âmbar suave + texto escuro p/ garantir contraste em navbar branca (WCAG AA). */
       .nav-links .nav-aviso-item {
         margin-left: auto;
       }
       .nav-links .nav-aviso {
-        color: #ffeaa7;
-        border: 1px solid rgba(255, 224, 130, 0.45);
+        color: #664d03;
+        background: #fff3cd;
+        border: 1px solid #ffc107;
+        font-weight: 600;
       }
       .nav-links .nav-aviso:hover,
       .nav-links .nav-aviso:focus {
-        background: rgba(255, 248, 225, 0.18);
-        color: #fff;
+        background: #ffe69c;
+        color: #533c01;
+        outline: 2px solid #ffc107;
+        outline-offset: 1px;
       }
       @media (max-width: 768px) {
         /* Em mobile (drawer) volta a fluir normalmente, sem alinhamento à direita. */

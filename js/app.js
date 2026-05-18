@@ -2675,7 +2675,9 @@ um advogado ou o <strong>CRAS</strong> da sua cidade.</p>
         });
     }
     // ── Análise IA: consentimento LGPD + chamada ao backend + renderização ──
-    const AI_CONSENT_KEY = 'nd_ai_consent_v1';
+    // v2: chave bumpada na migração para Azure OpenAI (v1.18.0) — invalida consentimentos
+    // legados dados ao antigo provedor Doc Intelligence (mudança de base legal LGPD).
+    const AI_CONSENT_KEY = 'nd_ai_consent_v2';
     const AI_CONSENT_TTL_MS = 30 * 24 * 60 * 60 * 1000; // 30 dias
     function getStoredAIConsent() {
         try {
@@ -3114,9 +3116,31 @@ um advogado ou o <strong>CRAS</strong> da sua cidade.</p>
             });
         });
     }
+    // v1.18.0 — Link "Aviso" no menu: garante scroll na 1a clicada
+    // (sem isso, com lazy content abaixo, o browser as vezes mede altura errada).
+    function setupNavAvisoScroll() {
+        document.querySelectorAll('a.nav-aviso[href="#disclaimerInline"]').forEach((link) => {
+            link.addEventListener('click', (e) => {
+                const target = document.getElementById('disclaimerInline');
+                if (!target) return;
+                e.preventDefault();
+                // Fecha drawer mobile se aberto
+                const drawer = document.getElementById('navLinks');
+                const toggle = document.getElementById('menuToggle');
+                if (drawer && drawer.classList.contains('open')) {
+                    drawer.classList.remove('open');
+                    if (toggle) toggle.setAttribute('aria-expanded', 'false');
+                }
+                // Atualiza hash sem disparar scroll nativo, depois faz scroll suave preciso
+                if (history.replaceState) history.replaceState(null, '', '#disclaimerInline');
+                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            });
+        });
+    }
     if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', init);
+        document.addEventListener('DOMContentLoaded', () => { init(); setupNavAvisoScroll(); });
     } else {
         init();
+        setupNavAvisoScroll();
     }
 })();
