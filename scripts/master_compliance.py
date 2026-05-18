@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Master Compliance Validator - NossoDireito v1.18.0
+Master Compliance Validator - NossoDireito v1.19.0
 
 Ponto de entrada ÚNICO de qualidade do projeto.
 Usado pelo pre-commit hook e também como validador standalone.
@@ -63,8 +63,7 @@ _VERSION_CHECKS = [
     ('README.md', 'regex', r'Version-([\d.]+)'),
     ('GOVERNANCE.md', 'regex', r'\*\*Versão:\*\*\s*([\d.]+)'),
     ('SECURITY_AUDIT.md', 'regex', r'Auditoria de Segurança v([\d.]+)'),
-    ('docs/COMPLIANCE.md', 'regex', r'\*\*Versão:\*\*\s*([\d.]+)'),
-    ('docs/ARCHITECTURE.md', 'regex', r'\*\*Versão:\*\*\s*([\d.]+)'),
+    ('docs/ARCHITECTURE.md', 'regex', r'Versao:\s*([\d.]+)'),
     ('scripts/master_compliance.py', 'regex', r'self\.version\s*=\s*"([\d.]+)"'),
 ]
 
@@ -113,7 +112,7 @@ class MasterComplianceValidator:
 
     def __init__(self, quick: bool = False):
         self.root = Path(__file__).parent.parent
-        self.version = "1.18.2"
+        self.version = "1.19.0"
         self.quick = quick
         self.errors = []
         self.warnings = []
@@ -455,7 +454,7 @@ class MasterComplianceValidator:
                        'bump_version.py', 'validate_all.py', 'pre-commit'],
             'css': ['styles.css'],
             'js': ['app.js', 'sw-register.js'],
-            'docs': ['KNOWN_ISSUES.md', 'QUALITY_GUIDE.md', 'ACCESSIBILITY.md', 'REFERENCE.md'],
+            'docs': ['README.md', 'ARCHITECTURE.md', 'OPERATIONS.md', 'SECURITY-LGPD.md', 'REPLICATION.md'],
             'terraform': ['main.tf', 'providers.tf', 'variables.tf', 'outputs.tf'],
             '.githooks': ['pre-commit'],
             '.': ['index.html', 'manifest.json', 'robots.txt', 'sitemap.xml',
@@ -500,10 +499,11 @@ class MasterComplianceValidator:
             'GOVERNANCE.md': 5,
             'LICENSE': 5,
             'CHANGELOG.md': 5,
-            'docs/QUALITY_GUIDE.md': 5,
-            'docs/ACCESSIBILITY.md': 3,
-            'docs/KNOWN_ISSUES.md': 3,
-            'docs/REFERENCE.md': 2
+            'docs/README.md': 5,
+            'docs/ARCHITECTURE.md': 5,
+            'docs/OPERATIONS.md': 4,
+            'docs/SECURITY-LGPD.md': 4,
+            'docs/REPLICATION.md': 4
         }
 
         for doc, points in required_docs.items():

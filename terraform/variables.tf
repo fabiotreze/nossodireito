@@ -124,6 +124,36 @@ variable "budget_alert_threshold" {
   default     = 70
 }
 
+variable "enable_openai_private_network" {
+  description = "Habilita acesso privado ao Azure OpenAI via Private Endpoint + Private DNS + integração VNet do App Service"
+  type        = bool
+  default     = true
+}
+
+variable "vnet_address_space" {
+  description = "CIDR da VNet usada para integração do App Service e Private Endpoint do OpenAI"
+  type        = list(string)
+  default     = ["10.42.0.0/16"]
+}
+
+variable "app_service_integration_subnet_cidr" {
+  description = "CIDR da subnet delegada para integração VNet do App Service"
+  type        = string
+  default     = "10.42.1.0/24"
+}
+
+variable "openai_private_endpoint_subnet_cidr" {
+  description = "CIDR da subnet dedicada ao Private Endpoint do Azure OpenAI"
+  type        = string
+  default     = "10.42.2.0/24"
+}
+
+variable "openai_private_dns_zone_name" {
+  description = "Private DNS Zone para resolução privada do endpoint OpenAI"
+  type        = string
+  default     = "privatelink.openai.azure.com"
+}
+
 # --- Locals: nomes derivados do ambiente ---
 locals {
   # Base do projeto — alterando aqui, todos os nomes mudam automaticamente
@@ -137,6 +167,9 @@ locals {
   key_vault_name        = "kv-${local.project}${local.suffix}"
   app_insights_name     = "appi-${local.project}${local.suffix}"
   log_analytics_name    = "log-${local.project}${local.suffix}"
+  vnet_name             = "vnet-${local.project}${local.suffix}"
+  appsvc_subnet_name    = "snet-appsvc-${var.environment}"
+  openai_pe_subnet_name = "snet-openai-pe-${var.environment}"
 
   tags = merge(
     {

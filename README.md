@@ -4,15 +4,15 @@
 
 # ⚖️ NossoDireito
 
-[![Compliance](https://img.shields.io/badge/Compliance-99.54%25-brightgreen?style=flat-square)](docs/COMPLIANCE.md)
+[![Compliance](https://img.shields.io/badge/Compliance-LGPD%20Current%20State-brightgreen?style=flat-square)](docs/SECURITY-LGPD.md)
 [![Azure WAF](https://img.shields.io/badge/Azure%20WAF-Aligned-success?style=flat-square&logo=microsoftazure)](docs/ARCHITECTURE.md)
 [![Security](https://img.shields.io/badge/Security-HTTPS%20%7C%20CSP%20%7C%20Zero%20Tracking-green?style=flat-square&logo=letsencrypt)](SECURITY.md)
-[![Accessibility](https://img.shields.io/badge/Accessibility-ARIA%20%7C%20VLibras%20%7C%20WCAG-blue?style=flat-square&logo=accessible-icon)](docs/ACCESSIBILITY.md)
-[![LGPD](https://img.shields.io/badge/LGPD-Zero%20Data%20Collection-blue?style=flat-square)](docs/COMPLIANCE.md)
+[![Accessibility](https://img.shields.io/badge/Accessibility-ARIA%20%7C%20VLibras%20%7C%20WCAG-blue?style=flat-square&logo=accessible-icon)](docs/OPERATIONS.md)
+[![LGPD](https://img.shields.io/badge/LGPD-Zero%20Data%20Collection-blue?style=flat-square)](docs/SECURITY-LGPD.md)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow?style=flat-square)](LICENSE)
 [![Version](https://img.shields.io/github/v/tag/fabiotreze/nossodireito?style=flat-square&label=version)](CHANGELOG.md)
 [![Quality Gate](https://github.com/fabiotreze/nossodireito/actions/workflows/quality-gate.yml/badge.svg)](https://github.com/fabiotreze/nossodireito/actions/workflows/quality-gate.yml)
-[![Tests](https://img.shields.io/github/actions/workflow/status/fabiotreze/nossodireito/quality-gate.yml?label=tests&style=flat-square&logo=pytest)](docs/QUALITY_GUIDE.md)
+[![Tests](https://img.shields.io/github/actions/workflow/status/fabiotreze/nossodireito/quality-gate.yml?label=tests&style=flat-square&logo=pytest)](docs/OPERATIONS.md)
 [![CodeQL](https://github.com/fabiotreze/nossodireito/actions/workflows/codeql.yml/badge.svg)](https://github.com/fabiotreze/nossodireito/actions/workflows/codeql.yml)
 [![gitleaks](https://github.com/fabiotreze/nossodireito/actions/workflows/gitleaks.yml/badge.svg)](https://github.com/fabiotreze/nossodireito/actions/workflows/gitleaks.yml)
 [![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/fabiotreze/nossodireito/badge)](https://securityscorecards.dev/viewer/?uri=github.com/fabiotreze/nossodireito)
@@ -50,29 +50,39 @@ pip install -r requirements.txt -r requirements-dev.txt
 node server.js                                    # → http://localhost:8080
 ```
 
-Para rodar testes: veja [`docs/QUALITY_GUIDE.md`](docs/QUALITY_GUIDE.md)
+Para rodar testes: veja [`docs/OPERATIONS.md`](docs/OPERATIONS.md)
+
+## 📘 Documentação consolidada (v1.19.0)
+
+- [`docs/README.md`](docs/README.md) — índice da documentação
+- [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) — arquitetura e diagrama E2E
+- [`docs/OPERATIONS.md`](docs/OPERATIONS.md) — operação e runbook
+- [`docs/SECURITY-LGPD.md`](docs/SECURITY-LGPD.md) — baseline de segurança e LGPD
+- [`docs/REPLICATION.md`](docs/REPLICATION.md) — replicação para novo tenant/subscription
+- [`docs/COST-ESTIMATE.md`](docs/COST-ESTIMATE.md) — itens e baseline para Azure Pricing Calculator
 
 ---
 
-## 🎉 NOVIDADES v1.14.8 (01/03/2026) — Migração Azure & Zero Hardcoding
+## 🎉 NOVIDADES v1.19.0 (18/05/2026) — Replicação, hardening e docs enxutas
 
-**🏆 Master Compliance:** 1077.7/1082.7 pontos **(99.54%)** — 21 categorias; 1 categoria (Dependências) em 87.5% (falta atualizar/auditar lockfile)
+**🏆 Status atual:** pipeline de testes 100% verde (678 passed) e baseline de segurança ativa.
 
 ### ✅ O que mudou:
 
-1. **Migração de tenant Azure** — novo tenant, subscription MSDN-online, OIDC configurado
-2. **Região brazilsouth** — conformidade LGPD (dados em território nacional)
-3. **Recursos renomeados** — sufixo `-br`: `app-nossodireito-br`, `rg-nossodireito-br`, etc.
-4. **Zero hardcoding** — nomes centralizados via `var.project_name` (Terraform), `env.PROJECT` (workflows) e `WEBSITE_HOSTNAME` (server.js)
-5. **Documentação atualizada** — ARCHITECTURE.md reflete padrão dinâmico
+1. **Revogação de consentimento IA permanente (LGPD Art. 8º §5)** na interface.
+2. **Replicação automatizada** com script de bootstrap para novo tenant/subscription.
+3. **Workflow dedicado de replicação** (`.github/workflows/replication.yml`).
+4. **Baseline de segurança automatizada** (`.github/workflows/security-baseline.yml`).
+5. **Documentação consolidada** em arquitetura/operação/segurança-replicação.
 
 ### 📚 Documentação:
 
-- [`docs/QUALITY_GUIDE.md`](docs/QUALITY_GUIDE.md) ⭐ — Quick Start, pipeline, scripts, troubleshooting
-- [`docs/ACCESSIBILITY.md`](docs/ACCESSIBILITY.md) — Auditoria WCAG/eMAG, correções, widgets
-- [`docs/REFERENCE.md`](docs/REFERENCE.md) — 31+ benefícios PcD, dependências, ordenação
-- [`docs/COMPLIANCE.md`](docs/COMPLIANCE.md) — LGPD, LBI, ISO, Azure
-- [`docs/KNOWN_ISSUES.md`](docs/KNOWN_ISSUES.md) — Bugs, VLibras, limitações
+- [`docs/README.md`](docs/README.md) — índice da documentação
+- [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) — arquitetura atual
+- [`docs/OPERATIONS.md`](docs/OPERATIONS.md) — runbook e operação
+- [`docs/SECURITY-LGPD.md`](docs/SECURITY-LGPD.md) — segurança e LGPD
+- [`docs/REPLICATION.md`](docs/REPLICATION.md) — replicação em novo ambiente
+- [`docs/COST-ESTIMATE.md`](docs/COST-ESTIMATE.md) — custos estimados e cenários
 
 ---
 

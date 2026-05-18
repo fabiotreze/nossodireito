@@ -17,11 +17,13 @@
 
 subscription_id = "YOUR_AZURE_SUBSCRIPTION_ID"
 
+# --- Replicação (novo tenant/subscription) ---
+# project_name = "nossodireito-br"
+# environment  = "prod"        # prod | staging | dev
+# location     = "brazilsouth"
+
 # --- E-mail para alertas do Azure Monitor ---
 # alert_email = "seu-email@example.com"
-
-# --- Ambiente ---
-# environment = "prod"     # prod | staging | dev
 
 # --- SKU ---
 # app_service_sku = "B1"   # F1 (Free) | B1 ($13/mês, suporta SSL)

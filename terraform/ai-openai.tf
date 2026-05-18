@@ -58,7 +58,7 @@ resource "azurerm_cognitive_account" "openai" {
   # Custom subdomain é OBRIGATÓRIO para autenticação via Azure AD / MSI.
   custom_subdomain_name = "cog-${local.project}-openai${local.suffix}"
 
-  public_network_access_enabled = true
+  public_network_access_enabled = var.enable_openai_private_network ? false : true
 
   # local_auth_enabled = false força uso de Azure AD/MSI (zero key leaks).
   # LGPD Art. 46 — mínima exposição de credenciais.

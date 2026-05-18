@@ -16,11 +16,10 @@ const path = require("node:path");
 const zlib = require("node:zlib");
 const crypto = require("node:crypto");
 
-// ── IA opt-in (Document Intelligence) ──
+// ── IA opt-in (Azure OpenAI) ──
 // Anonymizer roda em Node + browser. Aqui é o double-check de PII.
 const { anonymize, containsPII } = require("./shared/anonymizer");
-// Doc Intelligence client é lazy-loaded (require interno) — só carrega
-// SDK Azure quando AZURE_DOC_INTELLIGENCE_ENDPOINT existir.
+// Cliente Azure OpenAI é lazy-loaded (require interno).
 const AI_ANALYSIS_ENABLED = process.env.AI_ANALYSIS_ENABLED === "true";
 
 const PORT = process.env.PORT || 8080;
@@ -439,11 +438,30 @@ const server = http.createServer(async (req, res) => {
   // Must respond 200 on ALL hosts (including *.azurewebsites.net)
   // before the domain redirect, otherwise probe marks app unhealthy.
   if (req.url === "/healthz" || req.url === "/health") {
+    let ai = {
+      enabled: AI_ANALYSIS_ENABLED,
+      configured: false,
+      circuitOpen: false,
+      retryAfterSeconds: 0,
+    };
+    try {
+      const { getAIHealth } = require("./services/ai-analysis");
+      ai = getAIHealth();
+    } catch {
+      // Service optional for health endpoint; do not fail health probe.
+    }
     res.writeHead(200, {
       "Content-Type": "application/json",
       "Cache-Control": "no-cache, no-store",
     });
-    res.end(JSON.stringify({ status: "healthy", version: PKG_VERSION }));
+    res.end(
+      JSON.stringify({
+        status: "healthy",
+        version: PKG_VERSION,
+        localAnalysisAvailable: true,
+        ai,
+      }),
+    );
     return;
   }
 
@@ -595,7 +613,7 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
-  // ── IA opt-in: Análise de documento via Azure Document Intelligence ──
+  // ── IA opt-in: Análise de documento via Azure OpenAI ──
   // Fluxo:
   //  1. Cliente anonimiza no browser (shared/anonymizer.js)
   //  2. POST { text: "..." } com Content-Type: application/json
@@ -605,7 +623,12 @@ const server = http.createServer(async (req, res) => {
   if (isAnalyzeEndpoint && req.method === "POST") {
     if (!AI_ANALYSIS_ENABLED) {
       res.writeHead(503, { "Content-Type": "application/json", ...SECURITY_HEADERS });
-      res.end(JSON.stringify({ error: "AI analysis disabled" }));
+      res.end(
+        JSON.stringify({
+          error: "AI analysis disabled",
+          localAnalysisFallback: true,
+        }),
+      );
       return;
     }
     if ((req.headers["content-type"] || "").split(";")[0].trim() !== "application/json") {
@@ -707,18 +730,32 @@ const server = http.createServer(async (req, res) => {
         res.end(JSON.stringify(result));
       } catch (err) {
         const errMsg = String(err && err.message).slice(0, 500);
+        const errCode = String((err && err.code) || "");
+        const retryAfter = Number((err && err.retryAfter) || 0);
         if (appInsights && appInsights.defaultClient) {
           appInsights.defaultClient.trackEvent({
             name: "AI.Analysis.Error",
             properties: {
               message: errMsg,
-              code: String((err && err.code) || ""),
+              code: errCode,
               status: String((err && err.status) || ""),
             },
           });
         }
-        res.writeHead(502, { "Content-Type": "application/json", ...SECURITY_HEADERS });
-        res.end(JSON.stringify({ error: "AI service unavailable" }));
+        const status = errCode === "CIRCUIT_OPEN" || errCode === "ETIMEDOUT" ? 503 : 502;
+        const errorHeaders = {
+          "Content-Type": "application/json",
+          ...SECURITY_HEADERS,
+        };
+        if (retryAfter > 0) errorHeaders["Retry-After"] = String(retryAfter);
+        res.writeHead(status, errorHeaders);
+        res.end(
+          JSON.stringify({
+            error: "AI service unavailable",
+            localAnalysisFallback: true,
+            retryAfterSeconds: retryAfter || undefined,
+          }),
+        );
       }
     });
     req.on("error", () => {

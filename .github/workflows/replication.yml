@@ -1,0 +1,114 @@
+name: Replication Bootstrap
+
+on:
+  workflow_dispatch:
+    inputs:
+      action:
+        description: "Action"
+        required: true
+        default: "plan"
+        type: choice
+        options:
+          - plan
+          - apply
+      environment:
+        description: "Environment name"
+        required: true
+        default: "prod"
+        type: string
+      project_name:
+        description: "Project base name"
+        required: true
+        default: "nossodireito-br"
+        type: string
+      custom_domain:
+        description: "Custom domain"
+        required: true
+        default: "nossodireito.fabiotreze.com"
+        type: string
+      location:
+        description: "Azure region"
+        required: true
+        default: "brazilsouth"
+        type: string
+      enable_custom_domain:
+        description: "Enable custom domain"
+        required: true
+        default: true
+        type: boolean
+      enable_keyvault:
+        description: "Enable Key Vault and cert resources"
+        required: true
+        default: true
+        type: boolean
+
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  group: replication-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: terraform
+
+    env:
+      ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+      ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+      ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+      ARM_USE_OIDC: "true"
+      TF_VAR_subscription_id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+      TF_VAR_environment: ${{ github.event.inputs.environment }}
+      TF_VAR_project_name: ${{ github.event.inputs.project_name }}
+      TF_VAR_custom_domain: ${{ github.event.inputs.custom_domain }}
+      TF_VAR_location: ${{ github.event.inputs.location }}
+      TF_VAR_enable_custom_domain: ${{ github.event.inputs.enable_custom_domain }}
+      TF_VAR_enable_keyvault: ${{ github.event.inputs.enable_keyvault }}
+      TF_VAR_pfx_password: ${{ secrets.TF_VAR_PFX_PASSWORD }}
+      TF_VAR_user_object_id: ${{ secrets.USER_OBJECT_ID }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: "24"
+          cache: "npm"
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_wrapper: false
+
+      - name: Azure Login (OIDC)
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.ARM_CLIENT_ID }}
+          tenant-id: ${{ secrets.ARM_TENANT_ID }}
+          subscription-id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
+
+      - name: Terraform Init
+        run: terraform init
+
+      - name: Terraform Validate
+        run: terraform validate
+
+      - name: Terraform Plan
+        run: terraform plan -out=tfplan
+
+      - name: Upload plan artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: replication-tfplan
+          path: terraform/tfplan
+
+      - name: Terraform Apply
+        if: github.event.inputs.action == 'apply'
+        run: terraform apply -auto-approve tfplan

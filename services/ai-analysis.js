@@ -31,6 +31,18 @@ let _client = null;
 let _initError = null;
 let _credential = null;
 
+const AI_TIMEOUT_MS = Number(process.env.AI_TIMEOUT_MS || 12000);
+const AI_MAX_RETRIES = Number(process.env.AI_MAX_RETRIES || 2);
+const AI_RETRY_BASE_MS = Number(process.env.AI_RETRY_BASE_MS || 600);
+const AI_CB_FAILURE_THRESHOLD = Number(process.env.AI_CB_FAILURE_THRESHOLD || 3);
+const AI_CB_COOLDOWN_MS = Number(process.env.AI_CB_COOLDOWN_MS || 60000);
+
+const aiCircuit = {
+  failures: 0,
+  openUntil: 0,
+  lastError: "",
+};
+
 /** Schema esperado do JSON estruturado retornado pelo modelo. */
 const ANALYSIS_JSON_SCHEMA = {
   name: "analise_laudo_pcd",
@@ -128,6 +140,81 @@ function getCredential() {
   return _credential;
 }
 
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function isTransientError(err) {
+  const status = Number(err?.status || err?.statusCode || 0);
+  const code = String(err?.code || "").toUpperCase();
+  if ([408, 409, 425, 429, 500, 502, 503, 504].includes(status)) return true;
+  return ["ETIMEDOUT", "ECONNRESET", "ECONNREFUSED", "EAI_AGAIN", "ABORT_ERR"].includes(code);
+}
+
+function markFailure(err) {
+  aiCircuit.failures += 1;
+  aiCircuit.lastError = String(err?.message || err || "").slice(0, 500);
+  if (aiCircuit.failures >= AI_CB_FAILURE_THRESHOLD) {
+    aiCircuit.openUntil = Date.now() + AI_CB_COOLDOWN_MS;
+  }
+}
+
+function markSuccess() {
+  aiCircuit.failures = 0;
+  aiCircuit.openUntil = 0;
+  aiCircuit.lastError = "";
+}
+
+function assertCircuitClosed() {
+  if (Date.now() < aiCircuit.openUntil) {
+    const retryAfter = Math.ceil((aiCircuit.openUntil - Date.now()) / 1000);
+    const err = new Error(`AI circuit breaker open for ${retryAfter}s`);
+    err.code = "CIRCUIT_OPEN";
+    err.retryAfter = retryAfter;
+    throw err;
+  }
+}
+
+async function runWithTimeout(promiseFactory, timeoutMs) {
+  let timer;
+  try {
+    return await Promise.race([
+      promiseFactory(),
+      new Promise((_, reject) => {
+        timer = setTimeout(() => {
+          const err = new Error(`AI timeout after ${timeoutMs}ms`);
+          err.code = "ETIMEDOUT";
+          reject(err);
+        }, timeoutMs);
+      }),
+    ]);
+  } finally {
+    if (timer) clearTimeout(timer);
+  }
+}
+
+async function createCompletionWithResilience(client, payload) {
+  let attempt = 0;
+  while (true) {
+    attempt += 1;
+    try {
+      const completion = await runWithTimeout(
+        () => client.chat.completions.create(payload),
+        AI_TIMEOUT_MS,
+      );
+      markSuccess();
+      return completion;
+    } catch (err) {
+      markFailure(err);
+      if (attempt > AI_MAX_RETRIES || !isTransientError(err)) {
+        throw err;
+      }
+      const backoff = AI_RETRY_BASE_MS * Math.pow(2, attempt - 1);
+      await sleep(backoff);
+    }
+  }
+}
+
 function getClient() {
   if (_client) return _client;
   if (_initError) throw _initError;
@@ -173,6 +260,7 @@ function getClient() {
  * @param {string} anonymizedText Texto JÁ ANONIMIZADO
  */
 async function analyzeText(anonymizedText) {
+  assertCircuitClosed();
   const t0 = Date.now();
   const contentHash = crypto.createHash("sha256").update(anonymizedText).digest("hex").slice(0, 16);
 
@@ -186,7 +274,7 @@ async function analyzeText(anonymizedText) {
   const client = getClient();
   const deployment = process.env.AZURE_OPENAI_DEPLOYMENT_NAME;
 
-  const completion = await client.chat.completions.create({
+  const completion = await createCompletionWithResilience(client, {
     model: deployment,
     messages: [
       { role: "system", content: SYSTEM_PROMPT },
@@ -232,4 +320,20 @@ async function analyzeText(anonymizedText) {
   };
 }
 
-module.exports = { analyzeText };
+function getAIHealth() {
+  const configured = Boolean(
+    process.env.AZURE_OPENAI_ENDPOINT && process.env.AZURE_OPENAI_DEPLOYMENT_NAME,
+  );
+  const circuitOpen = Date.now() < aiCircuit.openUntil;
+  return {
+    enabled: process.env.AI_ANALYSIS_ENABLED === "true",
+    configured,
+    circuitOpen,
+    retryAfterSeconds: circuitOpen ? Math.ceil((aiCircuit.openUntil - Date.now()) / 1000) : 0,
+    timeoutMs: AI_TIMEOUT_MS,
+    maxRetries: AI_MAX_RETRIES,
+    lastError: aiCircuit.lastError,
+  };
+}
+
+module.exports = { analyzeText, getAIHealth };
