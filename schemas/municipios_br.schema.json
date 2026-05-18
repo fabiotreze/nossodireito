@@ -1,0 +1,45 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://nossodireito.app/schemas/municipios_br.schema.json",
+  "title": "Municípios brasileiros (snapshot IBGE)",
+  "description": "Snapshot dos 5.570 municípios brasileiros (IBGE). Campos curtos para reduzir payload: id=código IBGE, n=nome oficial, u=UF, k=nome normalizado (lowercase, sem acentos, sem apóstrofos/hífens) para busca.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["fonte", "gerado_em", "total", "municipios"],
+  "properties": {
+    "fonte": {
+      "type": "string",
+      "format": "uri",
+      "pattern": "^https://"
+    },
+    "gerado_em": {
+      "type": "string",
+      "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+    },
+    "total": {
+      "type": "integer",
+      "minimum": 5500,
+      "maximum": 5700
+    },
+    "municipios": {
+      "type": "array",
+      "minItems": 5500,
+      "maxItems": 5700,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "n", "u", "k"],
+        "properties": {
+          "id": {
+            "type": "integer",
+            "minimum": 1000000,
+            "maximum": 9999999
+          },
+          "n": { "type": "string", "minLength": 2 },
+          "u": { "type": "string", "pattern": "^[A-Z]{2}$" },
+          "k": { "type": "string", "pattern": "^[a-z0-9 ]+$" }
+        }
+      }
+    }
+  }
+}
