@@ -1,0 +1,51 @@
+#!/bin/sh
+# NossoDireito — commit-msg hook
+# Enforce Conventional Commits (https://www.conventionalcommits.org/).
+#
+# Permite:
+#   feat: ... | fix: ... | docs: ... | style: ... | refactor: ...
+#   perf: ... | test: ... | build: ... | ci: ... | chore: ... | revert: ...
+# Com scope opcional:  feat(geo): ...
+# Breaking:  feat!: ...  ou  feat(api)!: ...
+#
+# Pula:
+#   - Merge commits (Merge branch ..., Merge pull request ...)
+#   - Revert commits (Revert "...")
+#   - Fixup/squash (autosquash do git)
+# Bypass: git commit --no-verify
+
+msg_file="$1"
+[ -z "$msg_file" ] && exit 0
+[ -f "$msg_file" ] || exit 0
+
+first_line=$(head -n1 "$msg_file")
+
+# Skip merges, reverts, fixups
+case "$first_line" in
+    "Merge "*|"Revert \""*|"fixup! "*|"squash! "*|"amend! "*) exit 0 ;;
+esac
+
+# Regex Conventional Commits (POSIX-friendly via grep -E):
+#   tipo(scope opcional)!?: descricao
+pattern='^(feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert)(\([a-z0-9_-]+\))?!?:[[:space:]].+'
+
+if ! printf '%s' "$first_line" | grep -qE "$pattern"; then
+    echo "❌ commit-msg: mensagem fora do padrao Conventional Commits."
+    echo ""
+    echo "   Recebido: $first_line"
+    echo ""
+    echo "   Formato esperado:"
+    echo "     <tipo>(<scope opcional>)<!>: <descricao>"
+    echo ""
+    echo "   Tipos: feat fix docs style refactor perf test build ci chore revert"
+    echo "   Exemplos:"
+    echo "     feat(geo): busca real via IBGE"
+    echo "     fix: corrige off-by-one no semver gate"
+    echo "     chore(release): v1.21.0"
+    echo "     feat(api)!: remove endpoint /v1/legacy"
+    echo ""
+    echo "   Bypass (com motivo): git commit --no-verify"
+    exit 1
+fi
+
+exit 0

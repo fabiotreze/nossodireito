@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Master Compliance Validator - NossoDireito v1.20.0
+Master Compliance Validator - NossoDireito v1.21.0
 
 Ponto de entrada ÚNICO de qualidade do projeto.
 Usado pelo pre-commit hook e também como validador standalone.
@@ -112,7 +112,7 @@ class MasterComplianceValidator:
 
     def __init__(self, quick: bool = False):
         self.root = Path(__file__).parent.parent
-        self.version = "1.20.0"
+        self.version = "1.21.0"
         self.quick = quick
         self.errors = []
         self.warnings = []
@@ -2551,46 +2551,74 @@ class MasterComplianceValidator:
     # =========================================================================
 
     def validate_json_schema(self) -> bool:
-        """Valida data/direitos.json contra schemas/direitos.schema.json.
-        Retorna True se válido ou se lib não disponível (graceful degradation).
-        """
-        data_path = self.root / 'data' / 'direitos.json'
-        schema_path = self.root / 'schemas' / 'direitos.schema.json'
+        """Valida JSONs de dados contra schemas em schemas/.
 
+        Schemas verificados:
+          - data/direitos.json          ↔ schemas/direitos.schema.json
+          - data/municipios_br.json     ↔ schemas/municipios_br.schema.json
+          - data/orgaos_estaduais.json  ↔ schemas/orgaos_estaduais.schema.json (se ambos existirem)
+
+        Retorna True se todos válidos ou se lib não disponível (graceful degradation).
+        Schemas/data ausentes geram warning, não falha.
+        """
         if not _HAS_JSONSCHEMA:
             self.log_warning('dados', "jsonschema não instalado — schema check pulado")
             return True
 
-        if not schema_path.exists():
-            self.log_warning('dados', "schemas/direitos.schema.json não encontrado — schema check pulado")
+        pairs = [
+            ('data/direitos.json',         'schemas/direitos.schema.json',         'categorias'),
+            ('data/municipios_br.json',    'schemas/municipios_br.schema.json',    'municipios'),
+            ('data/orgaos_estaduais.json', 'schemas/orgaos_estaduais.schema.json', 'orgaos'),
+        ]
+
+        all_ok = True
+        any_validated = False
+
+        for data_rel, schema_rel, count_key in pairs:
+            data_path = self.root / data_rel
+            schema_path = self.root / schema_rel
+
+            if not schema_path.exists():
+                self.log_warning('dados', f"{schema_rel} não encontrado — schema check pulado")
+                continue
+            if not data_path.exists():
+                # Schema existe mas data não: faz schema-loadability check apenas.
+                try:
+                    with open(schema_path, 'r', encoding='utf-8') as f:
+                        json.load(f)
+                    self.log_pass('dados', f"{schema_rel}: schema carregável (data ausente)", 2)
+                except Exception as e:
+                    self.log_fail('dados', f"{schema_rel}: schema inválido: {e}", 5)
+                    all_ok = False
+                continue
+
+            try:
+                with open(data_path, 'r', encoding='utf-8') as f:
+                    data = json.load(f)
+                with open(schema_path, 'r', encoding='utf-8') as f:
+                    schema = json.load(f)
+
+                validator = Draft7Validator(schema)
+                errors = list(validator.iter_errors(data))
+                any_validated = True
+
+                if not errors:
+                    top = data.get(count_key) if isinstance(data, dict) else None
+                    n = len(top) if isinstance(top, list) else (len(data) if hasattr(data, '__len__') else '?')
+                    self.log_pass('dados', f"{data_rel}: válido ({n} {count_key})", 5)
+                else:
+                    self.log_fail('dados', f"{data_rel}: {len(errors)} erro(s) de schema", 5)
+                    for err in errors[:3]:
+                        path = ".".join(str(p) for p in err.path) or "root"
+                        print(f"    ⚠️  {path}: {err.message[:100]}")
+                    all_ok = False
+            except Exception as e:
+                self.log_fail('dados', f"{data_rel}: schema check falhou: {e}", 5)
+                all_ok = False
+
+        if not any_validated:
             return True
-
-        if not data_path.exists():
-            self.log_fail('dados', "data/direitos.json não encontrado para schema check", 5)
-            return False
-
-        try:
-            with open(data_path, 'r', encoding='utf-8') as f:
-                data = json.load(f)
-            with open(schema_path, 'r', encoding='utf-8') as f:
-                schema = json.load(f)
-
-            validator = Draft7Validator(schema)
-            errors = list(validator.iter_errors(data))
-
-            if not errors:
-                n_cats = len(data.get('categorias', []))
-                self.log_pass('dados', f"JSON Schema Draft 7: válido ({n_cats} categorias)", 5)
-                return True
-            else:
-                self.log_fail('dados', f"JSON Schema: {len(errors)} erro(s)", 5)
-                for err in errors[:3]:
-                    path = ".".join(str(p) for p in err.path) or "root"
-                    print(f"    ⚠️  {path}: {err.message[:100]}")
-                return False
-        except Exception as e:
-            self.log_fail('dados', f"JSON Schema check falhou: {e}", 5)
-            return False
+        return all_ok
 
     # =========================================================================
     # EXECUÇÃO PRINCIPAL

@@ -1,20 +1,26 @@
 #!/bin/sh
 # NossoDireito — Pre-commit Hook (Quality Gate)
 #
-# Comando unico: master_compliance.py --quick
+# Instalacao automatica via 'npm install' (script 'prepare' seta core.hooksPath).
+# Manual: git config core.hooksPath .githooks
+#
+# Comando unico: master_compliance.py --quick (~6s)
 # Inclui internamente:
-#   - Fail-fast de versao (aborta se inconsistente)
+#   - Fail-fast de versao (aborta se inconsistente entre manifest/sw/data/*.json)
 #   - JSON Schema Draft 7
 #   - 21 categorias de validacao (~1050 pts)
-#   - Pula HTTP/fontes (modo rapido, ~30s)
+#   - Pula HTTP/fontes (modo rapido)
 #
-# O que NAO roda aqui (requer servidor/browser ou CI/CD):
-#   - test_e2e_playwright.py (requer Playwright + navegador)
-#   - pytest tests/ (regressao de dados — usar no CI/CD)
-#   - validate_all.py (16 fases completas — usar manualmente)
-#
-# Instalacao: cp scripts/pre-commit .git/hooks/pre-commit
-# Para pular: git commit --no-verify
+# Skip automatico: diffs SO de documentacao (.md/.txt) pulam o validator pesado.
+# Checks pesados (testes Node, semver gate, SW cache gate) rodam no pre-push.
+# Para pular manualmente: git commit --no-verify (use com motivo no msg).
+
+# Skip se diff so toca arquivos de docs (acelera commits de README/CHANGELOG).
+non_docs=$(git diff --cached --name-only --diff-filter=ACMR | grep -vE '\.(md|txt)$' || true)
+if [ -z "$non_docs" ]; then
+    echo "📝 pre-commit: diff so de docs — pulando validator pesado."
+    exit 0
+fi
 
 echo ""
 echo "======================================================"

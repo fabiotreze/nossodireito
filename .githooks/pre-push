@@ -1,0 +1,58 @@
+#!/bin/sh
+# NossoDireito — pre-push hook
+# Roda checks PESADOS antes do push (~5-10s total). Bloqueia push se algum falhar.
+# Bypass: git push --no-verify (use somente com motivo registrado).
+#
+# Checks:
+#   1. npm run test:js          — 62 testes Node (geo, anonymizer, week-plan, sanitizePlanKey)
+#   2. check_semver_bump.py     — feat:/breaking exige bump de manifest.json
+#   3. check_cache_invalidation.py — app.js ou data/*.json mudou exige bump de CACHE_VERSION
+
+set -e
+
+REPO_ROOT="$(git rev-parse --show-toplevel)"
+cd "$REPO_ROOT"
+
+# Detectar Python
+if command -v python3 >/dev/null 2>&1; then
+    PYTHON=python3
+elif command -v python >/dev/null 2>&1; then
+    PYTHON=python
+else
+    echo "⚠️  pre-push: Python nao encontrado — pulando gates Python."
+    PYTHON=""
+fi
+
+echo ""
+echo "🪝 pre-push: rodando gates pesados..."
+
+# 1. Testes Node
+if [ -f package.json ] && command -v npm >/dev/null 2>&1; then
+    echo "  → npm run test:js"
+    if ! npm run test:js --silent >/tmp/pp_test_js.log 2>&1; then
+        echo "❌ pre-push: testes Node falharam. Output:"
+        tail -40 /tmp/pp_test_js.log
+        echo ""
+        echo "   Bypass: git push --no-verify"
+        exit 1
+    fi
+fi
+
+# 2. Semver gate — feat:/breaking sem bump
+if [ -n "$PYTHON" ] && [ -f scripts/check_semver_bump.py ]; then
+    echo "  → check_semver_bump.py"
+    if ! $PYTHON scripts/check_semver_bump.py; then
+        exit 1
+    fi
+fi
+
+# 3. SW cache invalidation gate
+if [ -n "$PYTHON" ] && [ -f scripts/check_cache_invalidation.py ]; then
+    echo "  → check_cache_invalidation.py"
+    if ! $PYTHON scripts/check_cache_invalidation.py; then
+        exit 1
+    fi
+fi
+
+echo "✅ pre-push: todos os gates passaram."
+exit 0
