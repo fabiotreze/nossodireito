@@ -113,7 +113,7 @@ class MasterComplianceValidator:
 
     def __init__(self, quick: bool = False):
         self.root = Path(__file__).parent.parent
-        self.version = "1.18.0"
+        self.version = "1.18.2"
         self.quick = quick
         self.errors = []
         self.warnings = []
