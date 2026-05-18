@@ -48,16 +48,18 @@ jobs:
         id: health
         continue-on-error: true
         run: |
-          HZ=$(curl -s -o /dev/null -w "%{http_code}" --max-time 10 "https://app-${PROJECT}.azurewebsites.net/health" 2>/dev/null || echo "ERRO")
-          CD=$(curl -s -o /dev/null -w "%{http_code}" --max-time 10 "https://nossodireito.fabiotreze.com/" 2>/dev/null || echo "ERRO")
-          RD=$(curl -s -o /dev/null -w "%{http_code}" --max-time 10 --max-redirs 0 "https://app-${PROJECT}.azurewebsites.net/" 2>/dev/null || echo "ERRO")
+          # Cloudflare-only inbound: checks devem priorizar o domínio público.
+          HZ=$(curl -A "Mozilla/5.0 (compatible; weekly-review-bot/1.0)" -s -o /dev/null -w "%{http_code}" --max-time 10 "https://nossodireito.fabiotreze.com/health" 2>/dev/null || echo "ERRO")
+          CD=$(curl -A "Mozilla/5.0 (compatible; weekly-review-bot/1.0)" -s -o /dev/null -w "%{http_code}" --max-time 10 "https://nossodireito.fabiotreze.com/" 2>/dev/null || echo "ERRO")
+          AZ=$(curl -s -o /dev/null -w "%{http_code}" --max-time 10 "https://app-${PROJECT}.azurewebsites.net/" 2>/dev/null || echo "ERRO")
 
           echo "health=$HZ" >> "$GITHUB_OUTPUT"
           echo "custom_domain=$CD" >> "$GITHUB_OUTPUT"
-          echo "redirect=$RD" >> "$GITHUB_OUTPUT"
+          echo "azure_direct=$AZ" >> "$GITHUB_OUTPUT"
 
           STATUS="✅"
-          if [ "$HZ" != "200" ] || [ "$CD" != "200" ] || [ "$RD" != "301" ]; then
+          # Esperado: domínio público 200 e hostname direto do Azure bloqueado (403).
+          if [ "$HZ" != "200" ] || [ "$CD" != "200" ] || [ "$AZ" != "403" ]; then
             STATUS="⚠️"
           fi
           echo "overall=$STATUS" >> "$GITHUB_OUTPUT"
@@ -219,7 +221,7 @@ jobs:
           HEALTH_OVERALL: ${{ steps.health.outputs.overall }}
           HEALTH_HZ: ${{ steps.health.outputs.health }}
           HEALTH_CD: ${{ steps.health.outputs.custom_domain }}
-          HEALTH_RD: ${{ steps.health.outputs.redirect }}
+          HEALTH_AZ: ${{ steps.health.outputs.azure_direct }}
           CID_OK: ${{ steps.cidcheck.outputs.cid_ok }}
           CID_TOTAL: ${{ steps.cidcheck.outputs.cid_total }}
           CID_ERRORS: ${{ steps.cidcheck.outputs.cid_errors }}
@@ -254,7 +256,7 @@ jobs:
               `| Quality Gate | ${e('QG_STATUS')} |`,
               `| Health Probe (/health) | HTTP ${e('HEALTH_HZ')} |`,
               `| Custom Domain | HTTP ${e('HEALTH_CD')} |`,
-              `| Redirect Azure | HTTP ${e('HEALTH_RD')} |`,
+              `| Azure hostname direto (esperado 403) | HTTP ${e('HEALTH_AZ')} |`,
               `| URL Validation | ${e('URL_SCORE', '?')}% (${e('URL_ERRORS', '?')} erros, ${e('URL_WARNINGS', '?')} avisos) |`,
               `| CID (OMS ICD API) | ${e('CID_OK', '?')}/${e('CID_TOTAL', '?')} ✅ |`,
               `| **Status Geral** | **${e('HEALTH_OVERALL')}** |`,
