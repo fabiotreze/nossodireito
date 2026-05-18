@@ -2004,12 +2004,39 @@ html.high-contrast .valor-destaque {
     margin: 0.25rem 0;
 }
 
+.analysis-week-plan li label {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+}
+
+.analysis-week-plan-day {
+    margin-top: 3px;
+    flex-shrink: 0;
+}
+
+.analysis-week-plan li.completed .analysis-week-plan-text {
+    text-decoration: line-through;
+    color: var(--text-muted);
+}
+
+.analysis-week-plan-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+    flex-wrap: wrap;
+}
+
 @media (max-width: 768px) {
     .analysis-ai-practical-grid {
         grid-template-columns: 1fr;
     }
 
     .analysis-ai-actions .btn {
+        width: 100%;
+    }
+
+    .analysis-week-plan-actions .btn {
         width: 100%;
     }
 }
