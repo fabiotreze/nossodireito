@@ -13,8 +13,12 @@
 ## Daily Checks
 
 1. Check app health:
-   - `curl -s https://app-nossodireito-br.azurewebsites.net/health | jq`
+   - `curl -s https://nossodireito.fabiotreze.com/health | jq`
    - Verify `localAnalysisAvailable=true` and inspect `ai.circuitOpen` / `ai.retryAfterSeconds`.
+2. Validate ingress hardening:
+   - `curl -s -o /dev/null -w "%{http_code}\n" https://nossodireito.fabiotreze.com/`
+   - `curl -s -o /dev/null -w "%{http_code}\n" https://app-nossodireito-br.azurewebsites.net/`
+   - Expected: custom domain `200`, direct hostname `403`.
 2. Validate security headers:
    - `bash scripts/security_headers_check.sh`
 3. Validate tests:
@@ -29,7 +33,7 @@
 2. App package deploy:
    - `gh workflow run deploy.yml -R fabiotreze/nossodireito`
 3. Post-deploy smoke:
-   - `curl -s https://app-nossodireito-br.azurewebsites.net/ | grep -E "aiConsentRevokeInline|v=1.19.0"`
+   - `curl -s https://nossodireito.fabiotreze.com/ | grep -E "aiConsentRevokeInline|v=1.19.0"`
 
 ## Incident Triage
 
@@ -44,6 +48,12 @@
 4. Check OpenAI private mode:
    - `az cognitiveservices account show -n cog-nossodireito-br-openai -g rg-nossodireito-br`
    - `--query properties.publicNetworkAccess -o tsv`
+   - Expected: `Disabled`
+5. Check Key Vault private mode:
+   - `az keyvault show -n kv-nossodireito-br -g rg-nossodireito-br --query properties.publicNetworkAccess -o tsv`
+   - Expected: `Disabled`
+6. Check Redis private mode:
+   - `az redis show -n redis-nossodireito-br -g rg-nossodireito-br --query publicNetworkAccess -o tsv`
    - Expected: `Disabled`
 
 ## AI Resilience Controls
@@ -62,3 +72,4 @@ com `Retry-After` e o frontend mantém a análise local como fallback padrão.
 - Use branch + PR by default for large changes.
 - Keep `main` deployable and version-consistent (`package.json`, `data/*.json`, `sw.js`, cache-bust in `index.html`).
 - Never commit `terraform/terraform.tfvars` or certificate files.
+- In runner fora da VNet, manter `manage_redis_secret_with_terraform=false` para evitar erro 403 no refresh de segredo em Key Vault privado.
