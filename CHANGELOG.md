@@ -24,6 +24,7 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 - **README atualizado** para refletir a documentação consolidada e o foco em operação/replicação.
 - **`terraform.tfvars.example` reforçado** para cenário de replicação multi-ambiente.
 - **Plano de 7 dias pós-análise IA tornado executável**: checklist com progresso salvo no navegador, opção de copiar plano e reiniciar acompanhamento.
+- **Plano de 7 dias — ciclo de UX**: barra de progresso com contador (`X/7 dias`), destaque do "dia atual" (primeiro item não concluído), checklist de "Documentos essenciais" persistido em `localStorage`, disclaimer reforçado de "não substitui orientação jurídica" diretamente acima do plano, melhorias de acessibilidade (`role`, `aria-expanded`, `aria-checked`, `aria-valuenow`, `focus-visible`, `prefers-reduced-motion`), tap target ≥28px e cap de 20 planos no `localStorage` com sanitização do `planKey`.
 
 ### Removido
 

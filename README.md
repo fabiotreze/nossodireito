@@ -82,7 +82,7 @@ Para rodar testes: veja [`docs/OPERATIONS.md`](docs/OPERATIONS.md)
 3. **Workflow dedicado de replicação** (`.github/workflows/replication.yml`).
 4. **Baseline de segurança automatizada** (`.github/workflows/security-baseline.yml`).
 5. **Documentação consolidada** em arquitetura/operação/segurança-replicação.
-6. **Plano de 7 dias executável no resultado da IA** (checklist com progresso salvo + copiar/reiniciar).
+6. **Plano de 7 dias executável no resultado da IA** (checklist com progresso salvo + copiar/reiniciar, barra de progresso `X/7`, destaque do dia atual, checklist de documentos essenciais e disclaimer jurídico reforçado).
 
 ### 📚 Documentação:
 
