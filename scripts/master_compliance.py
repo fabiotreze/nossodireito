@@ -57,6 +57,7 @@ except ImportError:
 _SEMVER_RE = re.compile(r'^\d+\.\d+\.\d+$')
 _VERSION_CHECKS = [
     ('data/direitos.json', 'json', 'versao'),
+    ('data/dicionario_pcd.json', 'json', 'versao'),
     ('manifest.json', 'json', 'version'),
     ('sw.js', 'regex', r"CACHE_VERSION\s*=\s*'nossodireito-v([\d.]+)'"),
     ('README.md', 'regex', r'Version-([\d.]+)'),
