@@ -9,7 +9,7 @@
 
 'use strict';
 
-const CACHE_VERSION = 'nossodireito-v1.19.0';
+const CACHE_VERSION = 'nossodireito-v1.20.0';
 const STATIC_ASSETS = [
     '/',
     '/index.html',
@@ -19,6 +19,7 @@ const STATIC_ASSETS = [
     '/data/direitos.json',
     '/data/matching_engine.json',
     '/data/dicionario_pcd.json',
+    '/data/municipios_br.json',
     '/manifest.json',
     '/images/favicon.ico',
     '/images/favicon-32x32.png',
