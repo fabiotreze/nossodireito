@@ -5,7 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta name="format-detection" content="telephone=no" />
     <title>Direitos PcD 2026 — BPC, CIPTEA, Escola | NossoDireito</title>
-    <meta name="description" content="Recebeu um laudo? Guia gratuito de direitos PcD 2026: BPC/LOAS, CIPTEA, escola inclusiva, plano de saúde, FGTS e mais. Fontes oficiais." />
+    <meta
+      name="description"
+      content="Recebeu um laudo? Guia gratuito de direitos PcD 2026: BPC/LOAS, CIPTEA, escola inclusiva, plano de saúde, FGTS e mais. Fontes oficiais."
+    />
     <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
     <meta
       name="keywords"
@@ -101,23 +104,29 @@
 
       html {
         scroll-behavior: smooth;
-        /* Compensa AMBOS os elementos sticky no topo: #legalBanner (~70-140px, varia c/ wrap em mobile) + .navbar (64px).
-           Antes era 120px (só navbar) e causava bug de "primeiro clique não pula" em âncoras como #disclaimerInline. */
-        scroll-padding-top: 220px;
+        /* Compensa apenas a navbar sticky (64px) — banner legal não é mais sticky. */
+        scroll-padding-top: 80px;
         font-size: 16px;
       }
 
-      /* Defesa extra: alvos de âncora explícitos garantem offset correto mesmo se a altura do banner mudar (ex.: wrap em mobile). */
+      /* Defesa para âncoras críticas mesmo com navbar variável. */
       :target,
       #disclaimerInline,
       [id^="benefit-"],
       section[id] {
-        scroll-margin-top: 220px;
+        scroll-margin-top: 80px;
       }
 
       @media (max-width: 600px) {
-        html { scroll-padding-top: 260px; }
-        :target, #disclaimerInline, [id^="benefit-"], section[id] { scroll-margin-top: 260px; }
+        html {
+          scroll-padding-top: 96px;
+        }
+        :target,
+        #disclaimerInline,
+        [id^="benefit-"],
+        section[id] {
+          scroll-margin-top: 96px;
+        }
       }
 
       body {
@@ -170,17 +179,26 @@
         padding: 0.5rem 0;
         list-style: none;
       }
-      .seo-resumo > summary::-webkit-details-marker { display: none; }
+      .seo-resumo > summary::-webkit-details-marker {
+        display: none;
+      }
       .seo-resumo > summary::before {
         content: "▶";
         display: inline-block;
         margin-right: 0.5rem;
         transition: transform 0.2s;
       }
-      .seo-resumo[open] > summary::before { transform: rotate(90deg); }
+      .seo-resumo[open] > summary::before {
+        transform: rotate(90deg);
+      }
       .seo-resumo h2,
-      .seo-resumo h3 { color: #1e3a8a; margin-top: 1.25rem; }
-      .seo-resumo p { margin: 0.5rem 0; }
+      .seo-resumo h3 {
+        color: #1e3a8a;
+        margin-top: 1.25rem;
+      }
+      .seo-resumo p {
+        margin: 0.5rem 0;
+      }
 
       .skip-link {
         position: absolute;
@@ -494,9 +512,9 @@
         }
       }
     </style>
-    <link rel="stylesheet" href="css/styles.css?v=1.16.0" media="print" id="deferredCSS" />
+    <link rel="stylesheet" href="css/styles.css?v=1.17.0" media="print" id="deferredCSS" />
     <noscript>
-      <link rel="stylesheet" href="css/styles.css?v=1.16.0" />
+      <link rel="stylesheet" href="css/styles.css?v=1.17.0" />
     </noscript>
     <script type="application/ld+json">
       {
@@ -1298,36 +1316,6 @@
     <a href="#navLinks" class="skip-link" accesskey="2">Ir para o menu [2]</a>
     <a href="#searchInput" class="skip-link" accesskey="3">Ir para a busca [3]</a>
 
-    <!-- ⚠️ Banner persistente de aviso legal (LGPD + isenção de responsabilidade).
-         Visível em todo carregamento para reforço jurídico — não é dispensável.
-         Texto curto + link para o disclaimer completo (#disclaimerInline). -->
-    <div
-      id="legalBanner"
-      role="alert"
-      style="
-        background: #fff3cd;
-        color: #664d03;
-        border-bottom: 2px solid #ffc107;
-        padding: 0.6rem 1rem;
-        font-size: 0.9rem;
-        line-height: 1.4;
-        text-align: center;
-        position: sticky;
-        top: 0;
-        z-index: 9999;
-      "
-    >
-      <strong>⚠️ Conteúdo educacional — NÃO substitui orientação profissional.</strong>
-      Projeto independente, ambiente de desenvolvimento/POC, sem fins lucrativos.
-      Para ajuda especializada gratuita procure
-      <strong>Defensoria Pública</strong> (jurídico),
-      <strong>CRAS</strong> (social) ou
-      <strong>SUS</strong> (saúde).
-      <a href="#disclaimerInline" style="color: #664d03; text-decoration: underline; font-weight: 600"
-        >Ler aviso completo →</a
-      >
-    </div>
-
     <header>
       <nav class="navbar" role="navigation" aria-label="Menu principal">
         <div class="container">
@@ -1357,6 +1345,7 @@
         </div>
       </nav>
     </header>
+
     <noscript>
       <div
         style="
@@ -1769,6 +1758,14 @@
             <button id="analyzeSelected" class="btn btn-primary btn-analyze-global" type="button" disabled>
               🔍 Enviar para análise local
             </button>
+            <button id="analyzeWithAI" class="btn btn-secondary btn-analyze-global" type="button" disabled
+                    aria-describedby="aiAnalysisHint">
+              🧠 Analisar com IA (servidor)
+            </button>
+            <p id="aiAnalysisHint" class="upload-hint" style="margin-top:6px;">
+              💡 A análise com IA envia o <strong>texto anonimizado</strong> (sem nome, CPF, RG, endereço, telefone) para o
+              Azure Doc Intelligence em região Brasil. Requer seu consentimento explícito (LGPD Art. 7º I).
+            </p>
             <div class="upload-privacy">
               <p>
                 🔒 <strong>Consulta pontual:</strong> seus arquivos são criptografados (AES-256), analisados localmente
@@ -1984,10 +1981,10 @@
               <p style="margin-top: 0.75rem; font-size: 0.92rem">
                 <strong>Isenção de responsabilidade:</strong> este é um projeto pessoal, independente, sem fins
                 lucrativos, mantido em ambiente de <strong>desenvolvimento/POC</strong>. O autor e mantenedores
-                <strong>não se responsabilizam</strong> por decisões tomadas com base no conteúdo aqui apresentado,
-                nem por eventuais desatualizações, erros ou omissões. A legislação brasileira muda com frequência —
-                sempre confirme com a fonte oficial e com um profissional habilitado (advogado, médico, assistente
-                social, psicólogo) antes de agir.
+                <strong>não se responsabilizam</strong> por decisões tomadas com base no conteúdo aqui apresentado, nem
+                por eventuais desatualizações, erros ou omissões. A legislação brasileira muda com frequência — sempre
+                confirme com a fonte oficial e com um profissional habilitado (advogado, médico, assistente social,
+                psicólogo) antes de agir.
               </p>
             </div>
             <div class="disclaimer-section">
@@ -2078,9 +2075,33 @@
         </div>
       </div>
     </footer>
+
+    <!-- Aviso legal (LGPD + isenção). Movido do topo para o rodapé para não competir com a CTA inicial. -->
+    <div
+      id="legalBanner"
+      role="note"
+      aria-label="Aviso legal e isenção de responsabilidade"
+      style="
+        background: #fff8e1;
+        color: #664d03;
+        border-top: 1px solid #ffe082;
+        padding: 0.5rem 1rem;
+        font-size: 0.85rem;
+        line-height: 1.4;
+        text-align: center;
+      "
+    >
+      <strong>⚠️ Conteúdo educacional — NÃO substitui orientação profissional.</strong>
+      Projeto independente (POC, sem fins lucrativos). Para ajuda gratuita:
+      <strong>Defensoria Pública</strong>, <strong>CRAS</strong> ou <strong>SUS</strong>.
+      <a href="#disclaimerInline" style="color: #664d03; text-decoration: underline; font-weight: 600"
+        >Ler aviso completo →</a
+      >
+    </div>
     <button id="backToTop" type="button" class="back-to-top" aria-label="Voltar ao topo" title="Voltar ao topo">
       ↑
     </button>
+
 
     <!-- Painel de Acessibilidade (Drawer Pattern - Padrão Gov.br) -->
     <!-- Botão Trigger -->
@@ -2231,7 +2252,51 @@
         </div>
       </div>
     </aside>
-    <script src="js/app.js?v=1.16.0" defer></script>
-    <script src="js/sw-register.js?v=1.16.0" defer></script>
+    <!-- LGPD Consent Modal — análise com IA (opt-in) -->
+    <div id="aiConsentModal" class="modal-overlay" role="dialog" aria-modal="true"
+         aria-labelledby="aiConsentTitle" aria-describedby="aiConsentBody"
+         style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:9999;align-items:center;justify-content:center;padding:20px;">
+      <div class="modal-content" style="background:#fff;max-width:560px;width:100%;border-radius:8px;padding:24px;box-shadow:0 10px 40px rgba(0,0,0,0.3);max-height:90vh;overflow-y:auto;">
+        <h2 id="aiConsentTitle" style="margin-top:0;">🧠 Análise com Inteligência Artificial</h2>
+        <div id="aiConsentBody" style="font-size:0.95rem;line-height:1.5;">
+          <p><strong>O que será enviado:</strong></p>
+          <ul style="margin:8px 0 16px 20px;">
+            <li>✅ Texto extraído do PDF, <strong>já anonimizado no seu navegador</strong></li>
+            <li>🚫 <strong>Removido antes do envio</strong>: nome, CPF, RG, e-mail, telefone, endereço, CEP, data de nascimento</li>
+            <li>📄 <strong>Não enviado</strong>: o arquivo PDF/imagem original (fica só no seu dispositivo)</li>
+          </ul>
+          <p><strong>Para onde vai:</strong></p>
+          <ul style="margin:8px 0 16px 20px;">
+            <li>🇧🇷 <strong>Azure Doc Intelligence</strong> — região <strong>Brasil Sul</strong> (LGPD)</li>
+            <li>🔐 Autenticação via <strong>Managed Identity</strong> (sem chaves de API expostas)</li>
+            <li>⏱️ <strong>Sem armazenamento</strong>: a Microsoft não retém o texto após o processamento</li>
+          </ul>
+          <p><strong>O que você recebe:</strong></p>
+          <ul style="margin:8px 0 16px 20px;">
+            <li>🏷️ CIDs detectados (com validação de formato)</li>
+            <li>📅 Datas detectadas (com validação de formato)</li>
+            <li>📊 Estrutura do documento (páginas, parágrafos)</li>
+          </ul>
+          <p style="background:#fff3cd;padding:10px;border-left:3px solid #ffc107;border-radius:4px;font-size:0.85rem;">
+            ⚖️ Base legal: <strong>consentimento</strong> (LGPD Art. 7º I). Você pode revogar a qualquer momento
+            limpando os dados do site. Esta análise é orientação preliminar — <strong>não substitui</strong>
+            avaliação profissional.
+          </p>
+          <label style="display:flex;align-items:center;gap:8px;margin:12px 0;cursor:pointer;">
+            <input type="checkbox" id="aiConsentRemember" />
+            <span style="font-size:0.85rem;">Lembrar minha escolha por 30 dias</span>
+          </label>
+        </div>
+        <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:16px;flex-wrap:wrap;">
+          <button id="aiConsentCancel" type="button" class="btn btn-secondary">Cancelar</button>
+          <button id="aiConsentAccept" type="button" class="btn btn-primary">✅ Concordo e enviar</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Anonymizer compartilhado (Node + Browser) — DEVE carregar ANTES de app.js -->
+    <script src="shared/anonymizer.js?v=1.17.0" defer></script>
+    <script src="js/app.js?v=1.17.0" defer></script>
+    <script src="js/sw-register.js?v=1.17.0" defer></script>
   </body>
 </html>

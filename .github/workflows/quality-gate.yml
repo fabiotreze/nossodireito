@@ -83,13 +83,8 @@ jobs:
 
           echo "✅ Nenhum dado sensível detectado nos arquivos rastreados."
 
-      # ── Validação de Conteúdo ──
-      - name: Validar Conteúdo (categorias, IPVA, matching engine)
-        run: |
-          echo "🔍 Validando estrutura de conteúdo..."
-          python3 scripts/validate_content.py
-
-      # ── Quality Gate Principal ──
+      # ── Quality Gate Principal (único entry point) ──
+      # Inclui validate_content + 16 fases. Não duplicar validação antes.
       - name: Executar Quality Gate (validate_all.py)
         run: |
           echo "🔎 Executando Quality Gate..."

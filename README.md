@@ -4,7 +4,7 @@
 
 # ⚖️ NossoDireito
 
-[![Compliance](https://img.shields.io/badge/Compliance-100%25-brightgreen?style=flat-square)](docs/COMPLIANCE.md)
+[![Compliance](https://img.shields.io/badge/Compliance-99.54%25-brightgreen?style=flat-square)](docs/COMPLIANCE.md)
 [![Azure WAF](https://img.shields.io/badge/Azure%20WAF-Aligned-success?style=flat-square&logo=microsoftazure)](docs/ARCHITECTURE.md)
 [![Security](https://img.shields.io/badge/Security-HTTPS%20%7C%20CSP%20%7C%20Zero%20Tracking-green?style=flat-square&logo=letsencrypt)](SECURITY.md)
 [![Accessibility](https://img.shields.io/badge/Accessibility-ARIA%20%7C%20VLibras%20%7C%20WCAG-blue?style=flat-square&logo=accessible-icon)](docs/ACCESSIBILITY.md)
@@ -36,7 +36,7 @@ Este projeto responde essa pergunta de forma clara, objetiva e validada.
 
 ### 🌐 About (English)
 
-**NossoDireito — Rights Portal for People with Disabilities.** Regional project — interface and content in Portuguese (pt-BR) for Brazilian citizens. Web portal with **30 rights categories**, 68 official sources, keyword-based document analysis (609 mapped terms), accessibility tools (VLibras sign language, TTS, high contrast, font scaling), PWA offline support, and encrypted storage via Web Crypto API. **Zero data collection (LGPD compliant).** Master Compliance 100% (1059.9/1059.9 — 21 validation categories). Infrastructure as Code with Terraform on Azure App Service (region `brazilsouth`), CI/CD via GitHub Actions with automated Quality Gate.
+**NossoDireito — Rights Portal for People with Disabilities.** Regional project — interface and content in Portuguese (pt-BR) for Brazilian citizens. Web portal with **30 rights categories**, 68 official sources, keyword-based document analysis (609 mapped terms), accessibility tools (VLibras sign language, TTS, high contrast, font scaling), PWA offline support, and encrypted storage via Web Crypto API. **Zero data collection (LGPD compliant).** Master Compliance score 1077.7/1082.7 (99.54%) across 21 validation categories. Infrastructure as Code with Terraform on Azure App Service (region `brazilsouth`), CI/CD via GitHub Actions with automated Quality Gate.
 
 ---
 
@@ -56,7 +56,7 @@ Para rodar testes: veja [`docs/QUALITY_GUIDE.md`](docs/QUALITY_GUIDE.md)
 
 ## 🎉 NOVIDADES v1.14.8 (01/03/2026) — Migração Azure & Zero Hardcoding
 
-**🏆 Master Compliance:** 1104.7/1104.7 pontos **(100.00%)**
+**🏆 Master Compliance:** 1077.7/1082.7 pontos **(99.54%)** — 21 categorias; 1 categoria (Dependências) em 87.5% (falta atualizar/auditar lockfile)
 
 ### ✅ O que mudou:
 

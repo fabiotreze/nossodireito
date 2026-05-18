@@ -1,6 +1,6 @@
 # NossoDireito — Arquitetura do Sistema V1 (Produção Atual)
 
-**Versão:** 1.16.0
+**Versão:** 1.17.0
 **Data:** Fevereiro 2026
 **Status:** Produção Estável (Quality Gate: 100.0/100)
 **URL:** https://nossodireito.fabiotreze.com
@@ -62,7 +62,7 @@
 | **Acurácia de Análise** | ~70% (limitação regex) |
 | **Lighthouse Score** | Performance: 95+, Accessibility: 100, Best Practices: 100, SEO: 100 |
 | **Testes Automatizados** | 846 (709 unit + 137 Playwright E2E) |
-| **Master Compliance** | 100.00% (1104.7/1104.7) |
+| **Master Compliance** | 99.54% (1077.7/1082.7 — v1.17.0) |
 | **Tamanho Total** | 2.78 MB (52 arquivos) |
 
 ---
@@ -105,8 +105,8 @@
 └────────────────┬───────────────────────────────────────┘
                  │
         ┌────────▼──────────┐
-        │   GoDaddy DNS     │  ← CNAME: nossodireito.fabiotreze.com
-        │   (Registrar)     │     aponta para app-nossodireito-br.azurewebsites.net
+        │  Cloudflare DNS   │  ← CNAME (proxied): nossodireito.fabiotreze.com
+        │  (DNS + CDN/WAF)  │     aponta para app-nossodireito-br.azurewebsites.net
         └────────┬──────────┘
                  │
         ┌────────▼────────────────────────────────────────┐
@@ -358,7 +358,7 @@ Motor de análise de documentos baseado em regex e pesos.
 | **Azure Key Vault** | Standard | Armazenamento de certificado SSL PFX |
 | **Azure Application Insights** | Pay-as-you-go | Monitoramento, métricas, alertas |
 | **Azure Log Analytics** | PerGB2018 | Workspace para logs (30 dias retenção) |
-| **GoDaddy DNS** | - | Registrar do domínio fabiotreze.com |
+| **Cloudflare** | Free | DNS autoritativo + proxy/CDN/WAF para fabiotreze.com |
 
 ### DevOps & IaC
 | Ferramenta | Versão | Uso |
@@ -1099,9 +1099,11 @@ self.addEventListener('fetch', (event) => {
    - Metrics coletadas: Page views, IPs, geo, response time, errors
 
 6. **Custom Domain** (`nossodireito.fabiotreze.com`)
-   - CNAME GoDaddy → `app-nossodireito-br.azurewebsites.net`
-   - SSL Binding: SNI Enabled
-   - Certificado: Key Vault PFX
+   - CNAME na Cloudflare (proxied) → `app-nossodireito-br.azurewebsites.net`
+   - SSL Binding no App Service: SNI Enabled
+   - Certificado origin: **PFX wildcard `*.fabiotreze.com`** (DigiCert/GeoTrust TLS RSA CA G1, expira 2027-02-10, thumbprint `75F0CB7D560CFEDB4E689700787BEC6CECFA690B`), armazenado em Key Vault `kv-nossodireito-br` (secret `fabiotreze-wildcard`) e referenciado pelo App Service como `cert-app-nossodireito-br`
+   - Certificado edge (visto pelo browser): **Cloudflare Universal SSL** (Let's Encrypt) — termina TLS no edge; comportamento padrão do proxy Cloudflare
+   - SSL/TLS encryption mode na Cloudflare: **Full (strict)** (valida o cert DigiCert no origin)
 
 7. **Monitor Alerts** (4 alertas)
    - HTTP 5xx (severity 1 — errors)
@@ -1766,7 +1768,7 @@ scripts/                            # Scripts de validação e automação
 ├── bump_version.py                 # Incremento de versão (package.json, sw.js, direitos.json)
 ├── complete_beneficios.py          # Enriquecimento de benefícios
 ├── discover_benefits.py            # Descoberta de benefícios gov.br
-├── master_compliance.py            # Master Compliance Score (1104.7/1104.7)
+├── master_compliance.py            # Master Compliance Score (1077.7/1082.7, 99.54%)
 ├── pre-commit                      # Hook git pre-commit
 ├── validate_all.py                 # Quality Gate agregado (--quick mode)
 ├── validate_content.py             # Validação de conteúdo (categorias, IPVA)
@@ -2101,7 +2103,8 @@ Configurados via Terraform (`azurerm_monitor_metric_alert`):
 | **Log Analytics** | PerGB2018 | 500 MB/mês | $1.38 |
 | **Bandwidth** | Outbound | 10 GB/mês | $0.87 |
 | **Alerts** | Metric alerts | 4 rules | $0.00 (free tier: 10 rules) |
-| **GoDaddy (外部)** | Domain | Anual | ~$1.00/mês (amortizado) |
+| **Cloudflare** | DNS + proxy/CDN/WAF (Free) | Ilimitado | $0.00 |
+| **Domínio fabiotreze.com** | Registro anual (externo) | Anual | ~$1.00/mês (amortizado) |
 | **TOTAL** | | | **~$19.18/mês** |
 
 **Nota:** Estimativa para 500-1.000 pageviews/mês (tráfego baixo). Custos reais podem variar.
@@ -2211,17 +2214,19 @@ Configurados via Terraform (`azurerm_monitor_metric_alert`):
 
 ## 14. DNS & Domínio Customizado
 
-### Configuração GoDaddy
+### Configuração Cloudflare
 
-**Domínio:** `fabiotreze.com` (registrado na GoDaddy)
+**Domínio:** `fabiotreze.com` (DNS autoritativo na Cloudflare, modo proxied/CDN+WAF ativo)
 
-**Registros DNS:**
+**Registros DNS (Cloudflare):**
 ```
-Type   Host                      Value                                    TTL
-────────────────────────────────────────────────────────────────────────────
-CNAME  nossodireito              app-nossodireito-br.azurewebsites.net       1 Hour
-TXT    asuid.nossodireito        <Azure verification token>               1 Hour
+Type   Name                      Content                                  Proxy    TTL
+──────────────────────────────────────────────────────────────────────────────────────
+CNAME  nossodireito              app-nossodireito-br.azurewebsites.net    Proxied  Auto
+TXT    asuid.nossodireito        <Azure verification token>               DNS-only Auto
 ```
+
+> O registro TXT de validação (`asuid.*`) **precisa ficar DNS-only** (nuvem cinza), senão o Azure não consegue ler.
 
 **Processo de Setup:**
 
@@ -2229,18 +2234,43 @@ TXT    asuid.nossodireito        <Azure verification token>               1 Hour
    - Hostname: `nossodireito.fabiotreze.com`
    - Validate ownership via TXT record (`asuid.<subdomain>`)
 
-2. **GoDaddy → DNS Management**
-   - Adicionar CNAME: `nossodireito` → `app-nossodireito-br.azurewebsites.net`
-   - Adicionar TXT (verification): `asuid.nossodireito` → (valor do Azure)
+2. **Cloudflare → DNS**
+   - Adicionar CNAME: `nossodireito` → `app-nossodireito-br.azurewebsites.net` (Proxied)
+   - Adicionar TXT (verification): `asuid.nossodireito` → (valor do Azure) — **DNS only**
+   - SSL/TLS encryption mode: **Full (strict)**
 
-3. **Aguardar Propagação** (DNS TTL: 1 hora)
-   - Verificar: `nslookup nossodireito.fabiotreze.com`
-   - Deve apontar para `app-nossodireito-br.azurewebsites.net`
+3. **Aguardar Propagação** (DNS TTL: Auto, alguns minutos)
+   - Verificar: `dig +short nossodireito.fabiotreze.com` (deve resolver para IPs Cloudflare)
+   - `curl -vI https://nossodireito.fabiotreze.com` → cabeçalho `server: cloudflare`
 
-4. **Azure → Certificado SSL (Key Vault PFX)**
-   - Terraform importa PFX para Key Vault
-   - App Service Certificate referencia via `key_vault_secret_id`
-   - SSL Binding: SNI Enabled
+4. **Azure → Certificado SSL (PFX Wildcard via Key Vault)**
+   - PFX wildcard `*.fabiotreze.com` (DigiCert/GeoTrust TLS RSA CA G1) importado para o Key Vault `kv-nossodireito-br` (secret `fabiotreze-wildcard`)
+   - App Service Certificate referencia via `key_vault_secret_id` → recurso `cert-app-nossodireito-br` (`microsoft.web/certificates`)
+   - SSL Binding: SNI Enabled, thumbprint `75F0CB7D560CFEDB4E689700787BEC6CECFA690B`, expira 2027-02-10
+   - Renovação: manual via DigiCert (alerta 30 dias antes — ver §15)
+
+### Arquitetura de dois certificados (Cloudflare proxied)
+
+O browser **não vê** o cert DigiCert do origin — ele vê o cert da Cloudflare. Isso é esperado:
+
+```
+Browser ──TLS (Cloudflare Universal SSL / Let's Encrypt)──▶ Cloudflare edge
+                                                              │
+                                                              │ TLS (DigiCert *.fabiotreze.com, Key Vault)
+                                                              ▼
+                                                       Azure App Service
+```
+
+| Camada | Cert apresentado | Issuer | Origem |
+|---|---|---|---|
+| Edge (browser) | `CN=fabiotreze.com` | Let's Encrypt (Cloudflare Universal SSL Free) | Cloudflare, automático |
+| Origin (Azure) | `CN=*.fabiotreze.com` | GeoTrust TLS RSA CA G1 (DigiCert) | Key Vault `kv-nossodireito-br/fabiotreze-wildcard` |
+
+Validação do binding origin (CLI):
+```bash
+az webapp config ssl list -g rg-nossodireito-br \
+  --query "[?thumbprint=='75F0CB7D560CFEDB4E689700787BEC6CECFA690B'].{subject:subjectName,issuer:issuer,expires:expirationDate,hostnames:hostNames}"
+```
 
 5. **Redirect azurewebsites.net → Custom Domain** (server.js)
 ```javascript
@@ -2254,12 +2284,20 @@ if (AZURE_HOSTNAME && host === AZURE_HOSTNAME && req.headers.accept?.includes('t
 }
 ```
 
-**Certificado SSL:**
-- **Tipo:** Wildcard (`*.fabiotreze.com` + `fabiotreze.com`)
-- **Issuer:** Let's Encrypt ou DigiCert (GoDaddy)
-- **Validade:** 1 ano (renovação manual via GoDaddy)
+**Certificado SSL (origin Azure):**
+- **Tipo:** Wildcard PFX (`*.fabiotreze.com`)
+- **Issuer:** GeoTrust TLS RSA CA G1 (DigiCert)
+- **Validade:** até 10/02/2027 (renovação manual via DigiCert)
+- **Thumbprint:** `75F0CB7D560CFEDB4E689700787BEC6CECFA690B`
 - **Formato:** PFX (PKCS#12) com senha
-- **Armazenamento:** Azure Key Vault (encrypted at rest)
+- **Armazenamento:** Azure Key Vault `kv-nossodireito-br`, secret `fabiotreze-wildcard` (encrypted at rest)
+- **Referência App Service:** `cert-app-nossodireito-br` (`microsoft.web/certificates`)
+
+**Certificado SSL (edge Cloudflare):**
+- **Tipo:** Universal SSL (DV, SAN `fabiotreze.com` + `*.fabiotreze.com`)
+- **Issuer:** Let's Encrypt
+- **Validade:** ~90 dias (renovação automática pela Cloudflare)
+- **Custo:** Gratuito (plano Free)
 
 ---
 
@@ -2332,16 +2370,25 @@ if (AZURE_HOSTNAME && host === AZURE_HOSTNAME && req.headers.accept?.includes('t
    ```
 2. Ou: Gerenciar via Azure Portal manualmente
 
-#### 4. Key Vault Certificate Expiration
-**Impacto:** SSL inválido (browser warning)
-**Prevenção:** Alerta 30 dias antes (Azure Monitor)
+#### 4. Key Vault PFX Certificate Expiration
+**Impacto:** SSL inválido (browser warning) no origin Azure → Cloudflare em modo Full (strict) bloqueia o tráfego → site fora do ar
+**Prevenção:** Alerta 30 dias antes (Azure Monitor); cert atual expira **10/02/2027**
 **Restore:**
-1. Renovar certificado no GoDaddy
-2. Download novo PFX
-3. Re-run Terraform:
+1. Renovar certificado wildcard `*.fabiotreze.com` na DigiCert
+2. Exportar novo PFX (com senha)
+3. Re-importar no Key Vault:
+   ```bash
+   az keyvault certificate import \
+     --vault-name kv-nossodireito-br \
+     --name fabiotreze-wildcard \
+     --file ./fabiotreze-wildcard.pfx \
+     --password "$PFX_PASSWORD"
+   ```
+4. Re-run Terraform (atualiza `cert-app-nossodireito-br` + re-bind SNI):
    ```bash
    terraform apply -var="pfx_file_path=$CERT_FILE_PATH"
    ```
+5. Validar: `az webapp config ssl list -g rg-nossodireito-br --query "[].{name:name,thumb:thumbprint,expires:expirationDate}"`
 
 #### 5. Data Corruption (direitos.json)
 **Impacto:** Informações incorretas exibidas

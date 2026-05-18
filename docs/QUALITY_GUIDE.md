@@ -58,171 +58,134 @@ node server.js                           # Servidor local → http://localhost:8
 
 ## 1. Visão Geral do Pipeline
 
-### Arquitetura de Validação (2 componentes)
+### Hierarquia (2 entry points, 7 leaf validators)
 
-| Componente | Script | Papel |
-|-----------|--------|-------|
-| **Gatilho** | `pre-commit` (hook Git) | Comando único, bloqueia commit se falhar |
-| **Motor de qualidade** | `master_compliance.py --quick` | 21 categorias, ~1050 pts, fail-fast versão, JSON Schema |
+```
+┌─────────────────────────────────────────────────────────────┐
+│  ENTRY POINTS (chame APENAS estes — nunca os leaves direto) │
+├─────────────────────────────────────────────────────────────┤
+│  master_compliance.py  → Pre-commit + CI quality-gate       │
+│                          21 categorias, ~1080 pts, ~30s     │
+│                          Invoca: analise360                 │
+│                                                              │
+│  validate_all.py       → CI/CD deploy + weekly-review       │
+│                          16 fases, inclui HTTP, ~3-5min     │
+│                          Invoca: validate_schema,           │
+│                                  validate_content,          │
+│                                  validate_sources,          │
+│                                  validate_urls,             │
+│                                  validate_legal_sources,    │
+│                                  validate_legal_compliance, │
+│                                  audit_automation,          │
+│                                  complete_beneficios        │
+└─────────────────────────────────────────────────────────────┘
+       │
+       └─── LEAF VALIDATORS (não chamar manualmente) ──────────
+            • validate_schema.py        — JSON Schema Draft 7
+            • validate_content.py       — 85+ checks semânticos
+            • validate_sources.py       — URLs .gov.br vivas
+            • validate_urls.py          — 318 URLs c/ whitelist
+            • validate_legal_sources.py — leis, artigos, CIDs
+            • validate_legal_compliance.py — disclaimer, LGPD
+            • audit_automation.py       — mapeamento auto
+            • complete_beneficios.py    — preencher campos
+            • analise360.py             — 807 checks cobertura
 
-> `validate_all.py` permanece para rodadas **manuais completas** (16 fases, inclui HTTP).
+       └─── UTILS (chamada manual sob demanda) ────────────────
+            • bump_version.py           — release tooling
+            • discover_benefits.py      — cron mensal (novos PcDs)
+```
 
-### O que Validamos
+### Ordem de execução por gatilho
 
-- ✅ 30 categorias completas (todos os campos obrigatórios)
-- ✅ 27 estados no dropdown IPVA (lei, artigo, SEFAZ)
-- ✅ Matching engine (keywords, sinônimos, termos uppercase)
-- ✅ Fontes oficiais (gov.br, planalto.gov.br)
-- ✅ 88 relacionamentos entre categorias e documentos
-- ✅ Padrões de código (sem alert(), error handling, ARIA)
-- ✅ Análise semântica (resumos, dicas, valores monetários)
-- ✅ Segurança (HTTPS, CSP, dados sensíveis)
-- ✅ Performance (HTML <100KB, JS <100KB, CSS <100KB)
-- ✅ JS syntax check (`node -c`)
-- ✅ Workspace hygiene (temp files, orphans, duplicates)
-- ✅ JSON Schema Draft 7 (direitos.json vs schema)
-- ✅ Consistência de versão (10 arquivos vs package.json)
+| Gatilho | Comando único | Duração |
+|---|---|---|
+| **Local: `git commit`** | `master_compliance.py --quick` (via `scripts/pre-commit`) | ~30s |
+| **CI: quality-gate.yml** | `validate_all.py --quick` | ~60s |
+| **CI: deploy.yml** | `pytest tests/` → `validate_all.py --quick` | ~3min |
+| **CI: weekly-review.yml** | `validate_all.py --quick` → `validate_sources.py --urls` → `discover_benefits.py` | ~10min |
+| **CI: discover-benefits.yml** (cron 1º do mês) | `discover_benefits.py --since 60` | ~5min |
+
+> Regra de ouro: **se você está pensando em rodar um validator leaf manualmente, está fazendo errado.** Use um dos 2 entry points.
 
 ### Pre-commit Hook — Comando Único
 
-O hook `scripts/pre-commit` executa **um único comando** a cada `git commit`:
+O hook `scripts/pre-commit` executa **um único comando**:
 
 ```
 master_compliance.py --quick
-  ├── STEP 0: Versão (fail-fast — aborta se inconsistente)
-  ├── STEP 1: JSON Schema Draft 7
-  └── STEP 2: 21 categorias (sem HTTP, ~30s)
+  ├── STEP 0: Versão (fail-fast — aborta se inconsistente em 10 arquivos)
+  ├── STEP 1: JSON Schema Draft 7 (direitos.json)
+  ├── STEP 2: 21 categorias de scoring (~1080 pts, sem HTTP)
+  └── STEP 3: analise360.py via subprocess (35 pts adicionais)
 ```
 
 | O que faz | Fail-fast? | Duração |
-|-----------|------------|--------|
-| Versão: 10 arquivos vs `package.json` | **SIM** (aborta imediatamente) | 0.1s |
+|---|---|---|
+| Versão: 10 arquivos vs `package.json` | **SIM** | 0.1s |
 | Schema: `direitos.json` vs JSON Schema Draft 7 | NÃO | 0.5s |
-| 21 categorias: dados, código, arquitetura, segurança, etc. | NÃO | ~30s |
+| 21 categorias: dados, código, segurança, etc. | NÃO | ~25s |
+| analise360.py (cobertura, IPVA, completude) | NÃO | ~5s |
 
-> **Por que comando único?** Tudo absorvido internamente no `master_compliance.py`:
-> versão, schema, análise 360°, e todos os checks de dados.
-> Zero duplicação, zero arquivos intermediários.
-
-**Instalação:**
-```bash
-cp scripts/pre-commit .git/hooks/pre-commit
-chmod +x .git/hooks/pre-commit
-```
+**Instalação:** `cp scripts/pre-commit .git/hooks/pre-commit && chmod +x .git/hooks/pre-commit`
 
 **Bypass (emergência):** `git commit --no-verify`
 
-### Testes que não rodam no pre-commit
+### O que NÃO roda no pre-commit
 
-| Teste | Checks | Motivo |
-|-------|--------|--------|
-| `test_e2e_interactive.py` | 42 testes Playwright | Requer `node server.js` + Chromium |
-
-| `pytest tests/` | 9 testes unitários | Coberto por master_compliance (usar no CI/CD) |
-| `validate_all.py` | 16 fases completas | Inclui HTTP (usar manualmente/semanal) |
-
-**Modos de execução:**
-
-```bash
-python scripts/master_compliance.py --quick  # ~30s (pre-commit)
-python scripts/master_compliance.py          # ~1-5min (completo, com HTTP)
-python scripts/validate_all.py               # ~3-5min (16 fases, com HTTP)
-python scripts/validate_all.py --fix     # validar + corrigir
-```
+| Excluído | Motivo |
+|---|---|
+| `pytest tests/` (9 testes) | Coberto por master_compliance (usar no CI) |
+| `test_e2e_playwright.py` (42 testes) | Requer `node server.js` + Chromium |
+| `validate_all.py` (16 fases) | Inclui HTTP (~3min — usar no CI/manual) |
+| `validate_sources.py --urls` | HTTP live (~60-180s) |
+| `discover_benefits.py` | Cron mensal (workflow dedicado) |
 
 ---
 
 ## 2. Referência de Scripts
 
-### 2.1 `master_compliance.py` — Motor de Qualidade (ponto de entrada único)
+### 2.1 Entry points (use estes)
+
+#### `master_compliance.py` — Motor de Qualidade (pre-commit + quality-gate CI)
 
 ```bash
-python scripts/master_compliance.py --quick  # Pre-commit (~30s, sem HTTP)
-python scripts/master_compliance.py          # Completo (~1-5min, com HTTP)
+python scripts/master_compliance.py --quick  # ~30s (sem HTTP)
+python scripts/master_compliance.py          # ~1-5min (com HTTP)
 ```
 
-Inclui internamente: fail-fast de versão, JSON Schema Draft 7, 21 categorias de scoring.
+**21 categorias scoradas:** Dados, Código, Fontes, Arquitetura, Documentação, Segurança, Performance, Acessibilidade, SEO, Infraestrutura, Testes E2E, Dead Code, Órfãos, Lógica, Regulatory, Cloud Security, CI/CD, Dependências, Changelog, Análise 360° (via subprocess `analise360.py`), Referências Órfãs.
 
-**21 categorias:** Dados, Código, Fontes, Arquitetura, Documentação, Segurança, Performance, Acessibilidade, SEO, Infraestrutura, Testes E2E, Dead Code, Órfãos, Lógica, Regulatory, Cloud Security, CI/CD, Dependências, Changelog, Análise 360°, Referências Órfãs.
-
-### 2.2 `validate_all.py` — Orquestrador manual (16 fases)
+#### `validate_all.py` — Orquestrador estendido (CI deploy + weekly)
 
 ```bash
-python scripts/validate_all.py           # Modo completo (16 fases, inclui HTTP)
-python scripts/validate_all.py --quick   # Modo rápido (fases 1-4)
-python scripts/validate_all.py --fix     # Validar + corrigir
+python scripts/validate_all.py           # 16 fases completas, com HTTP
+python scripts/validate_all.py --quick   # Fases 1-4 (sem HTTP)
+python scripts/validate_all.py --fix     # Validar + auto-corrigir
 ```
 
-**Output:** `validation_report.json` (exit code 0=OK, 1=falhas)
+**Output:** `validation_report.json`. Invoca todos os leaf validators abaixo via subprocess.
 
-> Não faz parte do pre-commit. Usar para validações completas manuais/semanais.
+### 2.2 Leaf validators (chamados pelos entry points — não rodar diretamente)
 
-### 2.3 `analise360.py` — Cobertura de Benefícios
+| Script | Quem chama | Responsabilidade |
+|---|---|---|
+| `validate_schema.py` | `validate_all` Fase 1 | JSON Schema Draft 7 |
+| `validate_content.py` | `validate_all` Fase 2 | 85+ checks semânticos (categorias, IPVA, matching) |
+| `validate_sources.py` | `validate_all` Fase 5, `deploy.yml`, `weekly-review.yml` | URLs .gov.br vivas (HTTP) |
+| `validate_urls.py` | `validate_all` Fase 7, `weekly-review.yml` | 318 URLs c/ whitelist internacional |
+| `validate_legal_sources.py` | `master_compliance` (subprocess) | Leis, artigos, CIDs |
+| `validate_legal_compliance.py` | `validate_all` (extras) | Disclaimer, LGPD, isenção |
+| `audit_automation.py` | `validate_all` Fase 12 | Mapeamento de automação |
+| `complete_beneficios.py` | `validate_all` Fase 13 | Templates p/ campos parciais |
+| `analise360.py` | `master_compliance` (subprocess) | 807 checks de cobertura, IPVA 27 UFs |
 
-```bash
-python scripts/analise360.py
-```
+### 2.3 Utils (chamada manual ou por workflow dedicado)
 
-Valida cobertura (≥75%), completude (≥20 benefícios), IPVA (27 estados).
-
-### 2.4 `validate_content.py` — Validador Semântico
-
-```bash
-python scripts/validate_content.py
-```
-
-Valida 85+ checks: categorias (20 campos), IPVA dropdown (27 UFs), matching engine, documentos mestre (16), relacionamentos (88), padrões de código, conteúdo semântico.
-
-### 2.5 `validate_sources.py` — URLs .gov.br
-
-```bash
-python scripts/validate_sources.py   # ~60-180s (HTTP real)
-```
-
-### 2.6 `complete_beneficios.py` — Preenchimento de Campos
-
-```bash
-python scripts/complete_beneficios.py
-```
-
-Preenche campos faltantes com templates (mín: 5 requisitos, 4 documentos, 6 passos, 4 dicas, 2 links). ⚠️ Revise o conteúdo gerado.
-
-### 2.7 `audit_automation.py` — Mapeamento de Automação
-
-```bash
-python scripts/audit_automation.py
-```
-
-### 2.8 `analise360.py` — Avaliação Completa (807 checks)
-
-```bash
-python scripts/analise360.py
-```
-
-807 verificações em 11 seções: SEO, segurança, acessibilidade, conteúdo, performance, legal, URLs (318). Gera relatório detalhado com percentual por seção.
-
-### 2.9 `validate_urls.py` — Validação de URLs
-
-```bash
-python scripts/validate_urls.py
-```
-
-Valida 318 URLs do projeto (gov.br, legislação, internacionais). Whitelist `DOMINIOS_INTERNACIONAIS` para domínios como icd.who.int.
-
-### Quando Usar Cada Script
-
-| Situação | Script | Quando |
-|----------|--------|--------|
-| Antes de commit | `pre-commit` hook (automático) | A cada `git commit` |
-| Bump de versão | `bump_version.py <versao>` | Antes de release |
-| Verificar versão | `master_compliance.py --quick` | Automático (pre-commit) |
-| Verificação completa | `validate_all.py` | Semanal |
-| Avaliação 360° | `analise360.py` | Antes de release |
-| Após editar benefícios | `analise360.py` | Conforme necessário |
-| Completar parciais | `complete_beneficios.py` | Quando completude < 20 |
-| Validar links gov.br | `validate_sources.py` | Semanal |
-| Validar todas URLs | `validate_urls.py` | Antes de release |
-| Planejar melhorias | `audit_automation.py` | Mensal |
+| Script | Quando rodar |
+|---|---|
+| `bump_version.py <versão>` | Antes de release (atualiza 10 arquivos) |
+| `discover_benefits.py --since N` | Cron mensal (`discover-benefits.yml`) — descobre novos PcDs no DOU/Senado |
 
 ---
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Master Compliance Validator - NossoDireito v1.16.0
+Master Compliance Validator - NossoDireito v1.17.0
 
 Ponto de entrada ÚNICO de qualidade do projeto.
 Usado pelo pre-commit hook e também como validador standalone.
@@ -22,7 +22,7 @@ Uso:
 
 Inclui:
   - Fail-fast de versão (primeiro check, aborta se inconsistente)
-  - JSON Schema Draft 7 (absorvido de validate_schema.py)
+  - JSON Schema Draft 7 (lógica inline; ver também scripts/validate_schema.py)
   - Consistência de versão (absorvido de check_version_consistency.py)
 
 Objetivo: Score 100% — Somente fontes oficiais + segurança máxima
@@ -112,7 +112,7 @@ class MasterComplianceValidator:
 
     def __init__(self, quick: bool = False):
         self.root = Path(__file__).parent.parent
-        self.version = "1.16.0"
+        self.version = "1.17.0"
         self.quick = quick
         self.errors = []
         self.warnings = []

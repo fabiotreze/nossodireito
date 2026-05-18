@@ -2137,15 +2137,25 @@ No Brasil, a maioria dos laudos ainda usa CID-10. O sistema aceita ambas as codi
     }
     function updateAnalyzeButton() {
         const btn = document.getElementById('analyzeSelected');
-        if (!btn) return;
+        const btnAI = document.getElementById('analyzeWithAI');
         const checked = dom.fileList.querySelectorAll('.file-select-cb:checked');
         const count = checked.length;
-        btn.disabled = count === 0;
-        btn.textContent = count === 0
-            ? '🔍 Enviar para análise local'
-            : count === 1
-                ? '🔍 Analisar 1 arquivo'
-                : `🔍 Analisar ${count} arquivos`;
+        if (btn) {
+            btn.disabled = count === 0;
+            btn.textContent = count === 0
+                ? '🔍 Enviar para análise local'
+                : count === 1
+                    ? '🔍 Analisar 1 arquivo'
+                    : `🔍 Analisar ${count} arquivos`;
+        }
+        if (btnAI) {
+            btnAI.disabled = count === 0;
+            btnAI.textContent = count === 0
+                ? '🧠 Analisar com IA (servidor)'
+                : count === 1
+                    ? '🧠 Analisar 1 arquivo com IA'
+                    : `🧠 Analisar ${count} arquivos com IA`;
+        }
     }
     function setupAnalysis() {
         if (dom.closeAnalysis) {
@@ -2264,11 +2274,16 @@ No Brasil, a maioria dos laudos ainda usa CID-10. O sistema aceita ambas as codi
         }
         const analyzeBtn = document.getElementById('analyzeSelected');
         if (analyzeBtn) {
-            analyzeBtn.addEventListener('click', analyzeSelectedDocuments);
+            analyzeBtn.addEventListener('click', () => analyzeSelectedDocuments(false));
+        }
+        const analyzeAIBtn = document.getElementById('analyzeWithAI');
+        if (analyzeAIBtn) {
+            analyzeAIBtn.addEventListener('click', () => analyzeSelectedDocuments(true));
         }
     }
-    async function analyzeSelectedDocuments() {
+    async function analyzeSelectedDocuments(useAI = false) {
         const analyzeBtn = document.getElementById('analyzeSelected');
+        const analyzeAIBtn = document.getElementById('analyzeWithAI');
         const checkboxes = dom.fileList.querySelectorAll('.file-select-cb:checked');
         const fileIds = Array.from(checkboxes).map((cb) => cb.dataset.id);
         if (fileIds.length === 0) {
@@ -2278,6 +2293,10 @@ No Brasil, a maioria dos laudos ainda usa CID-10. O sistema aceita ambas as codi
         if (analyzeBtn) {
             analyzeBtn.disabled = true;
             analyzeBtn.textContent = '⏳ Analisando...';
+        }
+        if (analyzeAIBtn) {
+            analyzeAIBtn.disabled = true;
+            if (useAI) analyzeAIBtn.textContent = '⏳ Anonimizando + IA...';
         }
         dom.analysisResults.style.display = '';
         dom.analysisLoading.style.display = '';
@@ -2381,7 +2400,25 @@ para encontrar seus direitos manualmente.
             const combinedNames = fileNames.join(' ');
             const results = matchRights(originalText, combinedNames);
             const anyPdf = hasPdf.some(Boolean);
-            renderAnalysisResults(results, fileNames, anyPdf, errors);
+            let aiResult = null;
+            if (useAI) {
+                try {
+                    const consent = await getAIConsent();
+                    if (!consent) {
+                        errors.push({ name: 'Análise IA', reason: 'Consentimento LGPD não concedido.' });
+                    } else if (!window.Anonymizer || typeof window.Anonymizer.anonymize !== 'function') {
+                        errors.push({ name: 'Análise IA', reason: 'Anonymizer não carregado no navegador.' });
+                    } else {
+                        const { text: anonymized, stats: anonStats } = window.Anonymizer.anonymize(originalText);
+                        console.info('[AI] Anonimização local concluída:', anonStats);
+                        aiResult = await callServerAnalysis(anonymized);
+                    }
+                } catch (aiErr) {
+                    console.error('Erro análise IA:', aiErr);
+                    errors.push({ name: 'Análise IA', reason: aiErr.message || 'Falha no servidor.' });
+                }
+            }
+            renderAnalysisResults(results, fileNames, anyPdf, errors, aiResult);
             for (const id of successIds) {
                 try {
                     await deleteFile(id);
@@ -2542,7 +2579,7 @@ para encontrar seus direitos manualmente.
             .filter((r) => r.score > 0)
             .sort((a, b) => b.score - a.score);
     }
-    function renderAnalysisResults(results, fileNames, hasPdf, errors = []) {
+    function renderAnalysisResults(results, fileNames, hasPdf, errors = [], aiResult = null) {
         const names = Array.isArray(fileNames) ? fileNames : [fileNames];
         const fileCount = names.length;
         const filesLabel = fileCount === 1
@@ -2622,6 +2659,7 @@ Ver detalhes e passo a passo →
 </div>`;
         });
         html += `</div>
+${aiResult ? renderAIResult(aiResult) : ''}
 <div class="analysis-footer">
 <p>⚠️ <strong>Atenção:</strong> Esta análise é uma <strong>orientação preliminar</strong>
 baseada em correspondência de palavras-chave. <strong>Não substitui</strong> orientação
@@ -2635,6 +2673,128 @@ um advogado ou o <strong>CRAS</strong> da sua cidade.</p>
                 dom.analysisResults.style.display = 'none';
             });
         });
+    }
+    // ── Análise IA: consentimento LGPD + chamada ao backend + renderização ──
+    const AI_CONSENT_KEY = 'nd_ai_consent_v1';
+    const AI_CONSENT_TTL_MS = 30 * 24 * 60 * 60 * 1000; // 30 dias
+    function getStoredAIConsent() {
+        try {
+            const raw = localStorage.getItem(AI_CONSENT_KEY);
+            if (!raw) return false;
+            const { granted, exp } = JSON.parse(raw);
+            if (!granted || !exp || Date.now() > exp) return false;
+            return true;
+        } catch { return false; }
+    }
+    function setStoredAIConsent(granted) {
+        try {
+            localStorage.setItem(AI_CONSENT_KEY, JSON.stringify({
+                granted: !!granted,
+                exp: Date.now() + AI_CONSENT_TTL_MS,
+            }));
+        } catch { /* localStorage indisponível — silencioso */ }
+    }
+    function getAIConsent() {
+        if (getStoredAIConsent()) return Promise.resolve(true);
+        const modal = document.getElementById('aiConsentModal');
+        const btnAccept = document.getElementById('aiConsentAccept');
+        const btnCancel = document.getElementById('aiConsentCancel');
+        const cbRemember = document.getElementById('aiConsentRemember');
+        if (!modal || !btnAccept || !btnCancel) {
+            return Promise.resolve(window.confirm('Permitir envio do texto anonimizado para análise com IA (Azure Doc Intelligence, Brasil Sul)?'));
+        }
+        modal.style.display = 'flex';
+        if (cbRemember) cbRemember.checked = false;
+        return new Promise((resolve) => {
+            const cleanup = (result) => {
+                modal.style.display = 'none';
+                btnAccept.removeEventListener('click', onAccept);
+                btnCancel.removeEventListener('click', onCancel);
+                document.removeEventListener('keydown', onKey);
+                resolve(result);
+            };
+            const onAccept = () => {
+                if (cbRemember && cbRemember.checked) setStoredAIConsent(true);
+                cleanup(true);
+            };
+            const onCancel = () => cleanup(false);
+            const onKey = (e) => { if (e.key === 'Escape') cleanup(false); };
+            btnAccept.addEventListener('click', onAccept);
+            btnCancel.addEventListener('click', onCancel);
+            document.addEventListener('keydown', onKey);
+            setTimeout(() => btnAccept.focus(), 50);
+        });
+    }
+    async function callServerAnalysis(anonymizedText) {
+        const resp = await fetch('/api/analyze-document', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+            body: JSON.stringify({ text: anonymizedText }),
+        });
+        const ctype = resp.headers.get('content-type') || '';
+        const body = ctype.includes('application/json') ? await resp.json().catch(() => ({})) : { error: await resp.text().catch(() => '') };
+        if (!resp.ok) {
+            const msg = body.error || body.message || `HTTP ${resp.status}`;
+            if (resp.status === 503) throw new Error('Análise IA indisponível no servidor (AI_ANALYSIS_ENABLED desativado).');
+            if (resp.status === 413) throw new Error('Texto muito grande para análise (máx. 200KB).');
+            if (resp.status === 422) throw new Error('Detectado PII residual no texto anonimizado — envio bloqueado por segurança.');
+            if (resp.status === 502) throw new Error('Falha na comunicação com o Azure Doc Intelligence.');
+            throw new Error(msg);
+        }
+        return body;
+    }
+    function isValidCID(code) {
+        // CID-10: letra + 2 dígitos + opcional .N ou .NN
+        return /^[A-Z]\d{2}(\.\d{1,2})?$/.test(String(code || '').trim());
+    }
+    function isValidDate(dateStr) {
+        const s = String(dateStr || '').trim();
+        const m = s.match(/^(\d{1,2})[\/\-.](\d{1,2})[\/\-.](\d{2,4})$/);
+        if (!m) return false;
+        let [, d, mo, y] = m;
+        d = parseInt(d, 10); mo = parseInt(mo, 10); y = parseInt(y, 10);
+        if (y < 100) y += y < 50 ? 2000 : 1900;
+        if (mo < 1 || mo > 12 || d < 1 || d > 31) return false;
+        const dt = new Date(y, mo - 1, d);
+        if (dt.getFullYear() !== y || dt.getMonth() !== mo - 1 || dt.getDate() !== d) return false;
+        const nowYear = new Date().getFullYear();
+        return y >= 1900 && y <= nowYear + 1;
+    }
+    function renderAIResult(ai) {
+        const cids = Array.isArray(ai.cids) ? Array.from(new Set(ai.cids)) : [];
+        const dates = Array.isArray(ai.dates) ? Array.from(new Set(ai.dates)) : [];
+        const pages = Number(ai.pages) || 0;
+        const paraCount = Array.isArray(ai.paragraphs) ? ai.paragraphs.length : 0;
+        const cidBadges = cids.length
+            ? cids.map((c) => {
+                const ok = isValidCID(c);
+                return `<span class="kw-tag ${ok ? 'high' : 'low'}" title="${ok ? 'Formato CID-10 válido' : 'Formato suspeito — verificar'}">${ok ? '✓' : '⚠'} ${escapeHtml(c)}</span>`;
+            }).join(' ')
+            : '<span class="analysis-hint">Nenhum CID detectado pelo OCR.</span>';
+        const dateBadges = dates.length
+            ? dates.slice(0, 12).map((d) => {
+                const ok = isValidDate(d);
+                return `<span class="kw-tag ${ok ? 'high' : 'low'}" title="${ok ? 'Data plausível' : 'Formato suspeito'}">${ok ? '✓' : '⚠'} ${escapeHtml(d)}</span>`;
+            }).join(' ')
+            : '<span class="analysis-hint">Nenhuma data detectada pelo OCR.</span>';
+        return `
+<div class="analysis-ai-section" style="margin-top:18px;padding:16px;border:1px solid #cfe2ff;background:#f5faff;border-radius:6px;">
+  <h3 style="margin-top:0;">🧠 Análise por IA (Azure Doc Intelligence — Brasil Sul)</h3>
+  <p style="font-size:0.85rem;color:#555;margin:4px 0 12px;">
+    Texto enviado de forma <strong>anonimizada</strong>. Resultado: ${pages} página(s), ${paraCount} parágrafo(s).
+  </p>
+  <div style="margin-bottom:10px;">
+    <strong>🏷️ CIDs detectados:</strong><br>
+    ${cidBadges}
+  </div>
+  <div>
+    <strong>📅 Datas detectadas:</strong><br>
+    ${dateBadges}
+  </div>
+  <p style="font-size:0.8rem;color:#666;margin:10px 0 0;">
+    ✓ = formato válido · ⚠ = formato suspeito (requer revisão manual)
+  </p>
+</div>`;
     }
     async function getCryptoKey() {
         if (!CRYPTO_AVAILABLE) return null;

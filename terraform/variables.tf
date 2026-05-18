@@ -106,6 +106,24 @@ variable "alert_email" {
   default     = ""
 }
 
+variable "deployer_object_id" {
+  description = "Object ID do principal (user ou SP) que executa Terraform e precisa de acesso ao Key Vault. Se vazio, usa o usuário corrente (data.azurerm_client_config). Em CI/CD, setar para o objectId do Service Principal usado pelo pipeline."
+  type        = string
+  default     = ""
+}
+
+variable "monthly_budget_amount" {
+  description = "Valor mensal do budget (na currency do billing account). 0 = não cria budget."
+  type        = number
+  default     = 0
+}
+
+variable "budget_alert_threshold" {
+  description = "Percentual do budget que dispara alerta (ex: 70 = 70%)"
+  type        = number
+  default     = 70
+}
+
 # --- Locals: nomes derivados do ambiente ---
 locals {
   # Base do projeto — alterando aqui, todos os nomes mudam automaticamente

@@ -5,11 +5,29 @@ Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/)
 e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [1.17.0] - 2026-05-18
+
+### Adicionado
+
+- **Wiring frontend da análise por IA (opt-in com consentimento LGPD)** — botão `#analyzeWithAI` adicionado ao painel de seleção; ao clicar, abre modal de consentimento (`#aiConsentModal`) explicando o fluxo (anonimização cliente → POST `/api/analyze-document` → Azure Document Intelligence via MSI → resposta com CIDs/datas). Consentimento persistido em `localStorage` (`nd_ai_consent_v1`, TTL 30 dias, checkbox "lembrar"). Texto é anonimizado por `shared/anonymizer.js` (window.Anonymizer) antes do envio; zero PII bruta sai do navegador.
+- **Validação de veracidade no render IA** — CIDs validados contra regex `^[A-Z]\d{2}(\.\d{1,2})?$` e datas contra parser real (dd[/.-]mm[/.-]yy[yy], ano ≥1900, ≤now+1). Badges visuais `✓ alta confiança` vs `⚠ baixa confiança` para evitar exibir alucinações do modelo como fato.
+- **Tratamento de erro server-side mapeado para PT-BR** — `503` (IA desabilitada), `413` (>200KB), `422` (PII detectada server-side), `502` (falha Azure).
+
+### Alterado
+
+- **Banner educacional `#legalBanner` movido do topo para o rodapé** — antes aparecia entre `</header>` e o `<main>`, agora aparece após `</footer>` com `border-top` (em vez de `border-bottom`). Reduz ruído no above-the-fold e melhora foco no conteúdo principal.
+- **Versionamento de assets bumpado para `?v=1.17.0`** em `index.html` para forçar cache-bust no Service Worker.
+
+### Infraestrutura
+
+- **Alerta de orçamento adicional (70% do mensal)** — `azurerm_consumption_budget_subscription.budget_70pct` em `terraform/budget.tf`, $73.50 (70% de $105), notifica `Actual` + `Forecasted` para `fabiotreze@hotmail.com`. Complementa o budget existente de 80%/100%.
+- **Fix do role assignment do deployer SP no Key Vault (F1)** — `deployer_object_id` adicionado em `variables.tf` + `main.tf` para que o `sp-nossodireito-deploy` (deployer real no pipeline GHA) mantenha permissão de acesso, sem o TF tentar substituir pela ACL do usuário local.
+
 ## [1.16.0] - 2026-05-17
 
 ### Adicionado
 
-- (descrever mudanças aqui)
+- **POC IA — Azure AI Document Intelligence (backend)** — endpoint `POST /api/analyze-document` (server-side), módulo `services/doc-intelligence.js` com `DefaultAzureCredential` (MSI), feature-flag `AI_ANALYSIS_ENABLED=false` por default. Recurso `cog-nossodireito-br-docint` (F0) em Brazil South provisionado via Terraform com role `Cognitive Services User` para a MSI do App Service.
 
 ---
 

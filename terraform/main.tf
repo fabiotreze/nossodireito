@@ -60,13 +60,15 @@ resource "azurerm_key_vault" "main" {
   tags = local.tags
 }
 
-# --- Access Policy: Terraform deployer (você) ---
+# --- Access Policy: Terraform deployer (você ou Service Principal do CI/CD) ---
+# Se var.deployer_object_id estiver setado (CI/CD), usa o SP do pipeline.
+# Caso contrário, cai pro usuário corrente (execução local).
 resource "azurerm_key_vault_access_policy" "deployer" {
   count = var.enable_keyvault ? 1 : 0
 
   key_vault_id = azurerm_key_vault.main[0].id
   tenant_id    = data.azurerm_client_config.current.tenant_id
-  object_id    = data.azurerm_client_config.current.object_id
+  object_id    = var.deployer_object_id != "" ? var.deployer_object_id : data.azurerm_client_config.current.object_id
 
   certificate_permissions = ["Create", "Delete", "Get", "Import", "List", "Update", "Purge"]
   secret_permissions      = ["Get", "List", "Set", "Delete", "Purge"]
@@ -234,7 +236,8 @@ resource "azurerm_linux_web_app" "main" {
 }
 
 # --- Custom Domain ---
-# PREREQUISITO: Atualize o CNAME no GoDaddy para apontar para <web_app_name>.azurewebsites.net
+# PREREQUISITO: Atualize o CNAME na Cloudflare (proxied) para apontar para <web_app_name>.azurewebsites.net
+# e mantenha o TXT asuid.* em DNS-only para o Azure validar a propriedade do domínio.
 resource "azurerm_app_service_custom_hostname_binding" "main" {
   count               = var.enable_custom_domain && var.custom_domain != "" ? 1 : 0
   hostname            = var.custom_domain

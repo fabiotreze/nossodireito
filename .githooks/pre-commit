@@ -9,7 +9,7 @@
 #   - Pula HTTP/fontes (modo rapido, ~30s)
 #
 # O que NAO roda aqui (requer servidor/browser ou CI/CD):
-#   - test_e2e_interactive.py, test_visual_browser.py, test_high_contrast.py
+#   - test_e2e_playwright.py (requer Playwright + navegador)
 #   - pytest tests/ (regressao de dados — usar no CI/CD)
 #   - validate_all.py (16 fases completas — usar manualmente)
 #

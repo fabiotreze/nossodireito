@@ -51,7 +51,7 @@ output "next_steps" {
     ├──────────────────────────────────────────────────────────┤
     │  Próximos Passos                                         │
     ├──────────────────────────────────────────────────────────┤
-    │  1. Atualize o CNAME no GoDaddy (veja acima)              │
+    │  1. Atualize o CNAME na Cloudflare (proxied; veja acima)  │
     │  2. git push (auto-deploy no push para main)              │
     │  3. curl -vI https://${var.custom_domain}                │
     └──────────────────────────────────────────────────────────┘
