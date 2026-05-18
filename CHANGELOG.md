@@ -5,6 +5,43 @@ Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/)
 e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [1.20.0] - 2026-05-18
+
+### Adicionado
+
+- **Busca geográfica baseada em IBGE** (`data/municipios_br.json`): snapshot oficial com
+  os 5.570 municípios brasileiros (`{id, n, u, k}`), substituindo o dicionário hardcoded
+  anterior de ~200 cidades (cobertura subiu de 3,6% para 100%). Carregado em paralelo via
+  `_earlyFetch` (~82 KB gzipped).
+- **`detectLocation` v2** em `js/app.js`: 4 etapas de precedência (UF sigla → resolução
+  exata com tie-break por UF → município por substring com longest-match → estado por
+  substring). Resolve corretamente "São Paulo"/"Rio de Janeiro" como capitais e
+  "Espírito Santo" como UF ES.
+- **`_normalizeGeo`**: helper de normalização espelhando o builder Python (NFD + lowercase
+  + drop `'`/`-`/`.` + collapse spaces) para garantir paridade cliente/dataset.
+- **Aviso honesto na UI** quando o município é identificado mas não há dados de prefeitura
+  ("ℹ️ Ainda não temos dados específicos da prefeitura de X. Os direitos federais valem
+  aqui; consulte também os portais estaduais (UF) acima.").
+- **Schemas formais**: `schemas/municipios_br.schema.json` (snapshot IBGE) e
+  `schemas/orgaos_estaduais.schema.json` (27 órgãos estaduais com URLs https).
+- **Build reproduzível**: `scripts/build_municipios.py` regenera o snapshot a partir do
+  endpoint oficial do IBGE (`/api/v1/localidades/municipios`).
+- **25 testes de regressão geo** (`tests/geo-search-contract.test.mjs`): contrato no fonte,
+  integridade do snapshot (27 UFs, sem duplicatas, âncoras IBGE-ID), validação de schemas
+  e comportamento em sandbox VM com dataset real.
+
+### Alterado
+
+- **Service Worker**: `CACHE_VERSION` bumpado para `nossodireito-v1.20.0` e
+  `data/municipios_br.json` adicionado ao `STATIC_ASSETS` precache.
+- **`renderLocationResults`**: usa o nome cru do IBGE (casing oficial) para cidades.
+
+### Removido
+
+- Dicionário hardcoded `CIDADES_UF` em `js/app.js` (~200 cidades, 3,6% de cobertura).
+
+---
+
 ## [1.19.0] - 2026-05-18
 
 ### Adicionado
