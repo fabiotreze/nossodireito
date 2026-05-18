@@ -25,22 +25,50 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v6
+        with:
+          fetch-depth: 0  # necessário para git describe --tags (semver gate) e diff origin/main (cache gate)
 
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
-      - name: Instalar dependências
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Instalar dependências Python
         run: |
           pip install -r requirements.txt
           pip install -r requirements-dev.txt
+
+      - name: Instalar dependências Node
+        run: npm ci --no-audit --no-fund
+
+      # ── Testes Node (geo, anonymizer, week-plan, sanitizePlanKey) ──
+      - name: Executar testes Node
+        run: |
+          echo "🧪 Executando testes Node..."
+          npm run test:js
 
       # ── Testes Python (pytest) ──
       - name: Executar testes Python
         run: |
           echo "🧪 Executando testes Python..."
           python -m pytest tests/ -v --tb=short --ignore=tests/test_e2e_playwright.py -q
+
+      # ── Gate: semver bump exigido para feat:/BREAKING ──
+      - name: Gate de semver (feat/BREAKING exige bump)
+        run: |
+          git fetch --tags --force --quiet 2>/dev/null || true
+          python scripts/check_semver_bump.py
+
+      # ── Gate: invalidação de cache do SW ──
+      - name: Gate de cache (app.js/data exige bump de CACHE_VERSION)
+        run: |
+          git fetch origin main --quiet 2>/dev/null || true
+          python scripts/check_cache_invalidation.py
 
       # ── Sensitive Data Scan (pre-check rápido) ──
       - name: Scan para dados sensíveis

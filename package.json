@@ -9,7 +9,8 @@
     "test:js": "node --test tests/*.test.mjs",
     "validate": "python scripts/validate_all.py --quick",
     "security:headers": "bash scripts/security_headers_check.sh",
-    "replication:bootstrap": "bash scripts/bootstrap_replication.sh --help"
+    "replication:bootstrap": "bash scripts/bootstrap_replication.sh --help",
+    "prepare": "git config core.hooksPath .githooks 2>/dev/null && chmod +x .githooks/* 2>/dev/null || true"
   },
   "dependencies": {
     "@azure/identity": "^4.13.1",
