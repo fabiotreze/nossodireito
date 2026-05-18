@@ -912,8 +912,9 @@ class MasterComplianceValidator:
             self.log_fail('infraestrutura', "Pasta terraform/ ausente", 20)
             return
 
-        # Arquivos Terraform obrigatórios
+        # Arquivos Terraform obrigatórios (núcleo) + descoberta dinâmica de *.tf adicionais
         required_tf = ['main.tf', 'providers.tf', 'variables.tf', 'outputs.tf']
+        optional_tf = ['ai-doc-intelligence.tf', 'budget.tf']  # módulos esperados v1.16+
 
         for tf_file in required_tf:
             path = terraform_dir / tf_file
@@ -926,6 +927,19 @@ class MasterComplianceValidator:
                     self.log_pass('infraestrutura', f"{tf_file}: sintaxe válida", 2)
             else:
                 self.log_fail('infraestrutura', f"{tf_file} ausente", 5)
+
+        # Módulos opcionais esperados (v1.16+): falha apenas se ambos ausentes
+        present_optional = [f for f in optional_tf if (terraform_dir / f).exists()]
+        if present_optional:
+            self.log_pass('infraestrutura', f"Módulos TF opcionais detectados: {', '.join(present_optional)}", 2)
+        else:
+            self.log_warning('infraestrutura', f"Nenhum módulo opcional ({', '.join(optional_tf)}) encontrado")
+
+        # Descoberta dinâmica: lista todos *.tf que não estão em required/optional
+        all_tf = sorted([p.name for p in terraform_dir.glob('*.tf')])
+        extra_tf = [f for f in all_tf if f not in required_tf and f not in optional_tf]
+        if extra_tf:
+            self.log_pass('infraestrutura', f"Módulos TF extras descobertos: {len(extra_tf)} ({', '.join(extra_tf[:3])}" + ("..." if len(extra_tf) > 3 else "") + ")", 1)
 
         # terraform.tfvars.example
         tfvars_example = terraform_dir / 'terraform.tfvars.example'
@@ -1518,7 +1532,8 @@ class MasterComplianceValidator:
             self.log_fail('cloud_security', "main.tf ausente", 10)
             return
 
-        tf_content = main_tf.read_text(encoding='utf-8')
+        # Descoberta dinâmica: concatena TODOS *.tf para os checks (cobre ai-doc-intelligence.tf, budget.tf, etc.)
+        tf_content = "\n".join(p.read_text(encoding='utf-8') for p in sorted(terraform_dir.glob('*.tf')))
 
         # ===== VALIDAÇÕES ESPECÍFICAS DOS RECURSOS USADOS =====
 
@@ -1614,6 +1629,58 @@ class MasterComplianceValidator:
             self.log_pass('cloud_security', "LGPD/GDPR: mencionado em documentação ✓", 7)
         else:
             self.log_warning('cloud_security', "LGPD/GDPR não mencionado - validar se aplicável")
+
+        # 8. LGPD Runtime Guardrail (v1.18+): bloqueia se IA habilitada sem anonimização + consent + retention
+        self._validate_lgpd_runtime()
+
+        # 9. Cognitive Services (Doc Intelligence) — exige local_auth_enabled=false + tag LGPDClassification
+        if 'azurerm_cognitive_account' in tf_content:
+            if 'local_auth_enabled = false' in tf_content:
+                self.log_pass('cloud_security', "Doc Intelligence: local_auth desabilitado (MSI obrigatório) ✓", 5)
+            else:
+                self.log_fail('cloud_security', "Doc Intelligence: local_auth_enabled deve ser false (LGPD Art. 46)", 5)
+            if '"LGPDClassification"' in tf_content or 'LGPDClassification' in tf_content:
+                self.log_pass('cloud_security', "Doc Intelligence: tag LGPDClassification presente ✓", 3)
+            else:
+                self.log_fail('cloud_security', "Doc Intelligence: tag LGPDClassification ausente (governance gap)", 3)
+
+    def _validate_lgpd_runtime(self):
+        """Guardrail runtime LGPD: anonymizer + containsPII + consent modal + retention header."""
+        gaps = []
+        anonymizer = self.root / 'shared' / 'anonymizer.js'
+        server_js = self.root / 'server.js'
+        app_js = self.root / 'js' / 'app.js'
+        index_html = self.root / 'index.html'
+
+        if not anonymizer.exists():
+            gaps.append("shared/anonymizer.js ausente")
+        if server_js.exists():
+            sc = server_js.read_text(encoding='utf-8')
+            if 'containsPII' not in sc:
+                gaps.append("server.js sem containsPII() (defesa em profundidade)")
+            if '/api/analyze-document' in sc and 'X-Data-Retention' not in sc:
+                gaps.append("server.js sem header X-Data-Retention no endpoint IA")
+        if app_js.exists():
+            ac = app_js.read_text(encoding='utf-8')
+            if 'AI_CONSENT_KEY' not in ac:
+                gaps.append("app.js sem chave de consentimento AI_CONSENT_KEY")
+            if 'revokeAIConsent' not in ac and 'clearStoredAIConsent' not in ac:
+                gaps.append("app.js sem função de revogação de consentimento (LGPD Art. 8º §5)")
+        if index_html.exists():
+            ic = index_html.read_text(encoding='utf-8')
+            if 'aiConsentModal' not in ic:
+                gaps.append("index.html sem modal de consentimento IA")
+            if 'Direitos do Titular' not in ic and 'direitos do titular' not in ic.lower():
+                gaps.append("index.html sem seção Direitos do Titular (LGPD Art. 18)")
+            if 'Encarregado' not in ic and 'DPO' not in ic and 'encarregado' not in ic.lower():
+                gaps.append("index.html sem contato do Encarregado/DPO (LGPD Art. 41)")
+
+        if not gaps:
+            self.log_pass('cloud_security', "LGPD Runtime Guardrail: 100% (anonimização + consent + revogação + DPO + retention) ✓", 10)
+        elif len(gaps) <= 2:
+            self.log_warning('cloud_security', f"LGPD Runtime: {len(gaps)} gap(s) — {'; '.join(gaps)}")
+        else:
+            self.log_fail('cloud_security', f"LGPD Runtime: {len(gaps)} gaps críticos — {'; '.join(gaps[:3])}...", 10)
 
     # =========================================================================
     # CATEGORIA 17: CI/CD — GitHub Actions Workflows

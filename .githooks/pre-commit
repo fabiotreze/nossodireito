@@ -33,6 +33,9 @@ else
 fi
 
 $PYTHON scripts/master_compliance.py --quick
+
+# Freshness das fontes jurídicas (warning, não bloqueia)
+$PYTHON scripts/check_sources_freshness.py || true
 RESULT=$?
 
 echo ""

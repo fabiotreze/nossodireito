@@ -669,6 +669,14 @@ const server = http.createServer(async (req, res) => {
       try {
         const { analyzeText } = require("./services/doc-intelligence");
         const result = await analyzeText(cleanText);
+        // LGPD: anexa metadados de transparência ao payload (Art. 6º V + Art. 9º)
+        result.lgpd = {
+          retention_seconds: 0,
+          legal_basis: "LGPD Art. 7º I (consentimento)",
+          anonymized_client_side: true,
+          anonymized_server_side: true,
+          data_residency: "brazil-south",
+        };
         if (appInsights && appInsights.defaultClient) {
           appInsights.defaultClient.trackEvent({
             name: "AI.Analysis.Success",
@@ -684,6 +692,8 @@ const server = http.createServer(async (req, res) => {
         const okHeaders = {
           "Content-Type": "application/json",
           "Cache-Control": "no-store",
+          "X-Data-Retention": "0",
+          "X-LGPD-Legal-Basis": "Art-7-I-Consentimento",
           ...SECURITY_HEADERS,
         };
         if (corsOrigin) okHeaders["Access-Control-Allow-Origin"] = corsOrigin;

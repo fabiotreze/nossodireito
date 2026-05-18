@@ -2699,6 +2699,7 @@ um advogado ou o <strong>CRAS</strong> da sua cidade.</p>
         const modal = document.getElementById('aiConsentModal');
         const btnAccept = document.getElementById('aiConsentAccept');
         const btnCancel = document.getElementById('aiConsentCancel');
+        const btnRevoke = document.getElementById('aiConsentRevoke');
         const cbRemember = document.getElementById('aiConsentRemember');
         if (!modal || !btnAccept || !btnCancel) {
             return Promise.resolve(window.confirm('Permitir envio do texto anonimizado para análise com IA (Azure Doc Intelligence, Brasil Sul)?'));
@@ -2710,6 +2711,7 @@ um advogado ou o <strong>CRAS</strong> da sua cidade.</p>
                 modal.style.display = 'none';
                 btnAccept.removeEventListener('click', onAccept);
                 btnCancel.removeEventListener('click', onCancel);
+                if (btnRevoke) btnRevoke.removeEventListener('click', onRevoke);
                 document.removeEventListener('keydown', onKey);
                 resolve(result);
             };
@@ -2718,13 +2720,26 @@ um advogado ou o <strong>CRAS</strong> da sua cidade.</p>
                 cleanup(true);
             };
             const onCancel = () => cleanup(false);
+            const onRevoke = () => {
+                // LGPD Art. 8º §5: revogação do consentimento a qualquer momento
+                try { localStorage.removeItem(AI_CONSENT_KEY); } catch { /* silencioso */ }
+                if (typeof showToast === 'function') {
+                    showToast('Consentimento de IA revogado. Será solicitado novamente na próxima análise.', 'info');
+                }
+                cleanup(false);
+            };
             const onKey = (e) => { if (e.key === 'Escape') cleanup(false); };
             btnAccept.addEventListener('click', onAccept);
             btnCancel.addEventListener('click', onCancel);
+            if (btnRevoke) btnRevoke.addEventListener('click', onRevoke);
             document.addEventListener('keydown', onKey);
             setTimeout(() => btnAccept.focus(), 50);
         });
     }
+    // LGPD Art. 8º §5 — exposição global para chamada via console / outros pontos do UI
+    window.revokeAIConsent = function () {
+        try { localStorage.removeItem(AI_CONSENT_KEY); return true; } catch { return false; }
+    };
     async function callServerAnalysis(anonymizedText) {
         const resp = await fetch('/api/analyze-document', {
             method: 'POST',

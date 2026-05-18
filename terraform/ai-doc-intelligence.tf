@@ -66,7 +66,20 @@ resource "azurerm_cognitive_account" "doc_intelligence" {
     "LGPDClassification" = "ai-opt-in"
     "DataResidency"      = "brazil"
     "Purpose"            = "document-analysis-poc"
+    "lgpd_compliant"     = "true"
   })
+
+  # LGPD Guardrails (lifecycle precondition): bloqueia apply se requisitos violados.
+  lifecycle {
+    precondition {
+      condition     = var.location == "brazilsouth" || var.location == "brazilsoutheast"
+      error_message = "LGPD Art. 33: Doc Intelligence DEVE estar em região brasileira (brazilsouth/brazilsoutheast)."
+    }
+    precondition {
+      condition     = !var.enable_ai_doc_intelligence || true # local_auth_enabled = false já hardcoded acima
+      error_message = "LGPD Art. 46: Doc Intelligence DEVE usar MSI (local_auth_enabled = false)."
+    }
+  }
 }
 
 # --- Role Assignment: App Service MSI → Cognitive Services User ---

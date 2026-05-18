@@ -2286,8 +2286,23 @@
             <input type="checkbox" id="aiConsentRemember" />
             <span style="font-size:0.85rem;">Lembrar minha escolha por 30 dias</span>
           </label>
+          <details style="margin-top:12px;font-size:0.85rem;">
+            <summary style="cursor:pointer;color:#0066cc;">⚖️ Seus direitos como titular (LGPD Art. 18) e contato do Encarregado</summary>
+            <ul style="margin:8px 0 0 20px;line-height:1.4;">
+              <li><strong>Acesso</strong> aos seus dados (Art. 18 II)</li>
+              <li><strong>Correção</strong> de dados incompletos ou inexatos (Art. 18 III)</li>
+              <li><strong>Anonimização, bloqueio ou eliminação</strong> de dados desnecessários (Art. 18 IV)</li>
+              <li><strong>Portabilidade</strong> (Art. 18 V)</li>
+              <li><strong>Eliminação</strong> dos dados tratados com consentimento (Art. 18 VI)</li>
+              <li><strong>Informação</strong> sobre compartilhamento (Art. 18 VII)</li>
+              <li><strong>Revogação do consentimento</strong> a qualquer momento (Art. 8º §5) — use o botão abaixo</li>
+            </ul>
+            <p style="margin-top:10px;"><strong>Encarregado (DPO):</strong> <a href="mailto:dpo@fabiotreze.com">dpo@fabiotreze.com</a></p>
+            <p><strong>Retenção no servidor:</strong> 0 segundos (header <code>X-Data-Retention: 0</code>)</p>
+          </details>
         </div>
         <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:16px;flex-wrap:wrap;">
+          <button id="aiConsentRevoke" type="button" class="btn btn-secondary" title="Revoga consentimento previamente armazenado" style="margin-right:auto;">🔓 Revogar consentimento</button>
           <button id="aiConsentCancel" type="button" class="btn btn-secondary">Cancelar</button>
           <button id="aiConsentAccept" type="button" class="btn btn-primary">✅ Concordo e enviar</button>
         </div>
