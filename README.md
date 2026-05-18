@@ -30,6 +30,8 @@ O Key Vault agora roda em modo privado por padrão; o apply do Terraform precisa
 
 Por padrão, o segredo `redis-primary-key` não é mais gerenciado pelo Terraform (`manage_redis_secret_with_terraform=false`) para evitar erro 403 em runners fora da VNet quando o Key Vault está fechado.
 
+Arquitetura atualizada (incluindo Mermaid e referências Terraform): [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
+
 ---
 
 ## 📖 Descrição

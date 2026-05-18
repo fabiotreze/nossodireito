@@ -11,6 +11,10 @@
 - `x-content-type-options: nosniff`
 - `referrer-policy` and `permissions-policy` enabled
 - Rate limit for abuse protection in server runtime
+- App Service ingress restricted to Cloudflare edge ranges (default deny)
+- Azure OpenAI in private mode (`publicNetworkAccess=Disabled`)
+- Key Vault in private mode by default (`public_network_access_enabled=false`)
+- Redis in private mode (`publicNetworkAccess=Disabled`, TLS 1.2)
 
 Run baseline check:
 
@@ -34,9 +38,18 @@ flowchart LR
   C -->|Aceita| S[/api/analyze-document]
   C -->|Recusa| L[Somente analise local]
   S --> V[Validacao anti-PII]
-  V --> O[Azure OpenAI gpt-4o-mini]
-  O --> R[Resposta estruturada]
+  V --> O[Azure OpenAI gpt-4o-mini via Private Endpoint]
+  S --> K[Key Vault via MSI e DNS privado]
+  S --> RD[Redis TLS 6380 via Private Endpoint]
+  O --> RS[Resposta estruturada]
 ```
+
+## Network Security Notes
+
+- Dominio oficial (`nossodireito.fabiotreze.com`) permanece publico para usuarios.
+- Hostname direto do App Service (`*.azurewebsites.net`) deve retornar 403.
+- Tráfego App Service -> OpenAI, Key Vault e Redis ocorre por VNet + Private Endpoint + Private DNS.
+- Segredo `redis-primary-key` por padrao nao e atualizado por Terraform em runners externos a VNet.
 
 ## DPO Flow
 
