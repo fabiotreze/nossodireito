@@ -2689,6 +2689,9 @@ um advogado ou o <strong>CRAS</strong> da sua cidade.</p>
     // legados dados ao antigo provedor Doc Intelligence (mudança de base legal LGPD).
     const AI_CONSENT_KEY = 'nd_ai_consent_v2';
     const AI_CONSENT_TTL_MS = 30 * 24 * 60 * 60 * 1000; // 30 dias
+    function emitAIConsentChanged() {
+        document.dispatchEvent(new Event('ai-consent-changed'));
+    }
     function getStoredAIConsent() {
         try {
             const raw = localStorage.getItem(AI_CONSENT_KEY);
@@ -2704,6 +2707,7 @@ um advogado ou o <strong>CRAS</strong> da sua cidade.</p>
                 granted: !!granted,
                 exp: Date.now() + AI_CONSENT_TTL_MS,
             }));
+            emitAIConsentChanged();
         } catch { /* localStorage indisponível — silencioso */ }
     }
     function getAIConsent() {
@@ -2735,6 +2739,7 @@ um advogado ou o <strong>CRAS</strong> da sua cidade.</p>
             const onRevoke = () => {
                 // LGPD Art. 8º §5: revogação do consentimento a qualquer momento
                 try { localStorage.removeItem(AI_CONSENT_KEY); } catch { /* silencioso */ }
+                emitAIConsentChanged();
                 if (typeof showToast === 'function') {
                     showToast('Consentimento de IA revogado. Será solicitado novamente na próxima análise.', 'info');
                 }
@@ -2750,7 +2755,13 @@ um advogado ou o <strong>CRAS</strong> da sua cidade.</p>
     }
     // LGPD Art. 8º §5 — exposição global para chamada via console / outros pontos do UI
     window.revokeAIConsent = function () {
-        try { localStorage.removeItem(AI_CONSENT_KEY); return true; } catch { return false; }
+        try {
+            localStorage.removeItem(AI_CONSENT_KEY);
+            emitAIConsentChanged();
+            return true;
+        } catch {
+            return false;
+        }
     };
     async function callServerAnalysis(anonymizedText) {
         const controller = new AbortController();
@@ -3150,14 +3161,22 @@ um advogado ou o <strong>CRAS</strong> da sua cidade.</p>
             if (granted) {
                 status.textContent = 'ativo (lembrado por 30 dias)';
                 status.style.color = '#0f5132';
-                btn.disabled = false;
+                btn.textContent = '🔓 Revogar consentimento de IA';
             } else {
                 status.textContent = 'não armazenado (será solicitado ao analisar laudo)';
                 status.style.color = '#664d03';
-                btn.disabled = true;
+                btn.textContent = '🔓 Revogar consentimento de IA';
             }
         };
         btn.addEventListener('click', () => {
+            const granted = getStoredAIConsent();
+            if (!granted) {
+                if (typeof showToast === 'function') {
+                    showToast('Nenhum consentimento salvo no momento. Ele será solicitado na próxima análise com IA.', 'info');
+                }
+                render();
+                return;
+            }
             const ok = window.revokeAIConsent && window.revokeAIConsent();
             if (typeof showToast === 'function') {
                 showToast(
@@ -3169,6 +3188,44 @@ um advogado ou o <strong>CRAS</strong> da sua cidade.</p>
             }
             render();
         });
+        document.addEventListener('ai-consent-changed', render);
+        render();
+    }
+    function setupAIConsentQuickActions() {
+        const btn = document.getElementById('aiConsentRevokeQuick');
+        const status = document.getElementById('aiConsentQuickStatus');
+        if (!btn || !status) return;
+        const render = () => {
+            const granted = getStoredAIConsent();
+            if (granted) {
+                status.textContent = 'Consentimento atualmente ativo.';
+                btn.textContent = '🔓 Revogar consentimento salvo';
+            } else {
+                status.textContent = 'Nenhum consentimento salvo no momento.';
+                btn.textContent = '🧠 Consentimento será solicitado ao usar IA';
+            }
+        };
+        btn.addEventListener('click', () => {
+            const granted = getStoredAIConsent();
+            if (!granted) {
+                if (typeof showToast === 'function') {
+                    showToast('Nenhum consentimento salvo no momento. Ele será solicitado na próxima análise com IA.', 'info');
+                }
+                render();
+                return;
+            }
+            const ok = window.revokeAIConsent && window.revokeAIConsent();
+            if (typeof showToast === 'function') {
+                showToast(
+                    ok
+                        ? 'Consentimento de IA revogado. Será solicitado novamente na próxima análise.'
+                        : 'Não foi possível revogar (localStorage indisponível).',
+                    ok ? 'info' : 'warning'
+                );
+            }
+            render();
+        });
+        document.addEventListener('ai-consent-changed', render);
         render();
     }
     // v1.18.0 — Link "Aviso" no menu: garante scroll na 1a clicada
@@ -3193,10 +3250,11 @@ um advogado ou o <strong>CRAS</strong> da sua cidade.</p>
         });
     }
     if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', () => { init(); setupNavAvisoScroll(); setupAIConsentManager(); });
+        document.addEventListener('DOMContentLoaded', () => { init(); setupNavAvisoScroll(); setupAIConsentManager(); setupAIConsentQuickActions(); });
     } else {
         init();
         setupNavAvisoScroll();
         setupAIConsentManager();
+        setupAIConsentQuickActions();
     }
 })();

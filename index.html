@@ -1798,6 +1798,20 @@
               💡 A análise com IA envia o <strong>texto anonimizado</strong> (sem nome, CPF, RG, endereço, telefone) para o
               <strong>Azure OpenAI (gpt-4o-mini)</strong> em região Brasil. Requer seu consentimento explícito (LGPD Art. 7º I).
             </p>
+            <div id="aiConsentQuickActions" class="ai-consent-quick-actions" role="region" aria-label="Gerenciamento rápido de consentimento de IA">
+              <p class="ai-consent-quick-text">
+                ⚖️ LGPD Art. 8º §5: revogar deve ser tão fácil quanto aceitar.
+                <span id="aiConsentQuickStatus" aria-live="polite">Verificando status…</span>
+              </p>
+              <button
+                id="aiConsentRevokeQuick"
+                class="btn btn-secondary btn-consent-quick"
+                type="button"
+                aria-describedby="aiConsentQuickStatus"
+              >
+                🔓 Revogar consentimento salvo
+              </button>
+            </div>
             <div class="upload-privacy">
               <p>
                 🔒 <strong>Consulta pontual:</strong> seus arquivos são criptografados (AES-256), analisados localmente
