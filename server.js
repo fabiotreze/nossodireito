@@ -667,7 +667,7 @@ const server = http.createServer(async (req, res) => {
         return;
       }
       try {
-        const { analyzeText } = require("./services/doc-intelligence");
+        const { analyzeText } = require("./services/ai-analysis");
         const result = await analyzeText(cleanText);
         // LGPD: anexa metadados de transparência ao payload (Art. 6º V + Art. 9º)
         result.lgpd = {

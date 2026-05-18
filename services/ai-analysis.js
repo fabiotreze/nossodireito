@@ -1,13 +1,12 @@
 /**
- * services/doc-intelligence.js
+ * services/ai-analysis.js
  *
  * Cliente Azure OpenAI (gpt-4o-mini) para análise IA de laudos PcD.
  *
- * @deprecated Nome legado (era Doc Intelligence até v1.17.0). Em v1.18.0
- * a implementação interna foi trocada para Azure OpenAI Chat Completions
- * porque `prebuilt-read` é OCR e rejeitava text/plain. O arquivo mantém
- * o nome para minimizar diff de import no server.js — será renomeado
- * para services/ai-analysis.js em uma futura release de cleanup.
+ * Histórico: era services/doc-intelligence.js (Azure AI Document Intelligence
+ * via prebuilt-read) até v1.17.0. Em v1.18.0 a implementação foi trocada para
+ * Azure OpenAI Chat Completions porque prebuilt-read é OCR e rejeitava
+ * text/plain. Renomeado para services/ai-analysis.js em v1.19.0 (cleanup).
  *
  * Autenticação: DefaultAzureCredential → Managed Identity em produção
  * (zero secrets), az login em dev. Token AAD com escopo
