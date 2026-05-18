@@ -5,6 +5,43 @@ Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/)
 e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [1.21.0] - 2026-05-18
+
+### Adicionado
+
+- **Pre-commit hardening:** Hook `.githooks/pre-commit` agora ativa
+  automaticamente via `npm install` (script `prepare` seta
+  `core.hooksPath`). Era código morto antes — existia mas ninguém setava.
+- **Conventional Commits enforcement:** Novo hook `.githooks/commit-msg`
+  (regex POSIX, skip de merge/revert/fixup).
+- **Pre-push gate:** Novo hook `.githooks/pre-push` roda `npm run test:js`
+  (62 testes Node) + `check_semver_bump.py` + `check_cache_invalidation.py`.
+- **Semver bump gate:** `scripts/check_semver_bump.py` falha o push se
+  há commits `feat:` ou `BREAKING CHANGE` desde a última tag mas
+  `manifest.json.version` não foi bumpado. Previne recorrência do furo
+  do PR #76 (merged sem bump).
+- **Cache invalidation gate:** `scripts/check_cache_invalidation.py`
+  falha o push se `js/app.js` ou `data/*.json` mudaram em relação a
+  `origin/main` mas `CACHE_VERSION` em `sw.js` não foi bumpado.
+- **CI Node tests:** Quality Gate workflow agora roda `npm ci` +
+  `npm run test:js` (Setup Node 22 + 62 testes em `tests/*.test.mjs`).
+  Antes só rodava pytest — testes Node eram off-radar.
+- **Schema validation expandida:** `master_compliance.validate_json_schema`
+  agora valida `municipios_br.schema.json` (5570 municípios) e
+  `orgaos_estaduais.schema.json` (schema-loadability check), além do
+  `direitos.schema.json` existente.
+- **CI fetch-depth:** Quality Gate workflow recebe `fetch-depth: 0` no
+  checkout — necessário pra `git describe --tags` (semver gate) e diff
+  contra `origin/main` (cache gate).
+
+### Modificado
+
+- **Pre-commit otimizado:** Diffs só de docs (`.md`/`.txt`) pulam o
+  validator pesado (`master_compliance --quick`), acelerando commits de
+  README/CHANGELOG sem perder o fail-fast de versão.
+
+---
+
 ## [1.20.0] - 2026-05-18
 
 ### Adicionado
