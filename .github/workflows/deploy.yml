@@ -178,6 +178,14 @@ jobs:
 
       - name: Health check (com retries)
         if: always() && steps.infra_check.outputs.rg_exists == 'true'
+        env:
+          # Origem-de-verdade do probe: custom domain via Cloudflare.
+          # app-*.azurewebsites.net é bloqueado por Access Restriction (só IPs
+          # Cloudflare), sondá-lo direto retorna 403 — é design, não falha.
+          # /health no origin tem `cache-control: no-cache, no-store` +
+          # cf-cache-status: DYNAMIC, então a sonda via CDN é real.
+          HEALTH_URL: "https://nossodireito.fabiotreze.com/health"
+          ROOT_URL: "https://nossodireito.fabiotreze.com/"
         run: |
           echo "⏳ Aguardando estabilização do deploy..."
           MAX_RETRIES=12
@@ -188,8 +196,9 @@ jobs:
           for i in $(seq 1 $MAX_RETRIES); do
             HZ_STATUS=$(curl -s -o /dev/null -w "%{http_code}" \
               --connect-timeout 10 --max-time 15 \
-              "https://app-${PROJECT}.azurewebsites.net/health" || true)
-            echo "🏥 Tentativa ${i}/${MAX_RETRIES}: /health → HTTP ${HZ_STATUS}"
+              -H "Cache-Control: no-cache" -H "Pragma: no-cache" \
+              "$HEALTH_URL" || true)
+            echo "🏥 Tentativa ${i}/${MAX_RETRIES}: /health (custom domain) → HTTP ${HZ_STATUS}"
             if [ "$HZ_STATUS" = "200" ]; then
               HEALTH_OK=true
               break
@@ -206,22 +215,23 @@ jobs:
 
           FAIL=0
 
-          # 2. Custom domain (deve servir conteúdo)
+          # 2. Custom domain root (deve servir conteúdo)
           CD_STATUS=$(curl -s -o /dev/null -w "%{http_code}" --connect-timeout 10 \
-            "https://nossodireito.fabiotreze.com/" || true)
-          echo "🌐 Custom domain → HTTP ${CD_STATUS}"
+            "$ROOT_URL" || true)
+          echo "🌐 Custom domain root → HTTP ${CD_STATUS}"
           if [ "$CD_STATUS" != "200" ]; then
             echo "::warning::Custom domain retornou ${CD_STATUS}"
             FAIL=$((FAIL + 1))
           fi
 
-          # 3. Redirect do domínio Azure (deve dar 301 para browsers)
+          # 3. Origem Azure deve continuar BLOQUEADA por Access Restriction
+          # (esperado 403 — qualquer 200/30x indica regressão de access policy).
           AZ_STATUS=$(curl -s -o /dev/null -w "%{http_code}" --max-redirs 0 --connect-timeout 10 \
             -H "Accept: text/html" \
             "https://app-${PROJECT}.azurewebsites.net/" || true)
-          echo "🔀 Azure domain redirect (browser) → HTTP ${AZ_STATUS}"
-          if [ "$AZ_STATUS" != "301" ]; then
-            echo "::warning::Azure domain não redirecionou browser (esperado 301, recebeu ${AZ_STATUS})"
+          echo "🔒 Azure domain (esperado 403 por Access Restriction) → HTTP ${AZ_STATUS}"
+          if [ "$AZ_STATUS" != "403" ]; then
+            echo "::warning::Azure domain devolveu ${AZ_STATUS} (esperado 403 — verificar Access Restriction)"
             FAIL=$((FAIL + 1))
           fi
 
