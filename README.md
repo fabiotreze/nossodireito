@@ -52,19 +52,27 @@ node server.js                                    # → http://localhost:8080
 
 Para rodar testes: veja [`docs/QUALITY_GUIDE.md`](docs/QUALITY_GUIDE.md)
 
+## 📘 Documentação consolidada (v1.19.0)
+
+- [`docs/README.md`](docs/README.md) — índice da documentação
+- [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) — arquitetura e diagrama E2E
+- [`docs/OPERATIONS.md`](docs/OPERATIONS.md) — operação e runbook
+- [`docs/SECURITY-LGPD.md`](docs/SECURITY-LGPD.md) — baseline de segurança e LGPD
+- [`docs/REPLICATION.md`](docs/REPLICATION.md) — replicação para novo tenant/subscription
+
 ---
 
-## 🎉 NOVIDADES v1.14.8 (01/03/2026) — Migração Azure & Zero Hardcoding
+## 🎉 NOVIDADES v1.19.0 (18/05/2026) — Replicação, hardening e docs enxutas
 
-**🏆 Master Compliance:** 1077.7/1082.7 pontos **(99.54%)** — 21 categorias; 1 categoria (Dependências) em 87.5% (falta atualizar/auditar lockfile)
+**🏆 Status atual:** pipeline de testes 100% verde (678 passed) e baseline de segurança ativa.
 
 ### ✅ O que mudou:
 
-1. **Migração de tenant Azure** — novo tenant, subscription MSDN-online, OIDC configurado
-2. **Região brazilsouth** — conformidade LGPD (dados em território nacional)
-3. **Recursos renomeados** — sufixo `-br`: `app-nossodireito-br`, `rg-nossodireito-br`, etc.
-4. **Zero hardcoding** — nomes centralizados via `var.project_name` (Terraform), `env.PROJECT` (workflows) e `WEBSITE_HOSTNAME` (server.js)
-5. **Documentação atualizada** — ARCHITECTURE.md reflete padrão dinâmico
+1. **Revogação de consentimento IA permanente (LGPD Art. 8º §5)** na interface.
+2. **Replicação automatizada** com script de bootstrap para novo tenant/subscription.
+3. **Workflow dedicado de replicação** (`.github/workflows/replication.yml`).
+4. **Baseline de segurança automatizada** (`.github/workflows/security-baseline.yml`).
+5. **Documentação consolidada** em arquitetura/operação/segurança-replicação.
 
 ### 📚 Documentação:
 

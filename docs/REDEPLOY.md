@@ -1,7 +1,10 @@
 # REDEPLOY — Recriação do ambiente do zero
 
-**Versão:** 1.15.0
-**Atualizado:** 2026-05-17
+**Versão:** 1.19.0
+**Atualizado:** 2026-05-18
+
+> Documento legado: o guia principal de replicação foi consolidado em
+> [REPLICATION.md](REPLICATION.md).
 
 Este documento descreve como reconstruir o ambiente NossoDireito a partir do
 zero em uma nova subscription Azure (ou para fins de Disaster Recovery).

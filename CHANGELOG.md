@@ -5,6 +5,31 @@ Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/)
 e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [1.19.0] - 2026-05-18
+
+### Adicionado
+
+- **Automação de replicação** com `scripts/bootstrap_replication.sh` para novo tenant/subscription.
+- **Workflow de replicação** (`.github/workflows/replication.yml`) com `workflow_dispatch` para `plan/apply`.
+- **Workflow de baseline de segurança** (`.github/workflows/security-baseline.yml`) com `npm audit`, `pip-audit` e
+  verificação de headers.
+- **Script de verificação de headers** (`scripts/security_headers_check.sh`) para validação rápida em produção.
+- **Documentação consolidada**: `docs/OPERATIONS.md`, `docs/SECURITY-LGPD.md`, `docs/REPLICATION.md`, `docs/README.md`.
+- **Novos diagramas Draw.io**: `docs/diagrams/02-ia-flow.drawio` e `docs/diagrams/03-replication.drawio`.
+
+### Alterado
+
+- **Versão global para `1.19.0`** em runtime assets e metadados (`package.json`, `manifest.json`, `data/*.json`,
+  `sw.js`, cache-bust de `index.html`).
+- **README atualizado** para refletir a documentação consolidada e o foco em operação/replicação.
+- **`terraform.tfvars.example` reforçado** para cenário de replicação multi-ambiente.
+
+### Removido
+
+- **Stub Terraform de Doc Intelligence** removido definitivamente (`terraform/ai-doc-intelligence.tf`).
+
+---
+
 ## [1.18.0] - 2026-05-18
 
 ### Adicionado

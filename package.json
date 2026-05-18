@@ -1,13 +1,15 @@
 {
   "name": "nossodireito",
-  "version": "1.18.2",
+  "version": "1.19.0",
   "description": "NossoDireito — Portal de direitos PcD (server)",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
     "test": "python -m pytest tests/ -v --tb=short --ignore=tests/test_browser.py",
     "test:js": "node --test tests/*.test.mjs",
-    "validate": "python scripts/validate_all.py --quick"
+    "validate": "python scripts/validate_all.py --quick",
+    "security:headers": "bash scripts/security_headers_check.sh",
+    "replication:bootstrap": "bash scripts/bootstrap_replication.sh --help"
   },
   "dependencies": {
     "@azure/identity": "^4.13.1",
