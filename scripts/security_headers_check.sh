@@ -12,10 +12,9 @@ require_cmd() {
 
 require_cmd curl
 
-URLS=(
-  "https://app-nossodireito-br.azurewebsites.net/"
-  "https://nossodireito.fabiotreze.com/"
-)
+PUBLIC_URL="${PUBLIC_URL:-https://nossodireito.fabiotreze.com/}"
+DIRECT_AZURE_URL="${DIRECT_AZURE_URL:-https://app-nossodireito-br.azurewebsites.net/}"
+EXPECTED_DIRECT_STATUS="${EXPECTED_DIRECT_STATUS:-403}"
 
 REQUIRED_HEADERS=(
   "strict-transport-security"
@@ -28,19 +27,33 @@ REQUIRED_HEADERS=(
 
 EXIT_CODE=0
 
-for url in "${URLS[@]}"; do
-  echo "=== ${url} ==="
-  headers="$(curl -sI "$url" | tr '[:upper:]' '[:lower:]')"
-  for hdr in "${REQUIRED_HEADERS[@]}"; do
-    if grep -q "^${hdr}:" <<<"$headers"; then
-      echo "[OK] ${hdr}"
-    else
-      echo "[FAIL] Missing header: ${hdr}"
-      EXIT_CODE=1
-    fi
-  done
-  echo
+echo "=== Direct host hardening (${DIRECT_AZURE_URL}) ==="
+direct_status="$(curl -s -o /dev/null -w "%{http_code}" "$DIRECT_AZURE_URL")"
+if [[ "$direct_status" == "$EXPECTED_DIRECT_STATUS" ]]; then
+  echo "[OK] Direct Azure host returns ${direct_status} (blocked as expected)"
+else
+  echo "[FAIL] Direct Azure host returned ${direct_status}; expected ${EXPECTED_DIRECT_STATUS}"
+  EXIT_CODE=1
+fi
+echo
 
+echo "=== Public domain headers (${PUBLIC_URL}) ==="
+public_status="$(curl -s -o /dev/null -w "%{http_code}" "$PUBLIC_URL")"
+if [[ "$public_status" =~ ^[23] ]]; then
+  echo "[OK] Public domain reachable (${public_status})"
+else
+  echo "[FAIL] Public domain not reachable (${public_status})"
+  EXIT_CODE=1
+fi
+
+headers="$(curl -sI "$PUBLIC_URL" | tr '[:upper:]' '[:lower:]')"
+for hdr in "${REQUIRED_HEADERS[@]}"; do
+  if grep -q "^${hdr}:" <<<"$headers"; then
+    echo "[OK] ${hdr}"
+  else
+    echo "[FAIL] Missing header: ${hdr}"
+    EXIT_CODE=1
+  fi
 done
 
 if [[ $EXIT_CODE -eq 0 ]]; then
