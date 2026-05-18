@@ -1135,13 +1135,16 @@ self.addEventListener("fetch", (event) => {
    - Response time > 5s (severity 2 — performance)
    - HTTP 4xx spike > 50 (severity 3 — possível scan/ataque)
 
-8. **Azure AI Document Intelligence** (`cog-nossodireito-br-docint`) — _opt-in, v1.16.0+_
-   - SKU: **F0** (free tier, 500 páginas/mês, custo $0)
-   - Location: `brazilsouth` (mesma região do App Service)
+8. **Azure OpenAI** (`cog-nossodireito-br-openai`) — _opt-in, v1.18.0+_
+   - SKU: **GlobalStandard** (pay-per-token); modelo `gpt-4o-mini` em deployment dedicado
+   - Location: `brazilsouth` (mesma região do App Service — dados ficam no Brasil)
    - Custom subdomain habilitado (requerido para Entra ID auth)
-   - Provisionamento condicional: `var.enable_ai_doc_intelligence = true` em `terraform/ai-doc-intelligence.tf`
-   - **Autenticação:** Managed System Identity do App Service (sem chaves no código). Role `Cognitive Services User` atribuída via `azurerm_role_assignment.app_to_doc_intelligence`.
-   - App Setting `AZURE_DOC_INTELLIGENCE_ENDPOINT` injetada via TF; `AI_ANALYSIS_ENABLED=true` ativa o endpoint server-side `/api/analyze-document`.
+   - Provisionamento: `terraform/ai-openai.tf` (sempre criado quando IA está ativa)
+   - **Autenticação:** Managed System Identity do App Service. Role `Cognitive Services OpenAI User` atribuída via `azurerm_role_assignment.app_to_openai` (sem chaves no código)
+   - App Settings: `AZURE_OPENAI_ENDPOINT`, `AZURE_OPENAI_DEPLOYMENT`, `AZURE_OPENAI_API_VERSION` injetadas via TF; `AI_ANALYSIS_ENABLED=true` ativa o endpoint server-side `POST /api/analyze-document`
+   - Pipeline de entrada: texto já anonimizado no browser (sem nome/CPF/RG/endereço/telefone) → validação anti-PII no server (HTTP 422 se vazar) → Structured Outputs (JSON schema fixo) com CIDs, datas, diagnósticos, direitos sugeridos
+   - Custo típico: ~$1.50/mês para 1k análises (mediana ~745→303 tokens). Zero-retention DPA garante que prompts/respostas não ficam armazenados no serviço
+   - **Histórico:** Em v1.16.0–1.17.0 o backend era Azure AI Document Intelligence (`cog-nossodireito-br-docint`, SKU F0). Foi descontinuado porque `prebuilt-read` é OCR e rejeita `text/plain`. O recurso antigo foi deletado + purgado do Azure em v1.18.1.
 
 9. **Consumption Budgets** (`terraform/budget.tf`) — proteção de custo
    - **Budget primário** (`budget-nossodireitobr`): $105/mês, alertas em **80% (Actual)** e **100% (Forecasted)** para `fabiotreze@hotmail.com`
