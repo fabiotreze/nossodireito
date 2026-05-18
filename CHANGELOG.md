@@ -23,6 +23,7 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
   `sw.js`, cache-bust de `index.html`).
 - **README atualizado** para refletir a documentação consolidada e o foco em operação/replicação.
 - **`terraform.tfvars.example` reforçado** para cenário de replicação multi-ambiente.
+- **Plano de 7 dias pós-análise IA tornado executável**: checklist com progresso salvo no navegador, opção de copiar plano e reiniciar acompanhamento.
 
 ### Removido
 
