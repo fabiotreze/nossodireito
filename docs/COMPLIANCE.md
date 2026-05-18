@@ -1,6 +1,6 @@
 # NossoDireito — Documento Único de Compliance
 
-**Versão:** 1.17.0
+**Versão:** 1.18.0
 **Data:** 17 de maio de 2026
 **Responsável (Titular / DPO de facto):** Fabio Costa — `38567767+fabiotreze@users.noreply.github.com`
 **Tipo:** Compliance Legal, Técnico, Segurança, Privacidade, Acessibilidade, Qualidade

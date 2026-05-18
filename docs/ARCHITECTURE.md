@@ -1,6 +1,6 @@
 # NossoDireito — Arquitetura do Sistema V1 (Produção Atual)
 
-**Versão:** 1.17.0
+**Versão:** 1.18.0
 **Data:** Fevereiro 2026
 **Status:** Produção Estável (Quality Gate: 100.0/100)
 **URL:** https://nossodireito.fabiotreze.com
@@ -31,6 +31,7 @@
 ## 1. Resumo Executivo
 
 ### Propósito
+
 **NossoDireito** é um portal web gratuito que fornece informações sobre direitos e benefícios para pessoas com deficiência (PcD) no Brasil. Criado para famílias que recebem laudos médicos (TEA, deficiência física, intelectual, sensorial), o portal oferece:
 
 - **30 categorias de direitos**: BPC/LOAS, CIPTEA, Educação Inclusiva, Terapias SUS, Planos de Saúde, Transporte, Trabalho, FGTS, Habitação, IPVA PcD, Isenção IR, Prioridade em Filas, Tecnologia Assistiva, Aposentadoria PcD, entre outras
@@ -42,28 +43,31 @@
 - **Totalmente offline-first**: Service Worker com cache, dados JSON estáticos, zero backend dinâmico
 
 ### Arquitetura
+
 100% client-side rendering com Node.js como servidor de arquivos estáticos endurecido para segurança. Dados estruturados em JSON (2.293 linhas de direitos + 2.716 linhas de motor de matching). Infraestrutura hospedada no Azure App Service (Linux, Node.js 22 LTS) com Terraform IaC.
 
 ### Conformidade
+
 - **LGPD Art. 4º, I**: Não armazena dados pessoais em servidores (análise 100% local no navegador)
 - **WCAG 2.1 Nível AA**: Contraste ≥4.5:1, navegação por teclado, ARIA labels, landmarks
 - **eMAG 3.1** (Gov.br): VLibras para tradução em Libras, text-to-speech nativo
 - **OWASP Secure Headers**: CSP, HSTS, X-Frame-Options, Permissions-Policy
 
 ### KPIs V1
-| Métrica | Valor |
-|---------|-------|
-| **Quality Gate** | 100.0/100 |
-| **Uptime SLA** | 99.95% (Azure App Service Basic+) |
-| **Custo Mensal** | ~$13/mês (App Service B1 + Key Vault) |
-| **Tempo de Resposta** | <500ms (95th percentile) |
-| **Categorias de Direitos** | 30 (direitos.json ~265KB) |
-| **Keywords Matching** | ~1.218 termos + CID-10/11 ranges |
-| **Acurácia de Análise** | ~70% (limitação regex) |
-| **Lighthouse Score** | Performance: 95+, Accessibility: 100, Best Practices: 100, SEO: 100 |
-| **Testes Automatizados** | 846 (709 unit + 137 Playwright E2E) |
-| **Master Compliance** | 99.54% (1077.7/1082.7 — v1.17.0) |
-| **Tamanho Total** | 2.78 MB (52 arquivos) |
+
+| Métrica                    | Valor                                                               |
+| -------------------------- | ------------------------------------------------------------------- |
+| **Quality Gate**           | 100.0/100                                                           |
+| **Uptime SLA**             | 99.95% (Azure App Service Basic+)                                   |
+| **Custo Mensal**           | ~$13/mês (App Service B1 + Key Vault)                               |
+| **Tempo de Resposta**      | <500ms (95th percentile)                                            |
+| **Categorias de Direitos** | 30 (direitos.json ~265KB)                                           |
+| **Keywords Matching**      | ~1.218 termos + CID-10/11 ranges                                    |
+| **Acurácia de Análise**    | ~70% (limitação regex)                                              |
+| **Lighthouse Score**       | Performance: 95+, Accessibility: 100, Best Practices: 100, SEO: 100 |
+| **Testes Automatizados**   | 846 (709 unit + 137 Playwright E2E)                                 |
+| **Master Compliance**      | 100.00% (1113.2/1113.2 — v1.18.0)                                   |
+| **Tamanho Total**          | 2.78 MB (52 arquivos)                                               |
 
 ---
 
@@ -74,20 +78,25 @@
 ```
 1. Acesso ao Portal (nossodireito.fabiotreze.com)
    ↓
-2. Disclaimer LGPD (modal inicial)
+2. Navegação livre (sem modal bloqueante)
+   │  Banner legal não-bloqueante no rodapé (#legalBanner, movido do topo na v1.17.0)
+   │  Link ⚠️ "Aviso" no menu superior → âncora #disclaimerInline
    ↓
-3. Navegação:
+3. Funcionalidades disponíveis:
    ├─ Busca por palavra-chave (search bar)
    ├─ Exploração de categorias (30 cards)
    ├─ Checklist "Primeiros Passos" (guia interativo)
-   └─ Upload de laudo PDF (análise local)
+   └─ Upload de laudo PDF (análise local + IA opcional)
        ↓
 4. Análise de Documento:
    ├─ Upload → IndexedDB com AES-GCM-256 (TTL 15 min)
-   ├─ PDF.js extrai texto
-   ├─ Regex matching com data/matching_engine.json
-   └─ Exibe direitos identificados (score + peso)
-       ↓
+   ├─ PDF.js extrai texto (100% client-side)
+   ├─ Anonimização automática (nome/CPF/RG/endereço/telefone)
+   ├─ Regex matching local com data/matching_engine.json (sempre)
+   └─ [Opcional] Análise IA: aiConsentModal (opt-in LGPD Art. 7º I)
+          → POST /api/analyze-document → Azure OpenAI gpt-4o-mini (brazilsouth)
+          → Retorna CIDs+descrição, datas+contexto, diagnósticos, direitos sugeridos, resumo
+   ↓
 5. Exploração de Direitos:
    ├─ Expansão de cards com detalhes
    ├─ Links para fontes oficiais (.gov.br)
@@ -228,6 +237,7 @@
 ### Dados Estáticos (JSON)
 
 #### data/direitos.json (~265KB, 30 categorias)
+
 Fonte de verdade para as 30 categorias de direitos PcD, 27 órgãos estaduais (SEFAZ/DETRAN), 25 instituições de apoio, 16 classificações de deficiência, e IPVA inline por estado. Estrutura:
 
 ```json
@@ -253,13 +263,21 @@ Fonte de verdade para as 30 categorias de direitos PcD, 27 órgãos estaduais (S
       ],
       "cids_relacionados": ["F84.0", "F84.9", "F90.0", "Q90.0", "..."],
       "keywords": ["bpc", "loas", "beneficio", "assistencial", "baixa renda"]
-    },
+    }
     // ... outras 29 categorias
   ],
-  "orgaos_estaduais": [ /* 27 UFs com sefaz, detran, beneficios_destaque */ ],
-  "instituicoes_apoio": [ /* 25 instituições */ ],
-  "classificacao_deficiencia": [ /* 16 tipos CID-10/11 */ ],
-  "dica_seguranca": { /* dicas de segurança digital */ }
+  "orgaos_estaduais": [
+    /* 27 UFs com sefaz, detran, beneficios_destaque */
+  ],
+  "instituicoes_apoio": [
+    /* 25 instituições */
+  ],
+  "classificacao_deficiencia": [
+    /* 16 tipos CID-10/11 */
+  ],
+  "dica_seguranca": {
+    /* dicas de segurança digital */
+  }
 }
 ```
 
@@ -268,9 +286,11 @@ Fonte de verdade para as 30 categorias de direitos PcD, 27 órgãos estaduais (S
 Incluem BPC/LOAS, CIPTEA, Educação Inclusiva, Terapias e Planos de Saúde, Terapias pelo SUS, Transporte (Passe Livre, IPVA, Estacionamento), Trabalho (Cotas PcD, Estabilidade), FGTS (Saque), Habitação (Prioridade MCMV), IPVA PcD (isenção por estado), Isenção de Imposto de Renda, Prioridade em Filas, Tecnologia Assistiva, Aposentadoria PcD, entre outras. Lista completa em `data/direitos.json`.
 
 #### data/dicionario_pcd.json (~72KB)
+
 Glossário de 14 deficiências com sinônimos, CID-10/CID-11, keywords de busca e benefícios elegíveis. Carregado em `app.js` e integrado ao `KEYWORD_MAP` para enriquecer buscas por sinônimos (ex: "trissomia 21" → Síndrome de Down) e códigos CID.
 
 #### data/matching_engine.json (~106KB)
+
 Motor de análise de documentos baseado em regex e pesos.
 
 ```json
@@ -319,6 +339,7 @@ Motor de análise de documentos baseado em regex e pesos.
 ```
 
 **Lógica de Matching:**
+
 1. Extração de texto do PDF via PDF.js
 2. Busca por CID codes exatos (regex `[A-Z]\d{2}(\.\d{1,2})?`)
 3. Busca por keywords com peso (primary: 10, secondary: 5)
@@ -331,50 +352,56 @@ Motor de análise de documentos baseado em regex e pesos.
 ## 3. Stack Tecnológica
 
 ### Frontend
-| Tecnologia | Versão | Uso |
-|------------|--------|-----|
-| **HTML5** | - | SPA shell (index.html 568 linhas) |
-| **CSS3** | - | styles.css (3.326 linhas), variáveis CSS, dark mode `@media (prefers-color-scheme: dark)` |
-| **JavaScript (Vanilla)** | ES2022 | app.js (2.764 linhas), zero frameworks/libraries |
-| **Web Speech API** | - | Text-to-speech (TTS) síntese de voz pt-BR |
-| **PDF.js** | 3.11.174 | Extração de texto de PDFs (CDN cloudflare.com) |
-| **VLibras** | 3.2 | Widget gov.br para tradução Libras (Unity WebGL) |
-| **Service Worker API** | - | Network-first strategy (sw.js 159 linhas) |
-| **IndexedDB API** | - | Armazenamento local de PDFs com AES-GCM-256 |
-| **Web Crypto API** | - | Criptografia client-side (AES-GCM-256) |
+
+| Tecnologia               | Versão   | Uso                                                                                       |
+| ------------------------ | -------- | ----------------------------------------------------------------------------------------- |
+| **HTML5**                | -        | SPA shell (index.html 568 linhas)                                                         |
+| **CSS3**                 | -        | styles.css (3.326 linhas), variáveis CSS, dark mode `@media (prefers-color-scheme: dark)` |
+| **JavaScript (Vanilla)** | ES2022   | app.js (2.764 linhas), zero frameworks/libraries                                          |
+| **Web Speech API**       | -        | Text-to-speech (TTS) síntese de voz pt-BR                                                 |
+| **PDF.js**               | 3.11.174 | Extração de texto de PDFs (CDN cloudflare.com)                                            |
+| **VLibras**              | 3.2      | Widget gov.br para tradução Libras (Unity WebGL)                                          |
+| **Service Worker API**   | -        | Network-first strategy (sw.js 159 linhas)                                                 |
+| **IndexedDB API**        | -        | Armazenamento local de PDFs com AES-GCM-256                                               |
+| **Web Crypto API**       | -        | Criptografia client-side (AES-GCM-256)                                                    |
 
 ### Backend
-| Tecnologia | Versão | Uso |
-|------------|--------|-----|
-| **Node.js** | 22 LTS | Runtime do servidor |
-| **http (native)** | - | Servidor HTTP vanilla (sem Express/Fastify) |
-| **zlib (native)** | - | Compressão Gzip/Brotli |
-| **applicationinsights** | 3.4.0 | Telemetria Azure (único dependency) |
+
+| Tecnologia              | Versão | Uso                                         |
+| ----------------------- | ------ | ------------------------------------------- |
+| **Node.js**             | 22 LTS | Runtime do servidor                         |
+| **http (native)**       | -      | Servidor HTTP vanilla (sem Express/Fastify) |
+| **zlib (native)**       | -      | Compressão Gzip/Brotli                      |
+| **applicationinsights** | 3.4.0  | Telemetria Azure (único dependency)         |
 
 ### Infraestrutura
-| Serviço | Tier | Uso |
-|---------|------|-----|
-| **Azure App Service** | B1 Linux (Basic) | Hospedagem do Node.js server |
-| **Azure Key Vault** | Standard | Armazenamento de certificado SSL PFX |
-| **Azure Application Insights** | Pay-as-you-go | Monitoramento, métricas, alertas |
-| **Azure Log Analytics** | PerGB2018 | Workspace para logs (30 dias retenção) |
-| **Cloudflare** | Free | DNS autoritativo + proxy/CDN/WAF para fabiotreze.com |
+
+| Serviço                        | Tier             | Uso                                                  |
+| ------------------------------ | ---------------- | ---------------------------------------------------- |
+| **Azure App Service**          | B1 Linux (Basic) | Hospedagem do Node.js server                         |
+| **Azure Key Vault**            | Standard         | Armazenamento de certificado SSL PFX                 |
+| **Azure Application Insights** | Pay-as-you-go    | Monitoramento, métricas, alertas                     |
+| **Azure Log Analytics**        | PerGB2018        | Workspace para logs (30 dias retenção)               |
+| **Cloudflare**                 | Free             | DNS autoritativo + proxy/CDN/WAF para fabiotreze.com |
 
 ### DevOps & IaC
-| Ferramenta | Versão | Uso |
-|------------|--------|-----|
-| **Terraform** | 1.9+ | Infrastructure as Code (main.tf 370 linhas) |
-| **GitHub Actions** | - | CI/CD (deploy.yml, quality-gate.yml) |
-| **Python** | 3.10+ | Scripts de validação (validate_sources.py, bump_version.py) |
+
+| Ferramenta         | Versão | Uso                                                         |
+| ------------------ | ------ | ----------------------------------------------------------- |
+| **Terraform**      | 1.9+   | Infrastructure as Code (main.tf 370 linhas)                 |
+| **GitHub Actions** | -      | CI/CD (deploy.yml, quality-gate.yml)                        |
+| **Python**         | 3.10+  | Scripts de validação (validate_sources.py, bump_version.py) |
 
 ### Dependências NPM
+
 ```json
 {
-  "applicationinsights": "^3.4.0"  // Único dependency
+  "applicationinsights": "^3.4.0" // Único dependency
 }
 ```
 
 **Justificativa Zero Dependencies (frontend):**
+
 - Evita supply chain attacks (npm package hijacking)
 - Reduz bundle size (<100 KB total JS minificado)
 - Melhor controle sobre código executado
@@ -387,6 +414,7 @@ Motor de análise de documentos baseado em regex e pesos.
 ### server.js — Servidor Endurecido + Endpoint IA Opt-in (937 linhas)
 
 **Responsabilidades:**
+
 1. Servir arquivos estáticos (HTML, CSS, JS, JSON, imagens)
 2. Aplicar security headers (CSP, HSTS, X-Frame-Options, etc.)
 3. Rate limiting por IP (120 req/min, janela 1 minuto)
@@ -402,7 +430,7 @@ Motor de análise de documentos baseado em regex e pesos.
 ```javascript
 // Security Headers (OWASP Secure Headers + Mozilla Observatory)
 const SECURITY_HEADERS = {
-  'Content-Security-Policy': [
+  "Content-Security-Policy": [
     "default-src 'none'",
     "script-src 'self' blob: https://cdnjs.cloudflare.com https://vlibras.gov.br https://*.vlibras.gov.br https://cdn.jsdelivr.net 'unsafe-eval' 'wasm-unsafe-eval'",
     "style-src 'self' 'unsafe-inline' https://*.vlibras.gov.br https://cdn.jsdelivr.net",
@@ -412,122 +440,123 @@ const SECURITY_HEADERS = {
     "form-action 'none'",
     "base-uri 'self'",
     "frame-ancestors 'none'",
-    "upgrade-insecure-requests"
-  ].join('; '),
-  'Strict-Transport-Security': 'max-age=31536000; includeSubDomains; preload',
-  'X-Content-Type-Options': 'nosniff',
-  'X-Frame-Options': 'DENY',
-  'Referrer-Policy': 'strict-origin-when-cross-origin',
-  'Permissions-Policy': 'camera=(), microphone=(), geolocation=(), payment=(), usb=(), bluetooth=(), serial=(), hid=()',
-  'Cross-Origin-Opener-Policy': 'same-origin',
-  'Cross-Origin-Resource-Policy': 'cross-origin',
-  'Cross-Origin-Embedder-Policy': 'unsafe-none'  // VLibras Unity requer cross-origin assets
+    "upgrade-insecure-requests",
+  ].join("; "),
+  "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+  "X-Content-Type-Options": "nosniff",
+  "X-Frame-Options": "DENY",
+  "Referrer-Policy": "strict-origin-when-cross-origin",
+  "Permissions-Policy": "camera=(), microphone=(), geolocation=(), payment=(), usb=(), bluetooth=(), serial=(), hid=()",
+  "Cross-Origin-Opener-Policy": "same-origin",
+  "Cross-Origin-Resource-Policy": "cross-origin",
+  "Cross-Origin-Embedder-Policy": "unsafe-none", // VLibras Unity requer cross-origin assets
 };
 ```
 
 **Rate Limiting (in-memory):**
+
 ```javascript
-const RATE_LIMIT_WINDOW = 60_000;  // 1 minuto
-const RATE_LIMIT_MAX = 120;        // 120 requisições
+const RATE_LIMIT_WINDOW = 60_000; // 1 minuto
+const RATE_LIMIT_MAX = 120; // 120 requisições
 
 function isRateLimited(ip) {
-    const now = Date.now();
-    const entry = rateLimitMap.get(ip);
-    if (!entry || now - entry.start > RATE_LIMIT_WINDOW) {
-        rateLimitMap.set(ip, { start: now, count: 1 });
-        return false;
-    }
-    entry.count++;
-    return entry.count > RATE_LIMIT_MAX;
+  const now = Date.now();
+  const entry = rateLimitMap.get(ip);
+  if (!entry || now - entry.start > RATE_LIMIT_WINDOW) {
+    rateLimitMap.set(ip, { start: now, count: 1 });
+    return false;
+  }
+  entry.count++;
+  return entry.count > RATE_LIMIT_MAX;
 }
 
 // Cleanup stale entries (evita memory leak)
 setInterval(() => {
-    const now = Date.now();
-    for (const [ip, entry] of rateLimitMap) {
-        if (now - entry.start > RATE_LIMIT_WINDOW) rateLimitMap.delete(ip);
-    }
-}, 300_000);  // A cada 5 minutos
+  const now = Date.now();
+  for (const [ip, entry] of rateLimitMap) {
+    if (now - entry.start > RATE_LIMIT_WINDOW) rateLimitMap.delete(ip);
+  }
+}, 300_000); // A cada 5 minutos
 ```
 
 **Cache Policies:**
+
 ```javascript
 const CACHE = {
-    '.html': 'public, max-age=300, stale-while-revalidate=300',  // 5 min + serve stale
-    '.json': 'public, max-age=3600, stale-while-revalidate=600', // 1 hora + 10 min stale
-    '.css': 'public, max-age=2592000, immutable',    // 30 dias — never revalidate
-    '.js': 'public, max-age=2592000, immutable',     // 30 dias — never revalidate
-    '.png': 'public, max-age=2592000, immutable',    // 30 dias — never revalidate
-    '.ico': 'public, max-age=2592000, immutable',    // 30 dias — never revalidate
-    '.svg': 'public, max-age=2592000, immutable',    // 30 dias — never revalidate
-    '.webp': 'public, max-age=2592000, immutable',   // 30 dias — never revalidate
-    '.xml': 'public, max-age=3600, stale-while-revalidate=600', // 1 hora + 10 min stale
-    '.txt': 'public, max-age=86400',      // 1 dia
+  ".html": "public, max-age=300, stale-while-revalidate=300", // 5 min + serve stale
+  ".json": "public, max-age=3600, stale-while-revalidate=600", // 1 hora + 10 min stale
+  ".css": "public, max-age=2592000, immutable", // 30 dias — never revalidate
+  ".js": "public, max-age=2592000, immutable", // 30 dias — never revalidate
+  ".png": "public, max-age=2592000, immutable", // 30 dias — never revalidate
+  ".ico": "public, max-age=2592000, immutable", // 30 dias — never revalidate
+  ".svg": "public, max-age=2592000, immutable", // 30 dias — never revalidate
+  ".webp": "public, max-age=2592000, immutable", // 30 dias — never revalidate
+  ".xml": "public, max-age=3600, stale-while-revalidate=600", // 1 hora + 10 min stale
+  ".txt": "public, max-age=86400", // 1 dia
 };
 
 // Service Worker exception: cache curto para update detection
-const isSW = urlPath === '/sw.js';
-const cacheControl = isSW ? 'no-cache' : (CACHE[ext] || 'no-cache');
+const isSW = urlPath === "/sw.js";
+const cacheControl = isSW ? "no-cache" : CACHE[ext] || "no-cache";
 ```
 
 **Whitelist de Extensões (CWE-434):**
+
 ```javascript
-const ALLOWED_EXT = new Set([
-    '.html', '.css', '.js', '.json',
-    '.png', '.ico', '.svg', '.webp',
-    '.txt', '.xml'
-]);
+const ALLOWED_EXT = new Set([".html", ".css", ".js", ".json", ".png", ".ico", ".svg", ".webp", ".txt", ".xml"]);
 
 // Rejeita tudo que não está na whitelist
 if (ext && !ALLOWED_EXT.has(ext)) return null;
 ```
 
 **Directory Traversal Protection (CWE-22):**
+
 ```javascript
 function resolveFile(urlPath) {
-    // 1. Reject null-byte injection
-    if (urlPath.includes('\0')) return null;
+  // 1. Reject null-byte injection
+  if (urlPath.includes("\0")) return null;
 
-    // 2. Reject oversized URLs (CWE-400)
-    if (urlPath.length > MAX_URL_LENGTH) return null;
+  // 2. Reject oversized URLs (CWE-400)
+  if (urlPath.length > MAX_URL_LENGTH) return null;
 
-    // 3. Reject control characters
-    if (/[\x00-\x1f\x7f]/.test(urlPath)) return null;
+  // 3. Reject control characters
+  if (/[\x00-\x1f\x7f]/.test(urlPath)) return null;
 
-    // 4. Normalize and decode
-    let filePath;
-    try {
-        filePath = path.normalize(decodeURIComponent(urlPath));
-    } catch {
-        return null;  // malformed URI
-    }
+  // 4. Normalize and decode
+  let filePath;
+  try {
+    filePath = path.normalize(decodeURIComponent(urlPath));
+  } catch {
+    return null; // malformed URI
+  }
 
-    // 5. Reject double-encoded traversal (e.g. %252e%252e)
-    if (filePath.includes('..')) return null;
+  // 5. Reject double-encoded traversal (e.g. %252e%252e)
+  if (filePath.includes("..")) return null;
 
-    // 6. Ensure within root
-    const fullPath = path.join(ROOT, filePath);
-    if (!fullPath.startsWith(ROOT + path.sep) && fullPath !== ROOT) return null;
+  // 6. Ensure within root
+  const fullPath = path.join(ROOT, filePath);
+  if (!fullPath.startsWith(ROOT + path.sep) && fullPath !== ROOT) return null;
 
-    // 7. Block dotfiles (.env, .git, .github)
-    const segments = relative.split(path.sep);
-    if (segments.some(seg => seg.startsWith('.'))) return null;
+  // 7. Block dotfiles (.env, .git, .github)
+  const segments = relative.split(path.sep);
+  if (segments.some((seg) => seg.startsWith("."))) return null;
 
-    // 8. Block sensitive directories
-    const BLOCKED_DIRS = new Set(['terraform', 'node_modules', 'docs']);
-    if (BLOCKED_DIRS.has(segments[0].toLowerCase())) return null;
+  // 8. Block sensitive directories
+  const BLOCKED_DIRS = new Set(["terraform", "node_modules", "docs"]);
+  if (BLOCKED_DIRS.has(segments[0].toLowerCase())) return null;
 
-    return fullPath;
+  return fullPath;
 }
 ```
 
 **Connection Hardening (anti-Slowloris + Azure LB compat):**
+
 ```javascript
-server.timeout = 30_000;           // 30s request timeout
-server.headersTimeout = 70_000;    // 70s header timeout (must exceed keepAliveTimeout)
-server.requestTimeout = 30_000;    // 30s total request timeout
-server.keepAliveTimeout = 65_000;  // 65s keep-alive (must exceed Azure LB 60s timeout)
-server.maxHeadersCount = 50;       // Limit header count
+server.timeout = 30_000; // 30s request timeout
+server.headersTimeout = 70_000; // 70s header timeout (must exceed keepAliveTimeout)
+server.requestTimeout = 30_000; // 30s total request timeout
+server.keepAliveTimeout = 65_000; // 65s keep-alive (must exceed Azure LB 60s timeout)
+server.maxHeadersCount = 50; // Limit header count
 server.maxRequestsPerSocket = 100; // Limit requests per socket
 ```
 
@@ -536,257 +565,262 @@ server.maxRequestsPerSocket = 100; // Limit requests per socket
 **Módulos Principais:**
 
 #### 1. TTS Engine (Text-to-Speech)
+
 ```javascript
 // Web Speech API — Síntese de voz pt-BR
 class TTSEngine {
-    constructor() {
-        this.synth = window.speechSynthesis;
-        this.voice = this.selectBrazilianVoice();
-        this.isSpeaking = false;
-        this.currentUtterance = null;
+  constructor() {
+    this.synth = window.speechSynthesis;
+    this.voice = this.selectBrazilianVoice();
+    this.isSpeaking = false;
+    this.currentUtterance = null;
+  }
+
+  selectBrazilianVoice() {
+    const voices = this.synth.getVoices();
+    // Preferência: Google português do Brasil > Microsoft Helena > fallback
+    const preferred = [
+      "Google português do Brasil",
+      "Microsoft Helena - Portuguese (Brazil)",
+      "Luciana", // iOS pt-BR
+    ];
+
+    for (const name of preferred) {
+      const match = voices.find((v) => v.name.includes(name) || v.lang === "pt-BR");
+      if (match) return match;
     }
 
-    selectBrazilianVoice() {
-        const voices = this.synth.getVoices();
-        // Preferência: Google português do Brasil > Microsoft Helena > fallback
-        const preferred = [
-            'Google português do Brasil',
-            'Microsoft Helena - Portuguese (Brazil)',
-            'Luciana',  // iOS pt-BR
-        ];
+    return voices.find((v) => v.lang.startsWith("pt")) || voices[0];
+  }
 
-        for (const name of preferred) {
-            const match = voices.find(v => v.name.includes(name) || v.lang === 'pt-BR');
-            if (match) return match;
+  speak(text) {
+    if (this.isSpeaking) this.stop();
+
+    // Chunk text em parágrafos menores (limite API: ~32.767 chars)
+    const chunks = this.chunkText(text, 1000);
+
+    chunks.forEach((chunk, i) => {
+      const utterance = new SpeechSynthesisUtterance(chunk);
+      utterance.voice = this.voice;
+      utterance.rate = 1.0;
+      utterance.pitch = 1.0;
+      utterance.volume = 1.0;
+      utterance.lang = "pt-BR";
+
+      utterance.onend = () => {
+        if (i === chunks.length - 1) {
+          this.isSpeaking = false;
+          this.updateButton(false);
         }
+      };
 
-        return voices.find(v => v.lang.startsWith('pt')) || voices[0];
-    }
-
-    speak(text) {
-        if (this.isSpeaking) this.stop();
-
-        // Chunk text em parágrafos menores (limite API: ~32.767 chars)
-        const chunks = this.chunkText(text, 1000);
-
-        chunks.forEach((chunk, i) => {
-            const utterance = new SpeechSynthesisUtterance(chunk);
-            utterance.voice = this.voice;
-            utterance.rate = 1.0;
-            utterance.pitch = 1.0;
-            utterance.volume = 1.0;
-            utterance.lang = 'pt-BR';
-
-            utterance.onend = () => {
-                if (i === chunks.length - 1) {
-                    this.isSpeaking = false;
-                    this.updateButton(false);
-                }
-            };
-
-            utterance.onerror = (e) => {
-                console.error('TTS error:', e);
-                this.isSpeaking = false;
-                this.updateButton(false);
-            };
-
-            this.synth.speak(utterance);
-        });
-
-        this.isSpeaking = true;
-    }
-
-    stop() {
-        this.synth.cancel();
+      utterance.onerror = (e) => {
+        console.error("TTS error:", e);
         this.isSpeaking = false;
-    }
+        this.updateButton(false);
+      };
 
-    chunkText(text, maxLength) {
-        // Split por parágrafos e sentenças para melhor naturalidade
-        const paragraphs = text.split(/\n\n+/);
-        const chunks = [];
-        let currentChunk = '';
+      this.synth.speak(utterance);
+    });
 
-        paragraphs.forEach(para => {
-            if ((currentChunk + para).length > maxLength) {
-                if (currentChunk) chunks.push(currentChunk.trim());
-                currentChunk = para;
-            } else {
-                currentChunk += (currentChunk ? '\n\n' : '') + para;
-            }
-        });
+    this.isSpeaking = true;
+  }
 
+  stop() {
+    this.synth.cancel();
+    this.isSpeaking = false;
+  }
+
+  chunkText(text, maxLength) {
+    // Split por parágrafos e sentenças para melhor naturalidade
+    const paragraphs = text.split(/\n\n+/);
+    const chunks = [];
+    let currentChunk = "";
+
+    paragraphs.forEach((para) => {
+      if ((currentChunk + para).length > maxLength) {
         if (currentChunk) chunks.push(currentChunk.trim());
-        return chunks;
-    }
+        currentChunk = para;
+      } else {
+        currentChunk += (currentChunk ? "\n\n" : "") + para;
+      }
+    });
+
+    if (currentChunk) chunks.push(currentChunk.trim());
+    return chunks;
+  }
 }
 ```
 
 #### 2. VLibras Integration
+
 ```javascript
 // Unity WebGL Widget (gov.br) — Tradução Libras
 function initVLibras() {
-    // 1. Carregar script gov.br
-    const script = document.createElement('script');
-    script.src = 'https://vlibras.gov.br/app/vlibras-plugin.js';
-    script.async = true;
-    script.onload = () => {
-        // 2. Inicializar widget
-        new window.VLibras.Widget({
-            rootPath: 'https://vlibras.gov.br/app',
-            opacity: 1,
-            position: 'R',  // Right
-            avatar: 'icaro',  // Avatar padrão
-        });
+  // 1. Carregar script gov.br
+  const script = document.createElement("script");
+  script.src = "https://vlibras.gov.br/app/vlibras-plugin.js";
+  script.async = true;
+  script.onload = () => {
+    // 2. Inicializar widget
+    new window.VLibras.Widget({
+      rootPath: "https://vlibras.gov.br/app",
+      opacity: 1,
+      position: "R", // Right
+      avatar: "icaro", // Avatar padrão
+    });
 
-        // 3. Mover botão para accessibility toolbar
-        setTimeout(() => {
-            const vlibrasBtn = document.querySelector('[vw-access-button]');
-            if (vlibrasBtn) {
-                vlibrasBtn.style.display = 'none';  // Esconder botão nativo
-            }
-        }, 1000);
-    };
+    // 3. Mover botão para accessibility toolbar
+    setTimeout(() => {
+      const vlibrasBtn = document.querySelector("[vw-access-button]");
+      if (vlibrasBtn) {
+        vlibrasBtn.style.display = "none"; // Esconder botão nativo
+      }
+    }, 1000);
+  };
 
-    script.onerror = () => {
-        console.error('Falha ao carregar VLibras');
-        alert('VLibras indisponível. Tente novamente mais tarde.');
-    };
+  script.onerror = () => {
+    console.error("Falha ao carregar VLibras");
+    alert("VLibras indisponível. Tente novamente mais tarde.");
+  };
 
-    document.head.appendChild(script);
+  document.head.appendChild(script);
 }
 
 // Botão customizado na toolbar
-document.getElementById('a11yLibras').addEventListener('click', () => {
-    const widget = document.querySelector('[vw]');
-    if (!widget) {
-        initVLibras();
-    } else {
-        // Toggle widget existente
-        const btn = document.querySelector('[vw-access-button]');
-        if (btn) btn.click();
-    }
+document.getElementById("a11yLibras").addEventListener("click", () => {
+  const widget = document.querySelector("[vw]");
+  if (!widget) {
+    initVLibras();
+  } else {
+    // Toggle widget existente
+    const btn = document.querySelector("[vw-access-button]");
+    if (btn) btn.click();
+  }
 });
 ```
 
 **Nota sobre Unity WebGL Errors:**
 Erros comuns em mobile (INVALID_ENUM 0x822A no glTexSubImage2DRobustANGLE):
+
 - **Causa:** Unity 2018 usa HDR texture formats não suportados em GPUs mobile antigas
 - **Impacto:** Zero — widget funciona normalmente, erros são fallback do Unity
 - **Ação:** Ignorar logs de erro (fora do nosso controle, widget oficial gov.br)
 
 #### 3. PDF Analysis Engine
+
 ```javascript
 // PDF.js text extraction + Regex matching
 class PDFAnalyzer {
-    constructor(matchingEngine) {
-        this.engine = matchingEngine;  // data/matching_engine.json
-        this.pdfjsLib = window['pdfjs-dist/build/pdf'];
-        this.pdfjsLib.GlobalWorkerOptions.workerSrc =
-            'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+  constructor(matchingEngine) {
+    this.engine = matchingEngine; // data/matching_engine.json
+    this.pdfjsLib = window["pdfjs-dist/build/pdf"];
+    this.pdfjsLib.GlobalWorkerOptions.workerSrc =
+      "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+  }
+
+  async analyzePDF(file) {
+    // 1. Carregar PDF via ArrayBuffer
+    const arrayBuffer = await file.arrayBuffer();
+    const pdf = await this.pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+
+    // 2. Extrair texto de todas páginas
+    let fullText = "";
+    for (let i = 1; i <= pdf.numPages; i++) {
+      const page = await pdf.getPage(i);
+      const textContent = await page.getTextContent();
+      const pageText = textContent.items.map((item) => item.str).join(" ");
+      fullText += pageText + "\n";
     }
 
-    async analyzePDF(file) {
-        // 1. Carregar PDF via ArrayBuffer
-        const arrayBuffer = await file.arrayBuffer();
-        const pdf = await this.pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+    // 3. Normalizar texto (uppercase para matching case-insensitive)
+    const normalizedText = fullText.toUpperCase();
 
-        // 2. Extrair texto de todas páginas
-        let fullText = '';
-        for (let i = 1; i <= pdf.numPages; i++) {
-            const page = await pdf.getPage(i);
-            const textContent = await page.getTextContent();
-            const pageText = textContent.items.map(item => item.str).join(' ');
-            fullText += pageText + '\n';
-        }
+    // 4. Buscar CID codes
+    const cidMatches = this.extractCIDs(normalizedText);
 
-        // 3. Normalizar texto (uppercase para matching case-insensitive)
-        const normalizedText = fullText.toUpperCase();
+    // 5. Buscar keywords por categoria
+    const keywordMatches = this.extractKeywords(normalizedText);
 
-        // 4. Buscar CID codes
-        const cidMatches = this.extractCIDs(normalizedText);
+    // 6. Calcular scores por categoria
+    const scores = this.calculateScores(cidMatches, keywordMatches);
 
-        // 5. Buscar keywords por categoria
-        const keywordMatches = this.extractKeywords(normalizedText);
+    // 7. Ordenar e retornar
+    return Object.entries(scores)
+      .filter(([_, score]) => score > 0)
+      .sort((a, b) => b[1] - a[1])
+      .map(([categoryId, score]) => ({ categoryId, score }));
+  }
 
-        // 6. Calcular scores por categoria
-        const scores = this.calculateScores(cidMatches, keywordMatches);
+  extractCIDs(text) {
+    const cidRegex = /[A-Z]\d{2}(?:\.\d{1,2})?/g;
+    const matches = [...text.matchAll(cidRegex)];
 
-        // 7. Ordenar e retornar
-        return Object.entries(scores)
-            .filter(([_, score]) => score > 0)
-            .sort((a, b) => b[1] - a[1])
-            .map(([categoryId, score]) => ({ categoryId, score }));
-    }
+    return matches
+      .map((m) => m[0])
+      .filter((cid) => this.engine.cid_mappings[cid])
+      .map((cid) => ({
+        code: cid,
+        categories: this.engine.cid_mappings[cid].categories,
+        weight: this.engine.cid_mappings[cid].weight,
+      }));
+  }
 
-    extractCIDs(text) {
-        const cidRegex = /[A-Z]\d{2}(?:\.\d{1,2})?/g;
-        const matches = [...text.matchAll(cidRegex)];
+  extractKeywords(text) {
+    const matches = {};
 
-        return matches
-            .map(m => m[0])
-            .filter(cid => this.engine.cid_mappings[cid])
-            .map(cid => ({
-                code: cid,
-                categories: this.engine.cid_mappings[cid].categories,
-                weight: this.engine.cid_mappings[cid].weight
-            }));
-    }
+    Object.entries(this.engine.keyword_patterns).forEach(([categoryId, patterns]) => {
+      let score = 0;
 
-    extractKeywords(text) {
-        const matches = {};
+      // Primary keywords (peso 10)
+      patterns.primary.forEach((keyword) => {
+        const regex = new RegExp(keyword, "gi");
+        const count = (text.match(regex) || []).length;
+        score += count * 10;
+      });
 
-        Object.entries(this.engine.keyword_patterns).forEach(([categoryId, patterns]) => {
-            let score = 0;
+      // Secondary keywords (peso 5)
+      patterns.secondary.forEach((keyword) => {
+        const regex = new RegExp(keyword, "gi");
+        const count = (text.match(regex) || []).length;
+        score += count * 5;
+      });
 
-            // Primary keywords (peso 10)
-            patterns.primary.forEach(keyword => {
-                const regex = new RegExp(keyword, 'gi');
-                const count = (text.match(regex) || []).length;
-                score += count * 10;
-            });
+      // Uppercase-only terms (somente maiúsculas — evita false positives)
+      patterns.uppercase_only_terms?.forEach((term) => {
+        const regex = new RegExp(`\\b${term}\\b`, "g"); // word boundary
+        const count = (text.match(regex) || []).length;
+        score += count * 10;
+      });
 
-            // Secondary keywords (peso 5)
-            patterns.secondary.forEach(keyword => {
-                const regex = new RegExp(keyword, 'gi');
-                const count = (text.match(regex) || []).length;
-                score += count * 5;
-            });
+      matches[categoryId] = score;
+    });
 
-            // Uppercase-only terms (somente maiúsculas — evita false positives)
-            patterns.uppercase_only_terms?.forEach(term => {
-                const regex = new RegExp(`\\b${term}\\b`, 'g');  // word boundary
-                const count = (text.match(regex) || []).length;
-                score += count * 10;
-            });
+    return matches;
+  }
 
-            matches[categoryId] = score;
-        });
+  calculateScores(cidMatches, keywordMatches) {
+    const scores = {};
 
-        return matches;
-    }
+    // Scores de CIDs
+    cidMatches.forEach((match) => {
+      match.categories.forEach((categoryId) => {
+        scores[categoryId] = (scores[categoryId] || 0) + match.weight;
+      });
+    });
 
-    calculateScores(cidMatches, keywordMatches) {
-        const scores = {};
+    // Scores de keywords
+    Object.entries(keywordMatches).forEach(([categoryId, score]) => {
+      scores[categoryId] = (scores[categoryId] || 0) + score;
+    });
 
-        // Scores de CIDs
-        cidMatches.forEach(match => {
-            match.categories.forEach(categoryId => {
-                scores[categoryId] = (scores[categoryId] || 0) + match.weight;
-            });
-        });
-
-        // Scores de keywords
-        Object.entries(keywordMatches).forEach(([categoryId, score]) => {
-            scores[categoryId] = (scores[categoryId] || 0) + score;
-        });
-
-        return scores;
-    }
+    return scores;
+  }
 }
 ```
 
 **Limitações da Análise Regex:**
+
 - Acurácia: ~70% (vs. 95% possível com NLP/GPT)
 - Não entende contexto semântico ("não elegível" conta como "elegível")
 - False positives: Keywords genéricos (ex: "saúde" em contextos irrelevantes)
@@ -794,163 +828,147 @@ class PDFAnalyzer {
 - Não detecta negativas ("paciente NÃO apresenta TEA")
 
 #### 4. IndexedDB Manager (Encryption)
+
 ```javascript
 // Armazenamento local com AES-GCM-256 + TTL
 class IndexedDBManager {
-    constructor(dbName = 'nossoDireitoDB', storeName = 'pdfFiles') {
-        this.dbName = dbName;
-        this.storeName = storeName;
-        this.db = null;
-        this.TTL_MINUTES = 30;
-    }
+  constructor(dbName = "nossoDireitoDB", storeName = "pdfFiles") {
+    this.dbName = dbName;
+    this.storeName = storeName;
+    this.db = null;
+    this.TTL_MINUTES = 30;
+  }
 
-    async init() {
-        return new Promise((resolve, reject) => {
-            const request = indexedDB.open(this.dbName, 1);
+  async init() {
+    return new Promise((resolve, reject) => {
+      const request = indexedDB.open(this.dbName, 1);
 
-            request.onerror = () => reject(request.error);
-            request.onsuccess = () => {
-                this.db = request.result;
-                resolve();
-            };
+      request.onerror = () => reject(request.error);
+      request.onsuccess = () => {
+        this.db = request.result;
+        resolve();
+      };
 
-            request.onupgradeneeded = (event) => {
-                const db = event.target.result;
-                if (!db.objectStoreNames.contains(this.storeName)) {
-                    const store = db.createObjectStore(this.storeName, { keyPath: 'id', autoIncrement: true });
-                    store.createIndex('uploadDate', 'uploadDate', { unique: false });
-                }
-            };
-        });
-    }
-
-    async savePDF(name, arrayBuffer) {
-        // 1. Gerar encryption key (AES-GCM-256)
-        const key = await crypto.subtle.generateKey(
-            { name: 'AES-GCM', length: 256 },
-            true,
-            ['encrypt', 'decrypt']
-        );
-
-        // 2. Gerar IV aleatório (12 bytes)
-        const iv = crypto.getRandomValues(new Uint8Array(12));
-
-        // 3. Encriptar PDF
-        const encryptedData = await crypto.subtle.encrypt(
-            { name: 'AES-GCM', iv },
-            key,
-            arrayBuffer
-        );
-
-        // 4. Exportar key (para armazenar)
-        const exportedKey = await crypto.subtle.exportKey('raw', key);
-
-        // 5. Salvar no IndexedDB
-        const transaction = this.db.transaction([this.storeName], 'readwrite');
-        const store = transaction.objectStore(this.storeName);
-
-        const record = {
-            name,
-            data: encryptedData,
-            key: exportedKey,
-            iv: Array.from(iv),  // Uint8Array → Array para serialização
-            uploadDate: Date.now(),
-            expiresAt: Date.now() + (this.TTL_MINUTES * 60 * 1000)
-        };
-
-        await store.add(record);
-
-        return { success: true, id: record.id };
-    }
-
-    async getPDF(id) {
-        const transaction = this.db.transaction([this.storeName], 'readonly');
-        const store = transaction.objectStore(this.storeName);
-        const record = await store.get(id);
-
-        if (!record) return null;
-
-        // Verificar TTL
-        if (Date.now() > record.expiresAt) {
-            await this.deletePDF(id);
-            return null;
+      request.onupgradeneeded = (event) => {
+        const db = event.target.result;
+        if (!db.objectStoreNames.contains(this.storeName)) {
+          const store = db.createObjectStore(this.storeName, { keyPath: "id", autoIncrement: true });
+          store.createIndex("uploadDate", "uploadDate", { unique: false });
         }
+      };
+    });
+  }
 
-        // Desencriptar
-        const key = await crypto.subtle.importKey(
-            'raw',
-            record.key,
-            { name: 'AES-GCM' },
-            false,
-            ['decrypt']
-        );
+  async savePDF(name, arrayBuffer) {
+    // 1. Gerar encryption key (AES-GCM-256)
+    const key = await crypto.subtle.generateKey({ name: "AES-GCM", length: 256 }, true, ["encrypt", "decrypt"]);
 
-        const iv = new Uint8Array(record.iv);
-        const decryptedData = await crypto.subtle.decrypt(
-            { name: 'AES-GCM', iv },
-            key,
-            record.data
-        );
+    // 2. Gerar IV aleatório (12 bytes)
+    const iv = crypto.getRandomValues(new Uint8Array(12));
 
-        return {
-            name: record.name,
-            data: decryptedData,
-            uploadDate: record.uploadDate
-        };
+    // 3. Encriptar PDF
+    const encryptedData = await crypto.subtle.encrypt({ name: "AES-GCM", iv }, key, arrayBuffer);
+
+    // 4. Exportar key (para armazenar)
+    const exportedKey = await crypto.subtle.exportKey("raw", key);
+
+    // 5. Salvar no IndexedDB
+    const transaction = this.db.transaction([this.storeName], "readwrite");
+    const store = transaction.objectStore(this.storeName);
+
+    const record = {
+      name,
+      data: encryptedData,
+      key: exportedKey,
+      iv: Array.from(iv), // Uint8Array → Array para serialização
+      uploadDate: Date.now(),
+      expiresAt: Date.now() + this.TTL_MINUTES * 60 * 1000,
+    };
+
+    await store.add(record);
+
+    return { success: true, id: record.id };
+  }
+
+  async getPDF(id) {
+    const transaction = this.db.transaction([this.storeName], "readonly");
+    const store = transaction.objectStore(this.storeName);
+    const record = await store.get(id);
+
+    if (!record) return null;
+
+    // Verificar TTL
+    if (Date.now() > record.expiresAt) {
+      await this.deletePDF(id);
+      return null;
     }
 
-    async deletePDF(id) {
-        const transaction = this.db.transaction([this.storeName], 'readwrite');
-        const store = transaction.objectStore(this.storeName);
-        await store.delete(id);
-    }
+    // Desencriptar
+    const key = await crypto.subtle.importKey("raw", record.key, { name: "AES-GCM" }, false, ["decrypt"]);
 
-    async cleanExpired() {
-        const transaction = this.db.transaction([this.storeName], 'readwrite');
-        const store = transaction.objectStore(this.storeName);
-        const index = store.index('uploadDate');
-        const cursor = await index.openCursor();
+    const iv = new Uint8Array(record.iv);
+    const decryptedData = await crypto.subtle.decrypt({ name: "AES-GCM", iv }, key, record.data);
 
-        const now = Date.now();
-        const toDelete = [];
+    return {
+      name: record.name,
+      data: decryptedData,
+      uploadDate: record.uploadDate,
+    };
+  }
 
-        cursor?.onsuccess = (event) => {
-            const cursor = event.target.result;
-            if (cursor) {
-                if (now > cursor.value.expiresAt) {
-                    toDelete.push(cursor.value.id);
-                }
-                cursor.continue();
-            } else {
-                // Deletar todos expirados
-                toDelete.forEach(id => store.delete(id));
-            }
-        };
-    }
+  async deletePDF(id) {
+    const transaction = this.db.transaction([this.storeName], "readwrite");
+    const store = transaction.objectStore(this.storeName);
+    await store.delete(id);
+  }
+
+  async cleanExpired() {
+    const transaction = this.db.transaction([this.storeName], "readwrite");
+    const store = transaction.objectStore(this.storeName);
+    const index = store.index("uploadDate");
+    const cursor = await index.openCursor();
+
+    const now = Date.now();
+    const toDelete = [];
+
+    cursor?.onsuccess = (event) => {
+      const cursor = event.target.result;
+      if (cursor) {
+        if (now > cursor.value.expiresAt) {
+          toDelete.push(cursor.value.id);
+        }
+        cursor.continue();
+      } else {
+        // Deletar todos expirados
+        toDelete.forEach((id) => store.delete(id));
+      }
+    };
+  }
 }
 
 // Auto-cleanup a cada 60 segundos
 setInterval(() => {
-    if (dbManager && dbManager.db) {
-        dbManager.cleanExpired();
-    }
+  if (dbManager && dbManager.db) {
+    dbManager.cleanExpired();
+  }
 }, 60_000);
 ```
 
 #### 5. UI Renderer (Dynamic Cards)
+
 ```javascript
 // Renderização de cards de direitos dinamicamente
 function renderCategoryCards(categories, container) {
-    container.innerHTML = '';
+  container.innerHTML = "";
 
-    categories.forEach(categoria => {
-        const card = document.createElement('div');
-        card.className = 'direito-card';
-        card.setAttribute('data-category', categoria.id);
-        card.setAttribute('role', 'article');
-        card.setAttribute('tabindex', '0');
+  categories.forEach((categoria) => {
+    const card = document.createElement("div");
+    card.className = "direito-card";
+    card.setAttribute("data-category", categoria.id);
+    card.setAttribute("role", "article");
+    card.setAttribute("tabindex", "0");
 
-        card.innerHTML = `
+    card.innerHTML = `
             <h3>${categoria.titulo}</h3>
             <p class="descricao-curta">${categoria.descricao_curta}</p>
             <button class="btn btn-outline" data-action="expand">
@@ -959,17 +977,17 @@ function renderCategoryCards(categories, container) {
             <div class="detalhes" hidden>
                 <h4>📋 Requisitos</h4>
                 <ul>
-                    ${categoria.detalhes.requisitos.map(r => `<li>${r}</li>`).join('')}
+                    ${categoria.detalhes.requisitos.map((r) => `<li>${r}</li>`).join("")}
                 </ul>
 
                 <h4>📄 Documentos Necessários</h4>
                 <ul>
-                    ${categoria.detalhes.documentos.map(d => `<li>${d}</li>`).join('')}
+                    ${categoria.detalhes.documentos.map((d) => `<li>${d}</li>`).join("")}
                 </ul>
 
                 <h4>🔗 Como Solicitar</h4>
                 <ol>
-                    ${categoria.detalhes.como_solicitar.map(p => `<li>${p}</li>`).join('')}
+                    ${categoria.detalhes.como_solicitar.map((p) => `<li>${p}</li>`).join("")}
                 </ol>
 
                 <h4>⏱️ Prazo Médio</h4>
@@ -977,86 +995,92 @@ function renderCategoryCards(categories, container) {
 
                 <h4>📚 Fontes Oficiais</h4>
                 <ul class="fontes">
-                    ${categoria.fontes.map(f => `
+                    ${categoria.fontes
+                      .map(
+                        (f) => `
                         <li>
                             <a href="${f.url}" target="_blank" rel="noopener noreferrer">
                                 ${f.titulo}
                             </a>
                         </li>
-                    `).join('')}
+                    `,
+                      )
+                      .join("")}
                 </ul>
             </div>
         `;
 
-        // Accordion toggle
-        const expandBtn = card.querySelector('[data-action="expand"]');
-        const detalhes = card.querySelector('.detalhes');
+    // Accordion toggle
+    const expandBtn = card.querySelector('[data-action="expand"]');
+    const detalhes = card.querySelector(".detalhes");
 
-        expandBtn.addEventListener('click', () => {
-            const isExpanded = !detalhes.hidden;
-            detalhes.hidden = isExpanded;
-            expandBtn.textContent = isExpanded ? 'Ver detalhes' : 'Ocultar';
-            expandBtn.setAttribute('aria-expanded', !isExpanded);
-        });
-
-        // Keyboard navigation (Enter/Space)
-        card.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
-                e.preventDefault();
-                expandBtn.click();
-            }
-        });
-
-        container.appendChild(card);
+    expandBtn.addEventListener("click", () => {
+      const isExpanded = !detalhes.hidden;
+      detalhes.hidden = isExpanded;
+      expandBtn.textContent = isExpanded ? "Ver detalhes" : "Ocultar";
+      expandBtn.setAttribute("aria-expanded", !isExpanded);
     });
+
+    // Keyboard navigation (Enter/Space)
+    card.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        expandBtn.click();
+      }
+    });
+
+    container.appendChild(card);
+  });
 }
 ```
 
 ### Service Worker (sw.js) — Offline-First Strategy
 
 ```javascript
-const CACHE_VERSION = 'nossodireito-v1.14.4';
+const CACHE_VERSION = "nossodireito-v1.14.4";
 const STATIC_ASSETS = [
-    '/', '/index.html', '/css/styles.css', '/js/app.js',
-    '/data/direitos.json', '/data/matching_engine.json', '/data/dicionario_pcd.json',
-    '/manifest.json', '/images/favicon.ico', '/images/favicon-32x32.png',
-    '/images/apple-touch-icon.png'
+  "/",
+  "/index.html",
+  "/css/styles.css",
+  "/js/app.js",
+  "/data/direitos.json",
+  "/data/matching_engine.json",
+  "/data/dicionario_pcd.json",
+  "/manifest.json",
+  "/images/favicon.ico",
+  "/images/favicon-32x32.png",
+  "/images/apple-touch-icon.png",
 ];
 
 // Install: Pre-cache all static assets
-self.addEventListener('install', (event) => {
-    event.waitUntil(
-        caches.open(CACHE_VERSION).then(cache => cache.addAll(STATIC_ASSETS))
-    );
-    self.skipWaiting();  // Activate immediately
+self.addEventListener("install", (event) => {
+  event.waitUntil(caches.open(CACHE_VERSION).then((cache) => cache.addAll(STATIC_ASSETS)));
+  self.skipWaiting(); // Activate immediately
 });
 
 // Activate: Delete old caches
-self.addEventListener('activate', (event) => {
-    event.waitUntil(
-        caches.keys().then(keys =>
-            Promise.all(
-                keys.filter(key => key !== CACHE_VERSION)
-                    .map(key => caches.delete(key))
-            )
-        )
-    );
-    self.clients.claim();
+self.addEventListener("activate", (event) => {
+  event.waitUntil(
+    caches
+      .keys()
+      .then((keys) => Promise.all(keys.filter((key) => key !== CACHE_VERSION).map((key) => caches.delete(key)))),
+  );
+  self.clients.claim();
 });
 
 // Fetch: Network-first for same-origin, Cache-first for CDN
-self.addEventListener('fetch', (event) => {
-    const url = new URL(event.request.url);
+self.addEventListener("fetch", (event) => {
+  const url = new URL(event.request.url);
 
-    // External CDN assets (versioned/immutable): Cache-first
-    if (url.origin !== self.location.origin) {
-        event.respondWith(cacheFirst(event.request));
-        return;
-    }
+  // External CDN assets (versioned/immutable): Cache-first
+  if (url.origin !== self.location.origin) {
+    event.respondWith(cacheFirst(event.request));
+    return;
+  }
 
-    // All same-origin assets: Network-first
-    // Garante conteúdo fresco após deploy; cai no cache apenas offline.
-    event.respondWith(networkFirst(event.request));
+  // All same-origin assets: Network-first
+  // Garante conteúdo fresco após deploy; cai no cache apenas offline.
+  event.respondWith(networkFirst(event.request));
 });
 ```
 
@@ -1121,7 +1145,7 @@ self.addEventListener('fetch', (event) => {
 
 9. **Consumption Budgets** (`terraform/budget.tf`) — proteção de custo
    - **Budget primário** (`budget-nossodireitobr`): $105/mês, alertas em **80% (Actual)** e **100% (Forecasted)** para `fabiotreze@hotmail.com`
-   - **Budget de early-warning** (`budget-nossodireitobr-70pct`, v1.17.0): $105/mês, alertas em **70% Actual + Forecasted** para detecção precoce de drift de custo (especialmente útil com tier F0 da Doc Intelligence que pode escalar inadvertidamente para S0 se a flag mudar)
+   - **Budget de early-warning** (`budget-nossodireitobr-70pct`, v1.18.0): $105/mês, alertas em **70% Actual + Forecasted** para detecção precoce de drift de custo (Azure OpenAI gpt-4o-mini em GlobalStandard é pay-per-token, ~$1.50/mês para 1k análises)
 
 **Diagrama de Rede:**
 
@@ -1218,6 +1242,7 @@ Ter ambos (codeless agent + SDK manual) causa conflito: "Attempted duplicate reg
 ### EASM Hardening (External Attack Surface Management)
 
 **Ferramentas de Scan Resistidas:**
+
 - Microsoft Defender EASM
 - Qualys SSL Labs (A+ rating target)
 - Shodan / Censys
@@ -1226,6 +1251,7 @@ Ter ambos (codeless agent + SDK manual) causa conflito: "Attempted duplicate reg
 **Camadas de Defesa:**
 
 #### Camada 1: Azure App Service (Platform-Level)
+
 - SSL/TLS 1.2+ only (TLS 1.0/1.1 desabilitado)
 - SNI SSL binding (suporta múltiplos domínios)
 - HTTPS Only enforced (redirect HTTP → HTTPS)
@@ -1233,21 +1259,23 @@ Ter ambos (codeless agent + SDK manual) causa conflito: "Attempted duplicate reg
 - Azure Front Door (CDN implícito com WAF capabilities)
 
 #### Camada 2: server.js Application-Level
+
 **Lista Completa de Mitigações:**
 
-| Vulnerabilidade (CWE) | Mitigação Implementada |
-|-----------------------|------------------------|
-| **CWE-22** (Path Traversal) | Normalização de paths, reject `..`, verificação `startsWith(ROOT)`, block dotfiles |
-| **CWE-158** (Null Byte Injection) | Reject `\0` em URLs |
-| **CWE-116** (Control Chars) | Reject `[\x00-\x1f\x7f]` |
-| **CWE-400** (Uncontrolled Resource) | Max URL length 2048, request timeout 30s |
-| **CWE-434** (Unrestricted Upload) | Whitelist extensões (.html, .css, .js, .json, .png, etc.) |
-| **CWE-644** (Host Header Poisoning) | Whitelist exato de hosts permitidos |
-| **CWE-770** (Allocation Without Limits) | Rate limiting 120 req/min por IP |
-| **CWE-200** (Information Exposure) | Supressão de `X-Powered-By`, block `/terraform`, `/docs`, `/node_modules` |
-| **CWE-693** (Protection Mechanism Failure) | 14 security headers (CSP, HSTS, COEP, COOP, etc.) |
+| Vulnerabilidade (CWE)                      | Mitigação Implementada                                                             |
+| ------------------------------------------ | ---------------------------------------------------------------------------------- |
+| **CWE-22** (Path Traversal)                | Normalização de paths, reject `..`, verificação `startsWith(ROOT)`, block dotfiles |
+| **CWE-158** (Null Byte Injection)          | Reject `\0` em URLs                                                                |
+| **CWE-116** (Control Chars)                | Reject `[\x00-\x1f\x7f]`                                                           |
+| **CWE-400** (Uncontrolled Resource)        | Max URL length 2048, request timeout 30s                                           |
+| **CWE-434** (Unrestricted Upload)          | Whitelist extensões (.html, .css, .js, .json, .png, etc.)                          |
+| **CWE-644** (Host Header Poisoning)        | Whitelist exato de hosts permitidos                                                |
+| **CWE-770** (Allocation Without Limits)    | Rate limiting 120 req/min por IP                                                   |
+| **CWE-200** (Information Exposure)         | Supressão de `X-Powered-By`, block `/terraform`, `/docs`, `/node_modules`          |
+| **CWE-693** (Protection Mechanism Failure) | 14 security headers (CSP, HSTS, COEP, COOP, etc.)                                  |
 
 **Content Security Policy (Detalhado):**
+
 ```
 default-src 'none';  ← Deny all por padrão (whitelist approach)
 
@@ -1278,6 +1306,7 @@ upgrade-insecure-requests;  ← Força HTTPS para todos recursos
 ```
 
 **Trade-offs de Segurança:**
+
 1. **`unsafe-eval` em script-src**: Necessário para Unity WebGL (VLibras)
    - Alternativa: Remover VLibras (inaceitável — requisito de acessibilidade)
    - Mitigação: CSP mantém outras proteções (whitelist de origins)
@@ -1291,6 +1320,7 @@ upgrade-insecure-requests;  ← Força HTTPS para todos recursos
    - Mitigação: `credentialless` não suportado no Safari (2026)
 
 #### Camada 3: Azure Monitor Alerts (Detection)
+
 - **5xx Errors**: Alert severity 1 (erros servidor)
 - **Health Check Failures**: Severity 0 (downtime crítico)
 - **Latency > 5s**: Severity 2 (degradação performance)
@@ -1300,12 +1330,12 @@ upgrade-insecure-requests;  ← Força HTTPS para todos recursos
 
 ### Vulnerabilidades Conhecidas Aceitas
 
-| ID | Descrição | Impacto | Justificativa |
-|----|-----------|---------|---------------|
-| **CSP-01** | `unsafe-eval` em script-src | Médio | VLibras Unity WebGL requer eval() para carregar WASM. Projeto gov.br oficial, risco mitigado por whitelist de origins. |
-| **CSP-02** | `unsafe-inline` em style-src | Baixo | VLibras widget injeta CSS inline. Sem alternativa (biblioteca terceira). |
-| **RLIMIT-01** | Rate limiting in-memory | Médio | Map não persiste entre restarts. DDoS distribuído não é mitigado. Trade-off: simplicidade vs. Redis ($). Aceitável para site institucional baixo tráfego. |
-| **Unity-WARN** | VLibras WebGL errors mobile | Muito Baixo | Erros de texture HDR em GPUs mobile antigas. Unity 2018 faz fallback automaticamente. Widget funciona normalmente. |
+| ID             | Descrição                    | Impacto     | Justificativa                                                                                                                                             |
+| -------------- | ---------------------------- | ----------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **CSP-01**     | `unsafe-eval` em script-src  | Médio       | VLibras Unity WebGL requer eval() para carregar WASM. Projeto gov.br oficial, risco mitigado por whitelist de origins.                                    |
+| **CSP-02**     | `unsafe-inline` em style-src | Baixo       | VLibras widget injeta CSS inline. Sem alternativa (biblioteca terceira).                                                                                  |
+| **RLIMIT-01**  | Rate limiting in-memory      | Médio       | Map não persiste entre restarts. DDoS distribuído não é mitigado. Trade-off: simplicidade vs. Redis ($). Aceitável para site institucional baixo tráfego. |
+| **Unity-WARN** | VLibras WebGL errors mobile  | Muito Baixo | Erros de texture HDR em GPUs mobile antigas. Unity 2018 faz fallback automaticamente. Widget funciona normalmente.                                        |
 
 ---
 
@@ -1315,10 +1345,10 @@ upgrade-insecure-requests;  ← Força HTTPS para todos recursos
 
 A partir da v1.16.0 o sistema tem **dois caminhos de processamento** com bases legais distintas:
 
-| Caminho | Base legal | Tratamento? |
-|---|---|---|
-| **Análise local** (default, 100% offline) | LGPD Art. 4º, I — não aplicável | ❌ Não há tratamento server-side |
-| **Análise por IA** (opt-in, v1.16.0+) | LGPD Art. 7º, I — consentimento livre, informado e específico | ✅ Tratamento de dados **anonimizados** (Art. 12 LGPD) |
+| Caminho                                   | Base legal                                                    | Tratamento?                                            |
+| ----------------------------------------- | ------------------------------------------------------------- | ------------------------------------------------------ |
+| **Análise local** (default, 100% offline) | LGPD Art. 4º, I — não aplicável                               | ❌ Não há tratamento server-side                       |
+| **Análise por IA** (opt-in, v1.16.0+)     | LGPD Art. 7º, I — consentimento livre, informado e específico | ✅ Tratamento de dados **anonimizados** (Art. 12 LGPD) |
 
 ### Arquitetura Zero-Data Collection (caminho default)
 
@@ -1370,6 +1400,7 @@ A partir da v1.16.0 o sistema tem **dois caminhos de processamento** com bases l
 ### Dados Coletados (Telemetria Azure)
 
 **Application Insights** coleta automaticamente:
+
 1. **Page views**: URL path (sem query params sensíveis)
 2. **IP addresses**: Anonimizados (últimos 2 octets mascarados)
 3. **Geolocalização**: País/Estado (não cidade/CEP)
@@ -1378,6 +1409,7 @@ A partir da v1.16.0 o sistema tem **dois caminhos de processamento** com bases l
 6. **Custom events**: Cliques em botões (sem identificadores)
 
 **Dados NÃO Coletados:**
+
 - ❌ Conteúdo de PDFs analisados
 - ❌ Texto inserido em buscas
 - ❌ Estado de checkboxes marcados
@@ -1399,7 +1431,7 @@ A partir da v1.16.0 o sistema tem **dois caminhos de processamento** com bases l
    - Substituições determinísticas via regex; auditadas em stats
 5. POST /api/analyze-document (application/json, body ≤200KB)
 6. server.js executa containsPII() de novo (defesa em profundidade) → 422 se vazar PII
-7. services/doc-intelligence.js usa DefaultAzureCredential (MSI) → Azure Doc Intelligence F0
+7. services/doc-intelligence.js usa DefaultAzureCredential (MSI) → Azure OpenAI gpt-4o-mini (brazilsouth, GlobalStandard, zero-retention via DPA)
 8. Resposta: {cids[], dates[], pages, paragraphs[], contentHash, durationMs}
    - CIDs validados client-side contra ^[A-Z]\d{2}(\.\d{1,2})?$
    - Datas validadas contra parser real (dd[/.-]mm[/.-]yy[yy], range pláusivel)
@@ -1419,6 +1451,7 @@ A partir da v1.16.0 o sistema tem **dois caminhos de processamento** com bases l
 ### Base Legal (caminho default — Não Aplicável)
 
 No caminho default (análise local), como não há tratamento de dados pessoais (LGPD Art. 4º, I), não é necessário:
+
 - ✅ Consentimento (Art. 7º, I) — N/A
 - ✅ DPO (Encarregado) — N/A
 - ✅ RIPD (Relatório de Impacto) — N/A
@@ -1431,16 +1464,18 @@ No caminho default (análise local), como não há tratamento de dados pessoais 
 
 ```html
 <div id="disclaimerModal" class="modal" role="dialog" aria-modal="true">
-    <h2>⚠️ Aviso Legal</h2>
-    <h3>🔒 Privacidade (LGPD)</h3>
-    <ul>
-        <li>Não coletamos, armazenamos ou recebemos dados pessoais em servidores</li>
-        <li>Nenhum documento é transmitido pela internet — análise 100% local no navegador</li>
-        <li>"Meus Documentos", checklists e preferências ficam no localStorage/IndexedDB
-            do seu dispositivo e podem ser apagados a qualquer momento</li>
-        <li>VLibras (Gov.br) carrega bibliotecas externas sem envio dos seus dados</li>
-    </ul>
-    <button id="acceptDisclaimer">Entendi — Fechar</button>
+  <h2>⚠️ Aviso Legal</h2>
+  <h3>🔒 Privacidade (LGPD)</h3>
+  <ul>
+    <li>Não coletamos, armazenamos ou recebemos dados pessoais em servidores</li>
+    <li>Nenhum documento é transmitido pela internet — análise 100% local no navegador</li>
+    <li>
+      "Meus Documentos", checklists e preferências ficam no localStorage/IndexedDB do seu dispositivo e podem ser
+      apagados a qualquer momento
+    </li>
+    <li>VLibras (Gov.br) carrega bibliotecas externas sem envio dos seus dados</li>
+  </ul>
+  <button id="acceptDisclaimer">Entendi — Fechar</button>
 </div>
 ```
 
@@ -1455,6 +1490,7 @@ No caminho default (análise local), como não há tratamento de dados pessoais 
 **Princípios:** Perceptível, Operável, Compreensível, Robusto
 
 #### 1. Perceptível
+
 ✅ **1.1.1 — Conteúdo Não Textual**: Todas imagens têm `alt` descritivo
 ✅ **1.3.1 — Info e Relações**: Landmarks (`<header>`, `<nav>`, `<main>`, `<footer>`), ARIA labels
 ✅ **1.3.2 — Sequência Significativa**: DOM order = visual order
@@ -1463,6 +1499,7 @@ No caminho default (análise local), como não há tratamento de dados pessoais 
 ✅ **1.4.10 — Reflow**: Content reflow até 320px (mobile)
 
 #### 2. Operável
+
 ✅ **2.1.1 — Teclado**: Navegação 100% por teclado (Tab, Enter, Space, Arrows)
 ✅ **2.1.2 — Sem Armadilha**: Nenhum elemento captura foco permanentemente
 ✅ **2.4.1 — Bypass Blocks**: Skip link ("Pular para conteúdo principal")
@@ -1470,11 +1507,13 @@ No caminho default (análise local), como não há tratamento de dados pessoais 
 ✅ **2.4.7 — Foco Visível**: Outline 3px azul + box-shadow em todos focusable elements
 
 #### 3. Compreensível
+
 ✅ **3.1.1 — Idioma**: `<html lang="pt-BR">`
 ✅ **3.2.1 — Ao Receber Foco**: Nenhuma ação automática (ex: auto-play)
 ✅ **3.3.2 — Rótulos/Instruções**: Labels em todos inputs/selects
 
 #### 4. Robusto
+
 ✅ **4.1.2 — Nome, Função, Valor**: ARIA attributes (`aria-label`, `aria-expanded`, `aria-pressed`)
 ✅ **4.1.3 — Status Messages**: `role="alert"` para mensagens dinâmicas
 
@@ -1491,21 +1530,15 @@ No caminho default (análise local), como não há tratamento de dados pessoais 
 ```html
 <!-- Accessibility Toolbar -->
 <div class="a11y-toolbar" role="toolbar" aria-label="Ferramentas de acessibilidade">
-    <button id="a11yFontDecrease" aria-label="Diminuir tamanho da fonte">A−</button>
-    <button id="a11yFontReset" aria-label="Tamanho de fonte padrão">A</button>
-    <button id="a11yFontIncrease" aria-label="Aumentar tamanho da fonte">A+</button>
+  <button id="a11yFontDecrease" aria-label="Diminuir tamanho da fonte">A−</button>
+  <button id="a11yFontReset" aria-label="Tamanho de fonte padrão">A</button>
+  <button id="a11yFontIncrease" aria-label="Aumentar tamanho da fonte">A+</button>
 
-    <button id="a11yContrast" aria-label="Alternar alto contraste" aria-pressed="false">
-        🔲 Contraste
-    </button>
+  <button id="a11yContrast" aria-label="Alternar alto contraste" aria-pressed="false">🔲 Contraste</button>
 
-    <button id="a11yLibras" aria-label="Ativar tradução em Libras (VLibras)">
-        🤟 Libras
-    </button>
+  <button id="a11yLibras" aria-label="Ativar tradução em Libras (VLibras)">🤟 Libras</button>
 
-    <button id="a11yReadAloud" aria-label="Ler conteúdo em voz alta" aria-pressed="false">
-        🔊 Ouvir
-    </button>
+  <button id="a11yReadAloud" aria-label="Ler conteúdo em voz alta" aria-pressed="false">🔊 Ouvir</button>
 </div>
 ```
 
@@ -1538,7 +1571,7 @@ No caminho default (análise local), como não há tratamento de dados pessoais 
 <a href="#mainContent" class="skip-link">Pular para o conteúdo principal</a>
 
 <style>
-.skip-link {
+  .skip-link {
     position: absolute;
     top: -40px;
     left: 0;
@@ -1546,11 +1579,11 @@ No caminho default (análise local), como não há tratamento de dados pessoais 
     color: white;
     padding: 8px 16px;
     z-index: 9999;
-}
+  }
 
-.skip-link:focus {
-    top: 0;  /* Torna visível ao receber foco via Tab */
-}
+  .skip-link:focus {
+    top: 0; /* Torna visível ao receber foco via Tab */
+  }
 </style>
 ```
 
@@ -1560,13 +1593,13 @@ No caminho default (análise local), como não há tratamento de dados pessoais 
 
 ### Lighthouse Scores (Target)
 
-| Métrica | Score Target | Valor Atual |
-|---------|--------------|-------------|
-| **Performance** | 90+ | 95 |
-| **Accessibility** | 100 | 100 |
-| **Best Practices** | 100 | 100 |
-| **SEO** | 100 | 100 |
-| **PWA** | Installable | ✅ |
+| Métrica            | Score Target | Valor Atual |
+| ------------------ | ------------ | ----------- |
+| **Performance**    | 90+          | 95          |
+| **Accessibility**  | 100          | 100         |
+| **Best Practices** | 100          | 100         |
+| **SEO**            | 100          | 100         |
+| **PWA**            | Installable  | ✅          |
 
 ### Core Web Vitals
 
@@ -1596,34 +1629,41 @@ No caminho default (análise local), como não há tratamento de dados pessoais 
 ### Cache Strategy (Multi-Layer)
 
 #### Layer 1: Browser Cache (HTTP Headers)
+
 ```javascript
 const CACHE = {
-    '.html': 'public, max-age=300',    // 5 min (atualização frequente)
-    '.json': 'public, max-age=3600',   // 1 hora
-    '.css': 'public, max-age=86400',   // 1 dia
-    '.js': 'public, max-age=86400',    // 1 dia
-    '.png': 'public, max-age=604800',  // 1 semana
-    '.ico': 'public, max-age=604800',
-    '.svg': 'public, max-age=604800',
+  ".html": "public, max-age=300", // 5 min (atualização frequente)
+  ".json": "public, max-age=3600", // 1 hora
+  ".css": "public, max-age=86400", // 1 dia
+  ".js": "public, max-age=86400", // 1 dia
+  ".png": "public, max-age=604800", // 1 semana
+  ".ico": "public, max-age=604800",
+  ".svg": "public, max-age=604800",
 };
 ```
 
 **Exception:** Service Worker (`/sw.js`) tem `Cache-Control: no-cache` para forçar update detection.
 
 #### Layer 2: Service Worker Cache
+
 ```javascript
 // Network-first para assets do mesmo domínio
-fetch(request).then(response => {
+fetch(request)
+  .then((response) => {
     cache.put(request, response.clone());
     return response;
-}).catch(() => caches.match(request))
+  })
+  .catch(() => caches.match(request));
 
 // Cache-first apenas para CDN externas (versioned/immutable)
-caches.match(request).then(cached => cached || fetch(request))
-    .catch(() => caches.match(request))  // Fallback offline
+caches
+  .match(request)
+  .then((cached) => cached || fetch(request))
+  .catch(() => caches.match(request)); // Fallback offline
 ```
 
 #### Layer 3: Azure CDN (Implícito)
+
 - Azure App Service usa Azure Front Door automaticamente
 - Edge locations globais (latência <50ms para 95% dos usuários BR)
 - HTTP/2 + Server Push
@@ -1631,33 +1671,35 @@ caches.match(request).then(cached => cached || fetch(request))
 
 ### Bundle Size
 
-| Asset | Size (Brotli) | Load Time (4G) |
-|-------|---------------|----------------|
-| **index.html** | 5 KB | <100ms |
-| **styles.css** | 12 KB | <200ms |
-| **app.js** | 22 KB | <300ms |
-| **direitos.json** | 18 KB | <250ms |
-| **matching_engine.json** | 20 KB | <300ms |
-| **PDF.js** (CDN) | 450 KB | <1.5s |
-| **VLibras** (CDN, lazy) | 5 MB | ~5s (lazy load) |
+| Asset                    | Size (Brotli) | Load Time (4G)  |
+| ------------------------ | ------------- | --------------- |
+| **index.html**           | 5 KB          | <100ms          |
+| **styles.css**           | 12 KB         | <200ms          |
+| **app.js**               | 22 KB         | <300ms          |
+| **direitos.json**        | 18 KB         | <250ms          |
+| **matching_engine.json** | 20 KB         | <300ms          |
+| **PDF.js** (CDN)         | 450 KB        | <1.5s           |
+| **VLibras** (CDN, lazy)  | 5 MB          | ~5s (lazy load) |
 
 **Total First Paint (sem VLibras):** ~77 KB → <1s em 4G
 
 ### Compression
 
 **server.js** aplica compressão automaticamente:
+
 ```javascript
-const useBrotli = COMPRESSIBLE.has(ext) && acceptEncoding.includes('br');
-const useGzip = !useBrotli && COMPRESSIBLE.has(ext) && acceptEncoding.includes('gzip');
+const useBrotli = COMPRESSIBLE.has(ext) && acceptEncoding.includes("br");
+const useGzip = !useBrotli && COMPRESSIBLE.has(ext) && acceptEncoding.includes("gzip");
 
 if (useBrotli) {
-    stream.pipe(zlib.createBrotliCompress()).pipe(res);
+  stream.pipe(zlib.createBrotliCompress()).pipe(res);
 } else if (useGzip) {
-    stream.pipe(zlib.createGzip()).pipe(res);
+  stream.pipe(zlib.createGzip()).pipe(res);
 }
 ```
 
 **Compression Ratio:**
+
 - Brotli: ~75% reduction (best)
 - Gzip: ~65% reduction
 - None: 0% (fallback para clientes antigos)
@@ -1669,6 +1711,7 @@ if (useBrotli) {
 ### GitHub Actions Workflows
 
 #### 1. deploy.yml (Production Deployment)
+
 ```yaml
 name: Deploy to Azure
 
@@ -1686,7 +1729,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: "22"
 
       - name: Install dependencies
         run: npm ci
@@ -1702,7 +1745,7 @@ jobs:
       - name: Deploy to App Service
         uses: azure/webapps-deploy@v2
         with:
-          app-name: 'app-${{ env.PROJECT }}'  # PROJECT = "nossodireito-br"
+          app-name: "app-${{ env.PROJECT }}" # PROJECT = "nossodireito-br"
           package: .
 
       - name: Verify deployment
@@ -1711,11 +1754,13 @@ jobs:
 ```
 
 **Secrets Requeridos:**
+
 - `AZURE_CLIENT_ID`: Application (client) ID do App Registration
 - `AZURE_TENANT_ID`: Directory (tenant) ID do Azure AD
 - `AZURE_SUBSCRIPTION_ID`: Subscription ID da Azure
 
 #### 2. quality-gate.yml (Validation)
+
 ```yaml
 name: Quality Gate
 
@@ -1735,7 +1780,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: "3.11"
 
       - name: Instalar dependências
         run: |
@@ -1746,7 +1791,7 @@ jobs:
         run: python -m pytest tests/ -v --tb=short --ignore=tests/test_e2e_playwright.py -q
 
       - name: Scan dados sensíveis
-        run: |  # Verifica padrões de chaves privadas, tokens, extensões sensíveis
+        run: | # Verifica padrões de chaves privadas, tokens, extensões sensíveis
 
       - name: Validar Conteúdo
         run: python3 scripts/validate_content.py
@@ -1766,6 +1811,7 @@ jobs:
 ### Terraform Workflow
 
 **Local Development:**
+
 ```bash
 cd terraform/
 
@@ -1786,6 +1832,7 @@ terraform output
 ```
 
 **Production Deploy:**
+
 ```bash
 # Via GitHub Actions (terraform.yml — OIDC authentication)
 git push origin main  # Trigger deploy workflow
@@ -1803,6 +1850,7 @@ terraform apply -auto-approve
 ### Infraestrutura de Testes
 
 **Estrutura:**
+
 ```
 tests/                              # Testes pytest (709 unit + 137 E2E = 846)
 ├── conftest.py                     # Fixtures compartilhadas (direitos, matching, dicionario, schema, html, css, etc.)
@@ -1835,6 +1883,7 @@ scripts/                            # Scripts de validação e automação
 ```
 
 **Execução:**
+
 ```bash
 # Testes unitários (709 tests, ~8s)
 python -m pytest tests/ --ignore=tests/test_e2e_playwright.py -v -q
@@ -1854,7 +1903,9 @@ python scripts/validate_all.py --quick
 ### Scripts Python (scripts/)
 
 #### 1. validate_sources.py
+
 Valida URLs de fontes oficiais em `direitos.json`:
+
 ```python
 import json
 import requests
@@ -1895,7 +1946,9 @@ if __name__ == '__main__':
 ```
 
 #### 2. bump_version.py
+
 Incrementa versão em `package.json`, `direitos.json`, `sw.js`:
+
 ```python
 import json
 import re
@@ -1952,6 +2005,7 @@ if __name__ == '__main__':
 ```
 
 **Uso:**
+
 ```bash
 python scripts/bump_version.py patch  # 1.14.5 → 1.14.6
 python scripts/bump_version.py minor  # 1.14.5 → 1.15.0
@@ -1965,17 +2019,19 @@ python scripts/bump_version.py major  # 1.14.5 → 2.0.0
 ### Azure Application Insights
 
 **Integração (server.js):**
+
 ```javascript
-const appInsights = require('applicationinsights');
-appInsights.setup(process.env.APPLICATIONINSIGHTS_CONNECTION_STRING)
-    .setAutoCollectRequests(true)       // HTTP requests
-    .setAutoCollectPerformance(true, true)  // CPU, memory
-    .setAutoCollectExceptions(true)     // Unhandled exceptions
-    .setAutoCollectDependencies(false)  // SQL, Redis (N/A)
-    .setAutoCollectConsole(false)       // console.log (noise)
-    .setDistributedTracingMode(appInsights.DistributedTracingModes.AI_AND_W3C)
-    .setSendLiveMetrics(true)           // Real-time dashboard
-    .start();
+const appInsights = require("applicationinsights");
+appInsights
+  .setup(process.env.APPLICATIONINSIGHTS_CONNECTION_STRING)
+  .setAutoCollectRequests(true) // HTTP requests
+  .setAutoCollectPerformance(true, true) // CPU, memory
+  .setAutoCollectExceptions(true) // Unhandled exceptions
+  .setAutoCollectDependencies(false) // SQL, Redis (N/A)
+  .setAutoCollectConsole(false) // console.log (noise)
+  .setDistributedTracingMode(appInsights.DistributedTracingModes.AI_AND_W3C)
+  .setSendLiveMetrics(true) // Real-time dashboard
+  .start();
 ```
 
 **Métricas Coletadas:**
@@ -1984,7 +2040,7 @@ appInsights.setup(process.env.APPLICATIONINSIGHTS_CONNECTION_STRING)
    - URL path (ex: `/`, `/css/styles.css`, `/data/direitos.json`)
    - Response time (ms)
    - HTTP status code
-   - Client IP (anonimizado: 203.0.113.*)
+   - Client IP (anonimizado: 203.0.113.\*)
    - User-Agent (browser/OS)
 
 2. **Performance**:
@@ -1999,14 +2055,15 @@ appInsights.setup(process.env.APPLICATIONINSIGHTS_CONNECTION_STRING)
    - Stack traces
 
 4. **Custom Events** (client-side):
+
 ```javascript
 // Tracking de interações (opcional — não implementado ainda)
 appInsights.trackEvent({
-    name: 'PDFAnalysisCompleted',
-    properties: {
-        categoriesFound: 3,
-        analysisTimeMs: 1250,
-    }
+  name: "PDFAnalysisCompleted",
+  properties: {
+    categoriesFound: 3,
+    analysisTimeMs: 1250,
+  },
 });
 ```
 
@@ -2023,19 +2080,22 @@ appInsights.trackEvent({
 
 **Métricas Coletadas:**
 
-| Métrica | Tipo | Descrição |
-|---------|------|-----------|
-| `daily_unique_visitors` | App Insights Custom Metric | Visitantes únicos no dia |
-| `daily_page_views` | App Insights Custom Metric | Total de visualizações de página |
-| `byDevice` | In-memory | Contagem por tipo (desktop/mobile/tablet) |
-| `byPath` | In-memory | Contagem por URL path |
-| `hourly` | In-memory | Distribuição horária (0-23h) |
+| Métrica                 | Tipo                       | Descrição                                 |
+| ----------------------- | -------------------------- | ----------------------------------------- |
+| `daily_unique_visitors` | App Insights Custom Metric | Visitantes únicos no dia                  |
+| `daily_page_views`      | App Insights Custom Metric | Total de visualizações de página          |
+| `byDevice`              | In-memory                  | Contagem por tipo (desktop/mobile/tablet) |
+| `byPath`                | In-memory                  | Contagem por URL path                     |
+| `hourly`                | In-memory                  | Distribuição horária (0-23h)              |
 
 **Endpoint:**
+
 ```
 GET /api/stats
 ```
+
 Retorna JSON com estatísticas do dia atual:
+
 ```json
 {
   "date": "2026-02-23",
@@ -2049,6 +2109,7 @@ Retorna JSON com estatísticas do dia atual:
 ```
 
 **Conformidade LGPD:**
+
 - Hash SHA-256 com salt efêmero — qualifica como dado anonimizado (Art. 12 LGPD)
 - Salt rotacionado diariamente impossibilita correlação entre dias
 - Zero dados pessoais armazenados em disco ou transmitidos a terceiros
@@ -2075,6 +2136,7 @@ customMetrics
 ### Kusto Query Language (KQL) — Queries Úteis
 
 **1. Top 10 páginas mais acessadas (última hora):**
+
 ```kql
 requests
 | where timestamp > ago(1h)
@@ -2083,6 +2145,7 @@ requests
 ```
 
 **2. Erros 5xx (últimas 24h):**
+
 ```kql
 requests
 | where timestamp > ago(24h) and resultCode startswith "5"
@@ -2091,6 +2154,7 @@ requests
 ```
 
 **3. Response time P95 por endpoint:**
+
 ```kql
 requests
 | where timestamp > ago(7d)
@@ -2099,6 +2163,7 @@ requests
 ```
 
 **4. Geolocalização de usuários:**
+
 ```kql
 requests
 | where timestamp > ago(30d)
@@ -2107,6 +2172,7 @@ requests
 ```
 
 **5. Taxa de erro por hora:**
+
 ```kql
 requests
 | where timestamp > ago(24h)
@@ -2119,14 +2185,15 @@ requests
 
 Configurados via Terraform (`azurerm_monitor_metric_alert`):
 
-| Alerta | Condição | Action | SLA Impact |
-|--------|----------|--------|------------|
-| **HTTP 5xx** | Total > 0 em 5 min | Email (severity 1) | Sim — downtime |
-| **Health Check** | Avg < 100 em 5 min | Email (severity 0) | Sim — downtime |
-| **Latency** | Avg > 5s em 15 min | Email (severity 2) | Não — degradação |
-| **4xx Spike** | Total > 50 em 5 min | Email (severity 3) | Não — possível ataque |
+| Alerta           | Condição            | Action             | SLA Impact            |
+| ---------------- | ------------------- | ------------------ | --------------------- |
+| **HTTP 5xx**     | Total > 0 em 5 min  | Email (severity 1) | Sim — downtime        |
+| **Health Check** | Avg < 100 em 5 min  | Email (severity 0) | Sim — downtime        |
+| **Latency**      | Avg > 5s em 15 min  | Email (severity 2) | Não — degradação      |
+| **4xx Spike**    | Total > 50 em 5 min | Email (severity 3) | Não — possível ataque |
 
 **Action Group:**
+
 - Recipient: `38567767+fabiotreze@users.noreply.github.com`
 - Common Alert Schema: Enabled (JSON estruturado)
 - Retry: 3 attempts com backoff exponencial
@@ -2136,6 +2203,7 @@ Configurados via Terraform (`azurerm_monitor_metric_alert`):
 **Retenção:** 30 dias (configurável até 730 dias)
 
 **Tables:**
+
 - `requests`: HTTP requests (URL, duration, status)
 - `dependencies`: External calls (SQL, Redis, APIs) — N/A para este app
 - `exceptions`: Uncaught errors
@@ -2150,17 +2218,17 @@ Configurados via Terraform (`azurerm_monitor_metric_alert`):
 
 ### Breakdown Mensal (USD)
 
-| Serviço | Tier | Uso Estimado | Custo/Mês |
-|---------|------|--------------|-----------|
-| **App Service Plan** | B1 Linux | 730 horas | $13.14 |
-| **Key Vault** | Standard | 1.000 operations | $0.03 |
-| **Application Insights** | Pay-as-you-go | 1 GB/mês | $2.76 |
-| **Log Analytics** | PerGB2018 | 500 MB/mês | $1.38 |
-| **Bandwidth** | Outbound | 10 GB/mês | $0.87 |
-| **Alerts** | Metric alerts | 4 rules | $0.00 (free tier: 10 rules) |
-| **Cloudflare** | DNS + proxy/CDN/WAF (Free) | Ilimitado | $0.00 |
-| **Domínio fabiotreze.com** | Registro anual (externo) | Anual | ~$1.00/mês (amortizado) |
-| **TOTAL** | | | **~$19.18/mês** |
+| Serviço                    | Tier                       | Uso Estimado     | Custo/Mês                   |
+| -------------------------- | -------------------------- | ---------------- | --------------------------- |
+| **App Service Plan**       | B1 Linux                   | 730 horas        | $13.14                      |
+| **Key Vault**              | Standard                   | 1.000 operations | $0.03                       |
+| **Application Insights**   | Pay-as-you-go              | 1 GB/mês         | $2.76                       |
+| **Log Analytics**          | PerGB2018                  | 500 MB/mês       | $1.38                       |
+| **Bandwidth**              | Outbound                   | 10 GB/mês        | $0.87                       |
+| **Alerts**                 | Metric alerts              | 4 rules          | $0.00 (free tier: 10 rules) |
+| **Cloudflare**             | DNS + proxy/CDN/WAF (Free) | Ilimitado        | $0.00                       |
+| **Domínio fabiotreze.com** | Registro anual (externo)   | Anual            | ~$1.00/mês (amortizado)     |
+| **TOTAL**                  |                            |                  | **~$19.18/mês**             |
 
 **Nota:** Estimativa para 500-1.000 pageviews/mês (tráfego baixo). Custos reais podem variar.
 
@@ -2185,14 +2253,15 @@ Configurados via Terraform (`azurerm_monitor_metric_alert`):
 
 ### Projeção de Crescimento
 
-| Cenário | Pageviews/Mês | Cost/Mês |
-|---------|---------------|----------|
-| **Atual** (low traffic) | 1.000 | $19 |
-| **Moderado** | 10.000 | $28 |
-| **Alto** | 100.000 | $65 |
-| **Viral** | 1.000.000 | $350+ |
+| Cenário                 | Pageviews/Mês | Cost/Mês |
+| ----------------------- | ------------- | -------- |
+| **Atual** (low traffic) | 1.000         | $19      |
+| **Moderado**            | 10.000        | $28      |
+| **Alto**                | 100.000       | $65      |
+| **Viral**               | 1.000.000     | $350+    |
 
 **Ação para Crescimento:**
+
 - 10k+ pageviews: Upgrade S1 ($70/mês) + Azure CDN Premium
 - 100k+: Considerar cache Redis + serverless (Azure Functions)
 
@@ -2274,6 +2343,7 @@ Configurados via Terraform (`azurerm_monitor_metric_alert`):
 **Domínio:** `fabiotreze.com` (DNS autoritativo na Cloudflare, modo proxied/CDN+WAF ativo)
 
 **Registros DNS (Cloudflare):**
+
 ```
 Type   Name                      Content                                  Proxy    TTL
 ──────────────────────────────────────────────────────────────────────────────────────
@@ -2316,30 +2386,33 @@ Browser ──TLS (Cloudflare Universal SSL / Let's Encrypt)──▶ Cloudflare
                                                        Azure App Service
 ```
 
-| Camada | Cert apresentado | Issuer | Origem |
-|---|---|---|---|
-| Edge (browser) | `CN=fabiotreze.com` | Let's Encrypt (Cloudflare Universal SSL Free) | Cloudflare, automático |
-| Origin (Azure) | `CN=*.fabiotreze.com` | GeoTrust TLS RSA CA G1 (DigiCert) | Key Vault `kv-nossodireito-br/fabiotreze-wildcard` |
+| Camada         | Cert apresentado      | Issuer                                        | Origem                                             |
+| -------------- | --------------------- | --------------------------------------------- | -------------------------------------------------- |
+| Edge (browser) | `CN=fabiotreze.com`   | Let's Encrypt (Cloudflare Universal SSL Free) | Cloudflare, automático                             |
+| Origin (Azure) | `CN=*.fabiotreze.com` | GeoTrust TLS RSA CA G1 (DigiCert)             | Key Vault `kv-nossodireito-br/fabiotreze-wildcard` |
 
 Validação do binding origin (CLI):
+
 ```bash
 az webapp config ssl list -g rg-nossodireito-br \
   --query "[?thumbprint=='75F0CB7D560CFEDB4E689700787BEC6CECFA690B'].{subject:subjectName,issuer:issuer,expires:expirationDate,hostnames:hostNames}"
 ```
 
 5. **Redirect azurewebsites.net → Custom Domain** (server.js)
+
 ```javascript
 // WEBSITE_HOSTNAME é injetado automaticamente pelo Azure App Service
-const AZURE_HOSTNAME = process.env.WEBSITE_HOSTNAME || '';
-if (AZURE_HOSTNAME && host === AZURE_HOSTNAME && req.headers.accept?.includes('text/html')) {
-    const location = `https://nossodireito.fabiotreze.com${req.url}`;
-    res.writeHead(301, { 'Location': location, 'Cache-Control': 'public, max-age=86400' });
-    res.end();
-    return;
+const AZURE_HOSTNAME = process.env.WEBSITE_HOSTNAME || "";
+if (AZURE_HOSTNAME && host === AZURE_HOSTNAME && req.headers.accept?.includes("text/html")) {
+  const location = `https://nossodireito.fabiotreze.com${req.url}`;
+  res.writeHead(301, { Location: location, "Cache-Control": "public, max-age=86400" });
+  res.end();
+  return;
 }
 ```
 
 **Certificado SSL (origin Azure):**
+
 - **Tipo:** Wildcard PFX (`*.fabiotreze.com`)
 - **Issuer:** GeoTrust TLS RSA CA G1 (DigiCert)
 - **Validade:** até 10/02/2027 (renovação manual via DigiCert)
@@ -2349,6 +2422,7 @@ if (AZURE_HOSTNAME && host === AZURE_HOSTNAME && req.headers.accept?.includes('t
 - **Referência App Service:** `cert-app-nossodireito-br` (`microsoft.web/certificates`)
 
 **Certificado SSL (edge Cloudflare):**
+
 - **Tipo:** Universal SSL (DV, SAN `fabiotreze.com` + `*.fabiotreze.com`)
 - **Issuer:** Let's Encrypt
 - **Validade:** ~90 dias (renovação automática pela Cloudflare)
@@ -2361,37 +2435,43 @@ if (AZURE_HOSTNAME && host === AZURE_HOSTNAME && req.headers.accept?.includes('t
 ### Estratégia de Backup
 
 **Código Fonte:** GitHub repository (git push)
+
 - **Frequência:** A cada commit
 - **Retenção:** Ilimitada (GitHub gratuito)
 - **Restore:** `git clone https://github.com/fabiotreze/nossodireito.git`
 
 **Infraestrutura (Terraform State):**
+
 - **Backend:** Local `terraform.tfstate` (não commitado)
 - **Backup Manual:** Copiar `terraform.tfstate` para OneDrive/1 vez mês
 - **Restore:** `terraform apply` com state file
 
 **Dados JSON:**
+
 - **Frequência:** Versionado com código (git)
 - **Retenção:** Git history (every commit)
 - **Restore:** `git checkout <commit> data/direitos.json`
 
 **Certificado SSL:**
+
 - **Backup:** PFX file local (não commitado) + Key Vault
 - **Restore:** Re-run `terraform apply` com `var.pfx_file_path`
 
 ### RTO/RPO
 
-| Métrica | Valor | Justificativa |
-|---------|-------|---------------|
-| **RTO** (Recovery Time Objective) | 1 hora | Tempo para re-deploy manual via GitHub Actions + Terraform |
-| **RPO** (Recovery Point Objective) | 0 (zero loss) | Código/dados em git, state em Key Vault |
+| Métrica                            | Valor         | Justificativa                                              |
+| ---------------------------------- | ------------- | ---------------------------------------------------------- |
+| **RTO** (Recovery Time Objective)  | 1 hora        | Tempo para re-deploy manual via GitHub Actions + Terraform |
+| **RPO** (Recovery Point Objective) | 0 (zero loss) | Código/dados em git, state em Key Vault                    |
 
 ### Disaster Scenarios
 
 #### 1. Azure Region Outage (Brazil South)
+
 **Impacto:** Site indisponível
 **Mitigação:** Não há (mono-region, sem DR)
 **Restore:**
+
 1. Aguardar Azure restore (SLA 99.95% = 4.38h downtime/ano)
 2. Ou: Re-deploy em região secundária (East US 2)
    ```bash
@@ -2399,8 +2479,10 @@ if (AZURE_HOSTNAME && host === AZURE_HOSTNAME && req.headers.accept?.includes('t
    ```
 
 #### 2. App Service Corruption
+
 **Impacto:** Site serve conteúdo incorreto/quebrado
 **Restore:**
+
 1. Rollback via GitHub Actions (re-deploy commit anterior)
    ```bash
    git revert HEAD
@@ -2415,8 +2497,10 @@ if (AZURE_HOSTNAME && host === AZURE_HOSTNAME && req.headers.accept?.includes('t
    ```
 
 #### 3. Terraform State Loss
+
 **Impacto:** Não consegue gerenciar infra via Terraform
 **Restore:**
+
 1. Re-import recursos existentes:
    ```bash
    terraform import azurerm_resource_group.main /subscriptions/{id}/resourceGroups/rg-nossodireito-br-prod
@@ -2426,9 +2510,11 @@ if (AZURE_HOSTNAME && host === AZURE_HOSTNAME && req.headers.accept?.includes('t
 2. Ou: Gerenciar via Azure Portal manualmente
 
 #### 4. Key Vault PFX Certificate Expiration
+
 **Impacto:** SSL inválido (browser warning) no origin Azure → Cloudflare em modo Full (strict) bloqueia o tráfego → site fora do ar
 **Prevenção:** Alerta 30 dias antes (Azure Monitor); cert atual expira **10/02/2027**
 **Restore:**
+
 1. Renovar certificado wildcard `*.fabiotreze.com` na DigiCert
 2. Exportar novo PFX (com senha)
 3. Re-importar no Key Vault:
@@ -2446,8 +2532,10 @@ if (AZURE_HOSTNAME && host === AZURE_HOSTNAME && req.headers.accept?.includes('t
 5. Validar: `az webapp config ssl list -g rg-nossodireito-br --query "[].{name:name,thumb:thumbprint,expires:expirationDate}"`
 
 #### 5. Data Corruption (direitos.json)
+
 **Impacto:** Informações incorretas exibidas
 **Restore:**
+
 1. Git revert:
    ```bash
    git log data/direitos.json  # Find good commit
@@ -2459,17 +2547,19 @@ if (AZURE_HOSTNAME && host === AZURE_HOSTNAME && req.headers.accept?.includes('t
 ### Monitoring for Failures
 
 **Healthcheck Endpoint:**
+
 ```javascript
 // server.js
-if (req.url === '/healthz' || req.url === '/health') {
-    const pkg = JSON.parse(fs.readFileSync(path.join(__dirname, 'package.json'), 'utf8'));
-    res.writeHead(200, { 'Content-Type': 'application/json', 'Cache-Control': 'no-cache, no-store' });
-    res.end(JSON.stringify({ status: 'healthy', version: pkg.version }));
-    return;
+if (req.url === "/healthz" || req.url === "/health") {
+  const pkg = JSON.parse(fs.readFileSync(path.join(__dirname, "package.json"), "utf8"));
+  res.writeHead(200, { "Content-Type": "application/json", "Cache-Control": "no-cache, no-store" });
+  res.end(JSON.stringify({ status: "healthy", version: pkg.version }));
+  return;
 }
 ```
 
 **Azure Monitor Probe:**
+
 - Path: `/health`
 - Interval: 5 minutos
 - Timeout: 30 segundos
@@ -2493,6 +2583,7 @@ Este documento apresenta a arquitetura completa do sistema **NossoDireito V1** (
 ### Próximos Passos
 
 Melhorias futuras consideráveis:
+
 - Azure OpenAI GPT-4o-mini (95% acurácia vs. 70% regex)
 - Next.js 14 + TypeScript
 - Redis cache + Cosmos DB

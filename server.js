@@ -676,15 +676,20 @@ const server = http.createServer(async (req, res) => {
           anonymized_client_side: true,
           anonymized_server_side: true,
           data_residency: "brazil-south",
+          ai_provider: "azure-openai",
+          ai_model: result.model || "gpt-4o-mini",
         };
         if (appInsights && appInsights.defaultClient) {
           appInsights.defaultClient.trackEvent({
             name: "AI.Analysis.Success",
             properties: {
               contentHash: result.contentHash,
-              cidsFound: String(result.cids.length),
+              cidsFound: String((result.cids || []).length),
+              direitosSugeridos: String((result.direitos_sugeridos || []).length),
               durationMs: String(result.durationMs),
-              pages: String(result.pages),
+              tokensInput: String(result.tokens ? result.tokens.input : 0),
+              tokensOutput: String(result.tokens ? result.tokens.output : 0),
+              confianca: String(result.confianca || "baixa"),
               anonPatterns: Object.keys(anonStats).join(","),
             },
           });
@@ -694,16 +699,22 @@ const server = http.createServer(async (req, res) => {
           "Cache-Control": "no-store",
           "X-Data-Retention": "0",
           "X-LGPD-Legal-Basis": "Art-7-I-Consentimento",
+          "X-AI-Provider": "azure-openai",
           ...SECURITY_HEADERS,
         };
         if (corsOrigin) okHeaders["Access-Control-Allow-Origin"] = corsOrigin;
         res.writeHead(200, okHeaders);
         res.end(JSON.stringify(result));
       } catch (err) {
+        const errMsg = String(err && err.message).slice(0, 500);
         if (appInsights && appInsights.defaultClient) {
           appInsights.defaultClient.trackEvent({
             name: "AI.Analysis.Error",
-            properties: { message: String(err && err.message).slice(0, 200) },
+            properties: {
+              message: errMsg,
+              code: String((err && err.code) || ""),
+              status: String((err && err.status) || ""),
+            },
           });
         }
         res.writeHead(502, { "Content-Type": "application/json", ...SECURITY_HEADERS });

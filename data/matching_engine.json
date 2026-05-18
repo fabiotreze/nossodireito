@@ -2191,9 +2191,9 @@
     },
     "interdição": {
       "cats": [
-        "bpc"
+        "capacidade_legal"
       ],
-      "weight": 3
+      "weight": 7
     },
     "interdicao": {
       "cats": [
@@ -2696,7 +2696,7 @@
       "cats": [
         "aposentadoria_especial_pcd"
       ],
-      "weight": 10
+      "weight": 4
     },
     "lc 142": {
       "cats": [
@@ -2711,12 +2711,6 @@
       "weight": 5
     },
     "tempo reduzido": {
-      "cats": [
-        "aposentadoria_especial_pcd"
-      ],
-      "weight": 4
-    },
-    "aposentadoria pcd": {
       "cats": [
         "aposentadoria_especial_pcd"
       ],
@@ -2879,7 +2873,7 @@
       "cats": [
         "isencao_ir"
       ],
-      "weight": 8
+      "weight": 5
     },
     "irpf pcd": {
       "cats": [
@@ -2888,12 +2882,6 @@
       "weight": 10
     },
     "imposto renda": {
-      "cats": [
-        "isencao_ir"
-      ],
-      "weight": 5
-    },
-    "irpf": {
       "cats": [
         "isencao_ir"
       ],
@@ -4757,12 +4745,6 @@
       ],
       "weight": 7
     },
-    "interdição": {
-      "cats": [
-        "capacidade_legal"
-      ],
-      "weight": 7
-    },
     "crime PcD": {
       "cats": [
         "crimes_contra_pcd"
@@ -6181,5 +6163,6 @@
       ],
       "weight": 7
     }
-  }
+  },
+  "versao": "1.18.0"
 }

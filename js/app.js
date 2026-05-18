@@ -2702,7 +2702,7 @@ um advogado ou o <strong>CRAS</strong> da sua cidade.</p>
         const btnRevoke = document.getElementById('aiConsentRevoke');
         const cbRemember = document.getElementById('aiConsentRemember');
         if (!modal || !btnAccept || !btnCancel) {
-            return Promise.resolve(window.confirm('Permitir envio do texto anonimizado para análise com IA (Azure Doc Intelligence, Brasil Sul)?'));
+            return Promise.resolve(window.confirm('Permitir envio do texto anonimizado para análise com IA (Azure OpenAI gpt-4o-mini, Brasil Sul)?'));
         }
         modal.style.display = 'flex';
         if (cbRemember) cbRemember.checked = false;
@@ -2753,7 +2753,7 @@ um advogado ou o <strong>CRAS</strong> da sua cidade.</p>
             if (resp.status === 503) throw new Error('Análise IA indisponível no servidor (AI_ANALYSIS_ENABLED desativado).');
             if (resp.status === 413) throw new Error('Texto muito grande para análise (máx. 200KB).');
             if (resp.status === 422) throw new Error('Detectado PII residual no texto anonimizado — envio bloqueado por segurança.');
-            if (resp.status === 502) throw new Error('Falha na comunicação com o Azure Doc Intelligence.');
+            if (resp.status === 502) throw new Error('Falha na comunicação com o Azure OpenAI.');
             throw new Error(msg);
         }
         return body;
@@ -2776,38 +2776,69 @@ um advogado ou o <strong>CRAS</strong> da sua cidade.</p>
         return y >= 1900 && y <= nowYear + 1;
     }
     function renderAIResult(ai) {
-        const cids = Array.isArray(ai.cids) ? Array.from(new Set(ai.cids)) : [];
-        const dates = Array.isArray(ai.dates) ? Array.from(new Set(ai.dates)) : [];
-        const pages = Number(ai.pages) || 0;
-        const paraCount = Array.isArray(ai.paragraphs) ? ai.paragraphs.length : 0;
+        // v1.18.0: novo schema do Azure OpenAI gpt-4o-mini (vs. legacy Doc Intelligence)
+        const cids = Array.isArray(ai.cids) ? ai.cids : [];
+        const datas = Array.isArray(ai.datas) ? ai.datas : [];
+        const diagnosticos = Array.isArray(ai.diagnosticos) ? ai.diagnosticos : [];
+        const direitos = Array.isArray(ai.direitos_sugeridos) ? ai.direitos_sugeridos : [];
+        const resumo = String(ai.resumo || '').trim();
+        const confiancaGeral = String(ai.confianca || 'baixa');
+        const tokensIn = (ai.tokens && ai.tokens.input) || 0;
+        const tokensOut = (ai.tokens && ai.tokens.output) || 0;
+        const confBadgeClass = (c) => c === 'alta' ? 'high' : (c === 'media' ? 'mid' : 'low');
+        const confBadgeIcon = (c) => c === 'alta' ? '✓' : (c === 'media' ? '~' : '⚠');
         const cidBadges = cids.length
             ? cids.map((c) => {
-                const ok = isValidCID(c);
-                return `<span class="kw-tag ${ok ? 'high' : 'low'}" title="${ok ? 'Formato CID-10 válido' : 'Formato suspeito — verificar'}">${ok ? '✓' : '⚠'} ${escapeHtml(c)}</span>`;
+                const code = String(c.codigo || c).trim();
+                const ok = isValidCID(code);
+                const conf = String(c.confianca || 'baixa');
+                const desc = escapeHtml(c.descricao || '');
+                return `<span class="kw-tag ${ok ? confBadgeClass(conf) : 'low'}" title="${desc} (confiança: ${conf})">${ok ? confBadgeIcon(conf) : '⚠'} ${escapeHtml(code)}${desc ? ' — ' + desc : ''}</span>`;
             }).join(' ')
-            : '<span class="analysis-hint">Nenhum CID detectado pelo OCR.</span>';
-        const dateBadges = dates.length
-            ? dates.slice(0, 12).map((d) => {
-                const ok = isValidDate(d);
-                return `<span class="kw-tag ${ok ? 'high' : 'low'}" title="${ok ? 'Data plausível' : 'Formato suspeito'}">${ok ? '✓' : '⚠'} ${escapeHtml(d)}</span>`;
+            : '<span class="analysis-hint">Nenhum CID identificado pelo modelo.</span>';
+        const dateBadges = datas.length
+            ? datas.slice(0, 8).map((d) => {
+                const data = escapeHtml(d.data || '');
+                const ctx = escapeHtml(d.contexto || '');
+                return `<span class="kw-tag mid" title="${ctx}">📅 ${data}${ctx ? ' — ' + ctx : ''}</span>`;
             }).join(' ')
-            : '<span class="analysis-hint">Nenhuma data detectada pelo OCR.</span>';
+            : '<span class="analysis-hint">Nenhuma data relevante identificada.</span>';
+        const diagBadges = diagnosticos.length
+            ? diagnosticos.slice(0, 8).map((d) => `<li>${escapeHtml(d)}</li>`).join('')
+            : '<li class="analysis-hint">Nenhum diagnóstico explicitado no texto.</li>';
+        const direitosHtml = direitos.length
+            ? direitos.map((r) => {
+                const cat = escapeHtml(r.categoria_id || '');
+                const just = escapeHtml(r.justificativa || '');
+                const conf = String(r.confianca || 'baixa');
+                return `<li><span class="kw-tag ${confBadgeClass(conf)}">${confBadgeIcon(conf)} ${cat}</span> — ${just}</li>`;
+            }).join('')
+            : '<li class="analysis-hint">Nenhum direito sugerido pelo modelo.</li>';
         return `
 <div class="analysis-ai-section" style="margin-top:18px;padding:16px;border:1px solid #cfe2ff;background:#f5faff;border-radius:6px;">
-  <h3 style="margin-top:0;">🧠 Análise por IA (Azure Doc Intelligence — Brasil Sul)</h3>
+  <h3 style="margin-top:0;">🧠 Análise por IA (Azure OpenAI gpt-4o-mini — Brasil Sul)</h3>
   <p style="font-size:0.85rem;color:#555;margin:4px 0 12px;">
-    Texto enviado de forma <strong>anonimizada</strong>. Resultado: ${pages} página(s), ${paraCount} parágrafo(s).
+    Texto enviado de forma <strong>anonimizada</strong>. Confiança geral: <strong>${escapeHtml(confiancaGeral)}</strong>. Tokens: ${tokensIn}→${tokensOut}.
   </p>
+  ${resumo ? `<div style="background:#fff;padding:10px;border-left:3px solid #0d6efd;border-radius:4px;margin-bottom:12px;"><strong>📝 Resumo orientativo:</strong><br>${escapeHtml(resumo)}</div>` : ''}
   <div style="margin-bottom:10px;">
-    <strong>🏷️ CIDs detectados:</strong><br>
+    <strong>🏷️ CIDs identificados:</strong><br>
     ${cidBadges}
   </div>
-  <div>
-    <strong>📅 Datas detectadas:</strong><br>
+  <div style="margin-bottom:10px;">
+    <strong>📅 Datas relevantes:</strong><br>
     ${dateBadges}
   </div>
+  <div style="margin-bottom:10px;">
+    <strong>🩺 Diagnósticos identificados:</strong>
+    <ul style="margin:4px 0 0 20px;">${diagBadges}</ul>
+  </div>
+  <div style="margin-bottom:10px;">
+    <strong>⚖️ Direitos sugeridos:</strong>
+    <ul style="margin:4px 0 0 20px;">${direitosHtml}</ul>
+  </div>
   <p style="font-size:0.8rem;color:#666;margin:10px 0 0;">
-    ✓ = formato válido · ⚠ = formato suspeito (requer revisão manual)
+    ✓ = alta confiança · ~ = média · ⚠ = baixa/suspeito. <strong>Não substitui</strong> orientação profissional.
   </p>
 </div>`;
     }

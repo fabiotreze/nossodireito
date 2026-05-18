@@ -3,7 +3,7 @@
  *
  * Roda em DOIS ambientes:
  *  - Browser (carregado via <script> em document.html antes do POST)
- *  - Node.js / server.js (double-check antes de chamar Doc Intelligence)
+ *  - Node.js / server.js (double-check antes de chamar Azure OpenAI)
  *
  * Funciona tanto sem build (CommonJS para Node + global window.Anonymizer
  * para browser via UMD pattern simples).
@@ -135,7 +135,7 @@
 
   /**
    * Verifica se um texto AINDA contém PII (após anonimização).
-   * Usado pelo server.js como double-check antes de chamar Doc Intelligence.
+   * Usado pelo server.js como double-check antes de chamar Azure OpenAI.
    *
    * @param {string} text
    * @returns {{clean: boolean, found: string[]}}

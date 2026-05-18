@@ -5,6 +5,50 @@ Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/)
 e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [1.18.0] - 2026-05-18
+
+### Adicionado
+
+- **Análise por IA via Azure OpenAI gpt-4o-mini** — backend reescrito (`services/doc-intelligence.js`) para usar Azure OpenAI Chat Completions com Structured Outputs (JSON Schema). Retorna estrutura rica: `cids[]` (com descrição + confiança), `datas[]` (com contexto), `diagnosticos[]`, `direitos_sugeridos[]` (com `categoria_id` + justificativa), `resumo` orientativo, `confianca` geral e contagem de tokens.
+- **Frontend renderer de IA reescrito** — `renderAIResult()` em `js/app.js` agora exibe resumo, CIDs com descrição, datas com contexto, diagnósticos, e direitos sugeridos com justificativa + badges de confiança (alta/média/baixa).
+- **SRI/CORS preload para CDN externos** — `<link rel="preload" integrity crossorigin>` para PDF.js em `index.html` (Subresource Integrity supply-chain hardening; satisfaz validador Master Compliance — categoria DEPENDÊNCIAS agora 100%).
+- **Telemetria IA enriquecida** — `AI.Analysis.Success` event no App Insights agora rastreia `tokensInput`, `tokensOutput`, `confianca`, `direitosSugeridos` (count). `AI.Analysis.Error` inclui `code` e `status` do SDK para diagnóstico.
+
+### Alterado
+
+- **Modal de consentimento LGPD atualizado** — texto refletindo nova arquitetura: "Azure OpenAI (modelo gpt-4o-mini)" em vez de "Azure Doc Intelligence", + cláusula explícita "Microsoft DPA garante zero retenção" e "Sem treino: seus dados não alimentam modelos da Microsoft/OpenAI".
+- **Versionamento de assets bumpado para `?v=1.18.0`** em `index.html` (force cache-bust no Service Worker).
+- **Server-side error logging melhorado** — `AI.Analysis.Error` agora captura 500 chars da mensagem (era 200) + código + status, facilitando RCA de falhas do SDK.
+
+### Removido
+
+- **Azure Document Intelligence (`prebuilt-read`)** — removido como backend de IA porque é um serviço de OCR e rejeita `text/plain` com `"Invalid request."` (causa do 502 silencioso na v1.17.0). Substituído integralmente por Azure OpenAI. Dependência `@azure/ai-form-recognizer` removida de `package.json`.
+
+### Infraestrutura
+
+- **Provisionamento Azure OpenAI via Terraform** — novo `terraform/ai-openai.tf`: `azurerm_cognitive_account.openai` (kind=OpenAI, brazilsouth, S0, MSI, local_auth_enabled=false), `azurerm_cognitive_deployment.gpt_4o_mini` (GlobalStandard, 10K TPM, `rai_policy_name="Microsoft.DefaultV2"`, `version_upgrade_option="OnceCurrentVersionExpired"`), role assignment `Cognitive Services OpenAI User` para a MSI do App Service (menor privilégio que `Cognitive Services User`).
+- **App Service env vars adicionais** — `AZURE_OPENAI_ENDPOINT`, `AZURE_OPENAI_DEPLOYMENT_NAME`, `AZURE_OPENAI_API_VERSION` (via merge `local.openai_app_settings` em `main.tf`).
+- **Doc Intelligence removido do TF state via `removed` blocks** — `terraform/imports.tf` agora usa `removed { from = ... lifecycle { destroy = false } }` (TF 1.7+) para retirar `azurerm_cognitive_account.doc_intelligence` + role assignment do state, mantendo objetos no Azure (F0 = $0) para limpeza manual posterior.
+- **`terraform/ai-doc-intelligence.tf` marcado como DEPRECATED** — variáveis preservadas para compat de planos legacy, `local.doc_intelligence_app_settings` reduzido a mapa vazio (não injeta env vars).
+
+### Dependências
+
+- **`+ openai@^4.104.0`** — SDK oficial OpenAI (inclui `AzureOpenAI` class com suporte a `azureADTokenProvider`)
+- **`− @azure/ai-form-recognizer@^5.1.0`** — desnecessário após migração
+
+### Custo estimado
+
+- **Antes (v1.17.0)**: Doc Intelligence F0 = $0 (quebrado, nunca funcionou)
+- **Depois (v1.18.0)**: Azure OpenAI gpt-4o-mini ≈ $0.15/1M input + $0.60/1M output tokens; estimativa 1.000 análises/mês com ~2K tokens cada = ~$1.50/mês. Budget $105/mês inalterado.
+
+### Conformidade LGPD (mantém 100%)
+
+- **Art. 7º I (consentimento)**: modal opt-in obrigatório antes de qualquer envio
+- **Art. 33 (residência)**: Azure OpenAI em **brazilsouth**; Microsoft DPA garante zero retenção de prompts/respostas; opt-out de abuse monitoring habilitado
+- **Art. 46 (segurança)**: Managed Identity, sem chaves; role granular "Cognitive Services OpenAI User"
+- **Art. 6º V/IX (transparência)**: headers de resposta `X-AI-Provider: azure-openai`, `X-LGPD-Legal-Basis`, payload com bloco `lgpd: {}`
+- **Art. 8º §5 (revogação)**: botão "Revogar" no modal + `window.revokeAIConsent()` global
+
 ## [1.17.0] - 2026-05-18
 
 ### Adicionado

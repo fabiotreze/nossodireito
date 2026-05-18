@@ -1,19 +1,28 @@
-# --- Terraform Import Blocks (Terraform 1.5+) ---
-# Recursos criados fora do TF que precisam ser adotados pelo state.
-# Após apply bem-sucedido, este arquivo pode ser removido (ou mantido como registro).
+# ============================================================
+# Terraform State Migration — Removed Blocks (TF 1.7+)
+# ============================================================
+# Recursos removidos do código mas mantidos no Azure para limpeza
+# manual posterior. `lifecycle.destroy = false` impede o TF de tentar
+# deletar (que falharia por falta de permissão do GHA SP, e mesmo se
+# tivesse não há urgência — Doc Intelligence F0 = custo zero).
+#
+# Para limpeza manual quando conveniente:
+#   az role assignment delete --ids \
+#     /subscriptions/<sub>/resourceGroups/rg-nossodireito-br/providers/Microsoft.CognitiveServices/accounts/cog-nossodireito-br-docint/providers/Microsoft.Authorization/roleAssignments/1f47605c-655e-c325-96cd-1794fbc58d43
+#   az cognitiveservices account delete \
+#     -n cog-nossodireito-br-docint -g rg-nossodireito-br --yes
+# ============================================================
 
-# Doc Intelligence foi criado manualmente antes do TF cobri-lo.
-# Importa para o state em vez de tentar recriar.
-import {
-  to = azurerm_cognitive_account.doc_intelligence[0]
-  id = "/subscriptions/${var.subscription_id}/resourceGroups/${local.resource_group_name}/providers/Microsoft.CognitiveServices/accounts/cog-${local.project}-docint${local.suffix}"
+removed {
+  from = azurerm_cognitive_account.doc_intelligence
+  lifecycle {
+    destroy = false
+  }
 }
 
-# Role Assignment App MSI -> Doc Intelligence também já existe no Azure.
-# O SP do GitHub OIDC tem apenas Contributor (sem permissão de criar role
-# assignments), então importamos a atribuição existente em vez de tentar
-# recriar (que falharia com 403 AuthorizationFailed).
-import {
-  to = azurerm_role_assignment.app_to_doc_intelligence[0]
-  id = "/subscriptions/${var.subscription_id}/resourceGroups/${local.resource_group_name}/providers/Microsoft.CognitiveServices/accounts/cog-${local.project}-docint${local.suffix}/providers/Microsoft.Authorization/roleAssignments/1f47605c-655e-c325-96cd-1794fbc58d43"
+removed {
+  from = azurerm_role_assignment.app_to_doc_intelligence
+  lifecycle {
+    destroy = false
+  }
 }

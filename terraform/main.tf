@@ -229,7 +229,8 @@ resource "azurerm_linux_web_app" "main" {
       # Ter ambos causa: "Attempted duplicate registration of API: propagation"
       ApplicationInsightsAgent_EXTENSION_VERSION = "disabled"
     },
-    local.doc_intelligence_app_settings, # Endpoint Doc Intelligence (vazio se desabilitado)
+    local.doc_intelligence_app_settings, # legacy (vazio v1.18.0+) — vide ai-doc-intelligence.tf
+    local.openai_app_settings,           # Azure OpenAI gpt-4o-mini (v1.18.0+)
   )
 
   tags = local.tags

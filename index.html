@@ -15,6 +15,17 @@
     <link rel="alternate" hreflang="x-default" href="https://nossodireito.fabiotreze.com/" />
     <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com" />
     <link rel="dns-prefetch" href="https://vlibras.gov.br" />
+    <!-- SRI/CORS preload p/ scripts CDN externos (LGPD + supply-chain hardening) -->
+    <!-- PDF.js: hash sha384 verificado em build; integrity= + crossorigin= satisfazem Subresource Integrity. -->
+    <link
+      rel="preload"
+      as="script"
+      href="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"
+      integrity="sha384-/1qUCSGwTur9vjf/z9lmu/eCUYbpOTgSjmpbMQZ1/CtX2v/WcAIKqRv+U1DUCG6e"
+      crossorigin="anonymous"
+    />
+    <!-- VLibras (gov.br): crossorigin para CORS; SRI dispensado (atualização do governo quebraria hash). -->
+    <link rel="preconnect" href="https://vlibras.gov.br" crossorigin="anonymous" />
     <link
       rel="preload"
       as="image"
@@ -423,6 +434,26 @@
         font-size: 0.875rem;
         font-weight: 500;
         text-decoration: none;
+      }
+
+      /* Link "Aviso" — destaque âmbar, alinhado à direita do menu (margin-left:auto no <li>). */
+      .nav-links .nav-aviso-item {
+        margin-left: auto;
+      }
+      .nav-links .nav-aviso {
+        color: #ffeaa7;
+        border: 1px solid rgba(255, 224, 130, 0.45);
+      }
+      .nav-links .nav-aviso:hover,
+      .nav-links .nav-aviso:focus {
+        background: rgba(255, 248, 225, 0.18);
+        color: #fff;
+      }
+      @media (max-width: 768px) {
+        /* Em mobile (drawer) volta a fluir normalmente, sem alinhamento à direita. */
+        .nav-links .nav-aviso-item {
+          margin-left: 0;
+        }
       }
 
       .menu-toggle {
@@ -1335,6 +1366,9 @@
             <li><a href="#orgaos-estaduais">Estados</a></li>
             <li><a href="#instituicoes">Instituições</a></li>
             <li><a href="#transparencia">Fontes</a></li>
+            <li class="nav-aviso-item">
+              <a href="#disclaimerInline" class="nav-aviso" aria-label="Aviso Legal e Isenção de Responsabilidade" title="Aviso legal: conteúdo educacional, não substitui orientação profissional">⚠️ Aviso</a>
+            </li>
           </ul>
         </div>
       </nav>
@@ -1758,7 +1792,7 @@
             </button>
             <p id="aiAnalysisHint" class="upload-hint" style="margin-top:6px;">
               💡 A análise com IA envia o <strong>texto anonimizado</strong> (sem nome, CPF, RG, endereço, telefone) para o
-              Azure Doc Intelligence em região Brasil. Requer seu consentimento explícito (LGPD Art. 7º I).
+              <strong>Azure OpenAI (gpt-4o-mini)</strong> em região Brasil. Requer seu consentimento explícito (LGPD Art. 7º I).
             </p>
             <div class="upload-privacy">
               <p>
@@ -2261,15 +2295,17 @@
           </ul>
           <p><strong>Para onde vai:</strong></p>
           <ul style="margin:8px 0 16px 20px;">
-            <li>🇧🇷 <strong>Azure Doc Intelligence</strong> — região <strong>Brasil Sul</strong> (LGPD)</li>
+            <li>🇧🇷 <strong>Azure OpenAI</strong> (modelo <code>gpt-4o-mini</code>) — região <strong>Brasil Sul</strong> (LGPD Art. 33)</li>
             <li>🔐 Autenticação via <strong>Managed Identity</strong> (sem chaves de API expostas)</li>
-            <li>⏱️ <strong>Sem armazenamento</strong>: a Microsoft não retém o texto após o processamento</li>
+            <li>⏱️ <strong>Sem armazenamento</strong>: Microsoft DPA garante zero retenção de prompts/respostas</li>
+            <li>🚫 Sem treino: seus dados <strong>não</strong> alimentam modelos da Microsoft/OpenAI</li>
           </ul>
           <p><strong>O que você recebe:</strong></p>
           <ul style="margin:8px 0 16px 20px;">
-            <li>🏷️ CIDs detectados (com validação de formato)</li>
-            <li>📅 Datas detectadas (com validação de formato)</li>
-            <li>📊 Estrutura do documento (páginas, parágrafos)</li>
+            <li>🏷️ CIDs detectados com descrição e confiança</li>
+            <li>📅 Datas relevantes com contexto</li>
+            <li>📊 Categorias de direitos sugeridas com justificativa</li>
+            <li>📝 Resumo orientativo (não substitui avaliação profissional)</li>
           </ul>
           <p style="background:#fff3cd;padding:10px;border-left:3px solid #ffc107;border-radius:4px;font-size:0.85rem;">
             ⚖️ Base legal: <strong>consentimento</strong> (LGPD Art. 7º I). Você pode revogar a qualquer momento
@@ -2304,8 +2340,8 @@
     </div>
 
     <!-- Anonymizer compartilhado (Node + Browser) — DEVE carregar ANTES de app.js -->
-    <script src="shared/anonymizer.js?v=1.17.0" defer></script>
-    <script src="js/app.js?v=1.17.0" defer></script>
-    <script src="js/sw-register.js?v=1.17.0" defer></script>
+    <script src="shared/anonymizer.js?v=1.18.0" defer></script>
+    <script src="js/app.js?v=1.18.0" defer></script>
+    <script src="js/sw-register.js?v=1.18.0" defer></script>
   </body>
 </html>
