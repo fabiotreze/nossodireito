@@ -19,17 +19,9 @@
 #     -n cog-nossodireito-br-docint -g rg-nossodireito-br
 # ============================================================
 
-variable "enable_ai_doc_intelligence" {
-  description = "DEPRECATED v1.18.0 — substituído por Azure OpenAI (vide ai-openai.tf)"
-  type        = bool
-  default     = false
-}
-
-variable "ai_doc_intelligence_sku" {
-  description = "DEPRECATED v1.18.0 — não tem efeito"
-  type        = string
-  default     = "F0"
-}
+# Variáveis removidas v1.18.0 — eram declaradas mas não usadas (tflint).
+# Caso algum tfvars/CI ainda passe ai_doc_intelligence_sku/enable_ai_doc_intelligence,
+# o Terraform >=1.6 apenas emite warning não-fatal.
 
 # Mapa vazio para compat — o merge em main.tf continua funcionando sem
 # precisar editar todas as referências de uma só vez.
