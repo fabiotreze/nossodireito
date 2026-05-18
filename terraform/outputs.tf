@@ -113,3 +113,23 @@ output "openai_private_endpoint_ip" {
   description = "IP privado atribuído ao Private Endpoint do OpenAI (se habilitado)"
   value       = var.enable_openai_private_network && var.enable_ai_openai ? azurerm_private_endpoint.openai[0].private_service_connection[0].private_ip_address : null
 }
+
+output "key_vault_private_endpoint_ip" {
+  description = "IP privado atribuído ao Private Endpoint do Key Vault (se habilitado)"
+  value       = var.enable_keyvault && var.enable_keyvault_private_network ? azurerm_private_endpoint.keyvault[0].private_service_connection[0].private_ip_address : null
+}
+
+output "redis_name" {
+  description = "Nome do Azure Cache for Redis"
+  value       = var.enable_redis ? azurerm_redis_cache.main[0].name : null
+}
+
+output "redis_hostname" {
+  description = "Hostname do Azure Cache for Redis"
+  value       = var.enable_redis ? azurerm_redis_cache.main[0].hostname : null
+}
+
+output "redis_private_endpoint_ip" {
+  description = "IP privado atribuído ao Private Endpoint do Redis (se habilitado)"
+  value       = var.enable_redis && var.enable_redis_private_network ? azurerm_private_endpoint.redis[0].private_service_connection[0].private_ip_address : null
+}

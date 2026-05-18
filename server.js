@@ -21,6 +21,11 @@ const crypto = require("node:crypto");
 const { anonymize, containsPII } = require("./shared/anonymizer");
 // Cliente Azure OpenAI é lazy-loaded (require interno).
 const AI_ANALYSIS_ENABLED = process.env.AI_ANALYSIS_ENABLED === "true";
+const REDIS_RATE_LIMIT_ENABLED = process.env.REDIS_RATE_LIMIT_ENABLED === "true";
+const REDIS_HOSTNAME = process.env.REDIS_HOSTNAME || "";
+const REDIS_PORT = Number(process.env.REDIS_PORT || 6380);
+const REDIS_SECRET_NAME = process.env.REDIS_SECRET_NAME || "redis-primary-key";
+const KEY_VAULT_URI = process.env.KEY_VAULT_URI || "";
 
 const PORT = process.env.PORT || 8080;
 // Limite do body POST /api/analyze-document (CWE-400 — DoS por payload grande).
@@ -81,6 +86,67 @@ if (AI_CONN) {
     console.log("ℹ️ applicationinsights package not available — telemetry disabled");
     appInsights = null;
   }
+}
+
+// ── Redis-backed rate limiting (optional) ──
+// Usado quando Redis + Key Vault estão configurados; caso contrário,
+// mantém fallback em memória para não travar o boot local.
+let redisClient = null;
+let redisInitPromise = null;
+let redisInitError = null;
+let redisSecretClient = null;
+
+function redisConfigured() {
+  return REDIS_RATE_LIMIT_ENABLED && REDIS_HOSTNAME && KEY_VAULT_URI;
+}
+
+async function getRedisPassword() {
+  if (!redisSecretClient) {
+    const { SecretClient } = require("@azure/keyvault-secrets");
+    redisSecretClient = new SecretClient(KEY_VAULT_URI, getCredential());
+  }
+  const secret = await redisSecretClient.getSecret(REDIS_SECRET_NAME);
+  if (!secret?.value) {
+    throw new Error("Redis secret not found in Key Vault");
+  }
+  return secret.value;
+}
+
+async function getRedisClient() {
+  if (!redisConfigured()) {
+    throw new Error("Redis rate limiting not configured");
+  }
+  if (redisClient) return redisClient;
+  if (redisInitPromise) return redisInitPromise;
+
+  redisInitPromise = (async () => {
+    const { createClient } = require("redis");
+    const password = await getRedisPassword();
+    const client = createClient({
+      socket: {
+        host: REDIS_HOSTNAME,
+        port: REDIS_PORT,
+        tls: true,
+      },
+      username: "default",
+      password,
+    });
+
+    client.on("error", (err) => {
+      redisInitError = err;
+      console.warn(`Redis client error: ${err.message}`);
+    });
+
+    await client.connect();
+    redisClient = client;
+    return client;
+  })().catch((err) => {
+    redisInitError = err;
+    redisInitPromise = null;
+    throw err;
+  });
+
+  return redisInitPromise;
 }
 
 // ── Privacy-Respecting Visitor Analytics ──
@@ -237,6 +303,30 @@ function isRateLimited(ip) {
   }
   entry.count++;
   return entry.count > RATE_LIMIT_MAX;
+}
+
+async function isRateLimitedRedis(ip) {
+  const client = await getRedisClient();
+  const key = `rate:${ip}`;
+  const count = await client.incr(key);
+  if (count === 1) {
+    await client.expire(key, Math.ceil(RATE_LIMIT_WINDOW / 1000));
+  }
+  return count > RATE_LIMIT_MAX;
+}
+
+async function isRateLimitedAdaptive(ip) {
+  if (!redisConfigured()) {
+    return isRateLimited(ip);
+  }
+
+  try {
+    return await isRateLimitedRedis(ip);
+  } catch (err) {
+    if (!redisInitError) redisInitError = err;
+    console.warn(`Redis rate limiting unavailable, falling back to memory: ${err.message}`);
+    return isRateLimited(ip);
+  }
 }
 
 // Cleanup stale entries every 5 minutes
@@ -517,7 +607,7 @@ const server = http.createServer(async (req, res) => {
   const clientIp = TRUST_PROXY
     ? req.headers["x-forwarded-for"]?.split(",")[0]?.trim() || req.socket.remoteAddress || ""
     : req.socket.remoteAddress || "";
-  if (isRateLimited(clientIp)) {
+  if (await isRateLimitedAdaptive(clientIp)) {
     res.writeHead(429, {
       "Content-Type": "text/plain",
       "Retry-After": "60",

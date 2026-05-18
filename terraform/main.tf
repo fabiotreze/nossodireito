@@ -49,13 +49,14 @@ resource "azurerm_resource_group" "main" {
 resource "azurerm_key_vault" "main" {
   count = var.enable_keyvault ? 1 : 0
 
-  name                       = local.key_vault_name
-  location                   = azurerm_resource_group.main.location
-  resource_group_name        = azurerm_resource_group.main.name
-  tenant_id                  = data.azurerm_client_config.current.tenant_id
-  sku_name                   = "standard"
-  soft_delete_retention_days = 7
-  purge_protection_enabled   = false
+  name                          = local.key_vault_name
+  location                      = azurerm_resource_group.main.location
+  resource_group_name           = azurerm_resource_group.main.name
+  tenant_id                     = data.azurerm_client_config.current.tenant_id
+  sku_name                      = "standard"
+  soft_delete_retention_days    = 7
+  purge_protection_enabled      = false
+  public_network_access_enabled = var.key_vault_public_network_access_enabled
 
   tags = local.tags
 }
@@ -188,12 +189,25 @@ resource "azurerm_linux_web_app" "main" {
   }
 
   site_config {
-    always_on              = true
-    ftps_state             = "Disabled"
-    vnet_route_all_enabled = var.enable_openai_private_network
+    always_on                     = true
+    ftps_state                    = "Disabled"
+    vnet_route_all_enabled        = var.enable_openai_private_network
+    ip_restriction_default_action = var.enable_cloudflare_only_inbound ? "Deny" : "Allow"
 
     application_stack {
       node_version = "22-lts"
+    }
+
+    dynamic "ip_restriction" {
+      for_each = var.enable_cloudflare_only_inbound ? local.cloudflare_allowed_ip_ranges : []
+
+      content {
+        name        = "cloudflare-${index(local.cloudflare_allowed_ip_ranges, ip_restriction.value)}"
+        priority    = 100 + index(local.cloudflare_allowed_ip_ranges, ip_restriction.value)
+        action      = "Allow"
+        ip_address  = ip_restriction.value
+        description = "Allow inbound only from Cloudflare edge IPs"
+      }
     }
 
     app_command_line                  = "node server.js"
@@ -232,6 +246,7 @@ resource "azurerm_linux_web_app" "main" {
       ApplicationInsightsAgent_EXTENSION_VERSION = "disabled"
     },
     local.openai_app_settings, # Azure OpenAI gpt-4o-mini (v1.18.0+)
+    local.redis_app_settings,
   )
 
   tags = local.tags

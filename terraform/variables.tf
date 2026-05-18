@@ -88,6 +88,18 @@ variable "enable_keyvault" {
   default     = true
 }
 
+variable "enable_keyvault_private_network" {
+  description = "Habilita Private Endpoint e Private DNS para o Key Vault"
+  type        = bool
+  default     = true
+}
+
+variable "key_vault_public_network_access_enabled" {
+  description = "Mantém o Key Vault acessível publicamente. Para o modo final fechado, defina false e execute o apply de dentro da VNet."
+  type        = bool
+  default     = false
+}
+
 variable "web_rp_object_id" {
   description = "Object ID do Service Principal Microsoft.Web RP (abfa0a7c-a6b6-4736-8310-5855508787cd). Descoberto via az ad sp show."
   type        = string
@@ -130,6 +142,12 @@ variable "enable_openai_private_network" {
   default     = true
 }
 
+variable "enable_cloudflare_only_inbound" {
+  description = "Restringe o App Service público aos IPs de saída da Cloudflare"
+  type        = bool
+  default     = true
+}
+
 variable "vnet_address_space" {
   description = "CIDR da VNet usada para integração do App Service e Private Endpoint do OpenAI"
   type        = list(string)
@@ -154,22 +172,115 @@ variable "openai_private_dns_zone_name" {
   default     = "privatelink.openai.azure.com"
 }
 
+variable "enable_redis" {
+  description = "Habilita Azure Cache for Redis para rate limiting e estudos de PE"
+  type        = bool
+  default     = true
+}
+
+variable "manage_redis_secret_with_terraform" {
+  description = "Gerencia o segredo redis-primary-key via Terraform. Em Key Vault privado com runner fora da VNet, mantenha false para evitar erro 403 no plan/apply."
+  type        = bool
+  default     = false
+}
+
+variable "enable_redis_private_network" {
+  description = "Habilita Private Endpoint e Private DNS para o Redis"
+  type        = bool
+  default     = true
+}
+
+variable "redis_sku_name" {
+  description = "SKU do Azure Cache for Redis"
+  type        = string
+  default     = "Basic"
+}
+
+variable "redis_family" {
+  description = "Família do SKU do Azure Cache for Redis"
+  type        = string
+  default     = "C"
+}
+
+variable "redis_capacity" {
+  description = "Capacidade do Azure Cache for Redis (0 para Basic C0)"
+  type        = number
+  default     = 0
+}
+
+variable "redis_private_endpoint_subnet_cidr" {
+  description = "CIDR da subnet dedicada ao Private Endpoint do Redis"
+  type        = string
+  default     = "10.42.4.0/24"
+}
+
+variable "redis_private_dns_zone_name" {
+  description = "Private DNS Zone para resolução privada do endpoint Redis"
+  type        = string
+  default     = "privatelink.redis.cache.windows.net"
+}
+
+variable "keyvault_private_endpoint_subnet_cidr" {
+  description = "CIDR da subnet dedicada ao Private Endpoint do Key Vault"
+  type        = string
+  default     = "10.42.3.0/24"
+}
+
+variable "keyvault_private_dns_zone_name" {
+  description = "Private DNS Zone para resolução privada do endpoint Key Vault"
+  type        = string
+  default     = "privatelink.vaultcore.azure.net"
+}
+
 # --- Locals: nomes derivados do ambiente ---
 locals {
   # Base do projeto — alterando aqui, todos os nomes mudam automaticamente
   project = var.project_name
 
   # prod usa nomes limpos, outros ambientes ganham sufixo
-  suffix                = var.environment == "prod" ? "" : "-${var.environment}"
-  resource_group_name   = "rg-${local.project}${local.suffix}"
-  app_service_plan_name = "plan-${local.project}${local.suffix}"
-  web_app_name          = "app-${local.project}${local.suffix}"
-  key_vault_name        = "kv-${local.project}${local.suffix}"
-  app_insights_name     = "appi-${local.project}${local.suffix}"
-  log_analytics_name    = "log-${local.project}${local.suffix}"
-  vnet_name             = "vnet-${local.project}${local.suffix}"
-  appsvc_subnet_name    = "snet-appsvc-${var.environment}"
-  openai_pe_subnet_name = "snet-openai-pe-${var.environment}"
+  suffix                  = var.environment == "prod" ? "" : "-${var.environment}"
+  resource_group_name     = "rg-${local.project}${local.suffix}"
+  app_service_plan_name   = "plan-${local.project}${local.suffix}"
+  web_app_name            = "app-${local.project}${local.suffix}"
+  key_vault_name          = "kv-${local.project}${local.suffix}"
+  app_insights_name       = "appi-${local.project}${local.suffix}"
+  log_analytics_name      = "log-${local.project}${local.suffix}"
+  vnet_name               = "vnet-${local.project}${local.suffix}"
+  appsvc_subnet_name      = "snet-appsvc-${var.environment}"
+  openai_pe_subnet_name   = "snet-openai-pe-${var.environment}"
+  keyvault_pe_subnet_name = "snet-kv-pe-${var.environment}"
+  redis_pe_subnet_name    = "snet-redis-pe-${var.environment}"
+  redis_name              = "redis-${local.project}${local.suffix}"
+
+  cloudflare_ipv4_ranges = [
+    "103.21.244.0/22",
+    "103.22.200.0/22",
+    "103.31.4.0/22",
+    "104.16.0.0/13",
+    "104.24.0.0/14",
+    "108.162.192.0/18",
+    "131.0.72.0/22",
+    "141.101.64.0/18",
+    "162.158.0.0/15",
+    "172.64.0.0/13",
+    "173.245.48.0/20",
+    "188.114.96.0/20",
+    "190.93.240.0/20",
+    "197.234.240.0/22",
+    "198.41.128.0/17",
+  ]
+
+  cloudflare_ipv6_ranges = [
+    "2400:cb00::/32",
+    "2606:4700::/32",
+    "2803:f800::/32",
+    "2405:b500::/32",
+    "2405:8100::/32",
+    "2a06:98c0::/29",
+    "2c0f:f248::/32",
+  ]
+
+  cloudflare_allowed_ip_ranges = concat(local.cloudflare_ipv4_ranges, local.cloudflare_ipv6_ranges)
 
   tags = merge(
     {
