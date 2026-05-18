@@ -1,0 +1,49 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://nossodireito.app/schemas/orgaos_estaduais.schema.json",
+  "title": "Órgãos Estaduais (SEFAZ/DETRAN/Benefícios)",
+  "description": "Esquema para o array orgaos_estaduais embarcado em data/direitos.json. Cobre as 27 unidades da federação (26 estados + DF).",
+  "type": "array",
+  "minItems": 27,
+  "maxItems": 27,
+  "items": {
+    "type": "object",
+    "additionalProperties": false,
+    "required": ["uf", "nome", "url"],
+    "properties": {
+      "uf": {
+        "type": "string",
+        "pattern": "^[A-Z]{2}$",
+        "description": "Sigla oficial da UF (ex.: SP, RJ, DF)."
+      },
+      "nome": {
+        "type": "string",
+        "minLength": 3
+      },
+      "url": {
+        "type": "string",
+        "format": "uri",
+        "pattern": "^https://"
+      },
+      "sefaz": {
+        "type": "string",
+        "format": "uri",
+        "pattern": "^https://"
+      },
+      "detran": {
+        "type": "string",
+        "format": "uri",
+        "pattern": "^https://"
+      },
+      "beneficios_destaque": {
+        "type": "array",
+        "items": { "type": "string", "minLength": 3 },
+        "minItems": 1
+      },
+      "observacoes": {
+        "type": "string"
+      }
+    }
+  },
+  "uniqueItems": true
+}

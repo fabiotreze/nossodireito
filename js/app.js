@@ -15,6 +15,8 @@
     const _earlyDireitos = _earlyFetch('data/direitos.json');
     const _earlyMatching = _earlyFetch('data/matching_engine.json');
     const _earlyDicionario = _earlyFetch('data/dicionario_pcd.json');
+    // Geo snapshot (IBGE, 5570 municípios, ~80 KB gzipped). Non-blocking on first paint.
+    const _earlyMunicipios = _earlyFetch('data/municipios_br.json');
     function safeJsonParse(str) {
         return JSON.parse(str, (key, value) => {
             if (key === '__proto__' || key === 'constructor' || key === 'prototype') {
@@ -59,6 +61,8 @@
     let docsMestreData = null;
     let instituicoesData = null;
     let orgaosEstaduaisData = null;
+    let municipiosData = null;        // IBGE snapshot: [{id,n,u,k}, ...] — populated by loadData
+    let municipiosByKey = null;       // Map<k, {id,n,u,k}> for O(1) exact lookup
     let classificacaoData = null;
     let jsonMeta = null;
     let UPPERCASE_ONLY_TERMS = new Set();
@@ -941,6 +945,18 @@
         } catch (err) {
             console.warn('Dicionário PcD não carregou — busca por sinônimos limitada:', err.message);
         }
+        // Load IBGE municipios snapshot (5570 entries, ~80 KB gzipped).
+        // Non-fatal: detectLocation falls back to UF-only detection if absent.
+        try {
+            const muniRes = (await _earlyMunicipios) || await resilientFetch('data/municipios_br.json');
+            const muni = await muniRes.json();
+            municipiosData = deepFreeze(muni.municipios || []);
+            const byKey = new Map();
+            municipiosData.forEach((m) => { byKey.set(m.k, m); });
+            municipiosByKey = byKey;  // Map can't be frozen but contents are
+        } catch (err) {
+            console.warn('Snapshot de municípios não carregou — detecção limitada a UF/estado:', err.message);
+        }
     }
     async function enrichGovBr() {
         if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') return;
@@ -1326,109 +1342,78 @@ style="margin-top:16px;display:inline-block">
         'sergipe': 'SE', 'tocantins': 'TO',
     };
     const UF_SET = new Set(Object.values(ESTADOS_BR));
-    const CIDADES_UF = {
-        // SP — Grande São Paulo e interior
-        'barueri': 'SP', 'osasco': 'SP', 'guarulhos': 'SP', 'campinas': 'SP', 'santos': 'SP',
-        'sorocaba': 'SP', 'jundiai': 'SP', 'santo andre': 'SP', 'sao bernardo': 'SP',
-        'sao caetano': 'SP', 'diadema': 'SP', 'maua': 'SP', 'mogi das cruzes': 'SP',
-        'suzano': 'SP', 'taboao da serra': 'SP', 'cotia': 'SP', 'itaquaquecetuba': 'SP',
-        'carapicuiba': 'SP', 'itapevi': 'SP', 'embu das artes': 'SP', 'francisco morato': 'SP',
-        'franco da rocha': 'SP', 'caieiras': 'SP', 'ribeirao preto': 'SP', 'piracicaba': 'SP',
-        'sao jose dos campos': 'SP', 'sao jose do rio preto': 'SP', 'araraquara': 'SP',
-        'marilia': 'SP', 'presidente prudente': 'SP', 'bauru': 'SP', 'franca': 'SP',
-        'limeira': 'SP', 'taubate': 'SP', 'indaiatuba': 'SP', 'sumare': 'SP', 'americana': 'SP',
-        'praia grande': 'SP', 'sao vicente': 'SP', 'guaruja': 'SP', 'itanhaem': 'SP',
-        'hortolandia': 'SP', 'santa barbara d\'oeste': 'SP', 'ferraz de vasconcelos': 'SP',
-        'itapecerica da serra': 'SP', 'jacarei': 'SP', 'itu': 'SP', 'atibaia': 'SP',
-        'rio claro': 'SP', 'braganca paulista': 'SP', 'sertaozinho': 'SP', 'catanduva': 'SP',
-        // RJ
-        'rio de janeiro': 'RJ', 'niteroi': 'RJ', 'sao goncalo': 'RJ', 'duque de caxias': 'RJ',
-        'nova iguacu': 'RJ', 'petropolis': 'RJ', 'volta redonda': 'RJ', 'campos dos goytacazes': 'RJ',
-        'belford roxo': 'RJ', 'sao joao de meriti': 'RJ', 'macae': 'RJ', 'magalhaes bastos': 'RJ',
-        'mesquita': 'RJ', 'nilopolis': 'RJ', 'itaborai': 'RJ', 'marica': 'RJ', 'cabo frio': 'RJ',
-        'angra dos reis': 'RJ', 'teresopolis': 'RJ', 'resende': 'RJ', 'barra mansa': 'RJ',
-        // MG
-        'belo horizonte': 'MG', 'uberlandia': 'MG', 'contagem': 'MG', 'juiz de fora': 'MG',
-        'betim': 'MG', 'montes claros': 'MG', 'uberaba': 'MG', 'governador valadares': 'MG',
-        'ribeirao das neves': 'MG', 'santa luzia': 'MG', 'ipatinga': 'MG', 'sete lagoas': 'MG',
-        'divinopolis': 'MG', 'pocos de caldas': 'MG', 'patos de minas': 'MG', 'teofilo otoni': 'MG',
-        'barbacena': 'MG', 'sabara': 'MG', 'varginha': 'MG', 'conselheiro lafaiete': 'MG',
-        // PR
-        'curitiba': 'PR', 'londrina': 'PR', 'maringa': 'PR', 'ponta grossa': 'PR', 'cascavel': 'PR',
-        'foz do iguacu': 'PR', 'sao jose dos pinhais': 'PR', 'colombo': 'PR',
-        'guarapuava': 'PR', 'paranagua': 'PR', 'toledo': 'PR', 'apucarana': 'PR', 'campo largo': 'PR',
-        // RS
-        'porto alegre': 'RS', 'caxias do sul': 'RS', 'pelotas': 'RS', 'canoas': 'RS', 'gravatai': 'RS',
-        'viamao': 'RS', 'novo hamburgo': 'RS', 'sao leopoldo': 'RS', 'rio grande': 'RS',
-        'alvorada': 'RS', 'passo fundo': 'RS', 'sapucaia do sul': 'RS', 'santa maria': 'RS',
-        // SC
-        'florianopolis': 'SC', 'joinville': 'SC', 'blumenau': 'SC', 'chapeco': 'SC', 'itajai': 'SC',
-        'criciuma': 'SC', 'jaragua do sul': 'SC', 'lages': 'SC', 'palhoca': 'SC', 'brusque': 'SC',
-        // DF + GO
-        'brasilia': 'DF', 'taguatinga': 'DF', 'ceilandia': 'DF', 'samambaia': 'DF',
-        'goiania': 'GO', 'aparecida de goiania': 'GO', 'anapolis': 'GO', 'rio verde': 'GO', 'luziania': 'GO',
-        // MT + MS
-        'cuiaba': 'MT', 'varzea grande': 'MT', 'rondonopolis': 'MT', 'sinop': 'MT', 'tangara da serra': 'MT',
-        'campo grande': 'MS', 'dourados': 'MS', 'tres lagoas': 'MS', 'corumba': 'MS', 'ponta pora': 'MS',
-        // BA
-        'salvador': 'BA', 'feira de santana': 'BA', 'vitoria da conquista': 'BA', 'camacari': 'BA',
-        'itabuna': 'BA', 'juazeiro': 'BA', 'lauro de freitas': 'BA', 'ilheus': 'BA', 'jequie': 'BA',
-        'teixeira de freitas': 'BA', 'barreiras': 'BA', 'alagoinhas': 'BA', 'porto seguro': 'BA',
-        // PE
-        'recife': 'PE', 'jaboatao dos guararapes': 'PE', 'olinda': 'PE', 'caruaru': 'PE',
-        'paulista': 'PE', 'petrolina': 'PE', 'cabo de santo agostinho': 'PE', 'garanhuns': 'PE',
-        // CE
-        'fortaleza': 'CE', 'caucaia': 'CE', 'juazeiro do norte': 'CE', 'maracanau': 'CE',
-        'sobral': 'CE', 'crato': 'CE', 'itapipoca': 'CE', 'maranguape': 'CE', 'iguatu': 'CE',
-        // RN + PB + AL + SE + PI
-        'natal': 'RN', 'mossoro': 'RN', 'parnamirim': 'RN', 'sao goncalo do amarante': 'RN', 'caico': 'RN',
-        'joao pessoa': 'PB', 'campina grande': 'PB', 'santa rita': 'PB', 'patos': 'PB',
-        'maceio': 'AL', 'arapiraca': 'AL', 'rio largo': 'AL', 'palmeira dos indios': 'AL',
-        'aracaju': 'SE', 'nossa senhora do socorro': 'SE', 'lagarto': 'SE',
-        'teresina': 'PI', 'parnaiba': 'PI', 'picos': 'PI', 'floriano': 'PI',
-        // MA
-        'sao luis': 'MA', 'imperatriz': 'MA', 'sao jose de ribamar': 'MA', 'timon': 'MA', 'caxias': 'MA',
-        'codó': 'MA', 'paco do lumiar': 'MA', 'acailandia': 'MA',
-        // PA
-        'belem': 'PA', 'ananindeua': 'PA', 'santarem': 'PA', 'maraba': 'PA',
-        'castanhal': 'PA', 'parauapebas': 'PA', 'cameta': 'PA', 'braganca': 'PA', 'altamira': 'PA',
-        // AM + AP + RO + RR + AC + TO
-        'manaus': 'AM', 'parintins': 'AM', 'itacoatiara': 'AM', 'manacapuru': 'AM', 'tefe': 'AM',
-        'macapa': 'AP', 'santana': 'AP', 'laranjal do jari': 'AP',
-        'porto velho': 'RO', 'ji-parana': 'RO', 'ariquemes': 'RO', 'vilhena': 'RO', 'cacoal': 'RO',
-        'boa vista': 'RR', 'rorainopolis': 'RR',
-        'rio branco': 'AC', 'cruzeiro do sul': 'AC', 'sena madureira': 'AC',
-        'palmas': 'TO', 'araguaina': 'TO', 'gurupi': 'TO',
-        // ES
-        'vitoria': 'ES', 'vila velha': 'ES', 'serra': 'ES', 'cariacica': 'ES',
-        'linhares': 'ES', 'cachoeiro de itapemirim': 'ES', 'colatina': 'ES', 'guarapari': 'ES',
-    };
+    // Normalize geo input the same way scripts/build_municipios.py builds the `k`
+    // field of data/municipios_br.json: NFD-strip accents, lowercase, drop
+    // apostrophes/hyphens/dots, collapse whitespace. Keeps detection consistent
+    // with the IBGE snapshot.
+    function _normalizeGeo(s) {
+        if (!s) return '';
+        return String(s)
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '')
+            .toLowerCase()
+            .replace(/['\-.]/g, '')
+            .replace(/\s+/g, ' ')
+            .trim();
+    }
+    // Title-case a normalized geo name for display ("sao paulo" → "São Paulo" is
+    // not possible without the original; we just capitalize words and let the
+    // município `n` field carry true casing when we have an IBGE hit).
+    function _titleCaseGeo(s) {
+        return String(s).split(' ').map((w) => w ? w[0].toUpperCase() + w.slice(1) : '').join(' ');
+    }
     function detectLocation(queryNorm) {
-        const q = queryNorm.toLowerCase().trim();
-        if (UF_SET.has(q.toUpperCase()) && q.length === 2) {
-            return { type: 'uf', uf: q.toUpperCase(), name: q.toUpperCase(), matched: q };
+        const qRaw = String(queryNorm || '').trim();
+        if (!qRaw) return null;
+        // 1. UF sigla (exact, case-insensitive, 2 chars)
+        if (qRaw.length === 2 && UF_SET.has(qRaw.toUpperCase())) {
+            const uf = qRaw.toUpperCase();
+            return { type: 'uf', uf, name: uf, matched: qRaw.toLowerCase(), ibge_id: null };
         }
-        if (ESTADOS_BR[q]) {
-            return { type: 'estado', uf: ESTADOS_BR[q], name: q, matched: q };
+        const q = _normalizeGeo(qRaw);
+        if (!q) return null;
+        const estadoUF = ESTADOS_BR[q] || null;
+        const muniHit = municipiosByKey && municipiosByKey.has(q) ? municipiosByKey.get(q) : null;
+        // 2. Resolução exata (município vs. estado, com tie-break por UF).
+        //    Se o nome bate tanto em estado quanto em município, o município
+        //    só vence quando ambos apontam para a mesma UF — assim "São Paulo"
+        //    e "Rio de Janeiro" viram capital (mais útil), enquanto pequenos
+        //    municípios homônimos a estados ("Espírito Santo" em RN) não
+        //    sequestram a UF que o usuário provavelmente quer.
+        if (muniHit && (!estadoUF || muniHit.u === estadoUF)) {
+            return { type: 'cidade', uf: muniHit.u, name: muniHit.n, matched: muniHit.k, ibge_id: muniHit.id };
         }
-        if (CIDADES_UF[q]) {
-            return { type: 'cidade', uf: CIDADES_UF[q], name: q, matched: q };
+        if (estadoUF) {
+            return { type: 'estado', uf: estadoUF, name: q, matched: q, ibge_id: null };
         }
-        for (const [cidade, uf] of Object.entries(CIDADES_UF)) {
-            if (q.includes(cidade)) {
-                return { type: 'cidade', uf, name: cidade, matched: cidade };
+        // 3. Município por substring com fronteira de palavra (escolhe o mais
+        //    longo para evitar "São Paulo" engolir "São Paulo do Potengi").
+        if (municipiosData && municipiosData.length) {
+            const padded = ' ' + q + ' ';
+            let best = null;
+            for (let i = 0; i < municipiosData.length; i++) {
+                const m = municipiosData[i];
+                if (padded.indexOf(' ' + m.k + ' ') !== -1) {
+                    if (!best || m.k.length > best.k.length) best = m;
+                }
+            }
+            if (best) {
+                return { type: 'cidade', uf: best.u, name: best.n, matched: best.k, ibge_id: best.id };
             }
         }
-        for (const [estado, uf] of Object.entries(ESTADOS_BR)) {
-            if (q.includes(estado)) {
-                return { type: 'estado', uf, name: estado, matched: estado };
+        // 4. Estado por substring (fallback)
+        for (const estado in ESTADOS_BR) {
+            if ((' ' + q + ' ').indexOf(' ' + estado + ' ') !== -1) {
+                return { type: 'estado', uf: ESTADOS_BR[estado], name: estado, matched: estado, ibge_id: null };
             }
         }
         return null;
     }
     function renderLocationResults(location, query, filteredCats) {
         const ufLabel = location.uf;
-        const nomeDisplay = location.name.charAt(0).toUpperCase() + location.name.slice(1);
+        const nomeDisplay = location.type === 'uf'
+            ? location.name
+            : (location.type === 'cidade' ? location.name : _titleCaseGeo(location.name));
         const orgao = orgaosEstaduaisData
             ? orgaosEstaduaisData.find((o) => o.uf === ufLabel)
             : null;
@@ -1463,12 +1448,19 @@ ${orgao.beneficios_destaque.map(b => `<li style="padding:4px 0;">✅ ${escapeHtm
         const filterNote = filteredCats
             ? `<p class="search-hint">🔎 Mostrando <strong>${filteredCats.length}</strong> resultado(s) filtrado(s) para sua busca em <strong>${escapeHtml(nomeDisplay)}</strong>.</p>`
             : '';
+        // Aviso honesto: identificamos o município pelo IBGE, mas ainda não
+        // temos curadoria de órgãos municipais (prefeituras). Os direitos
+        // federais valem; o estadual aparece via SEFAZ/DETRAN acima.
+        const municipalNote = location.type === 'cidade'
+            ? `<p class="search-hint" style="color:var(--text-muted);font-style:italic;">ℹ️ Ainda não temos dados específicos da prefeitura de <strong>${escapeHtml(nomeDisplay)}</strong>. Os direitos federais valem aqui; consulte também os portais estaduais (${escapeHtml(ufLabel)}) acima.</p>`
+            : '';
         dom.searchResults.innerHTML =
             `<div class="search-suggestion search-location">
 <p>📍 <strong>${escapeHtml(nomeDisplay)}</strong> ${location.type === 'cidade' ? `(${escapeHtml(ufLabel)})` : ''} — os direitos abaixo são <strong>federais</strong> e valem em todo o Brasil, incluindo na sua cidade/estado.</p>
 ${orgaoHtml}
 ${portaisHtml}
 ${beneficiosHtml}
+${municipalNote}
 ${filterNote}
 <p class="search-hint">💡 Clique em qualquer direito para ver detalhes, documentos e passo a passo.</p>
 </div>` +
