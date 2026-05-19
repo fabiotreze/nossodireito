@@ -723,7 +723,12 @@
         "protecao_social",
         "pensao_zika",
         "esporte_paralimpico",
-        "turismo_acessivel"
+        "turismo_acessivel",
+        "acessibilidade_arquitetonica",
+        "capacidade_legal",
+        "crimes_contra_pcd",
+        "acessibilidade_digital",
+        "reabilitacao"
       ],
       "dica": "Certidão de Nascimento vale como RG para menores de idade"
     },
@@ -751,7 +756,12 @@
         "protecao_social",
         "pensao_zika",
         "esporte_paralimpico",
-        "turismo_acessivel"
+        "turismo_acessivel",
+        "acessibilidade_arquitetonica",
+        "capacidade_legal",
+        "crimes_contra_pcd",
+        "acessibilidade_digital",
+        "reabilitacao"
       ],
       "dica": "CPF de menor pode ser obtido nas agências do Banco do Brasil, Caixa ou Correios"
     },
@@ -771,7 +781,8 @@
         "prouni_fies_sisu",
         "bolsa_familia",
         "tarifa_social_energia",
-        "protecao_social"
+        "protecao_social",
+        "acessibilidade_arquitetonica"
       ],
       "dica": "Se mora de aluguel sem conta no nome, peça declaração do proprietário com firma reconhecida"
     },
@@ -803,7 +814,10 @@
         "protecao_social",
         "pensao_zika",
         "esporte_paralimpico",
-        "turismo_acessivel"
+        "turismo_acessivel",
+        "acessibilidade_arquitetonica",
+        "capacidade_legal",
+        "acessibilidade_digital"
       ],
       "dica": "Guarde SEMPRE o original. Faça várias cópias autenticadas. O laudo é seu documento mais importante."
     },
@@ -845,7 +859,8 @@
       "nome": "Cartão SUS",
       "descricao": "Cartão Nacional de Saúde — pode ser feito gratuitamente em qualquer UBS",
       "categorias": [
-        "sus_terapias"
+        "sus_terapias",
+        "reabilitacao"
       ],
       "dica": "Se não tiver, faça na UBS mais próxima levando RG e comprovante de residência"
     },
@@ -864,7 +879,8 @@
       "descricao": "Receita com tipo de terapia, frequência semanal e justificativa clínica",
       "categorias": [
         "plano_saude",
-        "sus_terapias"
+        "sus_terapias",
+        "reabilitacao"
       ],
       "dica": "Peça ao médico que detalhe: tipo de terapia, quantidade de sessões por semana e justificativa"
     },
