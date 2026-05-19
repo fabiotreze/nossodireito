@@ -24,7 +24,6 @@ import argparse
 import json
 import re
 import sys
-from collections import defaultdict
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
@@ -145,7 +144,8 @@ class LegalComplianceValidator:
 
     def load_data(self) -> Dict[str, Any]:
         if not self.direitos_path.exists():
-            raise FileNotFoundError(f"Arquivo não encontrado: {self.direitos_path}")
+            raise FileNotFoundError(
+                f"Arquivo não encontrado: {self.direitos_path}")
         with open(self.direitos_path, "r", encoding="utf-8") as f:
             return json.load(f)
 
@@ -224,7 +224,8 @@ class LegalComplianceValidator:
         fontes = data.get("fontes", [])
 
         by_number, by_name = self._index_legal_sources(fontes)
-        mapped_items = self._map_base_legal(categorias, category, by_number, by_name)
+        mapped_items = self._map_base_legal(
+            categorias, category, by_number, by_name)
 
         # Deduplicar fontes a validar por URL para evitar custo/rede desnecessário.
         sources_to_validate: Dict[str, Dict[str, Any]] = {}
@@ -314,7 +315,8 @@ class LegalComplianceValidator:
                 f"⚠️ Itens base_legal sem mapeamento oficial: "
                 f"{self.report['summary']['unmapped_base_legal_items']}"
             )
-            print("   Ver relatório: validation_legal_report.json (campo unmapped_base_legal)")
+            print(
+                "   Ver relatório: validation_legal_report.json (campo unmapped_base_legal)")
 
         print(f"\n📄 Relatório salvo em: {report_path.name}")
         print("=" * 80)
@@ -327,7 +329,8 @@ def main() -> int:
     parser = argparse.ArgumentParser(
         description="Validate Legal Compliance — Validação de base legal por camadas"
     )
-    parser.add_argument("--category", help="Validar apenas categoria específica (ex: bpc)")
+    parser.add_argument(
+        "--category", help="Validar apenas categoria específica (ex: bpc)")
     parser.add_argument(
         "--quick",
         action="store_true",
