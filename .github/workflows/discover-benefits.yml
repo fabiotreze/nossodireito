@@ -33,10 +33,10 @@ jobs:
       issues: write
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.0
 
       - name: Setup Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
         with:
           python-version: "3.11"
 
@@ -90,7 +90,7 @@ jobs:
 
       - name: Criar issue com candidatos
         if: steps.discover.outputs.has_candidates == 'true' && inputs.dry_run != 'true'
-        uses: actions/github-script@v9
+        uses: actions/github-script@373c709c69115d41ff229c7e5df9f8788daa9553 # v9.0.0
         env:
           TOTAL: ${{ steps.discover.outputs.total }}
           ALTA: ${{ steps.discover.outputs.alta }}
@@ -158,7 +158,7 @@ jobs:
 
       - name: Upload relatório como artefato
         if: always()
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.0
         with:
           name: discovery-report-${{ github.run_number }}
           path: |
