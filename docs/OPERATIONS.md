@@ -33,7 +33,7 @@
 2. App package deploy:
    - `gh workflow run deploy.yml -R fabiotreze/nossodireito`
 3. Post-deploy smoke:
-   - `curl -s https://nossodireito.fabiotreze.com/ | grep -E "aiConsentRevokeInline|v=1.19.0"`
+   - `curl -s https://nossodireito.fabiotreze.com/ | grep -E "aiConsentRevokeInline|v=1.21.0"`
 
 ## Incident Triage
 
