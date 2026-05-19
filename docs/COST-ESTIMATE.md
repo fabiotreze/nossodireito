@@ -1,6 +1,6 @@
 ## Estimativa de Custo (Azure Pricing Calculator)
 
-**Version:** 1.19.0
+**Version:** 1.21.0
 **Updated:** 2026-05-18
 **Region:** Brazil South (`brazilsouth`)
 **Currency base:** USD

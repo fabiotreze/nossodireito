@@ -15,7 +15,7 @@ Replicate this solution with minimal manual work in another tenant/subscription,
 - `project_name` (resource naming base)
 - `custom_domain` (for hostname/cert binding)
 
-## Network and Secret Posture (v1.19.0)
+## Network and Secret Posture (v1.21.0)
 
 - OpenAI, Key Vault e Redis usam Private Endpoint + Private DNS por padrao.
 - O App Service continua publico via dominio customizado, com acesso direto restrito a IPs Cloudflare.
