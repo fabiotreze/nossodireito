@@ -5,7 +5,7 @@
 requests~=2.34.0
 
 # HTML/XML parsing for content validation
-lxml~=6.1.0
+lxml~=6.1.1
 
 # JSON Schema validation (Draft 7)
 jsonschema~=4.26.0
