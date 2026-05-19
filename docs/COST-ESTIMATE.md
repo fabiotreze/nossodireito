@@ -1,4 +1,4 @@
-## Estimativa de Custo (Azure Pricing Calculator)
+# Estimativa de Custo (Azure Pricing Calculator)
 
 **Version:** 1.21.0
 **Updated:** 2026-05-18
@@ -141,6 +141,38 @@ Total mensal aproximado:
 $$
 Total = Subtotal\_sem\_IA + Custo\_IA\_mensal
 $$
+
+## Custo Real Observado (atualizado 2026-05-19)
+
+Dados extraidos do Azure Cost Management (mes corrente, BRL).
+
+### Total subscription
+
+- **Custo acumulado no mes:** `R$ 66.58`
+- **Previsao fim do mes:** `R$ 112.83`
+- **Credito disponivel:** `R$ 512.07`
+- **Saldo projetado:** `~R$ 399 sobra`
+
+### Top servicos (mes corrente)
+
+| Servico                          | BRL    |
+| -------------------------------- | ------ |
+| Azure App Service (B1 Linux)     | ~30.20 |
+| Container Registry               | ~13.85 |
+| Azure OpenAI (gpt-4o-mini)       | ~9.40  |
+| Private Endpoint + Private DNS   | ~5.10  |
+| Log Analytics + App Insights     | ~4.80  |
+| Key Vault Standard               | ~1.50  |
+| Outros (Monitor, Cosmos < R$0.01)| ~1.73  |
+
+> Valores arredondados a partir da consulta `az consumption usage list`.
+> A coluna oficial fica em USD; conversao aproximada a `R$ 5,00/USD`.
+
+### Observacoes
+
+- Custo real esta **dentro do baseline + delta privado** projetado acima.
+- Container Registry aparece por imagens de build antigas; nao e usado em runtime (deploy atual e ZIP via azd).
+- Cosmos DB esta em SKU serverless ocioso (custo < R$ 0.01/mes); pode ser removido se nao for ativado.
 
 ## Proximo passo recomendado
 

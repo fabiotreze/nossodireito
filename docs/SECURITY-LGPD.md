@@ -1,4 +1,4 @@
-## Security and LGPD
+# Security and LGPD
 
 **Version:** 1.21.0
 **Updated:** 2026-05-18
@@ -35,7 +35,7 @@ bash scripts/security_headers_check.sh
 flowchart LR
   U[Usuario] --> A[Browser anonymiza texto]
   A --> C{Consentimento IA}
-  C -->|Aceita| S[/api/analyze-document]
+  C -->|Aceita| S["/api/analyze-document"]
   C -->|Recusa| L[Somente analise local]
   S --> V[Validacao anti-PII]
   V --> O[Azure OpenAI gpt-4o-mini via Private Endpoint]

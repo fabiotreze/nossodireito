@@ -1,4 +1,4 @@
-## Operations Runbook
+# Operations Runbook
 
 **Version:** 1.21.0
 **Updated:** 2026-05-18

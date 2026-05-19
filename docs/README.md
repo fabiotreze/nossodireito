@@ -1,4 +1,4 @@
-## Documentation Index
+# Documentation Index
 
 **Version:** 1.21.0
 **Updated:** 2026-05-18
