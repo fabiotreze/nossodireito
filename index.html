@@ -15,15 +15,10 @@
     <link rel="alternate" hreflang="x-default" href="https://nossodireito.fabiotreze.com/" />
     <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com" />
     <link rel="dns-prefetch" href="https://vlibras.gov.br" />
-    <!-- SRI/CORS preload p/ scripts CDN externos (LGPD + supply-chain hardening) -->
-    <!-- PDF.js: hash sha384 verificado em build; integrity= + crossorigin= satisfazem Subresource Integrity. -->
-    <link
-      rel="preload"
-      as="script"
-      href="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"
-      integrity="sha384-/1qUCSGwTur9vjf/z9lmu/eCUYbpOTgSjmpbMQZ1/CtX2v/WcAIKqRv+U1DUCG6e"
-      crossorigin="anonymous"
-    />
+    <!-- PDF.js: lazy-loaded via dynamic <script> in app.js only when user uploads a PDF.
+         Removed <link rel="preload"> — it triggered "preloaded but not used within 5s" browser
+         warning since the script is never executed synchronously on page load.
+         SW cache (sw.js CDN_ASSETS) handles warm-load for repeat visitors. -->
     <!-- VLibras (gov.br): crossorigin para CORS; SRI dispensado (atualização do governo quebraria hash). -->
     <link rel="preconnect" href="https://vlibras.gov.br" crossorigin="anonymous" />
     <link
@@ -541,9 +536,9 @@
         }
       }
     </style>
-    <link rel="stylesheet" href="css/styles.css?v=1.21.0" media="print" id="deferredCSS" />
+    <link rel="stylesheet" href="css/styles.css?v=1.21.1" media="print" id="deferredCSS" />
     <noscript>
-      <link rel="stylesheet" href="css/styles.css?v=1.21.0" />
+      <link rel="stylesheet" href="css/styles.css?v=1.21.1" />
     </noscript>
     <script type="application/ld+json">
       {
@@ -2380,8 +2375,8 @@
     </div>
 
     <!-- Anonymizer compartilhado (Node + Browser) — DEVE carregar ANTES de app.js -->
-    <script src="shared/anonymizer.js?v=1.21.0" defer></script>
-    <script src="js/app.js?v=1.21.0" defer></script>
-    <script src="js/sw-register.js?v=1.21.0" defer></script>
+    <script src="shared/anonymizer.js?v=1.21.1" defer></script>
+    <script src="js/app.js?v=1.21.1" defer></script>
+    <script src="js/sw-register.js?v=1.21.1" defer></script>
   </body>
 </html>

@@ -155,15 +155,15 @@ Dados extraidos do Azure Cost Management (mes corrente, BRL).
 
 ### Top servicos (mes corrente)
 
-| Servico                          | BRL    |
-| -------------------------------- | ------ |
-| Azure App Service (B1 Linux)     | ~30.20 |
-| Container Registry               | ~13.85 |
-| Azure OpenAI (gpt-4o-mini)       | ~9.40  |
-| Private Endpoint + Private DNS   | ~5.10  |
-| Log Analytics + App Insights     | ~4.80  |
-| Key Vault Standard               | ~1.50  |
-| Outros (Monitor, Cosmos < R$0.01)| ~1.73  |
+| Servico                           | BRL    |
+| --------------------------------- | ------ |
+| Azure App Service (B1 Linux)      | ~30.20 |
+| Container Registry                | ~13.85 |
+| Azure OpenAI (gpt-4o-mini)        | ~9.40  |
+| Private Endpoint + Private DNS    | ~5.10  |
+| Log Analytics + App Insights      | ~4.80  |
+| Key Vault Standard                | ~1.50  |
+| Outros (Monitor, Cosmos < R$0.01) | ~1.73  |
 
 > Valores arredondados a partir da consulta `az consumption usage list`.
 > A coluna oficial fica em USD; conversao aproximada a `R$ 5,00/USD`.

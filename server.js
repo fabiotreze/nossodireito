@@ -415,8 +415,9 @@ const SECURITY_HEADERS = Object.freeze({
   // VLibras Unity WebGL (Emscripten) calls _emscripten_set_devicemotion_callback
   // which requires accelerometer permission. Chromium enforces this via
   // Permissions-Policy; Safari does not. Blocking breaks VLibras on Windows.
+  // bluetooth=() removed: not a recognized W3C Permissions Policy feature (console warning).
   "Permissions-Policy":
-    "camera=(), microphone=(), geolocation=(), payment=(), usb=(), bluetooth=(), serial=(), hid=(), accelerometer=(self), gyroscope=(self), magnetometer=(self), screen-wake-lock=()",
+    "camera=(), microphone=(), geolocation=(), payment=(), usb=(), serial=(), hid=(), accelerometer=(self), gyroscope=(self), magnetometer=(self), screen-wake-lock=()",
 
   // ── Cross-Origin Isolation ──
   "Cross-Origin-Opener-Policy": "same-origin",

@@ -7,9 +7,11 @@
     // Fetch JSON data eagerly at module scope (before DOMContentLoaded).
     // Replaces <link rel="preload"> which had credential-mode mismatch.
     // AbortController prevents ERR_TIMED_OUT on cold starts.
+    // 12000ms: App Service B1 cold start can take 8-12s; 6000ms was too tight
+    // causing Google Search Console to log XHR failures on cold-start renders.
     function _earlyFetch(url) {
         const c = new AbortController();
-        const t = setTimeout(() => c.abort(), 6000);
+        const t = setTimeout(() => c.abort(), 12000);
         return fetch(url, { signal: c.signal }).then(r => { clearTimeout(t); return r.ok ? r : Promise.reject(r); }).catch(() => { clearTimeout(t); return null; });
     }
     const _earlyDireitos = _earlyFetch('data/direitos.json');

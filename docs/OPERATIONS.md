@@ -1,7 +1,7 @@
 # Operations Runbook
 
-**Version:** 1.21.0
-**Updated:** 2026-05-18
+**Version:** 1.21.1
+**Updated:** 2026-05-19
 
 ## Scope
 
@@ -19,11 +19,11 @@
    - `curl -s -o /dev/null -w "%{http_code}\n" https://nossodireito.fabiotreze.com/`
    - `curl -s -o /dev/null -w "%{http_code}\n" https://app-nossodireito-br.azurewebsites.net/`
    - Expected: custom domain `200`, direct hostname `403`.
-2. Validate security headers:
+3. Validate security headers:
    - `bash scripts/security_headers_check.sh`
-3. Validate tests:
+4. Validate tests:
    - `python -m pytest tests/ --ignore=tests/test_e2e_playwright.py -q`
-4. Validate Terraform:
+5. Validate Terraform:
    - `cd terraform && terraform fmt -check -recursive && terraform validate`
 
 ## Deploy
