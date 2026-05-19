@@ -30,22 +30,6 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 
 ---
 
-## [1.22.0] - 2026-05-19
-
-### Adicionado
-
-- (descrever mudanças aqui)
-
----
-
-## [1.21.1] - 2026-05-19
-
-### Adicionado
-
-- (descrever mudanças aqui)
-
----
-
 ## [1.21.0] - 2026-05-18
 
 ### Adicionado

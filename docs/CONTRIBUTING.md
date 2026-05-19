@@ -2,6 +2,9 @@
 
 **Bem-vindo(a)!** Este projeto é mantido pela **comunidade** e sua contribuição é essencial para manter as informações atualizadas e precisas.
 
+> 💻 **Contribuindo com código?** Veja [`../CONTRIBUTING.md`](../CONTRIBUTING.md)
+> na raiz — guia técnico com fluxo de PR, branches e gates de CI.
+
 ---
 
 ## 🎯 Formas de Contribuir
