@@ -161,12 +161,14 @@ class MasterComplianceValidator:
                 self.matching = json.load(f)
         except Exception as e:
             self.matching = None
-            self.log_error('dados', f"Erro ao carregar matching_engine.json: {e}")
+            self.log_error(
+                'dados', f"Erro ao carregar matching_engine.json: {e}")
 
     def log_error(self, category: str, message: str):
         """Registra erro"""
         self.errors.append({'category': category, 'message': message})
-        self.metrics[category]['checks'].append({'type': 'ERROR', 'message': message})
+        self.metrics[category]['checks'].append(
+            {'type': 'ERROR', 'message': message})
         print(f"❌ [{category.upper()}] {message}")
 
     def log_warning(self, category: str, message: str, penalty: float = 0.5):
@@ -178,7 +180,8 @@ class MasterComplianceValidator:
         informativos (raros).
         """
         self.warnings.append({'category': category, 'message': message})
-        self.metrics[category]['checks'].append({'type': 'WARN', 'message': message})
+        self.metrics[category]['checks'].append(
+            {'type': 'WARN', 'message': message})
         if penalty > 0:
             self.metrics[category]['max'] += penalty
         print(f"⚠️  [{category.upper()}] {message}")
@@ -188,7 +191,8 @@ class MasterComplianceValidator:
         self.passes.append({'category': category, 'message': message})
         self.metrics[category]['score'] += points
         self.metrics[category]['max'] += points
-        self.metrics[category]['checks'].append({'type': 'PASS', 'message': message, 'points': points})
+        self.metrics[category]['checks'].append(
+            {'type': 'PASS', 'message': message, 'points': points})
         print(f"✅ [{category.upper()}] {message}")
 
     def log_fail(self, category: str, message: str, points: float = 1.0):
@@ -241,7 +245,8 @@ class MasterComplianceValidator:
         if len(cats) == 30:
             self.log_pass('dados', f"30 categorias presentes ✓", 5)
         else:
-            self.log_fail('dados', f"Esperado 30 categorias, encontrado {len(cats)}", 5)
+            self.log_fail(
+                'dados', f"Esperado 30 categorias, encontrado {len(cats)}", 5)
 
         # 3. Cada categoria deve ter campos obrigatórios
         required_cat_fields = ['id', 'titulo', 'resumo', 'base_legal', 'requisitos',
@@ -251,16 +256,20 @@ class MasterComplianceValidator:
             cat_id = cat.get('id', 'UNKNOWN')
             for field in required_cat_fields:
                 if field not in cat or not cat[field]:
-                    self.log_warning('dados', f"Categoria '{cat_id}': campo '{field}' ausente ou vazio")
+                    self.log_warning(
+                        'dados', f"Categoria '{cat_id}': campo '{field}' ausente ou vazio")
                 else:
-                    self.log_pass('dados', f"Categoria '{cat_id}': campo '{field}' ✓", 0.5)
+                    self.log_pass(
+                        'dados', f"Categoria '{cat_id}': campo '{field}' ✓", 0.5)
 
             # Validar base_legal tem artigos
             for idx, bl in enumerate(cat.get('base_legal', [])):
                 if 'artigo' not in bl or not bl['artigo']:
-                    self.log_warning('dados', f"Categoria '{cat_id}': base_legal[{idx}] sem artigo")
+                    self.log_warning(
+                        'dados', f"Categoria '{cat_id}': base_legal[{idx}] sem artigo")
                 elif 'lei' in bl and 'url' in bl:
-                    self.log_pass('dados', f"Categoria '{cat_id}': base_legal[{idx}] completa", 0.3)
+                    self.log_pass(
+                        'dados', f"Categoria '{cat_id}': base_legal[{idx}] completa", 0.3)
 
         # 4. Validar matching_engine
         if not self.matching:
@@ -269,16 +278,20 @@ class MasterComplianceValidator:
 
         if 'keyword_map' in self.matching:
             keyword_map = self.matching['keyword_map']
-            self.log_pass('dados', f"keyword_map presente com {len(keyword_map)} keywords", 5)
+            self.log_pass(
+                'dados', f"keyword_map presente com {len(keyword_map)} keywords", 5)
 
             # Validar estrutura de cada keyword
             for kw, config in keyword_map.items():
                 if 'cats' in config and 'weight' in config:
-                    self.log_pass('dados', f"Keyword '{kw}': estrutura válida", 0.1)
+                    self.log_pass(
+                        'dados', f"Keyword '{kw}': estrutura válida", 0.1)
                 else:
-                    self.log_warning('dados', f"Keyword '{kw}': estrutura incompleta")
+                    self.log_warning(
+                        'dados', f"Keyword '{kw}': estrutura incompleta")
         else:
-            self.log_fail('dados', "keyword_map ausente no matching_engine.json", 10)
+            self.log_fail(
+                'dados', "keyword_map ausente no matching_engine.json", 10)
 
     # =========================================================================
     # CATEGORIA 2: VALIDAÇÃO DE CÓDIGO
@@ -308,20 +321,25 @@ class MasterComplianceValidator:
                     match = re.search(r'Passou: (\d+)', output)
                     if match:
                         passes = int(match.group(1))
-                        self.log_pass('codigo', f"validate_content.py: {passes} validações OK", passes * 0.5)
+                        self.log_pass(
+                            'codigo', f"validate_content.py: {passes} validações OK", passes * 0.5)
 
                 if 'Erros: 0' in output:
-                    self.log_pass('codigo', "validate_content.py: 0 erros ✓", 10)
+                    self.log_pass(
+                        'codigo', "validate_content.py: 0 erros ✓", 10)
                 else:
                     match = re.search(r'Erros: (\d+)', output)
                     if match:
                         errors = int(match.group(1))
-                        self.log_fail('codigo', f"validate_content.py: {errors} erros encontrados", 10)
+                        self.log_fail(
+                            'codigo', f"validate_content.py: {errors} erros encontrados", 10)
             else:
-                self.log_fail('codigo', f"validate_content.py falhou (exit {result.returncode})", 20)
+                self.log_fail(
+                    'codigo', f"validate_content.py falhou (exit {result.returncode})", 20)
 
         except Exception as e:
-            self.log_fail('codigo', f"Erro ao executar validate_content.py: {e}", 20)
+            self.log_fail(
+                'codigo', f"Erro ao executar validate_content.py: {e}", 20)
 
         # 2. Validar arquivos Python
         python_files = self._find_files('.py')
@@ -333,10 +351,12 @@ class MasterComplianceValidator:
                     compile(f.read(), py_file, 'exec')
                 self.log_pass('codigo', f"{py_file.name}: sintaxe válida", 0.5)
             except SyntaxError as e:
-                self.log_fail('codigo', f"{py_file.name}: erro de sintaxe linha {e.lineno}", 1)
+                self.log_fail(
+                    'codigo', f"{py_file.name}: erro de sintaxe linha {e.lineno}", 1)
 
         # 3. Validar JSON
-        json_files = ['data/direitos.json', 'data/matching_engine.json', 'manifest.json', 'package.json']
+        json_files = ['data/direitos.json',
+                      'data/matching_engine.json', 'manifest.json', 'package.json']
         for json_file in json_files:
             try:
                 with open(self.root / json_file, 'r', encoding='utf-8') as f:
@@ -358,13 +378,17 @@ class MasterComplianceValidator:
                         timeout=10
                     )
                     if result.returncode == 0:
-                        self.log_pass('codigo', f"{js_file.name}: JS sintaxe válida (node -c)", 2)
+                        self.log_pass(
+                            'codigo', f"{js_file.name}: JS sintaxe válida (node -c)", 2)
                     else:
-                        self.log_fail('codigo', f"{js_file.name}: JS sintaxe inválida", 2)
+                        self.log_fail(
+                            'codigo', f"{js_file.name}: JS sintaxe inválida", 2)
                 except FileNotFoundError:
-                    self.log_pass('codigo', f"{js_file.name}: node não disponível (skip JS syntax)", 1)
+                    self.log_pass(
+                        'codigo', f"{js_file.name}: node não disponível (skip JS syntax)", 1)
                 except Exception as e:
-                    self.log_warning('codigo', f"{js_file.name}: erro ao verificar JS syntax: {e}")
+                    self.log_warning(
+                        'codigo', f"{js_file.name}: erro ao verificar JS syntax: {e}")
 
     # =========================================================================
     # CATEGORIA 3: VALIDAÇÃO DE FONTES OFICIAIS
@@ -379,7 +403,8 @@ class MasterComplianceValidator:
         print("=" * 80)
 
         if self.quick:
-            self.log_pass('fontes', "Fontes: pulado em --quick (requer HTTP)", 20)
+            self.log_pass(
+                'fontes', "Fontes: pulado em --quick (requer HTTP)", 20)
             return
 
         # Executar validate_legal_sources.py
@@ -402,8 +427,10 @@ class MasterComplianceValidator:
                 match = re.search(r'Total de problemas: (\d+)', output)
                 if match:
                     problems = int(match.group(1))
-                    self.log_warning('fontes', f"{problems} problemas encontrados nas fontes legais")
-                    self.metrics['fontes']['score'] += max(0, 20 - problems * 2)
+                    self.log_warning(
+                        'fontes', f"{problems} problemas encontrados nas fontes legais")
+                    self.metrics['fontes']['score'] += max(
+                        0, 20 - problems * 2)
                     self.metrics['fontes']['max'] += 20
 
         except Exception as e:
@@ -416,8 +443,10 @@ class MasterComplianceValidator:
             'inss.gov.br',
             'receita.fazenda.gov.br',
             'mec.gov.br',
-            'who.int',       # OMS — Organização Mundial da Saúde (fonte internacional legítima)
-            'icd.who.int',   # OMS — CID-10/CID-11 (classificação oficial de doenças)
+            # OMS — Organização Mundial da Saúde (fonte internacional legítima)
+            'who.int',
+            # OMS — CID-10/CID-11 (classificação oficial de doenças)
+            'icd.who.int',
             'dpu.def.br',    # Defensoria Pública da União (domínio oficial)
             'mpf.mp.br',     # Ministério Público Federal (domínio oficial)
             'cpb.org.br',    # Comitê Paralímpico Brasileiro
@@ -443,9 +472,11 @@ class MasterComplianceValidator:
             for fonte in fontes:
                 url = fonte.get('url', '')
                 if any(domain in url for domain in official_domains):
-                    self.log_pass('fontes', f"Fonte oficial: {fonte.get('nome', 'N/A')} ✓", 0.5)
+                    self.log_pass(
+                        'fontes', f"Fonte oficial: {fonte.get('nome', 'N/A')} ✓", 0.5)
                 else:
-                    self.log_warning('fontes', f"Fonte não oficial: {fonte.get('nome', 'N/A')} - {url}")
+                    self.log_warning(
+                        'fontes', f"Fonte não oficial: {fonte.get('nome', 'N/A')} - {url}")
 
     # =========================================================================
     # CATEGORIA 4: VALIDAÇÃO DE ARQUITETURA
@@ -461,7 +492,7 @@ class MasterComplianceValidator:
         expected_structure = {
             'data': ['direitos.json', 'matching_engine.json'],
             'scripts': ['validate_content.py', 'validate_sources.py', 'validate_legal_sources.py',
-                       'bump_version.py', 'validate_all.py', 'pre-commit'],
+                        'bump_version.py', 'validate_all.py', 'pre-commit'],
             'css': ['styles.css'],
             'js': ['app.js', 'sw-register.js'],
             'docs': ['README.md', 'ARCHITECTURE.md', 'OPERATIONS.md', 'SECURITY-LGPD.md', 'REPLICATION.md'],
@@ -481,7 +512,8 @@ class MasterComplianceValidator:
             for file in files:
                 file_path = folder_path / file
                 if file_path.exists():
-                    self.log_pass('arquitetura', f"{folder}/{file} presente", 0.5)
+                    self.log_pass(
+                        'arquitetura', f"{folder}/{file} presente", 0.5)
                 else:
                     self.log_warning('arquitetura', f"{folder}/{file} ausente")
 
@@ -522,9 +554,11 @@ class MasterComplianceValidator:
                 # Verificar tamanho mínimo
                 size = doc_path.stat().st_size
                 if size > 100:  # Pelo menos 100 bytes
-                    self.log_pass('documentacao', f"{doc} presente e completo", points)
+                    self.log_pass('documentacao',
+                                  f"{doc} presente e completo", points)
                 else:
-                    self.log_warning('documentacao', f"{doc} muito curto ({size} bytes)")
+                    self.log_warning(
+                        'documentacao', f"{doc} muito curto ({size} bytes)")
                     self.metrics['documentacao']['score'] += points * 0.5
                     self.metrics['documentacao']['max'] += points
             else:
@@ -535,12 +569,15 @@ class MasterComplianceValidator:
         if readme_path.exists():
             content = readme_path.read_text(encoding='utf-8')
 
-            required_sections = ['Descrição', 'Funcionalidades', 'Como Usar', 'Tecnologias']
+            required_sections = ['Descrição',
+                                 'Funcionalidades', 'Como Usar', 'Tecnologias']
             for section in required_sections:
                 if section.lower() in content.lower():
-                    self.log_pass('documentacao', f"README: seção '{section}' presente", 1)
+                    self.log_pass('documentacao',
+                                  f"README: seção '{section}' presente", 1)
                 else:
-                    self.log_warning('documentacao', f"README: seção '{section}' ausente")
+                    self.log_warning(
+                        'documentacao', f"README: seção '{section}' ausente")
 
         # Padrão único de header em docs/ (# H1 + **Version:** + **Updated:** YYYY-MM-DD)
         # Freshness: avisa se Updated > 60 dias.
@@ -562,19 +599,24 @@ class MasterComplianceValidator:
                 text = md.read_text(encoding='utf-8')
                 m = header_re.search(text)
                 if not m:
-                    self.log_fail('documentacao', f"{md.relative_to(self.root)}: header fora do padrao (# Title + **Version:** + **Updated:**)", 2)
+                    self.log_fail(
+                        'documentacao', f"{md.relative_to(self.root)}: header fora do padrao (# Title + **Version:** + **Updated:**)", 2)
                 else:
-                    self.log_pass('documentacao', f"{md.name}: header padrao OK", 1)
+                    self.log_pass('documentacao',
+                                  f"{md.name}: header padrao OK", 1)
                     try:
                         updated = _dt.strptime(m.group(1), '%Y-%m-%d').date()
                         age = (today - updated).days
                         if age > 60:
-                            self.log_warning('documentacao', f"{md.name}: Updated ha {age} dias (>60)")
+                            self.log_warning(
+                                'documentacao', f"{md.name}: Updated ha {age} dias (>60)")
                     except ValueError:
-                        self.log_fail('documentacao', f"{md.name}: data Updated invalida", 1)
+                        self.log_fail('documentacao',
+                                      f"{md.name}: data Updated invalida", 1)
                 for block in mermaid_block_re.findall(text):
                     for bad in bad_shape_re.findall(block):
-                        self.log_fail('documentacao', f"{md.name}: mermaid shape sem aspas '{bad}' (quebra render GitHub; use [\"...\"]) ", 2)
+                        self.log_fail(
+                            'documentacao', f"{md.name}: mermaid shape sem aspas '{bad}' (quebra render GitHub; use [\"...\"]) ", 2)
 
     # =========================================================================
     # CATEGORIA 6: VALIDAÇÃO DE SEGURANÇA
@@ -626,16 +668,19 @@ class MasterComplianceValidator:
                         continue
 
                 for pattern in dangerous_patterns:
-                    matches = list(re.finditer(pattern, content, re.IGNORECASE))
+                    matches = list(re.finditer(
+                        pattern, content, re.IGNORECASE))
 
                     if matches:
-                        self.log_warning('seguranca', f"{file.name}: possível credencial hardcoded")
+                        self.log_warning(
+                            'seguranca', f"{file.name}: possível credencial hardcoded")
                         found_secrets = True
             except:
                 pass
 
         if not found_secrets:
-            self.log_pass('seguranca', "Nenhuma credencial hardcoded detectada", 10)
+            self.log_pass(
+                'seguranca', "Nenhuma credencial hardcoded detectada", 10)
 
         # 3. Validar CSP (Content Security Policy) no HTML
         index_html = self.root / 'index.html'
@@ -661,7 +706,8 @@ class MasterComplianceValidator:
         if sw_js.exists():
             content = sw_js.read_text(encoding='utf-8')
             if 'cache' in content.lower():
-                self.log_pass('performance', "Service Worker com cache implementado", 10)
+                self.log_pass(
+                    'performance', "Service Worker com cache implementado", 10)
             else:
                 self.log_warning('performance', "Service Worker sem cache")
         else:
@@ -679,13 +725,15 @@ class MasterComplianceValidator:
             # Verificar se HTML está otimizado (pouco espaço em branco, sem comentários HTML)
             content = index_html.read_text(encoding='utf-8')
             # HTML minificado tem menos de 2% de espaços/tabs/newlines
-            whitespace_ratio = (content.count(' ') + content.count('\t') + content.count('\n')) / len(content)
+            whitespace_ratio = (content.count(
+                ' ') + content.count('\t') + content.count('\n')) / len(content)
             has_html_comments = '<!--' in content and '-->' in content
             is_optimized = whitespace_ratio < 0.15 and not has_html_comments
 
         if has_minified or is_optimized:
             status = "arquivo .min.html" if has_minified else "HTML otimizado"
-            self.log_pass('performance', f"HTML minificado presente ({status})", 5)
+            self.log_pass(
+                'performance', f"HTML minificado presente ({status})", 5)
         else:
             self.log_warning('performance', "HTML minificado ausente")
 
@@ -696,9 +744,11 @@ class MasterComplianceValidator:
             if path.exists():
                 size_mb = path.stat().st_size / (1024 * 1024)
                 if size_mb < 5:
-                    self.log_pass('performance', f"{file}: tamanho OK ({size_mb:.2f}MB)", 2)
+                    self.log_pass(
+                        'performance', f"{file}: tamanho OK ({size_mb:.2f}MB)", 2)
                 else:
-                    self.log_warning('performance', f"{file}: arquivo grande ({size_mb:.2f}MB)")
+                    self.log_warning(
+                        'performance', f"{file}: arquivo grande ({size_mb:.2f}MB)")
 
         # 4. Tamanho de assets críticos (HTML <100KB, JS <100KB, CSS <100KB)
         asset_limits = {
@@ -712,9 +762,11 @@ class MasterComplianceValidator:
                 size = asset_path.stat().st_size
                 size_kb = size / 1024
                 if size <= max_bytes:
-                    self.log_pass('performance', f"{asset}: {size_kb:.0f}KB (< {max_bytes // 1024}KB)", 1)
+                    self.log_pass(
+                        'performance', f"{asset}: {size_kb:.0f}KB (< {max_bytes // 1024}KB)", 1)
                 else:
-                    self.log_warning('performance', f"{asset}: {size_kb:.0f}KB (> {max_bytes // 1024}KB)")
+                    self.log_warning(
+                        'performance', f"{asset}: {size_kb:.0f}KB (> {max_bytes // 1024}KB)")
 
     # =========================================================================
     # CATEGORIA 8: VALIDAÇÃO DE ACESSIBILIDADE
@@ -736,9 +788,11 @@ class MasterComplianceValidator:
         # 1. Atributos ARIA
         aria_count = len(re.findall(r'aria-\w+', content))
         if aria_count >= 30:
-            self.log_pass('acessibilidade', f"{aria_count} atributos ARIA encontrados ✓", 10)
+            self.log_pass('acessibilidade',
+                          f"{aria_count} atributos ARIA encontrados ✓", 10)
         else:
-            self.log_warning('acessibilidade', f"Poucos atributos ARIA ({aria_count})")
+            self.log_warning('acessibilidade',
+                             f"Poucos atributos ARIA ({aria_count})")
 
         # 2. VLibras
         if 'vlibras' in content.lower():
@@ -756,10 +810,12 @@ class MasterComplianceValidator:
         if missing_alt == 0:
             self.log_pass('acessibilidade', "Todas imagens com alt text", 5)
         else:
-            self.log_warning('acessibilidade', f"{missing_alt} imagens sem alt text")
+            self.log_warning('acessibilidade',
+                             f"{missing_alt} imagens sem alt text")
 
         # 4. Semântica HTML5
-        semantic_tags = ['nav', 'main', 'section', 'article', 'header', 'footer']
+        semantic_tags = ['nav', 'main', 'section',
+                         'article', 'header', 'footer']
 
         # Verificar também no JavaScript para conteúdo gerado dinamicamente
         js_file = self.root / 'js' / 'app.js'
@@ -774,9 +830,11 @@ class MasterComplianceValidator:
 
             if in_html or in_js:
                 source = "HTML" if in_html else "JavaScript dinâmico"
-                self.log_pass('acessibilidade', f"Tag semântica <{tag}> presente ({source})", 1)
+                self.log_pass('acessibilidade',
+                              f"Tag semântica <{tag}> presente ({source})", 1)
             else:
-                self.log_warning('acessibilidade', f"Tag semântica <{tag}> ausente")
+                self.log_warning('acessibilidade',
+                                 f"Tag semântica <{tag}> ausente")
 
     # =========================================================================
     # CATEGORIA 9: VALIDAÇÃO DE SEO
@@ -828,12 +886,15 @@ class MasterComplianceValidator:
                 with open(manifest, 'r', encoding='utf-8') as f:
                     manifest_data = json.load(f)
 
-                required_fields = ['name', 'short_name', 'description', 'icons']
+                required_fields = [
+                    'name', 'short_name', 'description', 'icons']
                 for field in required_fields:
                     if field in manifest_data:
-                        self.log_pass('seo', f"manifest.json: campo '{field}' presente", 1)
+                        self.log_pass(
+                            'seo', f"manifest.json: campo '{field}' presente", 1)
                     else:
-                        self.log_warning('seo', f"manifest.json: campo '{field}' ausente")
+                        self.log_warning(
+                            'seo', f"manifest.json: campo '{field}' ausente")
             except:
                 self.log_fail('seo', "manifest.json inválido", 5)
         else:
@@ -853,7 +914,8 @@ class MasterComplianceValidator:
             if not ld_blocks:
                 self.log_fail('seo', "Nenhum bloco JSON-LD encontrado", 5)
             else:
-                self.log_pass('seo', f"{len(ld_blocks)} blocos JSON-LD encontrados", 2)
+                self.log_pass(
+                    'seo', f"{len(ld_blocks)} blocos JSON-LD encontrados", 2)
 
                 ld_types_found = []
                 for block in ld_blocks:
@@ -865,10 +927,12 @@ class MasterComplianceValidator:
                         self.log_fail('seo', "JSON-LD com sintaxe inválida", 3)
 
                 # Verificar tipos obrigatórios
-                required_ld_types = ['FAQPage', 'GovernmentService', 'WebApplication']
+                required_ld_types = ['FAQPage',
+                                     'GovernmentService', 'WebApplication']
                 for ld_type in required_ld_types:
                     if ld_type in ld_types_found:
-                        self.log_pass('seo', f"JSON-LD '{ld_type}' presente", 3)
+                        self.log_pass(
+                            'seo', f"JSON-LD '{ld_type}' presente", 3)
                     else:
                         self.log_fail('seo', f"JSON-LD '{ld_type}' ausente", 3)
 
@@ -880,9 +944,11 @@ class MasterComplianceValidator:
                             entities = ld_data.get('mainEntity', [])
                             count = len(entities)
                             if count >= 10:
-                                self.log_pass('seo', f"FAQPage com {count} perguntas (≥10)", 3)
+                                self.log_pass(
+                                    'seo', f"FAQPage com {count} perguntas (≥10)", 3)
                             else:
-                                self.log_fail('seo', f"FAQPage com apenas {count} perguntas (<10)", 3)
+                                self.log_fail(
+                                    'seo', f"FAQPage com apenas {count} perguntas (<10)", 3)
 
                             # Verificar que cada FAQ tem Question + acceptedAnswer
                             valid_faqs = sum(
@@ -893,9 +959,11 @@ class MasterComplianceValidator:
                                 and e['acceptedAnswer'].get('text', '').strip()
                             )
                             if valid_faqs == count and count > 0:
-                                self.log_pass('seo', f"Todas {count} FAQs com Question+Answer válidos", 2)
+                                self.log_pass(
+                                    'seo', f"Todas {count} FAQs com Question+Answer válidos", 2)
                             else:
-                                self.log_fail('seo', f"FAQs inválidos: {count - valid_faqs} de {count}", 2)
+                                self.log_fail(
+                                    'seo', f"FAQs inválidos: {count - valid_faqs} de {count}", 2)
                     except json.JSONDecodeError:
                         pass
 
@@ -907,9 +975,11 @@ class MasterComplianceValidator:
                             catalog = ld_data.get('hasOfferCatalog', {})
                             items = catalog.get('itemListElement', [])
                             if len(items) >= 20:
-                                self.log_pass('seo', f"GovernmentService com {len(items)} benefícios (≥20)", 3)
+                                self.log_pass(
+                                    'seo', f"GovernmentService com {len(items)} benefícios (≥20)", 3)
                             else:
-                                self.log_fail('seo', f"GovernmentService com apenas {len(items)} benefícios (<20)", 3)
+                                self.log_fail(
+                                    'seo', f"GovernmentService com apenas {len(items)} benefícios (<20)", 3)
                     except json.JSONDecodeError:
                         pass
 
@@ -926,7 +996,8 @@ class MasterComplianceValidator:
                 self.log_warning('seo', "Google Site Verification ausente")
 
             # 8. Open Graph completo
-            og_extras = ['og:image', 'og:type', 'og:url', 'og:locale', 'og:site_name']
+            og_extras = ['og:image', 'og:type',
+                         'og:url', 'og:locale', 'og:site_name']
             for og in og_extras:
                 if og in content:
                     self.log_pass('seo', f"Open Graph '{og}' presente", 1)
@@ -934,7 +1005,8 @@ class MasterComplianceValidator:
                     self.log_warning('seo', f"Open Graph '{og}' ausente")
 
             # 9. Twitter Card
-            twitter_tags = ['twitter:card', 'twitter:title', 'twitter:description', 'twitter:image']
+            twitter_tags = ['twitter:card', 'twitter:title',
+                            'twitter:description', 'twitter:image']
             for tw in twitter_tags:
                 if tw in content:
                     self.log_pass('seo', f"Twitter Card '{tw}' presente", 1)
@@ -959,7 +1031,8 @@ class MasterComplianceValidator:
 
         # Arquivos Terraform obrigatórios (núcleo) + descoberta dinâmica de *.tf adicionais
         required_tf = ['main.tf', 'providers.tf', 'variables.tf', 'outputs.tf']
-        optional_tf = ['ai-doc-intelligence.tf', 'budget.tf']  # módulos esperados v1.16+
+        optional_tf = ['ai-doc-intelligence.tf',
+                       'budget.tf']  # módulos esperados v1.16+
 
         for tf_file in required_tf:
             path = terraform_dir / tf_file
@@ -969,29 +1042,37 @@ class MasterComplianceValidator:
                 # Validar sintaxe básica
                 content = path.read_text(encoding='utf-8')
                 if 'resource' in content or 'variable' in content or 'output' in content or 'terraform' in content:
-                    self.log_pass('infraestrutura', f"{tf_file}: sintaxe válida", 2)
+                    self.log_pass('infraestrutura',
+                                  f"{tf_file}: sintaxe válida", 2)
             else:
                 self.log_fail('infraestrutura', f"{tf_file} ausente", 5)
 
         # Módulos opcionais esperados (v1.16+): falha apenas se ambos ausentes
-        present_optional = [f for f in optional_tf if (terraform_dir / f).exists()]
+        present_optional = [f for f in optional_tf if (
+            terraform_dir / f).exists()]
         if present_optional:
-            self.log_pass('infraestrutura', f"Módulos TF opcionais detectados: {', '.join(present_optional)}", 2)
+            self.log_pass(
+                'infraestrutura', f"Módulos TF opcionais detectados: {', '.join(present_optional)}", 2)
         else:
-            self.log_warning('infraestrutura', f"Nenhum módulo opcional ({', '.join(optional_tf)}) encontrado")
+            self.log_warning(
+                'infraestrutura', f"Nenhum módulo opcional ({', '.join(optional_tf)}) encontrado")
 
         # Descoberta dinâmica: lista todos *.tf que não estão em required/optional
         all_tf = sorted([p.name for p in terraform_dir.glob('*.tf')])
-        extra_tf = [f for f in all_tf if f not in required_tf and f not in optional_tf]
+        extra_tf = [
+            f for f in all_tf if f not in required_tf and f not in optional_tf]
         if extra_tf:
-            self.log_pass('infraestrutura', f"Módulos TF extras descobertos: {len(extra_tf)} ({', '.join(extra_tf[:3])}" + ("..." if len(extra_tf) > 3 else "") + ")", 1)
+            self.log_pass('infraestrutura', f"Módulos TF extras descobertos: {len(extra_tf)} ({', '.join(extra_tf[:3])}" + (
+                "..." if len(extra_tf) > 3 else "") + ")", 1)
 
         # terraform.tfvars.example
         tfvars_example = terraform_dir / 'terraform.tfvars.example'
         if tfvars_example.exists():
-            self.log_pass('infraestrutura', "terraform.tfvars.example presente", 3)
+            self.log_pass('infraestrutura',
+                          "terraform.tfvars.example presente", 3)
         else:
-            self.log_warning('infraestrutura', "terraform.tfvars.example ausente")
+            self.log_warning('infraestrutura',
+                             "terraform.tfvars.example ausente")
 
     # =========================================================================
     # 11. TESTES AUTOMATIZADOS
@@ -1012,13 +1093,17 @@ class MasterComplianceValidator:
                 import re
                 test_count = len(re.findall(r'def test_', content))
                 if test_count >= 100:
-                    self.log_pass('testes', f"Testes E2E Playwright: {test_count} testes definidos", 20)
+                    self.log_pass(
+                        'testes', f"Testes E2E Playwright: {test_count} testes definidos", 20)
                 elif test_count >= 50:
-                    self.log_pass('testes', f"Testes E2E Playwright: {test_count} testes definidos", 15)
+                    self.log_pass(
+                        'testes', f"Testes E2E Playwright: {test_count} testes definidos", 15)
                 elif test_count >= 10:
-                    self.log_pass('testes', f"Testes E2E Playwright: {test_count} testes definidos", 10)
+                    self.log_pass(
+                        'testes', f"Testes E2E Playwright: {test_count} testes definidos", 10)
                 else:
-                    self.log_warning('testes', f"Poucos testes E2E: {test_count}")
+                    self.log_warning(
+                        'testes', f"Poucos testes E2E: {test_count}")
             except Exception as e:
                 self.log_warning('testes', f"Erro ao analisar testes E2E: {e}")
         else:
@@ -1046,11 +1131,14 @@ class MasterComplianceValidator:
 
             coverage = (tested_count / len(critical_functions)) * 100
             if coverage == 100:
-                self.log_pass('testes', f"Todas funções críticas presentes ({tested_count}/{len(critical_functions)})", 10)
+                self.log_pass(
+                    'testes', f"Todas funções críticas presentes ({tested_count}/{len(critical_functions)})", 10)
             elif coverage >= 80:
-                self.log_pass('testes', f"Boa cobertura de funções ({tested_count}/{len(critical_functions)})", 7)
+                self.log_pass(
+                    'testes', f"Boa cobertura de funções ({tested_count}/{len(critical_functions)})", 7)
             else:
-                self.log_warning('testes', f"Cobertura baixa de funções ({tested_count}/{len(critical_functions)})")
+                self.log_warning(
+                    'testes', f"Cobertura baixa de funções ({tested_count}/{len(critical_functions)})")
 
     # =========================================================================
     # 12. DEAD CODE DETECTION
@@ -1067,22 +1155,31 @@ class MasterComplianceValidator:
 
             # Extrair todas as declarações de função
             import re
-            function_declarations = re.findall(r'function\s+(\w+)\s*\(', content)
-            function_declarations += re.findall(r'const\s+(\w+)\s*=\s*(?:async\s*)?\(', content)
-            function_declarations += re.findall(r'let\s+(\w+)\s*=\s*(?:async\s*)?\(', content)
+            function_declarations = re.findall(
+                r'function\s+(\w+)\s*\(', content)
+            function_declarations += re.findall(
+                r'const\s+(\w+)\s*=\s*(?:async\s*)?\(', content)
+            function_declarations += re.findall(
+                r'let\s+(\w+)\s*=\s*(?:async\s*)?\(', content)
 
             # Filtrar funções internas e IIFEs
-            declarations_filtered = [fn for fn in function_declarations if not fn.startswith('setup') and fn != 'count']
+            declarations_filtered = [
+                fn for fn in function_declarations if not fn.startswith('setup') and fn != 'count']
 
             unused_functions = []
             for func_name in declarations_filtered:
                 # Contar chamadas diretas funcName() e addEventListener(funcName - sem parênteses)
-                direct_calls = content.count(f'{func_name}(') - 1  # -1 para declaração
-                event_listener_calls = content.count(f'addEventListener(') and func_name in re.findall(rf'addEventListener\([^,]+,\s*{func_name}\)', content)
+                direct_calls = content.count(
+                    f'{func_name}(') - 1  # -1 para declaração
+                event_listener_calls = content.count(f'addEventListener(') and func_name in re.findall(
+                    rf'addEventListener\([^,]+,\s*{func_name}\)', content)
                 # Contar referências como valor (fn: funcName, callback, array entries)
-                ref_as_value = len(re.findall(rf'[:,\[]\s*{func_name}\b', content))
+                ref_as_value = len(re.findall(
+                    rf'[:,\[]\s*{func_name}\b', content))
 
-                total_usage = direct_calls + len(re.findall(rf'addEventListener\([^,]+,\s*{func_name}\)', content)) + ref_as_value
+                total_usage = direct_calls + \
+                    len(re.findall(
+                        rf'addEventListener\([^,]+,\s*{func_name}\)', content)) + ref_as_value
 
                 if total_usage == 0:
                     # Verificar se é callback em outro contexto
@@ -1090,11 +1187,14 @@ class MasterComplianceValidator:
                         unused_functions.append(func_name)
 
             if len(unused_functions) == 0:
-                self.log_pass('dead_code', "JavaScript: nenhuma função não usada detectada", 15)
+                self.log_pass(
+                    'dead_code', "JavaScript: nenhuma função não usada detectada", 15)
             elif len(unused_functions) <= 2:
-                self.log_pass('dead_code', f"JavaScript: apenas {len(unused_functions)} função(ões) possivelmente não usada(s) - OK", 12)
+                self.log_pass(
+                    'dead_code', f"JavaScript: apenas {len(unused_functions)} função(ões) possivelmente não usada(s) - OK", 12)
             else:
-                self.log_fail('dead_code', f"JavaScript: {len(unused_functions)} funções não usadas: {', '.join(unused_functions[:5])}...", 15)
+                self.log_fail(
+                    'dead_code', f"JavaScript: {len(unused_functions)} funções não usadas: {', '.join(unused_functions[:5])}...", 15)
 
         # 2. Verificar importações Python não usadas
         py_files = list(self.root.glob('scripts/**/*.py'))
@@ -1142,28 +1242,37 @@ class MasterComplianceValidator:
                     total_unused_imports += 1
 
         if total_unused_imports == 0:
-            self.log_pass('dead_code', "Python: nenhuma importação não usada", 10)
+            self.log_pass(
+                'dead_code', "Python: nenhuma importação não usada", 10)
         elif total_unused_imports <= 3:
-            self.log_pass('dead_code', f"Python: {total_unused_imports} importação(ões) não usada(s) - OK", 7)
+            self.log_pass(
+                'dead_code', f"Python: {total_unused_imports} importação(ões) não usada(s) - OK", 7)
         else:
-            self.log_warning('dead_code', f"Python: {total_unused_imports} importações não usadas")
+            self.log_warning(
+                'dead_code', f"Python: {total_unused_imports} importações não usadas")
 
         # 3. Verificar console.log() esquecidos
-        js_content = js_file.read_text(encoding='utf-8') if js_file.exists() else ""
+        js_content = js_file.read_text(
+            encoding='utf-8') if js_file.exists() else ""
         console_logs = js_content.count('console.log')
 
         # Console.log é aceitável se comentado para debug
-        uncommented_logs = len(re.findall(r'^\s*console\.log', js_content, re.MULTILINE))
+        uncommented_logs = len(re.findall(
+            r'^\s*console\.log', js_content, re.MULTILINE))
 
         if uncommented_logs == 0:
-            self.log_pass('dead_code', "JavaScript: sem console.log() ativo em produção", 5)
+            self.log_pass(
+                'dead_code', "JavaScript: sem console.log() ativo em produção", 5)
         elif uncommented_logs <= 3:
-            self.log_pass('dead_code', f"JavaScript: {uncommented_logs} console.log() (aceitável para debug)", 4)
+            self.log_pass(
+                'dead_code', f"JavaScript: {uncommented_logs} console.log() (aceitável para debug)", 4)
         elif uncommented_logs <= 8:
-            self.log_warning('dead_code', f"JavaScript: {uncommented_logs} console.log() ativos - considerar remover para produção")
+            self.log_warning(
+                'dead_code', f"JavaScript: {uncommented_logs} console.log() ativos - considerar remover para produção")
             self.log_pass('dead_code', "JavaScript: console.log() moderado", 3)
         else:
-            self.log_warning('dead_code', f"JavaScript: {uncommented_logs} console.log() - alto para produção")
+            self.log_warning(
+                'dead_code', f"JavaScript: {uncommented_logs} console.log() - alto para produção")
 
     # =========================================================================
     # 13. ARQUIVOS ÓRFÃOS
@@ -1372,10 +1481,12 @@ class MasterComplianceValidator:
                         pass
 
         if len(large_files) == 0:
-            self.log_pass('orfaos', "Nenhum arquivo grande (>10MB) detectado", 5)
+            self.log_pass(
+                'orfaos', "Nenhum arquivo grande (>10MB) detectado", 5)
         else:
             total_size = sum(size for _, size in large_files) / (1024 * 1024)
-            self.log_warning('orfaos', f"{len(large_files)} arquivo(s) grande(s) ({total_size:.1f}MB total)")
+            self.log_warning(
+                'orfaos', f"{len(large_files)} arquivo(s) grande(s) ({total_size:.1f}MB total)")
 
     # =========================================================================
     # 14. LÓGICA DE NEGÓCIO
@@ -1410,12 +1521,14 @@ class MasterComplianceValidator:
             for cat_id in cats_relacionadas:
                 if cat_id not in cat_ids:
                     broken_links += 1
-                    self.log_warning('logica', f"Documento '{doc.get('nome', 'unknown')}' referencia categoria inexistente: {cat_id}")
+                    self.log_warning(
+                        'logica', f"Documento '{doc.get('nome', 'unknown')}' referencia categoria inexistente: {cat_id}")
 
         if broken_links == 0:
             self.log_pass('logica', "Documentos_mestre: vínculos corretos", 15)
         else:
-            self.log_fail('logica', f"Documentos_mestre: {broken_links} vínculo(s) quebrado(s)", 15)
+            self.log_fail(
+                'logica', f"Documentos_mestre: {broken_links} vínculo(s) quebrado(s)", 15)
 
         # 3. Validar que cada categoria tem pelo menos 1 documento
         cats_sem_docs = []
@@ -1433,9 +1546,11 @@ class MasterComplianceValidator:
                 cats_sem_docs.append(cat_id)
 
         if len(cats_sem_docs) == 0:
-            self.log_pass('logica', "Todas categorias têm documentos vinculados", 10)
+            self.log_pass(
+                'logica', "Todas categorias têm documentos vinculados", 10)
         else:
-            self.log_warning('logica', f"{len(cats_sem_docs)} categoria(s) sem documentos: {', '.join(cats_sem_docs[:3])}...")
+            self.log_warning(
+                'logica', f"{len(cats_sem_docs)} categoria(s) sem documentos: {', '.join(cats_sem_docs[:3])}...")
 
         # 4. Validar classificação de dados (tipo de informação)
         dados_sensiveis = 0
@@ -1444,7 +1559,8 @@ class MasterComplianceValidator:
             passo_a_passo = str(cat.get('passo_a_passo', '')).lower()
 
             # Detectar menção a dados sensíveis
-            sensitive_keywords = ['cpf', 'rg', 'senha', 'cartão', 'conta', 'saldo']
+            sensitive_keywords = ['cpf', 'rg',
+                                  'senha', 'cartão', 'conta', 'saldo']
 
             for keyword in sensitive_keywords:
                 if keyword in resumo or keyword in passo_a_passo:
@@ -1452,11 +1568,13 @@ class MasterComplianceValidator:
                     break
 
         if dados_sensiveis == 0:
-            self.log_pass('logica', "Nenhuma menção direta a dados sensíveis", 10)
+            self.log_pass(
+                'logica', "Nenhuma menção direta a dados sensíveis", 10)
         else:
             # NOTA: Menções são legítimas (documentos necessários para solicitar benefícios)
             # Site tem política de privacidade completa e não coleta dados dos usuários
-            self.log_pass('logica', f"{dados_sensiveis} categoria(s) mencionam dados sensíveis (documentação legítima)", 10)
+            self.log_pass(
+                'logica', f"{dados_sensiveis} categoria(s) mencionam dados sensíveis (documentação legítima)", 10)
 
         # 5. Validar que todas as categorias têm pelo menos 3 passos
         cats_poucos_passos = []
@@ -1468,7 +1586,8 @@ class MasterComplianceValidator:
         if len(cats_poucos_passos) == 0:
             self.log_pass('logica', "Todas categorias ≥3 passos", 8)
         else:
-            self.log_warning('logica', f"{len(cats_poucos_passos)} categoria(s) com <3 passos")
+            self.log_warning(
+                'logica', f"{len(cats_poucos_passos)} categoria(s) com <3 passos")
 
         # 6. Validar URLs de base_legal são HTTPS
         http_urls = 0
@@ -1481,7 +1600,8 @@ class MasterComplianceValidator:
         if http_urls == 0:
             self.log_pass('logica', "Todas URLs base_legal são HTTPS", 7)
         else:
-            self.log_fail('logica', f"{http_urls} URL(s) HTTP (devem ser HTTPS)", 7)
+            self.log_fail(
+                'logica', f"{http_urls} URL(s) HTTP (devem ser HTTPS)", 7)
 
     # =========================================================================
     # 15. REGULATORY COMPLIANCE
@@ -1501,26 +1621,34 @@ class MasterComplianceValidator:
         # 1. LGPD - Lei 13.709/2018
         lgpd_checks = [
             ('LGPD' in content, "Menção à LGPD"),
-            ('Lei 13.709' in content or '13.709/2018' in content, "Citação Lei 13.709/2018"),
+            ('Lei 13.709' in content or '13.709/2018' in content,
+             "Citação Lei 13.709/2018"),
             ('dados pessoais' in content.lower(), "Menção a 'dados pessoais'"),
             ('privacidade' in content.lower(), "Política de privacidade"),
-            ('não coletamos' in content.lower() or 'não coleta' in content.lower(), "Declaração de não coleta"),
-            ('localStorage' in content or 'IndexedDB' in content, "LocalStorage/IndexedDB mencionado"),
+            ('não coletamos' in content.lower()
+             or 'não coleta' in content.lower(), "Declaração de não coleta"),
+            ('localStorage' in content or 'IndexedDB' in content,
+             "LocalStorage/IndexedDB mencionado"),
         ]
 
         lgpd_score = sum(1 for check, name in lgpd_checks if check)
         if lgpd_score == len(lgpd_checks):
             self.log_pass('regulatory', "LGPD: 100% compliance", 15)
         elif lgpd_score >= 4:
-            self.log_pass('regulatory', f"LGPD: {lgpd_score}/{len(lgpd_checks)} checks OK", 10)
+            self.log_pass(
+                'regulatory', f"LGPD: {lgpd_score}/{len(lgpd_checks)} checks OK", 10)
         else:
-            self.log_fail('regulatory', f"LGPD: apenas {lgpd_score}/{len(lgpd_checks)} checks", 15)
+            self.log_fail(
+                'regulatory', f"LGPD: apenas {lgpd_score}/{len(lgpd_checks)} checks", 15)
 
         # 2. Disclaimer / Aviso Legal
         disclaimer_checks = [
-            ('aviso legal' in content.lower() or 'disclaimer' in content.lower(), "Aviso legal presente"),
-            ('não substitui' in content.lower(), "Não substitui orientação profissional"),
-            ('consultoria jurídica' in content.lower() or 'assessoria jurídica' in content.lower(), "Não é consultoria jurídica"),
+            ('aviso legal' in content.lower()
+             or 'disclaimer' in content.lower(), "Aviso legal presente"),
+            ('não substitui' in content.lower(),
+             "Não substitui orientação profissional"),
+            ('consultoria jurídica' in content.lower(
+            ) or 'assessoria jurídica' in content.lower(), "Não é consultoria jurídica"),
             ('defensoria pública' in content.lower(), "Menção Defensoria Pública"),
             ('fontes oficiais' in content.lower(), "Referência a fontes oficiais")
         ]
@@ -1529,22 +1657,28 @@ class MasterComplianceValidator:
         if disclaimer_score == len(disclaimer_checks):
             self.log_pass('regulatory', "Disclaimer: completo", 12)
         elif disclaimer_score >= 3:
-            self.log_pass('regulatory', f"Disclaimer: {disclaimer_score}/{len(disclaimer_checks)} OK", 8)
+            self.log_pass(
+                'regulatory', f"Disclaimer: {disclaimer_score}/{len(disclaimer_checks)} OK", 8)
         else:
-            self.log_fail('regulatory', f"Disclaimer: apenas {disclaimer_score}/{len(disclaimer_checks)}", 12)
+            self.log_fail(
+                'regulatory', f"Disclaimer: apenas {disclaimer_score}/{len(disclaimer_checks)}", 12)
 
         # 3. Finance / Transparência Financeira (projeto sem fins lucrativos)
         finance_checks = [
-            ('sem fins lucrativos' in content.lower() or 'non-profit' in content.lower(), "Declaração sem fins lucrativos"),
-            ('gratuito' in content.lower() or 'free' in content.lower(), "Serviço gratuito"),
-            ('sem custo' in content.lower() or 'sem cobrança' in content.lower() or 'não cobra' in content.lower(), "Sem custo")
+            ('sem fins lucrativos' in content.lower()
+             or 'non-profit' in content.lower(), "Declaração sem fins lucrativos"),
+            ('gratuito' in content.lower()
+             or 'free' in content.lower(), "Serviço gratuito"),
+            ('sem custo' in content.lower() or 'sem cobrança' in content.lower()
+             or 'não cobra' in content.lower(), "Sem custo")
         ]
 
         finance_score = sum(1 for check, name in finance_checks if check)
         if finance_score >= 2:
             self.log_pass('regulatory', "Finance: transparência OK", 8)
         else:
-            self.log_warning('regulatory', f"Finance: apenas {finance_score}/{len(finance_checks)} mencionado")
+            self.log_warning(
+                'regulatory', f"Finance: apenas {finance_score}/{len(finance_checks)} mencionado")
 
         # 4. GitHub Security (segredos expostos)
         security_file = self.root / 'SECURITY.md'
@@ -1552,16 +1686,20 @@ class MasterComplianceValidator:
             sec_content = security_file.read_text(encoding='utf-8')
 
             github_sec_checks = [
-                ('reportando vulnerabilidades' in sec_content.lower() or 'reporting vulnerabilities' in sec_content.lower(), "Processo de reporte"),
-                ('@' in sec_content or 'email' in sec_content.lower(), "Contato de segurança"),
-                ('não' in sec_content and 'issue pública' in sec_content.lower(), "Não usar issue pública")
+                ('reportando vulnerabilidades' in sec_content.lower(
+                ) or 'reporting vulnerabilities' in sec_content.lower(), "Processo de reporte"),
+                ('@' in sec_content or 'email' in sec_content.lower(),
+                 "Contato de segurança"),
+                ('não' in sec_content and 'issue pública' in sec_content.lower(),
+                 "Não usar issue pública")
             ]
 
             gh_sec_score = sum(1 for check, name in github_sec_checks if check)
             if gh_sec_score >= 2:
                 self.log_pass('regulatory', "GitHub Security: OK", 8)
             else:
-                self.log_warning('regulatory', f"GitHub Security: {gh_sec_score}/{len(github_sec_checks)}")
+                self.log_warning(
+                    'regulatory', f"GitHub Security: {gh_sec_score}/{len(github_sec_checks)}")
         else:
             self.log_fail('regulatory', "SECURITY.md ausente", 8)
 
@@ -1594,19 +1732,23 @@ class MasterComplianceValidator:
         if len(sensitive_found) == 0:
             self.log_pass('regulatory', "Dados Sensíveis: nenhum exposto", 12)
         else:
-            self.log_fail('regulatory', f"Dados Sensíveis: {len(sensitive_found)} padrão(ões) detectado(s)", 12)
+            self.log_fail(
+                'regulatory', f"Dados Sensíveis: {len(sensitive_found)} padrão(ões) detectado(s)", 12)
             for filename, pattern_name in sensitive_found[:3]:
                 print(f"  ⚠️  {filename}: {pattern_name}")
 
         # 6. Validar versões consistentes (inline — antes era check_version_consistency.py)
         canonical_version, mismatches = check_versions(self.root)
         if not canonical_version:
-            self.log_warning('regulatory', "Versão: package.json não encontrado ou versão inválida")
+            self.log_warning(
+                'regulatory', "Versão: package.json não encontrado ou versão inválida")
         elif not mismatches:
-            self.log_pass('regulatory', f"Versões consistentes: v{canonical_version} (5 arquivos)", 10)
+            self.log_pass(
+                'regulatory', f"Versões consistentes: v{canonical_version} (5 arquivos)", 10)
         else:
             mismatch_str = ', '.join(mismatches)
-            self.log_fail('regulatory', f"Versões inconsistentes (esperado v{canonical_version}): {mismatch_str}", 10)
+            self.log_fail(
+                'regulatory', f"Versões inconsistentes (esperado v{canonical_version}): {mismatch_str}", 10)
 
     # =========================================================================
     # =========================================================================
@@ -1615,12 +1757,14 @@ class MasterComplianceValidator:
 
     def validate_cloud_security(self):
         """Valida configurações de segurança Azure/Cloud (específicas dos recursos usados)"""
-        print("\n[CLOUD_SECURITY] Validando Azure Security Posture (App Service + Key Vault)...")
+        print(
+            "\n[CLOUD_SECURITY] Validando Azure Security Posture (App Service + Key Vault)...")
 
         # 1. Terraform Security Best Practices
         terraform_dir = self.root / 'terraform'
         if not terraform_dir.exists():
-            self.log_warning('cloud_security', "Diretório terraform ausente - infra não gerenciada por IaC")
+            self.log_warning(
+                'cloud_security', "Diretório terraform ausente - infra não gerenciada por IaC")
             return
 
         main_tf = terraform_dir / 'main.tf'
@@ -1629,57 +1773,74 @@ class MasterComplianceValidator:
             return
 
         # Descoberta dinâmica: concatena TODOS *.tf para os checks (cobre ai-doc-intelligence.tf, budget.tf, etc.)
-        tf_content = "\n".join(p.read_text(encoding='utf-8') for p in sorted(terraform_dir.glob('*.tf')))
+        tf_content = "\n".join(p.read_text(encoding='utf-8')
+                               for p in sorted(terraform_dir.glob('*.tf')))
 
         # ===== VALIDAÇÕES ESPECÍFICAS DOS RECURSOS USADOS =====
 
         # 1. App Service - HTTPS Only (CRÍTICO)
         if 'azurerm_linux_web_app' in tf_content or 'azurerm_windows_web_app' in tf_content:
             if 'https_only = true' in tf_content:
-                self.log_pass('cloud_security', "App Service: HTTPS Only enforced ✓", 12)
+                self.log_pass('cloud_security',
+                              "App Service: HTTPS Only enforced ✓", 12)
             else:
-                self.log_fail('cloud_security', "App Service: HTTPS Only NÃO enforced (vulnerável a downgrade)", 12)
+                self.log_fail(
+                    'cloud_security', "App Service: HTTPS Only NÃO enforced (vulnerável a downgrade)", 12)
 
         # 2. Key Vault - Soft Delete (proteção contra exclusão acidental)
         if 'azurerm_key_vault' in tf_content:
             if 'soft_delete_retention_days' in tf_content:
-                days_match = re.search(r'soft_delete_retention_days\s*=\s*(\d+)', tf_content)
+                days_match = re.search(
+                    r'soft_delete_retention_days\s*=\s*(\d+)', tf_content)
                 if days_match:
                     days = int(days_match.group(1))
                     if days >= 7:
-                        self.log_pass('cloud_security', f"Key Vault: Soft Delete habilitado ({days} dias) ✓", 8)
+                        self.log_pass(
+                            'cloud_security', f"Key Vault: Soft Delete habilitado ({days} dias) ✓", 8)
                     else:
-                        self.log_warning('cloud_security', f"Key Vault: Soft Delete < 7 dias ({days} dias)")
-                        self.log_pass('cloud_security', "Key Vault: Soft Delete presente", 5)
+                        self.log_warning(
+                            'cloud_security', f"Key Vault: Soft Delete < 7 dias ({days} dias)")
+                        self.log_pass('cloud_security',
+                                      "Key Vault: Soft Delete presente", 5)
             else:
-                self.log_fail('cloud_security', "Key Vault: Soft Delete não configurado", 8)
+                self.log_fail('cloud_security',
+                              "Key Vault: Soft Delete não configurado", 8)
 
         # 3. Managed Identity (zero credenciais hardcoded)
         if 'identity {' in tf_content or 'identity{' in tf_content:
             if 'type = "SystemAssigned"' in tf_content or 'type = "UserAssigned"' in tf_content:
-                self.log_pass('cloud_security', "Managed Identity configurado (zero secrets hardcoded) ✓", 10)
+                self.log_pass(
+                    'cloud_security', "Managed Identity configurado (zero secrets hardcoded) ✓", 10)
             else:
-                self.log_warning('cloud_security', "Identity block presente mas tipo não reconhecido")
+                self.log_warning(
+                    'cloud_security', "Identity block presente mas tipo não reconhecido")
         else:
-            self.log_warning('cloud_security', "Managed Identity não detectado - app usa credenciais?")
+            self.log_warning(
+                'cloud_security', "Managed Identity não detectado - app usa credenciais?")
 
         # 4. Application Insights (observability/detecção de ataques)
         if 'azurerm_application_insights' in tf_content:
-            self.log_pass('cloud_security', "Application Insights habilitado (rastreamento de anomalias) ✓", 8)
+            self.log_pass(
+                'cloud_security', "Application Insights habilitado (rastreamento de anomalias) ✓", 8)
         else:
-            self.log_warning('cloud_security', "Application Insights ausente - sem telemetry/alertas")
+            self.log_warning(
+                'cloud_security', "Application Insights ausente - sem telemetry/alertas")
 
         # 5. Monitor Alerts (detecção proativa de incidentes)
         if 'azurerm_monitor_metric_alert' in tf_content:
             alert_count = tf_content.count('azurerm_monitor_metric_alert')
             if alert_count >= 3:
-                self.log_pass('cloud_security', f"Monitor Alerts: {alert_count} alertas configurados (5xx/health/latency) ✓", 10)
+                self.log_pass(
+                    'cloud_security', f"Monitor Alerts: {alert_count} alertas configurados (5xx/health/latency) ✓", 10)
             elif alert_count >= 1:
-                self.log_pass('cloud_security', f"Monitor Alerts: {alert_count} alerta(s) presente(s)", 6)
+                self.log_pass(
+                    'cloud_security', f"Monitor Alerts: {alert_count} alerta(s) presente(s)", 6)
             else:
-                self.log_warning('cloud_security', "Monitor Alerts configurados mas count não detectado")
+                self.log_warning(
+                    'cloud_security', "Monitor Alerts configurados mas count não detectado")
         else:
-            self.log_warning('cloud_security', "Monitor Alerts ausentes - sem notificações de incidentes")
+            self.log_warning(
+                'cloud_security', "Monitor Alerts ausentes - sem notificações de incidentes")
 
         # ===== VALIDAÇÃO DE SECURITY HEADERS (server.js) =====
 
@@ -1698,15 +1859,21 @@ class MasterComplianceValidator:
             headers_count = sum(1 for check, _ in security_headers if check)
 
             if headers_count >= 4:
-                self.log_pass('cloud_security', f"Security Headers: {headers_count}/4 implementados (CSP+HSTS+nosniff+frameguard) ✓", 12)
+                self.log_pass(
+                    'cloud_security', f"Security Headers: {headers_count}/4 implementados (CSP+HSTS+nosniff+frameguard) ✓", 12)
             elif headers_count >= 2:
-                self.log_pass('cloud_security', f"Security Headers: {headers_count}/4 implementados", 7)
-                missing = [name for check, name in security_headers if not check]
-                self.log_warning('cloud_security', f"Security Headers faltando: {', '.join(missing)}")
+                self.log_pass(
+                    'cloud_security', f"Security Headers: {headers_count}/4 implementados", 7)
+                missing = [name for check,
+                           name in security_headers if not check]
+                self.log_warning(
+                    'cloud_security', f"Security Headers faltando: {', '.join(missing)}")
             else:
-                self.log_fail('cloud_security', "Security Headers insuficientes (< 2/4)", 12)
+                self.log_fail('cloud_security',
+                              "Security Headers insuficientes (< 2/4)", 12)
         else:
-            self.log_warning('cloud_security', "server.js ausente - não foi possível validar security headers")
+            self.log_warning(
+                'cloud_security', "server.js ausente - não foi possível validar security headers")
 
         # ===== DOCUMENTAÇÃO & COMPLIANCE =====
 
@@ -1722,9 +1889,11 @@ class MasterComplianceValidator:
                     break
 
         if compliance_found:
-            self.log_pass('cloud_security', "LGPD/GDPR: mencionado em documentação ✓", 7)
+            self.log_pass('cloud_security',
+                          "LGPD/GDPR: mencionado em documentação ✓", 7)
         else:
-            self.log_warning('cloud_security', "LGPD/GDPR não mencionado - validar se aplicável")
+            self.log_warning('cloud_security',
+                             "LGPD/GDPR não mencionado - validar se aplicável")
 
         # 8. LGPD Runtime Guardrail (v1.18+): bloqueia se IA habilitada sem anonimização + consent + retention
         self._validate_lgpd_runtime()
@@ -1732,13 +1901,17 @@ class MasterComplianceValidator:
         # 9. Cognitive Services (Doc Intelligence) — exige local_auth_enabled=false + tag LGPDClassification
         if 'azurerm_cognitive_account' in tf_content:
             if 'local_auth_enabled = false' in tf_content:
-                self.log_pass('cloud_security', "Doc Intelligence: local_auth desabilitado (MSI obrigatório) ✓", 5)
+                self.log_pass(
+                    'cloud_security', "Doc Intelligence: local_auth desabilitado (MSI obrigatório) ✓", 5)
             else:
-                self.log_fail('cloud_security', "Doc Intelligence: local_auth_enabled deve ser false (LGPD Art. 46)", 5)
+                self.log_fail(
+                    'cloud_security', "Doc Intelligence: local_auth_enabled deve ser false (LGPD Art. 46)", 5)
             if '"LGPDClassification"' in tf_content or 'LGPDClassification' in tf_content:
-                self.log_pass('cloud_security', "Doc Intelligence: tag LGPDClassification presente ✓", 3)
+                self.log_pass(
+                    'cloud_security', "Doc Intelligence: tag LGPDClassification presente ✓", 3)
             else:
-                self.log_fail('cloud_security', "Doc Intelligence: tag LGPDClassification ausente (governance gap)", 3)
+                self.log_fail(
+                    'cloud_security', "Doc Intelligence: tag LGPDClassification ausente (governance gap)", 3)
 
     def _validate_lgpd_runtime(self):
         """Guardrail runtime LGPD: anonymizer + containsPII + consent modal + retention header."""
@@ -1753,15 +1926,18 @@ class MasterComplianceValidator:
         if server_js.exists():
             sc = server_js.read_text(encoding='utf-8')
             if 'containsPII' not in sc:
-                gaps.append("server.js sem containsPII() (defesa em profundidade)")
+                gaps.append(
+                    "server.js sem containsPII() (defesa em profundidade)")
             if '/api/analyze-document' in sc and 'X-Data-Retention' not in sc:
-                gaps.append("server.js sem header X-Data-Retention no endpoint IA")
+                gaps.append(
+                    "server.js sem header X-Data-Retention no endpoint IA")
         if app_js.exists():
             ac = app_js.read_text(encoding='utf-8')
             if 'AI_CONSENT_KEY' not in ac:
                 gaps.append("app.js sem chave de consentimento AI_CONSENT_KEY")
             if 'revokeAIConsent' not in ac and 'clearStoredAIConsent' not in ac:
-                gaps.append("app.js sem função de revogação de consentimento (LGPD Art. 8º §5)")
+                gaps.append(
+                    "app.js sem função de revogação de consentimento (LGPD Art. 8º §5)")
         if index_html.exists():
             ic = index_html.read_text(encoding='utf-8')
             if 'aiConsentModal' not in ic:
@@ -1770,16 +1946,21 @@ class MasterComplianceValidator:
                 r'direitos\s+(do|como)\s+titular',
                 ic, re.IGNORECASE,
             ):
-                gaps.append("index.html sem seção Direitos do Titular (LGPD Art. 18)")
+                gaps.append(
+                    "index.html sem seção Direitos do Titular (LGPD Art. 18)")
             if 'Encarregado' not in ic and 'DPO' not in ic and 'encarregado' not in ic.lower():
-                gaps.append("index.html sem contato do Encarregado/DPO (LGPD Art. 41)")
+                gaps.append(
+                    "index.html sem contato do Encarregado/DPO (LGPD Art. 41)")
 
         if not gaps:
-            self.log_pass('cloud_security', "LGPD Runtime Guardrail: 100% (anonimização + consent + revogação + DPO + retention) ✓", 10)
+            self.log_pass(
+                'cloud_security', "LGPD Runtime Guardrail: 100% (anonimização + consent + revogação + DPO + retention) ✓", 10)
         elif len(gaps) <= 2:
-            self.log_warning('cloud_security', f"LGPD Runtime: {len(gaps)} gap(s) — {'; '.join(gaps)}")
+            self.log_warning(
+                'cloud_security', f"LGPD Runtime: {len(gaps)} gap(s) — {'; '.join(gaps)}")
         else:
-            self.log_fail('cloud_security', f"LGPD Runtime: {len(gaps)} gaps críticos — {'; '.join(gaps[:3])}...", 10)
+            self.log_fail(
+                'cloud_security', f"LGPD Runtime: {len(gaps)} gaps críticos — {'; '.join(gaps[:3])}...", 10)
 
     # =========================================================================
     # CATEGORIA 17: CI/CD — GitHub Actions Workflows
@@ -1834,25 +2015,32 @@ class MasterComplianceValidator:
             has_jobs = 'jobs:' in content
 
             if has_name and has_on and has_jobs:
-                self.log_pass(cat, f"{wf_name}: estrutura YAML válida (name/on/jobs)", 2)
+                self.log_pass(
+                    cat, f"{wf_name}: estrutura YAML válida (name/on/jobs)", 2)
             else:
-                missing = [x for x, v in [('name', has_name), ('on', has_on), ('jobs', has_jobs)] if not v]
-                self.log_fail(cat, f"{wf_name}: faltam campos — {', '.join(missing)}", 2)
+                missing = [x for x, v in [
+                    ('name', has_name), ('on', has_on), ('jobs', has_jobs)] if not v]
+                self.log_fail(
+                    cat, f"{wf_name}: faltam campos — {', '.join(missing)}", 2)
 
         # ── 3. Segurança: permissions (least privilege) ──
         for wf_name, content in workflow_contents.items():
             if 'permissions:' in content:
-                self.log_pass(cat, f"{wf_name}: permissions definidas (least privilege)", 3)
+                self.log_pass(
+                    cat, f"{wf_name}: permissions definidas (least privilege)", 3)
 
                 # Verificar se não tem permissions: write-all
                 if 'permissions: write-all' in content or 'permissions:\n  contents: write' in content:
-                    self.log_warning(cat, f"{wf_name}: permissions muito amplas — restringir")
+                    self.log_warning(
+                        cat, f"{wf_name}: permissions muito amplas — restringir")
             else:
                 # deploy.yml pode não ter permissions explícitas mas herda defaults
                 if wf_name in ('deploy.yml',):
-                    self.log_warning(cat, f"{wf_name}: permissions não explícitas — considerar adicionar")
+                    self.log_warning(
+                        cat, f"{wf_name}: permissions não explícitas — considerar adicionar")
                 else:
-                    self.log_warning(cat, f"{wf_name}: permissions não definidas")
+                    self.log_warning(
+                        cat, f"{wf_name}: permissions não definidas")
 
         # ── 4. Segurança: actions pinadas (versão fixa) ──
         import re as re_mod
@@ -1881,13 +2069,16 @@ class MasterComplianceValidator:
         if total_actions > 0:
             pin_rate = (pinned_actions / total_actions) * 100
             if pin_rate == 100:
-                self.log_pass(cat, f"Actions pinadas: {pinned_actions}/{total_actions} (100%)", 5)
+                self.log_pass(
+                    cat, f"Actions pinadas: {pinned_actions}/{total_actions} (100%)", 5)
             elif pin_rate >= 80:
-                self.log_pass(cat, f"Actions pinadas: {pinned_actions}/{total_actions} ({pin_rate:.0f}%)", 3)
+                self.log_pass(
+                    cat, f"Actions pinadas: {pinned_actions}/{total_actions} ({pin_rate:.0f}%)", 3)
                 for item in unpinned_list:
                     self.log_warning(cat, f"Action sem pin: {item}")
             else:
-                self.log_fail(cat, f"Actions pinadas: {pinned_actions}/{total_actions} ({pin_rate:.0f}%) — risco supply chain", 5)
+                self.log_fail(
+                    cat, f"Actions pinadas: {pinned_actions}/{total_actions} ({pin_rate:.0f}%) — risco supply chain", 5)
 
         # ── 5. Quality Gate obrigatório antes de deploy ──
         deploy_content = workflow_contents.get('deploy.yml', '')
@@ -1895,13 +2086,16 @@ class MasterComplianceValidator:
             if 'needs: quality-gate' in deploy_content or 'needs:\n' in deploy_content:
                 self.log_pass(cat, "Deploy depende de Quality Gate (needs)", 5)
             else:
-                self.log_fail(cat, "Deploy NÃO depende de Quality Gate — risco", 5)
+                self.log_fail(
+                    cat, "Deploy NÃO depende de Quality Gate — risco", 5)
 
             # Concurrency (evita deploys paralelos)
             if 'concurrency:' in deploy_content:
-                self.log_pass(cat, "Deploy com concurrency group (sem paralelos)", 3)
+                self.log_pass(
+                    cat, "Deploy com concurrency group (sem paralelos)", 3)
             else:
-                self.log_warning(cat, "Deploy sem concurrency — deploys paralelos possíveis")
+                self.log_warning(
+                    cat, "Deploy sem concurrency — deploys paralelos possíveis")
 
         # ── 6. Sensitive data scan no CI ──
         qg_content = workflow_contents.get('quality-gate.yml', '')
@@ -1912,7 +2106,8 @@ class MasterComplianceValidator:
                 break
 
         if has_secret_scan:
-            self.log_pass(cat, "Scan de dados sensíveis presente nos workflows", 4)
+            self.log_pass(
+                cat, "Scan de dados sensíveis presente nos workflows", 4)
         else:
             self.log_fail(cat, "Sem scan de dados sensíveis nos workflows", 4)
 
@@ -1930,7 +2125,8 @@ class MasterComplianceValidator:
             for pattern in dangerous_patterns:
                 if re_mod.search(pattern, content):
                     secrets_hardcoded = True
-                    self.log_fail(cat, f"{wf_name}: segredo hardcoded detectado!", 5)
+                    self.log_fail(
+                        cat, f"{wf_name}: segredo hardcoded detectado!", 5)
                     break
 
         if not secrets_hardcoded:
@@ -1943,7 +2139,8 @@ class MasterComplianceValidator:
             secrets_refs.update(refs)
 
         if secrets_refs:
-            self.log_pass(cat, f"Secrets via GitHub: {len(secrets_refs)} referências seguras", 3)
+            self.log_pass(
+                cat, f"Secrets via GitHub: {len(secrets_refs)} referências seguras", 3)
 
         # ── 8. Health check após deploy ──
         if deploy_content:
@@ -1960,7 +2157,8 @@ class MasterComplianceValidator:
                 break
 
         if has_artifacts:
-            self.log_pass(cat, "Artifact upload configurado (relatórios persistidos)", 2)
+            self.log_pass(
+                cat, "Artifact upload configurado (relatórios persistidos)", 2)
         else:
             self.log_warning(cat, "Sem upload de artifacts nos workflows")
 
@@ -1968,7 +2166,8 @@ class MasterComplianceValidator:
         tf_content = workflow_contents.get('terraform.yml', '')
         if tf_content:
             if 'workflow_dispatch' in tf_content:
-                self.log_pass(cat, "Terraform: execução manual habilitada (workflow_dispatch)", 2)
+                self.log_pass(
+                    cat, "Terraform: execução manual habilitada (workflow_dispatch)", 2)
 
             if 'terraform plan' in tf_content:
                 self.log_pass(cat, "Terraform: plan presente", 2)
@@ -1987,9 +2186,11 @@ class MasterComplianceValidator:
 
             # State management
             if 'tfstate' in tf_content or 'terraform.tfstate' in tf_content:
-                self.log_pass(cat, "Terraform: state management configurado", 2)
+                self.log_pass(
+                    cat, "Terraform: state management configurado", 2)
             else:
-                self.log_warning(cat, "Terraform: state management não encontrado")
+                self.log_warning(
+                    cat, "Terraform: state management não encontrado")
 
         # ── 11. Weekly review (monitoramento contínuo) ──
         weekly_content = workflow_contents.get('weekly-review.yml', '')
@@ -1997,10 +2198,12 @@ class MasterComplianceValidator:
             if 'schedule' in weekly_content or 'cron' in weekly_content:
                 self.log_pass(cat, "Revisão periódica com schedule/cron", 3)
             else:
-                self.log_warning(cat, "Revisão periódica sem schedule — execução manual apenas")
+                self.log_warning(
+                    cat, "Revisão periódica sem schedule — execução manual apenas")
 
             if 'issues: write' in weekly_content:
-                self.log_pass(cat, "Revisão periódica cria issues automaticamente", 2)
+                self.log_pass(
+                    cat, "Revisão periódica cria issues automaticamente", 2)
             else:
                 self.log_warning(cat, "Revisão periódica não cria issues")
 
@@ -2012,7 +2215,8 @@ class MasterComplianceValidator:
                 break
 
         if ci_runs_quality_gate:
-            self.log_pass(cat, "CI executa quality gate automatizado (validate_all.py)", 4)
+            self.log_pass(
+                cat, "CI executa quality gate automatizado (validate_all.py)", 4)
         else:
             self.log_fail(cat, "CI não executa quality gate automatizado", 4)
 
@@ -2024,7 +2228,8 @@ class MasterComplianceValidator:
                 break
 
         if ci_runs_validate:
-            self.log_pass(cat, "CI executa validate_content.py (validação de dados)", 3)
+            self.log_pass(
+                cat, "CI executa validate_content.py (validação de dados)", 3)
         else:
             self.log_warning(cat, "CI não executa validate_content.py")
 
@@ -2036,7 +2241,8 @@ class MasterComplianceValidator:
                 break
 
         if has_summary:
-            self.log_pass(cat, "GitHub Step Summary configurado (relatório visual)", 2)
+            self.log_pass(
+                cat, "GitHub Step Summary configurado (relatório visual)", 2)
         else:
             self.log_warning(cat, "Sem GITHUB_STEP_SUMMARY nos workflows")
 
@@ -2045,10 +2251,12 @@ class MasterComplianceValidator:
         for wf_name, content in workflow_contents.items():
             if 'pull_request_target' in content:
                 unsafe_triggers = True
-                self.log_warning(cat, f"{wf_name}: usa pull_request_target — risco de injection")
+                self.log_warning(
+                    cat, f"{wf_name}: usa pull_request_target — risco de injection")
 
         if not unsafe_triggers:
-            self.log_pass(cat, "Sem triggers inseguros (pull_request_target)", 2)
+            self.log_pass(
+                cat, "Sem triggers inseguros (pull_request_target)", 2)
 
     # =========================================================================
     # CATEGORIA 18: VALIDAÇÃO DE DEPENDÊNCIAS
@@ -2069,7 +2277,8 @@ class MasterComplianceValidator:
                     pkg = json.load(f)
 
                 if pkg.get('name') and pkg.get('version'):
-                    self.log_pass(cat, f"package.json válido (v{pkg['version']})", 10)
+                    self.log_pass(
+                        cat, f"package.json válido (v{pkg['version']})", 10)
                 else:
                     self.log_fail(cat, "package.json sem name ou version", 10)
             except json.JSONDecodeError as e:
@@ -2092,10 +2301,12 @@ class MasterComplianceValidator:
         if requirements.exists():
             try:
                 content = requirements.read_text(encoding='utf-8')
-                lines = [l.strip() for l in content.split('\n') if l.strip() and not l.startswith('#')]
+                lines = [l.strip() for l in content.split(
+                    '\n') if l.strip() and not l.startswith('#')]
 
                 if len(lines) > 0:
-                    self.log_pass(cat, f"requirements.txt válido ({len(lines)} deps)", 10)
+                    self.log_pass(
+                        cat, f"requirements.txt válido ({len(lines)} deps)", 10)
                 else:
                     self.log_warning(cat, "requirements.txt vazio")
                     self.metrics[cat]['score'] += 5
@@ -2127,11 +2338,14 @@ class MasterComplianceValidator:
                 pass
 
         if sri_found:
-            self.log_pass(cat, "SRI (Subresource Integrity) completo em scripts CDN", 10)
+            self.log_pass(
+                cat, "SRI (Subresource Integrity) completo em scripts CDN", 10)
         elif crossorigin_gov:
-            self.log_pass(cat, "Scripts governamentais (.gov.br) com crossorigin (SRI dispensado)", 10)
+            self.log_pass(
+                cat, "Scripts governamentais (.gov.br) com crossorigin (SRI dispensado)", 10)
         else:
-            self.log_warning(cat, "SRI/crossorigin não encontrado em scripts externos")
+            self.log_warning(
+                cat, "SRI/crossorigin não encontrado em scripts externos")
             self.metrics[cat]['score'] += 5
             self.metrics[cat]['max'] += 10
 
@@ -2168,7 +2382,8 @@ class MasterComplianceValidator:
         if has_structure:
             self.log_pass(cat, "Formato Keep a Changelog detectado", 10)
         else:
-            self.log_warning(cat, "CHANGELOG não segue formato Keep a Changelog")
+            self.log_warning(
+                cat, "CHANGELOG não segue formato Keep a Changelog")
             self.metrics[cat]['score'] += 5
             self.metrics[cat]['max'] += 10
 
@@ -2184,13 +2399,17 @@ class MasterComplianceValidator:
             self.metrics[cat]['max'] += 5
 
         # ── 4. Seções obrigatórias (Added, Changed, Fixed) (5 pts) ──
-        required_sections = ['### ✨ Adicionado', '### 🔄 Enriquecido', '### 🐛 Corrigido']
-        sections_present = sum(1 for sec in required_sections if sec in content or sec.replace('✨', '').replace('🔄', '').replace('🐛', '').strip() in content)
+        required_sections = ['### ✨ Adicionado',
+                             '### 🔄 Enriquecido', '### 🐛 Corrigido']
+        sections_present = sum(1 for sec in required_sections if sec in content or sec.replace(
+            '✨', '').replace('🔄', '').replace('🐛', '').strip() in content)
 
         if sections_present >= 2:
-            self.log_pass(cat, f"{sections_present}/3 seções presentes (Added/Changed/Fixed)", 5)
+            self.log_pass(
+                cat, f"{sections_present}/3 seções presentes (Added/Changed/Fixed)", 5)
         else:
-            self.log_warning(cat, f"Apenas {sections_present}/3 seções presentes")
+            self.log_warning(
+                cat, f"Apenas {sections_present}/3 seções presentes")
             self.metrics[cat]['score'] += 2
             self.metrics[cat]['max'] += 5
 
@@ -2233,17 +2452,21 @@ class MasterComplianceValidator:
                 self.log_pass(cat, "analise360.py executado com sucesso", 15)
 
                 # ── 2. Cobertura ≥ 75% (10 pts) ──
-                coverage_match = re.search(r'COBERTURA TOTAL.*?\(implementados\):\s*(\d+\.\d+)%', output)
+                coverage_match = re.search(
+                    r'COBERTURA TOTAL.*?\(implementados\):\s*(\d+\.\d+)%', output)
                 if coverage_match:
                     coverage = float(coverage_match.group(1))
 
                     if coverage >= 75:
-                        self.log_pass(cat, f"Cobertura {coverage}% ≥ 75% (excelente)", 10)
+                        self.log_pass(
+                            cat, f"Cobertura {coverage}% ≥ 75% (excelente)", 10)
                     elif coverage >= 60:
-                        self.log_pass(cat, f"Cobertura {coverage}% ≥ 60% (bom)", 7)
+                        self.log_pass(
+                            cat, f"Cobertura {coverage}% ≥ 60% (bom)", 7)
                         self.metrics[cat]['max'] += 3
                     else:
-                        self.log_warning(cat, f"Cobertura {coverage}% < 60% (atenção)")
+                        self.log_warning(
+                            cat, f"Cobertura {coverage}% < 60% (atenção)")
                         self.metrics[cat]['score'] += 4
                         self.metrics[cat]['max'] += 10
                 else:
@@ -2252,37 +2475,46 @@ class MasterComplianceValidator:
                     self.metrics[cat]['max'] += 10
 
                 # ── 3. Completude (benefícios completos) ≥ 20 (5 pts) ──
-                impl_match = re.search(r'Implementados completos:\s*(\d+)/(\d+)', output)
+                impl_match = re.search(
+                    r'Implementados completos:\s*(\d+)/(\d+)', output)
                 if impl_match:
                     impl_count = int(impl_match.group(1))
                     total = int(impl_match.group(2))
 
                     if impl_count >= 20:
-                        self.log_pass(cat, f"{impl_count} benefícios completos (≥20)", 5)
+                        self.log_pass(
+                            cat, f"{impl_count} benefícios completos (≥20)", 5)
                     elif impl_count >= 15:
-                        self.log_pass(cat, f"{impl_count}/{ total} benefícios completos (≥15)", 4)
+                        self.log_pass(
+                            cat, f"{impl_count}/{total} benefícios completos (≥15)", 4)
                         self.metrics[cat]['max'] += 1
                     else:
-                        self.log_warning(cat, f"Apenas {impl_count}/{total} benefícios completos")
+                        self.log_warning(
+                            cat, f"Apenas {impl_count}/{total} benefícios completos")
                         self.metrics[cat]['score'] += 2
                         self.metrics[cat]['max'] += 5
                 else:
-                    self.log_warning(cat, "Contagem de implementados não encontrada")
+                    self.log_warning(
+                        cat, "Contagem de implementados não encontrada")
                     self.metrics[cat]['score'] += 3
                     self.metrics[cat]['max'] += 5
 
                 # ── 4. IPVA estados mapeados (5 pts) ──
-                ipva_match = re.search(r'IPVA\s+(?:simples|detalhado)?:?\s*(\d+)\s+estados\s+mapeados', output) or re.search(r'Arquivo:\s*(\d+)\s+estados mapeados', output)
+                ipva_match = re.search(r'IPVA\s+(?:simples|detalhado)?:?\s*(\d+)\s+estados\s+mapeados',
+                                       output) or re.search(r'Arquivo:\s*(\d+)\s+estados mapeados', output)
                 if ipva_match:
                     estados = int(ipva_match.group(1))
 
                     if estados >= 27:
-                        self.log_pass(cat, f"{estados} estados IPVA mapeados (completo)", 5)
+                        self.log_pass(
+                            cat, f"{estados} estados IPVA mapeados (completo)", 5)
                     elif estados >= 20:
-                        self.log_pass(cat, f"{estados} estados IPVA mapeados", 4)
+                        self.log_pass(
+                            cat, f"{estados} estados IPVA mapeados", 4)
                         self.metrics[cat]['max'] += 1
                     else:
-                        self.log_warning(cat, f"Apenas {estados} estados IPVA mapeados")
+                        self.log_warning(
+                            cat, f"Apenas {estados} estados IPVA mapeados")
                         self.metrics[cat]['score'] += 2
                         self.metrics[cat]['max'] += 5
                 else:
@@ -2291,7 +2523,8 @@ class MasterComplianceValidator:
                     self.metrics[cat]['max'] += 5
 
             else:
-                self.log_fail(cat, f"analise360.py falhou: {result.stderr[:200]}", 35)
+                self.log_fail(
+                    cat, f"analise360.py falhou: {result.stderr[:200]}", 35)
 
         except subprocess.TimeoutExpired:
             self.log_fail(cat, "analise360.py timeout (>30s)", 35)
@@ -2348,28 +2581,35 @@ class MasterComplianceValidator:
             else:
                 percentage = 100.0
 
-            category_percentages.append((category_id, percentage, score, max_score))
+            category_percentages.append(
+                (category_id, percentage, score, max_score))
 
             status = "✅" if percentage == 100 else "⚠️" if percentage >= 70 else "❌"
-            category_display = category_names.get(category_id, category_id.upper())
+            category_display = category_names.get(
+                category_id, category_id.upper())
 
-            print(f"{status} {category_display:30} {score:5.1f}/{max_score:5.1f} ({percentage:5.1f}%)")
+            print(
+                f"{status} {category_display:30} {score:5.1f}/{max_score:5.1f} ({percentage:5.1f}%)")
 
-        final_percentage = (total_score / total_max * 100) if total_max > 0 else 100.0
+        final_percentage = (total_score / total_max *
+                            100) if total_max > 0 else 100.0
 
         print("="*60)
-        print(f"📊 SCORE FINAL: {total_score:.1f}/{total_max:.1f} = {final_percentage:.2f}%")
+        print(
+            f"📊 SCORE FINAL: {total_score:.1f}/{total_max:.1f} = {final_percentage:.2f}%")
         print("="*60)
 
         # Identificar categorias que precisam atenção
-        failing_categories = [(cat, pct, score, max_score) for cat, pct, score, max_score in category_percentages if pct < 100]
+        failing_categories = [(cat, pct, score, max_score) for cat,
+                              pct, score, max_score in category_percentages if pct < 100]
 
         if failing_categories:
             print("\n⚠️  CATEGORIAS ABAIXO DE 100%:")
             for cat, pct, score, max_score in failing_categories:
                 category_display = category_names.get(cat, cat.upper())
                 gap = max_score - score
-                print(f"   • {category_display}: {pct:.1f}% (falta {gap:.1f} pontos)")
+                print(
+                    f"   • {category_display}: {pct:.1f}% (falta {gap:.1f} pontos)")
 
         # Recomendações
         if final_percentage == 100:
@@ -2383,8 +2623,10 @@ class MasterComplianceValidator:
         else:
             print("\n❌ CRÍTICO! Score abaixo de 70%, ação urgente necessária.")
 
-        print(f"\nRelatório gerado em: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
-        print(f"Tempo de execução: {(datetime.now() - self.start_time).total_seconds():.2f}s")
+        print(
+            f"\nRelatório gerado em: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+        print(
+            f"Tempo de execução: {(datetime.now() - self.start_time).total_seconds():.2f}s")
 
         return final_percentage, total_score, total_max
 
@@ -2426,9 +2668,11 @@ class MasterComplianceValidator:
 
         if new_content != content:
             readme_path.write_text(new_content, encoding='utf-8')
-            print(f"\n✅ [AUTO-UPDATE] README.md badge atualizado: {total_score:.1f}/{total_max:.1f} ({percentage:.1f}%)")
+            print(
+                f"\n✅ [AUTO-UPDATE] README.md badge atualizado: {total_score:.1f}/{total_max:.1f} ({percentage:.1f}%)")
         else:
-            print(f"\n✅ [AUTO-UPDATE] README.md badge já está correto ({total_score:.1f}/{total_max:.1f})")
+            print(
+                f"\n✅ [AUTO-UPDATE] README.md badge já está correto ({total_score:.1f}/{total_max:.1f})")
 
     # =========================================================================
     # 21. REFERÊNCIAS ÓRFÃS (Dead References)
@@ -2461,33 +2705,57 @@ class MasterComplianceValidator:
             (r'V2_README\.md', "V2_README.md (arquivo removido)"),
             (r'GETTING_STARTED_V2\.md', "GETTING_STARTED_V2.md (arquivo removido)"),
             # Scripts que foram removidos ou renomeados
-            (r'validate_links\.py', "validate_links.py (duplicado de validate_sources.py)"),
-            (r'quality_pipeline\.py', "quality_pipeline.py (consolidado em validate_all.py + master_compliance.py)"),
-            (r'check_version_consistency\.py', "check_version_consistency.py (absorvido em master_compliance.py)"),
+            (r'validate_links\.py',
+             "validate_links.py (duplicado de validate_sources.py)"),
+            (r'quality_pipeline\.py',
+             "quality_pipeline.py (consolidado em validate_all.py + master_compliance.py)"),
+            (r'check_version_consistency\.py',
+             "check_version_consistency.py (absorvido em master_compliance.py)"),
             # Docs consolidados na grande unificação v1.10.0 (50→18 arquivos)
             (r'QUALITY_SYSTEM\.md', "QUALITY_SYSTEM.md (consolidado em QUALITY_GUIDE.md)"),
-            (r'QUALITY_TESTING_GUIDE\.md', "QUALITY_TESTING_GUIDE.md (consolidado em QUALITY_GUIDE.md)"),
-            (r'GUIA_RAPIDO_USO\.md', "GUIA_RAPIDO_USO.md (consolidado em QUALITY_GUIDE.md)"),
-            (r'OPCOES_EXECUCAO\.md', "OPCOES_EXECUCAO.md (consolidado em QUALITY_GUIDE.md)"),
-            (r'ACCESSIBILITY_AUDIT_REPORT\.md', "ACCESSIBILITY_AUDIT_REPORT.md (consolidado em ACCESSIBILITY.md)"),
-            (r'ACCESSIBILITY_FIXES_REPORT\.md', "ACCESSIBILITY_FIXES_REPORT.md (consolidado em ACCESSIBILITY.md)"),
-            (r'EMAG_BEST_PRACTICES_ANALYSIS\.md', "EMAG_BEST_PRACTICES_ANALYSIS.md (consolidado em ACCESSIBILITY.md)"),
-            (r'MELHORES_PRATICAS_RECURSOS_FLUTUANTES\.md', "MELHORES_PRATICAS_RECURSOS_FLUTUANTES.md (consolidado em ACCESSIBILITY.md)"),
-            (r'MOTOR_ACCESSIBILITY_IMPACT_ANALYSIS\.md', "MOTOR_ACCESSIBILITY_IMPACT_ANALYSIS.md (consolidado em ACCESSIBILITY.md)"),
-            (r'WHATSAPP_AUDIO_WIDGET_COMPLIANCE\.md', "WHATSAPP_AUDIO_WIDGET_COMPLIANCE.md (consolidado em ACCESSIBILITY.md)"),
-            (r'AUTOMATION_AUDIT\.md', "AUTOMATION_AUDIT.md (consolidado em QUALITY_GUIDE.md)"),
-            (r'VALIDATION_ROUTINES_STATUS\.md', "VALIDATION_ROUTINES_STATUS.md (consolidado em QUALITY_GUIDE.md)"),
-            (r'TESTES_E2E_STATUS\.md', "TESTES_E2E_STATUS.md (consolidado em QUALITY_GUIDE.md)"),
-            (r'CHECKLIST_VALIDATIONS\.md', "CHECKLIST_VALIDATIONS.md (consolidado em QUALITY_GUIDE.md)"),
-            (r'VALIDATION_STATUS\.md', "VALIDATION_STATUS.md (consolidado em QUALITY_GUIDE.md)"),
+            (r'QUALITY_TESTING_GUIDE\.md',
+             "QUALITY_TESTING_GUIDE.md (consolidado em QUALITY_GUIDE.md)"),
+            (r'GUIA_RAPIDO_USO\.md',
+             "GUIA_RAPIDO_USO.md (consolidado em QUALITY_GUIDE.md)"),
+            (r'OPCOES_EXECUCAO\.md',
+             "OPCOES_EXECUCAO.md (consolidado em QUALITY_GUIDE.md)"),
+            (r'ACCESSIBILITY_AUDIT_REPORT\.md',
+             "ACCESSIBILITY_AUDIT_REPORT.md (consolidado em ACCESSIBILITY.md)"),
+            (r'ACCESSIBILITY_FIXES_REPORT\.md',
+             "ACCESSIBILITY_FIXES_REPORT.md (consolidado em ACCESSIBILITY.md)"),
+            (r'EMAG_BEST_PRACTICES_ANALYSIS\.md',
+             "EMAG_BEST_PRACTICES_ANALYSIS.md (consolidado em ACCESSIBILITY.md)"),
+            (r'MELHORES_PRATICAS_RECURSOS_FLUTUANTES\.md',
+             "MELHORES_PRATICAS_RECURSOS_FLUTUANTES.md (consolidado em ACCESSIBILITY.md)"),
+            (r'MOTOR_ACCESSIBILITY_IMPACT_ANALYSIS\.md',
+             "MOTOR_ACCESSIBILITY_IMPACT_ANALYSIS.md (consolidado em ACCESSIBILITY.md)"),
+            (r'WHATSAPP_AUDIO_WIDGET_COMPLIANCE\.md',
+             "WHATSAPP_AUDIO_WIDGET_COMPLIANCE.md (consolidado em ACCESSIBILITY.md)"),
+            (r'AUTOMATION_AUDIT\.md',
+             "AUTOMATION_AUDIT.md (consolidado em QUALITY_GUIDE.md)"),
+            (r'VALIDATION_ROUTINES_STATUS\.md',
+             "VALIDATION_ROUTINES_STATUS.md (consolidado em QUALITY_GUIDE.md)"),
+            (r'TESTES_E2E_STATUS\.md',
+             "TESTES_E2E_STATUS.md (consolidado em QUALITY_GUIDE.md)"),
+            (r'CHECKLIST_VALIDATIONS\.md',
+             "CHECKLIST_VALIDATIONS.md (consolidado em QUALITY_GUIDE.md)"),
+            (r'VALIDATION_STATUS\.md',
+             "VALIDATION_STATUS.md (consolidado em QUALITY_GUIDE.md)"),
             (r'TESTING\.md', "TESTING.md (consolidado em QUALITY_GUIDE.md)"),
-            (r'validate_govbr_urls\.py', "validate_govbr_urls.py (absorvido em validate_urls.py)"),
-            (r'BENEFICIOS_COMPLETOS_PCD\.md', "BENEFICIOS_COMPLETOS_PCD.md (consolidado em REFERENCE.md)"),
-            (r'DEPENDENCY_CONTROL\.md', "DEPENDENCY_CONTROL.md (consolidado em REFERENCE.md)"),
-            (r'SITE_ORDERING_CRITERIA\.md', "SITE_ORDERING_CRITERIA.md (consolidado em REFERENCE.md)"),
-            (r'VLIBRAS_LIMITATIONS\.md', "VLIBRAS_LIMITATIONS.md (absorvido em KNOWN_ISSUES.md)"),
-            (r'ACHIEVEMENT_100_PERCENT_FINAL\.md', "ACHIEVEMENT_100_PERCENT_FINAL.md (info já em CHANGELOG.md)"),
-            (r'RESUMO_FINAL_100_PERCENT\.md', "RESUMO_FINAL_100_PERCENT.md (info já em CHANGELOG.md)"),
+            (r'validate_govbr_urls\.py',
+             "validate_govbr_urls.py (absorvido em validate_url_policy.py)"),
+            (r'BENEFICIOS_COMPLETOS_PCD\.md',
+             "BENEFICIOS_COMPLETOS_PCD.md (consolidado em REFERENCE.md)"),
+            (r'DEPENDENCY_CONTROL\.md',
+             "DEPENDENCY_CONTROL.md (consolidado em REFERENCE.md)"),
+            (r'SITE_ORDERING_CRITERIA\.md',
+             "SITE_ORDERING_CRITERIA.md (consolidado em REFERENCE.md)"),
+            (r'VLIBRAS_LIMITATIONS\.md',
+             "VLIBRAS_LIMITATIONS.md (absorvido em KNOWN_ISSUES.md)"),
+            (r'ACHIEVEMENT_100_PERCENT_FINAL\.md',
+             "ACHIEVEMENT_100_PERCENT_FINAL.md (info já em CHANGELOG.md)"),
+            (r'RESUMO_FINAL_100_PERCENT\.md',
+             "RESUMO_FINAL_100_PERCENT.md (info já em CHANGELOG.md)"),
             (r'RESPOSTAS_DIRETAS\.md', "RESPOSTAS_DIRETAS.md (info já em CHANGELOG.md)"),
         ]
 
@@ -2524,7 +2792,8 @@ class MasterComplianceValidator:
                     continue
 
                 try:
-                    content = file_path.read_text(encoding='utf-8', errors='ignore')
+                    content = file_path.read_text(
+                        encoding='utf-8', errors='ignore')
                     scanned_files += 1
                 except Exception:
                     continue
@@ -2592,7 +2861,8 @@ class MasterComplianceValidator:
                     continue
 
                 try:
-                    content = file_path.read_text(encoding='utf-8', errors='ignore')
+                    content = file_path.read_text(
+                        encoding='utf-8', errors='ignore')
                 except Exception:
                     continue
 
@@ -2641,7 +2911,8 @@ class MasterComplianceValidator:
                     10,
                 )
                 for rel_path, ref in broken_script_refs[:10]:
-                    print(f"    ⚠️  {rel_path}: referencia '{ref}' (arquivo não existe)")
+                    print(
+                        f"    ⚠️  {rel_path}: referencia '{ref}' (arquivo não existe)")
             else:
                 self.log_pass(
                     'dead_refs',
@@ -2665,13 +2936,17 @@ class MasterComplianceValidator:
         Schemas/data ausentes geram warning, não falha.
         """
         if not _HAS_JSONSCHEMA:
-            self.log_warning('dados', "jsonschema não instalado — schema check pulado")
+            self.log_warning(
+                'dados', "jsonschema não instalado — schema check pulado")
             return True
 
         pairs = [
-            ('data/direitos.json',         'schemas/direitos.schema.json',         'categorias'),
-            ('data/municipios_br.json',    'schemas/municipios_br.schema.json',    'municipios'),
-            ('data/orgaos_estaduais.json', 'schemas/orgaos_estaduais.schema.json', 'orgaos'),
+            ('data/direitos.json',
+             'schemas/direitos.schema.json',         'categorias'),
+            ('data/municipios_br.json',
+             'schemas/municipios_br.schema.json',    'municipios'),
+            ('data/orgaos_estaduais.json',
+             'schemas/orgaos_estaduais.schema.json', 'orgaos'),
         ]
 
         all_ok = True
@@ -2682,16 +2957,19 @@ class MasterComplianceValidator:
             schema_path = self.root / schema_rel
 
             if not schema_path.exists():
-                self.log_warning('dados', f"{schema_rel} não encontrado — schema check pulado")
+                self.log_warning(
+                    'dados', f"{schema_rel} não encontrado — schema check pulado")
                 continue
             if not data_path.exists():
                 # Schema existe mas data não: faz schema-loadability check apenas.
                 try:
                     with open(schema_path, 'r', encoding='utf-8') as f:
                         json.load(f)
-                    self.log_pass('dados', f"{schema_rel}: schema carregável (data ausente)", 2)
+                    self.log_pass(
+                        'dados', f"{schema_rel}: schema carregável (data ausente)", 2)
                 except Exception as e:
-                    self.log_fail('dados', f"{schema_rel}: schema inválido: {e}", 5)
+                    self.log_fail(
+                        'dados', f"{schema_rel}: schema inválido: {e}", 5)
                     all_ok = False
                 continue
 
@@ -2706,17 +2984,22 @@ class MasterComplianceValidator:
                 any_validated = True
 
                 if not errors:
-                    top = data.get(count_key) if isinstance(data, dict) else None
-                    n = len(top) if isinstance(top, list) else (len(data) if hasattr(data, '__len__') else '?')
-                    self.log_pass('dados', f"{data_rel}: válido ({n} {count_key})", 5)
+                    top = data.get(count_key) if isinstance(
+                        data, dict) else None
+                    n = len(top) if isinstance(top, list) else (
+                        len(data) if hasattr(data, '__len__') else '?')
+                    self.log_pass(
+                        'dados', f"{data_rel}: válido ({n} {count_key})", 5)
                 else:
-                    self.log_fail('dados', f"{data_rel}: {len(errors)} erro(s) de schema", 5)
+                    self.log_fail(
+                        'dados', f"{data_rel}: {len(errors)} erro(s) de schema", 5)
                     for err in errors[:3]:
                         path = ".".join(str(p) for p in err.path) or "root"
                         print(f"    ⚠️  {path}: {err.message[:100]}")
                     all_ok = False
             except Exception as e:
-                self.log_fail('dados', f"{data_rel}: schema check falhou: {e}", 5)
+                self.log_fail(
+                    'dados', f"{data_rel}: schema check falhou: {e}", 5)
                 all_ok = False
 
         if not any_validated:
@@ -2764,7 +3047,8 @@ class MasterComplianceValidator:
         # ── STEP 2: 21 categorias ──
         print(f"\n🎯 21 CATEGORIAS DE VALIDAÇÃO:")
         print("   1. Dados  2. Código  3. Fontes  4. Arquitetura  5. Documentação")
-        print("   6. Segurança  7. Performance  8. Acessibilidade  9. SEO  10. Infraestrutura")
+        print(
+            "   6. Segurança  7. Performance  8. Acessibilidade  9. SEO  10. Infraestrutura")
         print("   11. Testes E2E  12. Dead Code  13. Órfãos  14. Lógica  15. Regulatory")
         print("   16. Cloud Security  17. CI/CD  18. Dependências  19. Changelog  20. Análise 360")
         print("   21. Referências Órfãs")
@@ -2826,8 +3110,10 @@ if __name__ == '__main__':
         validator = MasterComplianceValidator(quick=True)
         print("\n[DOCS-ONLY] Validando headers, mermaid e freshness de docs/*.md...")
         validator.validate_documentation()
-        pct = (validator.metrics['documentacao']['score'] / max(validator.metrics['documentacao']['max'], 1)) * 100
-        has_fail = any(c['type'] == 'ERROR' for c in validator.metrics['documentacao'].get('checks', []))
+        pct = (validator.metrics['documentacao']['score'] /
+               max(validator.metrics['documentacao']['max'], 1)) * 100
+        has_fail = any(
+            c['type'] == 'ERROR' for c in validator.metrics['documentacao'].get('checks', []))
         print(f"\n  documentacao: {pct:.0f}% ({'FAIL' if has_fail else 'OK'})")
         sys.exit(1 if has_fail else 0)
 

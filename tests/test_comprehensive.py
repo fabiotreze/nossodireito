@@ -588,7 +588,7 @@ class TestScripts:
     """Validação de scripts essenciais"""
 
     ESSENTIAL_SCRIPTS = [
-        "validate_schema.py", "validate_content.py", "validate_urls.py",
+        "validate_schema.py", "validate_content.py", "validate_url_policy.py",
         "validate_all.py", "bump_version.py"
     ]
 
@@ -1093,7 +1093,7 @@ class TestScriptsPostCleanup:
 
     ACTIVE_SCRIPTS = [
         "validate_all.py", "validate_content.py", "validate_schema.py",
-        "validate_sources.py", "validate_urls.py",
+        "validate_sources.py", "validate_url_policy.py",
         "validate_legal_compliance.py", "validate_legal_sources.py",
         "master_compliance.py", "bump_version.py", "discover_benefits.py",
         "analise360.py", "audit_automation.py",

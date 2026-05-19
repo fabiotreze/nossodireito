@@ -316,8 +316,8 @@ nossodireito/
 │   ├── validate_all.py     # Quality Gate agregado (--quick)
 │   ├── validate_content.py # Validação de conteúdo JSON
 │   ├── validate_schema.py  # Validação JSON Schema
-│   ├── validate_sources.py # Validação de fontes oficiais
-│   ├── validate_urls.py    # URLs gov.br + whitelist de domínios
+│   ├── validate_sources.py # Drift externo (HTTP + API Senado + ICD)
+│   ├── validate_url_policy.py # Política de URLs (whitelist .gov.br)
 │   ├── validate_legal_compliance.py # Auditoria legal profunda
 │   ├── validate_legal_sources.py # Extração de artigos de leis
 │   ├── analise360.py       # Análise 360° de cobertura

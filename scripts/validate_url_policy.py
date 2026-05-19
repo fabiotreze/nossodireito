@@ -1,18 +1,21 @@
 #!/usr/bin/env python3
 """
-NossoDireito — Validador de URLs e Fontes Oficiais
-====================================================
+NossoDireito — Validador de Política de URLs (whitelist de domínios)
+=================================================================
 Valida que TODOS os links em direitos.json pertencem a domínios
 oficiais do governo brasileiro (.gov.br, .leg.br, .jus.br, .def.br,
-.mp.br, .mil.br).
+.mp.br, .mil.br) ou organismos internacionais confiáveis.
+
+Gate de **política** — falha se alguém adiciona link não-oficial.
+Complementar a scripts/validate_sources.py (drift / acessibilidade HTTP).
 
 Também pode verificar acessibilidade HTTP (status 200) com --check-live.
 
 Uso:
-    python scripts/validate_urls.py                 # Validação de domínios
-    python scripts/validate_urls.py --check-live    # + verifica HTTP status
-    python scripts/validate_urls.py --fix           # Sugere correções
-    python scripts/validate_urls.py --dict          # Valida dicionário também
+    python scripts/validate_url_policy.py                 # Validação de domínios
+    python scripts/validate_url_policy.py --check-live    # + verifica HTTP status
+    python scripts/validate_url_policy.py --dict          # Valida dicionário também
+    python scripts/validate_url_policy.py --verbose       # Lista todas as URLs
 
 Retorna exit code 0 se tudo OK, 1 se há URLs não-governamentais.
 """
