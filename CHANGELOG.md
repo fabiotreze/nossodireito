@@ -5,6 +5,20 @@ Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/)
 e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [1.22.1] - 2026-05-19
+
+### Corrigido
+
+- `data/direitos.json`: vínculos inversos `documentos_mestre[].categorias`
+  para 5 categorias que tinham `documentos` próprios mas não eram referenciadas
+  por nenhum documento mestre (`acessibilidade_arquitetonica`, `capacidade_legal`,
+  `crimes_contra_pcd`, `acessibilidade_digital`, `reabilitacao`). 16 vínculos
+  adicionados (rg, cpf, laudo_medico, comprovante_residencia, cartao_sus,
+  prescricao_medica). Sem invenção de conteúdo — apenas reconciliação de
+  índices. Score master compliance LOGICA 98.8% → 100%.
+
+---
+
 ## [1.22.0] - 2026-05-19
 
 ### Adicionado
