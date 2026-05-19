@@ -80,7 +80,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.0
 
       # ── Decodificar certificado PFX ──
       - name: Decode PFX certificate
@@ -239,7 +239,7 @@ jobs:
 
       # ── tflint (provider-aware lint, deprecated args, SKU validation) ──
       - name: Setup tflint
-        uses: terraform-linters/setup-tflint@v4
+        uses: terraform-linters/setup-tflint@6e87008f9dd1fe3e34e66aca6c97b4a69f72a7f4 # v4
         with:
           tflint_version: v0.55.1
 
@@ -254,7 +254,7 @@ jobs:
       # ── checkov (security/compliance: LGPD, CIS, NIST) ──
       # Skips documentados em .checkov.yaml
       - name: checkov
-        uses: bridgecrewio/checkov-action@v12
+        uses: bridgecrewio/checkov-action@4048c972aae68d0b983a48bb3479aab2d877b898 # v12
         with:
           directory: terraform/
           config_file: .checkov.yaml
@@ -350,7 +350,7 @@ jobs:
       # via azurerm_app_service_certificate_binding — não precisa de az rest.
       - name: Setup Node.js 22 LTS
         if: github.event.inputs.action == 'apply'
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: "22"
 
@@ -473,7 +473,7 @@ jobs:
 
       - name: Upload tfstate
         if: always() && steps.state_check.outputs.has_state == 'true'
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.0
         with:
           name: terraform-state
           path: |
