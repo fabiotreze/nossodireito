@@ -17,8 +17,25 @@
 
 # Se diff so toca docs/*.md: roda apenas Cat-5 (headers + mermaid + freshness, ~1s).
 # Para qualquer outro arquivo: roda --quick completo (~30s).
-non_docs=$(git diff --cached --name-only --diff-filter=ACMR | grep -vE '\.(md|txt)$' || true)
-docs_changed=$(git diff --cached --name-only --diff-filter=ACMR | grep -E '^docs/.*\.md$' || true)
+# --- Security gates (sempre rodam, em qualquer diff) ---
+staged_files=$(git diff --cached --name-only --diff-filter=ACMR)
+
+# Gate 1: gitleaks (segredos)
+if command -v gitleaks > /dev/null 2>&1; then
+    gitleaks protect --staged --redact --no-banner 2>&1 || {
+        echo "  BLOQUEADO: segredos detectados pelo gitleaks. Use 'git commit --no-verify' apenas se for falso positivo."
+        exit 1
+    }
+fi
+
+# Gate 2: PII scan (LGPD)
+if [ -n "$staged_files" ] && command -v python3 > /dev/null 2>&1; then
+    # shellcheck disable=SC2086
+    python3 scripts/scan_pii.py $staged_files || exit 1
+fi
+
+non_docs=$(echo "$staged_files" | grep -vE '\.(md|txt)$' || true)
+docs_changed=$(echo "$staged_files" | grep -E '^docs/.*\.md$' || true)
 if [ -z "$non_docs" ]; then
     if [ -n "$docs_changed" ]; then
         echo "📝 pre-commit: diff so de docs — validando headers/mermaid/freshness (Cat-5)..."

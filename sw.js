@@ -9,7 +9,7 @@
 
 'use strict';
 
-const CACHE_VERSION = 'nossodireito-v1.21.1';
+const CACHE_VERSION = 'nossodireito-v1.22.0';
 const STATIC_ASSETS = [
     '/',
     '/index.html',
