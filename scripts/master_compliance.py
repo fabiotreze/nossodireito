@@ -532,6 +532,40 @@ class MasterComplianceValidator:
                 else:
                     self.log_warning('documentacao', f"README: seção '{section}' ausente")
 
+        # Padrão único de header em docs/ (# H1 + **Version:** + **Updated:** YYYY-MM-DD)
+        # Freshness: avisa se Updated > 60 dias.
+        # Mermaid: detecta shape trapezoide nao quoted (S[/path/...]) que quebra GitHub render.
+        import re as _re
+        from datetime import datetime as _dt, timezone as _tz
+        header_re = _re.compile(
+            r'\A#\s+\S.*\n\n\*\*Version:\*\*\s+\d+\.\d+\.\d+\n\*\*Updated:\*\*\s+(\d{4}-\d{2}-\d{2})',
+            _re.MULTILINE,
+        )
+        mermaid_block_re = _re.compile(r'```mermaid\n(.*?)\n```', _re.DOTALL)
+        bad_shape_re = _re.compile(r'\[/[^"\]\n]*[a-zA-Z0-9][^"\]\n]*\]')
+        today = _dt.now(_tz.utc).date()
+        docs_dir = self.root / 'docs'
+        if docs_dir.exists():
+            for md in sorted(docs_dir.glob('*.md')):
+                if md.name == 'CONTRIBUTING.md':
+                    continue  # user-facing, formato proprio
+                text = md.read_text(encoding='utf-8')
+                m = header_re.search(text)
+                if not m:
+                    self.log_fail('documentacao', f"{md.relative_to(self.root)}: header fora do padrao (# Title + **Version:** + **Updated:**)", 2)
+                else:
+                    self.log_pass('documentacao', f"{md.name}: header padrao OK", 1)
+                    try:
+                        updated = _dt.strptime(m.group(1), '%Y-%m-%d').date()
+                        age = (today - updated).days
+                        if age > 60:
+                            self.log_warning('documentacao', f"{md.name}: Updated ha {age} dias (>60)")
+                    except ValueError:
+                        self.log_fail('documentacao', f"{md.name}: data Updated invalida", 1)
+                for block in mermaid_block_re.findall(text):
+                    for bad in bad_shape_re.findall(block):
+                        self.log_fail('documentacao', f"{md.name}: mermaid shape sem aspas '{bad}' (quebra render GitHub; use [\"...\"]) ", 2)
+
     # =========================================================================
     # CATEGORIA 6: VALIDAÇÃO DE SEGURANÇA
     # =========================================================================
@@ -2713,7 +2747,20 @@ if __name__ == '__main__':
         '--quick', action='store_true',
         help='Modo rápido para pre-commit (pula HTTP/fontes, ~30s)',
     )
+    parser.add_argument(
+        '--docs-only', action='store_true',
+        help='Valida apenas Categoria 5 (headers, mermaid, freshness) — pre-commit docs-only path (~1s)',
+    )
     args = parser.parse_args()
+
+    if args.docs_only:
+        validator = MasterComplianceValidator(quick=True)
+        print("\n[DOCS-ONLY] Validando headers, mermaid e freshness de docs/*.md...")
+        validator.validate_documentation()
+        pct = (validator.metrics['documentacao']['score'] / max(validator.metrics['documentacao']['max'], 1)) * 100
+        has_fail = any(c['type'] == 'ERROR' for c in validator.metrics['documentacao'].get('checks', []))
+        print(f"\n  documentacao: {pct:.0f}% ({'FAIL' if has_fail else 'OK'})")
+        sys.exit(1 if has_fail else 0)
 
     validator = MasterComplianceValidator(quick=args.quick)
     exit_code = validator.run()

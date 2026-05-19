@@ -15,10 +15,18 @@
 # Checks pesados (testes Node, semver gate, SW cache gate) rodam no pre-push.
 # Para pular manualmente: git commit --no-verify (use com motivo no msg).
 
-# Skip se diff so toca arquivos de docs (acelera commits de README/CHANGELOG).
+# Se diff so toca docs/*.md: roda apenas Cat-5 (headers + mermaid + freshness, ~1s).
+# Para qualquer outro arquivo: roda --quick completo (~30s).
 non_docs=$(git diff --cached --name-only --diff-filter=ACMR | grep -vE '\.(md|txt)$' || true)
+docs_changed=$(git diff --cached --name-only --diff-filter=ACMR | grep -E '^docs/.*\.md$' || true)
 if [ -z "$non_docs" ]; then
-    echo "📝 pre-commit: diff so de docs — pulando validator pesado."
+    if [ -n "$docs_changed" ]; then
+        echo "📝 pre-commit: diff so de docs — validando headers/mermaid/freshness (Cat-5)..."
+        if command -v python > /dev/null 2>&1; then PYTHON=python; elif command -v python3 > /dev/null 2>&1; then PYTHON=python3; else exit 0; fi
+        $PYTHON scripts/master_compliance.py --docs-only || { echo "  BLOQUEADO: documentacao fora do padrao."; exit 1; }
+    else
+        echo "📝 pre-commit: diff so de .md/.txt nao-doc — pulando validator."
+    fi
     exit 0
 fi
 
