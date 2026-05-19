@@ -1,7 +1,11 @@
-# Contribuindo para o NossoDireito
+# Contribuindo para o NossoDireito (Guia Técnico)
 
 Obrigado por considerar contribuir! Este guia descreve o fluxo de trabalho
-obrigatório para enviar mudanças ao repositório.
+obrigatório para enviar mudanças **de código** ao repositório.
+
+> 📣 **Contribuindo com conteúdo (leis, links quebrados, informações desatualizadas)?**
+> Veja [`docs/CONTRIBUTING.md`](docs/CONTRIBUTING.md) — guia voltado à comunidade,
+> sem pré-requisitos técnicos.
 
 ## Antes de começar
 
