@@ -483,12 +483,12 @@ class MasterValidator:
         # ====================
         print()
         print("=" * 100)
-        print("🏠️ FASE 7/11: URLS GOV.BR PcD (via validate_urls --check-live)")
+        print("🏠️ FASE 7/11: URLS GOV.BR PcD (via validate_url_policy --check-live)")
         print("=" * 100)
 
         self.results.append(self.run_script(
-            "URLs gov.br PcD (validate_urls --check-live)",
-            self.root / "scripts" / "validate_urls.py",
+            "URLs gov.br PcD (validate_url_policy --check-live)",
+            self.root / "scripts" / "validate_url_policy.py",
             extra_args=["--check-live"],
             timeout=120
         ))

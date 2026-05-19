@@ -72,7 +72,7 @@ class AutomationAudit:
             },
             {
                 'area': 'Validação de Fontes',
-                'script': 'scripts/validate_sources.py + validate_urls.py --check-live',
+                'script': 'scripts/validate_sources.py + validate_url_policy.py --check-live',
                 'validacoes': [
                     '✅ URLs .gov.br: conectividade, status HTTP',
                     '✅ Formato de links: estrutura JSON',
