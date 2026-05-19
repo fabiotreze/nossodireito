@@ -160,18 +160,41 @@ def bump_index_html(new: str, old: str, *, dry_run: bool) -> bool:
 def bump_readme(new: str, old: str, *, dry_run: bool) -> bool:
     path = ROOT / "README.md"
     text = read_text(path)
+    changed = False
+
+    # 1) Shields.io badge "Version-X.Y.Z"
     old_badge = f"Version-{old}"
     new_badge = f"Version-{new}"
-    if old_badge not in text:
-        if new_badge in text:
-            print(f"  ✅ README.md já está em {new}")
-            return False
+    if old_badge in text:
+        text = text.replace(old_badge, new_badge)
+        changed = True
+        print(f"  ✅ README.md: badge → {new}")
+    elif new_badge not in text:
         print(f"  ⚠️  README.md: badge '{old_badge}' não encontrado")
-        return False
-    text = text.replace(old_badge, new_badge)
-    write_text(path, text, dry_run=dry_run)
-    print(f"  ✅ README.md: badge → {new}")
-    return True
+
+    # 2) Headings com versao embutida (evita drift apontado em PR #101)
+    #    "## 📘 Documentação consolidada (vX.Y.Z)"
+    #    "## 🎉 NOVIDADES vX.Y.Z (...) — ..."
+    import re as _re
+    pat_doc = _re.compile(r"(Documentação consolidada \(v)" + _re.escape(old) + r"(\))")
+    new_text, n = pat_doc.subn(r"\g<1>" + new + r"\g<2>", text)
+    if n:
+        text = new_text
+        changed = True
+        print(f"  ✅ README.md: heading 'Documentação consolidada' → v{new}")
+
+    pat_nov = _re.compile(r"(NOVIDADES v)" + _re.escape(old) + r"(\s)")
+    new_text, n = pat_nov.subn(r"\g<1>" + new + r"\g<2>", text)
+    if n:
+        text = new_text
+        changed = True
+        print(f"  ✅ README.md: heading 'NOVIDADES' → v{new}")
+
+    if changed:
+        write_text(path, text, dry_run=dry_run)
+    else:
+        print(f"  ℹ️  README.md: nenhuma mudança (já em {new}?)")
+    return changed
 
 
 def bump_changelog(new: str, old: str, *, dry_run: bool) -> bool:
