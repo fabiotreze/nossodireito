@@ -44,7 +44,7 @@ Este projeto responde essa pergunta de forma clara, objetiva e validada.
 
 ### 🌐 About (English)
 
-**NossoDireito — Rights Portal for People with Disabilities.** Regional project — interface and content in Portuguese (pt-BR) for Brazilian citizens. Web portal with **30 rights categories**, official-source references, keyword-based document analysis, accessibility tools (VLibras sign language, TTS, high contrast, font scaling), PWA offline support, and encrypted storage via Web Crypto API. **Zero data collection (LGPD compliant).** Master Compliance score 1118.7/1118.7 (100.00%) across 21 validation categories. Infrastructure as Code with Terraform on Azure App Service (region `brazilsouth`), CI/CD via GitHub Actions with automated Quality Gate.
+**NossoDireito — Rights Portal for People with Disabilities.** Regional project — interface and content in Portuguese (pt-BR) for Brazilian citizens. Web portal with **30 rights categories**, official-source references, keyword-based document analysis, accessibility tools (VLibras sign language, TTS, high contrast, font scaling), PWA offline support, and encrypted storage via Web Crypto API. **Zero data collection (LGPD compliant).** Master Compliance score 1126.2/1126.2 (100.0%) across 21 validation categories. Deployed to Azure App Service (region `brazilsouth`) via ZIP deploy; Terraform for infrastructure replication. CI/CD via GitHub Actions with automated Quality Gate.
 
 ---
 

@@ -47,14 +47,12 @@ Disallow: /tests/
 Disallow: /__pycache__/
 Disallow: /schemas/
 
-# Bloquear crawlers de IA que consomem dados sem atribuição
-User-agent: GPTBot
-Disallow: /
+# Bloquear crawlers de IA que consomem dados sem atribuição.
+# Nota: GPTBot, CCBot, Google-Extended, Bytespider, Meta-ExternalAgent e
+# Applebot-Extended já são gerenciados pelo bloco Cloudflare (prepend automático).
+# Listamos aqui apenas os agentes que o Cloudflare não cobre.
 
 User-agent: ChatGPT-User
-Disallow: /
-
-User-agent: CCBot
 Disallow: /
 
 User-agent: anthropic-ai
@@ -63,22 +61,10 @@ Disallow: /
 User-agent: Claude-Web
 Disallow: /
 
-User-agent: Google-Extended
-Disallow: /
-
-User-agent: Bytespider
-Disallow: /
-
 User-agent: PetalBot
 Disallow: /
 
-User-agent: Meta-ExternalAgent
-Disallow: /
-
 User-agent: PerplexityBot
-Disallow: /
-
-User-agent: Applebot-Extended
 Disallow: /
 
 User-agent: FacebookBot
