@@ -63,16 +63,18 @@ else
     exit 0
 fi
 
+# Quality Gate principal -- bloqueia se falhar (exit code != 0)
 $PYTHON scripts/master_compliance.py --quick
+GATE_RESULT=$?
 
-# Freshness das fontes jurídicas (warning, não bloqueia)
+# Freshness das fontes juridicas -- WARNING puro, nao bloqueia commit
+# (rodado por informacao; bloqueio acontece via --strict no weekly-review.yml)
 $PYTHON scripts/check_sources_freshness.py || true
-RESULT=$?
 
 echo ""
 echo "======================================================"
-if [ $RESULT -ne 0 ]; then
-    echo "  BLOQUEADO -- Quality Gate falhou."
+if [ $GATE_RESULT -ne 0 ]; then
+    echo "  BLOQUEADO -- master_compliance.py --quick falhou (exit $GATE_RESULT)."
     echo "  Corrija os problemas acima e tente novamente."
     echo "  Para pular: git commit --no-verify"
     echo "======================================================"
