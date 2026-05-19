@@ -167,10 +167,18 @@ class MasterComplianceValidator:
         self.metrics[category]['checks'].append({'type': 'ERROR', 'message': message})
         print(f"❌ [{category.upper()}] {message}")
 
-    def log_warning(self, category: str, message: str):
-        """Registra aviso"""
+    def log_warning(self, category: str, message: str, penalty: float = 0.5):
+        """Registra aviso. Por padrão decrementa 0.5pt do score (PR #99).
+
+        WARNs antes não afetavam a pontuação, mascarando problemas reais sob
+        score 100%. Agora cada warning adiciona `penalty` ao max sem somar
+        ao score → percentual cai. Use penalty=0 para warnings puramente
+        informativos (raros).
+        """
         self.warnings.append({'category': category, 'message': message})
         self.metrics[category]['checks'].append({'type': 'WARN', 'message': message})
+        if penalty > 0:
+            self.metrics[category]['max'] += penalty
         print(f"⚠️  [{category.upper()}] {message}")
 
     def log_pass(self, category: str, message: str, points: float = 1.0):
