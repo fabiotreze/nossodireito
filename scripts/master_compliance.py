@@ -55,21 +55,23 @@ except ImportError:
 
 # ── Constantes de versão (absorvido de check_version_consistency.py) ─────
 _SEMVER_RE = re.compile(r'^\d+\.\d+\.\d+$')
+# Slim v1.22.x — apenas arquivos com impacto runtime/funcional.
+# Removidos (não impactam comportamento — só metadados de doc):
+#   GOVERNANCE.md, SECURITY_AUDIT.md, docs/ARCHITECTURE.md,
+#   docs/SECURITY-LGPD.md, docs/OPERATIONS.md, docs/REPLICATION.md,
+#   scripts/master_compliance.py self.version,
+#   scripts/validate_content.py, tests/test_comprehensive.py.
 _VERSION_CHECKS = [
     ('data/direitos.json', 'json', 'versao'),
     ('data/dicionario_pcd.json', 'json', 'versao'),
     ('manifest.json', 'json', 'version'),
     ('sw.js', 'regex', r"CACHE_VERSION\s*=\s*'nossodireito-v([\d.]+)'"),
     ('README.md', 'regex', r'Version-([\d.]+)'),
-    ('GOVERNANCE.md', 'regex', r'\*\*Versão:\*\*\s*([\d.]+)'),
-    ('SECURITY_AUDIT.md', 'regex', r'Auditoria de Segurança v([\d.]+)'),
-    ('docs/ARCHITECTURE.md', 'regex', r'Versao:\s*([\d.]+)'),
-    ('scripts/master_compliance.py', 'regex', r'self\.version\s*=\s*"([\d.]+)"'),
 ]
 
 
 def check_versions(root: Path = None) -> tuple:
-    """Verifica consistência de versão em 10 arquivos vs package.json.
+    """Verifica consistência de versão em 5 arquivos vs package.json.
 
     Retorna (canonical_version, lista_de_inconsistentes).
     Pode ser chamado standalone ou internamente.
@@ -1550,7 +1552,7 @@ class MasterComplianceValidator:
         if not canonical_version:
             self.log_warning('regulatory', "Versão: package.json não encontrado ou versão inválida")
         elif not mismatches:
-            self.log_pass('regulatory', f"Versões consistentes: v{canonical_version} (10 arquivos)", 10)
+            self.log_pass('regulatory', f"Versões consistentes: v{canonical_version} (5 arquivos)", 10)
         else:
             mismatch_str = ', '.join(mismatches)
             self.log_fail('regulatory', f"Versões inconsistentes (esperado v{canonical_version}): {mismatch_str}", 10)
@@ -2699,7 +2701,7 @@ class MasterComplianceValidator:
             print(f"  FIX: python scripts/bump_version.py {canonical}")
             return 1
 
-        print(f"  OK: v{canonical} consistente em 10 arquivos")
+        print(f"  OK: v{canonical} consistente em 5 arquivos")
 
         # ── STEP 1: JSON Schema Draft 7 ──
         print("\n[SCHEMA] Validando JSON Schema...")

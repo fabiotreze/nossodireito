@@ -174,58 +174,6 @@ def bump_readme(new: str, old: str, *, dry_run: bool) -> bool:
     return True
 
 
-def bump_governance(new: str, old: str, *, dry_run: bool) -> bool:
-    path = ROOT / "GOVERNANCE.md"
-    text = read_text(path)
-    old_ver = f"**Versão:** {old}"
-    new_ver = f"**Versão:** {new}"
-    if old_ver not in text:
-        if new_ver in text:
-            print(f"  ✅ GOVERNANCE.md já está em {new}")
-            return False
-        print(f"  ⚠️  GOVERNANCE.md: '{old_ver}' não encontrado")
-        return False
-    text = text.replace(old_ver, new_ver)
-    # Atualiza data
-    old_date_re = re.compile(r"\*\*Data da última revisão:\*\*\s*\d{4}-\d{2}-\d{2}")
-    text = old_date_re.sub(f"**Data da última revisão:** {TODAY}", text)
-    write_text(path, text, dry_run=dry_run)
-    print(f"  ✅ GOVERNANCE.md: {old} → {new} (data: {TODAY})")
-    return True
-
-
-def bump_security_audit(new: str, old: str, *, dry_run: bool) -> bool:
-    path = ROOT / "SECURITY_AUDIT.md"
-    text = read_text(path)
-    replacements = [
-        (f"Auditoria de Segurança v{old}", f"Auditoria de Segurança v{new}"),
-        (f"Postura de Segurança v{old} (Depois)", f"Postura de Segurança v{new} (Depois)"),
-        (f"After v{old}", f"After v{new}"),
-        (f"(v{old})", f"(v{new})"),
-        (f"Novidades v{old}", f"Novidades v{new}"),
-        (f"NossoDireito v{old}.", f"NossoDireito v{new}."),
-    ]
-    changed = False
-    for old_str, new_str in replacements:
-        if old_str in text:
-            text = text.replace(old_str, new_str)
-            changed = True
-    # Atualiza data do documento
-    old_date_re = re.compile(r"\*\*Data\*\*:\s*\d{4}-\d{2}-\d{2}")
-    text = old_date_re.sub(f"**Data**: {TODAY}", text)
-    old_footer_re = re.compile(r"Documento atualizado em \d{4}-\d{2}-\d{2}")
-    text = old_footer_re.sub(f"Documento atualizado em {TODAY}", text)
-    if not changed:
-        if f"v{new}" in text:
-            print(f"  ✅ SECURITY_AUDIT.md já está em {new}")
-            return False
-        print(f"  ⚠️  SECURITY_AUDIT.md: nenhum padrão v{old} encontrado")
-        return False
-    write_text(path, text, dry_run=dry_run)
-    print(f"  ✅ SECURITY_AUDIT.md: v{old} → v{new} (data: {TODAY})")
-    return True
-
-
 def bump_changelog(new: str, old: str, *, dry_run: bool) -> bool:
     path = ROOT / "CHANGELOG.md"
     text = read_text(path)
@@ -264,129 +212,6 @@ def bump_manifest_json(new: str, old: str, *, dry_run: bool) -> bool:
     write_text(path, json.dumps(data, indent=4, ensure_ascii=False) + "\n", dry_run=dry_run)
     print(f"  ✅ manifest.json: {old} → {new}")
     return True
-
-
-def bump_compliance_md(new: str, old: str, *, dry_run: bool) -> bool:
-    path = ROOT / "docs" / "SECURITY-LGPD.md"
-    if not path.exists():
-        print("  ⚠️  docs/SECURITY-LGPD.md: não encontrado")
-        return False
-    text = read_text(path)
-    # Atualiza padrão **Version:** X.Y.Z
-    old_re = re.compile(r'(\*\*Version:\*\*\s*)\d+\.\d+\.\d+')
-    if not old_re.search(text):
-        print("  ⚠️  docs/SECURITY-LGPD.md: padrão **Version:** não encontrado")
-        return False
-    new_text = old_re.sub(f'\\g<1>{new}', text, count=1)
-    if new_text == text:
-        print(f"  ✅ docs/SECURITY-LGPD.md já está em {new}")
-        return False
-    write_text(path, new_text, dry_run=dry_run)
-    print(f"  ✅ docs/SECURITY-LGPD.md: → {new}")
-    return True
-
-
-def bump_architecture_md(new: str, old: str, *, dry_run: bool) -> bool:
-    path = ROOT / "docs" / "ARCHITECTURE.md"
-    if not path.exists():
-        print("  ⚠️  docs/ARCHITECTURE.md: não encontrado")
-        return False
-    text = read_text(path)
-    old_re = re.compile(r'(Versao:\s*)\d+\.\d+\.\d+')
-    if not old_re.search(text):
-        print("  ⚠️  docs/ARCHITECTURE.md: padrão Versao: não encontrado")
-        return False
-    new_text = old_re.sub(f'\\g<1>{new}', text, count=1)
-    if new_text == text:
-        print(f"  ✅ docs/ARCHITECTURE.md já está em {new}")
-        return False
-    write_text(path, new_text, dry_run=dry_run)
-    print(f"  ✅ docs/ARCHITECTURE.md: → {new}")
-    return True
-
-
-def bump_master_compliance(new: str, old: str, *, dry_run: bool) -> bool:
-    path = ROOT / "scripts" / "master_compliance.py"
-    if not path.exists():
-        print("  ⚠️  scripts/master_compliance.py: não encontrado")
-        return False
-    text = read_text(path)
-    old_pattern = f'self.version = "{old}"'
-    new_pattern = f'self.version = "{new}"'
-    if old_pattern not in text:
-        if f'self.version = "{new}"' in text:
-            print(f"  ✅ master_compliance.py já está em {new}")
-            return False
-        # Tentar regex mais flexível
-        ver_re = re.compile(r'self\.version\s*=\s*"\d+\.\d+\.\d+"')
-        if ver_re.search(text):
-            text = ver_re.sub(f'self.version = "{new}"', text, count=1)
-            write_text(path, text, dry_run=dry_run)
-            print(f"  ✅ master_compliance.py: → {new}")
-            return True
-        print(f"  ⚠️  master_compliance.py: padrão self.version não encontrado")
-        return False
-    text = text.replace(old_pattern, new_pattern, 1)
-    write_text(path, text, dry_run=dry_run)
-    print(f"  ✅ master_compliance.py: {old} → {new}")
-    return True
-
-
-def bump_python_docstrings(new: str, old: str, *, dry_run: bool) -> bool:
-    """Atualiza versão nos docstrings e banners dos scripts Python."""
-    files = [
-        ROOT / "scripts" / "validate_content.py",
-        ROOT / "scripts" / "master_compliance.py",
-        ROOT / "tests" / "test_comprehensive.py",
-    ]
-    changed = False
-    old_pattern = f"NossoDireito v{old}"
-    new_pattern = f"NossoDireito v{new}"
-    for path in files:
-        if not path.exists():
-            print(f"  ⚠️  {path.name}: não encontrado")
-            continue
-        text = read_text(path)
-        if old_pattern not in text:
-            if new_pattern in text:
-                print(f"  ✅ {path.name} docstring já está em v{new}")
-            else:
-                print(f"  ⚠️  {path.name}: padrão '{old_pattern}' não encontrado")
-            continue
-        text = text.replace(old_pattern, new_pattern)
-        write_text(path, text, dry_run=dry_run)
-        print(f"  ✅ {path.name}: v{old} → v{new}")
-        changed = True
-    return changed
-
-
-def bump_doc_headers(new: str, old: str, *, dry_run: bool) -> bool:
-    """Atualiza versão e data nos headers dos docs/*.md consolidados."""
-    docs = [
-        ROOT / "docs" / "OPERATIONS.md",
-        ROOT / "docs" / "REPLICATION.md",
-    ]
-    changed = False
-    ver_re = re.compile(r'(\*\*Version:\*\*\s*)\d+\.\d+\.\d+')
-    updated_re = re.compile(r'(\*\*Updated:\*\*\s*)\d{4}-\d{2}-\d{2}')
-    for path in docs:
-        if not path.exists():
-            print(f"  ⚠️  {path.name}: não encontrado")
-            continue
-        text = read_text(path)
-        match = ver_re.search(text)
-        if not match:
-            print(f"  ⚠️  {path.name}: padrão **Version:** não encontrado")
-            continue
-        new_text = ver_re.sub(f'\\g<1>{new}', text, count=1)
-        new_text = updated_re.sub(f'\\g<1>{TODAY}', new_text, count=1)
-        if new_text == text:
-            print(f"  ✅ {path.name} já está em {new}")
-            continue
-        write_text(path, new_text, dry_run=dry_run)
-        print(f"  ✅ {path.name}: → {new} (data: {TODAY})")
-        changed = True
-    return changed
 
 
 # ── Detecção da versão atual ──────────────────────────────────────
@@ -435,14 +260,7 @@ def main() -> None:
         bump_sw_js(new_version, old_version, dry_run=args.dry_run),
         bump_index_html(new_version, old_version, dry_run=args.dry_run),
         bump_readme(new_version, old_version, dry_run=args.dry_run),
-        bump_governance(new_version, old_version, dry_run=args.dry_run),
-        bump_security_audit(new_version, old_version, dry_run=args.dry_run),
-        bump_compliance_md(new_version, old_version, dry_run=args.dry_run),
-        bump_architecture_md(new_version, old_version, dry_run=args.dry_run),
-        bump_master_compliance(new_version, old_version, dry_run=args.dry_run),
         bump_changelog(new_version, old_version, dry_run=args.dry_run),
-        bump_python_docstrings(new_version, old_version, dry_run=args.dry_run),
-        bump_doc_headers(new_version, old_version, dry_run=args.dry_run),
     ]
 
     print("─" * 50)
