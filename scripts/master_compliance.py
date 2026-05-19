@@ -2355,6 +2355,11 @@ class MasterComplianceValidator:
 
         new_content = re.sub(badge_pattern, new_badge, content)
 
+        # Also update the prose description line (e.g. "Master Compliance score X/X")
+        prose_pattern = r'Master Compliance score \d+\.?\d*/\d+\.?\d* \(\d+\.?\d*%\)'
+        new_prose = f'Master Compliance score {total_score:.1f}/{total_max:.1f} ({percentage:.1f}%)'
+        new_content = re.sub(prose_pattern, new_prose, new_content)
+
         if new_content != content:
             readme_path.write_text(new_content, encoding='utf-8')
             print(f"\n✅ [AUTO-UPDATE] README.md badge atualizado: {total_score:.1f}/{total_max:.1f} ({percentage:.1f}%)")
