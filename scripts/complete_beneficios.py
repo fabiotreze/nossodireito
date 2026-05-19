@@ -9,18 +9,9 @@ import json
 import sys
 from pathlib import Path
 
-
-def is_beneficio_completo(cat):
-    """Verifica se benefício está completo"""
-    requisitos_ok = len(cat.get('requisitos', [])) >= 5
-    documentos_ok = len(cat.get('documentos', [])) >= 4
-    passos_ok = len(cat.get('passo_a_passo', [])) >= 6
-    dicas_ok = len(cat.get('dicas', [])) >= 4
-    links_ok = len(cat.get('links', [])) >= 2
-    base_legal_ok = len(cat.get('base_legal', [])) >= 1
-    valor_ok = len(cat.get('valor', '').strip()) >= 10
-
-    return all([requisitos_ok, documentos_ok, passos_ok, dicas_ok, links_ok, base_legal_ok, valor_ok])
+# Single source of truth para critérios de completude (DRY).
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from analise360 import is_beneficio_completo  # noqa: E402
 
 
 def complete_beneficio(cat):
