@@ -2,10 +2,10 @@
 # Python 3.10+
 
 # HTTP Client for URL validation
-requests~=2.34.0
+requests~=2.34.2
 
 # HTML/XML parsing for content validation
-lxml~=6.1.0
+lxml~=6.1.1
 
 # JSON Schema validation (Draft 7)
 jsonschema~=4.26.0
