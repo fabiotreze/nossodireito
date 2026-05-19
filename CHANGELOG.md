@@ -5,6 +5,17 @@ Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/)
 e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [1.22.2] - 2026-05-19
+
+### Alterado
+
+- Botão "🧠 Analisar com IA (servidor)" agora usa variante `.btn-ai`
+  (gradient azul→verde + sombra) em vez de `.btn-secondary` (cinza neutro).
+  Aumenta contraste visual e destaca a ação premium ao lado do botão de
+  análise local. Respeita `prefers-reduced-motion`.
+
+---
+
 ## [1.22.1] - 2026-05-19
 
 ### Corrigido
