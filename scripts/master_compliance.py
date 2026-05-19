@@ -1106,15 +1106,39 @@ class MasterComplianceValidator:
 
             content = py_file.read_text(encoding='utf-8')
 
-            # Extrair imports
-            import_pattern = r'import\s+(\w+)|from\s+\w+\s+import\s+(\w+)'
-            imports = re.findall(import_pattern, content)
+            # Usa AST: respeita `from __future__` (side-effect), aliases
+            # (`import x as y`) e `from m import a, b` corretamente.
+            try:
+                import ast
+                tree = ast.parse(content)
+            except SyntaxError:
+                continue
 
-            for imp in imports:
-                module_name = imp[0] if imp[0] else imp[1]
+            names_to_check = []
+            for node in ast.walk(tree):
+                if isinstance(node, ast.ImportFrom):
+                    # __future__ é side-effect (PEP 236/563) — sempre legítimo
+                    if node.module == '__future__':
+                        continue
+                    for alias in node.names:
+                        names_to_check.append(alias.asname or alias.name)
+                elif isinstance(node, ast.Import):
+                    for alias in node.names:
+                        # `import a.b.c` sem alias → nome local é `a`
+                        names_to_check.append(
+                            alias.asname or alias.name.split('.')[0]
+                        )
 
-                # Verificar se é usado no código
-                if content.count(module_name) == 1:  # Apenas na linha de import
+            # Remove a linha de import do conteúdo antes de contar referências
+            # (evita falso negativo de "usado" quando só aparece no import).
+            non_import_lines = [
+                line for line in content.splitlines()
+                if not re.match(r'\s*(import|from)\s+', line)
+            ]
+            body = '\n'.join(non_import_lines)
+            for name in names_to_check:
+                # Match como identificador (não substring)
+                if not re.search(rf'\b{re.escape(name)}\b', body):
                     total_unused_imports += 1
 
         if total_unused_imports == 0:
@@ -1273,6 +1297,33 @@ class MasterComplianceValidator:
 
         # Deduplicate
         orphaned_files = list(dict.fromkeys(orphaned_files))
+
+        # --- Filtro: ignorar arquivos cobertos por .gitignore ---
+        # Arquivos gitignored são cruft LOCAL legítimo (tfstate.backup,
+        # .DS_Store, __pycache__/*, node_modules/*, validation_*.json) e
+        # não devem decrementar o score do repo.
+        if orphaned_files:
+            try:
+                rels = [
+                    str(p.relative_to(self.root)) if p.is_absolute() else str(p)
+                    for p in orphaned_files
+                ]
+                # `git check-ignore` retorna na stdout os paths que SÃO ignorados
+                proc = subprocess.run(
+                    ['git', 'check-ignore', '--stdin'],
+                    input='\n'.join(rels),
+                    capture_output=True, text=True,
+                    cwd=self.root, timeout=10,
+                )
+                ignored = set(proc.stdout.splitlines())
+                if ignored:
+                    orphaned_files = [
+                        p for p, rel in zip(orphaned_files, rels)
+                        if rel not in ignored
+                    ]
+            except (subprocess.SubprocessError, FileNotFoundError, OSError):
+                # Sem git disponível: comportamento original (sem filtro)
+                pass
 
         # --- Report ---
         total_issues = len(orphaned_files) + len(hygiene_issues)
@@ -1715,7 +1766,10 @@ class MasterComplianceValidator:
             ic = index_html.read_text(encoding='utf-8')
             if 'aiConsentModal' not in ic:
                 gaps.append("index.html sem modal de consentimento IA")
-            if 'Direitos do Titular' not in ic and 'direitos do titular' not in ic.lower():
+            if not re.search(
+                r'direitos\s+(do|como)\s+titular',
+                ic, re.IGNORECASE,
+            ):
                 gaps.append("index.html sem seção Direitos do Titular (LGPD Art. 18)")
             if 'Encarregado' not in ic and 'DPO' not in ic and 'encarregado' not in ic.lower():
                 gaps.append("index.html sem contato do Encarregado/DPO (LGPD Art. 41)")
