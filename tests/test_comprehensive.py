@@ -883,7 +883,7 @@ class TestSitemap:
         assert "</urlset>" in self.sitemap
 
     def test_canonical_url_present(self):
-        """Sitemap deve conter a URL canônica principal (SPA = 1 URL indexável)"""
+        """Sitemap deve conter a URL canônica principal (home)"""
         assert "https://nossodireito.fabiotreze.com/" in self.sitemap
 
     def test_no_fragment_urls(self):
@@ -893,12 +893,19 @@ class TestSitemap:
         assert not fragments, \
             f"Sitemap contém URLs com fragmento (Google ignora): {fragments[:5]}"
 
-    def test_single_url_for_spa(self):
-        """SPA com hash-routing deve ter apenas 1 URL no sitemap"""
+    def test_prerendered_pages_in_sitemap(self):
+        """Sitemap deve conter home + 1 URL por categoria pré-renderizada."""
+        import json
         import re
         urls = re.findall(r'<loc>([^<]+)</loc>', self.sitemap)
-        assert len(urls) == 1, \
-            f"SPA deveria ter 1 URL no sitemap, encontrado {len(urls)}: {urls[:5]}"
+        direitos = json.loads((ROOT / "data" / "direitos.json").read_text(encoding="utf-8"))
+        n_categorias = len(direitos.get("categorias", []))
+        expected = 1 + n_categorias  # home + páginas de direitos
+        assert len(urls) == expected, \
+            f"Sitemap deveria ter {expected} URLs (1 home + {n_categorias} direitos), encontrado {len(urls)}"
+        for cat in direitos.get("categorias", []):
+            url = f"https://nossodireito.fabiotreze.com/direitos/{cat['id']}/"
+            assert url in urls, f"URL faltando no sitemap: {url}"
 
     def test_dates_are_current(self):
         """Datas não devem estar defasadas (within 90 days of today)"""
