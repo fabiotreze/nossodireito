@@ -895,7 +895,6 @@ class TestSitemap:
 
     def test_prerendered_pages_in_sitemap(self):
         """Sitemap deve conter home + 1 URL por categoria pré-renderizada."""
-        import json
         import re
         urls = re.findall(r'<loc>([^<]+)</loc>', self.sitemap)
         direitos = json.loads((ROOT / "data" / "direitos.json").read_text(encoding="utf-8"))
