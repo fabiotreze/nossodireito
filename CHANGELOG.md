@@ -5,6 +5,32 @@ Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/)
 e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [1.23.0] - 2026-05-20
+
+### Adicionado
+
+- **SEO multi-URL**: pré-render estático de 30 páginas profundas em
+  `direitos/<slug>/index.html`, geradas a partir de `data/direitos.json` por
+  `scripts/prerender_direitos.py`. Cada página tem `<title>`, meta description,
+  canonical, Open Graph, JSON-LD Article + BreadcrumbList únicos, conteúdo
+  completo (base legal, requisitos, documentos, passo a passo, emergência) e
+  link de retorno para a SPA. Sitemap regenerado: 1 → 31 URLs.
+  Resolve o problema de indexação de SPA hash-routing (Google só via `/`).
+- **Clean URLs** em `server.js → resolveFile`: requisições sem extensão
+  tentam `<path>/index.html` → `<path>.html` → fallback SPA. Permite
+  `/direitos/bpc/` servir `direitos/bpc/index.html` sem rewrites no Cloudflare.
+- **Validador**: `master_compliance.py` (categoria SEO) agora verifica que
+  todas as categorias têm página pré-renderizada e estão no sitemap, falhando
+  o quality gate se desatualizado. Modo `--check` em
+  `scripts/prerender_direitos.py` para uso em CI.
+
+### Documentação
+
+- `README.md`: seção SEO expandida com instruções de regeneração.
+- `docs/ARCHITECTURE.md`: nova seção "SEO — Páginas Pre-renderizadas".
+
+---
+
 ## [1.22.2] - 2026-05-19
 
 ### Alterado

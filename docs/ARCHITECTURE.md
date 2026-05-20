@@ -87,8 +87,32 @@ flowchart LR
 
 - `GET /` -> aplicacao web
 - `GET /health` -> health check da aplicacao
+- `GET /direitos/<slug>/` -> pagina estatica SEO de um direito (1 por categoria)
 - `POST /api/analyze-document` -> analise de texto com IA (opt-in)
 - `GET /data/*.json` -> base de direitos e mecanismos de busca
+
+## SEO — Paginas Pre-renderizadas
+
+Para evitar o problema de SPA com hash-routing (Google indexa apenas `/`),
+o repositorio mantem 30 paginas HTML estaticas em `direitos/<slug>/index.html`,
+geradas a partir de `data/direitos.json` pelo script `scripts/prerender_direitos.py`.
+
+Cada pagina contem: title/description/canonical unicos, H1 com o titulo da
+categoria, secoes Base legal/Requisitos/Documentos/Passo-a-passo, JSON-LD
+Article + BreadcrumbList, link de retorno para a home. Sao paginas leves
+(~13 KB) sem dependencia da SPA — Googlebot indexa diretamente.
+
+`server.js` resolve URLs limpas via `resolveFile`: requisicoes sem extensao
+(ex. `/direitos/bpc/`) tentam `<path>/index.html` -> `<path>.html` -> fallback SPA.
+
+`sitemap.xml` lista as 31 URLs (home + 30 direitos) e e regenerado pelo mesmo
+script. `master_compliance.py` valida sincronia (paginas presentes + sitemap
+atualizado) na categoria SEO.
+
+Regenerar apos editar `data/direitos.json`:
+```bash
+python3 scripts/prerender_direitos.py
+```
 
 ## Privacidade e LGPD
 

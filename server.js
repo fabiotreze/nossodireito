@@ -490,8 +490,28 @@ async function resolveFile(urlPath) {
   const ext = path.extname(fullPath).toLowerCase();
   if (ext && !ALLOWED_EXT.has(ext)) return null;
 
-  // Reject files without extension (except index.html fallback)
-  if (!ext && fullPath !== path.join(ROOT, "index.html")) return null;
+  // Clean-URL resolution for extensionless paths (SEO: /direitos/bpc/ -> direitos/bpc/index.html).
+  // Tries in order: <path>/index.html, <path>.html, then SPA fallback.
+  if (!ext) {
+    // Try directory index.html
+    const dirIndex = path.join(fullPath, "index.html");
+    try {
+      const stat = await fsPromises.lstat(dirIndex);
+      if (stat.isFile() && !stat.isSymbolicLink()) return dirIndex;
+    } catch {
+      /* not a directory or missing */
+    }
+    // Try <path>.html
+    const asHtml = `${fullPath}.html`;
+    try {
+      const stat = await fsPromises.lstat(asHtml);
+      if (stat.isFile() && !stat.isSymbolicLink()) return asHtml;
+    } catch {
+      /* missing */
+    }
+    // SPA fallback (navigation request)
+    return path.join(ROOT, "index.html");
+  }
 
   // File must exist and be a regular file (no symlink following)
   try {
@@ -501,10 +521,8 @@ async function resolveFile(urlPath) {
     // File doesn't exist
   }
 
-  // SPA fallback only for navigation-like requests (no extension)
   // Requests with file extensions that don't exist → 404
-  if (ext) return null;
-  return path.join(ROOT, "index.html");
+  return null;
 }
 
 const server = http.createServer(async (req, res) => {
