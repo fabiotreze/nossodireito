@@ -940,28 +940,6 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
-  // ── Dynamic sitemap.xml — lastmod = current date (build-free) ──
-  if (urlPath === "/sitemap.xml") {
-    const today = new Date().toISOString().split("T")[0];
-    const xml = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://${CANONICAL_HOST}/</loc>
-    <lastmod>${today}</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>1.0</priority>
-  </url>
-</urlset>
-`;
-    res.writeHead(200, {
-      "Content-Type": "application/xml; charset=utf-8",
-      "Cache-Control": "public, max-age=3600",
-      ...SECURITY_HEADERS,
-    });
-    res.end(req.method === "HEAD" ? "" : xml);
-    return;
-  }
-
   // ── /.well-known/security.txt (RFC 9116) ──
   // resolveFile rejeita paths começando com "." por segurança, então
   // servimos via rota explícita.
