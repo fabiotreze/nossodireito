@@ -60,7 +60,7 @@ node server.js                                    # → http://localhost:8080
 
 Para rodar testes: veja [`docs/OPERATIONS.md`](docs/OPERATIONS.md)
 
-## 📘 Documentação consolidada (v1.22.2)
+## 📘 Documentação consolidada (v1.23.0)
 
 - [`docs/README.md`](docs/README.md) — índice da documentação
 - [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) — arquitetura e diagrama E2E
@@ -71,7 +71,7 @@ Para rodar testes: veja [`docs/OPERATIONS.md`](docs/OPERATIONS.md)
 
 ---
 
-## 🎉 NOVIDADES v1.22.2 (19/05/2026) — Replicação, hardening e docs enxutas
+## 🎉 NOVIDADES v1.23.0 (19/05/2026) — Replicação, hardening e docs enxutas
 
 **🏆 Status atual:** pipeline de testes 100% verde (678 passed) e baseline de segurança ativa.
 
@@ -231,9 +231,16 @@ node server.js
 ### **SEO**
 
 - **Meta tags** completas (description, keywords, og:title, og:description)
-- **sitemap.xml** atualizado automaticamente
+- **sitemap.xml** com 31 URLs (home + 30 direitos pré-renderizados)
 - **robots.txt** configurado
-- **Schema.org** markup (FAQPage, BreadcrumbList)
+- **Schema.org** markup (FAQPage, BreadcrumbList, Article)
+- **Pré-render estático**: 30 páginas profundas em `/direitos/<slug>/` geradas
+  por `scripts/prerender_direitos.py` a partir de `data/direitos.json`.
+  Reexecutar após alterar o dataset:
+  ```bash
+  python3 scripts/prerender_direitos.py        # gera
+  python3 scripts/prerender_direitos.py --check  # valida (CI)
+  ```
 - **Performance** Lighthouse 95+
 
 ## ♿ Acessibilidade
@@ -280,7 +287,11 @@ nossodireito/
 ├── sw.js                   # Service Worker (PWA offline)
 ├── manifest.json           # PWA manifest
 ├── robots.txt              # Diretivas de rastreamento
-├── sitemap.xml             # Mapa do site para SEO
+├── sitemap.xml             # Mapa do site para SEO (regenerado por prerender_direitos.py)
+├── direitos/               # Páginas estáticas SEO (1 por categoria)
+│   ├── bpc/index.html
+│   ├── ciptea/index.html
+│   └── ... (30 categorias)
 ├── css/
 │   └── styles.css          # CSS responsivo + dark mode
 ├── js/

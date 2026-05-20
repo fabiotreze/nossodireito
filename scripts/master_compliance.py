@@ -1013,6 +1013,59 @@ class MasterComplianceValidator:
                 else:
                     self.log_warning('seo', f"Twitter Card '{tw}' ausente")
 
+        # 10. Páginas pré-renderizadas por direito (SEO multi-URL)
+        #     Cada categoria de data/direitos.json deve ter direitos/<id>/index.html
+        #     e o sitemap.xml deve listar todas elas.
+        #     Regenerar com: python3 scripts/prerender_direitos.py
+        try:
+            direitos_data = json.loads(
+                (self.root / 'data' / 'direitos.json').read_text(encoding='utf-8')
+            )
+            categorias = direitos_data.get('categorias', [])
+            prerender_dir = self.root / 'direitos'
+            sitemap_text = (self.root / 'sitemap.xml').read_text(encoding='utf-8') \
+                if (self.root / 'sitemap.xml').exists() else ''
+
+            missing_pages = []
+            missing_in_sitemap = []
+            for cat in categorias:
+                slug = cat.get('id', '')
+                if not slug:
+                    continue
+                page = prerender_dir / slug / 'index.html'
+                if not page.exists():
+                    missing_pages.append(slug)
+                if f"/direitos/{slug}/" not in sitemap_text:
+                    missing_in_sitemap.append(slug)
+
+            if not missing_pages:
+                self.log_pass(
+                    'seo',
+                    f"Pré-render: {len(categorias)} páginas /direitos/<id>/index.html presentes",
+                    5,
+                )
+            else:
+                self.log_fail(
+                    'seo',
+                    f"Pré-render: {len(missing_pages)} páginas faltando ({missing_pages[:3]}...) — rode scripts/prerender_direitos.py",
+                    5,
+                )
+
+            if not missing_in_sitemap:
+                self.log_pass(
+                    'seo',
+                    f"Sitemap: {len(categorias)} direitos listados",
+                    3,
+                )
+            else:
+                self.log_fail(
+                    'seo',
+                    f"Sitemap desatualizado: {len(missing_in_sitemap)} direitos ausentes — rode scripts/prerender_direitos.py",
+                    3,
+                )
+        except Exception as _e:
+            self.log_warning('seo', f"Pré-render: validação pulada ({_e})")
+
     # =========================================================================
     # CATEGORIA 10: VALIDAÇÃO DE INFRAESTRUTURA
     # =========================================================================
