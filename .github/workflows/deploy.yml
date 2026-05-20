@@ -21,6 +21,7 @@ on:
       - "sitemap.xml"
       - "sw.js"
       - "manifest.json"
+      - "direitos/**"
       - "scripts/**"
       - ".github/workflows/deploy.yml"
 
@@ -137,8 +138,8 @@ jobs:
         run: |
           zip -r site.zip \
             index.html server.js package.json package-lock.json \
-            robots.txt sw.js manifest.json \
-            node_modules/ css/ js/ data/ images/ shared/ services/ \
+            robots.txt sitemap.xml sw.js manifest.json \
+            node_modules/ css/ js/ data/ direitos/ images/ shared/ services/ \
             -x "*.bak" "*.swa.bak" "__pycache__/*" \
             "terraform/*" ".github/*" "tests/*" "docs/*" \
             "node_modules/.package-lock.json" "node_modules/.cache/*"
