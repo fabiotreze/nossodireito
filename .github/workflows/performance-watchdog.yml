@@ -21,15 +21,19 @@ on:
         default: "5"
         type: string
 
+# Top-level default: read-only (least privilege).
+# Writes (contents para baseline, issues para alerta) ficam no job.
 permissions:
-  contents: write  # Para commitar baseline
-  issues: write
+  contents: read
 
 jobs:
   watchdog:
     runs-on: ubuntu-latest
     name: Performance Check
     timeout-minutes: 10
+    permissions:
+      contents: write  # Para commitar baseline
+      issues: write
     
     steps:
       - name: Checkout
