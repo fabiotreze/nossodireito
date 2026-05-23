@@ -673,11 +673,15 @@
             heroCatCount: $('#heroCatCount'),
             heroFontesCount: $('#heroFontesCount'),
         };
+        // Security: passamos 'name' como argumento separado em vez de
+        // interpolar no template literal — evita CodeQL js/tainted-format-string
+        // (mesmo sendo strings literais nos call sites, o analisador trata como
+        // tainted; argumentos extras não são interpretados como format spec).
         const safeRun = (name, fn) => {
-            try { fn(); } catch (e) { console.error(`[init] ${name} falhou:`, e); }
+            try { fn(); } catch (e) { console.error('[init]', name, 'falhou:', e); }
         };
         const safeRunAsync = async (name, fn) => {
-            try { await fn(); } catch (e) { console.error(`[init] ${name} falhou:`, e); }
+            try { await fn(); } catch (e) { console.error('[init]', name, 'falhou:', e); }
         };
         // ── Phase 1: Critical above-fold (nav, search, data) ──
         safeRun('setupNavigation', setupNavigation);
@@ -1844,22 +1848,32 @@ Acessar site ↗
                 }
             });
         });
+        // Helper: match exato de host ou subdomínio (evita CodeQL
+        // js/incomplete-url-substring-sanitization — substring 'cfm.org'
+        // poderia casar com 'evil.com/cfm.org/path').
+        const hostMatches = (host, suffix) =>
+            host === suffix || host.endsWith('.' + suffix);
         dom.linksGrid.innerHTML = links
             .filter((lk) => isSafeUrl(lk.url))
             .map((lk) => {
-                const isTel = lk.url.trim().toLowerCase().startsWith('tel:');
+                // Detecta esquema via URL API (não via startsWith em string
+                // lowercased) — evita CodeQL js/incomplete-url-scheme-check.
+                let parsedUrl = null;
+                try { parsedUrl = new URL(lk.url, window.location.origin); }
+                catch { /* tel:/blob:/mailto: já filtrados por isSafeUrl */ }
+                const isTel = parsedUrl?.protocol === 'tel:';
                 const domain = (() => {
-                    if (isTel) return lk.url.replace('tel:', '');
-                    try { return new URL(lk.url).hostname.replace('www.', ''); }
+                    if (isTel) return (parsedUrl.pathname || lk.url.replace(/^tel:/i, ''));
+                    try { return new URL(lk.url).hostname.replace(/^www\./, ''); }
                     catch { return ''; }
                 })();
                 const icon = isTel ? '📞'
-                    : domain.includes('cfm.org') ? '👨‍⚕️'
-                        : domain.includes('cfp.org') ? '🧠'
-                            : domain.includes('who.int') ? '🌐'
-                                : domain.includes('gov.br') ? '🏛️'
-                                    : domain.includes('inss') ? '📋'
-                                        : domain.includes('mds.gov') ? '🏠'
+                    : hostMatches(domain, 'cfm.org.br') ? '👨‍⚕️'
+                        : hostMatches(domain, 'cfp.org.br') ? '🧠'
+                            : hostMatches(domain, 'who.int') ? '🌐'
+                                : (hostMatches(domain, 'gov.br') || domain.endsWith('.gov.br')) ? '🏛️'
+                                    : hostMatches(domain, 'inss.gov.br') ? '📋'
+                                        : hostMatches(domain, 'mds.gov.br') ? '🏠'
                                             : '🔗';
                 return `
 <a href="${escapeHtml(lk.url)}" class="link-card" target="_blank" rel="noopener noreferrer">
