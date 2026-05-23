@@ -24,15 +24,19 @@ on:
         default: false
         type: boolean
 
+# Top-level default: read-only (least privilege).
+# Writes (contents para auto-fix, pull-requests para abrir PR) ficam no job.
 permissions:
-  contents: write
-  pull-requests: write
+  contents: read
 
 jobs:
   check-docs:
     runs-on: ubuntu-latest
     name: Documentation Check
     timeout-minutes: 10
+    permissions:
+      contents: write
+      pull-requests: write
     
     steps:
       - name: Checkout

@@ -14,15 +14,19 @@ on:
         default: "5"
         type: string
 
+# Top-level default: read-only (least privilege).
+# Writes (contents para baseline, issues para alerta) ficam no job.
 permissions:
-  contents: write  # Para commitar baseline atualizado
-  issues: write
+  contents: read
 
 jobs:
   drift-check:
     runs-on: ubuntu-latest
     name: Compliance Drift Check
     timeout-minutes: 15
+    permissions:
+      contents: write  # Para commitar baseline atualizado
+      issues: write
     
     steps:
       - name: Checkout

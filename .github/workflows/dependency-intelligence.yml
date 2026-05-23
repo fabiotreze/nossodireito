@@ -11,16 +11,20 @@ on:
     - cron: "0 2 * * 3"
   workflow_dispatch:
 
+# Top-level default: read-only (least privilege).
+# Writes (issues, pull-requests) ficam apenas no job 'analyze'.
 permissions:
   contents: read
-  issues: write
-  pull-requests: write
 
 jobs:
   analyze:
     runs-on: ubuntu-latest
     name: Dependency Analysis
     timeout-minutes: 20
+    permissions:
+      contents: read
+      issues: write
+      pull-requests: write
     
     steps:
       - name: Checkout
