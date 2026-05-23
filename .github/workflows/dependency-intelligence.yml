@@ -1,0 +1,64 @@
+name: Dependency Intelligence
+
+# Agent: Análise inteligente de dependências
+# - Detecta breaking changes
+# - Avalia semver
+# - Verifica vulnerabilidades
+
+on:
+  schedule:
+    # Toda quarta-feira às 02:00 UTC (23:00 terça BRT)
+    - cron: "0 2 * * 3"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
+
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+    name: Dependency Analysis
+    timeout-minutes: 20
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: "22"
+
+      - name: Setup Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          npm ci || npm install
+          pip install -r requirements.txt
+
+      - name: Run Dependency Intelligence
+        id: deps
+        run: python scripts/agent_dependency_intelligence.py
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload report
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.0
+        with:
+          name: dependency-report
+          path: dependency_report.md
+          retention-days: 30
+
+      - name: Comment on workflow run
+        if: always()
+        run: |
+          if [ -f dependency_report.md ]; then
+            echo "## 📦 Dependency Intelligence Report" >> $GITHUB_STEP_SUMMARY
+            cat dependency_report.md >> $GITHUB_STEP_SUMMARY
+          fi

@@ -1,0 +1,60 @@
+name: Compliance Drift Detector
+
+# Agent: Monitora drift em compliance (LGPD, Azure WAF, segurança)
+# Mantém baseline em .github/state/ e alerta se score cair
+
+on:
+  schedule:
+    # Toda segunda-feira às 01:00 UTC (22:00 domingo BRT)
+    - cron: "0 1 * * 1"
+  workflow_dispatch:
+    inputs:
+      threshold:
+        description: "Threshold de queda em pontos para alertar"
+        default: "5"
+        type: string
+
+permissions:
+  contents: write  # Para commitar baseline atualizado
+  issues: write
+
+jobs:
+  drift-check:
+    runs-on: ubuntu-latest
+    name: Compliance Drift Check
+    timeout-minutes: 15
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.0
+
+      - name: Setup Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+          pip install -r requirements-dev.txt
+
+      - name: Run Compliance Drift Check
+        id: drift
+        continue-on-error: true
+        run: |
+          python scripts/agent_compliance_drift.py \
+            --threshold ${{ inputs.threshold || '5' }} \
+            --create-issue
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Commit baseline update
+        if: success() || steps.drift.outcome == 'success'
+        run: |
+          if [ -f .github/state/compliance_baseline.json ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git add .github/state/compliance_baseline.json
+            git diff --cached --quiet || git commit -m "chore(agent): atualiza baseline de compliance"
+            git push || echo "⚠️ No push permitido (fork ou PR)"
+          fi

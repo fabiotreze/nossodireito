@@ -1,0 +1,66 @@
+name: Documentation Keeper
+
+# Agent: Mantém documentação sincronizada
+# - Verifica versão consistente
+# - Valida links internos
+# - Roda após push em main
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "package.json"
+      - "manifest.json"
+      - "README.md"
+      - "docs/**"
+      - "CONTRIBUTING.md"
+  schedule:
+    # Toda quinta-feira às 03:00 UTC
+    - cron: "0 3 * * 4"
+  workflow_dispatch:
+    inputs:
+      auto_fix:
+        description: "Aplicar correções automaticamente"
+        default: false
+        type: boolean
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  check-docs:
+    runs-on: ubuntu-latest
+    name: Documentation Check
+    timeout-minutes: 10
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.0
+
+      - name: Setup Python
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+        with:
+          python-version: "3.11"
+
+      - name: Run Documentation Keeper
+        id: docs
+        continue-on-error: true
+        run: |
+          python scripts/agent_documentation_keeper.py \
+            $([ "${{ inputs.auto_fix || 'false' }}" = "true" ] && echo "--fix" || echo "")
+
+      - name: Upload report
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.0
+        with:
+          name: documentation-report
+          path: documentation_report.md
+          retention-days: 30
+
+      - name: Add to step summary
+        if: always()
+        run: |
+          if [ -f documentation_report.md ]; then
+            cat documentation_report.md >> $GITHUB_STEP_SUMMARY
+          fi
