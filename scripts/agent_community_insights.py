@@ -16,7 +16,6 @@ Uso:
 
 import argparse
 import json
-import os
 import re
 import subprocess
 import sys
@@ -50,8 +49,9 @@ def get_recent_issues(days: int = 30) -> list:
         
         if result.stdout:
             return json.loads(result.stdout)
-    except (subprocess.TimeoutExpired, json.JSONDecodeError, FileNotFoundError):
-        pass
+    except (subprocess.TimeoutExpired, json.JSONDecodeError, FileNotFoundError) as exc:
+        # gh CLI ausente, timeout ou JSON inválido — retornamos lista vazia para não bloquear o agent
+        print(f"[community_insights] Falha ao obter issues via gh CLI: {exc}", file=sys.stderr)
     
     return []
 

@@ -52,33 +52,20 @@ def get_npm_outdated() -> list:
                 }
                 for name, info in data.items()
             ]
-    except (subprocess.TimeoutExpired, json.JSONDecodeError, FileNotFoundError):
-        pass
+    except (subprocess.TimeoutExpired, json.JSONDecodeError, FileNotFoundError) as exc:
+        # npm ausente, timeout ou JSON inválido — retornamos lista vazia
+        print(f"[dependency_intelligence] npm outdated falhou: {exc}", file=sys.stderr)
     
     return []
 
 
 def get_pip_outdated() -> list:
-    """Obtém lista de pacotes Python desatualizados."""
-    outdated = []
-    
-    for req_file in ["requirements.txt", "requirements-dev.txt"]:
-        path = PROJECT_ROOT / req_file
-        if not path.exists():
-            continue
-        
-        try:
-            result = subprocess.run(
-                [sys.executable, "-m", "pip", "index", "versions", "--disable-pip-version-check"],
-                capture_output=True,
-                text=True,
-                timeout=60,
-            )
-            # pip index versions não funciona bem; usar pip-audit ao invés
-        except subprocess.TimeoutExpired:
-            pass
-    
-    return outdated
+    """Obtém lista de pacotes Python desatualizados.
+
+    NOTA: implementação reservada para próxima iteração. `pip index versions`
+    é instável; a versão atual confia em Dependabot para deps Python.
+    """
+    return []
 
 
 def check_semver(current: str, latest: str) -> dict:
@@ -117,8 +104,9 @@ def run_npm_audit() -> dict:
         
         if result.stdout:
             return json.loads(result.stdout)
-    except (subprocess.TimeoutExpired, json.JSONDecodeError, FileNotFoundError):
-        pass
+    except (subprocess.TimeoutExpired, json.JSONDecodeError, FileNotFoundError) as exc:
+        # npm audit pode falhar em ambientes sem npm — devolvemos zero vulns
+        print(f"[dependency_intelligence] npm audit falhou: {exc}", file=sys.stderr)
     
     return {"metadata": {"vulnerabilities": {"total": 0}}}
 
@@ -181,7 +169,7 @@ def generate_report(outdated: list, audit: dict) -> str:
 def main():
     parser = argparse.ArgumentParser(description="Agent: Dependency Intelligence")
     parser.add_argument("--create-pr", action="store_true", help="Criar PR com atualizações seguras")
-    args = parser.parse_args()
+    parser.parse_args()  # validação de args; --create-pr reservado para próxima iteração
     
     print("=" * 80)
     print("📦 DEPENDENCY INTELLIGENCE")

@@ -61,8 +61,14 @@ def check_outdated_beneficios(days_threshold: int = 90) -> list:
                         "days_old": days_old,
                         "base_legal": beneficio.get("base_legal_referencia", ""),
                     })
-            except (ValueError, AttributeError):
-                pass
+            except (ValueError, AttributeError) as exc:
+                # Data malformada em atualizado_em — ignoramos este benefício
+                print(
+                    f"[content_freshness] Data inválida em benefício "
+                    f"{beneficio.get('id')} (cat={categoria.get('id')}): "
+                    f"atualizado_em={updated!r} ({exc})",
+                    file=sys.stderr,
+                )
     
     return sorted(outdated, key=lambda x: x["days_old"], reverse=True)
 
@@ -72,11 +78,13 @@ def run_discover_benefits() -> dict:
     print("🔍 Executando descoberta de novos benefícios...")
     
     try:
-        result = subprocess.run(
+        # Apenas dispara o script; o resultado é lido do arquivo discovery_report.json
+        subprocess.run(
             [sys.executable, str(SCRIPT_DIR / "discover_benefits.py"), "--since", "30", "--json"],
             capture_output=True,
             text=True,
             timeout=600,
+            check=False,
         )
         
         # Tentar ler arquivo gerado
@@ -84,8 +92,9 @@ def run_discover_benefits() -> dict:
         if report_file.exists():
             with open(report_file, encoding="utf-8") as f:
                 return json.load(f)
-    except (subprocess.TimeoutExpired, json.JSONDecodeError, FileNotFoundError):
-        pass
+    except (subprocess.TimeoutExpired, json.JSONDecodeError, FileNotFoundError) as exc:
+        # discover_benefits.py ausente, timeout ou JSON inválido
+        print(f"[content_freshness] discover_benefits falhou: {exc}", file=sys.stderr)
     
     return {"candidates_found": 0, "candidates": []}
 

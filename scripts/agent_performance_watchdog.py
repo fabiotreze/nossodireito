@@ -17,7 +17,6 @@ Uso:
 import argparse
 import json
 import os
-import subprocess
 import sys
 from datetime import datetime
 from pathlib import Path
@@ -94,8 +93,9 @@ def load_baseline() -> dict:
         try:
             with open(STATE_FILE, encoding="utf-8") as f:
                 return json.load(f)
-        except json.JSONDecodeError:
-            pass
+        except json.JSONDecodeError as exc:
+            # Baseline corrompido — começamos do zero
+            print(f"[performance_watchdog] Baseline corrompido em {STATE_FILE}: {exc}", file=sys.stderr)
     
     return {"bundle": {}, "build_time": 0, "timestamp": None}
 

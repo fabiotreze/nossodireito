@@ -56,8 +56,9 @@ def run_validation() -> dict:
         if output_file.exists():
             with open(output_file, encoding="utf-8") as f:
                 return json.load(f)
-    except (json.JSONDecodeError, FileNotFoundError):
-        pass
+    except (json.JSONDecodeError, FileNotFoundError) as exc:
+        # validation_report.json ausente ou corrompido — devolvemos estrutura vazia
+        print(f"[legal_source_auditor] Falha ao ler validation_report.json: {exc}", file=sys.stderr)
     
     return {"sources": [], "summary": {"ok": 0, "errors": 0, "warnings": 0}}
 
@@ -94,8 +95,14 @@ def check_outdated_sources() -> list:
                             "last_checked": consultado,
                             "days_old": (datetime.now() - last_check.replace(tzinfo=None)).days,
                         })
-                except (ValueError, AttributeError):
-                    pass
+                except (ValueError, AttributeError) as exc:
+                    # consultado_em em formato inválido — ignoramos esta fonte
+                    print(
+                        f"[legal_source_auditor] Data inválida em consultado_em: "
+                        f"categoria={cat_id}, beneficio={beneficio.get('nome', 'unknown')}, "
+                        f"consultado_em={consultado!r} ({exc})",
+                        file=sys.stderr,
+                    )
     
     return issues
 

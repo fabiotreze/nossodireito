@@ -39,8 +39,9 @@ def load_baseline() -> dict:
         try:
             with open(STATE_FILE, encoding="utf-8") as f:
                 return json.load(f)
-        except json.JSONDecodeError:
-            pass
+        except json.JSONDecodeError as exc:
+            # Baseline corrompido — começamos do zero
+            print(f"[compliance_drift] Baseline corrompido em {STATE_FILE}: {exc}", file=sys.stderr)
     
     return {"score": 0, "timestamp": None, "details": {}}
 
@@ -75,8 +76,9 @@ def run_compliance_check() -> dict:
             with open(report_file, encoding="utf-8") as f:
                 report = json.load(f)
                 details = report.get("summary", {})
-        except json.JSONDecodeError:
-            pass
+        except json.JSONDecodeError as exc:
+            # validation_report.json corrompido — seguimos com details vazio
+            print(f"[compliance_drift] JSON inválido em {report_file}: {exc}", file=sys.stderr)
     
     return {
         "score": score,
