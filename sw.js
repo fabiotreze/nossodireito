@@ -9,7 +9,7 @@
 
 'use strict';
 
-const CACHE_VERSION = 'nossodireito-v1.23.0';
+const CACHE_VERSION = 'nossodireito-v1.23.1';
 const STATIC_ASSETS = [
     '/',
     '/index.html',
@@ -88,8 +88,13 @@ self.addEventListener('fetch', (event) => {
     // Don't cache SEO files — crawlers must always get fresh versions
     if (url.pathname === '/robots.txt' || url.pathname === '/sitemap.xml') return;
 
-    // VLibras/CDN: let browser handle natively (avoid synthetic 503 from SW)
-    if (url.hostname.includes('vlibras.gov.br') || url.hostname.includes('jsdelivr.net')) return;
+    // VLibras/CDN: let browser handle natively (avoid synthetic 503 from SW).
+    //
+    // Security: usa match exato/subdomínio em vez de substring includes
+    // (CodeQL js/incomplete-url-substring-sanitization) — uma URL como
+    // https://evil.com/jsdelivr.net/x não passa neste guard.
+    const hostIs = (host, suffix) => host === suffix || host.endsWith('.' + suffix);
+    if (hostIs(url.hostname, 'vlibras.gov.br') || hostIs(url.hostname, 'jsdelivr.net')) return;
 
     // External CDN assets (versioned URLs, immutable): Cache-first
     if (url.origin !== self.location.origin) {

@@ -211,11 +211,17 @@ function analyticsRotateIfNeeded() {
 
 /**
  * Detect device type from User-Agent (broad categories only — no fingerprinting).
+ *
+ * Security: regex evita backtracking polinomial (CodeQL js/polynomial-redos).
+ * O antigo padrão `android.*mobile` permitia ataque ReDoS em UAs construídos.
+ * Agora usamos alternations literais simples + checagem dupla para Android+Mobile.
  */
 function detectDevice(ua) {
   if (!ua) return "desktop";
   if (/tablet|ipad|playbook|silk/i.test(ua)) return "tablet";
-  if (/mobile|iphone|ipod|android.*mobile|windows phone|blackberry/i.test(ua)) return "mobile";
+  if (/mobile|iphone|ipod|windows phone|blackberry/i.test(ua)) return "mobile";
+  // Android Mobile: dois testes independentes (sem .* entre tokens → sem ReDoS)
+  if (/android/i.test(ua) && /mobile/i.test(ua)) return "mobile";
   return "desktop";
 }
 
@@ -693,8 +699,20 @@ const server = http.createServer(async (req, res) => {
 
   // Redirect default Azure domain → canonical custom domain (SEO + security)
   // Only redirect browser requests (with Accept: text/html), not health probes
+  //
+  // Security: req.url é controlado pelo cliente. Para evitar open-redirect
+  // (CodeQL js/server-side-unvalidated-url-redirection) reconstruímos a URL
+  // alvo a partir apenas de pathname + search, descartando qualquer authority
+  // (//evil.com/...) ou caracteres de controle (CRLF) injetados.
   if (AZURE_HOSTNAME && host === AZURE_HOSTNAME && req.headers.accept?.includes("text/html")) {
-    const location = `https://${CANONICAL_HOST}${req.url}`;
+    let safePath = "/";
+    try {
+      const parsed = new URL(req.url, `https://${CANONICAL_HOST}`);
+      safePath = parsed.pathname + parsed.search;
+    } catch {
+      safePath = "/";
+    }
+    const location = `https://${CANONICAL_HOST}${safePath}`;
     res.writeHead(301, {
       Location: location,
       "Cache-Control": "public, max-age=86400",
@@ -878,15 +896,29 @@ const server = http.createServer(async (req, res) => {
 
   // ── Gov.br API proxy (CORS bypass for servicos.gov.br) ──
   // Proxy gov.br sem await (não dá SyntaxError nunca)
+  //
+  // Security: a URL do upstream é construída a partir de input do cliente.
+  // Para mitigar SSRF (CodeQL js/request-forgery) garantimos que servicoId
+  // é estritamente numérico (regex \d+), com comprimento máximo, e fazemos
+  // um cast explícito para Number → toString antes de interpolar, removendo
+  // qualquer dúvida de fluxo taint para o fetch downstream.
   const govbrMatch = req.url.match(/^\/api\/govbr-servico\/(\d+)$/);
   if (govbrMatch) {
-    const servicoId = govbrMatch[1];
+    const servicoIdRaw = govbrMatch[1];
     // Limit servicoId length to prevent abuse (valid gov.br IDs are < 10 digits)
-    if (servicoId.length > 10) {
+    if (servicoIdRaw.length > 10) {
       res.writeHead(400, { "Content-Type": "text/plain" });
       res.end("Bad Request");
       return;
     }
+    // Cast numérico defensivo: garante que apenas dígitos chegam ao upstream
+    const servicoIdNum = Number.parseInt(servicoIdRaw, 10);
+    if (!Number.isSafeInteger(servicoIdNum) || servicoIdNum < 0) {
+      res.writeHead(400, { "Content-Type": "text/plain" });
+      res.end("Bad Request");
+      return;
+    }
+    const servicoId = String(servicoIdNum);
     const govbrUrl = `https://servicos.gov.br/api/v1/servicos/${servicoId}`;
 
     const controller = new AbortController();

@@ -5,6 +5,35 @@ Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/)
 e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [1.23.1] - 2026-05-23
+
+### Segurança
+
+- **server.js**: substitui regex `android.*mobile` em `detectDevice()` por dois
+  testes independentes — elimina ReDoS polinomial (CodeQL `js/polynomial-redos`).
+- **server.js**: reparseia `req.url` via URL API no redirect canônico Azure→host,
+  usando apenas `pathname+search` — fecha open-redirect e CRLF injection
+  (CodeQL `js/server-side-unvalidated-url-redirection`).
+- **server.js**: `servicoId` do proxy gov.br passa por `Number.parseInt` +
+  `Number.isSafeInteger` antes do `fetch` — mitiga SSRF
+  (CodeQL `js/request-forgery`).
+- **js/app.js**: `safeRun`/`safeRunAsync` passam `name` como argumento separado
+  ao `console.error` — fecha format-string tainted (CodeQL
+  `js/tainted-format-string`).
+- **js/app.js**: troca `domain.includes()` por helper `hostMatches()` com match
+  exato/subdomínio em `renderLinks` — bloqueia substring spoofing tipo
+  `evil.com/cfm.org/x` (CodeQL `js/incomplete-url-substring-sanitization`).
+- **js/app.js**: detecta `tel:` por `URL.protocol` em vez de `startsWith` —
+  fecha checagem incompleta de esquema (CodeQL `js/incomplete-url-scheme-check`).
+- **sw.js**: helper `hostIs()` exato/subdomínio para bypass VLibras/jsDelivr —
+  evita que URLs maliciosas com substring `jsdelivr.net` driblem o cache
+  (CodeQL `js/incomplete-url-substring-sanitization`).
+- **package.json**: adiciona `overrides.uuid: ^11.1.1` — corrige advisory
+  GHSA-w5hq-g745-h8pq (cadeia `applicationinsights → @azure/functions-old →
+  uuid@8`). `npm audit`: 0 vulnerabilidades.
+
+---
+
 ## [1.23.0] - 2026-05-20
 
 ### Adicionado
