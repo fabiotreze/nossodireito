@@ -25,6 +25,11 @@ concurrency:
   group: discover-benefits
   cancel-in-progress: true
 
+# Top-level default: read-only (least privilege).
+# Writes (issues) são concedidos apenas no job que precisa.
+permissions:
+  contents: read
+
 jobs:
   discover:
     runs-on: ubuntu-latest

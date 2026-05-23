@@ -10,6 +10,11 @@ on:
     - cron: "0 9 * * 1"
   workflow_dispatch: # Permite execução manual
 
+# Top-level default: read-only (least privilege).
+# Writes (issues) são concedidos apenas no job que precisa.
+permissions:
+  contents: read
+
 jobs:
   create-review-issue:
     runs-on: ubuntu-latest
