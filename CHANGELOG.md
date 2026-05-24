@@ -5,6 +5,24 @@ Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/)
 e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [1.26.1] - 2026-05-24
+
+### Removido — FAB de emergência
+
+- Removido o botão flutuante de **emergência** (FAB) e o modal associado da home
+  - Motivo: o FAB conflitava visualmente com o botão nativo "voltar ao topo" do navegador no canto inferior direito
+  - Contatos de emergência permanecem disponíveis dentro das páginas de direitos
+    relevantes (blocos `.emergencia-section`), preservados intactos
+  - `index.html`: removidos `#emergencyFab` + `#emergencyDialog` (~115 linhas)
+  - `js/app.js`: removida `setupEmergencyDialog()` e referências em `els`
+  - `css/styles.css`: removidos ~190 linhas (`.emergency-fab*`, `.emergency-dialog*`)
+
+### Notas
+- Sem impacto em a11y (axe-core: 0 violações mantidas)
+- pytest: 678 testes passando
+
+---
+
 ## [1.26.0] - 2026-05-24
 
 ### Adicionado — TOC sticky + scroll-spy + barra de progresso (PR-C)

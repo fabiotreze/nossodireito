@@ -60,7 +60,7 @@ node server.js                                    # → http://localhost:8080
 
 Para rodar testes: veja [`docs/OPERATIONS.md`](docs/OPERATIONS.md)
 
-## 📘 Documentação consolidada (v1.26.0)
+## 📘 Documentação consolidada (v1.26.1)
 
 - [`docs/README.md`](docs/README.md) — índice da documentação
 - [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) — arquitetura e diagrama E2E
@@ -71,7 +71,7 @@ Para rodar testes: veja [`docs/OPERATIONS.md`](docs/OPERATIONS.md)
 
 ---
 
-## 🎉 NOVIDADES v1.26.0 (19/05/2026) — Replicação, hardening e docs enxutas
+## 🎉 NOVIDADES v1.26.1 (19/05/2026) — Replicação, hardening e docs enxutas
 
 **🏆 Status atual:** pipeline de testes 100% verde (678 passed) e baseline de segurança ativa.
 
