@@ -28,12 +28,14 @@ Uso:
 
 import json
 import os
+import re
 import signal
 import socket
 import subprocess
 import sys
 import time
 from pathlib import Path
+from urllib.parse import urlparse
 
 import pytest
 
@@ -45,8 +47,8 @@ E2E_PORT = 9876
 # ════════════════════════════════════════════════════════════════
 
 try:
-    from playwright.sync_api import sync_playwright  # noqa: F401
-    HAS_PLAYWRIGHT = True
+    from playwright.sync_api import sync_playwright
+    HAS_PLAYWRIGHT = sync_playwright is not None
 except ImportError:
     HAS_PLAYWRIGHT = False
 
@@ -879,8 +881,14 @@ class TestExport:
         wa = page.locator("a.btn-whatsapp, a[href*='wa.me']")
         assert wa.count() >= 1, "Link de compartilhamento WhatsApp ausente"
         href = wa.first.get_attribute("href")
-        assert "wa.me" in href
-        assert "nossodireito.fabiotreze.com" in href
+        parsed = urlparse(href)
+        assert parsed.hostname == "wa.me", f"WhatsApp host inesperado: {parsed.hostname}"
+        # Extrai a URL compartilhada do parametro 'text' e valida hostname canonico
+        from urllib.parse import parse_qs
+        text_param = (parse_qs(parsed.query).get("text") or [""])[0]
+        shared_urls = re.findall(r"https?://[^\s]+", text_param)
+        assert any(urlparse(u).hostname == "nossodireito.fabiotreze.com" for u in shared_urls), \
+            f"Compartilhamento WhatsApp nao referencia o dominio canonico: {shared_urls}"
 
     def test_whatsapp_share_opens_new_tab(self, page, direitos_data):
         """Link WhatsApp deve abrir em nova aba (target=_blank, rel=noopener)."""

@@ -358,8 +358,6 @@ class ContentValidator:
         self.log("VALIDAÇÃO CATEGORIAS RELACIONADAS", 'PASS')
         self.log("=" * 70, 'PASS')
 
-        cat_ids = [c['id'] for c in self.data['categorias']]
-
         # Verificar se documentos_mestre cria relacionamentos válidos
         docs = self.data.get('documentos_mestre', [])
 
@@ -437,8 +435,7 @@ class ContentValidator:
                 if len(dica) < 20:
                     self.log(f"{cat['id']}: dica {i+1} muito curta", 'WARN')
 
-        # 3. Verificar valores monetários atualizados (ano 2026)
-        current_year = datetime.now().year
+        # 3. Verificar valores monetários atualizados (ano corrente)
         for cat in self.data['categorias']:
             valor = cat.get('valor', '')
             if 'R$' in valor or 'salário' in valor.lower():
@@ -497,4 +494,4 @@ class ContentValidator:
 if __name__ == '__main__':
     validator = ContentValidator()
     success = validator.run()
-    exit(0 if success else 1)
+    sys.exit(0 if success else 1)

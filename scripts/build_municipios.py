@@ -25,7 +25,6 @@ from __future__ import annotations
 
 import datetime as _dt
 import gzip
-import io
 import json
 import sys
 import unicodedata

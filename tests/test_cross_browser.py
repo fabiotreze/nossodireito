@@ -608,7 +608,6 @@ class TestCrossBrowserSimulation:
     @pytest.mark.parametrize("browser_id", list(BROWSERS.keys()))
     def test_html_parseable_all_browsers(self, browser_id, html):
         """HTML5 doctype ensures consistent parsing across browsers."""
-        browser = BROWSERS[browser_id]
         assert html.strip().lower().startswith("<!doctype html>"), (
             f"[{browser_id}] Missing HTML5 doctype for consistent rendering"
         )

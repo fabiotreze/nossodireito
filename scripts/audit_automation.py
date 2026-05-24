@@ -6,7 +6,6 @@ Análise completa de cobertura de automação do projeto
 Atualizado: 2026-02-26
 """
 
-import json
 import sys
 from pathlib import Path
 from typing import Dict, List

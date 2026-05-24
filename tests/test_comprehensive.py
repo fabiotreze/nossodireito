@@ -17,9 +17,7 @@ Cobertura completa:
 """
 
 import json
-import os
 import re
-import sys
 from collections import Counter
 from pathlib import Path
 
@@ -255,10 +253,6 @@ class TestDicionario:
 
     def test_new_categories_in_beneficios(self, dicionario):
         """Verifica que as novas categorias estão nos benefícios elegíveis"""
-        new_cats = {
-            "acessibilidade_arquitetonica", "capacidade_legal",
-            "crimes_contra_pcd", "acessibilidade_digital", "reabilitacao"
-        }
         for d in dicionario["deficiencias"]:
             eligibles = set(d.get("beneficios_elegiveis", []))
             # Universal categories should be in all
@@ -468,7 +462,6 @@ class TestCrossFileIntegrity:
         for cats in matching["cid_range_map"].values():
             covered.update(cats)
 
-        not_covered = cat_ids - covered
         # Some categories may intentionally not be directly searchable
         # but the 5 new ones must be covered
         new_cats = {"acessibilidade_arquitetonica", "capacidade_legal",
@@ -884,18 +877,17 @@ class TestSitemap:
 
     def test_canonical_url_present(self):
         """Sitemap deve conter a URL canônica principal (home)"""
-        assert "https://nossodireito.fabiotreze.com/" in self.sitemap
+        # Match exato dentro de <loc>...</loc> para evitar substring sanitization
+        assert "<loc>https://nossodireito.fabiotreze.com/</loc>" in self.sitemap
 
     def test_no_fragment_urls(self):
         """Google ignora fragmentos (#) — sitemap NÃO deve conter URLs com #"""
-        import re
         fragments = re.findall(r'<loc>[^<]*#[^<]*</loc>', self.sitemap)
         assert not fragments, \
             f"Sitemap contém URLs com fragmento (Google ignora): {fragments[:5]}"
 
     def test_prerendered_pages_in_sitemap(self):
         """Sitemap deve conter home + 1 URL por categoria pré-renderizada."""
-        import re
         urls = re.findall(r'<loc>([^<]+)</loc>', self.sitemap)
         direitos = json.loads((ROOT / "data" / "direitos.json").read_text(encoding="utf-8"))
         n_categorias = len(direitos.get("categorias", []))
@@ -908,9 +900,8 @@ class TestSitemap:
 
     def test_dates_are_current(self):
         """Datas não devem estar defasadas (within 90 days of today)"""
-        import re as _re
         from datetime import datetime, timedelta
-        dates = _re.findall(r'<lastmod>(\d{4}-\d{2}-\d{2})</lastmod>', self.sitemap)
+        dates = re.findall(r'<lastmod>(\d{4}-\d{2}-\d{2})</lastmod>', self.sitemap)
         assert dates, "Nenhuma data encontrada no sitemap"
         cutoff = datetime.now() - timedelta(days=90)
         for d in dates:
