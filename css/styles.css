@@ -4767,3 +4767,76 @@ html.high-contrast .disclaimer-alert {
         font-size: 20px;
     }
 }
+
+/* ---------- Section Nav (scroll-spy tabs após hero) ---------- */
+/* Adiciona-se como sticky banner abaixo do hero, sem mexer em #busca/etc. */
+.section-nav {
+    position: sticky;
+    top: 0;
+    z-index: 90;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    backdrop-filter: saturate(180%) blur(8px);
+    -webkit-backdrop-filter: saturate(180%) blur(8px);
+}
+
+.section-nav-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 10px 0;
+    overflow-x: auto;
+    scrollbar-width: thin;
+}
+
+.section-nav-tab {
+    appearance: none;
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 8px 16px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text);
+    cursor: pointer;
+    transition: background var(--transition), border-color var(--transition), color var(--transition);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    line-height: 1.2;
+    white-space: nowrap;
+    min-height: 40px;
+}
+
+.section-nav-tab:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+}
+
+.section-nav-tab[aria-selected="true"] {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: #fff;
+}
+
+.section-nav-tab:focus-visible {
+    outline: 3px solid var(--primary-light);
+    outline-offset: 2px;
+}
+
+@media (max-width: 640px) {
+    .section-nav-tab span {
+        display: none;
+    }
+    .section-nav-tab {
+        font-size: 1.1rem;
+        padding: 8px 14px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .section-nav-tab {
+        transition: none;
+    }
+}

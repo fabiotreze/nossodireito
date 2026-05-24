@@ -5,6 +5,40 @@ Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/)
 e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [1.29.0] - 2026-05-24
+
+### Adicionado — Section Nav (scroll-spy tabs após hero)
+
+Nova barra de navegação sticky logo abaixo do hero, com 3 tabs que agrupam o conteúdo do site por intenção do usuário, **sem reorganizar nenhuma seção existente**.
+
+- **`index.html`** — `<nav id="sectionNav">` com 3 `role="tab"` (📚 Guia rápido / ✅ Ações imediatas / 📖 Referência), inserido entre `#inicio` e `#busca`.
+- **`css/styles.css`** — bloco `.section-nav` / `.section-nav-tabs` / `.section-nav-tab` (~70 linhas), reutilizando tokens do tema (`--primary`, `--surface`, `--border`, `--transition`). Responsive: collapse para emoji-only em viewports < 640px. Respeita `prefers-reduced-motion`.
+- **`js/app.js`** — função `setupSectionNav()`:
+  - Smooth scroll para `#categorias`, `#checklist`, `#links` ao clicar/Enter/Space.
+  - Keyboard nav: ArrowLeft/Right/Home/End.
+  - Scroll-spy via `IntersectionObserver` atualiza `aria-selected` conforme a seção alvo entra no viewport.
+  - Respeita `prefers-reduced-motion`.
+- **`tests/test_e2e_playwright.py`** — nova classe `TestSectionNav` com 8 testes (estrutura, ARIA, keyboard, click-scroll, preservação de identidade visual). **8/8 passando** em headless Chromium.
+
+### Preservado integralmente
+
+- Hero, header, footer, ordem visual das seções — **inalterados**.
+- IDs (`#inicio`, `#busca`, `#categorias`, `#detalhe`, `#checklist`, `#documentos`, `#links`, `#classificacao`, `#orgaos-estaduais`, `#instituicoes`, `#transparencia`) — **inalterados**.
+- IntersectionObserver de deferred rendering — **não afetado** (nenhuma seção foi movida para tabpanel).
+- `js/app.js` seletor `:scope > .section` — **não afetado**.
+- Visibility de `#detalhe` (E2E asserts) — **não afetado**.
+- Cores, ícones, imagens, mascote, espaçamentos — **não alterados**.
+- WCAG 2.1 AA (`role="tablist"` + `role="tab"` + `aria-selected` + `aria-controls`, focus visível, keyboard completo).
+- LGPD, Cloudflare, sitemap.xml, robots.txt — **não tocados**.
+
+### Validação
+
+- ✅ 678 testes pytest (suíte completa) + 8 novos E2E Playwright (TestSectionNav) — todos verdes.
+- ✅ Prerender: 41 páginas + sitemap.xml regenerado.
+- ✅ Smoke test manual: tabs animam, scrollspy correto, ArrowLeft/Right OK.
+
+---
+
 ## [1.28.1] - 2026-05-24
 
 ### Adicionado — Sync quinzenal Conecta gov.br

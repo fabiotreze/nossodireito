@@ -1414,3 +1414,58 @@ class TestTransparency:
     def test_aviso_legal_in_data(self, direitos_data):
         assert "aviso" in direitos_data or "aviso_legal" in direitos_data, \
             "direitos.json sem campo de aviso legal"
+
+
+# ════════════════════════════════════════════════════════════════
+# Section Nav (scroll-spy tabs após hero) — v1.29.0
+# ════════════════════════════════════════════════════════════════
+
+class TestSectionNav:
+    """Valida a navegação sticky tabbed adicionada após o hero."""
+
+    def test_section_nav_exists(self, page):
+        nav = page.locator("#sectionNav")
+        assert nav.count() == 1, "section-nav (sticky tabs) ausente"
+
+    def test_section_nav_has_three_tabs(self, page):
+        tabs = page.locator("#sectionNav [role='tab']")
+        assert tabs.count() == 3, f"Esperado 3 tabs, obtido {tabs.count()}"
+
+    def test_section_nav_first_tab_selected_by_default(self, page):
+        first = page.locator("#sectionNavTab-guia")
+        assert first.get_attribute("aria-selected") == "true"
+
+    def test_section_nav_tablist_role(self, page):
+        tablist = page.locator("#sectionNav [role='tablist']")
+        assert tablist.count() == 1
+
+    def test_section_nav_tabs_have_aria_controls(self, page):
+        tabs = page.locator("#sectionNav [role='tab']")
+        for i in range(tabs.count()):
+            controls = tabs.nth(i).get_attribute("aria-controls")
+            assert controls, f"Tab {i} sem aria-controls"
+            assert page.locator(f"#{controls}").count() == 1, \
+                f"aria-controls={controls} aponta para id inexistente"
+
+    def test_section_nav_keyboard_arrow_right(self, page):
+        first = page.locator("#sectionNavTab-guia")
+        first.focus()
+        page.keyboard.press("ArrowRight")
+        second = page.locator("#sectionNavTab-acoes")
+        assert second.get_attribute("aria-selected") == "true"
+
+    def test_section_nav_click_scrolls_to_target(self, page):
+        acoes = page.locator("#sectionNavTab-acoes")
+        acoes.click()
+        page.wait_for_timeout(800)  # smooth scroll
+        # Checklist deve estar no viewport (ou próximo)
+        checklist = page.locator("#checklist")
+        assert checklist.is_visible()
+
+    def test_section_nav_preserves_identity(self, page):
+        # Identidade visual: hero, header, footer ainda existem e na ordem certa.
+        assert page.locator("#inicio").count() == 1
+        assert page.locator("#busca").count() == 1
+        assert page.locator("#categorias").count() == 1
+        assert page.locator("#checklist").count() == 1
+        assert page.locator("#links").count() == 1
