@@ -12,8 +12,12 @@
  * Viola\u00e7\u00f5es "moderate" e "minor" s\u00e3o logadas como warning.
  *
  * Exit codes: 0 = pass, 1 = serious/critical violations, 2 = setup error.
+ *
+ * Env vars:
+ *   BROWSER = chromium | firefox | webkit (default: chromium)
+ *   SOFT_FAIL = "1" para never-fail (warning-only, ex.: webkit baseline).
  */
-import { chromium } from 'playwright';
+import { chromium, firefox, webkit } from 'playwright';
 import { AxeBuilder } from '@axe-core/playwright';
 import http from 'node:http';
 import { createReadStream, statSync } from 'node:fs';
@@ -105,9 +109,19 @@ const DISABLED_RULES = [
     // 'color-contrast', // ex: re-enable after design pass
 ];
 
+const BROWSERS = { chromium, firefox, webkit };
+const BROWSER_NAME = (process.env.BROWSER || 'chromium').toLowerCase();
+const SOFT_FAIL = process.env.SOFT_FAIL === '1';
+
 async function main() {
+    const launcher = BROWSERS[BROWSER_NAME];
+    if (!launcher) {
+        console.error(`Unknown BROWSER="${BROWSER_NAME}". Use chromium | firefox | webkit.`);
+        process.exit(2);
+    }
+    console.log(`Running axe-core on browser=${BROWSER_NAME} (soft_fail=${SOFT_FAIL})`);
     const server = await startServer();
-    const browser = await chromium.launch();
+    const browser = await launcher.launch();
     const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 } });
 
     let totalCritical = 0;
@@ -161,14 +175,18 @@ async function main() {
     server.close();
 
     console.log(`\n${'='.repeat(60)}`);
-    console.log(`A11Y SUMMARY  pages=${PAGES.length}  critical=${totalCritical}  serious=${totalSerious}  moderate=${totalModerate}  minor=${totalMinor}`);
+    console.log(`A11Y SUMMARY (${BROWSER_NAME})  pages=${PAGES.length}  critical=${totalCritical}  serious=${totalSerious}  moderate=${totalModerate}  minor=${totalMinor}`);
     console.log('='.repeat(60));
 
     if (totalCritical + totalSerious > 0) {
-        console.error(`\nFAIL: ${totalCritical} critical + ${totalSerious} serious WCAG 2.1 AA violations.`);
+        if (SOFT_FAIL) {
+            console.warn(`\nSOFT-FAIL (${BROWSER_NAME}): ${totalCritical} critical + ${totalSerious} serious violations — not blocking (baseline mode).`);
+            process.exit(0);
+        }
+        console.error(`\nFAIL (${BROWSER_NAME}): ${totalCritical} critical + ${totalSerious} serious WCAG 2.1 AA violations.`);
         process.exit(1);
     }
-    console.log('\nPASS: No critical/serious violations.');
+    console.log(`\nPASS (${BROWSER_NAME}): No critical/serious violations.`);
 }
 
 main().catch((e) => {

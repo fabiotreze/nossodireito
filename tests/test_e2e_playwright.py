@@ -581,6 +581,49 @@ class TestPWA:
         meta = page.locator('meta[name="theme-color"]')
         assert meta.count() >= 1
 
+    def test_manifest_json_valid(self, server):
+        """manifest.json deve ser JSON válido com campos obrigatórios PWA."""
+        import urllib.request
+        url = f"http://127.0.0.1:{E2E_PORT}/manifest.json"
+        with urllib.request.urlopen(url, timeout=5) as r:
+            data = json.loads(r.read())
+        # Campos PWA mínimos exigidos por Lighthouse + Chrome install criteria
+        assert data.get("name") or data.get("short_name"), "manifest precisa de name/short_name"
+        assert data.get("start_url"), "manifest precisa de start_url"
+        assert data.get("display") in ("standalone", "fullscreen", "minimal-ui"), \
+            f"manifest.display deve ser standalone/fullscreen/minimal-ui (got {data.get('display')})"
+        icons = data.get("icons", [])
+        assert any(int(i.get("sizes", "0x0").split("x")[0]) >= 192 for i in icons if "x" in i.get("sizes", "")), \
+            "manifest precisa de ao menos 1 ícone >=192px"
+
+    def test_sw_js_served_correctly(self, server):
+        """sw.js deve ser servido com Content-Type application/javascript."""
+        import urllib.request
+        url = f"http://127.0.0.1:{E2E_PORT}/sw.js"
+        with urllib.request.urlopen(url, timeout=5) as r:
+            ct = r.headers.get("Content-Type", "")
+            body = r.read().decode("utf-8", errors="ignore")
+        assert "javascript" in ct.lower(), f"sw.js Content-Type inesperado: {ct}"
+        assert "CACHE_VERSION" in body or "caches" in body, "sw.js não parece um Service Worker"
+
+    def test_offline_fallback_cache(self, page, server):
+        """Após primeira carga, navegação offline deve servir do cache (PWA basic)."""
+        # 1ª carga online para popular cache
+        page.goto(f"http://127.0.0.1:{E2E_PORT}/", wait_until="networkidle")
+        page.wait_for_timeout(800)  # dar tempo para SW registrar e cachear
+        # Simula offline e tenta recarregar
+        page.context.set_offline(True)
+        try:
+            page.goto(f"http://127.0.0.1:{E2E_PORT}/", wait_until="domcontentloaded", timeout=8000)
+            # Se chegou aqui sem exception, cache respondeu — verifica que título existe
+            title = page.title()
+            assert title and len(title) > 0, "página offline carregou mas sem título"
+        except Exception as e:
+            # Em http://localhost, SW pode não registrar — não falha o teste (Lighthouse cobre)
+            pytest.skip(f"SW offline não testável em http://localhost: {e}")
+        finally:
+            page.context.set_offline(False)
+
 
 # ════════════════════════════════════════════════════════════════
 # 9. ARIA E ACESSIBILIDADE

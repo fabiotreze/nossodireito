@@ -21,7 +21,11 @@ jobs:
   axe:
     runs-on: ubuntu-latest
     name: A11y (axe-core WCAG 2.1 AA)
-    timeout-minutes: 10
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chromium, firefox, webkit]
     steps:
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.0
@@ -35,25 +39,33 @@ jobs:
       - name: Install dependencies
         run: npm ci --no-audit --no-fund
 
-      - name: Install Playwright browser (chromium)
-        run: npx playwright install --with-deps chromium
+      - name: Install Playwright browser (${{ matrix.browser }})
+        run: npx playwright install --with-deps ${{ matrix.browser }}
 
-      - name: Run axe-core audit
-        run: node tests/a11y.mjs | tee a11y-report.txt
+      - name: Run axe-core audit (${{ matrix.browser }})
+        env:
+          BROWSER: ${{ matrix.browser }}
+          # WebKit on Linux runners can produce flaky/CSS-only diffs — baseline-only first cycle.
+          SOFT_FAIL: ${{ matrix.browser == 'webkit' && '1' || '0' }}
+        run: node tests/a11y.mjs | tee a11y-report-${{ matrix.browser }}.txt
 
       - name: Upload report
         if: always()
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.0
         with:
-          name: a11y-report
-          path: a11y-report.txt
+          name: a11y-report-${{ matrix.browser }}
+          path: a11y-report-${{ matrix.browser }}.txt
           retention-days: 30
 
       - name: Job summary
         if: always()
         run: |
-          echo "## ♿ Accessibility (axe-core WCAG 2.1 AA)" >> $GITHUB_STEP_SUMMARY
+          echo "## ♿ Accessibility (axe-core) — ${{ matrix.browser }}" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
+          if [ "${{ matrix.browser }}" = "webkit" ]; then
+            echo "_WebKit em modo **warning-only** (baseline cross-browser)._" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+          fi
           echo '```' >> $GITHUB_STEP_SUMMARY
-          tail -30 a11y-report.txt >> $GITHUB_STEP_SUMMARY 2>/dev/null || echo "(no report)" >> $GITHUB_STEP_SUMMARY
+          tail -30 a11y-report-${{ matrix.browser }}.txt >> $GITHUB_STEP_SUMMARY 2>/dev/null || echo "(no report)" >> $GITHUB_STEP_SUMMARY
           echo '```' >> $GITHUB_STEP_SUMMARY

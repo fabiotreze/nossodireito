@@ -1,0 +1,63 @@
+# Lighthouse CI — Performance, SEO, Best Practices, A11y, PWA (warning-only baseline).
+# Roda em PR e push para main. Não bloqueia merge nesta fase (warning-only via assertions).
+# Após 1-2 ciclos de baseline, evoluir thresholds para "error" e promover a required check.
+
+name: Lighthouse CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: lighthouse-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  lighthouse:
+    runs-on: ubuntu-latest
+    name: Lighthouse (perf/seo/a11y/bp/pwa)
+    timeout-minutes: 15
+    continue-on-error: true
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: "22"
+          cache: "npm"
+
+      - name: Install Lighthouse CI
+        run: npm install -g @lhci/cli@0.14.x
+
+      - name: Run Lighthouse CI
+        run: lhci autorun --config=./lighthouserc.json || echo "Lighthouse returned non-zero (warning-only baseline)"
+        env:
+          LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
+
+      - name: Upload Lighthouse reports
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.0
+        with:
+          name: lighthouse-reports
+          path: .lighthouseci/
+          retention-days: 30
+
+      - name: Job summary
+        if: always()
+        run: |
+          echo "## 🚦 Lighthouse CI (baseline warning-only)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Thresholds atuais (warn): perf≥85, a11y≥90, bp≥90, seo≥90, pwa≥50." >> $GITHUB_STEP_SUMMARY
+          echo "Esta fase é **non-blocking** — após baseline (1-2 ciclos), promover a required check." >> $GITHUB_STEP_SUMMARY
+          if [ -d .lighthouseci ]; then
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "📊 Reports artifact: \`lighthouse-reports\` (retention 30d)" >> $GITHUB_STEP_SUMMARY
+          fi
