@@ -32,8 +32,8 @@ jobs:
 
       - name: Install dependencies
         run: |
-          npm ci
-          pip install -r requirements-dev.txt
+          npm ci --ignore-scripts --no-audit --no-fund
+          pip install --require-hashes --no-deps -r requirements-dev.lock
 
       - name: npm audit (high+)
         run: npm audit --audit-level=high

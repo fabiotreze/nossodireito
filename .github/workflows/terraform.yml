@@ -375,7 +375,7 @@ jobs:
           echo "✅ sitemap.xml lastmod → ${TODAY}"
 
           # Minificar HTML, JS e CSS
-          npm install --no-save terser clean-css-cli html-minifier-terser
+          npm ci --ignore-scripts --no-audit --no-fund
 
           npx terser js/app.js --compress --mangle --output js/app.min.js
           ORIG=$(wc -c < js/app.js)
@@ -396,7 +396,7 @@ jobs:
           mv index.min.html index.html
 
           # Instalar dependências de produção
-          npm ci --production --ignore-scripts 2>/dev/null || npm install --production
+          npm ci --omit=dev --ignore-scripts --no-audit --no-fund
           echo "✅ node_modules: $(du -sh node_modules | cut -f1)"
 
           # Criar pacote de deploy (mesmo conteúdo do deploy.yml)
