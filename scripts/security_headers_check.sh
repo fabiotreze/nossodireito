@@ -12,6 +12,11 @@ require_cmd() {
 
 require_cmd curl
 
+# Cloudflare WAF blocks default curl User-Agent from datacenter IPs (GitHub
+# Actions runners). Use a normal browser UA to bypass anti-bot heuristic.
+UA="${HTTP_USER_AGENT:-Mozilla/5.0 (compatible; NossoDireito-SecurityBaseline/1.0; +https://github.com/fabiotreze/nossodireito)}"
+CURL_OPTS=(-sS --max-time 20 -A "$UA")
+
 PUBLIC_URL="${PUBLIC_URL:-https://nossodireito.fabiotreze.com/}"
 DIRECT_AZURE_URL="${DIRECT_AZURE_URL:-https://app-nossodireito-br.azurewebsites.net/}"
 EXPECTED_DIRECT_STATUS="${EXPECTED_DIRECT_STATUS:-403}"
@@ -28,7 +33,7 @@ REQUIRED_HEADERS=(
 EXIT_CODE=0
 
 echo "=== Direct host hardening (${DIRECT_AZURE_URL}) ==="
-direct_status="$(curl -s -o /dev/null -w "%{http_code}" "$DIRECT_AZURE_URL")"
+direct_status="$(curl "${CURL_OPTS[@]}" -o /dev/null -w "%{http_code}" "$DIRECT_AZURE_URL")"
 if [[ "$direct_status" == "$EXPECTED_DIRECT_STATUS" ]]; then
   echo "[OK] Direct Azure host returns ${direct_status} (blocked as expected)"
 else
@@ -38,7 +43,7 @@ fi
 echo
 
 echo "=== Public domain headers (${PUBLIC_URL}) ==="
-public_status="$(curl -s -o /dev/null -w "%{http_code}" "$PUBLIC_URL")"
+public_status="$(curl "${CURL_OPTS[@]}" -o /dev/null -w "%{http_code}" "$PUBLIC_URL")"
 if [[ "$public_status" =~ ^[23] ]]; then
   echo "[OK] Public domain reachable (${public_status})"
 else
@@ -46,7 +51,7 @@ else
   EXIT_CODE=1
 fi
 
-headers="$(curl -sI "$PUBLIC_URL" | tr '[:upper:]' '[:lower:]')"
+headers="$(curl "${CURL_OPTS[@]}" -I "$PUBLIC_URL" | tr '[:upper:]' '[:lower:]')"
 for hdr in "${REQUIRED_HEADERS[@]}"; do
   if grep -q "^${hdr}:" <<<"$headers"; then
     echo "[OK] ${hdr}"
