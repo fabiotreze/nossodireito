@@ -5,6 +5,19 @@ Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/)
 e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [1.27.2] - 2026-05-24
+
+### Adicionado — matching CID → direito (cids_relacionados)
+
+- **`data/direitos.json`**: cada uma das 36 categorias agora declara `cids_relacionados[]` + `aplicavel_a_todas_deficiencias: bool`. Pavimenta busca reversa: usuário digita CID do laudo → todos os direitos aplicáveis aparecem com clareza de elegibilidade.
+  - 31 categorias **universais** → 79 CIDs (todos do dicionário PcD; CID-10 + CID-11)
+  - 3 **específicas**: `ciptea` (TEA), `pensao_zika` (síndrome congênita do Zika), `caa_comunicacao` (TEA + fala + auditiva + intelectual)
+  - 2 com **Lei 7.713/88** (17 faixas extras para doenças graves): `isencao_ir`, `saque_fgts_doenca_grave`
+- **`schemas/direitos.schema.json`**: novo campo + pattern permissivo aceitando CID-10 (F84.0), faixas (C00-C97) e CID-11 (MA10, 6A02).
+- **`scripts/add_cids_to_categorias.py`**: script idempotente de aplicação/manutenção do mapeamento.
+
+---
+
 ## [1.27.0] - 2026-05-24
 
 ### Adicionado — fontes oficiais + transparência da estatística IBGE
