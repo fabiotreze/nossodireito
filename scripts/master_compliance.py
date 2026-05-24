@@ -965,7 +965,7 @@ class MasterComplianceValidator:
                                 self.log_fail(
                                     'seo', f"FAQs inválidos: {count - valid_faqs} de {count}", 2)
                     except json.JSONDecodeError:
-                        pass
+                        continue  # bloco JSON-LD malformado — pular
 
                 # Validar GovernmentService — catalog items
                 for block in ld_blocks:
@@ -1526,7 +1526,7 @@ class MasterComplianceValidator:
                         if fsize > 10 * 1024 * 1024:
                             large_files.append((fpath, fsize))
                     except OSError:
-                        pass
+                        continue  # arquivo inacessível — ignorar
 
         if len(large_files) == 0:
             self.log_pass(

@@ -5,6 +5,20 @@ Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/)
 e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [1.23.4] - 2026-05-24
+
+### Segurança / Qualidade
+
+- **tests/test_e2e_playwright.py**: removidos 6 `import re` locais redundantes
+  (já presente no topo do módulo). Fecha CodeQL `py/repeated-import` #182-#187.
+- **js/app.js**: removido `let exportable = false;` não utilizado em
+  `getCryptoKey()`. Fecha CodeQL `js/unused-local-variable` #188.
+- **scripts/master_compliance.py**: 2 blocos `except: pass` reescritos como
+  `except <Tipo>: continue  # <motivo>` para semântica explícita. Fecha
+  CodeQL `py/empty-except` #38 e #145.
+
+---
+
 ## [1.23.3] - 2026-05-24
 
 ### Segurança

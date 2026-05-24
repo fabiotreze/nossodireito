@@ -3242,7 +3242,6 @@ ${renderWeekPlan(priorityOrder, titleById)}
         } finally {
             db.close();
         }
-        let exportable = false;
         let key;
         try {
             key = await crypto.subtle.generateKey(
