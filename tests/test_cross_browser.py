@@ -136,7 +136,7 @@ class TestDataIntegrity:
 
     def test_direitos_has_categorias(self, direitos):
         assert "categorias" in direitos
-        assert len(direitos["categorias"]) == 30
+        assert len(direitos["categorias"]) == 36
 
     def test_direitos_has_required_fields(self, direitos):
         required_top = ["versao", "ultima_atualizacao", "categorias"]

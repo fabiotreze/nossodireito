@@ -6,7 +6,7 @@ Executa TODAS as 11 verificações do projeto em sequência:
 
   FASE 1  — Pré-Validações (estrutura de arquivos + sintaxe JSON)
   FASE 2  — Schema (JSON Schema Draft 7)
-  FASE 3  — Conteúdo Profundo (30 categorias, matching engine, IPVA, semântica)
+  FASE 3  — Conteúdo Profundo (36 categorias, matching engine, IPVA, semântica)
   FASE 4  — Master Compliance (21 categorias, 1104.7 pts)
   FASE 5  — Análise 360° (cobertura benefícios implementados vs pesquisados)
   FASE 6  — Fontes Oficiais (URLs gov.br, planalto)
@@ -411,7 +411,7 @@ class MasterValidator:
         ))
 
         # ====================
-        # FASE 3: CONTEÚDO PROFUNDO (30 categorias, matching, IPVA, semântica)
+        # FASE 3: CONTEÚDO PROFUNDO (36 categorias, matching, IPVA, semântica)
         # ====================
         print()
         print("=" * 100)

@@ -239,13 +239,13 @@ class MasterComplianceValidator:
             else:
                 self.log_fail('dados', f"Campo obrigatório '{key}' ausente", 2)
 
-        # 2. Validar categorias (30 esperadas)
+        # 2. Validar categorias (36 esperadas)
         cats = self.direitos.get('categorias', [])
-        if len(cats) == 30:
-            self.log_pass('dados', f"30 categorias presentes ✓", 5)
+        if len(cats) == 36:
+            self.log_pass('dados', f"36 categorias presentes ✓", 5)
         else:
             self.log_fail(
-                'dados', f"Esperado 30 categorias, encontrado {len(cats)}", 5)
+                'dados', f"Esperado 36 categorias, encontrado {len(cats)}", 5)
 
         # 3. Cada categoria deve ter campos obrigatórios
         required_cat_fields = ['id', 'titulo', 'resumo', 'base_legal', 'requisitos',
