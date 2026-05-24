@@ -3741,13 +3741,86 @@ ${renderWeekPlan(priorityOrder, titleById)}
         });
     }
 
+    // ----- Section Nav (scroll-spy tabs, keyboard nav) -----
+    function setupSectionNav() {
+        const nav = document.getElementById('sectionNav');
+        if (!nav) return;
+        const tabs = Array.from(nav.querySelectorAll('.section-nav-tab'));
+        if (!tabs.length) return;
+
+        const targets = tabs
+            .map((t) => {
+                const sel = t.getAttribute('data-target');
+                return sel ? document.querySelector(sel) : null;
+            });
+
+        function activate(idx, { focus = false, scroll = false } = {}) {
+            tabs.forEach((t, i) => {
+                const sel = i === idx;
+                t.setAttribute('aria-selected', sel ? 'true' : 'false');
+                t.setAttribute('tabindex', sel ? '0' : '-1');
+            });
+            if (focus) tabs[idx].focus();
+            if (scroll && targets[idx]) {
+                const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+                targets[idx].scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'start' });
+            }
+        }
+
+        tabs.forEach((tab, i) => {
+            tab.addEventListener('click', (e) => {
+                e.preventDefault();
+                activate(i, { scroll: true });
+            });
+            tab.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowRight') {
+                    e.preventDefault();
+                    activate((i + 1) % tabs.length, { focus: true });
+                } else if (e.key === 'ArrowLeft') {
+                    e.preventDefault();
+                    activate((i - 1 + tabs.length) % tabs.length, { focus: true });
+                } else if (e.key === 'Home') {
+                    e.preventDefault();
+                    activate(0, { focus: true });
+                } else if (e.key === 'End') {
+                    e.preventDefault();
+                    activate(tabs.length - 1, { focus: true });
+                } else if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    activate(i, { scroll: true });
+                }
+            });
+        });
+
+        // Scrollspy: ativa a tab cuja seção alvo (ou QUALQUER seção entre o alvo deste e o do próximo)
+        // está mais visível. Implementação simples: observa as 3 seções alvo.
+        if ('IntersectionObserver' in window) {
+            const observer = new IntersectionObserver(
+                (entries) => {
+                    // pega a entry mais visível
+                    let best = null;
+                    for (const e of entries) {
+                        if (!e.isIntersecting) continue;
+                        if (!best || e.intersectionRatio > best.intersectionRatio) best = e;
+                    }
+                    if (!best) return;
+                    const idx = targets.findIndex((t) => t === best.target);
+                    if (idx >= 0) activate(idx, { focus: false, scroll: false });
+                },
+                { rootMargin: '-30% 0px -55% 0px', threshold: [0, 0.1, 0.5, 1] }
+            );
+            targets.forEach((t) => { if (t) observer.observe(t); });
+        }
+    }
+
     if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', () => { init(); setupNavAvisoScroll(); setupAIConsentManager(); setupAIConsentQuickActions(); setupEmergencyDialog(); });
+        document.addEventListener('DOMContentLoaded', () => { init(); setupNavAvisoScroll(); setupAIConsentManager(); setupAIConsentQuickActions(); setupEmergencyDialog(); setupSectionNav(); });
     } else {
         init();
         setupNavAvisoScroll();
         setupAIConsentManager();
         setupAIConsentQuickActions();
         setupEmergencyDialog();
+        setupSectionNav();
     }
 })();
