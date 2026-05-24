@@ -1,0 +1,170 @@
+# NossoDireito — Conecta gov.br Sync (Quinzenal)
+# Detecta drift de conteúdo nas URLs gov.br referenciadas em data/direitos.json.
+# Não modifica conteúdo automaticamente — apenas alerta humanos via issue.
+#
+# Cobertura: 41 categorias / 78 fontes / serviços federais Conecta gov.br.
+
+name: Conecta gov.br Sync
+
+on:
+  schedule:
+    # Quinzenal: dias 1 e 15 às 11:00 UTC (08:00 BRT)
+    - cron: "0 11 1,15 * *"
+  workflow_dispatch:
+    inputs:
+      update_state:
+        description: "Atualizar baseline (data/conecta_sync_state.json)"
+        default: false
+        type: boolean
+      dry_run:
+        description: "Dry-run (não cria issue)"
+        default: false
+        type: boolean
+
+concurrency:
+  group: conecta-govbr-sync
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.0
+
+      - name: Setup Python
+        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+        with:
+          python-version: "3.11"
+
+      - name: Executar sync
+        id: sync
+        continue-on-error: true
+        run: |
+          UPDATE_FLAG=""
+          if [ "${{ inputs.update_state }}" = "true" ]; then
+            UPDATE_FLAG="--update-state"
+          fi
+
+          python scripts/agent_conecta_govbr_sync.py --json $UPDATE_FLAG \
+            > sync_output.json 2>sync_log.txt || true
+
+          cat sync_log.txt || true
+
+          CHANGED=$(jq '.changed // 0' sync_output.json 2>/dev/null || echo "0")
+          NEW=$(jq '.new // 0' sync_output.json 2>/dev/null || echo "0")
+          ERRORS=$(jq '.errors // 0' sync_output.json 2>/dev/null || echo "0")
+          TOTAL=$(jq '.total // 0' sync_output.json 2>/dev/null || echo "0")
+          OK=$(jq '.ok // 0' sync_output.json 2>/dev/null || echo "0")
+
+          echo "changed=$CHANGED" >> "$GITHUB_OUTPUT"
+          echo "new=$NEW" >> "$GITHUB_OUTPUT"
+          echo "errors=$ERRORS" >> "$GITHUB_OUTPUT"
+          echo "total=$TOTAL" >> "$GITHUB_OUTPUT"
+          echo "ok=$OK" >> "$GITHUB_OUTPUT"
+
+          if [ "$CHANGED" -gt 0 ] || [ "$NEW" -gt 0 ]; then
+            echo "has_drift=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_drift=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Criar issue de drift
+        if: steps.sync.outputs.has_drift == 'true' && inputs.dry_run != 'true'
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+        env:
+          CHANGED: ${{ steps.sync.outputs.changed }}
+          NEW: ${{ steps.sync.outputs.new }}
+          ERRORS: ${{ steps.sync.outputs.errors }}
+          TOTAL: ${{ steps.sync.outputs.total }}
+          OK: ${{ steps.sync.outputs.ok }}
+        with:
+          script: |
+            const fs = require('fs');
+            const today = new Date().toISOString().split('T')[0];
+
+            let summary;
+            try {
+              summary = JSON.parse(fs.readFileSync('sync_output.json', 'utf8'));
+            } catch (e) {
+              summary = { details: { changed: [], new: [], errors: [] } };
+            }
+
+            const d = summary.details || {};
+            const changed = d.changed || [];
+            const newUrls = d.new || [];
+            const errors = d.errors || [];
+
+            let body = `## 🔄 Conecta gov.br — Drift Detectado (${today})\n\n`;
+            body += `- **Total URLs verificadas:** ${process.env.TOTAL}\n`;
+            body += `- **OK:** ${process.env.OK}\n`;
+            body += `- **🔄 Alteradas:** ${process.env.CHANGED}\n`;
+            body += `- **✨ Novas (baseline ausente):** ${process.env.NEW}\n`;
+            body += `- **❌ Erros:** ${process.env.ERRORS}\n\n`;
+
+            if (changed.length) {
+              body += `### 🔄 Conteúdo alterado (revisar)\n\n`;
+              for (const c of changed.slice(0, 30)) {
+                body += `- [ ] ${c.url}\n`;
+              }
+              if (changed.length > 30) body += `\n_... e mais ${changed.length - 30}._\n`;
+              body += '\n';
+            }
+
+            if (newUrls.length) {
+              body += `### ✨ Novas URLs (baseline a ser estabelecido)\n\n`;
+              for (const c of newUrls.slice(0, 20)) {
+                body += `- ${c.url}\n`;
+              }
+              body += '\n';
+            }
+
+            if (errors.length) {
+              body += `### ❌ Erros transitórios\n\n`;
+              for (const e of errors.slice(0, 15)) {
+                body += `- ${e.url} — ${e.error || e.status}\n`;
+              }
+              body += '\n';
+            }
+
+            body += `---\n`;
+            body += `**Próximos passos:**\n`;
+            body += `1. Validar manualmente as URLs alteradas (conteúdo legal/procedimentos podem ter mudado).\n`;
+            body += `2. Se válidas, atualizar baseline via workflow manual com \`update_state=true\`.\n`;
+            body += `3. Se conteúdo de direito mudou, abrir PR de atualização de \`data/direitos.json\` com \`consultado_em\` novo.\n\n`;
+            body += `_Issue gerada automaticamente por \`scripts/agent_conecta_govbr_sync.py\` (cron quinzenal)._`;
+
+            const labels = ['conecta-govbr', 'conteúdo', 'sync-automatico'];
+            if (parseInt(process.env.CHANGED) > 0) labels.push('drift-detectado');
+
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: `🔄 Conecta gov.br: ${process.env.CHANGED} alteração(ões) detectada(s) — ${today}`,
+              body: body,
+              labels: labels
+            });
+
+            console.log(`✅ Issue criada (changed=${process.env.CHANGED}, new=${process.env.NEW})`);
+
+      - name: Sem drift
+        if: steps.sync.outputs.has_drift == 'false'
+        run: |
+          echo "✅ Nenhuma alteração detectada nas URLs gov.br monitoradas."
+
+      - name: Upload artefatos
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.0
+        with:
+          name: conecta-sync-output
+          path: |
+            sync_output.json
+            sync_log.txt
+          retention-days: 30
+          if-no-files-found: ignore
