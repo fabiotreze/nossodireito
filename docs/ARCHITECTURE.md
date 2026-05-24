@@ -1,7 +1,7 @@
 # Arquitetura Atual — NossoDireito
 
-**Version:** 1.21.0
-**Updated:** 2026-05-18
+**Version:** 1.33.2
+**Updated:** 2026-05-24
 
 ## Visao Geral
 
@@ -94,7 +94,7 @@ flowchart LR
 ## SEO — Paginas Pre-renderizadas
 
 Para evitar o problema de SPA com hash-routing (Google indexa apenas `/`),
-o repositorio mantem 30 paginas HTML estaticas em `direitos/<slug>/index.html`,
+o repositorio mantem 42 paginas HTML estaticas em `direitos/<slug>/index.html`,
 geradas a partir de `data/direitos.json` pelo script `scripts/prerender_direitos.py`.
 
 Cada pagina contem: title/description/canonical unicos, H1 com o titulo da
@@ -105,7 +105,7 @@ Article + BreadcrumbList, link de retorno para a home. Sao paginas leves
 `server.js` resolve URLs limpas via `resolveFile`: requisicoes sem extensao
 (ex. `/direitos/bpc/`) tentam `<path>/index.html` -> `<path>.html` -> fallback SPA.
 
-`sitemap.xml` lista as 31 URLs (home + 30 direitos) e e regenerado pelo mesmo
+`sitemap.xml` lista as 43 URLs (home + 42 direitos) e e regenerado pelo mesmo
 script. `master_compliance.py` valida sincronia (paginas presentes + sitemap
 atualizado) na categoria SEO.
 
@@ -138,6 +138,26 @@ python3 scripts/prerender_direitos.py
 - O endpoint publico oficial e o dominio customizado em Cloudflare.
 - O Key Vault roda privado por padrao (`public_network_access_enabled=false`).
 - O segredo `redis-primary-key` permanece como referencia de app setting, mas por padrao nao e gerenciado via Terraform (`manage_redis_secret_with_terraform=false`) para evitar falha de data-plane em runners fora da VNet.
+
+## Gates de Qualidade (CI/CD)
+
+Desde v1.33.x, todo PR para `main` precisa passar nos 7 required checks abaixo antes do merge (configurado em branch protection):
+
+| Check                                       | Ferramenta                       | Bloqueia? |
+| ------------------------------------------- | -------------------------------- | --------- |
+| `CodeQL`                                    | GitHub Code Scanning (py + js/ts)| sim       |
+| `gitleaks scan`                             | gitleaks                         | sim       |
+| `Quality Gate (36 categorias)`              | `scripts/master_compliance.py`   | sim       |
+| `Lighthouse (perf/seo/a11y/bp/pwa)`         | `@lhci/cli` + `lighthouserc.json`| sim       |
+| `A11y (axe-core WCAG 2.1 AA) (chromium)`    | `tests/a11y.mjs` + Playwright    | sim       |
+| `A11y (axe-core WCAG 2.1 AA) (firefox)`     | `tests/a11y.mjs` + Playwright    | sim       |
+| `A11y (axe-core WCAG 2.1 AA) (webkit)`      | `tests/a11y.mjs` + Playwright    | sim       |
+
+Thresholds atuais (Lighthouse): perf ≥ 0.85, a11y ≥ 0.90, best-practices ≥ 0.90, seo ≥ 0.90, pwa ≥ 0.50 (warn). 4 URLs auditadas: home, `direitos/bpc/`, `direitos/educacao/`, `direitos/moradia_assistida_pcd/`.
+
+Testes PWA reais em `tests/test_e2e_playwright.py::TestPWA` validam `manifest.json` (campos + ícone ≥192px), `sw.js` (Content-Type + `CACHE_VERSION`) e fallback offline via `page.context.set_offline(True)`.
+
+Master Compliance score atual: **1263.5 / 1267.5 = 99.68%** (36 categorias).
 
 ## Diagramas
 

@@ -63,6 +63,11 @@ jobs:
           echo "🧪 Executando testes Python..."
           python -m pytest tests/ -v --tb=short --ignore=tests/test_e2e_playwright.py -q
 
+      # ── Gate: docs sync (categorias, version headers, CHANGELOG boilerplate) ──
+      - name: Gate de sincronia docs/código (check_docs_sync.py)
+        run: |
+          python scripts/check_docs_sync.py
+
       # ── Gate: semver bump exigido para feat:/BREAKING ──
       - name: Gate de semver (feat/BREAKING exige bump)
         run: |

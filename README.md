@@ -44,7 +44,7 @@ Este projeto responde essa pergunta de forma clara, objetiva e validada.
 
 ### 🌐 About (English)
 
-**NossoDireito — Rights Portal for People with Disabilities.** Regional project — interface and content in Portuguese (pt-BR) for Brazilian citizens. Web portal with **30 rights categories**, official-source references, keyword-based document analysis, accessibility tools (VLibras sign language, TTS, high contrast, font scaling), PWA offline support, and encrypted storage via Web Crypto API. **Zero data collection (LGPD compliant).** Master Compliance score 1109.7/1113.2 (99.7%) across 30 validation categories. Deployed to Azure App Service (region `brazilsouth`) via ZIP deploy; Terraform for infrastructure replication. CI/CD via GitHub Actions with automated Quality Gate.
+**NossoDireito — Rights Portal for People with Disabilities.** Regional project — interface and content in Portuguese (pt-BR) for Brazilian citizens. Web portal with **42 rights categories**, official-source references, keyword-based document analysis, accessibility tools (VLibras sign language, TTS, high contrast, font scaling), PWA offline support, and encrypted storage via Web Crypto API. **Zero data collection (LGPD compliant).** Master Compliance score 1263.5/1267.5 (99.68%) across 36 validation categories. CI quality gates: CodeQL, gitleaks, Quality Gate, Lighthouse (perf/seo/a11y/bp/pwa) and axe-core WCAG 2.1 AA in 3 browser engines (chromium/firefox/webkit). Deployed to Azure App Service (region `brazilsouth`) via ZIP deploy; Terraform for infrastructure replication. CI/CD via GitHub Actions with automated Quality Gate.
 
 ---
 
@@ -60,7 +60,7 @@ node server.js                                    # → http://localhost:8080
 
 Para rodar testes: veja [`docs/OPERATIONS.md`](docs/OPERATIONS.md)
 
-## 📘 Documentação consolidada (v1.33.1)
+## 📘 Documentação consolidada (v1.33.2)
 
 - [`docs/README.md`](docs/README.md) — índice da documentação
 - [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) — arquitetura e diagrama E2E
@@ -71,18 +71,17 @@ Para rodar testes: veja [`docs/OPERATIONS.md`](docs/OPERATIONS.md)
 
 ---
 
-## 🎉 NOVIDADES v1.33.1 (19/05/2026) — Replicação, hardening e docs enxutas
+## 🎉 NOVIDADES v1.33.2 (24/05/2026) — 42 categorias, cobertura E2E e hardening de gates
 
-**🏆 Status atual:** pipeline de testes 100% verde (678 passed) e baseline de segurança ativa.
+**🏆 Status atual:** pipeline de testes 100% verde (678 passed) + Lighthouse strict + axe-core cross-browser (chromium/firefox/webkit) + 7 required checks no branch protection.
 
-### ✅ O que mudou:
+### ✅ Pipeline S1–S11 (das últimas semanas):
 
-1. **Revogação de consentimento IA permanente (LGPD Art. 8º §5)** na interface.
-2. **Replicação automatizada** com script de bootstrap para novo tenant/subscription.
-3. **Workflow dedicado de replicação** (`.github/workflows/replication.yml`).
-4. **Baseline de segurança automatizada** (`.github/workflows/security-baseline.yml`).
-5. **Documentação consolidada** em arquitetura/operação/segurança-replicação.
-6. **Plano de 7 dias executável no resultado da IA** (checklist com progresso salvo + copiar/reiniciar, barra de progresso `X/7`, destaque do dia atual, checklist de documentos essenciais e disclaimer jurídico reforçado).
+1. **42 categorias de direitos** (era 30 + IPVA inline) — incluindo `moradia_assistida_pcd` (proteção pós-pais / Residência Inclusiva), 5 serviços federais novos, CIDs por categoria, hash diff + LexML Law Drift mensal, sync Conecta gov.br quinzenal.
+2. **Cobertura E2E end-to-end:** Lighthouse CI (perf≥85, a11y≥90, bp≥90, seo≥90, pwa≥50 warn) em 4 URLs × 5 categorias; PWA tests reais (manifest validation, sw.js Content-Type, offline fallback via `set_offline`); axe-core WCAG 2.1 AA em 3 engines (chromium/firefox/webkit).
+3. **Branch protection hardening:** 7 required checks (CodeQL, gitleaks scan, Quality Gate, Lighthouse, A11y × 3 engines).
+4. **UX home section-nav scroll-spy** + remoção do FAB de emergência (conteúdo de emergência preservado por categoria).
+5. **Hotfix:** URL IBGE Censo 2022 que retornava 404 substituída pela página canônica oficial.
 
 ### 📚 Documentação:
 
@@ -97,7 +96,7 @@ Para rodar testes: veja [`docs/OPERATIONS.md`](docs/OPERATIONS.md)
 
 ## ✨ Funcionalidades
 
-### 📋 **30 Categorias de Direitos**
+### 📋 **42 Categorias de Direitos**
 
 - **BPC/LOAS** — Benefício de Prestação Continuada (1 salário mínimo/mês)
 - **CIPTEA** — Carteira de Identificação da Pessoa com TEA
@@ -194,7 +193,7 @@ node server.js
 
 ### **Dados**
 
-- **JSON** — direitos.json (30 categorias, 265KB) + matching_engine.json (106KB) + dicionario_pcd.json (72KB)
+- **JSON** — direitos.json (42 categorias, ~330KB) + matching_engine.json (~110KB) + dicionario_pcd.json (~72KB)
 - **Compressão** — Minificação de HTML/CSS/JS
 
 ### **Infraestrutura (IaC)**
@@ -231,7 +230,7 @@ node server.js
 ### **SEO**
 
 - **Meta tags** completas (description, keywords, og:title, og:description)
-- **sitemap.xml** com 31 URLs (home + 30 direitos pré-renderizados)
+- **sitemap.xml** com 43 URLs (home + 42 direitos pré-renderizados)
 - **robots.txt** configurado
 - **Schema.org** markup (FAQPage, BreadcrumbList, Article)
 - **Pré-render estático**: 30 páginas profundas em `/direitos/<slug>/` geradas
@@ -291,14 +290,14 @@ nossodireito/
 ├── direitos/               # Páginas estáticas SEO (1 por categoria)
 │   ├── bpc/index.html
 │   ├── ciptea/index.html
-│   └── ... (30 categorias)
+│   └── ... (42 categorias)
 ├── css/
 │   └── styles.css          # CSS responsivo + dark mode
 ├── js/
 │   ├── app.js              # Busca, navegação, TTS, VLibras, criptografia
 │   └── sw-register.js      # Registro do Service Worker
 ├── data/
-│   ├── direitos.json       # Base de conhecimento (30 categorias + IPVA inline)
+│   ├── direitos.json       # Base de conhecimento (42 categorias + IPVA inline)
 │   ├── matching_engine.json # Keywords e motor de busca
 │   └── dicionario_pcd.json  # Dicionário PcD (deficiências, CIDs, leis)
 ├── images/                 # Favicons, OG image e logo
