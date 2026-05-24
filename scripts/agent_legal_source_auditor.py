@@ -44,7 +44,9 @@ def run_validation() -> dict:
         [sys.executable, str(SCRIPT_DIR / "validate_sources.py"), "--json"],
         capture_output=True,
         text=True,
-        timeout=600,
+        # 78 fontes .gov.br validadas sequencialmente — alguns domínios
+        # respondem lentamente (DOU, Conjur, etc). Timeout 25min (workflow=40min).
+        timeout=1500,
     )
     
     if result.returncode != 0:
