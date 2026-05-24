@@ -45,8 +45,8 @@ jobs:
       - name: Run axe-core audit (${{ matrix.browser }})
         env:
           BROWSER: ${{ matrix.browser }}
-          # WebKit on Linux runners can produce flaky/CSS-only diffs — baseline-only first cycle.
-          SOFT_FAIL: ${{ matrix.browser == 'webkit' && '1' || '0' }}
+          # All 3 engines pass strictly after v1.33.0 baseline — SOFT_FAIL retained for break-glass only.
+          SOFT_FAIL: "0"
         run: node tests/a11y.mjs | tee a11y-report-${{ matrix.browser }}.txt
 
       - name: Upload report

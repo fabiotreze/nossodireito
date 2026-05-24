@@ -5,6 +5,36 @@ Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/)
 e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [1.33.1] - 2026-05-24
+
+### Endurecido — Gates de qualidade promovidos a bloqueantes
+
+Após v1.33.0 ter passado em todos os 3 engines (chromium/firefox/webkit) e nas 5 categorias Lighthouse na primeira execução, os gates saem do modo baseline warning-only e passam a **bloquear PRs**:
+
+**Lighthouse CI** (`lighthouserc.json` + `.github/workflows/lighthouse.yml`)
+- Assertions: `warn` → **`error`** para Performance (≥85), Accessibility (≥90), Best Practices (≥90), SEO (≥90)
+- PWA mantido em `warn` (≥50) — score PWA do Lighthouse tem critérios voláteis entre versões
+- Removido `continue-on-error: true` do job — falha agora bloqueia merge
+- Removido fallback `|| echo "warning-only baseline"` do comando `lhci autorun`
+
+**axe-core cross-browser** (`.github/workflows/accessibility.yml`)
+- WebKit sai de `SOFT_FAIL=1` → `SOFT_FAIL=0` (mesmo critério dos outros engines)
+- Os 3 engines agora exigem **zero violações critical/serious** WCAG 2.1 AA
+
+### Preservado
+- Required checks históricos (CodeQL, gitleaks scan, Quality Gate 36 categorias) — inalterados
+- Conteúdo, identidade, 42 categorias, sitemap 43 URLs
+- 678 testes pytest
+
+### Próximo passo (manual no GitHub UI — governança)
+Adicionar como **required status checks** em Settings → Branches → main:
+- `Lighthouse (perf/seo/a11y/bp/pwa)`
+- `A11y (axe-core WCAG 2.1 AA) (chromium)`
+- `A11y (axe-core WCAG 2.1 AA) (firefox)`
+- `A11y (axe-core WCAG 2.1 AA) (webkit)`
+
+---
+
 ## [1.33.0] - 2026-05-24
 
 ### Adicionado — Cobertura final de qualidade end-to-end (S10)
