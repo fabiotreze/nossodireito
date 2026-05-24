@@ -294,7 +294,8 @@ class TestEmergencyProtocol:
     def test_emergency_section_rendered(self, page, direitos_data):
         """Protocolo de emergência deve aparecer para categorias com dados."""
         cats_with_emerg = [c for c in direitos_data["categorias"] if c.get("emergencia")]
-        assert len(cats_with_emerg) == 30, "Todas 30 categorias devem ter emergência"
+        total = len(direitos_data["categorias"])
+        assert len(cats_with_emerg) == total, f"Todas {total} categorias devem ter emergência (encontradas {len(cats_with_emerg)})"
 
         # Testar a primeira (BPC)
         cat = cats_with_emerg[0]
