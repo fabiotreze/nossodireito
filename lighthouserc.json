@@ -1,0 +1,38 @@
+{
+  "ci": {
+    "collect": {
+      "staticDistDir": ".",
+      "url": [
+        "http://localhost/index.html",
+        "http://localhost/direitos/bpc/index.html",
+        "http://localhost/direitos/educacao/index.html",
+        "http://localhost/direitos/moradia_assistida_pcd/index.html"
+      ],
+      "numberOfRuns": 1,
+      "settings": {
+        "preset": "desktop",
+        "chromeFlags": "--no-sandbox --headless=new",
+        "onlyCategories": ["performance", "accessibility", "best-practices", "seo", "pwa"],
+        "skipAudits": [
+          "uses-http2",
+          "redirects-http",
+          "is-on-https",
+          "uses-long-cache-ttl",
+          "canonical"
+        ]
+      }
+    },
+    "assert": {
+      "assertions": {
+        "categories:performance": ["warn", { "minScore": 0.85 }],
+        "categories:accessibility": ["warn", { "minScore": 0.9 }],
+        "categories:best-practices": ["warn", { "minScore": 0.9 }],
+        "categories:seo": ["warn", { "minScore": 0.9 }],
+        "categories:pwa": ["warn", { "minScore": 0.5 }]
+      }
+    },
+    "upload": {
+      "target": "temporary-public-storage"
+    }
+  }
+}

@@ -5,6 +5,42 @@ Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/)
 e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [1.33.0] - 2026-05-24
+
+### Adicionado — Cobertura final de qualidade end-to-end (S10)
+
+Fecha as 3 lacunas identificadas após o pipeline S1–S9: **Lighthouse CI**, **PWA real** e **cross-browser**. Tudo em modo **baseline warning-only** no primeiro ciclo — após 1–2 PRs com métricas estáveis, promover a required checks no branch protection.
+
+**1. Lighthouse CI** (novo `.github/workflows/lighthouse.yml` + `lighthouserc.json`)
+- 4 URLs auditadas: home, `direitos/bpc/`, `direitos/educacao/`, `direitos/moradia_assistida_pcd/`
+- 5 categorias: Performance, Accessibility, Best Practices, SEO, PWA
+- Thresholds iniciais (warn): perf≥85, a11y≥90, bp≥90, seo≥90, pwa≥50
+- Reports artifact `lighthouse-reports` (30d retention) via temporary-public-storage
+- `continue-on-error: true` — non-blocking nesta fase
+
+**2. PWA real** (extensão `tests/test_e2e_playwright.py::TestPWA`)
+- `test_manifest_json_valid`: parseia `manifest.json`, exige `name`/`short_name`, `start_url`, `display` ∈ {standalone/fullscreen/minimal-ui}, ≥1 ícone ≥192px
+- `test_sw_js_served_correctly`: valida Content-Type `application/javascript` e presença de `CACHE_VERSION`/`caches`
+- `test_offline_fallback_cache`: navegação offline real (Playwright `set_offline(True)`) — skip gracioso em `http://localhost` onde SW não registra
+
+**3. Cross-browser** (`tests/a11y.mjs` + `.github/workflows/accessibility.yml`)
+- Matriz `[chromium, firefox, webkit]` no axe-core CI (3 jobs paralelos)
+- `tests/a11y.mjs` agora aceita `BROWSER` e `SOFT_FAIL` env vars
+- WebKit em `SOFT_FAIL=1` (warning-only) — Linux runner pode ter diffs CSS-only flaky no baseline
+
+### Preservado
+- Required checks atuais (`CodeQL`, `gitleaks scan`, `Quality Gate (36 categorias)`) — inalterados
+- Conteúdo, identidade visual, sitemap (43 URLs), 42 categorias, Cloudflare
+- 678 testes pytest continuam passando
+
+### Próximo passo (manual após merge)
+- Avaliar baseline Lighthouse + WebKit em 1–2 PRs
+- Promover thresholds de `warn` → `error` no `lighthouserc.json`
+- Remover `continue-on-error` e `SOFT_FAIL` quando estável
+- Adicionar `Lighthouse (perf/seo/a11y/bp/pwa)` e `A11y (axe-core WCAG 2.1 AA) (chromium)` aos required checks no branch protection
+
+---
+
 ## [1.32.1] - 2026-05-24
 
 ### Corrigido — URL IBGE Censo 2022 (404)
