@@ -5,6 +5,25 @@ Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/)
 e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [1.32.1] - 2026-05-24
+
+### Corrigido — URL IBGE Censo 2022 (404)
+
+A URL antiga da Agência de Notícias IBGE estava retornando **404** (release `40083-no-brasil-7-3-da-populacao...`). O texto/release foi reorganizado pelo IBGE.
+
+**Substituição** em `index.html` (estatística "Pessoas com deficiência no Brasil — Censo 2022"):
+- ❌ Antiga: `https://agenciadenoticias.ibge.gov.br/agencia-noticias/2012-agencia-de-noticias/noticias/40083-no-brasil-7-3-da-populacao-com-2-anos-ou-mais-tinha-algum-tipo-de-deficiencia-em-2022`
+- ✅ Nova (página canônica do produto, estável): `https://www.ibge.gov.br/estatisticas/sociais/populacao/22827-censo-demografico-2022.html`
+
+A nova URL é a **página oficial do Censo Demográfico 2022** no IBGE — destino mais durável que páginas de release jornalístico (que mudam de slug).
+
+### Preservado
+- Texto da fonte ("Censo 2022 (IBGE, divulgação jul/2023)") inalterado
+- Estatística e contexto da home preservados
+- Identidade visual, sitemap, Cloudflare — sem alteração
+
+---
+
 ## [1.32.0] - 2026-05-24
 
 ### Removido — FAB de emergência sobreposto
