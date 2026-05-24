@@ -161,48 +161,130 @@ PAGE_TEMPLATE = """<!doctype html>
   <link rel="icon" type="image/x-icon" href="/images/favicon.ico" />
   <style>
     *,*::before,*::after{{box-sizing:border-box;margin:0;padding:0}}
-    :root{{--primary:#1e40af;--primary-dark:#1e3a8a;--text:#1e293b;--surface:#fff;--border:#e2e8f0}}
-    @media (prefers-color-scheme:dark){{:root{{--primary:#60a5fa;--primary-dark:#3b82f6;--text:#f1f5f9;--surface:#0f172a;--border:#334155}}}}
-    html{{scroll-behavior:smooth;font-size:16px}}
+    :root{{--primary:#1e40af;--primary-dark:#1e3a8a;--text:#1e293b;--muted:#64748b;--surface:#fff;--surface-2:#f8fafc;--border:#e2e8f0}}
+    @media (prefers-color-scheme:dark){{:root{{--primary:#60a5fa;--primary-dark:#3b82f6;--text:#f1f5f9;--muted:#94a3b8;--surface:#0f172a;--surface-2:#1e293b;--border:#334155}}}}
+    html{{scroll-behavior:smooth;font-size:16px;scroll-padding-top:80px}}
+    @media (prefers-reduced-motion:reduce){{html{{scroll-behavior:auto}}}}
     body{{font-family:"Segoe UI",system-ui,-apple-system,sans-serif;color:var(--text);background:var(--surface);line-height:1.6;-webkit-font-smoothing:antialiased}}
-    .container{{max-width:880px;margin:0 auto;padding:0 20px}}
-    header.topbar{{background:var(--primary-dark);color:#fff;padding:1rem 0;margin-bottom:2rem}}
-    header.topbar a{{color:#fff;text-decoration:none;font-weight:700;font-size:1.1rem}}
+    .container{{max-width:1180px;margin:0 auto;padding:0 20px}}
+    header.topbar{{background:var(--primary-dark);color:#fff;padding:1rem 0;margin-bottom:1.5rem;position:sticky;top:0;z-index:50}}
+    header.topbar a{{color:#fff;text-decoration:none;font-weight:700;font-size:1.05rem}}
     header.topbar a:hover{{text-decoration:underline}}
+    .scroll-progress{{position:fixed;top:0;left:0;height:3px;width:0;background:#fbbf24;z-index:100;transition:width 80ms linear}}
+    @media (prefers-reduced-motion:reduce){{.scroll-progress{{transition:none}}}}
     main{{padding-bottom:3rem}}
-    nav.breadcrumb{{font-size:.9rem;color:#64748b;margin-bottom:1rem}}
-    nav.breadcrumb a{{color:var(--primary);text-decoration:none}}
-    nav.breadcrumb a:hover{{text-decoration:underline}}
-    h1{{font-size:2rem;color:var(--primary-dark);margin-bottom:.5rem;line-height:1.2}}
-    .resumo{{font-size:1.1rem;color:#475569;margin:1rem 0 2rem;padding:1rem;background:#f1f5f9;border-left:4px solid var(--primary);border-radius:4px}}
-    @media (prefers-color-scheme:dark){{.resumo{{background:#1e293b;color:#cbd5e1}}}}
-    section{{margin:2rem 0}}
-    h2{{font-size:1.35rem;color:var(--primary-dark);margin-bottom:.75rem;border-bottom:2px solid var(--border);padding-bottom:.3rem}}
-    ul,ol{{padding-left:1.5rem;margin:.5rem 0}}
-    li{{margin:.35rem 0}}
+    nav.breadcrumb{{font-size:.9rem;color:var(--muted);margin-bottom:1rem}}
+    /* WCAG 2.4.4 / 1.4.1: links em bloco de texto devem ser distingu\u00edveis sem depender s\u00f3 de cor */
+    nav.breadcrumb a{{color:var(--primary);text-decoration:underline}}
+    nav.breadcrumb a:hover{{text-decoration:none}}
+    h1{{font-size:1.85rem;color:var(--primary-dark);margin-bottom:.5rem;line-height:1.2}}
+    .resumo{{font-size:1.05rem;color:var(--text);margin:1rem 0 1.5rem;padding:.9rem 1rem;background:var(--surface-2);border-left:4px solid var(--primary);border-radius:6px}}
+    .page-layout{{display:block}}
+    @media (min-width:1024px){{.page-layout{{display:grid;grid-template-columns:220px 1fr;gap:32px;align-items:start}}}}
+    .toc-sidebar{{display:none}}
+    @media (min-width:1024px){{
+      .toc-sidebar{{display:block;position:sticky;top:88px;max-height:calc(100vh - 110px);overflow-y:auto;padding:14px 12px;background:var(--surface-2);border:1px solid var(--border);border-radius:8px;font-size:.88rem}}
+      .toc-sidebar h2{{font-size:.78rem;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);font-weight:700;margin-bottom:8px;border:none;padding:0}}
+      .toc-sidebar ol{{list-style:none;padding:0;margin:0}}
+      .toc-sidebar li{{margin:2px 0}}
+      .toc-sidebar a{{display:block;padding:6px 8px;border-radius:4px;color:var(--text);text-decoration:none;line-height:1.3;border-left:3px solid transparent}}
+      .toc-sidebar a:hover{{background:var(--border);color:var(--primary)}}
+      .toc-sidebar a:focus-visible{{outline:2px solid var(--primary);outline-offset:1px}}
+      .toc-sidebar a[aria-current="location"]{{background:var(--surface);color:var(--primary);font-weight:600;border-left-color:var(--primary)}}
+    }}
+    section{{margin:1.5rem 0;scroll-margin-top:88px}}
+    h2{{font-size:1.25rem;color:var(--primary-dark);margin-bottom:.6rem;border-bottom:2px solid var(--border);padding-bottom:.3rem}}
+    h3{{font-size:1rem;margin:.8rem 0 .4rem;color:var(--text)}}
+    ul,ol{{padding-left:1.4rem;margin:.4rem 0}}
+    li{{margin:.3rem 0}}
+    p{{margin:.5rem 0}}
     a{{color:var(--primary)}}
-    .meta-info{{font-size:.85rem;color:#64748b;margin-top:2rem;padding-top:1rem;border-top:1px solid var(--border)}}
-    .aviso{{background:#fef3c7;border-left:4px solid #f59e0b;padding:1rem;margin:2rem 0;border-radius:4px;font-size:.9rem;color:#78350f}}
+    details.dicas{{margin:1rem 0;border:1px solid var(--border);border-radius:6px;background:var(--surface-2);padding:0}}
+    details.dicas[open]{{padding-bottom:.5rem}}
+    details.dicas > summary{{cursor:pointer;padding:.7rem 1rem;font-weight:600;color:var(--primary-dark);list-style:none;display:flex;align-items:center;gap:8px}}
+    details.dicas > summary::-webkit-details-marker{{display:none}}
+    details.dicas > summary::before{{content:"\u25b6";font-size:.7rem;transition:transform .15s}}
+    details.dicas[open] > summary::before{{transform:rotate(90deg)}}
+    details.dicas > summary:hover{{background:var(--border)}}
+    details.dicas > summary:focus-visible{{outline:2px solid var(--primary);outline-offset:-2px}}
+    details.dicas ul{{padding:0 1rem 0 2.2rem}}
+    @media (prefers-reduced-motion:reduce){{details.dicas > summary::before{{transition:none}}}}
+    .meta-info{{font-size:.85rem;color:var(--muted);margin-top:2rem;padding-top:1rem;border-top:1px solid var(--border)}}
+    .aviso{{background:#fef3c7;border-left:4px solid #f59e0b;padding:1rem;margin:1.5rem 0;border-radius:4px;font-size:.9rem;color:#78350f}}
     @media (prefers-color-scheme:dark){{.aviso{{background:#451a03;color:#fde68a}}}}
-    footer{{text-align:center;padding:2rem 1rem;border-top:1px solid var(--border);font-size:.85rem;color:#64748b;margin-top:3rem}}
+    .emergencia-box{{background:#fef2f2;border-left:4px solid #dc2626;padding:1rem;border-radius:6px;margin:1rem 0}}
+    @media (prefers-color-scheme:dark){{.emergencia-box{{background:#450a0a;color:#fecaca}}}}
+    footer{{text-align:center;padding:2rem 1rem;border-top:1px solid var(--border);font-size:.85rem;color:var(--muted);margin-top:3rem}}
   </style>
   {jsonld}
 </head>
 <body>
+  <div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
   <header class="topbar"><div class="container"><a href="/">⚖️ NossoDireito — Voltar à página inicial</a></div></header>
   <main class="container">
     <nav class="breadcrumb" aria-label="Navegação estrutural">
       <a href="/">Início</a> &rsaquo; <a href="/#categorias">Direitos PcD</a> &rsaquo; <span>{title_plain}</span>
     </nav>
-    <article>
-      <h1>{icone} {title}</h1>
-      <p class="resumo">{description}</p>
+    <div class="page-layout">
+      <aside class="toc-sidebar" aria-label="Sumário desta página">
+        <h2>Nesta página</h2>
+        <ol id="tocList"></ol>
+      </aside>
+      <article class="page-body">
+        <h1>{icone} {title}</h1>
+        <p class="resumo">{description}</p>
 {sections}
-      <p class="meta-info">Versão dos dados: {versao} — atualizado em {ultima_atualizacao}.</p>
-      <div class="aviso"><strong>Aviso:</strong> {aviso}</div>
-    </article>
+        <p class="meta-info">Versão dos dados: {versao} — atualizado em {ultima_atualizacao}.</p>
+        <div class="aviso"><strong>Aviso:</strong> {aviso}</div>
+      </article>
+    </div>
   </main>
   <footer><p>NossoDireito — Projeto sem fins lucrativos · <a href="/">Página inicial</a> · <a href="/sitemap.xml">Sitemap</a></p></footer>
+  <script>
+  (function(){{
+    var sections = document.querySelectorAll('article.page-body > section[id]');
+    var tocList = document.getElementById('tocList');
+    var progress = document.getElementById('scrollProgress');
+    if (tocList && sections.length){{
+      var links = [];
+      sections.forEach(function(sec){{
+        var h2 = sec.querySelector('h2');
+        if (!h2) return;
+        var li = document.createElement('li');
+        var a = document.createElement('a');
+        a.href = '#' + sec.id;
+        a.textContent = h2.textContent;
+        li.appendChild(a);
+        tocList.appendChild(li);
+        links.push({{a:a, sec:sec}});
+      }});
+      if ('IntersectionObserver' in window && links.length){{
+        var io = new IntersectionObserver(function(entries){{
+          entries.forEach(function(en){{
+            if (en.isIntersecting){{
+              links.forEach(function(l){{
+                if (l.sec === en.target) l.a.setAttribute('aria-current','location');
+                else l.a.removeAttribute('aria-current');
+              }});
+            }}
+          }});
+        }}, {{rootMargin:'-40% 0px -55% 0px', threshold:0}});
+        links.forEach(function(l){{ io.observe(l.sec); }});
+      }}
+    }}
+    if (progress){{
+      var raf = 0;
+      function upd(){{
+        var sc = document.documentElement;
+        var pct = (sc.scrollTop) / Math.max(1, sc.scrollHeight - sc.clientHeight);
+        progress.style.width = (Math.min(1, Math.max(0, pct)) * 100) + '%';
+        raf = 0;
+      }}
+      window.addEventListener('scroll', function(){{ if (!raf) raf = requestAnimationFrame(upd); }}, {{passive:true}});
+      upd();
+    }}
+  }})();
+  </script>
 </body>
 </html>
 """
@@ -211,30 +293,45 @@ PAGE_TEMPLATE = """<!doctype html>
 def build_sections(cat: dict) -> str:
     parts: list[str] = []
 
-    def section(title: str, body: str) -> None:
+    def section(title: str, body: str, sid: str = "", extra_class: str = "") -> None:
         if body and body.strip():
-            parts.append(f"      <section>\n        <h2>{esc(title)}</h2>\n{body}\n      </section>")
+            cls = f' class="{extra_class}"' if extra_class else ""
+            sid_attr = f' id="{sid}"' if sid else ""
+            parts.append(f"      <section{sid_attr}{cls}>\n        <h2>{esc(title)}</h2>\n{body}\n      </section>")
 
-    section("Base legal", render_base_legal(cat.get("base_legal", [])))
+    section("Base legal", render_base_legal(cat.get("base_legal", [])), sid="base-legal")
     if cat.get("valor"):
         section(
             "Valor / Benefício",
             f"        <p>{esc(cat['valor'])}</p>",
+            sid="valor",
         )
-    section("Requisitos", render_list(cat.get("requisitos", [])))
-    section("Documentos necessários", render_list(cat.get("documentos", [])))
-    section("Passo a passo", render_list(cat.get("passo_a_passo", []), ordered=True))
+    section("Requisitos", render_list(cat.get("requisitos", [])), sid="requisitos")
+    section("Documentos necessários", render_list(cat.get("documentos", [])), sid="documentos")
+    section("Passo a passo", render_list(cat.get("passo_a_passo", []), ordered=True), sid="passo-a-passo")
     if cat.get("dicas"):
-        section("Dicas práticas", render_list(cat["dicas"]))
+        # Dicas colapsáveis para reduzir muralha de texto em mobile
+        dicas_html = render_list(cat["dicas"])
+        body = (
+            f'        <details class="dicas">\n'
+            f'          <summary>Dicas práticas ({len(cat["dicas"])})</summary>\n'
+            f'{dicas_html}\n'
+            f'        </details>'
+        )
+        parts.append(f'      <section id="dicas">\n        <h2>Dicas práticas</h2>\n{body}\n      </section>')
     if cat.get("onde"):
         onde = cat["onde"]
         if isinstance(onde, str):
-            section("Onde solicitar", f"        <p>{esc(onde)}</p>")
+            section("Onde solicitar", f"        <p>{esc(onde)}</p>", sid="onde-solicitar")
         elif isinstance(onde, list):
-            section("Onde solicitar", render_list(onde))
-    section("Links oficiais", render_links(cat.get("links", [])))
+            section("Onde solicitar", render_list(onde), sid="onde-solicitar")
+    section("Links oficiais", render_links(cat.get("links", [])), sid="links-oficiais")
     if cat.get("emergencia"):
-        section("Em caso de emergência ou recusa", render_emergencia(cat["emergencia"]))
+        emerg_body = render_emergencia(cat["emergencia"])
+        wrapped = f'        <div class="emergencia-box">\n{emerg_body}\n        </div>'
+        parts.append(
+            f'      <section id="emergencia">\n        <h2>Em caso de emergência ou recusa</h2>\n{wrapped}\n      </section>'
+        )
 
     return "\n".join(parts)
 

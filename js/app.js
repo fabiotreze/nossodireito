@@ -645,6 +645,9 @@
             searchBtn: $('#searchBtn'),
             searchResults: $('#searchResults'),
             categoryGrid: $('#categoryGrid'),
+            trilhaTabs: $('#trilhaTabs'),
+            emergencyFab: $('#emergencyFab'),
+            emergencyDialog: $('#emergencyDialog'),
             detalheSection: $('#detalhe'),
             detalheContent: $('#detalheContent'),
             voltarBtn: $('#voltarBtn'),
@@ -988,7 +991,8 @@
                 (cat) => `
 <div class="category-card" tabindex="0" role="button"
 aria-label="Ver detalhes sobre ${escapeHtml(cat.titulo)}"
-data-id="${cat.id}">
+data-id="${cat.id}"
+data-trilha="${escapeHtml(getTrilhaId(cat.id))}">
 <span class="category-icon">${cat.icone}</span>
 <h3>${escapeHtml(cat.titulo)}</h3>
 <p>${escapeHtml(cat.resumo)}</p>
@@ -1004,6 +1008,97 @@ data-id="${cat.id}">
                     showDetalhe(card.dataset.id);
                 }
             });
+        });
+
+        renderTrilhaTabs();
+    }
+
+    // ---------- Trilhas (agrupamento de categorias) ----------
+    const TRILHAS = [
+        { id: 'todas', label: 'Todas', icone: '📋', ids: null },
+        {
+            id: 'renda', label: 'Renda & Benefícios', icone: '💰',
+            ids: ['bpc', 'auxilio_inclusao', 'bolsa_familia', 'fgts', 'saque_fgts_doenca_grave', 'pensao_zika', 'tarifa_social_energia', 'isencao_ir'],
+        },
+        {
+            id: 'saude', label: 'Saúde', icone: '🏥',
+            ids: ['sus_terapias', 'plano_saude', 'reabilitacao', 'caa_comunicacao_alternativa', 'tecnologia_assistiva'],
+        },
+        {
+            id: 'educacao', label: 'Educação', icone: '🎓',
+            ids: ['educacao', 'prouni_fies_sisu'],
+        },
+        {
+            id: 'trabalho', label: 'Trabalho & Aposentadoria', icone: '💼',
+            ids: ['trabalho', 'cota_emprego_pcd_empresa', 'horario_especial_servidor_pcd', 'aposentadoria_especial_pcd'],
+        },
+        {
+            id: 'mobilidade', label: 'Mobilidade & Transporte', icone: '🚌',
+            ids: ['transporte', 'estacionamento_especial', 'isencoes_tributarias', 'turismo_acessivel', 'moradia'],
+        },
+        {
+            id: 'cidadania', label: 'Direitos & Cidadania', icone: '⚖️',
+            ids: ['ciptea', 'atendimento_prioritario', 'prioridade_judicial', 'capacidade_legal', 'curatela_decisao_apoiada', 'crimes_contra_pcd', 'protecao_social', 'politica_nacional_cuidados', 'meia_entrada', 'acessibilidade_arquitetonica', 'acessibilidade_digital', 'esporte_paralimpico'],
+        },
+    ];
+
+    function getTrilhaId(catId) {
+        for (const t of TRILHAS) {
+            if (t.ids && t.ids.includes(catId)) return t.id;
+        }
+        return 'cidadania';
+    }
+
+    function renderTrilhaTabs() {
+        if (!dom.trilhaTabs || !direitosData) return;
+        const counts = {};
+        for (const t of TRILHAS) {
+            counts[t.id] = t.ids ? direitosData.filter((c) => t.ids.includes(c.id)).length : direitosData.length;
+        }
+        dom.trilhaTabs.innerHTML = TRILHAS
+            .map((t, i) => `
+<button type="button" class="trilha-tab" role="tab"
+id="trilhaTab-${t.id}"
+aria-selected="${i === 0 ? 'true' : 'false'}"
+aria-controls="categoryGrid"
+data-trilha="${t.id}"
+tabindex="${i === 0 ? '0' : '-1'}">
+<span aria-hidden="true">${t.icone}</span>
+<span>${escapeHtml(t.label)}</span>
+<span class="trilha-tab__count" aria-hidden="true">(${counts[t.id]})</span>
+</button>`)
+            .join('');
+
+        const tabs = dom.trilhaTabs.querySelectorAll('.trilha-tab');
+        tabs.forEach((tab) => {
+            tab.addEventListener('click', () => selectTrilha(tab.dataset.trilha));
+            tab.addEventListener('keydown', (e) => {
+                if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft' && e.key !== 'Home' && e.key !== 'End') return;
+                e.preventDefault();
+                const arr = Array.from(tabs);
+                const idx = arr.indexOf(tab);
+                let next = idx;
+                if (e.key === 'ArrowRight') next = (idx + 1) % arr.length;
+                else if (e.key === 'ArrowLeft') next = (idx - 1 + arr.length) % arr.length;
+                else if (e.key === 'Home') next = 0;
+                else if (e.key === 'End') next = arr.length - 1;
+                arr[next].focus();
+                selectTrilha(arr[next].dataset.trilha);
+            });
+        });
+    }
+
+    function selectTrilha(trilhaId) {
+        if (!dom.trilhaTabs || !dom.categoryGrid) return;
+        dom.trilhaTabs.querySelectorAll('.trilha-tab').forEach((tab) => {
+            const active = tab.dataset.trilha === trilhaId;
+            tab.setAttribute('aria-selected', active ? 'true' : 'false');
+            tab.setAttribute('tabindex', active ? '0' : '-1');
+        });
+        dom.categoryGrid.setAttribute('aria-labelledby', `trilhaTab-${trilhaId}`);
+        dom.categoryGrid.querySelectorAll('.category-card').forEach((card) => {
+            const show = trilhaId === 'todas' || card.dataset.trilha === trilhaId;
+            card.style.display = show ? '' : 'none';
         });
     }
     function showDetalhe(id, skipHistory) {
@@ -3590,12 +3685,69 @@ ${renderWeekPlan(priorityOrder, titleById)}
             });
         });
     }
+    function setupEmergencyDialog() {
+        const fab = document.getElementById('emergencyFab');
+        const dialog = document.getElementById('emergencyDialog');
+        if (!fab || !dialog) return;
+
+        let lastFocused = null;
+
+        function getFocusable() {
+            return dialog.querySelectorAll('a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])');
+        }
+
+        function open() {
+            lastFocused = document.activeElement;
+            dialog.hidden = false;
+            document.body.style.overflow = 'hidden';
+            fab.setAttribute('aria-expanded', 'true');
+            const focusables = getFocusable();
+            if (focusables.length) focusables[0].focus();
+            document.addEventListener('keydown', onKey);
+        }
+
+        function close() {
+            dialog.hidden = true;
+            document.body.style.overflow = '';
+            fab.setAttribute('aria-expanded', 'false');
+            document.removeEventListener('keydown', onKey);
+            if (lastFocused && typeof lastFocused.focus === 'function') lastFocused.focus();
+        }
+
+        function onKey(e) {
+            if (e.key === 'Escape') {
+                e.preventDefault();
+                close();
+                return;
+            }
+            if (e.key === 'Tab') {
+                const focusables = Array.from(getFocusable());
+                if (!focusables.length) return;
+                const first = focusables[0];
+                const last = focusables[focusables.length - 1];
+                if (e.shiftKey && document.activeElement === first) {
+                    e.preventDefault();
+                    last.focus();
+                } else if (!e.shiftKey && document.activeElement === last) {
+                    e.preventDefault();
+                    first.focus();
+                }
+            }
+        }
+
+        fab.addEventListener('click', open);
+        dialog.querySelectorAll('[data-emergency-close]').forEach((el) => {
+            el.addEventListener('click', close);
+        });
+    }
+
     if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', () => { init(); setupNavAvisoScroll(); setupAIConsentManager(); setupAIConsentQuickActions(); });
+        document.addEventListener('DOMContentLoaded', () => { init(); setupNavAvisoScroll(); setupAIConsentManager(); setupAIConsentQuickActions(); setupEmergencyDialog(); });
     } else {
         init();
         setupNavAvisoScroll();
         setupAIConsentManager();
         setupAIConsentQuickActions();
+        setupEmergencyDialog();
     }
 })();

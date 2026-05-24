@@ -23,30 +23,60 @@
   <link rel="icon" type="image/x-icon" href="/images/favicon.ico" />
   <style>
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-    :root{--primary:#1e40af;--primary-dark:#1e3a8a;--text:#1e293b;--surface:#fff;--border:#e2e8f0}
-    @media (prefers-color-scheme:dark){:root{--primary:#60a5fa;--primary-dark:#3b82f6;--text:#f1f5f9;--surface:#0f172a;--border:#334155}}
-    html{scroll-behavior:smooth;font-size:16px}
+    :root{--primary:#1e40af;--primary-dark:#1e3a8a;--text:#1e293b;--muted:#64748b;--surface:#fff;--surface-2:#f8fafc;--border:#e2e8f0}
+    @media (prefers-color-scheme:dark){:root{--primary:#60a5fa;--primary-dark:#3b82f6;--text:#f1f5f9;--muted:#94a3b8;--surface:#0f172a;--surface-2:#1e293b;--border:#334155}}
+    html{scroll-behavior:smooth;font-size:16px;scroll-padding-top:80px}
+    @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
     body{font-family:"Segoe UI",system-ui,-apple-system,sans-serif;color:var(--text);background:var(--surface);line-height:1.6;-webkit-font-smoothing:antialiased}
-    .container{max-width:880px;margin:0 auto;padding:0 20px}
-    header.topbar{background:var(--primary-dark);color:#fff;padding:1rem 0;margin-bottom:2rem}
-    header.topbar a{color:#fff;text-decoration:none;font-weight:700;font-size:1.1rem}
+    .container{max-width:1180px;margin:0 auto;padding:0 20px}
+    header.topbar{background:var(--primary-dark);color:#fff;padding:1rem 0;margin-bottom:1.5rem;position:sticky;top:0;z-index:50}
+    header.topbar a{color:#fff;text-decoration:none;font-weight:700;font-size:1.05rem}
     header.topbar a:hover{text-decoration:underline}
+    .scroll-progress{position:fixed;top:0;left:0;height:3px;width:0;background:#fbbf24;z-index:100;transition:width 80ms linear}
+    @media (prefers-reduced-motion:reduce){.scroll-progress{transition:none}}
     main{padding-bottom:3rem}
-    nav.breadcrumb{font-size:.9rem;color:#64748b;margin-bottom:1rem}
-    nav.breadcrumb a{color:var(--primary);text-decoration:none}
-    nav.breadcrumb a:hover{text-decoration:underline}
-    h1{font-size:2rem;color:var(--primary-dark);margin-bottom:.5rem;line-height:1.2}
-    .resumo{font-size:1.1rem;color:#475569;margin:1rem 0 2rem;padding:1rem;background:#f1f5f9;border-left:4px solid var(--primary);border-radius:4px}
-    @media (prefers-color-scheme:dark){.resumo{background:#1e293b;color:#cbd5e1}}
-    section{margin:2rem 0}
-    h2{font-size:1.35rem;color:var(--primary-dark);margin-bottom:.75rem;border-bottom:2px solid var(--border);padding-bottom:.3rem}
-    ul,ol{padding-left:1.5rem;margin:.5rem 0}
-    li{margin:.35rem 0}
+    nav.breadcrumb{font-size:.9rem;color:var(--muted);margin-bottom:1rem}
+    /* WCAG 2.4.4 / 1.4.1: links em bloco de texto devem ser distinguíveis sem depender só de cor */
+    nav.breadcrumb a{color:var(--primary);text-decoration:underline}
+    nav.breadcrumb a:hover{text-decoration:none}
+    h1{font-size:1.85rem;color:var(--primary-dark);margin-bottom:.5rem;line-height:1.2}
+    .resumo{font-size:1.05rem;color:var(--text);margin:1rem 0 1.5rem;padding:.9rem 1rem;background:var(--surface-2);border-left:4px solid var(--primary);border-radius:6px}
+    .page-layout{display:block}
+    @media (min-width:1024px){.page-layout{display:grid;grid-template-columns:220px 1fr;gap:32px;align-items:start}}
+    .toc-sidebar{display:none}
+    @media (min-width:1024px){
+      .toc-sidebar{display:block;position:sticky;top:88px;max-height:calc(100vh - 110px);overflow-y:auto;padding:14px 12px;background:var(--surface-2);border:1px solid var(--border);border-radius:8px;font-size:.88rem}
+      .toc-sidebar h2{font-size:.78rem;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);font-weight:700;margin-bottom:8px;border:none;padding:0}
+      .toc-sidebar ol{list-style:none;padding:0;margin:0}
+      .toc-sidebar li{margin:2px 0}
+      .toc-sidebar a{display:block;padding:6px 8px;border-radius:4px;color:var(--text);text-decoration:none;line-height:1.3;border-left:3px solid transparent}
+      .toc-sidebar a:hover{background:var(--border);color:var(--primary)}
+      .toc-sidebar a:focus-visible{outline:2px solid var(--primary);outline-offset:1px}
+      .toc-sidebar a[aria-current="location"]{background:var(--surface);color:var(--primary);font-weight:600;border-left-color:var(--primary)}
+    }
+    section{margin:1.5rem 0;scroll-margin-top:88px}
+    h2{font-size:1.25rem;color:var(--primary-dark);margin-bottom:.6rem;border-bottom:2px solid var(--border);padding-bottom:.3rem}
+    h3{font-size:1rem;margin:.8rem 0 .4rem;color:var(--text)}
+    ul,ol{padding-left:1.4rem;margin:.4rem 0}
+    li{margin:.3rem 0}
+    p{margin:.5rem 0}
     a{color:var(--primary)}
-    .meta-info{font-size:.85rem;color:#64748b;margin-top:2rem;padding-top:1rem;border-top:1px solid var(--border)}
-    .aviso{background:#fef3c7;border-left:4px solid #f59e0b;padding:1rem;margin:2rem 0;border-radius:4px;font-size:.9rem;color:#78350f}
+    details.dicas{margin:1rem 0;border:1px solid var(--border);border-radius:6px;background:var(--surface-2);padding:0}
+    details.dicas[open]{padding-bottom:.5rem}
+    details.dicas > summary{cursor:pointer;padding:.7rem 1rem;font-weight:600;color:var(--primary-dark);list-style:none;display:flex;align-items:center;gap:8px}
+    details.dicas > summary::-webkit-details-marker{display:none}
+    details.dicas > summary::before{content:"▶";font-size:.7rem;transition:transform .15s}
+    details.dicas[open] > summary::before{transform:rotate(90deg)}
+    details.dicas > summary:hover{background:var(--border)}
+    details.dicas > summary:focus-visible{outline:2px solid var(--primary);outline-offset:-2px}
+    details.dicas ul{padding:0 1rem 0 2.2rem}
+    @media (prefers-reduced-motion:reduce){details.dicas > summary::before{transition:none}}
+    .meta-info{font-size:.85rem;color:var(--muted);margin-top:2rem;padding-top:1rem;border-top:1px solid var(--border)}
+    .aviso{background:#fef3c7;border-left:4px solid #f59e0b;padding:1rem;margin:1.5rem 0;border-radius:4px;font-size:.9rem;color:#78350f}
     @media (prefers-color-scheme:dark){.aviso{background:#451a03;color:#fde68a}}
-    footer{text-align:center;padding:2rem 1rem;border-top:1px solid var(--border);font-size:.85rem;color:#64748b;margin-top:3rem}
+    .emergencia-box{background:#fef2f2;border-left:4px solid #dc2626;padding:1rem;border-radius:6px;margin:1rem 0}
+    @media (prefers-color-scheme:dark){.emergencia-box{background:#450a0a;color:#fecaca}}
+    footer{text-align:center;padding:2rem 1rem;border-top:1px solid var(--border);font-size:.85rem;color:var(--muted);margin-top:3rem}
   </style>
   <script type="application/ld+json">
 {
@@ -123,15 +153,21 @@
 </script>
 </head>
 <body>
+  <div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
   <header class="topbar"><div class="container"><a href="/">⚖️ NossoDireito — Voltar à página inicial</a></div></header>
   <main class="container">
     <nav class="breadcrumb" aria-label="Navegação estrutural">
       <a href="/">Início</a> &rsaquo; <a href="/#categorias">Direitos PcD</a> &rsaquo; <span>Trabalho — Cotas e Proteções</span>
     </nav>
-    <article>
-      <h1>💼 Trabalho — Cotas e Proteções</h1>
-      <p class="resumo">Empresas com 100+ funcionários devem reservar de 2% a 5% das vagas para PcD. Há proteções contra demissão arbitrária.</p>
-      <section>
+    <div class="page-layout">
+      <aside class="toc-sidebar" aria-label="Sumário desta página">
+        <h2>Nesta página</h2>
+        <ol id="tocList"></ol>
+      </aside>
+      <article class="page-body">
+        <h1>💼 Trabalho — Cotas e Proteções</h1>
+        <p class="resumo">Empresas com 100+ funcionários devem reservar de 2% a 5% das vagas para PcD. Há proteções contra demissão arbitrária.</p>
+      <section id="base-legal">
         <h2>Base legal</h2>
     <ul>
       <li><a href="https://www.planalto.gov.br/ccivil_03/leis/l8213cons.htm" rel="external noopener" target="_blank">Lei 8.213/1991</a> — Art. 93</li>
@@ -141,11 +177,11 @@
       <li><a href="https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2016/lei/l13370.htm" rel="external noopener" target="_blank">Lei nº 13.370/2016 — Horário especial para servidor PcD</a> — Art. 1º (altera Art. 98, §§ 2º e 3º da Lei 8.112/90)</li>
     </ul>
       </section>
-      <section>
+      <section id="valor">
         <h2>Valor / Benefício</h2>
         <p>Salário conforme a vaga + proteções legais</p>
       </section>
-      <section>
+      <section id="requisitos">
         <h2>Requisitos</h2>
     <ul>
       <li>Laudo médico comprovando a deficiência</li>
@@ -155,7 +191,7 @@
       <li>Declaração de renda familiar (se aplicável)</li>
     </ul>
       </section>
-      <section>
+      <section id="documentos">
         <h2>Documentos necessários</h2>
     <ul>
       <li>Laudo médico com CID</li>
@@ -164,7 +200,7 @@
       <li>CTPS (Carteira de Trabalho)</li>
     </ul>
       </section>
-      <section>
+      <section id="passo-a-passo">
         <h2>Passo a passo</h2>
     <ol>
       <li>Procure vagas PcD em sites de emprego (filtre por &#x27;PcD&#x27; ou &#x27;pessoa com deficiência&#x27;)</li>
@@ -175,8 +211,10 @@
       <li>6. Acompanhe o andamento pelo protocolo fornecido e aguarde retorno oficial</li>
     </ol>
       </section>
-      <section>
+      <section id="dicas">
         <h2>Dicas práticas</h2>
+        <details class="dicas">
+          <summary>Dicas práticas (8)</summary>
     <ul>
       <li>A empresa NÃO pode demitir PcD de cota sem contratar outro PcD no lugar</li>
       <li>Quem recebe BPC pode trabalhar e receber o Auxílio-Inclusão (50% do BPC)</li>
@@ -187,20 +225,22 @@
       <li>O Ministério do Trabalho e Emprego publica guias sobre contratação e fiscalização de cotas PcD</li>
       <li>Jornada reduzida: servidor público federal com deficiência (ou com filho PcD) pode trabalhar menos horas SEM perder salário. Precisa de laudo da junta médica oficial. Para CLT, verifique a convenção do seu sindicato.</li>
     </ul>
+        </details>
       </section>
-      <section>
+      <section id="onde-solicitar">
         <h2>Onde solicitar</h2>
         <p>SINE / Sites de emprego / SRTE</p>
       </section>
-      <section>
+      <section id="links-oficiais">
         <h2>Links oficiais</h2>
     <ul>
       <li><a href="https://www.gov.br/trabalho-e-emprego/pt-br" rel="external noopener" target="_blank">Buscar vagas PcD (gov.br)</a></li>
       <li><a href="https://www.gov.br/mdh/pt-br/ondh" rel="external noopener" target="_blank">Ouvidoria Nacional de Direitos Humanos (Disque 100)</a></li>
     </ul>
       </section>
-      <section>
+      <section id="emergencia">
         <h2>Em caso de emergência ou recusa</h2>
+        <div class="emergencia-box">
         <h3>Vaga de Cota Negada?</h3>
         <p><strong>Situação:</strong> Empresa recusa contratação de PcD, exige tipo específico de deficiência ou não oferece adaptações razoáveis.</p>
         <p><strong>Base legal:</strong> Art. 93 da Lei 8.213/91 (cotas de 2% a 5%) e Art. 34 da LBI (Lei 13.146/2015) — vedada qualquer forma de discriminação na contratação.</p>
@@ -215,11 +255,58 @@
         <blockquote>Prezada empresa, informo que a recusa de contratação de pessoa com deficiência com base em critérios discriminatórios viola o Art. 93 da Lei 8.213/91 e o Art. 34 da LBI (Lei 13.146/2015). A empresa com [Nº] ou mais empregados deve reservar de 2% a 5% das vagas para PcD. Solicito a revisão da decisão sob pena de denúncia ao Ministério Público do Trabalho.</blockquote>
         <p><strong>Onde denunciar:</strong> Ministério Público do Trabalho (MPT) (MPT da sua região) — <a href="https://mpt.mp.br/" rel="external noopener" target="_blank">https://mpt.mp.br/</a></p>
         <p class="aviso-inline"><em>⚠️ Este protocolo é de caráter informativo e NÃO substitui orientação jurídica profissional. Procure a Defensoria Pública ou o CRAS da sua cidade para assistência gratuita.</em></p>
+        </div>
       </section>
-      <p class="meta-info">Versão dos dados: 1.24.0 — atualizado em 2026-05-24.</p>
-      <div class="aviso"><strong>Aviso:</strong> Informações compiladas de fontes oficiais do governo brasileiro (gov.br). Podem estar desatualizadas. Verifique sempre as fontes originais.</div>
-    </article>
+        <p class="meta-info">Versão dos dados: 1.25.0 — atualizado em 2026-05-24.</p>
+        <div class="aviso"><strong>Aviso:</strong> Informações compiladas de fontes oficiais do governo brasileiro (gov.br). Podem estar desatualizadas. Verifique sempre as fontes originais.</div>
+      </article>
+    </div>
   </main>
   <footer><p>NossoDireito — Projeto sem fins lucrativos · <a href="/">Página inicial</a> · <a href="/sitemap.xml">Sitemap</a></p></footer>
+  <script>
+  (function(){
+    var sections = document.querySelectorAll('article.page-body > section[id]');
+    var tocList = document.getElementById('tocList');
+    var progress = document.getElementById('scrollProgress');
+    if (tocList && sections.length){
+      var links = [];
+      sections.forEach(function(sec){
+        var h2 = sec.querySelector('h2');
+        if (!h2) return;
+        var li = document.createElement('li');
+        var a = document.createElement('a');
+        a.href = '#' + sec.id;
+        a.textContent = h2.textContent;
+        li.appendChild(a);
+        tocList.appendChild(li);
+        links.push({a:a, sec:sec});
+      });
+      if ('IntersectionObserver' in window && links.length){
+        var io = new IntersectionObserver(function(entries){
+          entries.forEach(function(en){
+            if (en.isIntersecting){
+              links.forEach(function(l){
+                if (l.sec === en.target) l.a.setAttribute('aria-current','location');
+                else l.a.removeAttribute('aria-current');
+              });
+            }
+          });
+        }, {rootMargin:'-40% 0px -55% 0px', threshold:0});
+        links.forEach(function(l){ io.observe(l.sec); });
+      }
+    }
+    if (progress){
+      var raf = 0;
+      function upd(){
+        var sc = document.documentElement;
+        var pct = (sc.scrollTop) / Math.max(1, sc.scrollHeight - sc.clientHeight);
+        progress.style.width = (Math.min(1, Math.max(0, pct)) * 100) + '%';
+        raf = 0;
+      }
+      window.addEventListener('scroll', function(){ if (!raf) raf = requestAnimationFrame(upd); }, {passive:true});
+      upd();
+    }
+  })();
+  </script>
 </body>
 </html>
