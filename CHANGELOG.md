@@ -5,6 +5,30 @@ Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/)
 e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [1.28.1] - 2026-05-24
+
+### Adicionado — Sync quinzenal Conecta gov.br
+
+- **`scripts/agent_conecta_govbr_sync.py`** — novo agente que monitora URLs `gov.br` referenciadas em `data/direitos.json` (fontes globais + categorias).
+  - Calcula hash SHA-256 do conteúdo HTML normalizado.
+  - Compara contra baseline `data/conecta_sync_state.json`.
+  - Detecta 3 tipos de evento: `changed`, `new`, `errors`.
+  - Read-only — nunca modifica `direitos.json`.
+  - Stdlib only (sem novas dependências).
+- **`.github/workflows/conecta-govbr-sync.yml`** — workflow quinzenal (dias 1 e 15 às 11:00 UTC, ~08:00 BRT).
+  - Permissões mínimas (`contents: read` + `issues: write` apenas no job).
+  - Cria issue automática quando há drift de conteúdo, com checklist por URL.
+  - Suporta `workflow_dispatch` manual com `update_state` para refazer baseline.
+  - Upload de artefatos (`sync_output.json`, `sync_log.txt`) por 30 dias.
+
+### Preservado
+
+- Cores, ícones, imagens, identidade visual — não alterado.
+- WCAG 2.1 AA, LGPD, Cloudflare, sitemap.xml — não alterado.
+- Apenas observabilidade adicional sobre fontes oficiais já em uso.
+
+---
+
 ## [1.28.0] - 2026-05-24
 
 ### Adicionado — 5 serviços federais (36 → 41 categorias)
