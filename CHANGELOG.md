@@ -5,6 +5,33 @@ Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/)
 e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [1.26.0] - 2026-05-24
+
+### Adicionado — TOC sticky + scroll-spy + barra de progresso (PR-C)
+
+- **Sumário lateral sticky** nas 36 páginas internas de direitos (`direitos/<slug>/index.html`):
+  - Visível em viewport ≥1024px (grid 220px + conteúdo); mobile mantém fluxo linear
+  - Lista dinâmica das seções `<section id>` via JS, com âncoras navegáveis por teclado
+  - Scroll-spy via `IntersectionObserver` aplica `aria-current="location"` no item ativo
+  - `scroll-padding-top` + `scroll-margin-top` para não esconder âncoras sob header sticky
+
+- **Barra de progresso de leitura** (3px, fixa no topo) com `requestAnimationFrame`
+  - Respeita `prefers-reduced-motion`
+
+- **Header sticky** unificado nas páginas internas, mantendo contraste WCAG AA
+
+### A11y
+- `aria-current="location"` no item ativo do TOC
+- Sumário oculto em mobile sem prejudicar leitor de tela (linear flow)
+- `prefers-reduced-motion`: progress bar e smooth-scroll desativados quando solicitado
+
+### Build
+- `scripts/prerender_direitos.py`: template atualizado, 36 páginas rebuildadas
+- a11y axe-core: **0 violações** (critical/serious/moderate/minor)
+- pytest: **678 testes passando**
+
+---
+
 ## [1.25.0] - 2026-05-24
 
 ### Adicionado — Trilhas de navegação + FAB de emergência (UX arquitetural)
