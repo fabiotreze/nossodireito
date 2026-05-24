@@ -5,6 +5,43 @@ Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/)
 e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [1.28.0] - 2026-05-24
+
+### Adicionado — 5 serviços federais (36 → 41 categorias)
+
+Cinco novas categorias com base legal validada via API LexML/Senado e URLs verificadas (HEAD-check, score 99.5%):
+
+1. **`certificado_pcd_inss`** — Certificado de Deficiência via avaliação biopsicossocial INSS (LC 142/2013, Decreto 8.145/2013, LBI Art. 2º).
+2. **`carteira_identificacao_pcd`** — CIPCD nacional gratuita (Lei 14.624/2023, LBI Art. 9º, Lei 9.265/1996 — gratuidade).
+3. **`reabilitacao_profissional_inss`** — Reabilitação física, profissional e social pelo INSS (Lei 8.213/1991 Arts. 89-93, Decreto 3.048/1999, LBI Art. 36).
+4. **`pensao_talidomida`** — Pensão Especial vitalícia para vítimas da síndrome da talidomida (Lei 7.070/1982, Lei 8.686/1993, Lei 12.190/2010, Lei 13.985/2020).
+5. **`pensao_hanseniase`** — Pensão Especial para pessoas atingidas pela hanseníase compulsoriamente isoladas até 31/12/1986 (Lei 11.520/2007, Decreto 6.168/2007).
+
+### Mudado — Infraestrutura para 41 categorias
+
+- **`scripts/prerender_direitos.py`**: gera agora 41 páginas estáticas + `sitemap.xml` (42 URLs).
+- **`schemas/direitos.schema.json`**: validação OK para todas as 41 categorias.
+- **`tests/`**: contadores `36 → 41` em `test_comprehensive_validation.py` e `test_cross_browser.py`.
+- **`scripts/validate_content.py`** e **`master_compliance.py`**: contadores `36 → 41`.
+- **`.github/workflows/quality-gate.yml`**: adicionado comentário de cobertura 41 categorias (nome do job preservado para compatibilidade com branch protection).
+- **`index.html`**: SEO + structured data `ItemList` atualizados (numberOfItems: 36 → 41, 5 novos `ListItem`).
+- **`data/matching_engine.json`**: 16 novos keywords para roteamento das 5 categorias (talidomida, hanseníase, CIPCD, reabilitação profissional, certificado biopsicossocial, etc.).
+
+### Validação
+
+- ✅ Score: **99.5%** (194 URLs OK, 1 aviso temporário Barueri/SP HTTP 500, 0 erros)
+- ✅ 36 leis 100% válidas via API LexML/Senado
+- ✅ 678 testes pytest passando
+- ✅ Sitemap.xml regenerado, prerender OK
+- ✅ Cores, ícones, imagens e identidade visual preservadas
+- ✅ WCAG 2.1 AA, LGPD, .gov.br/.jus.br/.leg.br/.def.br/.mp.br only
+
+### Script auxiliar
+
+- **`scripts/add_5_servicos_federais.py`** — adição idempotente das 5 categorias (idempotente: pula se já existe).
+
+---
+
 ## [1.27.3] - 2026-05-24
 
 ### Mudado — Revalidação de fontes oficiais

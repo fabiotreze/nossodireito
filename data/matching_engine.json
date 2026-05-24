@@ -6435,6 +6435,102 @@
         "curatela_decisao_apoiada"
       ],
       "weight": 4
+    },
+    "certificado pcd": {
+      "cats": [
+        "certificado_pcd_inss"
+      ],
+      "weight": 5
+    },
+    "cipcd": {
+      "cats": [
+        "carteira_identificacao_pcd"
+      ],
+      "weight": 5
+    },
+    "carteira nacional pcd": {
+      "cats": [
+        "carteira_identificacao_pcd"
+      ],
+      "weight": 5
+    },
+    "lei 14624": {
+      "cats": [
+        "carteira_identificacao_pcd"
+      ],
+      "weight": 5
+    },
+    "reabilitação profissional": {
+      "cats": [
+        "reabilitacao_profissional_inss"
+      ],
+      "weight": 5
+    },
+    "reabilitacao profissional": {
+      "cats": [
+        "reabilitacao_profissional_inss"
+      ],
+      "weight": 5
+    },
+    "retorno ao trabalho": {
+      "cats": [
+        "reabilitacao_profissional_inss"
+      ],
+      "weight": 4
+    },
+    "talidomida": {
+      "cats": [
+        "pensao_talidomida"
+      ],
+      "weight": 5
+    },
+    "síndrome da talidomida": {
+      "cats": [
+        "pensao_talidomida"
+      ],
+      "weight": 5
+    },
+    "sindrome da talidomida": {
+      "cats": [
+        "pensao_talidomida"
+      ],
+      "weight": 5
+    },
+    "lei 7070": {
+      "cats": [
+        "pensao_talidomida"
+      ],
+      "weight": 5
+    },
+    "hanseníase": {
+      "cats": [
+        "pensao_hanseniase"
+      ],
+      "weight": 5
+    },
+    "hanseniase": {
+      "cats": [
+        "pensao_hanseniase"
+      ],
+      "weight": 5
+    },
+    "morhan": {
+      "cats": [
+        "pensao_hanseniase"
+      ],
+      "weight": 5
+    },
+    "hospital-colônia": {
+      "cats": [
+        "pensao_hanseniase"
+      ],
+      "weight": 4
+    },
+    "lei 11520": {
+      "cats": [
+        "pensao_hanseniase"
+      ],
+      "weight": 5
     }
   },
   "versao": "1.19.0"
