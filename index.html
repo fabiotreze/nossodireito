@@ -536,9 +536,9 @@
         }
       }
     </style>
-    <link rel="stylesheet" href="css/styles.css?v=1.31.0" media="print" id="deferredCSS" />
+    <link rel="stylesheet" href="css/styles.css?v=1.32.0" media="print" id="deferredCSS" />
     <noscript>
-      <link rel="stylesheet" href="css/styles.css?v=1.31.0" />
+      <link rel="stylesheet" href="css/styles.css?v=1.32.0" />
     </noscript>
     <script type="application/ld+json">
       {
@@ -2528,117 +2528,8 @@
     </div>
 
     <!-- Anonymizer compartilhado (Node + Browser) — DEVE carregar ANTES de app.js -->
-    <script src="shared/anonymizer.js?v=1.31.0" defer></script>
-    <script src="js/app.js?v=1.31.0" defer></script>
-    <script src="js/sw-register.js?v=1.31.0" defer></script>
-
-    <!-- FAB de emergência + modal -->
-    <button
-      type="button"
-      id="emergencyFab"
-      class="emergency-fab"
-      aria-label="Contatos de emergência e denúncia"
-      aria-haspopup="dialog"
-      aria-controls="emergencyDialog"
-    >
-      <span aria-hidden="true">🆘</span>
-      <span class="emergency-fab__label">Emergência</span>
-    </button>
-
-    <div
-      id="emergencyDialog"
-      class="emergency-dialog"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="emergencyDialogTitle"
-      aria-describedby="emergencyDialogDesc"
-      hidden
-    >
-      <div class="emergency-dialog__backdrop" data-emergency-close></div>
-      <div class="emergency-dialog__panel" role="document">
-        <header class="emergency-dialog__header">
-          <h2 id="emergencyDialogTitle">🆘 Contatos de emergência e denúncia</h2>
-          <button
-            type="button"
-            class="emergency-dialog__close"
-            data-emergency-close
-            aria-label="Fechar diálogo de emergência"
-          >×</button>
-        </header>
-        <p id="emergencyDialogDesc" class="emergency-dialog__desc">
-          Números gratuitos com cobertura nacional. Toque para ligar (em celular).
-        </p>
-        <ul class="emergency-dialog__list">
-          <li>
-            <a href="tel:190" class="emergency-dialog__item">
-              <span class="emergency-dialog__icon" aria-hidden="true">🚓</span>
-              <span class="emergency-dialog__text">
-                <strong>190 — Polícia Militar</strong>
-                <span>Risco imediato à vida ou crime em andamento</span>
-              </span>
-            </a>
-          </li>
-          <li>
-            <a href="tel:192" class="emergency-dialog__item">
-              <span class="emergency-dialog__icon" aria-hidden="true">🚑</span>
-              <span class="emergency-dialog__text">
-                <strong>192 — SAMU</strong>
-                <span>Emergência médica e socorro pré-hospitalar</span>
-              </span>
-            </a>
-          </li>
-          <li>
-            <a href="tel:193" class="emergency-dialog__item">
-              <span class="emergency-dialog__icon" aria-hidden="true">🚒</span>
-              <span class="emergency-dialog__text">
-                <strong>193 — Bombeiros</strong>
-                <span>Incêndio, resgate e acidentes</span>
-              </span>
-            </a>
-          </li>
-          <li>
-            <a href="tel:100" class="emergency-dialog__item">
-              <span class="emergency-dialog__icon" aria-hidden="true">📞</span>
-              <span class="emergency-dialog__text">
-                <strong>100 — Disque Direitos Humanos</strong>
-                <span>Violações e discriminação contra PcD — 24h</span>
-              </span>
-            </a>
-          </li>
-          <li>
-            <a href="tel:136" class="emergency-dialog__item">
-              <span class="emergency-dialog__icon" aria-hidden="true">💊</span>
-              <span class="emergency-dialog__text">
-                <strong>136 — OuvSUS</strong>
-                <span>Negativa de atendimento no SUS</span>
-              </span>
-            </a>
-          </li>
-          <li>
-            <a href="tel:08007019656" class="emergency-dialog__item"> <!-- pii-scan:ignore -->
-              <span class="emergency-dialog__icon" aria-hidden="true">🏥</span>
-              <span class="emergency-dialog__text">
-                <strong>0800 701 9656 — ANS</strong>
-                <span>Problemas com plano de saúde</span>
-              </span>
-            </a>
-          </li>
-          <li>
-            <a
-              href="https://www.gov.br/defensoria/pt-br"
-              target="_blank"
-              rel="external noopener noreferrer"
-              class="emergency-dialog__item"
-            >
-              <span class="emergency-dialog__icon" aria-hidden="true">⚖️</span>
-              <span class="emergency-dialog__text">
-                <strong>Defensoria Pública</strong>
-                <span>Assistência jurídica gratuita (DPU e DPEs)</span>
-              </span>
-            </a>
-          </li>
-        </ul>
-      </div>
-    </div>
+    <script src="shared/anonymizer.js?v=1.32.0" defer></script>
+    <script src="js/app.js?v=1.32.0" defer></script>
+    <script src="js/sw-register.js?v=1.32.0" defer></script>
   </body>
 </html>

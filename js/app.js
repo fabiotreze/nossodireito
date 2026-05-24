@@ -646,8 +646,6 @@
             searchResults: $('#searchResults'),
             categoryGrid: $('#categoryGrid'),
             trilhaTabs: $('#trilhaTabs'),
-            emergencyFab: $('#emergencyFab'),
-            emergencyDialog: $('#emergencyDialog'),
             detalheSection: $('#detalhe'),
             detalheContent: $('#detalheContent'),
             voltarBtn: $('#voltarBtn'),
@@ -3685,63 +3683,6 @@ ${renderWeekPlan(priorityOrder, titleById)}
             });
         });
     }
-    function setupEmergencyDialog() {
-        const fab = document.getElementById('emergencyFab');
-        const dialog = document.getElementById('emergencyDialog');
-        if (!fab || !dialog) return;
-
-        let lastFocused = null;
-
-        function getFocusable() {
-            return dialog.querySelectorAll('a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])');
-        }
-
-        function open() {
-            lastFocused = document.activeElement;
-            dialog.hidden = false;
-            document.body.style.overflow = 'hidden';
-            fab.setAttribute('aria-expanded', 'true');
-            const focusables = getFocusable();
-            if (focusables.length) focusables[0].focus();
-            document.addEventListener('keydown', onKey);
-        }
-
-        function close() {
-            dialog.hidden = true;
-            document.body.style.overflow = '';
-            fab.setAttribute('aria-expanded', 'false');
-            document.removeEventListener('keydown', onKey);
-            if (lastFocused && typeof lastFocused.focus === 'function') lastFocused.focus();
-        }
-
-        function onKey(e) {
-            if (e.key === 'Escape') {
-                e.preventDefault();
-                close();
-                return;
-            }
-            if (e.key === 'Tab') {
-                const focusables = Array.from(getFocusable());
-                if (!focusables.length) return;
-                const first = focusables[0];
-                const last = focusables[focusables.length - 1];
-                if (e.shiftKey && document.activeElement === first) {
-                    e.preventDefault();
-                    last.focus();
-                } else if (!e.shiftKey && document.activeElement === last) {
-                    e.preventDefault();
-                    first.focus();
-                }
-            }
-        }
-
-        fab.addEventListener('click', open);
-        dialog.querySelectorAll('[data-emergency-close]').forEach((el) => {
-            el.addEventListener('click', close);
-        });
-    }
-
-    // ----- Section Nav (scroll-spy tabs, keyboard nav) -----
     function setupSectionNav() {
         const nav = document.getElementById('sectionNav');
         if (!nav) return;
@@ -3814,13 +3755,12 @@ ${renderWeekPlan(priorityOrder, titleById)}
     }
 
     if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', () => { init(); setupNavAvisoScroll(); setupAIConsentManager(); setupAIConsentQuickActions(); setupEmergencyDialog(); setupSectionNav(); });
+        document.addEventListener('DOMContentLoaded', () => { init(); setupNavAvisoScroll(); setupAIConsentManager(); setupAIConsentQuickActions(); setupSectionNav(); });
     } else {
         init();
         setupNavAvisoScroll();
         setupAIConsentManager();
         setupAIConsentQuickActions();
-        setupEmergencyDialog();
         setupSectionNav();
     }
 })();

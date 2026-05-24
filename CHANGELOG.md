@@ -5,6 +5,39 @@ Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/)
 e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [1.32.0] - 2026-05-24
+
+### Removido — FAB de emergência sobreposto
+
+Remoção do **botão flutuante (FAB) "🆘 Emergência"** fixo no canto inferior-direito e do diálogo modal associado. O FAB sobrepunha o botão "voltar ao topo" e poluía a interface mobile.
+
+**Conteúdo removido** (~310 linhas):
+- `index.html`: `<button#emergencyFab>` + `<div#emergencyDialog>` (108 linhas) — modal com 7 contatos (190, 192, 193, 100, 136, ANS 0800, Defensoria)
+- `js/app.js`: `setupEmergencyDialog()` + refs em `els{}` + chamadas em `init()` (~60 linhas)
+- `css/styles.css`: regras `.emergency-fab*` + `.emergency-dialog*` + media queries (~200 linhas, linhas 3557–3754)
+
+### Preservado — Conteúdo de emergência
+
+Os dados de emergência continuam acessíveis ao usuário sem regressão:
+- **Por categoria**: bloco `emergencia` em cada `categoria` (conflito, base legal, ação imediata, modelo de notificação, órgão de denúncia) — renderizado em cada página `direitos/<id>/index.html`
+- **Global**: `data["dica_seguranca"]` permanece exibido na home
+- **Defensoria Pública e Disque 100**: continuam linkados nas páginas de direitos relacionadas
+
+### Preservado — Identidade & infra
+
+- ✅ Cores, ícones, layout do hero, section nav, busca, grid de categorias — intactos
+- ✅ Sitemap.xml (42 categorias) — sem alteração
+- ✅ Cloudflare / branch protection / job name `Quality Gate (36 categorias)` — preservados
+- ✅ WCAG 2.1 AA · LGPD · SemVer minor (1.31.0 → 1.32.0; remoção de UI auxiliar não-breaking)
+
+### Testes
+
+- **678 testes pytest** ✅ (baseline mantido)
+- Testes E2E de `emergencia` por categoria continuam válidos (testam `.emergencia-section`, não o FAB)
+- Schema 100% conforme · prerender 42 páginas
+
+---
+
 ## [1.31.0] - 2026-05-24
 
 ### Adicionado — Proteção pós-pais (Moradia Assistida / Residência Inclusiva)
