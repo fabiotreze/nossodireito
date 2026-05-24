@@ -11,6 +11,10 @@ updates:
     labels:
       - "dependencies"
       - "npm"
+    groups:
+      npm-minor-and-patch:
+        patterns: ["*"]
+        update-types: ["minor", "patch"]
 
   # Python (requirements.txt)
   - package-ecosystem: "pip"
@@ -22,6 +26,10 @@ updates:
     labels:
       - "dependencies"
       - "python"
+    groups:
+      pip-minor-and-patch:
+        patterns: ["*"]
+        update-types: ["minor", "patch"]
 
   # Terraform providers
   - package-ecosystem: "terraform"
@@ -33,6 +41,10 @@ updates:
     labels:
       - "dependencies"
       - "terraform"
+    groups:
+      terraform-minor-and-patch:
+        patterns: ["*"]
+        update-types: ["minor", "patch"]
 
   # GitHub Actions workflows
   - package-ecosystem: "github-actions"
@@ -44,3 +56,7 @@ updates:
     labels:
       - "dependencies"
       - "ci"
+    groups:
+      actions-minor-and-patch:
+        patterns: ["*"]
+        update-types: ["minor", "patch"]
