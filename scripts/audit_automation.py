@@ -89,7 +89,7 @@ class AutomationAudit:
                     '✅ URLs de legislação (planalto.gov.br)',
                     '✅ Artigos referenciados',
                 ],
-                'cobertura': 'Completo (29 leis, 30 categorias)'
+                'cobertura': 'Completo (29 leis, 36 categorias)'
             },
             {
                 'area': 'Análise 360°',
@@ -107,7 +107,7 @@ class AutomationAudit:
                 'script': 'schemas/direitos.schema.json + scripts/validate_schema.py',
                 'validacoes': [
                     '✅ JSON Schema Draft 7 validado',
-                    '✅ 30 categorias, campos obrigatórios',
+                    '✅ 36 categorias, campos obrigatórios',
                     '✅ Validação automática no pre-commit',
                 ],
                 'cobertura': 'Completo (schema formal implementado)'
@@ -144,7 +144,7 @@ class AutomationAudit:
                     '✅ Completude de campos por categoria',
                     '✅ Descoberta de novos benefícios',
                 ],
-                'cobertura': '30 categorias mapeadas'
+                'cobertura': '36 categorias mapeadas'
             },
             {
                 'area': 'Versionamento & Backup',

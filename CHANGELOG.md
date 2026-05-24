@@ -5,6 +5,55 @@ Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/)
 e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [1.24.0] - 2026-05-24
+
+### Adicionado — 6 novos direitos com foco em adultos PcD/TEA e cuidadores familiares
+
+Resposta à demanda por conteúdo que ampare o **dia-a-dia de adultos com deficiência**
+e os **familiares cuidadores** (não apenas crianças). Fontes exclusivamente
+.gov.br / planalto.gov.br conforme política de confiabilidade do projeto.
+
+- **`politica_nacional_cuidados`** — Lei 14.844/2024 (Política Nacional de
+  Cuidados). Reconhece o cuidador familiar (PcD, idoso, dependente) como
+  sujeito de direitos: CRAS/CREAS, PAIF/PAEFI, Centro-Dia, SCFV. Inclui
+  protocolo de emergência para sobrecarga do cuidador.
+- **`horario_especial_servidor_pcd`** — Lei 8.112/90 Art. 98 §§2º e 3º.
+  Servidor público federal com dependente PcD tem direito à redução de
+  jornada **sem compensação e sem desconto salarial**. Cita jurisprudência
+  STJ (REsp 1.953.180).
+- **`cota_emprego_pcd_empresa`** — Lei 8.213/91 Art. 93 (Lei de Cotas).
+  Reserva de 2% a 5% em empresas privadas com 100+ empregados. Inclui
+  caminho para denúncia no MPT.
+- **`saque_fgts_doenca_grave`** — Lei 8.036/90 Art. 20 XI/XIII/XIV. Saque
+  integral do FGTS para tratamento próprio ou de dependente com neoplasia
+  maligna, HIV/AIDS, estágio terminal. Isenção de IR (Lei 7.713/88 Art. 6º XIV).
+- **`caa_comunicacao_alternativa`** — Comunicação Aumentativa e Alternativa
+  (CAA) via SUS (CER) e escola (AEE/SRM/PDDE Acessibilidade). Base: LBI
+  Arts. 18, 28, 74-75; Lei 12.764/12; Portaria GM/MS 793/2012; Decreto
+  7.611/2011. Atende TEA, paralisia cerebral, ELA, AVC, def. intelectual.
+- **`curatela_decisao_apoiada`** — LBI Arts. 84-87 + CC Arts. 1.767-1.778
+  e 1.783-A. Reforma da capacidade legal: Tomada de Decisão Apoiada (TDA)
+  preferencial; curatela é excepcional, parcial e proporcional. Preserva
+  autonomia sobre corpo, casamento, voto, trabalho.
+
+### Conteúdo expandido
+
+- Total de direitos: **30 → 36** (`data/direitos.json`).
+- Páginas estáticas regeneradas: **30 → 36** (`direitos/<id>/index.html` via
+  `scripts/prerender_direitos.py`).
+- Sitemap atualizado: **37 URLs** (home + 36 direitos).
+- Validador atualizado para 36 categorias: `scripts/validate_content.py`.
+
+### Mantido
+
+- 100% das validações `validate_all.py --quick` aprovadas (6/6 fases).
+- Esquema JSON (`schemas/direitos.schema.json`) mantido — novos itens
+  aderem ao contrato existente (`id`, `titulo`, `icone`, `resumo`, `base_legal`,
+  `requisitos`, `documentos`, `passo_a_passo`, `dicas`, `valor`, `onde`,
+  `links`, `tags`, `emergencia`).
+
+---
+
 ## [1.23.4] - 2026-05-24
 
 ### Segurança / Qualidade

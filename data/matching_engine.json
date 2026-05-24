@@ -911,7 +911,9 @@
     },
     "vaga pcd": {
       "cats": [
-        "moradia"
+        "moradia",
+        "cota_emprego_pcd_empresa",
+        "trabalho"
       ],
       "weight": 5
     },
@@ -1980,7 +1982,8 @@
     },
     "lei 8.213": {
       "cats": [
-        "trabalho"
+        "trabalho",
+        "cota_emprego_pcd_empresa"
       ],
       "weight": 5
     },
@@ -2185,20 +2188,23 @@
     "curatela": {
       "cats": [
         "bpc",
-        "capacidade_legal"
+        "capacidade_legal",
+        "curatela_decisao_apoiada"
       ],
       "weight": 3
     },
     "interdição": {
       "cats": [
-        "capacidade_legal"
+        "capacidade_legal",
+        "curatela_decisao_apoiada"
       ],
       "weight": 7
     },
     "interdicao": {
       "cats": [
         "bpc",
-        "capacidade_legal"
+        "capacidade_legal",
+        "curatela_decisao_apoiada"
       ],
       "weight": 3
     },
@@ -4001,13 +4007,15 @@
     },
     "lei 8.112": {
       "cats": [
-        "trabalho"
+        "trabalho",
+        "horario_especial_servidor_pcd"
       ],
       "weight": 9
     },
     "lei 8112": {
       "cats": [
-        "trabalho"
+        "trabalho",
+        "horario_especial_servidor_pcd"
       ],
       "weight": 9
     },
@@ -4656,7 +4664,8 @@
     },
     "tomada de decisao apoiada": {
       "cats": [
-        "capacidade_legal"
+        "capacidade_legal",
+        "curatela_decisao_apoiada"
       ],
       "weight": 10
     },
@@ -4686,7 +4695,8 @@
     },
     "curador": {
       "cats": [
-        "capacidade_legal"
+        "capacidade_legal",
+        "curatela_decisao_apoiada"
       ],
       "weight": 9
     },
@@ -5983,25 +5993,29 @@
     },
     "redução jornada servidor": {
       "cats": [
-        "trabalho"
+        "trabalho",
+        "horario_especial_servidor_pcd"
       ],
       "weight": 9
     },
     "reducao jornada servidor": {
       "cats": [
-        "trabalho"
+        "trabalho",
+        "horario_especial_servidor_pcd"
       ],
       "weight": 9
     },
     "horário especial servidor": {
       "cats": [
-        "trabalho"
+        "trabalho",
+        "horario_especial_servidor_pcd"
       ],
       "weight": 9
     },
     "horario especial servidor": {
       "cats": [
-        "trabalho"
+        "trabalho",
+        "horario_especial_servidor_pcd"
       ],
       "weight": 9
     },
@@ -6162,6 +6176,265 @@
         "atendimento_prioritario"
       ],
       "weight": 7
+    },
+    "política nacional de cuidados": {
+      "cats": [
+        "politica_nacional_cuidados"
+      ],
+      "weight": 5
+    },
+    "politica nacional de cuidados": {
+      "cats": [
+        "politica_nacional_cuidados"
+      ],
+      "weight": 5
+    },
+    "cuidador familiar": {
+      "cats": [
+        "politica_nacional_cuidados",
+        "protecao_social"
+      ],
+      "weight": 4
+    },
+    "cuidadora": {
+      "cats": [
+        "politica_nacional_cuidados",
+        "protecao_social"
+      ],
+      "weight": 3
+    },
+    "sobrecarga cuidador": {
+      "cats": [
+        "politica_nacional_cuidados"
+      ],
+      "weight": 4
+    },
+    "lei 14844": {
+      "cats": [
+        "politica_nacional_cuidados"
+      ],
+      "weight": 5
+    },
+    "lei 14.844": {
+      "cats": [
+        "politica_nacional_cuidados"
+      ],
+      "weight": 5
+    },
+    "rede de apoio cuidador": {
+      "cats": [
+        "politica_nacional_cuidados"
+      ],
+      "weight": 3
+    },
+    "servidor com dependente pcd": {
+      "cats": [
+        "horario_especial_servidor_pcd"
+      ],
+      "weight": 5
+    },
+    "art 98 lei 8112": {
+      "cats": [
+        "horario_especial_servidor_pcd"
+      ],
+      "weight": 5
+    },
+    "lei de cotas": {
+      "cats": [
+        "cota_emprego_pcd_empresa",
+        "trabalho"
+      ],
+      "weight": 5
+    },
+    "cota pcd empresa": {
+      "cats": [
+        "cota_emprego_pcd_empresa"
+      ],
+      "weight": 5
+    },
+    "lei 8213 art 93": {
+      "cats": [
+        "cota_emprego_pcd_empresa"
+      ],
+      "weight": 5
+    },
+    "reabilitado inss": {
+      "cats": [
+        "cota_emprego_pcd_empresa",
+        "aposentadoria_especial_pcd"
+      ],
+      "weight": 4
+    },
+    "emprego pcd": {
+      "cats": [
+        "cota_emprego_pcd_empresa",
+        "trabalho"
+      ],
+      "weight": 4
+    },
+    "discriminação no trabalho pcd": {
+      "cats": [
+        "cota_emprego_pcd_empresa",
+        "crimes_contra_pcd"
+      ],
+      "weight": 3
+    },
+    "saque fgts doença grave": {
+      "cats": [
+        "saque_fgts_doenca_grave"
+      ],
+      "weight": 5
+    },
+    "saque fgts doenca grave": {
+      "cats": [
+        "saque_fgts_doenca_grave"
+      ],
+      "weight": 5
+    },
+    "fgts câncer": {
+      "cats": [
+        "saque_fgts_doenca_grave"
+      ],
+      "weight": 5
+    },
+    "fgts cancer": {
+      "cats": [
+        "saque_fgts_doenca_grave"
+      ],
+      "weight": 5
+    },
+    "fgts hiv": {
+      "cats": [
+        "saque_fgts_doenca_grave"
+      ],
+      "weight": 5
+    },
+    "neoplasia maligna fgts": {
+      "cats": [
+        "saque_fgts_doenca_grave"
+      ],
+      "weight": 5
+    },
+    "fgts dependente doença": {
+      "cats": [
+        "saque_fgts_doenca_grave"
+      ],
+      "weight": 5
+    },
+    "lei 8036 art 20": {
+      "cats": [
+        "saque_fgts_doenca_grave"
+      ],
+      "weight": 5
+    },
+    "caa": {
+      "cats": [
+        "caa_comunicacao_alternativa",
+        "tecnologia_assistiva"
+      ],
+      "weight": 5
+    },
+    "comunicação alternativa": {
+      "cats": [
+        "caa_comunicacao_alternativa"
+      ],
+      "weight": 5
+    },
+    "comunicacao alternativa": {
+      "cats": [
+        "caa_comunicacao_alternativa"
+      ],
+      "weight": 5
+    },
+    "comunicação aumentativa": {
+      "cats": [
+        "caa_comunicacao_alternativa"
+      ],
+      "weight": 5
+    },
+    "comunicacao aumentativa": {
+      "cats": [
+        "caa_comunicacao_alternativa"
+      ],
+      "weight": 5
+    },
+    "prancha de comunicação": {
+      "cats": [
+        "caa_comunicacao_alternativa"
+      ],
+      "weight": 4
+    },
+    "prancha de comunicacao": {
+      "cats": [
+        "caa_comunicacao_alternativa"
+      ],
+      "weight": 4
+    },
+    "tablet aee": {
+      "cats": [
+        "caa_comunicacao_alternativa",
+        "tecnologia_assistiva",
+        "educacao"
+      ],
+      "weight": 4
+    },
+    "pecs": {
+      "cats": [
+        "caa_comunicacao_alternativa"
+      ],
+      "weight": 4
+    },
+    "arasaac": {
+      "cats": [
+        "caa_comunicacao_alternativa"
+      ],
+      "weight": 4
+    },
+    "não fala": {
+      "cats": [
+        "caa_comunicacao_alternativa",
+        "sus_terapias"
+      ],
+      "weight": 3
+    },
+    "nao fala": {
+      "cats": [
+        "caa_comunicacao_alternativa",
+        "sus_terapias"
+      ],
+      "weight": 3
+    },
+    "fonoaudiologia caa": {
+      "cats": [
+        "caa_comunicacao_alternativa"
+      ],
+      "weight": 3
+    },
+    "tomada de decisão apoiada": {
+      "cats": [
+        "curatela_decisao_apoiada",
+        "capacidade_legal"
+      ],
+      "weight": 5
+    },
+    "tda": {
+      "cats": [
+        "curatela_decisao_apoiada"
+      ],
+      "weight": 4
+    },
+    "lbi art 84": {
+      "cats": [
+        "curatela_decisao_apoiada",
+        "capacidade_legal"
+      ],
+      "weight": 5
+    },
+    "art 1783 a": {
+      "cats": [
+        "curatela_decisao_apoiada"
+      ],
+      "weight": 4
     }
   },
   "versao": "1.19.0"
