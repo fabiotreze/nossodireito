@@ -5,6 +5,26 @@ Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/)
 e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [1.27.0] - 2026-05-24
+
+### Adicionado — fontes oficiais + transparência da estatística IBGE
+
+- **Hero IBGE**: a estatística "18,6M Pessoas com deficiência" agora **linka direto para a notícia oficial do IBGE** (Censo 2022, divulgação jul/2023), com `rel="external noopener noreferrer"`. Ano da divulgação explicitado.
+- **Direito `saque_fgts_doenca_grave`**: adicionados 2 links oficiais que faltavam:
+  - Caixa — página específica de "Saque FGTS por doença grave" (substitui o link genérico de FGTS)
+  - gov.br — Serviço oficial "Sacar o FGTS em caso de doença grave"
+- `.stat-source`: estilo discreto para o link da fonte no hero (sublinhado, herda cor branca)
+
+### Notas
+- DPU, Planalto (Lei 8.036, Lei 7.713, LBI, Lei Berenice Piana), CAIXA, gov.br/trabalho-e-emprego já constavam na base — verificados.
+- TRF/STJ jurisprudência e portais de mídia jurídica (Jusbrasil, Migalhas, ConJur) intencionalmente fora do escopo (não são fontes regulatórias diretas).
+
+### Qualidade
+- pytest: **678 testes passando**
+- axe-core: **0 violações**
+
+---
+
 ## [1.26.0] - 2026-05-24
 
 ### Adicionado — TOC sticky + scroll-spy + barra de progresso (PR-C)

@@ -1,5 +1,5 @@
 {
-  "versao": "1.26.0",
+  "versao": "1.27.0",
   "ultima_atualizacao": "2026-05-24",
   "aviso": "Informações compiladas de fontes oficiais do governo brasileiro (gov.br). Podem estar desatualizadas. Verifique sempre as fontes originais.",
   "fontes": [
@@ -6292,7 +6292,11 @@
         },
         {
           "titulo": "Caixa — FGTS Saque por Doença Grave",
-          "url": "https://www.caixa.gov.br/beneficios-trabalhador/fgts"
+          "url": "https://www.caixa.gov.br/beneficios-trabalhador/fgts/saque-FGTS/doencas-graves/Paginas/default.aspx"
+        },
+        {
+          "titulo": "gov.br — Sacar FGTS em caso de doença grave (serviço oficial)",
+          "url": "https://www.gov.br/pt-br/servicos/sacar-o-fgts-em-caso-de-doenca-grave"
         },
         {
           "titulo": "Lei 7.713/1988 Art. 6º XIV — Isenção IR",
