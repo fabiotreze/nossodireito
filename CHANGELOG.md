@@ -5,6 +5,32 @@ Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/)
 e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [1.23.3] - 2026-05-24
+
+### Segurança
+
+- **Pinned Dependencies (OpenSSF Scorecard)**: novos `requirements.lock` e
+  `requirements-dev.lock` gerados via `pip-compile --generate-hashes`,
+  fixando todas as deps Python (transitivas inclusas) por SHA-256.
+- **Workflows**: todos os `pip install -r requirements*.txt` substituídos por
+  `pip install --require-hashes --no-deps -r requirements*.lock`.
+- **package.json**: `terser`, `clean-css-cli`, `html-minifier-terser` movidos
+  para `devDependencies` — eliminam `npm install --no-save` em CI.
+- **deploy.yml / terraform.yml / dependency-intelligence.yml / security-baseline.yml**:
+  `npm install` e fallbacks `|| npm install` substituídos por `npm ci
+  --ignore-scripts --no-audit --no-fund` (lockfile-only, determinístico).
+- Fecha 18 alertas CodeQL `PinnedDependenciesID`.
+
+### Dispensado (CodeQL — won't fix com justificativa)
+
+- 10 alertas `js/unneeded-defensive-code` (guards `typeof showToast === 'function'`
+  são defensive code intencional contra refatoração).
+- 4 alertas Scorecard de metadata: `CodeReviewID`, `VulnerabilitiesID`,
+  `CIIBestPracticesID`, `FuzzingID` — não acionáveis em repo single-maintainer
+  de projeto social PcD; documentados em `SECURITY.md`.
+
+---
+
 ## [1.23.2] - 2026-05-24
 
 ### Adicionado

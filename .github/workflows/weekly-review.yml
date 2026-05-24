@@ -34,7 +34,7 @@ jobs:
           python-version: "3.11"
 
       - name: Instalar dependências
-        run: pip install -r requirements.txt
+        run: pip install --require-hashes --no-deps -r requirements.lock
 
       - name: Quality Gate (validar código atual)
         id: qg
@@ -188,7 +188,7 @@ jobs:
           ICD_CLIENT_ID: ${{ secrets.ICD_CLIENT_ID }}
           ICD_CLIENT_SECRET: ${{ secrets.ICD_CLIENT_SECRET }}
         run: |
-          pip install requests > /dev/null 2>&1
+          pip install --require-hashes --no-deps -r requirements.lock > /dev/null 2>&1
           if [ -z "$ICD_CLIENT_ID" ] || [ -z "$ICD_CLIENT_SECRET" ]; then
             echo "⚠️ ICD_CLIENT_ID / ICD_CLIENT_SECRET não configurados — pulando validação CID." > cid-report.md
             echo "cid_ok=0" >> "$GITHUB_OUTPUT"

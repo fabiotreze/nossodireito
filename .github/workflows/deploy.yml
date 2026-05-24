@@ -52,10 +52,10 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Instalar dependências
+      - name: Instalar dependências (hashed)
         run: |
-          pip install -r requirements.txt
-          pip install -r requirements-dev.txt
+          pip install --require-hashes --no-deps -r requirements.lock
+          pip install --require-hashes --no-deps -r requirements-dev.lock
 
       - name: Testes Python (pytest)
         run: python -m pytest tests/ -v --tb=short --ignore=tests/test_e2e_playwright.py -q
@@ -109,7 +109,7 @@ jobs:
 
       - name: Minificar HTML, JS e CSS
         run: |
-          npm install --no-save terser clean-css-cli html-minifier-terser
+          npm ci --ignore-scripts --no-audit --no-fund
 
           npx terser js/app.js --compress --mangle --output js/app.min.js
           ORIG=$(wc -c < js/app.js)
@@ -131,7 +131,7 @@ jobs:
 
       - name: Instalar dependências (production)
         run: |
-          npm ci --production --ignore-scripts 2>/dev/null || npm install --production
+          npm ci --omit=dev --ignore-scripts --no-audit --no-fund
           echo "✅ node_modules: $(du -sh node_modules | cut -f1)"
 
       - name: Criar pacote de deploy
