@@ -5,6 +5,27 @@ Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/)
 e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [1.27.3] - 2026-05-24
+
+### Mudado — Revalidação de fontes oficiais
+
+- **`data/direitos.json`**: revalidação de 184 URLs via `scripts/validate_sources.py` (HEAD-check). 77 fontes com `consultado_em` atualizado para `2026-05-24`. Score de validação: **99.5%** (183 OK, 1 aviso temporário Barueri/SP HTTP 500, 0 erros).
+
+### Corrigido — 5 URLs gov.br quebradas (HTTP 404 → 200/302)
+
+- `SUAS` → `https://www.gov.br/mds/pt-br/acoes-e-programas/suas`
+- `Disque 100` (3 ocorrências) → `https://www.gov.br/mdh/pt-br/acesso-a-informacao/disque-100`
+- `Empregabrasil/SINE` → `https://www.gov.br/trabalho-e-emprego/pt-br/assuntos/sistema-nacional-de-emprego-sine`
+- `Auxílio-Inclusão INSS` → `https://www.gov.br/inss/pt-br/direitos-e-deveres/beneficios-assistenciais`
+- `Sacar FGTS doença grave` → `https://www.caixa.gov.br/beneficios-trabalhador/fgts/saque-fgts/Paginas/default.aspx`
+
+### Validado
+
+- ⚖️ 36 leis verificadas via API Senado (LexML) — 100% OK
+- 🧪 678 testes pytest passando
+
+---
+
 ## [1.27.2] - 2026-05-24
 
 ### Adicionado — matching CID → direito (cids_relacionados)
