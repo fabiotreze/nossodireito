@@ -1218,8 +1218,20 @@ html.high-contrast ::selection {
 .stat-label {
     font-size: 0.875rem;
     opacity: 0.8;
-    max-width: 180px;
+    max-width: 220px;
     text-align: center;
+}
+
+.stat-source {
+    color: inherit;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+
+.stat-source:hover,
+.stat-source:focus-visible {
+    text-decoration: none;
+    opacity: 1;
 }
 
 /* ---------- Sections ---------- */
