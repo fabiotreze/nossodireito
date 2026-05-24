@@ -171,8 +171,9 @@ PAGE_TEMPLATE = """<!doctype html>
     header.topbar a:hover{{text-decoration:underline}}
     main{{padding-bottom:3rem}}
     nav.breadcrumb{{font-size:.9rem;color:#64748b;margin-bottom:1rem}}
-    nav.breadcrumb a{{color:var(--primary);text-decoration:none}}
-    nav.breadcrumb a:hover{{text-decoration:underline}}
+    /* WCAG 2.4.4 / 1.4.1: links em bloco de texto devem ser distingu\u00edveis sem depender s\u00f3 de cor */
+    nav.breadcrumb a{{color:var(--primary);text-decoration:underline}}
+    nav.breadcrumb a:hover{{text-decoration:none}}
     h1{{font-size:2rem;color:var(--primary-dark);margin-bottom:.5rem;line-height:1.2}}
     .resumo{{font-size:1.1rem;color:#475569;margin:1rem 0 2rem;padding:1rem;background:#f1f5f9;border-left:4px solid var(--primary);border-radius:4px}}
     @media (prefers-color-scheme:dark){{.resumo{{background:#1e293b;color:#cbd5e1}}}}
