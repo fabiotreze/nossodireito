@@ -5,6 +5,62 @@ Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/)
 e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [1.26.0] - 2026-05-24
+
+### Adicionado — TOC sticky + scroll-spy + barra de progresso (PR-C)
+
+- **Sumário lateral sticky** nas 36 páginas internas de direitos (`direitos/<slug>/index.html`):
+  - Visível em viewport ≥1024px (grid 220px + conteúdo); mobile mantém fluxo linear
+  - Lista dinâmica das seções `<section id>` via JS, com âncoras navegáveis por teclado
+  - Scroll-spy via `IntersectionObserver` aplica `aria-current="location"` no item ativo
+  - `scroll-padding-top` + `scroll-margin-top` para não esconder âncoras sob header sticky
+
+- **Barra de progresso de leitura** (3px, fixa no topo) com `requestAnimationFrame`
+  - Respeita `prefers-reduced-motion`
+
+- **Header sticky** unificado nas páginas internas, mantendo contraste WCAG AA
+
+### A11y
+- `aria-current="location"` no item ativo do TOC
+- Sumário oculto em mobile sem prejudicar leitor de tela (linear flow)
+- `prefers-reduced-motion`: progress bar e smooth-scroll desativados quando solicitado
+
+### Build
+- `scripts/prerender_direitos.py`: template atualizado, 36 páginas rebuildadas
+- a11y axe-core: **0 violações** (critical/serious/moderate/minor)
+- pytest: **678 testes passando**
+
+---
+
+## [1.25.0] - 2026-05-24
+
+### Adicionado — Trilhas de navegação + FAB de emergência (UX arquitetural)
+
+- **Trilhas (tablist)**: As 36 categorias agora podem ser filtradas por 6 trilhas
+  temáticas — Renda & Benefícios, Saúde, Educação, Trabalho & Aposentadoria,
+  Mobilidade & Transporte, Direitos & Cidadania (+ "Todas"). Reduz a sobrecarga
+  cognitiva da home (de 36 cards expostos para 2–12 por trilha).
+  - `role="tablist"` / `role="tab"` / `aria-selected` / `aria-controls`
+  - Navegação por teclado: ←/→ entre tabs, Home/End para extremos, focus-ring visível
+  - Busca textual segue varrendo todas as categorias (não restringe ao filtro ativo)
+
+- **FAB de emergência**: Botão flutuante vermelho (bottom-right) com `aria-label`
+  abre modal `role="dialog"` `aria-modal="true"` com contatos diretos:
+  - 190 (Polícia), 192 (SAMU), 193 (Bombeiros), 100 (Direitos Humanos 24h),
+    136 (OuvSUS), 0800 701 9656 (ANS), Defensoria Pública (link)
+  - Focus-trap, Esc para fechar, click no backdrop fecha, retorna foco ao gatilho
+  - `tel:` links permitem tocar para ligar em mobile
+  - Em telas <480px, o label colapsa para ícone — sem comprometer alvo de toque (≥44px)
+
+### A11y
+- `prefers-reduced-motion`: hover/transitions de tabs e FAB respeitam preferência
+
+### Notas
+- Sem alteração de schema em `data/direitos.json` — mapeamento trilha→categoria
+  vive em `js/app.js` (`TRILHAS`), revertível em uma edição.
+
+---
+
 ## [1.24.0] - 2026-05-24
 
 ### Adicionado — 6 novos direitos com foco em adultos PcD/TEA e cuidadores familiares

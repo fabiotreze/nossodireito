@@ -1,0 +1,59 @@
+# Accessibility (WCAG 2.1 AA) audit via axe-core on every PR + push to main.
+# Fails on serious/critical violations. Moderate/minor are reported but non-blocking.
+
+name: Accessibility (axe-core)
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: a11y-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  axe:
+    runs-on: ubuntu-latest
+    name: A11y (axe-core WCAG 2.1 AA)
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: "22"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci --no-audit --no-fund
+
+      - name: Install Playwright browser (chromium)
+        run: npx playwright install --with-deps chromium
+
+      - name: Run axe-core audit
+        run: node tests/a11y.mjs | tee a11y-report.txt
+
+      - name: Upload report
+        if: always()
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.0
+        with:
+          name: a11y-report
+          path: a11y-report.txt
+          retention-days: 30
+
+      - name: Job summary
+        if: always()
+        run: |
+          echo "## ♿ Accessibility (axe-core WCAG 2.1 AA)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          tail -30 a11y-report.txt >> $GITHUB_STEP_SUMMARY 2>/dev/null || echo "(no report)" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
