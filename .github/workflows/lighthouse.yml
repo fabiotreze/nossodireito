@@ -23,7 +23,6 @@ jobs:
     runs-on: ubuntu-latest
     name: Lighthouse (perf/seo/a11y/bp/pwa)
     timeout-minutes: 15
-    continue-on-error: true
     steps:
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.0
@@ -38,7 +37,7 @@ jobs:
         run: npm install -g @lhci/cli@0.14.x
 
       - name: Run Lighthouse CI
-        run: lhci autorun --config=./lighthouserc.json || echo "Lighthouse returned non-zero (warning-only baseline)"
+        run: lhci autorun --config=./lighthouserc.json
         env:
           LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
 
