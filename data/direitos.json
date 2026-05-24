@@ -1,5 +1,5 @@
 {
-  "versao": "1.30.0",
+  "versao": "1.31.0",
   "ultima_atualizacao": "2026-05-24",
   "aviso": "Informações compiladas de fontes oficiais do governo brasileiro (gov.br). Podem estar desatualizadas. Verifique sempre as fontes originais.",
   "fontes": [
@@ -1092,11 +1092,13 @@
       "id": "ama",
       "nome": "AMA — Associação de Amigos do Autista",
       "tipo": "ong",
-      "descricao": "Pioneira no atendimento ao autismo no Brasil. Oferece terapias, orientação familiar e luta pelos direitos das pessoas com TEA.",
+      "descricao": "Pioneira no atendimento ao autismo no Brasil (desde 1983). Oferece terapias, orientação familiar, advocacia por direitos e — central para famílias preocupadas com a 'proteção pós-pais' — mantém programas residenciais e de moradia assistida para jovens e adultos com TEA cujos responsáveis envelheceram ou faleceram.",
       "servicos": [
-        "Terapias especializadas para TEA",
-        "Orientação para famílias",
-        "Advocacia por direitos"
+        "Terapias especializadas para TEA (ABA, fonoaudiologia, TO, psicologia)",
+        "Programa de moradia assistida / residencial pós-pais para adultos com TEA",
+        "Orientação para famílias sobre planejamento sucessório e curatela compartilhada",
+        "Advocacy por direitos junto a legisladores e órgãos públicos",
+        "Capacitação profissional e inclusão produtiva"
       ],
       "url": "https://www.gov.br/mdh/pt-br/navegue-por-temas/pessoa-com-deficiencia",
       "como_acessar": "Sediada em São Paulo, com parcerias em outros estados. Consulte o site para atendimento.",
@@ -1104,7 +1106,8 @@
         "ciptea",
         "educacao",
         "plano_saude",
-        "sus_terapias"
+        "sus_terapias",
+        "moradia_assistida_pcd"
       ]
     },
     {
@@ -9796,6 +9799,105 @@
       ],
       "cids_relacionados": [],
       "aplicavel_a_todas_deficiencias": false
+    },
+    {
+      "id": "moradia_assistida_pcd",
+      "titulo": "Moradia Assistida / Residência Inclusiva (proteção pós-pais)",
+      "icone": "🏘️",
+      "resumo": "Direito a moradia digna com apoio para jovens e adultos com deficiência cujos responsáveis familiares envelheceram, faleceram ou já não conseguem oferecer cuidados. A Residência Inclusiva (SUAS) é o serviço público federal de acolhimento em pequeno grupo (até 10 pessoas), com equipe técnica, custeada pelo BPC e cofinanciada União/Estado/Município.",
+      "base_legal": [
+        {
+          "lei": "Lei 13.146/2015 (LBI)",
+          "artigo": "Art. 31",
+          "link": "https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2015/lei/l13146.htm"
+        },
+        {
+          "lei": "Lei 8.742/1993 (LOAS)",
+          "artigo": "Art. 23",
+          "link": "https://www.planalto.gov.br/ccivil_03/leis/l8742.htm"
+        },
+        {
+          "lei": "Lei 12.435/2011 (SUAS)",
+          "artigo": "Art. 6º-A",
+          "link": "https://www.planalto.gov.br/ccivil_03/_ato2011-2014/2011/lei/l12435.htm"
+        },
+        {
+          "lei": "Resolução CNAS nº 109/2009",
+          "artigo": "Tipificação Nacional — Acolhimento Institucional para PcD",
+          "link": "https://www.gov.br/mds/pt-br/acesso-a-informacao/legislacao/cnas/resolucoes"
+        },
+        {
+          "lei": "Lei 12.764/2012 (Política Nacional TEA)",
+          "artigo": "Art. 3º, III, d",
+          "link": "https://www.planalto.gov.br/ccivil_03/_ato2011-2014/2012/lei/l12764.htm"
+        }
+      ],
+      "requisitos": [
+        "Pessoa com deficiência (qualquer tipo) jovem ou adulta (a partir de 18 anos), em situação de dependência de cuidados",
+        "Vínculos familiares fragilizados, rompidos ou ausentes (responsável envelheceu, faleceu ou não tem mais condição de cuidado)",
+        "Avaliação social e técnica pelo CRAS/CREAS confirmando a necessidade de acolhimento",
+        "Inscrição no CadÚnico (preferencialmente) e elegibilidade ao BPC quando aplicável",
+        "Concordância da pessoa com deficiência (quando possível manifestar vontade) — princípio da autonomia LBI Art. 6º"
+      ],
+      "documentos": [
+        "Documento de identidade da pessoa com deficiência (RG, CPF)",
+        "Laudo médico/biopsicossocial detalhando deficiência e necessidades de apoio",
+        "CIPCD ou CIPTEA quando aplicável",
+        "Comprovante de inscrição no CadÚnico",
+        "Documentos do responsável atual (se houver) e justificativa social (relatório CRAS/CREAS)",
+        "Carta de encaminhamento da rede SUAS, Defensoria Pública ou Ministério Público"
+      ],
+      "passo_a_passo": [
+        "Procurar o CRAS mais próximo (rede SUAS) e relatar a situação familiar — atendimento gratuito e universal",
+        "Solicitar avaliação técnica do PAIF (Proteção e Atendimento Integral à Família) ou PAEFI (CREAS) conforme o caso",
+        "Apresentar documentação e participar das entrevistas com a equipe (assistente social + psicólogo)",
+        "Aguardar parecer técnico sobre necessidade de acolhimento em Residência Inclusiva (ou outro serviço SUAS)",
+        "Se necessário acolhimento e não houver vaga, acionar Defensoria Pública ou Ministério Público para garantir o direito (LBI Art. 31)",
+        "Acompanhar o Plano Individual de Atendimento (PIA) construído com a equipe da Residência Inclusiva após acolhimento"
+      ],
+      "dicas": [
+        "Comece o planejamento ANTES da crise — converse com o CRAS enquanto os pais ainda têm condições, para construir vínculo e plano sucessório",
+        "Mantenha o BPC ativo: o benefício continua sendo recebido pela pessoa acolhida e custeia parte do serviço",
+        "Procure também ONGs especializadas como AMA (SP), Lar Escola São Francisco, APAEs e Instituto Jô Clemente — algumas oferecem programas próprios complementares ao SUAS",
+        "Documentação do diagnóstico/laudo deve estar SEMPRE atualizada (≤ 2 anos) para acelerar o processo",
+        "Defensoria Pública atua gratuitamente em casos de negativa ou demora — Lei 13.146/2015 Art. 79 garante prioridade processual para PcD"
+      ],
+      "valor": "Serviço gratuito (SUAS). BPC mantido (R$ 1.518,00 — salário mínimo 2026). Custo coberto por cofinanciamento União/Estado/Município.",
+      "onde": "CRAS (porta de entrada) → CREAS (média complexidade) → Residência Inclusiva (alta complexidade SUAS). Em casos de negativa: Defensoria Pública da União ou Estadual.",
+      "links": [
+        {
+          "titulo": "Tipificação Nacional dos Serviços Socioassistenciais (MDS)",
+          "url": "https://www.gov.br/mds/pt-br/acesso-a-informacao/legislacao/cnas/resolucoes"
+        },
+        {
+          "titulo": "Localizador de CRAS/CREAS (MDS)",
+          "url": "https://www.gov.br/mds/pt-br/acesso-a-informacao/carta-de-servicos/desenvolvimento-social"
+        },
+        {
+          "titulo": "Defensoria Pública da União — Pessoa com Deficiência",
+          "url": "https://www.gov.br/defensoria/pt-br/assuntos/pessoa-com-deficiencia"
+        },
+        {
+          "titulo": "Lei Brasileira de Inclusão (LBI) — Planalto",
+          "url": "https://www.planalto.gov.br/ccivil_03/_ato2015-2018/2015/lei/l13146.htm"
+        }
+      ],
+      "tags": [
+        "moradia",
+        "pos-pais",
+        "residencia inclusiva",
+        "acolhimento",
+        "suas",
+        "autonomia"
+      ],
+      "cids_relacionados": [
+        "F70-F79",
+        "F84",
+        "G80",
+        "G71",
+        "Q90"
+      ],
+      "aplicavel_a_todas_deficiencias": true
     }
   ],
   "dica_seguranca": {

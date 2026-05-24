@@ -5,6 +5,55 @@ Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/)
 e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [1.31.0] - 2026-05-24
+
+### Adicionado — Proteção pós-pais (Moradia Assistida / Residência Inclusiva)
+
+Nova categoria **`moradia_assistida_pcd`** — _"Moradia Assistida / Residência Inclusiva (proteção pós-pais)"_ — atende à preocupação central das famílias de PcD com dependência intensa: **"o que acontece com meu filho depois que eu morrer?"**. Total de categorias passa de **41 → 42**.
+
+**Base legal**:
+- LBI (Lei 13.146/2015) — Art. 31 (direito à moradia digna em residência inclusiva ou serviço de acolhimento)
+- LOAS (Lei 8.742/1993) — Art. 23 (Serviços de Proteção Social Especial de Alta Complexidade)
+- SUAS (Lei 12.435/2011) — Art. 6º-A (Residência Inclusiva no Serviço de Acolhimento Institucional)
+- Resolução CNAS 109/2009 — Tipificação Nacional dos Serviços Socioassistenciais (Residência Inclusiva)
+- Lei TEA (12.764/2012) — Art. 3º (direitos do autista a atenção integral e moradia)
+
+**Documentos requeridos**: CadÚnico ativo, Laudo médico/CID, BPC ou comprovante de renda, Curatela/Tomada de Decisão Apoiada (se aplicável), Documentos do PcD e dos pais, Histórico do CRAS/CREAS.
+
+**Conteúdo**: 5 requisitos, 6 documentos, 6 passos guiados (CRAS → Plano Individual → CREAS Alta Complexidade → Residência Inclusiva), 5 dicas práticas, 4 links oficiais (planalto/MDS/CNAS), 6 tags, 5 CIDs relacionados (F70-F79, F84, G80, G71, Q90), `aplicavel_a_todas_deficiencias=true`.
+
+### Enriquecido — AMA (Associação de Amigos do Autista)
+
+A entrada da **AMA** em `data["instituicoes_apoio"]` foi enriquecida com o **programa residencial pós-pais** (Residência AMA / AMA Lar), referenciado nas comunidades de famílias atípicas como pioneiro nacional. Descrição atualizada e 5 novos serviços ampliados; vínculo bidirecional com a nova categoria via `categorias[]`.
+
+### Sincronização (matching engine)
+
+- **18 keywords novas** em `data/matching_engine.json` → categoria `moradia_assistida_pcd` (peso 5): _"moradia assistida"_, _"residência inclusiva"_, _"pos-pais"_, _"pós-pais"_, _"apos os pais"_, _"depois dos pais"_, _"protecao apos os pais"_, _"acolhimento institucional"_, _"suas pcd"_, _"ama lar"_, _"lar escola"_, _"cras pcd moradia"_, _"tipificacao 109"_, _"resolucao cnas 109"_, _"lbi art 31"_, entre outras.
+
+### Atualizado — Cascata 41 → 42
+
+Contadores atualizados em 9 arquivos:
+- `index.html` (meta description, 3 descriptions JSON-LD, hero, sub-hero, `numberOfItems`, +1 `ListItem` posição 42 no ItemList)
+- `tests/test_comprehensive_validation.py`, `tests/test_cross_browser.py`
+- `scripts/validate_content.py`, `scripts/master_compliance.py`, `scripts/agent_conecta_govbr_sync.py`
+- `.github/workflows/quality-gate.yml`, `.github/workflows/conecta-govbr-sync.yml` (comentários; **nome do job preservado**)
+
+### Preservado
+
+- **Identidade visual** (cores, ícones, layout, gradientes) — zero alteração
+- **Cloudflare / sitemap.xml** — gerado com 43 URLs (42 categorias + index), indexação Google intacta
+- **WCAG 2.1 AA** (axe-core), **LGPD** (PII scan), **SemVer** (1.30.0 → 1.31.0 minor — feature additiva)
+- **Branch protection**: nome do job `"Quality Gate (36 categorias)"` mantido literalmente
+- **Schema strict**: nova categoria sem bloco `emergencia` (não aplicável a este caso)
+
+### Testes
+
+- **678 testes pytest** ✅ (baseline mantido após adição da categoria + correção do formato `{cats, weight}` no `keyword_map`)
+- Prerender: **42 páginas** em `direitos/` + `sitemap.xml`
+- Schema validation: **100% conforme** (`scripts/validate_schema.py`)
+
+---
+
 ## [1.30.0] - 2026-05-24
 
 ### Adicionado — LexML Law Drift (monitor mensal de texto legal)
