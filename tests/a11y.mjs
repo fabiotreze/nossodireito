@@ -17,10 +17,13 @@ import { chromium } from 'playwright';
 import { AxeBuilder } from '@axe-core/playwright';
 import http from 'node:http';
 import { createReadStream, statSync } from 'node:fs';
-import { extname, join, resolve, normalize } from 'node:path';
+import { extname, join, resolve, relative, sep } from 'node:path';
 
 const ROOT = resolve(process.cwd());
 const PORT = 8099;
+// Allowlist of path characters: letters, digits, -, _, ., /, %
+// Anything outside this set is rejected before touching the filesystem.
+const SAFE_PATH = /^[A-Za-z0-9._\-/%]+$/;
 const MIME = {
     '.html': 'text/html; charset=utf-8',
     '.js': 'application/javascript; charset=utf-8',
@@ -41,22 +44,47 @@ const MIME = {
 function startServer() {
     return new Promise((resolveServer) => {
         const server = http.createServer((req, res) => {
-            // Normalize and prevent path traversal
-            const urlPath = decodeURIComponent(req.url.split('?')[0]);
-            let filePath = normalize(join(ROOT, urlPath));
-            if (!filePath.startsWith(ROOT)) {
+            // 1. Strip query, decode once.
+            let urlPath;
+            try { urlPath = decodeURIComponent(req.url.split('?')[0]); }
+            catch { res.writeHead(400); res.end('Bad Request'); return; }
+
+            // 2. Reject any path containing traversal sequences or NUL bytes
+            //    BEFORE any filesystem call.
+            if (urlPath.includes('..') || urlPath.includes('\0') || urlPath.includes('\\')) {
                 res.writeHead(403); res.end('Forbidden'); return;
             }
+
+            // 3. Enforce strict allowlist (path-injection defence-in-depth).
+            if (!SAFE_PATH.test(urlPath)) {
+                res.writeHead(403); res.end('Forbidden'); return;
+            }
+
+            // 4. Resolve and double-check it is within ROOT.
+            const candidate = resolve(ROOT, '.' + urlPath);
+            const rel = relative(ROOT, candidate);
+            if (rel.startsWith('..') || rel.startsWith(sep) || resolve(ROOT, rel) !== candidate) {
+                res.writeHead(403); res.end('Forbidden'); return;
+            }
+
+            // 5. Index resolution.
+            let filePath = candidate;
             try {
                 const s = statSync(filePath);
                 if (s.isDirectory()) filePath = join(filePath, 'index.html');
-            } catch { /* fall through */ }
-            try {
-                const s = statSync(filePath);
-                if (!s.isFile()) throw new Error('not file');
-            } catch {
-                res.writeHead(404); res.end('Not Found'); return;
+            } catch { /* fall through to 404 */ }
+
+            let finalStat;
+            try { finalStat = statSync(filePath); }
+            catch { res.writeHead(404); res.end('Not Found'); return; }
+            if (!finalStat.isFile()) { res.writeHead(404); res.end('Not Found'); return; }
+
+            // 6. Re-verify final path is inside ROOT (after index.html join).
+            const finalRel = relative(ROOT, filePath);
+            if (finalRel.startsWith('..') || finalRel.startsWith(sep)) {
+                res.writeHead(403); res.end('Forbidden'); return;
             }
+
             const ct = MIME[extname(filePath).toLowerCase()] || 'application/octet-stream';
             res.writeHead(200, { 'Content-Type': ct });
             createReadStream(filePath).pipe(res);
