@@ -8,7 +8,7 @@ referenciados em data/direitos.json. Detecta mudanças por hash do conteúdo
 HTML normalizado e gera relatório (e, opcionalmente, issue no GitHub).
 
 Estratégia (read-only, idempotente):
-1. Coleta URLs gov.br únicas de fontes[] e links[] das 41 categorias.
+1. Coleta URLs gov.br únicas de fontes[] e links[] das 42 categorias.
 2. Faz GET com timeout, captura ETag/Last-Modified quando disponíveis.
 3. Calcula hash SHA-256 do <main>/<article>/<body> (texto normalizado).
 4. Compara com data/conecta_sync_state.json (estado anterior).

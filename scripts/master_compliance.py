@@ -241,11 +241,11 @@ class MasterComplianceValidator:
 
         # 2. Validar categorias (36 esperadas)
         cats = self.direitos.get('categorias', [])
-        if len(cats) == 41:
-            self.log_pass('dados', f"41 categorias presentes ✓", 5)
+        if len(cats) == 42:
+            self.log_pass('dados', f"42 categorias presentes ✓", 5)
         else:
             self.log_fail(
-                'dados', f"Esperado 41 categorias, encontrado {len(cats)}", 5)
+                'dados', f"Esperado 42 categorias, encontrado {len(cats)}", 5)
 
         # 3. Cada categoria deve ter campos obrigatórios
         required_cat_fields = ['id', 'titulo', 'resumo', 'base_legal', 'requisitos',

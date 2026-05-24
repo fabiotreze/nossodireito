@@ -371,7 +371,7 @@ class TestCategoryStructure:
     """Validate all 30 category objects have correct structure."""
 
     def test_exactly_30_categories(self, direitos):
-        assert len(direitos["categorias"]) == 41
+        assert len(direitos["categorias"]) == 42
 
     def test_required_fields_present(self, direitos):
         required = ["id", "titulo", "resumo", "icone", "base_legal", "links", "tags"]

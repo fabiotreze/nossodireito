@@ -6531,6 +6531,102 @@
         "pensao_hanseniase"
       ],
       "weight": 5
+    },
+    "moradia assistida": {
+      "cats": [
+        "moradia_assistida_pcd"
+      ],
+      "weight": 5
+    },
+    "moradia assistida pcd": {
+      "cats": [
+        "moradia_assistida_pcd"
+      ],
+      "weight": 5
+    },
+    "pos pais": {
+      "cats": [
+        "moradia_assistida_pcd"
+      ],
+      "weight": 5
+    },
+    "pos-pais": {
+      "cats": [
+        "moradia_assistida_pcd"
+      ],
+      "weight": 5
+    },
+    "pós-pais": {
+      "cats": [
+        "moradia_assistida_pcd"
+      ],
+      "weight": 5
+    },
+    "apos os pais": {
+      "cats": [
+        "moradia_assistida_pcd"
+      ],
+      "weight": 5
+    },
+    "depois dos pais": {
+      "cats": [
+        "moradia_assistida_pcd"
+      ],
+      "weight": 5
+    },
+    "protecao apos os pais": {
+      "cats": [
+        "moradia_assistida_pcd"
+      ],
+      "weight": 5
+    },
+    "acolhimento institucional": {
+      "cats": [
+        "moradia_assistida_pcd"
+      ],
+      "weight": 5
+    },
+    "suas pcd": {
+      "cats": [
+        "moradia_assistida_pcd"
+      ],
+      "weight": 5
+    },
+    "ama lar": {
+      "cats": [
+        "moradia_assistida_pcd"
+      ],
+      "weight": 5
+    },
+    "lar escola": {
+      "cats": [
+        "moradia_assistida_pcd"
+      ],
+      "weight": 5
+    },
+    "cras pcd moradia": {
+      "cats": [
+        "moradia_assistida_pcd"
+      ],
+      "weight": 5
+    },
+    "tipificacao 109": {
+      "cats": [
+        "moradia_assistida_pcd"
+      ],
+      "weight": 5
+    },
+    "resolucao cnas 109": {
+      "cats": [
+        "moradia_assistida_pcd"
+      ],
+      "weight": 5
+    },
+    "lbi art 31": {
+      "cats": [
+        "moradia_assistida_pcd"
+      ],
+      "weight": 5
     }
   },
   "versao": "1.19.0"

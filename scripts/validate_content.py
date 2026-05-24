@@ -60,7 +60,7 @@ class ContentValidator:
             self.errors.append(message)
 
     def validate_categories(self):
-        """Validar 41 categorias completas"""
+        """Validar 42 categorias completas"""
         self.log("=" * 70, 'PASS')
         self.log("VALIDAÇÃO DE CATEGORIAS (36)", 'PASS')
         self.log("=" * 70, 'PASS')

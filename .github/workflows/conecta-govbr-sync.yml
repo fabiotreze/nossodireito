@@ -2,7 +2,7 @@
 # Detecta drift de conteúdo nas URLs gov.br referenciadas em data/direitos.json.
 # Não modifica conteúdo automaticamente — apenas alerta humanos via issue.
 #
-# Cobertura: 41 categorias / 78 fontes / serviços federais Conecta gov.br.
+# Cobertura: 42 categorias / 78 fontes / serviços federais Conecta gov.br.
 
 name: Conecta gov.br Sync
 
