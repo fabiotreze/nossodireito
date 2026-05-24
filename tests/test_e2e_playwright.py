@@ -28,6 +28,7 @@ Uso:
 
 import json
 import os
+import re
 import signal
 import socket
 import subprocess
@@ -882,8 +883,12 @@ class TestExport:
         href = wa.first.get_attribute("href")
         parsed = urlparse(href)
         assert parsed.hostname == "wa.me", f"WhatsApp host inesperado: {parsed.hostname}"
-        assert "nossodireito.fabiotreze.com" in (parsed.query or ""), \
-            "URL compartilhada deve referenciar o domínio canônico"
+        # Extrai a URL compartilhada do parametro 'text' e valida hostname canonico
+        from urllib.parse import parse_qs
+        text_param = (parse_qs(parsed.query).get("text") or [""])[0]
+        shared_urls = re.findall(r"https?://[^\s]+", text_param)
+        assert any(urlparse(u).hostname == "nossodireito.fabiotreze.com" for u in shared_urls), \
+            f"Compartilhamento WhatsApp nao referencia o dominio canonico: {shared_urls}"
 
     def test_whatsapp_share_opens_new_tab(self, page, direitos_data):
         """Link WhatsApp deve abrir em nova aba (target=_blank, rel=noopener)."""
