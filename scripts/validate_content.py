@@ -68,8 +68,8 @@ class ContentValidator:
         categorias = self.data.get('categorias', [])
 
         # 1. Total de categorias
-        if len(categorias) != 41:
-            self.log(f"Total de categorias: {len(categorias)} (esperado: 41)", 'ERROR')
+        if len(categorias) != 42:
+            self.log(f"Total de categorias: {len(categorias)} (esperado: 42)", 'ERROR')
         else:
             self.log(f"Total de categorias: 36 ✓", 'PASS')
 
