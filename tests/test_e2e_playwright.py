@@ -1148,7 +1148,6 @@ class TestDocumentation:
 
     def test_no_broken_doc_links(self):
         """Verifica que links internos em docs/ apontam para arquivos existentes."""
-        import re
         docs_dir = ROOT / "docs"
         broken = []
         for md in docs_dir.glob("*.md"):
@@ -1221,7 +1220,6 @@ class TestLGPD:
     ]
 
     def test_no_sensitive_data_in_json(self):
-        import re
         for jf in (ROOT / "data").glob("*.json"):
             content = jf.read_text(encoding="utf-8")
             for pattern in self.SENSITIVE_PATTERNS[:2]:  # CPF, CNPJ only
@@ -1233,7 +1231,6 @@ class TestLGPD:
             assert not private_emails, f"{jf.name}: emails privados: {private_emails[:3]}"
 
     def test_no_secrets_in_source(self):
-        import re
         for f in [ROOT / "js" / "app.js", ROOT / "server.js"]:
             content = f.read_text(encoding="utf-8")
             for pat in [r'api[_-]?key\s*[:=]\s*["\'][^"\']+', r'password\s*[:=]\s*["\'][^"\']+']:
@@ -1278,7 +1275,6 @@ class TestCSSReadability:
     def test_mobile_font_not_below_16px(self):
         """Font-size mobile deve ser ≥16px (WCAG)."""
         css = (ROOT / "css" / "styles.css").read_text(encoding="utf-8")
-        import re
         # Find font-size in @media blocks
         matches = re.findall(r'font-size:\s*(\d+)px', css)
         for m in matches:
@@ -1286,7 +1282,6 @@ class TestCSSReadability:
 
     def test_body_line_height_adequate(self):
         css = (ROOT / "css" / "styles.css").read_text(encoding="utf-8")
-        import re
         body_match = re.search(r'body\s*\{[^}]*line-height:\s*([\d.]+)', css)
         assert body_match, "body sem line-height"
         lh = float(body_match.group(1))
@@ -1294,7 +1289,6 @@ class TestCSSReadability:
 
     def test_dica_item_has_line_height(self):
         css = (ROOT / "css" / "styles.css").read_text(encoding="utf-8")
-        import re
         match = re.search(r'\.dica-item\s*\{[^}]*line-height:\s*([\d.]+)', css)
         assert match, ".dica-item sem line-height"
         assert float(match.group(1)) >= 1.5
