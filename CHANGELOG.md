@@ -5,6 +5,39 @@ Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/)
 e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [1.30.0] - 2026-05-24
+
+### Adicionado — LexML Law Drift (monitor mensal de texto legal)
+
+Novo agente de observabilidade que detecta alterações no **TEXTO** das leis (planalto.gov.br) referenciadas em `data/direitos.json` (campo `categorias[].base_legal[].link`). Complementar ao `agent_conecta_govbr_sync.py` (S4) que monitora URLs gov.br institucionais.
+
+- **`scripts/agent_lexml_law_drift.py`** — stdlib only, read-only, idempotente:
+  - Extrai URLs únicas `planalto.gov.br` de `base_legal[].link`.
+  - GET + normalização (remove `<script>`/`<style>`/comentários/tags) + SHA-256.
+  - Constrói **LexML lookup URL** por lei (apoio à revisão humana, sem dependência de API privada).
+  - Baseline persistido em `data/lexml_law_state.json`.
+  - Modos: `--update-state`, `--json`, `--max-laws N`, `--delay s`.
+- **`.github/workflows/lexml-law-drift.yml`** — mensal (dia 7 às 12:00 UTC):
+  - Permissões mínimas (top-level `contents: read`; `issues: write` só no job).
+  - Cria issue com checklist + LexML lookup quando lei alterada.
+  - Suporta `workflow_dispatch` com `update_state` para refazer baseline.
+  - Artefatos `drift_output.json`/`drift_log.txt` retidos 60 dias.
+
+### Preservado
+
+- Cores, ícones, imagens, identidade visual — não alterados.
+- WCAG 2.1 AA, LGPD, Cloudflare, sitemap.xml — não tocados.
+- Apenas observabilidade — nunca modifica `data/direitos.json`.
+- Cortesia: delay 0.6s entre requests ao planalto (sem flood).
+
+### Validação
+
+- ✅ Smoke test local (3 leis planalto) — 200 OK, hashes consistentes.
+- ✅ 678 testes pytest passando.
+- ✅ Quality Gate local OK.
+
+---
+
 ## [1.29.0] - 2026-05-24
 
 ### Adicionado — Section Nav (scroll-spy tabs após hero)
