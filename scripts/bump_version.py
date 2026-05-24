@@ -237,6 +237,40 @@ def bump_manifest_json(new: str, old: str, *, dry_run: bool) -> bool:
     return True
 
 
+VERSIONED_DOCS = [
+    "docs/ARCHITECTURE.md",
+    "docs/COST-ESTIMATE.md",
+    "docs/OPERATIONS.md",
+    "docs/SECURITY-LGPD.md",
+    "docs/REPLICATION.md",
+    "docs/README.md",
+    "GOVERNANCE.md",
+]
+
+
+def bump_docs_headers(new: str, *, dry_run: bool) -> bool:
+    """Atualiza '**Version:** X.Y.Z' e '**Updated:** YYYY-MM-DD' em docs/*.md
+    que já possuem esses cabeçalhos. Também aceita variante '**Versão:**'
+    e 'Versao:' (sem markdown). Idempotente.
+    """
+    import re as _re
+    any_changed = False
+    ver_pat = _re.compile(r"(\*\*(?:Version|Vers[aã]o):\*\*\s*)[0-9]+\.[0-9]+\.[0-9]+", _re.IGNORECASE)
+    upd_pat = _re.compile(r"(\*\*(?:Updated|Atualizado):\*\*\s*)\d{4}-\d{2}-\d{2}", _re.IGNORECASE)
+    for rel in VERSIONED_DOCS:
+        path = ROOT / rel
+        if not path.exists():
+            continue
+        text = read_text(path)
+        new_text, n_ver = ver_pat.subn(r"\g<1>" + new, text)
+        new_text, n_upd = upd_pat.subn(r"\g<1>" + TODAY, new_text)
+        if n_ver or n_upd:
+            write_text(path, new_text, dry_run=dry_run)
+            print(f"  ✅ {rel}: Version→{new} (n={n_ver}), Updated→{TODAY} (n={n_upd})")
+            any_changed = True
+    return any_changed
+
+
 # ── Detecção da versão atual ──────────────────────────────────────
 def detect_current_version() -> str:
     """Lê a versão atual de package.json."""
@@ -284,6 +318,7 @@ def main() -> None:
         bump_index_html(new_version, old_version, dry_run=args.dry_run),
         bump_readme(new_version, old_version, dry_run=args.dry_run),
         bump_changelog(new_version, old_version, dry_run=args.dry_run),
+        bump_docs_headers(new_version, dry_run=args.dry_run),
     ]
 
     print("─" * 50)

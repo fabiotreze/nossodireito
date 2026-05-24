@@ -5,6 +5,42 @@ Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/)
 e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [1.33.2] - 2026-05-24
+
+### Refresh de documentação — README/ARCHITECTURE/COST-ESTIMATE sincronizados com estado real
+
+Após auditoria, detectou-se que `README.md`, `docs/ARCHITECTURE.md` e `docs/COST-ESTIMATE.md` estavam defasados (mencionavam "30 categorias" e score "1109.7/1113.2" de v1.21) apesar de o conteúdo `data/direitos.json` já estar em 42 categorias e o score atual ser 1263.5/1267.5 (99.68%) desde v1.33.0.
+
+**Documentação atualizada**
+- `README.md` — EN description atualizada (42 rights categories, score real, CodeQL/gitleaks/Quality Gate/Lighthouse/axe-core 3 engines), novo bloco "NOVIDADES v1.33.2", todas as contagens corrigidas
+- `docs/ARCHITECTURE.md` — version header, "42 páginas HTML", "43 URLs (home + 42 direitos)", nova seção `## Gates de Qualidade (CI/CD)` com tabela das 7 required checks e thresholds Lighthouse
+- `docs/COST-ESTIMATE.md` — version header (custos Azure B1 inalterados)
+
+### Adicionado — Prevenção sistêmica de drift
+
+Para evitar que documentação volte a ficar defasada (gap identificado: nenhum dos 36 checks do Quality Gate validava strings em prosa do README/docs vs `data/direitos.json` real):
+
+- **Novo:** `scripts/check_docs_sync.py` — valida em tempo de commit:
+  - Contagens de "N categorias", "N URLs", "N páginas HTML" em README/ARCHITECTURE devem bater com `len(data/direitos.json["categorias"])` (com filtro de contexto: "21/36 categorias" em frases sobre Quality Gate são ignoradas — referem-se a checks de validação, não a direitos)
+  - Header `**Version:** X.Y.Z` em cada `docs/*.md` + `GOVERNANCE.md` deve bater com `manifest.json["version"]`
+  - Seção mais recente de `CHANGELOG.md` não pode conter boilerplate `(descrever mudanças aqui)` deixado por `bump_version.py`
+  - README não pode conter scores hardcoded antigos (`1109.7/1113.2`, `99.7% across 30`)
+- **Corrigido:** `scripts/bump_version.py` agora **realmente** atualiza headers de `docs/ARCHITECTURE.md`, `docs/COST-ESTIMATE.md`, `docs/OPERATIONS.md`, `docs/SECURITY-LGPD.md`, `docs/REPLICATION.md`, `docs/README.md` e `GOVERNANCE.md` (o docstring prometia desde v1.0 mas as funções correspondentes nunca existiam — por isso `ARCHITECTURE.md` ficou em `Version: 1.21.0` por 12 versões consecutivas)
+- **Atualizado:** `scripts/pre-commit` (hook git) invoca `check_docs_sync.py` ANTES do `master_compliance.py --quick` — drift bloqueia commit local
+- **Atualizado:** workflow `.github/workflows/quality-gate.yml` invoca `check_docs_sync.py` como step adicional (drift bloqueia PR no required check `Quality Gate (36 categorias)` — nome do job preservado literalmente para não quebrar branch protection)
+
+### Rotina nova de coverage para mudanças futuras
+
+| Tipo de mudança | Script de cobertura |
+|---|---|
+| Adicionar/remover categoria de direito | `data/direitos.json` → `prerender_direitos.py` → `bump_version.py` → `check_docs_sync.py` valida contagens em README/ARCHITECTURE |
+| Bump de versão | `bump_version.py X.Y.Z` (agora atualiza 8 arquivos + 7 docs headers) + boilerplate CHANGELOG **bloqueia commit** até ser editada |
+| Mudança em URL `.gov.br`/`.jus.br` | `validate_legal_sources.py`, `check_sources_freshness.py`, `validate_url_policy.py` (já existentes) |
+| Mudança em schema JSON | `validate_schema.py`, `validate_content.py` (já existentes) |
+| Mudança em prosa de README/docs | `check_docs_sync.py` (novo, v1.33.2) — bloqueia se contagens/versões divergem |
+
+---
+
 ## [1.33.1] - 2026-05-24
 
 ### Endurecido — Gates de qualidade promovidos a bloqueantes

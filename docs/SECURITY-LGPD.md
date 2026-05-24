@@ -1,7 +1,7 @@
 # Security and LGPD
 
-**Version:** 1.22.0
-**Updated:** 2026-05-18
+**Version:** 1.33.2
+**Updated:** 2026-05-24
 
 ## Security Baseline
 
