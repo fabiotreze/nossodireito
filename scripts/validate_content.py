@@ -60,18 +60,18 @@ class ContentValidator:
             self.errors.append(message)
 
     def validate_categories(self):
-        """Validar 30 categorias completas"""
+        """Validar 36 categorias completas"""
         self.log("=" * 70, 'PASS')
-        self.log("VALIDAÇÃO DE CATEGORIAS (30)", 'PASS')
+        self.log("VALIDAÇÃO DE CATEGORIAS (36)", 'PASS')
         self.log("=" * 70, 'PASS')
 
         categorias = self.data.get('categorias', [])
 
         # 1. Total de categorias
-        if len(categorias) != 30:
-            self.log(f"Total de categorias: {len(categorias)} (esperado: 30)", 'ERROR')
+        if len(categorias) != 36:
+            self.log(f"Total de categorias: {len(categorias)} (esperado: 36)", 'ERROR')
         else:
-            self.log(f"Total de categorias: 30 ✓", 'PASS')
+            self.log(f"Total de categorias: 36 ✓", 'PASS')
 
         # IDs esperados
         expected_ids = [
@@ -83,7 +83,10 @@ class ContentValidator:
             'auxilio_inclusao', 'protecao_social', 'pensao_zika',
             'esporte_paralimpico', 'turismo_acessivel',
             'acessibilidade_arquitetonica', 'capacidade_legal',
-            'crimes_contra_pcd', 'acessibilidade_digital', 'reabilitacao'
+            'crimes_contra_pcd', 'acessibilidade_digital', 'reabilitacao',
+            'politica_nacional_cuidados', 'horario_especial_servidor_pcd',
+            'cota_emprego_pcd_empresa', 'saque_fgts_doenca_grave',
+            'caa_comunicacao_alternativa', 'curatela_decisao_apoiada'
         ]
 
         found_ids = [c['id'] for c in categorias]
