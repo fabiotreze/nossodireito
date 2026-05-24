@@ -705,7 +705,7 @@ const server = http.createServer(async (req, res) => {
   // alvo a partir apenas de pathname + search, descartando qualquer authority
   // (//evil.com/...) ou caracteres de controle (CRLF) injetados.
   if (AZURE_HOSTNAME && host === AZURE_HOSTNAME && req.headers.accept?.includes("text/html")) {
-    let safePath = "/";
+    let safePath;
     try {
       const parsed = new URL(req.url, `https://${CANONICAL_HOST}`);
       safePath = parsed.pathname + parsed.search;

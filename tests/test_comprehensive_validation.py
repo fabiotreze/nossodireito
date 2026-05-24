@@ -121,7 +121,8 @@ class TestWhatsAppSharing:
 
     def test_whatsapp_api_url_in_code(self, appjs):
         """app.js must use the correct WhatsApp API URL."""
-        assert "api.whatsapp.com" in appjs or "wa.me" in appjs, (
+        # Match âncora completa para evitar substring sanitization
+        assert re.search(r'https?://(api\.whatsapp\.com|wa\.me)/', appjs), (
             "WhatsApp share URL not found in app.js"
         )
 

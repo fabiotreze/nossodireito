@@ -32,7 +32,8 @@ def is_beneficio_completo(cat):
         valor_ok = len(cat.get('valor', '').strip()) >= 10
 
         return all([requisitos_ok, documentos_ok, passos_ok, dicas_ok, links_ok, base_legal_ok, valor_ok])
-    except:
+    except Exception:
+        # Categoria malformada — considera incompleta
         return False
 
 

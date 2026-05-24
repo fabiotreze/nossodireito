@@ -16,7 +16,6 @@ Uso:
 
 import argparse
 import json
-import os
 import re
 import subprocess
 import sys
@@ -123,8 +122,7 @@ def generate_report(outdated: list, audit: dict) -> str:
     
     for pkg in outdated:
         semver = check_semver(pkg["current"], pkg["latest"])
-        pkg_type = pkg["type"]
-        
+
         entry = f"- **{pkg['package']}**: {pkg['current']} → {pkg['latest']} ({semver['type']})"
         
         if semver["breaking"]:

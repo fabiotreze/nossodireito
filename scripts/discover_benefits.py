@@ -40,7 +40,6 @@ revisão humana seguindo o fluxo definido em GOVERNANCE.md.
 import argparse
 import hashlib
 import json
-import os
 import re
 import sys
 import time

@@ -357,7 +357,9 @@
             clone.querySelectorAll('script, style, input, button, [aria-hidden="true"]').forEach(el => el.remove());
             const text = clone.textContent
                 .replace(/\s+/g, ' ')
-                .replace(/[📋🔍✅📎📄🔗🏥🏢🤝📜🏛️⚖️💚♿💡⚠️📲📥🗑️🔲🤟🔊⏳]/g, '')
+                // Remove qualquer pictograma estendido (emoji) — usa Unicode property escape
+                // para evitar duplicatas no character class (CodeQL js/regex/duplicate-in-character-class).
+                .replace(/\p{Extended_Pictographic}\uFE0F?/gu, '')
                 .trim();
             return text;
         }
@@ -3150,19 +3152,6 @@ ${renderWeekPlan(priorityOrder, titleById)}
         // CID-10: letra + 2 dígitos + opcional .N ou .NN
         return /^[A-Z]\d{2}(\.\d{1,2})?$/.test(String(code || '').trim());
     }
-    function isValidDate(dateStr) {
-        const s = String(dateStr || '').trim();
-        const m = s.match(/^(\d{1,2})[\/\-.](\d{1,2})[\/\-.](\d{2,4})$/);
-        if (!m) return false;
-        let [, d, mo, y] = m;
-        d = parseInt(d, 10); mo = parseInt(mo, 10); y = parseInt(y, 10);
-        if (y < 100) y += y < 50 ? 2000 : 1900;
-        if (mo < 1 || mo > 12 || d < 1 || d > 31) return false;
-        const dt = new Date(y, mo - 1, d);
-        if (dt.getFullYear() !== y || dt.getMonth() !== mo - 1 || dt.getDate() !== d) return false;
-        const nowYear = new Date().getFullYear();
-        return y >= 1900 && y <= nowYear + 1;
-    }
     function renderAIResult(ai) {
         // v1.18.0: novo schema do Azure OpenAI gpt-4o-mini (vs. legacy Doc Intelligence)
         const cids = Array.isArray(ai.cids) ? ai.cids : [];
@@ -3275,7 +3264,7 @@ ${renderWeekPlan(priorityOrder, titleById)}
             return key;
         } catch (cloneErr) {
             console.warn('[Crypto] CryptoKey structured clone failed, using JWK fallback:', cloneErr.message);
-            exportable = true;
+            // exportable forçado a true via flag em generateKey abaixo (JWK export path)
             key = await crypto.subtle.generateKey(
                 { name: 'AES-GCM', length: 256 },
                 true,
@@ -3420,7 +3409,8 @@ ${renderWeekPlan(priorityOrder, titleById)}
     function isSafeUrl(url) {
         if (!url || typeof url !== 'string') return false;
         const trimmed = url.trim().toLowerCase();
-        if (trimmed.startsWith('javascript:') || trimmed.startsWith('vbscript:')) return false;
+        // Bloqueia esquemas perigosos: javascript:, vbscript:, data: (XSS via data:text/html)
+        if (trimmed.startsWith('javascript:') || trimmed.startsWith('vbscript:') || trimmed.startsWith('data:')) return false;
         if (trimmed.startsWith('#') || trimmed.startsWith('/') || trimmed.startsWith('./')) return true;
         if (trimmed.startsWith('blob:') || trimmed.startsWith('tel:') || trimmed.startsWith('mailto:')) return true;
         try {

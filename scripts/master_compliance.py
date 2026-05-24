@@ -46,7 +46,6 @@ elif hasattr(sys.stdout, 'buffer'):
 
 
 try:
-    import jsonschema
     from jsonschema import Draft7Validator
     _HAS_JSONSCHEMA = True
 except ImportError:
@@ -675,7 +674,8 @@ class MasterComplianceValidator:
                         self.log_warning(
                             'seguranca', f"{file.name}: possível credencial hardcoded")
                         found_secrets = True
-            except:
+            except (OSError, UnicodeDecodeError):
+                # Arquivo binário ou erro de leitura — ignorar
                 pass
 
         if not found_secrets:
@@ -895,7 +895,7 @@ class MasterComplianceValidator:
                     else:
                         self.log_warning(
                             'seo', f"manifest.json: campo '{field}' ausente")
-            except:
+            except (json.JSONDecodeError, OSError):
                 self.log_fail('seo', "manifest.json inválido", 5)
         else:
             self.log_fail('seo', "manifest.json ausente", 5)
@@ -981,6 +981,7 @@ class MasterComplianceValidator:
                                 self.log_fail(
                                     'seo', f"GovernmentService com apenas {len(items)} benefícios (<20)", 3)
                     except json.JSONDecodeError:
+                        # Bloco JSON-LD inválido — pular
                         pass
 
             # 6. Canonical URL
@@ -1143,7 +1144,6 @@ class MasterComplianceValidator:
             # Verificar número de testes E2E definidos
             try:
                 content = test_e2e.read_text(encoding='utf-8')
-                import re
                 test_count = len(re.findall(r'def test_', content))
                 if test_count >= 100:
                     self.log_pass(
@@ -1207,7 +1207,6 @@ class MasterComplianceValidator:
             content = js_file.read_text(encoding='utf-8')
 
             # Extrair todas as declarações de função
-            import re
             function_declarations = re.findall(
                 r'function\s+(\w+)\s*\(', content)
             function_declarations += re.findall(
@@ -1224,8 +1223,6 @@ class MasterComplianceValidator:
                 # Contar chamadas diretas funcName() e addEventListener(funcName - sem parênteses)
                 direct_calls = content.count(
                     f'{func_name}(') - 1  # -1 para declaração
-                event_listener_calls = content.count(f'addEventListener(') and func_name in re.findall(
-                    rf'addEventListener\([^,]+,\s*{func_name}\)', content)
                 # Contar referências como valor (fn: funcName, callback, array entries)
                 ref_as_value = len(re.findall(
                     rf'[:,\[]\s*{func_name}\b', content))
@@ -1307,7 +1304,6 @@ class MasterComplianceValidator:
         # 3. Verificar console.log() esquecidos
         js_content = js_file.read_text(
             encoding='utf-8') if js_file.exists() else ""
-        console_logs = js_content.count('console.log')
 
         # Console.log é aceitável se comentado para debug
         uncommented_logs = len(re.findall(
@@ -1337,7 +1333,6 @@ class MasterComplianceValidator:
 
         orphaned_files = []
         hygiene_issues = []
-        cleanup_count = 0
 
         # --- 1) Padrões glob de arquivos órfãos clássicos ---
         # Padrões rasos (sem traversal em diretórios profundos)
@@ -1557,7 +1552,7 @@ class MasterComplianceValidator:
 
         try:
             direitos = json.loads(data_file.read_text(encoding='utf-8'))
-        except:
+        except (json.JSONDecodeError, OSError):
             self.log_fail('logica', "direitos.json inválido", 20)
             return
 
@@ -2151,7 +2146,6 @@ class MasterComplianceValidator:
                     cat, "Deploy sem concurrency — deploys paralelos possíveis")
 
         # ── 6. Sensitive data scan no CI ──
-        qg_content = workflow_contents.get('quality-gate.yml', '')
         has_secret_scan = False
         for content in workflow_contents.values():
             if 'PRIVATE KEY' in content or 'AKIA' in content or 'dados sensíveis' in content.lower():
@@ -2387,7 +2381,8 @@ class MasterComplianceValidator:
                 # (SRI hash quebraria a cada atualização do governo)
                 if 'crossorigin=' in content and '.gov.br' in content:
                     crossorigin_gov = True
-            except:
+            except (OSError, UnicodeDecodeError):
+                # Falha ao ler HTML — ignorar e tentar próximo
                 pass
 
         if sri_found:

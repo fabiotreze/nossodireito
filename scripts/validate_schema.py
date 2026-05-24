@@ -20,7 +20,6 @@ import sys
 from pathlib import Path
 
 try:
-    import jsonschema
     from jsonschema import Draft7Validator
     HAS_JSONSCHEMA = True
 except ImportError:
