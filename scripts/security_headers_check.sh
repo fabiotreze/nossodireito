@@ -63,7 +63,9 @@ if [[ $CF_WAF_BLOCKED -eq 1 ]]; then
   echo "=== Headers via Mozilla Observatory API (third-party scanner) ==="
   HOST="${PUBLIC_URL#https://}"; HOST="${HOST%%/*}"
   # Inicia novo scan e busca grade via Mozilla Observatory v2 API
-  obs_json="$(curl "${CURL_OPTS[@]}" -X POST "https://observatory.mozilla.org/api/v2/scan?host=${HOST}" || echo '{}')"
+  # Endpoint correto (V1 antiga deprecada em out/2024 conforme MDN docs):
+  # https://github.com/mdn/mdn-http-observatory#json-api
+  obs_json="$(curl --max-time 60 -sS -X POST "https://observatory-api.mdn.mozilla.net/api/v2/scan?host=${HOST}" || echo '{}')"
   grade="$(printf '%s' "$obs_json" | python3 -c "import sys,json
 try:
   print(json.load(sys.stdin).get('grade','?'))
