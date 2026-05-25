@@ -5,6 +5,25 @@ Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/)
 e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [1.34.0] - 2026-05-24
+
+### Adicionado — Prevenção sistêmica de drift git tag vs manifest.json
+
+- **`scripts/check_docs_sync.py`**: novo `check_git_tag_sync()` emite WARN (não-bloqueante) quando a tag git mais recente não bate com `manifest.json`. Visível em todo pre-commit e Quality Gate.
+- **`.github/workflows/deploy.yml`**: novo job `auto-tag` (depende de `deploy`) cria automaticamente `vX.Y.Z` apontando para o commit deployed. Idempotente (skip se tag já existir). Usa `GITHUB_TOKEN` com `permissions: contents: write`.
+
+### Corrigido — Agents falhando há semanas
+
+- **`scripts/security_headers_check.sh`**: Cloudflare WAF bloqueando IPs de runner CI (403/503) agora é tratado como **sinal positivo** (WAF ativo = segurança funcionando). Headers públicos validados via **Mozilla Observatory API v2** (`observatory-api.mdn.mozilla.net`) — endpoint correto após sunset da V1 em out/2024. Grade atual: **A+**.
+- **`scripts/agent_legal_source_auditor.py`**: timeout subprocess 600s → 1500s (78 fontes .gov.br validadas sequencialmente; DOU/Conjur respondem 5-15s cada).
+- **`.github/workflows/legal-source-auditor.yml`**: `timeout-minutes` 30 → 40 para folga vs subprocess.
+
+### Retroativo
+
+- Tag `v1.33.2` criada apontando para commit `7a3e62c` (em produção desde 2026-05-24).
+
+---
+
 ## [1.33.2] - 2026-05-24
 
 ### Refresh de documentação — README/ARCHITECTURE/COST-ESTIMATE sincronizados com estado real
