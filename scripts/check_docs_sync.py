@@ -205,6 +205,33 @@ def check_obsolete_scores(r: CheckResult) -> None:
             )
 
 
+def check_git_tag_sync(r: CheckResult) -> None:
+    """WARN se tag git mais recente não bater com manifest.json.
+    Não bloqueia (a tag só deve existir após deploy bem-sucedido)."""
+    import subprocess
+    try:
+        tag = subprocess.run(
+            ["git", "tag", "--sort=-v:refname", "--list", "v[0-9]*"],
+            capture_output=True, text=True, cwd=ROOT, timeout=10,
+        ).stdout.strip().splitlines()
+        latest = tag[0] if tag else None
+    except Exception:
+        return  # git indisponível: ignora silencioso
+    if not latest:
+        return
+    try:
+        manifest_v = "v" + json.loads(
+            (ROOT / "manifest.json").read_text(encoding="utf-8")
+        )["version"]
+    except Exception:
+        return
+    if latest != manifest_v:
+        r.warn(
+            f"git tag mais recente ({latest}) ≠ manifest.json ({manifest_v}). "
+            f"Rode `git tag {manifest_v} && git push origin {manifest_v}` após deploy."
+        )
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Valida sincronia docs ↔ código.")
     parser.add_argument("--quiet", action="store_true", help="Só mostra falhas")
@@ -215,6 +242,7 @@ def main() -> int:
     check_version_headers(r)
     check_changelog_boilerplate(r)
     check_obsolete_scores(r)
+    check_git_tag_sync(r)
 
     if not args.quiet:
         print("═" * 60)

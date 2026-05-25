@@ -321,3 +321,33 @@ jobs:
                 labels: ['validação', 'fontes', 'automated']
               });
             }
+
+  # ── Auto-tag (cria tag vX.Y.Z em main após deploy bem-sucedido) ──
+  auto-tag:
+    needs: deploy
+    runs-on: ubuntu-latest
+    name: Auto Tag Release
+    if: needs.deploy.result == 'success'
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.0
+        with:
+          fetch-depth: 0
+
+      - name: Criar tag se ainda não existir
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          VERSION="v$(jq -r .version manifest.json)"
+          if git rev-parse "$VERSION" >/dev/null 2>&1; then
+            echo "✅ Tag $VERSION já existe — nada a fazer."
+            exit 0
+          fi
+          echo "🏷️  Criando tag $VERSION em $(git rev-parse HEAD)..."
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git tag -a "$VERSION" -m "Release $VERSION (auto-tag pós-deploy)"
+          git push origin "$VERSION"
+          echo "✅ Tag $VERSION publicada."

@@ -60,7 +60,7 @@ node server.js                                    # → http://localhost:8080
 
 Para rodar testes: veja [`docs/OPERATIONS.md`](docs/OPERATIONS.md)
 
-## 📘 Documentação consolidada (v1.33.2)
+## 📘 Documentação consolidada (v1.34.0)
 
 - [`docs/README.md`](docs/README.md) — índice da documentação
 - [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) — arquitetura e diagrama E2E
@@ -71,7 +71,7 @@ Para rodar testes: veja [`docs/OPERATIONS.md`](docs/OPERATIONS.md)
 
 ---
 
-## 🎉 NOVIDADES v1.33.2 (24/05/2026) — 42 categorias, cobertura E2E e hardening de gates
+## 🎉 NOVIDADES v1.34.0 (24/05/2026) — 42 categorias, cobertura E2E e hardening de gates
 
 **🏆 Status atual:** pipeline de testes 100% verde (678 passed) + Lighthouse strict + axe-core cross-browser (chromium/firefox/webkit) + 7 required checks no branch protection.
 
