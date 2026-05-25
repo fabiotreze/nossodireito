@@ -327,6 +327,21 @@ def main() -> None:
         print(f"🔍 Dry run: {changed} arquivo(s) seriam alterados.")
     else:
         print(f"✅ {changed} arquivo(s) atualizado(s) para v{new_version}.")
+
+        # Regenera HTMLs pre-renderizados em direitos/*/index.html
+        # (cada arquivo contem "Versao dos dados: X.Y.Z" hardcoded vindo
+        # de data/direitos.json; sem este passo, ficam dessincronizados)
+        print("\n🔁 Regenerando paginas pre-renderizadas (direitos/*/index.html)...")
+        import subprocess
+        try:
+            subprocess.run(
+                [sys.executable, str(ROOT / "scripts" / "prerender_direitos.py")],
+                check=True,
+            )
+        except subprocess.CalledProcessError as e:
+            print(f"  ⚠️  prerender_direitos.py falhou (rc={e.returncode}). "
+                  f"Rode manualmente apos verificar.")
+
         print(f"\n📝 Lembre-se de editar CHANGELOG.md com as mudanças reais.")
 
 

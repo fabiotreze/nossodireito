@@ -1,6 +1,6 @@
 # Replication Guide (New Tenant / New Subscription)
 
-**Version:** 1.34.0
+**Version:** 1.34.1
 **Updated:** 2026-05-24
 
 ## Goal
