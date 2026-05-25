@@ -232,6 +232,35 @@ def check_git_tag_sync(r: CheckResult) -> None:
         )
 
 
+def check_prerendered_version_sync(r: CheckResult) -> None:
+    """ERRO se HTMLs pre-renderizados em direitos/*/index.html contiverem
+    versao diferente da do manifest.json. Indica que bump_version.py rodou
+    mas prerender_direitos.py nao foi executado depois."""
+    try:
+        manifest_v = json.loads(
+            (ROOT / "manifest.json").read_text(encoding="utf-8")
+        )["version"]
+    except Exception:
+        return
+    pat = re.compile(r"Vers[ãa]o dos dados:\s*(\d+\.\d+\.\d+)")
+    stale: list[tuple[str, str]] = []
+    for html_file in (ROOT / "direitos").glob("*/index.html"):
+        try:
+            txt = html_file.read_text(encoding="utf-8")
+        except Exception:
+            continue
+        m = pat.search(txt)
+        if m and m.group(1) != manifest_v:
+            stale.append((html_file.relative_to(ROOT).as_posix(), m.group(1)))
+    if stale:
+        sample = ", ".join(f"{p} ({v})" for p, v in stale[:3])
+        r.err(
+            f"{len(stale)} pagina(s) pre-renderizada(s) com versao stale "
+            f"(manifest={manifest_v}). Ex: {sample}. "
+            f"Rode `python3 scripts/prerender_direitos.py`."
+        )
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Valida sincronia docs ↔ código.")
     parser.add_argument("--quiet", action="store_true", help="Só mostra falhas")
@@ -243,6 +272,7 @@ def main() -> int:
     check_changelog_boilerplate(r)
     check_obsolete_scores(r)
     check_git_tag_sync(r)
+    check_prerendered_version_sync(r)
 
     if not args.quiet:
         print("═" * 60)

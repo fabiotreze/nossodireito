@@ -5,6 +5,16 @@ Todas as mudanças notáveis neste projeto serão documentadas neste arquivo.
 O formato é baseado em [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/)
 e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
+## [1.34.1] - 2026-05-24
+
+### Corrigido — Drift de versão em páginas pré-renderizadas
+
+- **`scripts/bump_version.py`**: agora invoca `prerender_direitos.py` automaticamente após o bump. Sem isso, as 42 páginas em `direitos/*/index.html` continham a versão antiga hardcoded (ex.: footer "Versão dos dados: 1.33.2" mesmo após bump para 1.34.0).
+- **`scripts/check_docs_sync.py`**: nova checagem `check_prerendered_version_sync()` que falha o pre-commit se qualquer `direitos/*/index.html` tiver versão diferente de `manifest.json`. Previne a recorrência do mesmo drift sistêmico.
+- **42 páginas regeneradas** com versão atual e data sincronizadas.
+
+---
+
 ## [1.34.0] - 2026-05-24
 
 ### Adicionado — Prevenção sistêmica de drift git tag vs manifest.json
