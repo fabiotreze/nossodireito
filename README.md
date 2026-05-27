@@ -15,7 +15,6 @@
 [![Tests](https://img.shields.io/github/actions/workflow/status/fabiotreze/nossodireito/quality-gate.yml?label=tests&style=flat-square&logo=pytest)](docs/OPERATIONS.md)
 [![CodeQL](https://github.com/fabiotreze/nossodireito/actions/workflows/codeql.yml/badge.svg)](https://github.com/fabiotreze/nossodireito/actions/workflows/codeql.yml)
 [![gitleaks](https://github.com/fabiotreze/nossodireito/actions/workflows/gitleaks.yml/badge.svg)](https://github.com/fabiotreze/nossodireito/actions/workflows/gitleaks.yml)
-[![OpenSSF Scorecard](https://api.securityscorecards.dev/projects/github.com/fabiotreze/nossodireito/badge)](https://securityscorecards.dev/viewer/?uri=github.com/fabiotreze/nossodireito)
 [![npm audit](https://img.shields.io/badge/npm%20audit-0%20vulnerabilities-brightgreen?style=flat-square&logo=npm)](package.json)
 
 **Recebeu um laudo? Vem que a gente te ajuda.**
@@ -346,10 +345,12 @@ nossodireito/
 ├── .github/workflows/
 │   ├── deploy.yml              # CI/CD push → deploy Azure
 │   ├── quality-gate.yml        # Quality Gate PR/push check
-│   ├── discover-benefits.yml   # Descoberta de benefícios gov.br
-│   ├── dependabot-auto-merge.yml # Auto-merge Dependabot PRs
+│   ├── codeql.yml              # Análise estática de segurança
+│   ├── gitleaks.yml            # Detecção de segredos
+│   ├── lighthouse.yml          # Perf/SEO/A11y/PWA budgets
+│   ├── accessibility.yml       # axe-core WCAG 2.1 AA (3 engines)
 │   ├── terraform.yml           # IaC manual dispatch
-│   └── weekly-review.yml       # Issue automática periódica
+│   └── dependabot-auto-merge.yml # Auto-merge Dependabot PRs
 ├── CHANGELOG.md
 ├── GOVERNANCE.md
 ├── SECURITY.md

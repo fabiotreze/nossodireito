@@ -64,6 +64,6 @@ flowchart LR
 ## Compliance Controls
 
 - CI checks for tests and content quality
-- GitHub security workflows (CodeQL, gitleaks, scorecard)
+- GitHub security workflows (CodeQL, gitleaks)
 - Terraform validation + policy checks in pipeline
 - App Insights telemetry configured with privacy-safe controls

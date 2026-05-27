@@ -261,6 +261,61 @@ def check_prerendered_version_sync(r: CheckResult) -> None:
         )
 
 
+def check_workflow_references(r: CheckResult) -> None:
+    """ERRO se README/docs referenciam workflows .yml inexistentes.
+
+    Cobre o gap descoberto em v1.34.2: ao desativar workflows (rename para
+    .yml.disabled), READMEs/badges/diagrams continuavam apontando para arquivos
+    que nao existem mais, causando badges quebrados e instrucoes obsoletas.
+    """
+    wf_dir = ROOT / ".github" / "workflows"
+    if not wf_dir.is_dir():
+        return
+    active = {p.name for p in wf_dir.glob("*.yml")}  # .disabled NAO conta
+
+    # Padroes que indicam referencia ATIVA a um workflow:
+    #   - badge.svg URL: actions/workflows/<file>.yml/badge.svg
+    #   - workflow page link: actions/workflows/<file>.yml
+    #   - inline mention: `.github/workflows/<file>.yml`
+    pat = re.compile(
+        r"(?:actions/workflows/|\.github/workflows/)([a-z0-9_-]+\.yml)\b",
+        re.IGNORECASE,
+    )
+
+    targets = [
+        "README.md",
+        "docs/ARCHITECTURE.md",
+        "docs/OPERATIONS.md",
+        "docs/REPLICATION.md",
+        "docs/SECURITY-LGPD.md",
+        "docs/README.md",
+        "GOVERNANCE.md",
+        "SECURITY.md",
+    ]
+    stale: list[tuple[str, str, int]] = []
+    for rel in targets:
+        f = ROOT / rel
+        if not f.is_file():
+            continue
+        text = f.read_text(encoding="utf-8")
+        # Pula arquivos marcados explicitamente como historicos/depreciados
+        if re.search(r"^\s*>?\s*\*?\*?(DEPRECATED|HIST[ÓO]RICO|OBSOLETO)",
+                     text[:500], re.IGNORECASE | re.MULTILINE):
+            continue
+        for lineno, line in enumerate(text.splitlines(), 1):
+            for match in pat.finditer(line):
+                wf = match.group(1).lower()
+                if wf not in active:
+                    stale.append((rel, wf, lineno))
+    if stale:
+        sample = "; ".join(f"{p}:{ln} -> {wf}" for p, wf, ln in stale[:5])
+        r.err(
+            f"{len(stale)} referencia(s) a workflow inexistente em docs. "
+            f"Ex: {sample}. "
+            f"Atualize a doc OU reative o workflow movendo `.yml.disabled` -> `.yml`."
+        )
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Valida sincronia docs ↔ código.")
     parser.add_argument("--quiet", action="store_true", help="Só mostra falhas")
@@ -273,6 +328,7 @@ def main() -> int:
     check_obsolete_scores(r)
     check_git_tag_sync(r)
     check_prerendered_version_sync(r)
+    check_workflow_references(r)
 
     if not args.quiet:
         print("═" * 60)

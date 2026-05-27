@@ -44,7 +44,7 @@ What the script does:
 
 Manual workflow for replicated environments:
 
-- Workflow: `.github/workflows/replication.yml`
+- Workflow: `.github/workflows/terraform.yml` (substitui o antigo `replication.yml`, desativado em v1.34.2)
 - Inputs: environment, project_name, custom_domain, location, action (`plan|apply`)
 - Authentication: OIDC (`azure/login`)
 
@@ -52,7 +52,7 @@ Manual workflow for replicated environments:
 flowchart TD
    A[bootstrap_replication.sh] --> B[GitHub Secrets ARM_*]
    A --> C[replication.auto.tfvars]
-   B --> D[Workflow replication.yml]
+   B --> D[Workflow terraform.yml]
    C --> D
    D --> E[terraform plan/apply]
    E --> F[App Service + OpenAI + Monitoring]
