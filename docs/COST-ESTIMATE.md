@@ -16,10 +16,11 @@ Inclui apenas custos Azure do ambiente atual em Terraform:
 
 - App Service Linux (B1)
 - Azure OpenAI (gpt-4o-mini, Global Standard)
-- Private Endpoint (OpenAI)
-- Private DNS Zone (`privatelink.openai.azure.com`)
+- Private Endpoint (OpenAI, Key Vault, Redis)
+- Private DNS Zone (`privatelink.openai.azure.com`, `privatelink.vaultcore.azure.net`, `privatelink.redis.cache.windows.net`)
 - Application Insights + Log Analytics Workspace
 - Key Vault Standard
+- Azure Cache for Redis (Basic C0) — rate limiting + estudo de PE
 - Azure Monitor Alerts (volume baixo)
 
 Nao inclui:
@@ -75,6 +76,13 @@ Nao inclui:
 - Meter principal: `Operations`
 - Estimar operacoes/mes em blocos de 10k
 
+1. Azure Cache for Redis
+
+- Region: `Brazil South`
+- Tier/SKU: `Basic C0` (250MB, 1 vCPU compartilhado)
+- Hours/month: `730`
+- Private Endpoint adicional (ver item Private Link)
+
 ## Referencia de precos (consulta 2026-05-18, retail)
 
 Valores variam por contrato, impostos e mudancas da Azure.
@@ -85,6 +93,7 @@ Valores variam por contrato, impostos e mudancas da Azure.
 - Private DNS Zone (`referencia de mercado Azure DNS`): `~0.50 USD/mes` por zona
 - Log Analytics Analytics Logs (`brazilsouth`): `2.3 USD/GB` (ingestao analisada)
 - Key Vault Standard Operations (`brazilsouth`): `0.03 USD / 10k operacoes`
+- Azure Cache for Redis Basic C0 (`brazilsouth`): `~0.022 USD/h` (~`16 USD/mes`)
 
 ## Baseline mensal sem IA (estimativa rapida)
 
