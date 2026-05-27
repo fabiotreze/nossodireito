@@ -1,9 +1,11 @@
 // scripts/a11y_audit.mjs
 // Roda axe-core via Playwright nas 10 páginas mais importantes do nossodireito.
-// Saída: tabela markdown ordenada por impacto + JSON detalhado em /tmp/nd_a11y.json
+// Saída: tabela markdown ordenada por impacto + JSON detalhado em diretório temporário seguro (logado no final).
 import { chromium } from 'playwright';
 import { AxeBuilder } from '@axe-core/playwright';
-import { writeFileSync } from 'fs';
+import { writeFileSync, mkdtempSync } from 'fs';
+import { tmpdir } from 'os';
+import { join } from 'path';
 
 const BASE = process.env.NOSSODIREITO_URL || 'http://127.0.0.1:8765';
 
@@ -75,7 +77,9 @@ const sorted = [...grouped.values()]
   .map(g => ({ ...g, pages: [...g.pages] }))
   .sort((a, b) => RANK[a.impact] - RANK[b.impact] || b.totalNodes - a.totalNodes);
 
-writeFileSync('/tmp/nd_a11y.json', JSON.stringify({
+const OUT_DIR = mkdtempSync(join(tmpdir(), 'nd_a11y_'));
+const OUT_FILE = join(OUT_DIR, 'report.json');
+writeFileSync(OUT_FILE, JSON.stringify({
   base: BASE, pages: PAGES.length, total_violations: allViolations.length,
   by_rule: sorted
 }, null, 2));
@@ -88,3 +92,4 @@ console.log('|---:|---|---|---:|---|---|');
 sorted.slice(0, 20).forEach((v, i) => {
   console.log(`| ${i+1} | ${v.impact || '-'} | \`${v.id}\` | ${v.totalNodes} | ${v.pages.length} (${v.pages.slice(0,3).join(', ')}${v.pages.length>3?'…':''}) | ${v.help} |`);
 });
+console.log(`\n📄 Relatório JSON: ${OUT_FILE}`);
