@@ -9,7 +9,22 @@ e este projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR
 
 ### Adicionado
 
-- (descrever mudanças aqui)
+- **`tests/test_matching_engine.py`** (novo, 20 testes): suite de precisão do matching engine — integridade estrutural (shape, weights 1–10, cats existem em `direitos.json`, sem duplicatas case-insensitive), precisão top-3 em 15 queries críticas e cobertura (toda categoria tem ≥1 keyword).
+- **`scripts/legacy/README.md`**: documenta scripts arquivados e como reativá-los.
+- **24 novas fontes oficiais** (`data/direitos.json`): INSS, Gov.br, Planalto (leis compiladas), CNJ, STJ — com cross-classification em `categorias.links`, `matching_engine.json` e `dicionario_pcd.json`.
+
+### Modificado — Simplificação do pipeline
+
+- **14 workflows desativados** (renomeados para `.yml.disabled`, reversível): community-insights, compliance-drift-detector, conecta-govbr-sync, content-freshness-monitor, dependency-intelligence, discover-benefits, documentation-keeper, legal-source-auditor, lexml-law-drift, performance-watchdog, replication, scorecard, security-baseline, weekly-review.
+- **8 workflows ativos** restantes: deploy, quality-gate, codeql, gitleaks, lighthouse, accessibility, terraform, dependabot-auto-merge.
+- **14 scripts órfãos** movidos para `scripts/legacy/` (preservando histórico via `git mv`).
+- **`docs/AGENTS.md`**: banner de descontinuação apontando para `.disabled` e `scripts/legacy/`.
+
+### Corrigido
+
+- **`schemas/direitos.schema.json`**: enum `fonte.tipo` expandido de 8 para 16 valores (`legislacao, portal, orgao_oficial, servico, programa, resolucao, portaria, decreto, norma_tecnica, app, dados, referencia, formulario, normativa`) — alinhado ao `VALID_TYPES` usado pelos testes; antes rejeitava 11 fontes válidas.
+- **`data/matching_engine.json`**: 6 duplicatas case-insensitive mescladas em forma lowercase canônica (FGTS Digital, Programa Mover, DPU, NBR 9050, Libras, RENAME) — preserva união de `cats` e `max(weight)`.
+- **`tests/test_comprehensive*.py`**: alinhados ao estado pós-simplificação (sem `weekly-review.yml`, sem `discover_benefits.py` em `scripts/`, keyword `nbr 9050` lowercase, `valid_tipos` ampliado para 16).
 
 ---
 
