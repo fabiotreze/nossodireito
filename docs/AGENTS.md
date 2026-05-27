@@ -1,8 +1,24 @@
 # 🤖 Agents — NossoDireito
 
-Documentação dos agents automatizados que monitoram, validam e melhoram o projeto.
+> ⚠️ **DESCONTINUADO em 2026-05-27** — Os 9 agents originais (legal-source-auditor,
+> content-freshness-monitor, compliance-drift-detector, community-insights,
+> dependency-intelligence, documentation-keeper, performance-watchdog,
+> conecta-govbr-sync, lexml-law-drift) foram desativados como parte da
+> simplificação do pipeline.
+>
+> - Workflows: renomeados para `.yml.disabled` em [`.github/workflows/`](../.github/workflows/) (reversível).
+> - Scripts: arquivados em [`scripts/legacy/`](../scripts/legacy/) (reversível).
+>
+> A operação passa a depender apenas dos 8 workflows essenciais (deploy,
+> quality-gate, codeql, gitleaks, lighthouse, accessibility, terraform,
+> dependabot-auto-merge). Monitoramento de fontes/conteúdo agora é manual
+> (quinzenal) via `python3 scripts/validate_all.py`.
+>
+> O documento abaixo é mantido apenas como referência histórica.
 
-## Visão Geral
+---
+
+## Visão Geral (histórico)
 
 Os agents são workflows GitHub Actions que rodam periodicamente para detectar problemas, sugerir melhorias e manter qualidade. Cada agent é independente e pode ser executado manualmente via `workflow_dispatch`.
 

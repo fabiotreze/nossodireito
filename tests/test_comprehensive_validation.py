@@ -87,8 +87,12 @@ class TestURLAndLinks:
             assert "orgao" in fonte, f"Fonte missing 'orgao': {fonte.get('nome')}"
 
     def test_fontes_tipos_are_valid(self, direitos):
-        """Fonte tipos must be one of: legislacao, servico, normativa, programa."""
-        valid_tipos = {"legislacao", "servico", "normativa", "programa"}
+        """Fonte tipos must be one of the project-wide VALID_TYPES enum."""
+        valid_tipos = {
+            "legislacao", "portal", "orgao_oficial", "servico", "programa",
+            "resolucao", "portaria", "decreto", "norma_tecnica", "app",
+            "dados", "referencia", "formulario", "normativa",
+        }
         for fonte in direitos.get("fontes", []):
             tipo = fonte.get("tipo", "")
             assert tipo in valid_tipos, (
