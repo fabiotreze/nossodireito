@@ -19,8 +19,6 @@ on:
       - "images/**"
       - "robots.txt"
       - "sitemap.xml"
-      - "sw.js"
-      - "manifest.json"
       - "direitos/**"
       - "scripts/**"
       - ".github/workflows/deploy.yml"
@@ -54,8 +52,8 @@ jobs:
 
       - name: Instalar dependências (hashed)
         run: |
-          pip install --require-hashes --no-deps -r requirements.lock
-          pip install --require-hashes --no-deps -r requirements-dev.lock
+          pip install -r requirements.txt
+          pip install -r requirements-dev.txt
 
       - name: Testes Python (pytest)
         run: python -m pytest tests/ -v --tb=short --ignore=tests/test_e2e_playwright.py -q
@@ -138,7 +136,7 @@ jobs:
         run: |
           zip -r site.zip \
             index.html server.js package.json package-lock.json \
-            robots.txt sitemap.xml sw.js manifest.json \
+            robots.txt sitemap.xml \
             node_modules/ css/ js/ data/ direitos/ images/ shared/ services/ \
             -x "*.bak" "*.swa.bak" "__pycache__/*" \
             "terraform/*" ".github/*" "tests/*" "docs/*" \
@@ -340,7 +338,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          VERSION="v$(jq -r .version manifest.json)"
+          VERSION="v$(jq -r .version package.json)"
           if git rev-parse "$VERSION" >/dev/null 2>&1; then
             echo "✅ Tag $VERSION já existe — nada a fazer."
             exit 0

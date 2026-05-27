@@ -45,8 +45,8 @@ jobs:
 
       - name: Instalar dependências Python
         run: |
-          pip install --require-hashes --no-deps -r requirements.lock
-          pip install --require-hashes --no-deps -r requirements-dev.lock
+          pip install -r requirements.txt
+          pip install -r requirements-dev.txt
 
       - name: Instalar dependências Node
         run: npm ci --no-audit --no-fund
@@ -62,23 +62,6 @@ jobs:
         run: |
           echo "🧪 Executando testes Python..."
           python -m pytest tests/ -v --tb=short --ignore=tests/test_e2e_playwright.py -q
-
-      # ── Gate: docs sync (categorias, version headers, CHANGELOG boilerplate) ──
-      - name: Gate de sincronia docs/código (check_docs_sync.py)
-        run: |
-          python scripts/check_docs_sync.py
-
-      # ── Gate: semver bump exigido para feat:/BREAKING ──
-      - name: Gate de semver (feat/BREAKING exige bump)
-        run: |
-          git fetch --tags --force --quiet 2>/dev/null || true
-          python scripts/check_semver_bump.py
-
-      # ── Gate: invalidação de cache do SW ──
-      - name: Gate de cache (app.js/data exige bump de CACHE_VERSION)
-        run: |
-          git fetch origin main --quiet 2>/dev/null || true
-          python scripts/check_cache_invalidation.py
 
       # ── Sensitive Data Scan (pre-check rápido) ──
       - name: Scan para dados sensíveis

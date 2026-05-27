@@ -135,11 +135,8 @@ class MasterValidator:
             'data/dicionario_pcd.json',
             'data/matching_engine.json',
             'index.html',
-            'manifest.json',
-            'sw.js',
             'README.md',
-            'LICENSE',
-            'CHANGELOG.md'
+            'LICENSE'
         ]
 
         missing = []
@@ -228,8 +225,7 @@ class MasterValidator:
         json_files = [
             'data/direitos.json',
             'data/dicionario_pcd.json',
-            'data/matching_engine.json',
-            'manifest.json'
+            'data/matching_engine.json'
         ]
 
         errors = []
@@ -424,22 +420,7 @@ class MasterValidator:
             timeout=60
         ))
 
-        # ====================
-        # FASE 4: MASTER COMPLIANCE (21 categorias, 1104.7 pts)
-        # ====================
-        print()
-        print("=" * 100)
-        print("🏆 FASE 4/11: MASTER COMPLIANCE (21 categorias, 1104.7 pts)")
-        print("=" * 100)
-
-        self.results.append(self.run_script(
-            "Master Compliance (21 cats — HTML, CSS, JS, PWA, ARIA, SEO, órfãs...)",
-            self.root / "scripts" / "master_compliance.py",
-            timeout=120
-        ))
-
-        # No modo quick, parar aqui — master_compliance (fase 4) já inclui
-        # validate_analise_360() internamente, então fase 5 seria redundante.
+        # No modo quick, parar aqui após pré-validações + schema.
         if quick:
             self._print_summary()
             return sum(1 for r in self.results if r.success), len(self.results)

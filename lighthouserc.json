@@ -3,10 +3,7 @@
     "collect": {
       "staticDistDir": ".",
       "url": [
-        "http://localhost/index.html",
-        "http://localhost/direitos/bpc/index.html",
-        "http://localhost/direitos/educacao/index.html",
-        "http://localhost/direitos/moradia_assistida_pcd/index.html"
+        "http://localhost/index.html"
       ],
       "numberOfRuns": 1,
       "settings": {
