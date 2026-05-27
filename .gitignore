@@ -65,6 +65,9 @@ data/discovery_report.json
 data/discovery_report.md
 screenshots/
 
+# Pre-rendered SEO HTML (gerado por scripts/prerender_direitos.py)
+direitos/*/index.html
+
 # Node.js
 node_modules/
 

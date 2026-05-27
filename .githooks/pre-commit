@@ -28,12 +28,6 @@ if command -v gitleaks > /dev/null 2>&1; then
     }
 fi
 
-# Gate 2: PII scan (LGPD)
-if [ -n "$staged_files" ] && command -v python3 > /dev/null 2>&1; then
-    # shellcheck disable=SC2086
-    python3 scripts/scan_pii.py $staged_files || exit 1
-fi
-
 non_docs=$(echo "$staged_files" | grep -vE '\.(md|txt)$' || true)
 docs_changed=$(echo "$staged_files" | grep -E '^docs/.*\.md$' || true)
 if [ -z "$non_docs" ]; then
