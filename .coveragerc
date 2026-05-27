@@ -1,0 +1,22 @@
+[run]
+branch = True
+parallel = True
+source =
+    scripts
+    services
+concurrency = multiprocessing
+data_file = .coverage
+omit =
+    */__pycache__/*
+    scripts/legacy/*
+    tests/*
+    .venv/*
+
+[report]
+show_missing = True
+skip_covered = False
+precision = 1
+exclude_lines =
+    pragma: no cover
+    if __name__ == .__main__.:
+    raise NotImplementedError

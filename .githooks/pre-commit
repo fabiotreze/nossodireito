@@ -1,88 +1,13 @@
 #!/bin/sh
-# NossoDireito — Pre-commit Hook (Quality Gate)
-#
-# Instalacao automatica via 'npm install' (script 'prepare' seta core.hooksPath).
-# Manual: git config core.hooksPath .githooks
-#
-# Comando unico: master_compliance.py --quick (~6s)
-# Inclui internamente:
-#   - Fail-fast de versao (aborta se inconsistente entre manifest/sw/data/*.json)
-#   - JSON Schema Draft 7
-#   - 21 categorias de validacao (~1050 pts)
-#   - Pula HTTP/fontes (modo rapido)
-#
-# Skip automatico: diffs SO de documentacao (.md/.txt) pulam o validator pesado.
-# Checks pesados (testes Node, semver gate, SW cache gate) rodam no pre-push.
-# Para pular manualmente: git commit --no-verify (use com motivo no msg).
+# NossoDireito — Pre-commit Hook (minimal)
+# Gate único: gitleaks (segredos). Quality gates pesados rodam no CI.
+# Skip manual: git commit --no-verify
 
-# Se diff so toca docs/*.md: roda apenas Cat-5 (headers + mermaid + freshness, ~1s).
-# Para qualquer outro arquivo: roda --quick completo (~30s).
-# --- Security gates (sempre rodam, em qualquer diff) ---
-staged_files=$(git diff --cached --name-only --diff-filter=ACMR)
-
-# Gate 1: gitleaks (segredos)
 if command -v gitleaks > /dev/null 2>&1; then
     gitleaks protect --staged --redact --no-banner 2>&1 || {
-        echo "  BLOQUEADO: segredos detectados pelo gitleaks. Use 'git commit --no-verify' apenas se for falso positivo."
+        echo "  BLOQUEADO: segredos detectados pelo gitleaks."
+        echo "  Skip: git commit --no-verify (apenas falsos positivos)."
         exit 1
     }
 fi
-
-# Gate 2: PII scan (LGPD)
-if [ -n "$staged_files" ] && command -v python3 > /dev/null 2>&1; then
-    # shellcheck disable=SC2086
-    python3 scripts/scan_pii.py $staged_files || exit 1
-fi
-
-non_docs=$(echo "$staged_files" | grep -vE '\.(md|txt)$' || true)
-docs_changed=$(echo "$staged_files" | grep -E '^docs/.*\.md$' || true)
-if [ -z "$non_docs" ]; then
-    if [ -n "$docs_changed" ]; then
-        echo "📝 pre-commit: diff so de docs — validando headers/mermaid/freshness (Cat-5)..."
-        if command -v python > /dev/null 2>&1; then PYTHON=python; elif command -v python3 > /dev/null 2>&1; then PYTHON=python3; else exit 0; fi
-        $PYTHON scripts/master_compliance.py --docs-only || { echo "  BLOQUEADO: documentacao fora do padrao."; exit 1; }
-    else
-        echo "📝 pre-commit: diff so de .md/.txt nao-doc — pulando validator."
-    fi
-    exit 0
-fi
-
-echo ""
-echo "======================================================"
-echo "  Pre-commit Quality Gate -- NossoDireito"
-echo "======================================================"
-echo ""
-
-# Detectar Python (prefere 'python' no Windows para evitar Store alias)
-if command -v python > /dev/null 2>&1; then
-    PYTHON=python
-elif command -v python3 > /dev/null 2>&1; then
-    PYTHON=python3
-else
-    echo "  WARN: Python nao encontrado -- pulando Quality Gate."
-    exit 0
-fi
-
-# Quality Gate principal -- bloqueia se falhar (exit code != 0)
-$PYTHON scripts/master_compliance.py --quick
-GATE_RESULT=$?
-
-# Freshness das fontes juridicas -- WARNING puro, nao bloqueia commit
-# (rodado por informacao; bloqueio acontece via --strict no weekly-review.yml)
-$PYTHON scripts/check_sources_freshness.py || true
-
-echo ""
-echo "======================================================"
-if [ $GATE_RESULT -ne 0 ]; then
-    echo "  BLOQUEADO -- master_compliance.py --quick falhou (exit $GATE_RESULT)."
-    echo "  Corrija os problemas acima e tente novamente."
-    echo "  Para pular: git commit --no-verify"
-    echo "======================================================"
-    echo ""
-    exit 1
-fi
-
-echo "  OK -- Quality Gate COMPLETO -- commit permitido."
-echo "======================================================"
-echo ""
 exit 0

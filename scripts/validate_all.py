@@ -135,11 +135,8 @@ class MasterValidator:
             'data/dicionario_pcd.json',
             'data/matching_engine.json',
             'index.html',
-            'manifest.json',
-            'sw.js',
             'README.md',
-            'LICENSE',
-            'CHANGELOG.md'
+            'LICENSE'
         ]
 
         missing = []
@@ -228,8 +225,7 @@ class MasterValidator:
         json_files = [
             'data/direitos.json',
             'data/dicionario_pcd.json',
-            'data/matching_engine.json',
-            'manifest.json'
+            'data/matching_engine.json'
         ]
 
         errors = []
@@ -424,48 +420,17 @@ class MasterValidator:
             timeout=60
         ))
 
-        # ====================
-        # FASE 4: MASTER COMPLIANCE (21 categorias, 1104.7 pts)
-        # ====================
-        print()
-        print("=" * 100)
-        print("🏆 FASE 4/11: MASTER COMPLIANCE (21 categorias, 1104.7 pts)")
-        print("=" * 100)
-
-        self.results.append(self.run_script(
-            "Master Compliance (21 cats — HTML, CSS, JS, PWA, ARIA, SEO, órfãs...)",
-            self.root / "scripts" / "master_compliance.py",
-            timeout=120
-        ))
-
-        # No modo quick, parar aqui — master_compliance (fase 4) já inclui
-        # validate_analise_360() internamente, então fase 5 seria redundante.
+        # No modo quick, parar aqui após pré-validações + schema.
         if quick:
             self._print_summary()
             return sum(1 for r in self.results if r.success), len(self.results)
 
         # ====================
-        # FASE 5: ANÁLISE 360° (Cobertura & Completude)
-        # ====================
-        # No modo completo, roda analise360.py como script separado
-        # para gerar relatório detalhado (é mais verbose que o embutido no master).
-        print()
-        print("=" * 100)
-        print("🌐 FASE 5/11: ANÁLISE 360° (Cobertura de Benefícios)")
-        print("=" * 100)
-
-        self.results.append(self.run_script(
-            "Análise 360° (benefícios implementados vs pesquisados)",
-            self.root / "scripts" / "analise360.py",
-            timeout=30
-        ))
-
-        # ====================
-        # FASE 6: FONTES OFICIAIS (URLs gov.br, planalto)
+        # FASE 5: FONTES OFICIAIS (URLs gov.br, planalto)
         # ====================
         print()
         print("=" * 100)
-        print("🔗 FASE 6/11: VALIDAÇÃO DE FONTES OFICIAIS (URLs)")
+        print("🔗 FASE 5/8: VALIDAÇÃO DE FONTES OFICIAIS (URLs)")
         print("=" * 100)
 
         if (self.root / "scripts" / "validate_sources.py").exists():
@@ -479,26 +444,11 @@ class MasterValidator:
             self.log("   ⚠️ validate_sources.py: NÃO ENCONTRADO")
 
         # ====================
-        # FASE 7: URLs GOV.BR PcD (Serviços específicos)
+        # FASE 6: BASE LEGAL (Compliance, leis vigentes)
         # ====================
         print()
         print("=" * 100)
-        print("🏠️ FASE 7/11: URLS GOV.BR PcD (via validate_url_policy --check-live)")
-        print("=" * 100)
-
-        self.results.append(self.run_script(
-            "URLs gov.br PcD (validate_url_policy --check-live)",
-            self.root / "scripts" / "validate_url_policy.py",
-            extra_args=["--check-live"],
-            timeout=120
-        ))
-
-        # ====================
-        # FASE 8: BASE LEGAL (Compliance, leis vigentes)
-        # ====================
-        print()
-        print("=" * 100)
-        print("⚖️ FASE 8/11: BASE LEGAL (Compliance, Vigência)")
+        print("⚖️ FASE 6/8: BASE LEGAL (Compliance, Vigência)")
         print("=" * 100)
 
         if (self.root / "scripts" / "validate_legal_compliance.py").exists():
@@ -512,11 +462,11 @@ class MasterValidator:
             self.log("   ⚠️ validate_legal_compliance.py: NÃO ENCONTRADO")
 
         # ====================
-        # FASE 9: FONTES LEGAIS (acesso HTTP)
+        # FASE 7: FONTES LEGAIS (acesso HTTP)
         # ====================
         print()
         print("=" * 100)
-        print("📜 FASE 9/11: FONTES LEGAIS (Acesso HTTP)")
+        print("📜 FASE 7/8: FONTES LEGAIS (Acesso HTTP)")
         print("=" * 100)
 
         if (self.root / "scripts" / "validate_legal_sources.py").exists():
@@ -529,50 +479,17 @@ class MasterValidator:
             self.log("   ⚠️ validate_legal_sources.py: NÃO ENCONTRADO")
 
         # ====================
-        # FASE 10: AUDITORIA DE AUTOMAÇÃO (Gaps & Recomendações)
+        # FASE 8: PYTEST (Unit Tests)
         # ====================
         print()
         print("=" * 100)
-        print("📈 FASE 10/11: AUDITORIA DE AUTOMAÇÃO (Gaps & Recomendações)")
-        print("=" * 100)
-
-        if (self.root / "scripts" / "audit_automation.py").exists():
-            self.results.append(self.run_script(
-                "Auditoria de Automação (gaps, recomendações)",
-                self.root / "scripts" / "audit_automation.py",
-                timeout=30
-            ))
-        else:
-            self.log("   ⚠️ audit_automation.py: NÃO ENCONTRADO")
-
-        # ====================
-        # FASE 11: PYTEST (Unit Tests)
-        # ====================
-        print()
-        print("=" * 100)
-        print("🧪 FASE 11/11: PYTEST (Unit Tests — JSON, campos, base_legal)")
+        print("🧪 FASE 8/8: PYTEST (Unit Tests — JSON, campos, base_legal)")
         print("=" * 100)
 
         self.results.append(self.run_pytest(
             "Pytest (tests/test_master_compliance.py)",
             "tests/"
         ))
-
-        # ====================
-        # FASE BÔNUS: AUTO-CORREÇÃO (SE --fix)
-        # ====================
-        if self.auto_fix:
-            print()
-            print("=" * 100)
-            print("🔧 BÔNUS: AUTO-CORREÇÃO (Complete Benefícios)")
-            print("=" * 100)
-
-            if (self.root / "scripts" / "complete_beneficios.py").exists():
-                self.results.append(self.run_script(
-                    "Complete Benefícios (auto-fix)",
-                    self.root / "scripts" / "complete_beneficios.py",
-                    timeout=60
-                ))
 
         # ====================
         # CONSOLIDAÇÃO DE RESULTADOS

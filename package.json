@@ -9,7 +9,6 @@
     "test:js": "node --test tests/*.test.mjs",
     "validate": "python scripts/validate_all.py --quick",
     "security:headers": "bash scripts/security_headers_check.sh",
-    "replication:bootstrap": "bash scripts/bootstrap_replication.sh --help",
     "prepare": "node scripts/setup-hooks.mjs"
   },
   "dependencies": {
