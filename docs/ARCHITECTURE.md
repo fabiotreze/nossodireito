@@ -157,7 +157,7 @@ Thresholds atuais (Lighthouse): perf ≥ 0.85, a11y ≥ 0.90, best-practices ≥
 
 Testes PWA reais em `tests/test_e2e_playwright.py::TestPWA` validam `manifest.json` (campos + ícone ≥192px), `sw.js` (Content-Type + `CACHE_VERSION`) e fallback offline via `page.context.set_offline(True)`.
 
-Master Compliance score atual: **1263.5 / 1267.5 = 99.68%** (36 categorias).
+Master Compliance score atual: **1248.5 / 1268.5 = 98.42%** (36 categorias).
 
 ## Diagramas
 

@@ -44,7 +44,7 @@ Este projeto responde essa pergunta de forma clara, objetiva e validada.
 <!-- ABOUT-EN:START -->
 ### 🌐 About (English)
 
-**NossoDireito — Rights Portal for People with Disabilities.** Regional project — interface and content in Portuguese (pt-BR) for Brazilian citizens. Web portal with **42 rights categories**, official-source references, keyword-based document analysis, accessibility tools (VLibras sign language, TTS, high contrast, font scaling), PWA offline support, and encrypted storage via Web Crypto API. **Zero data collection (LGPD compliant).** Master Compliance score 1263.5/1267.5 (99.68%) across 36 validation categories. CI quality gates: CodeQL, gitleaks, Quality Gate, Lighthouse (perf/seo/a11y/bp/pwa) and axe-core WCAG 2.1 AA in 3 browser engines (chromium/firefox/webkit). Deployed to Azure App Service (region `brazilsouth`) via ZIP deploy; Terraform for infrastructure replication. CI/CD via GitHub Actions with automated Quality Gate.
+**NossoDireito — Rights Portal for People with Disabilities.** Regional project — interface and content in Portuguese (pt-BR) for Brazilian citizens. Web portal with **42 rights categories**, official-source references, keyword-based document analysis, accessibility tools (VLibras sign language, TTS, high contrast, font scaling), PWA offline support, and encrypted storage via Web Crypto API. **Zero data collection (LGPD compliant).** Master Compliance score 1248.5/1268.5 (98.42%) across 36 validation categories. CI quality gates: CodeQL, gitleaks, Quality Gate, Lighthouse (perf/seo/a11y/bp/pwa) and axe-core WCAG 2.1 AA in 3 browser engines (chromium/firefox/webkit). Deployed to Azure App Service (region `brazilsouth`) via ZIP deploy; Terraform for infrastructure replication. CI/CD via GitHub Actions with automated Quality Gate.
 <!-- ABOUT-EN:END -->
 
 ---
@@ -72,17 +72,25 @@ Para rodar testes: veja [`docs/OPERATIONS.md`](docs/OPERATIONS.md)
 
 ---
 
-## 🎉 NOVIDADES v1.34.2 (24/05/2026) — 42 categorias, cobertura E2E e hardening de gates
+## 🎉 NOVIDADES v1.34.2 (27/05/2026) — simplificação operacional + guard de drift de docs
 
-**🏆 Status atual:** pipeline de testes 100% verde (678 passed) + Lighthouse strict + axe-core cross-browser (chromium/firefox/webkit) + 7 required checks no branch protection.
+**🏆 Status atual:** 513 testes Python passando (excluindo E2E browsers), CodeQL/gitleaks/Quality Gate/Lighthouse/axe-core (3 engines) verdes, 0 issues abertas, 0 alertas de segurança.
 
-### ✅ Pipeline S1–S11 (das últimas semanas):
+### ✅ O que mudou em v1.34.2
 
-1. **42 categorias de direitos** (era 30 + IPVA inline) — incluindo `moradia_assistida_pcd` (proteção pós-pais / Residência Inclusiva), 5 serviços federais novos, CIDs por categoria, hash diff + LexML Law Drift mensal, sync Conecta gov.br quinzenal.
-2. **Cobertura E2E end-to-end:** Lighthouse CI (perf≥85, a11y≥90, bp≥90, seo≥90, pwa≥50 warn) em 4 URLs × 5 categorias; PWA tests reais (manifest validation, sw.js Content-Type, offline fallback via `set_offline`); axe-core WCAG 2.1 AA em 3 engines (chromium/firefox/webkit).
-3. **Branch protection hardening:** 7 required checks (CodeQL, gitleaks scan, Quality Gate, Lighthouse, A11y × 3 engines).
-4. **UX home section-nav scroll-spy** + remoção do FAB de emergência (conteúdo de emergência preservado por categoria).
-5. **Hotfix:** URL IBGE Censo 2022 que retornava 404 substituída pela página canônica oficial.
+1. **Simplificação operacional:** 14 workflows GitHub Actions desativados (renomeados para `.yml.disabled`) — agentes de monitoramento contínuo (`legal-source-auditor`, `lexml-law-drift`, `conecta-govbr-sync`, `content-freshness-monitor`, `compliance-drift-detector`, `dependency-intelligence`, `community-insights`, `performance-watchdog`, `documentation-keeper`, `replication`, `scorecard`, `security-baseline`, `weekly-review`, `discover-benefits`). Permanecem ativos os 8 workflows essenciais de CI/CD e segurança.
+2. **Arquivamento de scripts:** 14 scripts movidos para `scripts/legacy/` (9 agentes + 3 migrações pontuais já aplicadas + 2 utilitários de cron). Histórico preservado, sem confusão sobre o que é runtime ativo.
+3. **Guard automático contra drift de docs:** novo `check_workflow_references()` em [check_docs_sync.py](scripts/check_docs_sync.py) — bloqueia commits quando README/docs referenciam workflows inexistentes. Catch automático do tipo de drift descoberto neste release.
+4. **Documentação ressincronizada:** README, docs/REPLICATION, docs/SECURITY-LGPD, docs/COST-ESTIMATE atualizados para refletir o inventário real (badges, tree, infra, custos com Redis).
+5. **Quality Gate reforçado:** branch protection com 7 required checks (CodeQL × 2 + gitleaks + Quality Gate + Lighthouse + A11y × 3 engines), comments-resolution required, admin override apenas para rebases de release.
+
+### ⚙️ Pipeline de gates (continua)
+
+- Lighthouse CI (perf ≥ 0.85, a11y ≥ 0.90, bp ≥ 0.90, seo ≥ 0.90, pwa ≥ 0.50 warn) em 4 URLs
+- axe-core WCAG 2.1 AA em 3 browser engines (chromium/firefox/webkit)
+- CodeQL Python + JavaScript/TypeScript
+- gitleaks secret scanning
+- Quality Gate (36 categorias master_compliance)
 
 ### 📚 Documentação:
 
@@ -194,7 +202,7 @@ node server.js
 
 ### **Dados**
 
-- **JSON** — direitos.json (42 categorias, ~330KB) + matching_engine.json (~110KB) + dicionario_pcd.json (~72KB)
+- **JSON** — direitos.json (42 categorias, ~400KB) + matching_engine.json (~110KB) + dicionario_pcd.json (~62KB) + municipios_br.json (~340KB)
 - **Compressão** — Minificação de HTML/CSS/JS
 
 ### **Infraestrutura (IaC)**

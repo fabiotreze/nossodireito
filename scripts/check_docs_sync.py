@@ -316,6 +316,114 @@ def check_workflow_references(r: CheckResult) -> None:
         )
 
 
+def check_master_compliance_score(r: CheckResult) -> None:
+    """ERRO se README/ARCHITECTURE citam score Master Compliance diferente
+    do produzido pelo `scripts/master_compliance.py`. Tolera diferenca <= 0.5pt.
+    """
+    import subprocess
+    try:
+        out = subprocess.run(
+            ["python3", str(ROOT / "scripts" / "master_compliance.py")],
+            capture_output=True, text=True, timeout=120, check=False,
+        ).stdout
+    except Exception as e:
+        r.warn(f"master_compliance.py nao executavel: {e}")
+        return
+    m = re.search(r"SCORE FINAL:\s*([\d.]+)/([\d.]+)\s*=\s*([\d.]+)%", out)
+    if not m:
+        r.warn("master_compliance.py: linha 'SCORE FINAL: X/Y = Z%' nao encontrada")
+        return
+    cur_num = float(m.group(1))
+    cur_den = float(m.group(2))
+    cur_pct = float(m.group(3))
+    # Padroes: "1248.5/1268.5 (98.42%)" ou "1248.5 / 1268.5 = 98.42%"
+    doc_pat = re.compile(
+        r"(\d{3,5}\.\d)\s*/\s*(\d{3,5}\.\d)\s*[(=]\s*(\d{2,3}\.\d{1,2})\s*%?\s*\)?",
+    )
+    for rel in ("README.md", "docs/ARCHITECTURE.md"):
+        f = ROOT / rel
+        if not f.is_file():
+            continue
+        for lineno, line in enumerate(f.read_text(encoding="utf-8").splitlines(), 1):
+            for match in doc_pat.finditer(line):
+                d_num = float(match.group(1))
+                d_den = float(match.group(2))
+                d_pct = float(match.group(3))
+                if abs(d_num - cur_num) > 0.5 or abs(d_den - cur_den) > 0.5 or abs(d_pct - cur_pct) > 0.1:
+                    r.err(
+                        f"{rel}:{lineno} score '{match.group(0)}' != real "
+                        f"({cur_num}/{cur_den} = {cur_pct}%). "
+                        f"Atualize com saida de `python3 scripts/master_compliance.py`."
+                    )
+
+
+def check_novidades_date(r: CheckResult) -> None:
+    """ERRO se 'NOVIDADES vX.Y.Z (DD/MM/YYYY)' no README cita versao != manifest
+    ou data > 30 dias atras enquanto a versao bate."""
+    from datetime import date, timedelta
+    try:
+        manifest_v = json.loads(
+            (ROOT / "manifest.json").read_text(encoding="utf-8")
+        )["version"]
+    except Exception:
+        return
+    text = _read(ROOT / "README.md")
+    if not text:
+        return
+    m = re.search(
+        r"NOVIDADES\s+v(\d+\.\d+\.\d+)\s*\((\d{2})/(\d{2})/(\d{4})\)",
+        text,
+    )
+    if not m:
+        return
+    ver, dd, mm, yyyy = m.group(1), int(m.group(2)), int(m.group(3)), int(m.group(4))
+    if ver != manifest_v:
+        r.err(
+            f"README NOVIDADES cita versao v{ver} != manifest.json (v{manifest_v}). "
+            f"Atualize o bloco NOVIDADES no README."
+        )
+        return
+    try:
+        novidades_date = date(yyyy, mm, dd)
+    except ValueError:
+        r.err(f"README NOVIDADES com data invalida: {dd}/{mm}/{yyyy}")
+        return
+    if novidades_date > date.today() + timedelta(days=1):
+        r.err(f"README NOVIDADES com data futura: {novidades_date}")
+    elif (date.today() - novidades_date) > timedelta(days=30):
+        r.warn(
+            f"README NOVIDADES de {novidades_date} tem >30 dias mas versao "
+            f"v{manifest_v} esta atual. Revise se o release foi reaproveitado."
+        )
+
+
+def check_json_size_claims(r: CheckResult) -> None:
+    """WARN se README cita '~NNNKB' para data/*.json com desvio >25% do tamanho real."""
+    text = _read(ROOT / "README.md")
+    if not text:
+        return
+    # padrao: '<basename>.json (... ~NNNKB)' ou '<basename>.json (~NNNKB)'
+    pat = re.compile(
+        r"([a-z_]+)\.json[^()\n]*?~(\d{2,4})\s*KB",
+        re.IGNORECASE,
+    )
+    for match in pat.finditer(text):
+        name = match.group(1).lower()
+        claimed_kb = int(match.group(2))
+        f = ROOT / "data" / f"{name}.json"
+        if not f.is_file():
+            continue
+        real_kb = f.stat().st_size // 1024
+        if real_kb == 0:
+            continue
+        drift_pct = abs(real_kb - claimed_kb) / real_kb * 100
+        if drift_pct > 25:
+            r.warn(
+                f"README cita data/{name}.json ~{claimed_kb}KB, real {real_kb}KB "
+                f"(drift {drift_pct:.0f}%). Atualize a estimativa."
+            )
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Valida sincronia docs ↔ código.")
     parser.add_argument("--quiet", action="store_true", help="Só mostra falhas")
@@ -329,6 +437,9 @@ def main() -> int:
     check_git_tag_sync(r)
     check_prerendered_version_sync(r)
     check_workflow_references(r)
+    check_master_compliance_score(r)
+    check_novidades_date(r)
+    check_json_size_claims(r)
 
     if not args.quiet:
         print("═" * 60)

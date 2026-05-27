@@ -257,6 +257,8 @@ def bump_docs_headers(new: str, *, dry_run: bool) -> bool:
     any_changed = False
     ver_pat = _re.compile(r"(\*\*(?:Version|Vers[aã]o):\*\*\s*)[0-9]+\.[0-9]+\.[0-9]+", _re.IGNORECASE)
     upd_pat = _re.compile(r"(\*\*(?:Updated|Atualizado):\*\*\s*)\d{4}-\d{2}-\d{2}", _re.IGNORECASE)
+    # tambem atualiza '**Última revisão:** YYYY-MM-DD' / '**Last review:** YYYY-MM-DD'
+    rev_pat = _re.compile(r"(\*\*(?:Última revisão|Ultima revisao|Last review):\*\*\s*)\d{4}-\d{2}-\d{2}", _re.IGNORECASE)
     for rel in VERSIONED_DOCS:
         path = ROOT / rel
         if not path.exists():
@@ -264,9 +266,10 @@ def bump_docs_headers(new: str, *, dry_run: bool) -> bool:
         text = read_text(path)
         new_text, n_ver = ver_pat.subn(r"\g<1>" + new, text)
         new_text, n_upd = upd_pat.subn(r"\g<1>" + TODAY, new_text)
-        if n_ver or n_upd:
+        new_text, n_rev = rev_pat.subn(r"\g<1>" + TODAY, new_text)
+        if n_ver or n_upd or n_rev:
             write_text(path, new_text, dry_run=dry_run)
-            print(f"  ✅ {rel}: Version→{new} (n={n_ver}), Updated→{TODAY} (n={n_upd})")
+            print(f"  ✅ {rel}: Version→{new} (n={n_ver}), Updated→{TODAY} (n={n_upd}), Revisão→{TODAY} (n={n_rev})")
             any_changed = True
     return any_changed
 
