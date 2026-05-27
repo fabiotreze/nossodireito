@@ -16,6 +16,14 @@ const path = require("node:path");
 const zlib = require("node:zlib");
 const crypto = require("node:crypto");
 
+// ── Lib modules (Onda 7 — modularização) ──
+const { MIME, CACHE, ALLOWED_EXT, COMPRESSIBLE } = require("./lib/mime");
+const { SECURITY_HEADERS } = require("./lib/security-headers");
+const { resolveFile } = require("./lib/file-resolver");
+const { createAnalytics } = require("./lib/analytics");
+const { createRateLimiter } = require("./lib/rate-limit");
+void ALLOWED_EXT;
+
 // ── IA opt-in (Azure OpenAI) ──
 // Anonymizer roda em Node + browser. Aqui é o double-check de PII.
 const { anonymize, containsPII } = require("./shared/anonymizer");
@@ -149,387 +157,31 @@ async function getRedisClient() {
   return redisInitPromise;
 }
 
-// ── Privacy-Respecting Visitor Analytics ──
-// LGPD-compliant: zero cookies, zero fingerprinting, zero PII stored.
-// IPs are anonymized via SHA-256 with a daily-rotating random salt.
-// Only aggregated counters are kept in-memory (reset daily).
-// Metrics are forwarded to Application Insights as custom events.
-const analytics = {
-  salt: crypto.randomBytes(32).toString("hex"),
-  date: new Date().toISOString().slice(0, 10),
-  pageViews: 0,
-  uniqueVisitors: new Set(),
-  byDevice: { desktop: 0, mobile: 0, tablet: 0 },
-  byPath: new Map(),
-  hourly: new Array(24).fill(0),
-  history: [], // last 30 days of {date, views, visitors}
-};
+// ── Privacy-Respecting Visitor Analytics (lib/analytics.js) ──
+const analytics = createAnalytics({
+  getAppInsightsClient: () => (appInsights ? appInsights.defaultClient : null),
+});
+const analyticsTrack = (ip, ua, urlPath) => analytics.track(ip, ua, urlPath);
+const analyticsRotateIfNeeded = () => analytics.rotateIfNeeded();
 
-/**
- * Rotate daily salt and archive yesterday's stats.
- * Called on every request — cheap Date comparison.
- */
-function analyticsRotateIfNeeded() {
-  const today = new Date().toISOString().slice(0, 10);
-  if (today === analytics.date) return;
-
-  // Archive previous day
-  analytics.history.push({
-    date: analytics.date,
-    views: analytics.pageViews,
-    visitors: analytics.uniqueVisitors.size,
-    devices: { ...analytics.byDevice },
-    topPages: [...analytics.byPath.entries()]
-      .sort((a, b) => b[1] - a[1])
-      .slice(0, 10)
-      .map(([p, c]) => ({ path: p, views: c })),
-  });
-  // Keep only last 30 days
-  if (analytics.history.length > 30) analytics.history.shift();
-
-  // Send summary to Application Insights (if available)
-  if (appInsights) {
-    const client = appInsights.defaultClient;
-    if (client) {
-      client.trackMetric({ name: "daily_unique_visitors", value: analytics.uniqueVisitors.size });
-      client.trackMetric({ name: "daily_page_views", value: analytics.pageViews });
-      client.trackMetric({ name: "daily_desktop", value: analytics.byDevice.desktop });
-      client.trackMetric({ name: "daily_mobile", value: analytics.byDevice.mobile });
-      client.trackMetric({ name: "daily_tablet", value: analytics.byDevice.tablet });
-    }
-  }
-
-  // Reset for new day with fresh salt (prevents cross-day correlation)
-  analytics.salt = crypto.randomBytes(32).toString("hex");
-  analytics.date = today;
-  analytics.pageViews = 0;
-  analytics.uniqueVisitors = new Set();
-  analytics.byDevice = { desktop: 0, mobile: 0, tablet: 0 };
-  analytics.byPath = new Map();
-  analytics.hourly = new Array(24).fill(0);
-}
-
-/**
- * Detect device type from User-Agent (broad categories only — no fingerprinting).
- *
- * Security: regex evita backtracking polinomial (CodeQL js/polynomial-redos).
- * O antigo padrão `android.*mobile` permitia ataque ReDoS em UAs construídos.
- * Agora usamos alternations literais simples + checagem dupla para Android+Mobile.
- */
-function detectDevice(ua) {
-  if (!ua) return "desktop";
-  if (/tablet|ipad|playbook|silk/i.test(ua)) return "tablet";
-  if (/mobile|iphone|ipod|windows phone|blackberry/i.test(ua)) return "mobile";
-  // Android Mobile: dois testes independentes (sem .* entre tokens → sem ReDoS)
-  if (/android/i.test(ua) && /mobile/i.test(ua)) return "mobile";
-  return "desktop";
-}
-
-/**
- * Record a page view with privacy-preserving visitor dedup.
- * @param {string} ip - Raw client IP (never stored)
- * @param {string} ua - User-Agent header
- * @param {string} urlPath - Requested path
- */
-function analyticsTrack(ip, ua, urlPath) {
-  analyticsRotateIfNeeded();
-
-  // Anonymize: SHA-256(salt + ip) — irreversible, non-correlatable across days
-  const hash = crypto
-    .createHash("sha256")
-    .update(analytics.salt + ip)
-    .digest("hex")
-    .slice(0, 16);
-  const isNew = !analytics.uniqueVisitors.has(hash);
-  analytics.uniqueVisitors.add(hash);
-
-  analytics.pageViews++;
-
-  // Device category
-  const device = detectDevice(ua);
-  if (isNew) analytics.byDevice[device]++;
-
-  // Path tracking (top pages)
-  const safePath = urlPath.split("?")[0].slice(0, 100); // strip query, limit length
-  analytics.byPath.set(safePath, (analytics.byPath.get(safePath) || 0) + 1);
-  // Cap map size to prevent memory abuse
-  if (analytics.byPath.size > 500) {
-    const sorted = [...analytics.byPath.entries()].sort((a, b) => b[1] - a[1]).slice(0, 100);
-    analytics.byPath = new Map(sorted);
-  }
-
-  // Hourly distribution
-  const hour = new Date().getHours();
-  analytics.hourly[hour]++;
-
-  // Real-time metric to App Insights (sampled — only on new visitors)
-  if (isNew && appInsights) {
-    const client = appInsights.defaultClient;
-    if (client) {
-      client.trackEvent({
-        name: "unique_visit",
-        properties: { device, path: safePath },
-      });
-    }
-  }
-
-  // Track page view → populates `pageViews` table in App Insights.
-  // NO raw IP sent — Azure auto-collects from the HTTP request and applies
-  // IP masking at ingestion (stores 0.0.0.0 by default, DisableIpMasking=false).
-  // Only anonymous aggregates (country/state) are derived and stored.
-  // LGPD-safe: no PII transmitted, no PII stored.
-  if (appInsights) {
-    const client = appInsights.defaultClient;
-    if (client) {
-      client.trackPageView({
-        name: safePath,
-        url: safePath,
-        properties: { device },
-      });
-    }
-  }
-}
-
-// ── Rate Limiting (in-memory, per IP) ──
-// Note: In-memory map acceptable for small-scale (institutional site).
-// For high-traffic production: consider Redis + node-rate-limiter-flexible
-// Limitations: memory growth with many IPs, resets on restart, vulnerable to distributed attacks
-const RATE_LIMIT_WINDOW = 60_000; // 1 minute
-const RATE_LIMIT_MAX = 120; // max requests per window
-const rateLimitMap = new Map();
-
-function isRateLimited(ip) {
-  const now = Date.now();
-  // Safety cap: prevent unbounded memory growth under distributed attack
-  if (rateLimitMap.size > 50000) rateLimitMap.clear();
-  const entry = rateLimitMap.get(ip);
-  if (!entry || now - entry.start > RATE_LIMIT_WINDOW) {
-    rateLimitMap.set(ip, { start: now, count: 1 });
-    return false;
-  }
-  entry.count++;
-  return entry.count > RATE_LIMIT_MAX;
-}
-
-async function isRateLimitedRedis(ip) {
-  const client = await getRedisClient();
-  const key = `rate:${ip}`;
-  const count = await client.incr(key);
-  if (count === 1) {
-    await client.expire(key, Math.ceil(RATE_LIMIT_WINDOW / 1000));
-  }
-  return count > RATE_LIMIT_MAX;
-}
-
-async function isRateLimitedAdaptive(ip) {
-  if (!redisConfigured()) {
-    return isRateLimited(ip);
-  }
-
-  try {
-    return await isRateLimitedRedis(ip);
-  } catch (err) {
+// ── Rate Limiting (lib/rate-limit.js) ──
+const rateLimiter = createRateLimiter({
+  redisConfigured,
+  getRedisClient,
+  onRedisError: (err) => {
     if (!redisInitError) redisInitError = err;
     console.warn(`Redis rate limiting unavailable, falling back to memory: ${err.message}`);
-    return isRateLimited(ip);
-  }
-}
-
-// Cleanup stale entries every 5 minutes
-setInterval(() => {
-  const now = Date.now();
-  for (const [ip, entry] of rateLimitMap) {
-    if (now - entry.start > RATE_LIMIT_WINDOW) rateLimitMap.delete(ip);
-  }
-}, 300_000);
-
-// MIME types (strict allowlist)
-const MIME = Object.freeze({
-  ".html": "text/html; charset=utf-8",
-  ".css": "text/css; charset=utf-8",
-  ".js": "application/javascript; charset=utf-8",
-  ".json": "application/json; charset=utf-8",
-  ".png": "image/png",
-  ".jpg": "image/jpeg",
-  ".jpeg": "image/jpeg",
-  ".ico": "image/x-icon",
-  ".svg": "image/svg+xml",
-  ".webp": "image/webp",
-  ".txt": "text/plain; charset=utf-8",
-  ".xml": "application/xml; charset=utf-8",
+  },
 });
+const isRateLimitedAdaptive = (ip) => rateLimiter.check(ip);
 
-// Cache policies (seconds)
-const CACHE = Object.freeze({
-  ".html": "public, max-age=300, stale-while-revalidate=300", // 5 min + serve stale while revalidating
-  ".json": "public, max-age=3600, stale-while-revalidate=600", // 1 hour + 10 min stale
-  ".css": "public, max-age=2592000, immutable", // 30 days — never revalidate
-  ".js": "public, max-age=2592000, immutable", // 30 days — never revalidate
-  ".png": "public, max-age=2592000, immutable", // 30 days — never revalidate
-  ".jpg": "public, max-age=2592000, immutable", // 30 days — never revalidate
-  ".jpeg": "public, max-age=2592000, immutable", // 30 days — never revalidate
-  ".ico": "public, max-age=2592000, immutable", // 30 days — never revalidate
-  ".svg": "public, max-age=2592000, immutable", // 30 days — never revalidate
-  ".webp": "public, max-age=2592000, immutable", // 30 days — never revalidate
-  ".xml": "public, max-age=3600, stale-while-revalidate=600", // 1 hour + 10 min stale
-  ".txt": "public, max-age=86400", // 1 day
-});
-
-// ── Security Headers (EASM-hardened) ──
-// Covers: OWASP Secure Headers, Mozilla Observatory, Qualys SSL Labs
-// Note: upgrade-insecure-requests is added dynamically only in production
-// (not on localhost) — see buildCSP(). On localhost/HTTP it would break all
-// resource loading by forcing HTTPS on a server without TLS.
-const IS_PRODUCTION = !!(process.env.WEBSITE_SITE_NAME || process.env.NODE_ENV === "production");
-
-const CSP_DIRECTIVES = [
-  "default-src 'none'",
-  "script-src 'self' blob: https://cdnjs.cloudflare.com https://vlibras.gov.br https://*.vlibras.gov.br https://cdn.jsdelivr.net 'unsafe-eval' 'wasm-unsafe-eval'",
-  "script-src-elem 'self' blob: https://vlibras.gov.br https://*.vlibras.gov.br https://cdnjs.cloudflare.com https://cdn.jsdelivr.net",
-  "style-src 'self' 'unsafe-inline' https://*.vlibras.gov.br https://cdn.jsdelivr.net",
-  "img-src 'self' data: blob: https://vlibras.gov.br https://*.vlibras.gov.br https://cdn.jsdelivr.net",
-  "connect-src 'self' https://vlibras.gov.br https://*.vlibras.gov.br https://cdn.jsdelivr.net https://cdnjs.cloudflare.com data:",
-  "worker-src 'self' blob: https://cdnjs.cloudflare.com https://vlibras.gov.br https://*.vlibras.gov.br",
-  "child-src blob:",
-  "frame-src 'self' https://*.vlibras.gov.br blob:",
-  "media-src 'self' https://*.vlibras.gov.br",
-  "font-src 'self' https://vlibras.gov.br https://*.vlibras.gov.br https://cdn.jsdelivr.net",
-  "form-action 'none'",
-  "base-uri 'self'",
-  "frame-ancestors 'none'",
-  "manifest-src 'self'",
-];
-if (IS_PRODUCTION) CSP_DIRECTIVES.push("upgrade-insecure-requests");
-
-const SECURITY_HEADERS = Object.freeze({
-  // ── Anti-XSS / Injection ──
-  // Note: 'unsafe-eval' adicionado para VLibras Unity (trade-off: funcionalidade vs segurança)
-  "Content-Security-Policy": CSP_DIRECTIVES.join("; "),
-  "X-Content-Type-Options": "nosniff",
-  "X-Frame-Options": "DENY",
-
-  // ── Transport Security ──
-  "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
-
-  // ── Privacy / Referrer ──
-  // strict-origin-when-cross-origin: sends origin on cross-origin requests
-  // (privacy-preserving) while allowing same-origin referral data for analytics.
-  "Referrer-Policy": "strict-origin-when-cross-origin",
-
-  // ── Feature Restrictions ──
-  // Note: accelerometer/gyroscope/magnetometer allowed for self —
-  // VLibras Unity WebGL (Emscripten) calls _emscripten_set_devicemotion_callback
-  // which requires accelerometer permission. Chromium enforces this via
-  // Permissions-Policy; Safari does not. Blocking breaks VLibras on Windows.
-  // bluetooth=() removed: not a recognized W3C Permissions Policy feature (console warning).
-  "Permissions-Policy":
-    "camera=(), microphone=(), geolocation=(), payment=(), usb=(), serial=(), hid=(), accelerometer=(self), gyroscope=(self), magnetometer=(self), screen-wake-lock=()",
-
-  // ── Cross-Origin Isolation ──
-  "Cross-Origin-Opener-Policy": "same-origin",
-  "Cross-Origin-Resource-Policy": "cross-origin",
-  // COEP unsafe-none: VLibras (vlibras.gov.br) assets cross-origin não enviam
-  // CORP headers. Safari não suporta 'credentialless'. require-corp quebraria
-  // o carregamento do avatar Unity no Safari/iOS.
-  "Cross-Origin-Embedder-Policy": "unsafe-none",
-
-  // ── Miscellaneous OWASP ──
-  "X-Permitted-Cross-Domain-Policies": "none",
-  "X-DNS-Prefetch-Control": "off",
-  "X-Download-Options": "noopen",
-});
-
-// Allowed file extensions (whitelist — reject everything else)
-const ALLOWED_EXT = new Set(Object.keys(MIME));
-
-// Compressible types
-const COMPRESSIBLE = new Set([".html", ".css", ".js", ".json", ".svg", ".txt", ".xml"]);
-
-// Blocked directories
-const BLOCKED_DIRS = new Set(["terraform", "node_modules", "tests", ".github", "docs", "__pycache__"]);
-
-// Max URL length (CWE-400 — prevent URL buffer attacks)
-const MAX_URL_LENGTH = 2048;
-
+// MIME, CACHE, CSP/SECURITY_HEADERS, ALLOWED_EXT, COMPRESSIBLE, BLOCKED_DIRS,
+// MAX_URL_LENGTH e resolveFile() foram extraídos para lib/* na Onda 7.
 const ROOT = __dirname;
+const MAX_URL_LENGTH = 2048;
 
 // Cache package.json version at startup (avoid readFileSync on every health check)
 const PKG_VERSION = JSON.parse(fs.readFileSync(path.join(__dirname, "package.json"), "utf8")).version;
-
-async function resolveFile(urlPath) {
-  // Reject null-byte injection (CWE-158)
-  if (urlPath.includes("\0")) return null;
-
-  // Reject oversized URLs (CWE-400)
-  if (urlPath.length > MAX_URL_LENGTH) return null;
-
-  // Reject non-ASCII control characters (CWE-116)
-  if (/[\x00-\x1f\x7f]/.test(urlPath)) return null;
-
-  // Normalize and prevent directory traversal (CWE-22)
-  let filePath;
-  try {
-    filePath = path.normalize(decodeURIComponent(urlPath));
-  } catch {
-    return null; // malformed URI encoding
-  }
-
-  // Reject double-encoded traversal (e.g. %252e%252e)
-  if (filePath.includes("..")) return null;
-
-  if (filePath === "/" || filePath === "\\") filePath = "/index.html";
-
-  const fullPath = path.join(ROOT, filePath);
-
-  // Ensure within root (CWE-22)
-  if (!fullPath.startsWith(ROOT + path.sep) && fullPath !== ROOT) return null;
-
-  // Block dotfiles and sensitive directories (.env, .git, .github, etc.)
-  const relative = path.relative(ROOT, fullPath);
-  const segments = relative.split(path.sep);
-  if (segments.some((seg) => seg.startsWith("."))) return null;
-
-  // Block sensitive directories
-  if (BLOCKED_DIRS.has(segments[0].toLowerCase())) return null;
-
-  // Extension whitelist — only serve known safe types
-  const ext = path.extname(fullPath).toLowerCase();
-  if (ext && !ALLOWED_EXT.has(ext)) return null;
-
-  // Clean-URL resolution for extensionless paths (SEO: /direitos/bpc/ -> direitos/bpc/index.html).
-  // Tries in order: <path>/index.html, <path>.html, then SPA fallback.
-  if (!ext) {
-    // Try directory index.html
-    const dirIndex = path.join(fullPath, "index.html");
-    try {
-      const stat = await fsPromises.lstat(dirIndex);
-      if (stat.isFile() && !stat.isSymbolicLink()) return dirIndex;
-    } catch {
-      /* not a directory or missing */
-    }
-    // Try <path>.html
-    const asHtml = `${fullPath}.html`;
-    try {
-      const stat = await fsPromises.lstat(asHtml);
-      if (stat.isFile() && !stat.isSymbolicLink()) return asHtml;
-    } catch {
-      /* missing */
-    }
-    // SPA fallback (navigation request)
-    return path.join(ROOT, "index.html");
-  }
-
-  // File must exist and be a regular file (no symlink following)
-  try {
-    const stat = await fsPromises.lstat(fullPath);
-    if (stat.isFile() && !stat.isSymbolicLink()) return fullPath;
-  } catch {
-    // File doesn't exist
-  }
-
-  // Requests with file extensions that don't exist → 404
-  return null;
-}
 
 const server = http.createServer(async (req, res) => {
   // ── Suppress server identification (CWE-200) ──
@@ -997,7 +649,7 @@ Acknowledgments: https://github.com/fabiotreze/nossodireito/security/advisories
     return;
   }
 
-  const fullPath = await resolveFile(urlPath);
+  const fullPath = await resolveFile(urlPath, ROOT);
 
   if (!fullPath) {
     res.writeHead(404, {
