@@ -130,7 +130,15 @@
                         "noticia",
                         "servico",
                         "normativa",
-                        "programa"
+                        "programa",
+                        "resolucao",
+                        "portaria",
+                        "decreto",
+                        "norma_tecnica",
+                        "app",
+                        "dados",
+                        "referencia",
+                        "formulario"
                     ],
                     "description": "Tipo da fonte"
                 },

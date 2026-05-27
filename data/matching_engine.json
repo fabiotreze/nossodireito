@@ -798,12 +798,6 @@
       ],
       "weight": 3
     },
-    "FGTS Digital": {
-      "cats": [
-        "fgts"
-      ],
-      "weight": 8
-    },
     "fgts digital": {
       "cats": [
         "fgts"
@@ -815,12 +809,6 @@
         "fgts"
       ],
       "weight": 6
-    },
-    "Programa Mover": {
-      "cats": [
-        "isencoes_tributarias"
-      ],
-      "weight": 8
     },
     "programa mover": {
       "cats": [
@@ -961,10 +949,12 @@
     },
     "nbr 9050": {
       "cats": [
+        "acessibilidade_arquitetonica",
+        "educacao",
         "estacionamento_especial",
-        "educacao"
+        "moradia"
       ],
-      "weight": 3
+      "weight": 10
     },
     "lei 10.098": {
       "cats": [
@@ -1426,10 +1416,11 @@
     },
     "libras": {
       "cats": [
+        "acessibilidade_digital",
         "educacao",
         "trabalho"
       ],
-      "weight": 3
+      "weight": 9
     },
     "aparelho auditivo": {
       "cats": [
@@ -2193,6 +2184,14 @@
       ],
       "weight": 3
     },
+    "representante legal": {
+      "cats": [
+        "bpc",
+        "capacidade_legal",
+        "curatela_decisao_apoiada"
+      ],
+      "weight": 5
+    },
     "interdição": {
       "cats": [
         "capacidade_legal",
@@ -2207,6 +2206,44 @@
         "curatela_decisao_apoiada"
       ],
       "weight": 3
+    },
+    "contribuinte facultativo": {
+      "cats": [
+        "aposentadoria_especial_pcd",
+        "certificado_pcd_inss",
+        "auxilio_inclusao"
+      ],
+      "weight": 4
+    },
+    "segurado facultativo": {
+      "cats": [
+        "aposentadoria_especial_pcd",
+        "certificado_pcd_inss",
+        "auxilio_inclusao"
+      ],
+      "weight": 4
+    },
+    "gps previdência": {
+      "cats": [
+        "aposentadoria_especial_pcd",
+        "certificado_pcd_inss",
+        "auxilio_inclusao"
+      ],
+      "weight": 4
+    },
+    "guia da previdência social": {
+      "cats": [
+        "aposentadoria_especial_pcd",
+        "certificado_pcd_inss",
+        "auxilio_inclusao"
+      ],
+      "weight": 4
+    },
+    "bpc loas": {
+      "cats": [
+        "bpc"
+      ],
+      "weight": 6
     },
     "aposentadoria por invalidez": {
       "cats": [
@@ -2302,7 +2339,7 @@
       "cats": [
         "sus_terapias"
       ],
-      "weight": 3
+      "weight": 9
     },
     "componente especializado": {
       "cats": [
@@ -3081,9 +3118,11 @@
     },
     "dpu": {
       "cats": [
-        "atendimento_prioritario"
+        "atendimento_prioritario",
+        "bpc",
+        "prioridade_judicial"
       ],
-      "weight": 4
+      "weight": 7
     },
     "assistência jurídica": {
       "cats": [
@@ -3746,14 +3785,6 @@
         "bpc"
       ],
       "weight": 8
-    },
-    "DPU": {
-      "cats": [
-        "atendimento_prioritario",
-        "prioridade_judicial",
-        "bpc"
-      ],
-      "weight": 7
     },
     "turismo acessível": {
       "cats": [
@@ -4604,13 +4635,6 @@
       ],
       "weight": 10
     },
-    "NBR 9050": {
-      "cats": [
-        "acessibilidade_arquitetonica",
-        "moradia"
-      ],
-      "weight": 10
-    },
     "piso tatil": {
       "cats": [
         "acessibilidade_arquitetonica"
@@ -4871,12 +4895,6 @@
       ],
       "weight": 10
     },
-    "Libras": {
-      "cats": [
-        "acessibilidade_digital"
-      ],
-      "weight": 9
-    },
     "interprete Libras": {
       "cats": [
         "acessibilidade_digital"
@@ -5073,12 +5091,6 @@
         "sus_terapias"
       ],
       "weight": 10
-    },
-    "RENAME": {
-      "cats": [
-        "sus_terapias"
-      ],
-      "weight": 9
     },
     "relação nacional medicamentos": {
       "cats": [

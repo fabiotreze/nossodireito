@@ -1,6 +1,6 @@
 {
   "versao": "1.34.1",
-  "ultima_atualizacao": "2026-05-24",
+  "ultima_atualizacao": "2026-05-27",
   "aviso": "Informações compiladas de fontes oficiais do governo brasileiro (gov.br). Podem estar desatualizadas. Verifique sempre as fontes originais.",
   "fontes": [
     {
@@ -692,6 +692,177 @@
       "artigos_referenciados": [
         "Art. 14, 25 a 29"
       ]
+    },
+    {
+      "nome": "Busca Gov.br — Portal Único do Governo Federal",
+      "tipo": "portal",
+      "url": "https://www.gov.br/pt-br/search?SearchableText=",
+      "orgao": "Governo Federal",
+      "consultado_em": "2026-05-27"
+    },
+    {
+      "nome": "Busca Gov.br — Contribuinte Facultativo",
+      "tipo": "referencia",
+      "url": "https://www.gov.br/pt-br/search?SearchableText=contribuinte%20facultativo",
+      "orgao": "Governo Federal",
+      "consultado_em": "2026-05-27"
+    },
+    {
+      "nome": "INSS — Portal Institucional",
+      "tipo": "portal",
+      "url": "https://www.gov.br/inss/pt-br",
+      "orgao": "INSS",
+      "consultado_em": "2026-05-27"
+    },
+    {
+      "nome": "INSS — BPC (Benefício de Prestação Continuada)",
+      "tipo": "servico",
+      "url": "https://www.gov.br/inss/pt-br/assuntos/beneficios-assistenciais/bpc-beneficio-de-prestacao-continuada",
+      "orgao": "INSS",
+      "consultado_em": "2026-05-27"
+    },
+    {
+      "nome": "INSS — Aposentadoria por Idade",
+      "tipo": "servico",
+      "url": "https://www.gov.br/inss/pt-br/assuntos/beneficios/aposentadoria/aposentadoria-por-idade",
+      "orgao": "INSS",
+      "consultado_em": "2026-05-27"
+    },
+    {
+      "nome": "INSS — Inscrição e Contribuição",
+      "tipo": "referencia",
+      "url": "https://www.gov.br/inss/pt-br/direitos-e-deveres/inscricao-e-contribuicao",
+      "orgao": "INSS",
+      "consultado_em": "2026-05-27"
+    },
+    {
+      "nome": "INSS — Contribuição dos Segurados Facultativo e Contribuinte Individual",
+      "tipo": "referencia",
+      "url": "https://www.gov.br/inss/pt-br/direitos-e-deveres/inscricao-e-contribuicao/contribuicao-dos-segurados-facultativo-e-contribuinte-individual",
+      "orgao": "INSS",
+      "consultado_em": "2026-05-27"
+    },
+    {
+      "nome": "INSS — Saiba Mais: Contribuições",
+      "tipo": "referencia",
+      "url": "https://www.gov.br/inss/pt-br/saiba-mais/contribuicoes",
+      "orgao": "INSS",
+      "consultado_em": "2026-05-27"
+    },
+    {
+      "nome": "INSS — Saiba Mais: Salário Mínimo",
+      "tipo": "referencia",
+      "url": "https://www.gov.br/inss/pt-br/saiba-mais/salario-minimo",
+      "orgao": "INSS",
+      "consultado_em": "2026-05-27"
+    },
+    {
+      "nome": "INSS — Seja um Segurado Facultativo",
+      "tipo": "referencia",
+      "url": "https://www.gov.br/inss/pt-br/saiba-mais/seja-um-segurado-facultativo",
+      "orgao": "INSS",
+      "consultado_em": "2026-05-27"
+    },
+    {
+      "nome": "INSS — Aposentadoria da Pessoa com Deficiência por Invalidez",
+      "tipo": "servico",
+      "url": "https://www.gov.br/inss/pt-br/servicos/aposentadoria-da-pessoa-com-deficiencia-por-invalidez",
+      "orgao": "INSS",
+      "consultado_em": "2026-05-27"
+    },
+    {
+      "nome": "INSS — Cadastrar ou Manter Contribuinte Facultativo",
+      "tipo": "servico",
+      "url": "https://www.gov.br/inss/pt-br/servicos/cadastrar-ou-manter-contribuinte-facultativo",
+      "orgao": "INSS",
+      "consultado_em": "2026-05-27"
+    },
+    {
+      "nome": "Gov.br — Emissão de Guia da Previdência Social (GPS)",
+      "tipo": "servico",
+      "url": "https://www.gov.br/pt-br/servicos/emissao-de-guia-da-previdencia-social-gps",
+      "orgao": "Governo Federal",
+      "consultado_em": "2026-05-27"
+    },
+    {
+      "nome": "Gov.br — Emitir GPS para Pagamento de Contribuições Previdenciárias",
+      "tipo": "servico",
+      "url": "https://www.gov.br/pt-br/servicos/emitir-gps-para-pagamento-de-contribuicoes-previdenciarias",
+      "orgao": "Governo Federal",
+      "consultado_em": "2026-05-27"
+    },
+    {
+      "nome": "Gov.br — Receber o Benefício de Prestação Continuada (BPC/LOAS)",
+      "tipo": "servico",
+      "url": "https://www.gov.br/pt-br/servicos/receber-o-beneficio-de-prestacao-continuada-bpc-loas",
+      "orgao": "Governo Federal",
+      "consultado_em": "2026-05-27"
+    },
+    {
+      "nome": "Lei 14.724/2024",
+      "tipo": "legislacao",
+      "url": "https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2024/lei/l14724.htm",
+      "orgao": "Presidência da República",
+      "consultado_em": "2026-05-27"
+    },
+    {
+      "nome": "Lei 9.250/1995 — Imposto de Renda das Pessoas Físicas",
+      "tipo": "legislacao",
+      "url": "https://www.planalto.gov.br/ccivil_03/leis/l9250.htm",
+      "orgao": "Presidência da República",
+      "consultado_em": "2026-05-27",
+      "artigos_referenciados": [
+        "Art. 6º, XIV"
+      ]
+    },
+    {
+      "nome": "Lei 8.213/1991 — Texto Compilado",
+      "tipo": "legislacao",
+      "url": "https://www.planalto.gov.br/ccivil_03/leis/L8213compilado.htm",
+      "orgao": "Presidência da República",
+      "consultado_em": "2026-05-27"
+    },
+    {
+      "nome": "Lei 8.742/1993 — Texto Compilado",
+      "tipo": "legislacao",
+      "url": "https://www.planalto.gov.br/ccivil_03/leis/L8742compilado.htm",
+      "orgao": "Presidência da República",
+      "consultado_em": "2026-05-27"
+    },
+    {
+      "nome": "CNJ — Busca por Curatela",
+      "tipo": "referencia",
+      "url": "https://www.cnj.jus.br/?s=curatela",
+      "orgao": "Conselho Nacional de Justiça",
+      "consultado_em": "2026-05-27"
+    },
+    {
+      "nome": "CNJ — Manifestação de Vontade em Processos de Interdição",
+      "tipo": "referencia",
+      "url": "https://www.cnj.jus.br/magistrados-devem-consultar-existencia-de-manifestacao-de-vontade-em-processos-de-interdicao/",
+      "orgao": "Conselho Nacional de Justiça",
+      "consultado_em": "2026-05-27"
+    },
+    {
+      "nome": "CNJ — Cartilha de Curatela (PDF)",
+      "tipo": "referencia",
+      "url": "https://www.cnj.jus.br/wp-content/uploads/2022/03/cartilha-curatela.pdf",
+      "orgao": "Conselho Nacional de Justiça",
+      "consultado_em": "2026-05-27"
+    },
+    {
+      "nome": "STJ — Busca por Curatela em Saúde",
+      "tipo": "referencia",
+      "url": "https://www.stj.jus.br/sites/portalp/Paginas/Busca.aspx?k=curatela%20sa%C3%BAde",
+      "orgao": "Superior Tribunal de Justiça",
+      "consultado_em": "2026-05-27"
+    },
+    {
+      "nome": "STJ — Representação em Atos de Saúde Exige Curatela Regularmente Constituída",
+      "tipo": "referencia",
+      "url": "https://www.stj.jus.br/sites/portalp/Paginas/Comunicacao/Noticias-antigas/2019/2019-09-26_13-30_Representacao-em-atos-de-saude-exige-curatela-regularmente-constituida.aspx",
+      "orgao": "Superior Tribunal de Justiça",
+      "consultado_em": "2026-05-27"
     }
   ],
   "documentos_mestre": [
@@ -1913,6 +2084,14 @@
         {
           "titulo": "Solicitar BPC (gov.br)",
           "url": "https://www.gov.br/pt-br/servicos/solicitar-beneficio-assistencial-a-pessoa-com-deficiencia"
+        },
+        {
+          "titulo": "Receber BPC/LOAS (gov.br)",
+          "url": "https://www.gov.br/pt-br/servicos/receber-o-beneficio-de-prestacao-continuada-bpc-loas"
+        },
+        {
+          "titulo": "INSS — BPC (orientações oficiais)",
+          "url": "https://www.gov.br/inss/pt-br/assuntos/beneficios-assistenciais/bpc-beneficio-de-prestacao-continuada"
         },
         {
           "titulo": "Meu INSS",
@@ -4918,6 +5097,10 @@
         {
           "titulo": "INSS — Aposentadoria da Pessoa com Deficiência",
           "url": "https://www.gov.br/inss/pt-br/servicos/aposentadorias"
+        },
+        {
+          "titulo": "INSS — Aposentadoria da Pessoa com Deficiência por Invalidez",
+          "url": "https://www.gov.br/inss/pt-br/servicos/aposentadoria-da-pessoa-com-deficiencia-por-invalidez"
         }
       ],
       "tags": [
@@ -7530,6 +7713,14 @@
           "url": "https://www.dpu.def.br/contatos-dpu"
         },
         {
+          "titulo": "CNJ — Cartilha de Curatela",
+          "url": "https://www.cnj.jus.br/wp-content/uploads/2022/03/cartilha-curatela.pdf"
+        },
+        {
+          "titulo": "STJ — Representação em atos de saúde exige curatela regularmente constituída",
+          "url": "https://www.stj.jus.br/sites/portalp/Paginas/Comunicacao/Noticias-antigas/2019/2019-09-26_13-30_Representacao-em-atos-de-saude-exige-curatela-regularmente-constituida.aspx"
+        },
+        {
           "titulo": "Secretaria Nacional dos Direitos da PcD",
           "url": "https://www.gov.br/mdh/pt-br/navegue-por-temas/pessoa-com-deficiencia"
         },
@@ -9245,6 +9436,14 @@
         {
           "titulo": "Conselho Nacional de Justiça (CNJ) — Manual de Curatela",
           "url": "https://www.cnj.jus.br/"
+        },
+        {
+          "titulo": "CNJ — Cartilha de Curatela (PDF)",
+          "url": "https://www.cnj.jus.br/wp-content/uploads/2022/03/cartilha-curatela.pdf"
+        },
+        {
+          "titulo": "STJ — Jurisprudência e notícias sobre curatela em saúde",
+          "url": "https://www.stj.jus.br/sites/portalp/Paginas/Busca.aspx?k=curatela%20sa%C3%BAde"
         },
         {
           "titulo": "Defensoria Pública — Mapa nacional",
