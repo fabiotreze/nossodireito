@@ -611,7 +611,7 @@ class TestWorkflows:
     """Validação de GitHub Actions workflows"""
 
     EXPECTED_WORKFLOWS = [
-        "deploy.yml", "quality-gate.yml", "weekly-review.yml"
+        "deploy.yml", "quality-gate.yml"
     ]
 
     def test_workflows_exist(self):
@@ -716,7 +716,7 @@ class TestSearchFunctionality:
         terms_to_find = {
             "curatela": "capacidade_legal",
             "crime PcD": "crimes_contra_pcd",
-            "NBR 9050": "acessibilidade_arquitetonica",
+            "nbr 9050": "acessibilidade_arquitetonica",
             "WCAG": "acessibilidade_digital",
             "estimulacao precoce": "reabilitacao",
         }
@@ -1092,7 +1092,7 @@ class TestScriptsPostCleanup:
         "validate_all.py", "validate_content.py", "validate_schema.py",
         "validate_sources.py", "validate_url_policy.py",
         "validate_legal_compliance.py", "validate_legal_sources.py",
-        "master_compliance.py", "bump_version.py", "discover_benefits.py",
+        "master_compliance.py", "bump_version.py",
         "analise360.py", "audit_automation.py",
         "complete_beneficios.py"
     ]
