@@ -24,6 +24,7 @@ const { createAnalytics } = require("./lib/analytics");
 const { createRateLimiter } = require("./lib/rate-limit");
 const { createRedisClient } = require("./lib/redis-client");
 const { createAiAnalyzeHandler } = require("./lib/ai-analyze");
+const { createGovBrProxy } = require("./lib/govbr-proxy");
 void ALLOWED_EXT;
 
 // ── IA opt-in (Azure OpenAI) ──
@@ -137,6 +138,9 @@ const aiAnalyzeHandler = createAiAnalyzeHandler({
   getAppInsightsClient: () => (appInsights ? appInsights.defaultClient : null),
   loadAnalyzer: () => require("./services/ai-analysis").analyzeText,
 });
+
+// ── Gov.br Proxy Handler (lib/govbr-proxy.js) ──
+const govbrProxy = createGovBrProxy({ securityHeaders: SECURITY_HEADERS });
 
 // MIME, CACHE, CSP/SECURITY_HEADERS, ALLOWED_EXT, COMPRESSIBLE, BLOCKED_DIRS,
 // MAX_URL_LENGTH e resolveFile() foram extraídos para lib/* na Onda 7.
@@ -362,81 +366,10 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
-  // ── Gov.br API proxy (CORS bypass for servicos.gov.br) ──
-  // Proxy gov.br sem await (não dá SyntaxError nunca)
-  //
-  // Security: a URL do upstream é construída a partir de input do cliente.
-  // Para mitigar SSRF (CodeQL js/request-forgery) garantimos que servicoId
-  // é estritamente numérico (regex \d+), com comprimento máximo, e fazemos
-  // um cast explícito para Number → toString antes de interpolar, removendo
-  // qualquer dúvida de fluxo taint para o fetch downstream.
+  // ── Gov.br API proxy (lib/govbr-proxy.js) ──
   const govbrMatch = req.url.match(/^\/api\/govbr-servico\/(\d+)$/);
   if (govbrMatch) {
-    const servicoIdRaw = govbrMatch[1];
-    // Limit servicoId length to prevent abuse (valid gov.br IDs are < 10 digits)
-    if (servicoIdRaw.length > 10) {
-      res.writeHead(400, { "Content-Type": "text/plain" });
-      res.end("Bad Request");
-      return;
-    }
-    // Cast numérico defensivo: garante que apenas dígitos chegam ao upstream
-    const servicoIdNum = Number.parseInt(servicoIdRaw, 10);
-    if (!Number.isSafeInteger(servicoIdNum) || servicoIdNum < 0) {
-      res.writeHead(400, { "Content-Type": "text/plain" });
-      res.end("Bad Request");
-      return;
-    }
-    const servicoId = String(servicoIdNum);
-    const govbrUrl = `https://servicos.gov.br/api/v1/servicos/${servicoId}`;
-
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 5000); // 5s timeout
-
-    fetch(govbrUrl, {
-      signal: controller.signal,
-      headers: { "User-Agent": "NossoDireito-Proxy/1.0" },
-    })
-      .then((r) => {
-        // Limit response body size (1 MB) to prevent memory abuse
-        const contentLength = parseInt(r.headers.get("content-length") || "0", 10);
-        if (contentLength > 1_048_576) {
-          throw new Error("Response too large");
-        }
-        return r.text().then((body) => ({ r, body }));
-      })
-      .then(({ r, body }) => {
-        clearTimeout(timeout);
-        if (res.destroyed) return; // client disconnected
-        const status = r.status;
-        const cacheControl = r.ok ? "public, max-age=3600" : "no-cache";
-        const proxyHeaders = {
-          "Content-Type": "application/json",
-          "Cache-Control": cacheControl,
-          ...SECURITY_HEADERS,
-        };
-        if (corsOrigin) proxyHeaders["Access-Control-Allow-Origin"] = corsOrigin;
-        res.writeHead(status, proxyHeaders);
-        if (req.method === "HEAD") {
-          res.end();
-          return;
-        }
-        if (r.ok) {
-          res.end(body);
-        } else {
-          res.end(JSON.stringify({ error: "Gov.br API unavailable" }));
-        }
-      })
-      .catch(() => {
-        clearTimeout(timeout);
-        if (res.destroyed) return; // client already disconnected
-        if (!res.headersSent) {
-          res.writeHead(503, {
-            "Content-Type": "application/json",
-            "Cache-Control": "no-cache",
-          });
-        }
-        if (!res.writableEnded) res.end(JSON.stringify({ error: "Service unavailable" }));
-      });
+    govbrProxy.handle(req, res, govbrMatch[1], corsOrigin);
     return;
   }
 
