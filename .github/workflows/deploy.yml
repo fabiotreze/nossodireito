@@ -38,41 +38,10 @@ env:
 
 jobs:
   # ── Quality Gate (obrigatório antes do deploy) ──
+  # Reutiliza quality-gate.yml via workflow_call. Era 38 linhas duplicadas
+  # (pytest, validate_all, scan-pfx) — removido para single source of truth (#194 W3).
   quality-gate:
-    runs-on: ubuntu-latest
-    name: Quality Gate
-    steps:
-      - name: Checkout
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.0
-
-      - name: Setup Python
-        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
-        with:
-          python-version: "3.11"
-
-      - name: Instalar dependências (hashed)
-        run: |
-          pip install -r requirements.txt
-          pip install -r requirements-dev.txt
-
-      - name: Testes Python (pytest)
-        run: python -m pytest tests/ -v --tb=short --ignore=tests/test_e2e_playwright.py -q
-
-      - name: Scan dados sensíveis
-        run: |
-          FOUND=0
-          for ext in pfx pem key p12 env; do
-            FILES=$(git ls-files "*.${ext}" 2>/dev/null || true)
-            if [ -n "$FILES" ]; then
-              echo "❌ Arquivo sensível: $FILES"
-              FOUND=$((FOUND + 1))
-            fi
-          done
-          if [ "$FOUND" -gt 0 ]; then exit 1; fi
-          echo "✅ Sem dados sensíveis."
-
-      - name: Quality Gate (validate_all --quick)
-        run: python scripts/validate_all.py --quick
+    uses: ./.github/workflows/quality-gate.yml
 
   # ── Deploy (só executa se quality-gate passar) ──
   deploy:

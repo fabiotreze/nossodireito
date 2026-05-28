@@ -21,7 +21,8 @@ permissions:
 jobs:
   lighthouse:
     runs-on: ubuntu-latest
-    name: Lighthouse (perf/seo/a11y/bp/pwa)
+    # Nome alinhado com lighthouserc.json (onlyCategories sem 'pwa'). #194 W4.
+    name: Lighthouse (perf/a11y/bp/seo)
     timeout-minutes: 15
     steps:
       - name: Checkout

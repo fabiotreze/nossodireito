@@ -25,7 +25,10 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        browser: [chromium, firefox, webkit]
+        # PR: smoke-test em chromium (feedback rápido, axe-core é engine-agnostic).
+        # Push em main / schedule / dispatch: matriz completa (cross-browser baseline).
+        # #194 W5 — reduz tempo de CI em PR sem perder cobertura em main.
+        browser: ${{ github.event_name == 'pull_request' && fromJSON('["chromium"]') || fromJSON('["chromium","firefox","webkit"]') }}
     steps:
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.0
