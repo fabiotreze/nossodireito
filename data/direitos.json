@@ -2231,7 +2231,9 @@
         "S88",
         "Z89"
       ],
-      "aplicavel_a_todas_deficiencias": true
+      "aplicavel_a_todas_deficiencias": true,
+      "data_ultima_verificacao": "2026-05-28",
+      "canal_de_atendimento_oficial": "CRAS (CadÚnico) → INSS (agendamento pelo 135 ou meu.inss.gov.br)"
     },
     {
       "id": "ciptea",
@@ -2369,7 +2371,9 @@
         "F84.8",
         "F84.9"
       ],
-      "aplicavel_a_todas_deficiencias": false
+      "aplicavel_a_todas_deficiencias": false,
+      "data_ultima_verificacao": "2026-05-28",
+      "canal_de_atendimento_oficial": "Prefeitura do seu município (Secretaria de Assistência Social ou de Saúde)"
     },
     {
       "id": "educacao",
@@ -2570,7 +2574,9 @@
         "S88",
         "Z89"
       ],
-      "aplicavel_a_todas_deficiencias": true
+      "aplicavel_a_todas_deficiencias": true,
+      "data_ultima_verificacao": "2026-05-28",
+      "canal_de_atendimento_oficial": "Escola + Secretaria de Educação do seu município"
     },
     {
       "id": "plano_saude",
@@ -2766,7 +2772,9 @@
         "S88",
         "Z89"
       ],
-      "aplicavel_a_todas_deficiencias": true
+      "aplicavel_a_todas_deficiencias": true,
+      "data_ultima_verificacao": "2026-05-28",
+      "canal_de_atendimento_oficial": "Operadora do plano → ANS → Defensoria Pública"
     },
     {
       "id": "sus_terapias",
@@ -3093,7 +3101,9 @@
         "S88",
         "Z89"
       ],
-      "aplicavel_a_todas_deficiencias": true
+      "aplicavel_a_todas_deficiencias": true,
+      "data_ultima_verificacao": "2026-05-28",
+      "canal_de_atendimento_oficial": "UBS → CER ou CAPS → Farmácia Popular → Farmácia Estadual (CEAF)"
     },
     {
       "id": "transporte",
@@ -3314,7 +3324,9 @@
         "S88",
         "Z89"
       ],
-      "aplicavel_a_todas_deficiencias": true
+      "aplicavel_a_todas_deficiencias": true,
+      "data_ultima_verificacao": "2026-05-28",
+      "canal_de_atendimento_oficial": "gov.br (federal) / Prefeitura (municipal) / Detran (estadual)"
     },
     {
       "id": "trabalho",
@@ -3515,7 +3527,9 @@
         "S88",
         "Z89"
       ],
-      "aplicavel_a_todas_deficiencias": true
+      "aplicavel_a_todas_deficiencias": true,
+      "data_ultima_verificacao": "2026-05-28",
+      "canal_de_atendimento_oficial": "SINE / Sites de emprego / SRTE"
     },
     {
       "id": "fgts",
@@ -3687,7 +3701,9 @@
         "S88",
         "Z89"
       ],
-      "aplicavel_a_todas_deficiencias": true
+      "aplicavel_a_todas_deficiencias": true,
+      "data_ultima_verificacao": "2026-05-28",
+      "canal_de_atendimento_oficial": "Caixa Econômica Federal (agência)"
     },
     {
       "id": "moradia",
@@ -3911,7 +3927,9 @@
         "S88",
         "Z89"
       ],
-      "aplicavel_a_todas_deficiencias": true
+      "aplicavel_a_todas_deficiencias": true,
+      "data_ultima_verificacao": "2026-05-28",
+      "canal_de_atendimento_oficial": "Síndico/Administradora → Defensoria Pública ou MP (se negado) / Prefeitura (programas habitacionais)"
     },
     {
       "id": "isencoes_tributarias",
@@ -4595,7 +4613,9 @@
         "S88",
         "Z89"
       ],
-      "aplicavel_a_todas_deficiencias": true
+      "aplicavel_a_todas_deficiencias": true,
+      "data_ultima_verificacao": "2026-05-28",
+      "canal_de_atendimento_oficial": "SISEN (sisen.receita.fazenda.gov.br) para IPI/IOF → SEFAZ do estado para ICMS/IPVA → Prefeitura para IPTU"
     },
     {
       "id": "atendimento_prioritario",
@@ -4836,7 +4856,9 @@
         "S88",
         "Z89"
       ],
-      "aplicavel_a_todas_deficiencias": true
+      "aplicavel_a_todas_deficiencias": true,
+      "data_ultima_verificacao": "2026-05-28",
+      "canal_de_atendimento_oficial": "Aplicável em todos os estabelecimentos: bancos, repartições, hospitais, supermercados, shoppings, etc."
     },
     {
       "id": "estacionamento_especial",
@@ -5036,7 +5058,9 @@
         "S88",
         "Z89"
       ],
-      "aplicavel_a_todas_deficiencias": true
+      "aplicavel_a_todas_deficiencias": true,
+      "data_ultima_verificacao": "2026-05-28",
+      "canal_de_atendimento_oficial": "Detran estadual, Junta Médica do Detran ou órgão de trânsito municipal"
     },
     {
       "id": "aposentadoria_especial_pcd",
@@ -5220,7 +5244,9 @@
         "S88",
         "Z89"
       ],
-      "aplicavel_a_todas_deficiencias": true
+      "aplicavel_a_todas_deficiencias": true,
+      "data_ultima_verificacao": "2026-05-28",
+      "canal_de_atendimento_oficial": "INSS — agendamento pelo 135 ou meu.inss.gov.br"
     },
     {
       "id": "prioridade_judicial",
@@ -5400,7 +5426,9 @@
         "S88",
         "Z89"
       ],
-      "aplicavel_a_todas_deficiencias": true
+      "aplicavel_a_todas_deficiencias": true,
+      "data_ultima_verificacao": "2026-05-28",
+      "canal_de_atendimento_oficial": "Tribunal ou Vara judicial onde tramita o processo — requerer via advogado ou Defensoria Pública"
     },
     {
       "id": "tecnologia_assistiva",
@@ -5602,7 +5630,9 @@
         "S88",
         "Z89"
       ],
-      "aplicavel_a_todas_deficiencias": true
+      "aplicavel_a_todas_deficiencias": true,
+      "data_ultima_verificacao": "2026-05-28",
+      "canal_de_atendimento_oficial": "Bancos credenciados BNDES, CRAS, UBS, instituições especializadas (APAE, AMA, Jô Clemente)"
     },
     {
       "id": "meia_entrada",
@@ -5774,7 +5804,9 @@
         "S88",
         "Z89"
       ],
-      "aplicavel_a_todas_deficiencias": true
+      "aplicavel_a_todas_deficiencias": true,
+      "data_ultima_verificacao": "2026-05-28",
+      "canal_de_atendimento_oficial": "Cinemas, teatros, casas de show, estádios, museus, circos e demais espaços culturais"
     },
     {
       "id": "prouni_fies_sisu",
@@ -5987,7 +6019,9 @@
         "S88",
         "Z89"
       ],
-      "aplicavel_a_todas_deficiencias": true
+      "aplicavel_a_todas_deficiencias": true,
+      "data_ultima_verificacao": "2026-05-28",
+      "canal_de_atendimento_oficial": "Inscrições online nos sites oficiais do MEC (prouniportal.mec.gov.br, sisu.mec.gov.br, fies.mec.gov.br)"
     },
     {
       "id": "isencao_ir",
@@ -6204,7 +6238,9 @@
         "T66",
         "Z89"
       ],
-      "aplicavel_a_todas_deficiencias": true
+      "aplicavel_a_todas_deficiencias": true,
+      "data_ultima_verificacao": "2026-05-28",
+      "canal_de_atendimento_oficial": "Receita Federal — site gov.br/receitafederal ou programa IRPF (download gratuito)"
     },
     {
       "id": "bolsa_familia",
@@ -6398,7 +6434,9 @@
         "S88",
         "Z89"
       ],
-      "aplicavel_a_todas_deficiencias": true
+      "aplicavel_a_todas_deficiencias": true,
+      "data_ultima_verificacao": "2026-05-28",
+      "canal_de_atendimento_oficial": "CRAS mais próximo (Centro de Referência de Assistência Social) — buscar no site do MDS"
     },
     {
       "id": "tarifa_social_energia",
@@ -6580,7 +6618,9 @@
         "S88",
         "Z89"
       ],
-      "aplicavel_a_todas_deficiencias": true
+      "aplicavel_a_todas_deficiencias": true,
+      "data_ultima_verificacao": "2026-05-28",
+      "canal_de_atendimento_oficial": "Distribuidora de energia da sua região (Enel, CPFL, Light, Cemig, etc.) + CRAS (CadÚnico)"
     },
     {
       "id": "auxilio_inclusao",
@@ -6769,7 +6809,9 @@
         "S88",
         "Z89"
       ],
-      "aplicavel_a_todas_deficiencias": true
+      "aplicavel_a_todas_deficiencias": true,
+      "data_ultima_verificacao": "2026-05-28",
+      "canal_de_atendimento_oficial": "Meu INSS (site/app) / Central 135 / Agências do INSS"
     },
     {
       "id": "protecao_social",
@@ -6963,7 +7005,9 @@
         "S88",
         "Z89"
       ],
-      "aplicavel_a_todas_deficiencias": true
+      "aplicavel_a_todas_deficiencias": true,
+      "data_ultima_verificacao": "2026-05-28",
+      "canal_de_atendimento_oficial": "CRAS (Proteção Básica) / CREAS (Proteção Especial) / Centro-Dia / Residência Inclusiva"
     },
     {
       "id": "pensao_zika",
@@ -7058,7 +7102,9 @@
         "P35.4",
         "Q02"
       ],
-      "aplicavel_a_todas_deficiencias": false
+      "aplicavel_a_todas_deficiencias": false,
+      "data_ultima_verificacao": "2026-05-28",
+      "canal_de_atendimento_oficial": "Meu INSS (site/app) / Central 135 / Agências do INSS"
     },
     {
       "id": "esporte_paralimpico",
@@ -7254,7 +7300,9 @@
         "S88",
         "Z89"
       ],
-      "aplicavel_a_todas_deficiencias": true
+      "aplicavel_a_todas_deficiencias": true,
+      "data_ultima_verificacao": "2026-05-28",
+      "canal_de_atendimento_oficial": "Ministério do Esporte (editais) / Comitê Paralímpico Brasileiro / Confederações de modalidades"
     },
     {
       "id": "turismo_acessivel",
@@ -7456,7 +7504,9 @@
         "S88",
         "Z89"
       ],
-      "aplicavel_a_todas_deficiencias": true
+      "aplicavel_a_todas_deficiencias": true,
+      "data_ultima_verificacao": "2026-05-28",
+      "canal_de_atendimento_oficial": "Portal do Turismo (gov.br/turismo) / Companhias aéreas / ANAC (163) / Procon / Consumidor.gov.br"
     },
     {
       "id": "acessibilidade_arquitetonica",
@@ -7650,7 +7700,9 @@
         "S88",
         "Z89"
       ],
-      "aplicavel_a_todas_deficiencias": true
+      "aplicavel_a_todas_deficiencias": true,
+      "data_ultima_verificacao": "2026-05-28",
+      "canal_de_atendimento_oficial": "Ministério Público / Defensoria Pública / Procon / Prefeitura (ouvidoria) / Disque 100"
     },
     {
       "id": "capacidade_legal",
@@ -7848,7 +7900,9 @@
         "S88",
         "Z89"
       ],
-      "aplicavel_a_todas_deficiencias": true
+      "aplicavel_a_todas_deficiencias": true,
+      "data_ultima_verificacao": "2026-05-28",
+      "canal_de_atendimento_oficial": "Defensoria Pública (gratuito) / Vara de Família ou Vara Cível / Ministério Público"
     },
     {
       "id": "crimes_contra_pcd",
@@ -8042,7 +8096,9 @@
         "S88",
         "Z89"
       ],
-      "aplicavel_a_todas_deficiencias": true
+      "aplicavel_a_todas_deficiencias": true,
+      "data_ultima_verificacao": "2026-05-28",
+      "canal_de_atendimento_oficial": "Disque 100 / Delegacia de Polícia / Ministério Público / Defensoria Pública / Procon / Fala.BR"
     },
     {
       "id": "acessibilidade_digital",
@@ -8242,7 +8298,9 @@
         "S88",
         "Z89"
       ],
-      "aplicavel_a_todas_deficiencias": true
+      "aplicavel_a_todas_deficiencias": true,
+      "data_ultima_verificacao": "2026-05-28",
+      "canal_de_atendimento_oficial": "Fala.BR / ANATEL (1331) / Ministério Público / Defensoria Pública / Portal eMAG (gov.br/governodigital)"
     },
     {
       "id": "reabilitacao",
@@ -8439,7 +8497,9 @@
         "S88",
         "Z89"
       ],
-      "aplicavel_a_todas_deficiencias": true
+      "aplicavel_a_todas_deficiencias": true,
+      "data_ultima_verificacao": "2026-05-28",
+      "canal_de_atendimento_oficial": "UBS → CER (Centro Especializado em Reabilitação) / INSS (reabilitação profissional) / Mapa CNES (cnes.datasus.gov.br)"
     },
     {
       "id": "politica_nacional_cuidados",
@@ -8628,7 +8688,9 @@
         "S88",
         "Z89"
       ],
-      "aplicavel_a_todas_deficiencias": true
+      "aplicavel_a_todas_deficiencias": true,
+      "data_ultima_verificacao": "2026-05-28",
+      "canal_de_atendimento_oficial": "CRAS (referência básica), CREAS (situação de violência/risco), UBS/CAPS (saúde mental do cuidador), Conselho Municipal dos Direitos da PcD"
     },
     {
       "id": "horario_especial_servidor_pcd",
@@ -8812,7 +8874,9 @@
         "S88",
         "Z89"
       ],
-      "aplicavel_a_todas_deficiencias": true
+      "aplicavel_a_todas_deficiencias": true,
+      "data_ultima_verificacao": "2026-05-28",
+      "canal_de_atendimento_oficial": "RH do órgão público (federal: SIASS); para estados/municípios, consultar Procuradoria/RH do ente respectivo"
     },
     {
       "id": "cota_emprego_pcd_empresa",
@@ -9003,7 +9067,9 @@
         "S88",
         "Z89"
       ],
-      "aplicavel_a_todas_deficiencias": true
+      "aplicavel_a_todas_deficiencias": true,
+      "data_ultima_verificacao": "2026-05-28",
+      "canal_de_atendimento_oficial": "SINE/Sistema Nacional de Emprego, agências do SINE, MPT (denúncias), Ministério do Trabalho e Emprego"
     },
     {
       "id": "saque_fgts_doenca_grave",
@@ -9211,7 +9277,9 @@
         "T66",
         "Z89"
       ],
-      "aplicavel_a_todas_deficiencias": true
+      "aplicavel_a_todas_deficiencias": true,
+      "data_ultima_verificacao": "2026-05-28",
+      "canal_de_atendimento_oficial": "Agências da Caixa Econômica Federal, app FGTS (iOS/Android), site caixa.gov.br/fgts"
     },
     {
       "id": "caa_comunicacao_alternativa",
@@ -9372,7 +9440,9 @@
         "R47.1",
         "R47.8"
       ],
-      "aplicavel_a_todas_deficiencias": false
+      "aplicavel_a_todas_deficiencias": false,
+      "data_ultima_verificacao": "2026-05-28",
+      "canal_de_atendimento_oficial": "UBS → CER (Centro Especializado em Reabilitação) | Escola pública → AEE/SRM (PDDE Acessibilidade) | Plano de saúde (terapias e equipamentos prescritos)"
     },
     {
       "id": "curatela_decisao_apoiada",
@@ -9568,7 +9638,9 @@
         "S88",
         "Z89"
       ],
-      "aplicavel_a_todas_deficiencias": true
+      "aplicavel_a_todas_deficiencias": true,
+      "data_ultima_verificacao": "2026-05-28",
+      "canal_de_atendimento_oficial": "Vara de Família/Sucessões da comarca, Defensoria Pública Estadual, Ministério Público (fiscaliza)"
     },
     {
       "id": "certificado_pcd_inss",
@@ -9652,7 +9724,9 @@
         "lc142"
       ],
       "cids_relacionados": [],
-      "aplicavel_a_todas_deficiencias": true
+      "aplicavel_a_todas_deficiencias": true,
+      "data_ultima_verificacao": "2026-05-28",
+      "canal_de_atendimento_oficial": "Meu INSS (app ou meu.inss.gov.br) e agências do INSS"
     },
     {
       "id": "carteira_identificacao_pcd",
@@ -9736,7 +9810,9 @@
         "prioridade"
       ],
       "cids_relacionados": [],
-      "aplicavel_a_todas_deficiencias": true
+      "aplicavel_a_todas_deficiencias": true,
+      "data_ultima_verificacao": "2026-05-28",
+      "canal_de_atendimento_oficial": "Órgão emissor designado pela União, estado ou município (geralmente Secretaria de Direitos da PcD)"
     },
     {
       "id": "reabilitacao_profissional_inss",
@@ -9820,7 +9896,9 @@
         "lei8213"
       ],
       "cids_relacionados": [],
-      "aplicavel_a_todas_deficiencias": true
+      "aplicavel_a_todas_deficiencias": true,
+      "data_ultima_verificacao": "2026-05-28",
+      "canal_de_atendimento_oficial": "Agências do INSS, Centros de Referência Profissional e Meu INSS"
     },
     {
       "id": "pensao_talidomida",
@@ -9909,7 +9987,9 @@
         "inss"
       ],
       "cids_relacionados": [],
-      "aplicavel_a_todas_deficiencias": false
+      "aplicavel_a_todas_deficiencias": false,
+      "data_ultima_verificacao": "2026-05-28",
+      "canal_de_atendimento_oficial": "Meu INSS (app ou meu.inss.gov.br) e agências do INSS"
     },
     {
       "id": "pensao_hanseniase",
@@ -9999,7 +10079,9 @@
         "mdhc"
       ],
       "cids_relacionados": [],
-      "aplicavel_a_todas_deficiencias": false
+      "aplicavel_a_todas_deficiencias": false,
+      "data_ultima_verificacao": "2026-05-28",
+      "canal_de_atendimento_oficial": "Ministério dos Direitos Humanos e Cidadania (MDHC) e Disque 100"
     },
     {
       "id": "moradia_assistida_pcd",
@@ -10098,7 +10180,9 @@
         "G71",
         "Q90"
       ],
-      "aplicavel_a_todas_deficiencias": true
+      "aplicavel_a_todas_deficiencias": true,
+      "data_ultima_verificacao": "2026-05-28",
+      "canal_de_atendimento_oficial": "CRAS (porta de entrada) → CREAS (média complexidade) → Residência Inclusiva (alta complexidade SUAS). Em casos de negativa: Defensoria Pública da União ou Estadual."
     }
   ],
   "dica_seguranca": {
