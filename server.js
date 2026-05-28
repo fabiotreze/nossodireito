@@ -22,6 +22,7 @@ const { SECURITY_HEADERS } = require("./lib/security-headers");
 const { resolveFile } = require("./lib/file-resolver");
 const { createAnalytics } = require("./lib/analytics");
 const { createRateLimiter } = require("./lib/rate-limit");
+const { createRedisClient } = require("./lib/redis-client");
 void ALLOWED_EXT;
 
 // ── IA opt-in (Azure OpenAI) ──
@@ -99,72 +100,13 @@ if (AI_CONN) {
 // ── Redis-backed rate limiting (optional) ──
 // Usado quando Redis + Key Vault estão configurados; caso contrário,
 // mantém fallback em memória para não travar o boot local.
-let redisClient = null;
-let redisInitPromise = null;
-let redisInitError = null;
-let redisSecretClient = null;
-let azureCredential = null;
-
-function getCredential() {
-  if (!azureCredential) {
-    const { DefaultAzureCredential } = require("@azure/identity");
-    azureCredential = new DefaultAzureCredential();
-  }
-  return azureCredential;
-}
-
-function redisConfigured() {
-  return REDIS_RATE_LIMIT_ENABLED && REDIS_HOSTNAME && KEY_VAULT_URI;
-}
-
-async function getRedisPassword() {
-  if (!redisSecretClient) {
-    const { SecretClient } = require("@azure/keyvault-secrets");
-    redisSecretClient = new SecretClient(KEY_VAULT_URI, getCredential());
-  }
-  const secret = await redisSecretClient.getSecret(REDIS_SECRET_NAME);
-  if (!secret?.value) {
-    throw new Error("Redis secret not found in Key Vault");
-  }
-  return secret.value;
-}
-
-async function getRedisClient() {
-  if (!redisConfigured()) {
-    throw new Error("Redis rate limiting not configured");
-  }
-  if (redisClient) return redisClient;
-  if (redisInitPromise) return redisInitPromise;
-
-  redisInitPromise = (async () => {
-    const { createClient } = require("redis");
-    const password = await getRedisPassword();
-    const client = createClient({
-      socket: {
-        host: REDIS_HOSTNAME,
-        port: REDIS_PORT,
-        tls: true,
-      },
-      username: "default",
-      password,
-    });
-
-    client.on("error", (err) => {
-      redisInitError = err;
-      console.warn(`Redis client error: ${err.message}`);
-    });
-
-    await client.connect();
-    redisClient = client;
-    return client;
-  })().catch((err) => {
-    redisInitError = err;
-    redisInitPromise = null;
-    throw err;
-  });
-
-  return redisInitPromise;
-}
+const redis = createRedisClient({
+  enabled: REDIS_RATE_LIMIT_ENABLED,
+  hostname: REDIS_HOSTNAME,
+  port: REDIS_PORT,
+  secretName: REDIS_SECRET_NAME,
+  keyVaultUri: KEY_VAULT_URI,
+});
 
 // ── Privacy-Respecting Visitor Analytics (lib/analytics.js) ──
 const analytics = createAnalytics({
@@ -175,10 +117,10 @@ const analyticsRotateIfNeeded = () => analytics.rotateIfNeeded();
 
 // ── Rate Limiting (lib/rate-limit.js) ──
 const rateLimiter = createRateLimiter({
-  redisConfigured,
-  getRedisClient,
+  redisConfigured: redis.configured,
+  getRedisClient: redis.getClient,
   onRedisError: (err) => {
-    if (!redisInitError) redisInitError = err;
+    if (!redis.initError) redis.initError = err;
     console.warn(`Redis rate limiting unavailable, falling back to memory: ${err.message}`);
   },
 });
@@ -758,7 +700,8 @@ server.maxRequestsPerSocket = 100; // Limit requests per keep-alive socket
 // ── Graceful shutdown ──
 function gracefulShutdown(signal) {
   console.log(`\n${signal} received — closing server gracefully...`);
-  server.close(() => {
+  server.close(async () => {
+    await redis.quit();
     console.log("Server closed.");
     process.exit(0);
   });
