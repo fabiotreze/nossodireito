@@ -35,9 +35,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v5
         with:
-          # Precisa do histórico até a base do PR para `git diff`.
-          # Em schedule/dispatch, depth=1 basta (escaneia repo inteiro).
-          fetch-depth: ${{ github.event_name == 'pull_request' && 0 || 1 }}
+          # PR mode usa git diff origin/<base>...HEAD → precisa do histórico
+          # completo. Repo é pequeno (~5MB), full clone é trivial.
+          # Schedule/dispatch escaneia repo inteiro → depth=1 basta, mas
+          # mantemos 0 para simplicidade (não há custo perceptível).
+          fetch-depth: 0
 
       - name: Restore lychee cache
         uses: actions/cache@v4
@@ -63,7 +65,7 @@ jobs:
           if [ "${EVENT_NAME}" = "pull_request" ]; then
             # Lychee gov.br + ~470 arquivos = timeout >20min. Em PRs, escaneamos
             # apenas o que o PR mudou (paths relevantes ao link-check).
-            git fetch --no-tags --depth=50 origin "${BASE_REF}"
+            # (fetch-depth=0 no checkout garante que origin/${BASE_REF} já existe localmente)
             changed_workflow="false"
             if git diff --name-only "origin/${BASE_REF}...HEAD" \
                 | grep -qx '.github/workflows/link-check.yml'; then
