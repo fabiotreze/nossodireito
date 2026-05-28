@@ -1,0 +1,85 @@
+name: Content Freshness (URLs + Senado + OMS CID)
+
+# Validação semanal automática das fontes externas de data/direitos.json.
+# Não bloqueia deploy — abre issue se detectar drift (URLs mortas, leis revogadas,
+# CIDs inválidos na OMS). Complementa o banner amarelo de staleness >180d em UI.
+#
+# Refs: #193 (blindagem editorial), #164 (cobertura semântica).
+
+on:
+  schedule:
+    # Toda segunda 05:00 UTC (02:00 BRT). Antes do scorecard (07:00 UTC).
+    - cron: "0 5 * * 1"
+  workflow_dispatch:
+    inputs:
+      open_issue:
+        description: "Abrir issue mesmo se rodar manualmente"
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+  issues: write
+
+concurrency:
+  group: content-freshness
+  cancel-in-progress: false
+
+jobs:
+  validate:
+    name: Validate sources (URLs + Senado + OMS CID)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Run validator (URLs + legislação)
+        id: validate_basic
+        continue-on-error: true
+        run: |
+          python scripts/validate_sources.py --urls --legislacao --json \
+            > validation_report.json
+          echo "exit_code=$?" >> "$GITHUB_OUTPUT"
+
+      - name: Run validator (CID — OMS ICD API)
+        id: validate_cid
+        continue-on-error: true
+        env:
+          ICD_CLIENT_ID: ${{ secrets.ICD_CLIENT_ID }}
+          ICD_CLIENT_SECRET: ${{ secrets.ICD_CLIENT_SECRET }}
+        run: |
+          if [ -z "$ICD_CLIENT_ID" ] || [ -z "$ICD_CLIENT_SECRET" ]; then
+            echo "::warning::Secrets ICD_CLIENT_ID/SECRET ausentes — pulando validação CID"
+            echo '{"timestamp":"","total":0,"ok":0,"warnings":0,"errors":0,"results":[]}' \
+              > validation_cid_report.json
+            exit 0
+          fi
+          python scripts/validate_sources.py --cid --json > validation_cid_report.json
+
+      - name: Merge reports
+        run: |
+          python scripts/merge_freshness_reports.py \
+            validation_report.json validation_cid_report.json \
+            > validation_combined.json
+          cat validation_combined.json | python -m json.tool | head -20
+
+      - name: Upload report artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: freshness-report-${{ github.run_number }}
+          path: |
+            validation_report.json
+            validation_cid_report.json
+            validation_combined.json
+          retention-days: 30
+
+      - name: Open / update issue on drift
+        if: github.event_name == 'schedule' || inputs.open_issue == true
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          python scripts/freshness_open_issue.py validation_combined.json
