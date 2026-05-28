@@ -63,6 +63,12 @@ jobs:
           echo "🔗 Validando links relativos em README.md e docs/..."
           node scripts/check_doc_links.mjs
 
+      # ── Doc truth guard (preveniu drift PWA/master_compliance/legacy em 28/mai) ──
+      - name: Validar verdade dos docs (sem features removidas)
+        run: |
+          echo "🧭 Validando que docs não citam features removidas..."
+          node scripts/check_docs_truth.mjs
+
       # ── Testes Python (pytest) ──
       - name: Executar testes Python
         run: |

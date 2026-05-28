@@ -70,6 +70,6 @@ com `Retry-After` e o frontend mantém a análise local como fallback padrão.
 ## Controle de Mudanças
 
 - Use branch + PR por padrão para mudanças grandes.
-- Mantenha `main` deployável e com versões consistentes (`package.json`, `data/*.json`, `sw.js`, cache-bust em `index.html`).
+- Mantenha `main` deployável e com versões consistentes (`package.json`, `data/*.json`, cache-bust em `index.html`).
 - Nunca commite `terraform/terraform.tfvars` nem arquivos de certificado.
 - Em runner fora da VNet, manter `manage_redis_secret_with_terraform=false` para evitar erro 403 no refresh de segredo em Key Vault privado.

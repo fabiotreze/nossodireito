@@ -110,7 +110,7 @@
 | **A04:2021** | Insecure Design                            | BAIXA      | Arquitetura client-side + server estático minimiza superfície | ✅     |
 | **A05:2021** | Security Misconfiguration                  | ALTA       | CSP restritivo, SRI, headers de segurança            | ✅     |
 | **A06:2021** | Vulnerable and Outdated Components         | MÉDIA      | pdf.js 3.11.174 (verificado); SRI contra tampering   | ✅     |
-| **A07:2021** | Identification and Auth Failures           | N/A        | Sem autenticação (app local offline)                 | ✅ N/A |
+| **A07:2021** | Identification and Auth Failures           | N/A        | Sem autenticação no app (sem cadastro)               | ✅ N/A |
 | **A08:2021** | Software and Data Integrity Failures       | ALTA       | SRI sha384 no CDN; CSP bloqueia scripts não-autorizados | ✅  |
 | **A09:2021** | Security Logging and Monitoring Failures   | BAIXA      | `console.info/warn/error` para eventos de segurança  | ✅     |
 | **A10:2021** | Server-Side Request Forgery                | BAIXA      | Proxy `/api/govbr-servico/:id` restrito a IDs numéricos (≤10 dígitos), URL fixa `servicos.gov.br`, timeout 5s, body limit 1MB | ✅     |
@@ -213,7 +213,7 @@ NONE      :   □ (0)               ■■■■■■■■■■ (6)
 |------------------|-----------------------------------------------------|----------------------------------------|
 | **S**poofing     | CDN servindo código malicioso                        | SRI + crossorigin                      |
 | **T**ampering    | Modificação de dados no IndexedDB                    | AES-GCM (authenticated encryption)     |
-| **R**epudiation  | N/A — app pessoal offline                            | —                                      |
+| **R**epudiation  | N/A — app sem cadastro/login                         | —                                      |
 | **I**nformation Disclosure | Acesso não autorizado a laudos médicos  | AES-256 + TTL 15min + auto-delete      |
 | **D**enial of Service | ReDoS via campo de busca                       | escapeRegex()                          |
 | **E**levation of Privilege | Script injection via XSS                   | CSP + escapeHtml()                     |

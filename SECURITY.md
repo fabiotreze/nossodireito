@@ -66,7 +66,7 @@ Sem `'unsafe-eval'` no CSP, o VLibras não carrega e o avatar de Libras não apa
 - `X-Content-Type-Options: nosniff`, `X-Frame-Options: DENY`, SRI em CDNs
 - Nenhum dado do usuário é transmitido — processamento 100% local
 
-**Referências:** [KNOWN_ISSUES.md](docs/KNOWN_ISSUES.md), [ARCHITECTURE.md](docs/ARCHITECTURE.md), [server.js L110](server.js)
+**Referências:** [ARCHITECTURE.md](docs/ARCHITECTURE.md), [server.js](server.js)
 
 ### Infraestrutura
 - Azure App Service com **HTTPS Only** enforced

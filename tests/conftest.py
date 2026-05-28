@@ -112,20 +112,6 @@ def css():
 
 
 @pytest.fixture(scope="session")
-def swjs():
-    """Conteúdo de sw.js (texto)."""
-    with open(ROOT / "sw.js", encoding="utf-8") as f:
-        return f.read()
-
-
-@pytest.fixture(scope="session")
-def manifest():
-    """Conteúdo de manifest.json (JSON)."""
-    with open(ROOT / "manifest.json", encoding="utf-8") as f:
-        return json.load(f)
-
-
-@pytest.fixture(scope="session")
 def packagejson():
     """Conteúdo de package.json (JSON)."""
     with open(ROOT / "package.json", encoding="utf-8") as f:

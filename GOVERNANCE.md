@@ -112,7 +112,7 @@
 6. Atualizar `artigos_referenciados` nas fontes existentes (ex: LBI)
 7. Incrementar versão (semver MINOR para nova categoria)
 8. Atualizar `ultima_atualizacao`
-9. Rodar `master_compliance.py --quick` — todas as categorias devem passar
+9. Rodar `python3 scripts/validate_all.py --quick` — deve passar sem CRITICAL
 10. Testar no navegador — categoria aparece, busca encontra, análise de documento detecta
 
 ---
@@ -122,7 +122,7 @@
 ### 4.1. Validação obrigatória
 
 - [ ] URL responde HTTP 200 (ou 301/302)
-- [ ] Domínio pertence a `OFFICIAL_DOMAINS` do master_compliance.py
+- [ ] Domínio pertence à lista de fontes oficiais aceitas (seção 2.1 deste documento)
 - [ ] Campo `consultado_em` preenchido com data YYYY-MM-DD
 - [ ] Campo `orgao` preenchido
 - [ ] Se legislação: campo `artigos_referenciados` preenchido
@@ -199,7 +199,7 @@ Categorias que podem ser adicionadas após pesquisa e validação:
 
 - ❌ Copiar texto de sites sem verificar a fonte original (gov.br)
 - ❌ Usar informações de fontes não-oficiais como base legal
-- ❌ Publicar sem rodar `master_compliance.py --quick` (todas as categorias devem passar)
+- ❌ Publicar sem rodar `validate_all.py --quick` (deve passar sem CRITICAL)
 - ❌ Deixar link quebrado sem correção
 - ❌ Inventar ou inferir direitos não previstos em lei
 - ❌ Dar conselho jurídico — o site **informa**, não aconselha
@@ -210,7 +210,7 @@ Categorias que podem ser adicionadas após pesquisa e validação:
 - ✅ Incluir o disclaimer de que informações podem estar desatualizadas
 - ✅ Manter `consultado_em` atualizado em cada fonte verificada
 - ✅ Testar todos os links antes de publicar
-- ✅ Rodar `master_compliance.py --quick` após qualquer alteração
+- ✅ Rodar `validate_all.py --quick` após qualquer alteração
 - ✅ Incluir variantes sem acento no `KEYWORD_MAP` (ex: `condomínio` e `condominio`)
 
 ### 7.3. Tom e linguagem
