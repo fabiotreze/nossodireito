@@ -25,7 +25,7 @@
  * Mantenha esta lista curta. Cada item aqui é uma cicatriz de drift real.
  */
 import { readFileSync, existsSync } from "node:fs";
-import { resolve, relative } from "node:path";
+import { resolve } from "node:path";
 import { glob } from "node:fs/promises";
 
 const ROOT = resolve(new URL("..", import.meta.url).pathname);
