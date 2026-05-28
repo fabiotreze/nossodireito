@@ -1561,6 +1561,76 @@ html.high-contrast ::selection {
     font-weight: 600;
 }
 
+/* ── Banner de staleness >180d (PR E #193) ────────────────────────────── */
+/* Amarelo institucional gov.br #fff5cc, sem alarme; informa data antiga. */
+.aviso-staleness {
+    background: #fff5cc;
+    border-left: 4px solid #b88800;
+    color: #5a3c00;
+    padding: 12px 16px;
+    margin: 0 0 16px;
+    border-radius: var(--radius-sm);
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+.aviso-staleness p {
+    margin: 0 0 6px;
+}
+.aviso-staleness p:last-child {
+    margin-bottom: 0;
+}
+.aviso-staleness a {
+    color: #8a5a00;
+    font-weight: 600;
+    text-decoration: underline;
+}
+.aviso-staleness a:hover,
+.aviso-staleness a:focus-visible {
+    color: #6a4400;
+}
+
+@media (prefers-color-scheme: dark) {
+    .aviso-staleness {
+        background: rgba(184, 136, 0, 0.16);
+        border-left-color: #e0b34d;
+        color: var(--text);
+    }
+    .aviso-staleness a {
+        color: #f0c878;
+    }
+    .aviso-staleness a:hover,
+    .aviso-staleness a:focus-visible {
+        color: #ffd99a;
+    }
+}
+
+/* ── Atrito inline em passo_a_passo para direitos com consulta jurídica ── */
+.passo-a-passo-atrito > summary {
+    cursor: pointer;
+    list-style: none;
+    padding: 4px 0;
+    user-select: none;
+}
+.passo-a-passo-atrito > summary::-webkit-details-marker {
+    display: none;
+}
+.passo-a-passo-atrito > summary::before {
+    content: '▶ ';
+    font-size: 0.8em;
+    color: var(--primary);
+    transition: transform var(--transition);
+    display: inline-block;
+}
+.passo-a-passo-atrito[open] > summary::before {
+    transform: rotate(90deg);
+}
+.passo-a-passo-atrito .atrito-hint {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    font-style: italic;
+    font-weight: 400;
+}
+
 .table-note {
     margin-top: 16px;
     padding: 12px 16px;

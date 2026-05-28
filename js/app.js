@@ -1126,6 +1126,19 @@ ${t.descricao ? `<span class="trilha-tab__desc">${escapeHtml(t.descricao)}</span
 <article>
 <h2>${cat.icone} ${escapeHtml(cat.titulo)}</h2>
 <p class="detalhe-resumo">${escapeHtml(cat.resumo)}</p>`;
+        if (cat.data_ultima_verificacao) {
+            const STALENESS_DAYS = 180;
+            const verifDate = new Date(cat.data_ultima_verificacao + 'T00:00:00Z');
+            if (!isNaN(verifDate.getTime())) {
+                const ageDays = Math.floor((Date.now() - verifDate.getTime()) / 86400000);
+                if (ageDays > STALENESS_DAYS) {
+                    html += `<aside class="aviso-staleness" role="note" aria-label="Aviso de conteúdo desatualizado">
+<p><strong>⚠️ Conteúdo verificado há mais de ${STALENESS_DAYS} dias (${ageDays} dias atrás).</strong></p>
+<p>A legislação pode ter mudado. Confirme a regra atual na <a href="https://www.gov.br/" target="_blank" rel="noopener noreferrer">fonte oficial</a> antes de agir e considere relatar o problema em <a href="https://github.com/fabiotreze/nossodireito/issues" target="_blank" rel="noopener noreferrer">issues do repositório</a>.</p>
+</aside>`;
+                }
+            }
+        }
         if (cat.requer_consulta_especializada === true) {
             html += `<aside class="aviso-consulta-juridica" role="note" aria-label="Aviso de consulta jurídica recomendada">
 <p><strong>ℹ️ Recomendamos orientação jurídica para este direito.</strong></p>
@@ -1164,10 +1177,21 @@ ${t.descricao ? `<span class="trilha-tab__desc">${escapeHtml(t.descricao)}</span
 </div>`;
         }
         if (cat.passo_a_passo && cat.passo_a_passo.length) {
-            html += `<div class="detalhe-section">
-<h3>👣 Passo a Passo</h3>
-<ol>${cat.passo_a_passo.map((p) => `<li>${escapeHtml(p)}</li>`).join('')}</ol>
+            const passosHtml = `<ol>${cat.passo_a_passo.map((p) => `<li>${escapeHtml(p)}</li>`).join('')}</ol>`;
+            if (cat.requer_consulta_especializada === true) {
+                // Atrito inline (não-bloqueante): leitor abre deliberadamente após ver aviso jurídico
+                html += `<div class="detalhe-section">
+<details class="passo-a-passo-atrito">
+<summary><h3 style="display:inline">👣 Passo a Passo</h3> <span class="atrito-hint">(clique para abrir — ler aviso acima primeiro)</span></summary>
+${passosHtml}
+</details>
 </div>`;
+            } else {
+                html += `<div class="detalhe-section">
+<h3>👣 Passo a Passo</h3>
+${passosHtml}
+</div>`;
+            }
         }
         if (cat.onde) {
             const canal = cat.canal_de_atendimento_oficial || cat.onde;
