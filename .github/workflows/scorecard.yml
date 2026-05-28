@@ -1,0 +1,57 @@
+# OpenSSF Scorecard — métrica pública de saúde de supply chain
+#
+# Avalia o repo em ~18 dimensões (signed releases, branch protection,
+# token permissions, pinned deps, etc.) e publica resultado em
+# https://scorecard.dev. Resultado também sobe pra Security tab via SARIF.
+#
+# Docs: https://github.com/ossf/scorecard-action
+name: OpenSSF Scorecard
+
+on:
+  branch_protection_rule:
+  schedule:
+    - cron: "0 7 * * 1" # Segunda 07:00 UTC
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+permissions: read-all
+
+concurrency:
+  group: scorecard-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  analysis:
+    name: Scorecard analysis
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      security-events: write # upload SARIF
+      id-token: write # publicação em scorecard.dev
+      contents: read
+      actions: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+
+      - name: Run analysis
+        uses: ossf/scorecard-action@v2.4.2
+        with:
+          results_file: results.sarif
+          results_format: sarif
+          publish_results: true # vai para scorecard.dev
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: scorecard-results
+          path: results.sarif
+          retention-days: 30
+
+      - name: Upload to GitHub Code Scanning
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: results.sarif
