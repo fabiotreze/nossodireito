@@ -11,10 +11,8 @@
 
 const http = require("node:http");
 const fs = require("node:fs");
-const fsPromises = require("node:fs/promises");
 const path = require("node:path");
 const zlib = require("node:zlib");
-const crypto = require("node:crypto");
 
 // ── Lib modules (Onda 7 — modularização) ──
 const { MIME, CACHE, COMPRESSIBLE } = require("./lib/mime");
