@@ -134,16 +134,25 @@ jobs:
 
       - name: Criar pacote de deploy
         run: |
-          zip -r site.zip \
-            index.html server.js package.json package-lock.json \
-            robots.txt sitemap.xml \
-            node_modules/ lib/ css/ js/ data/ direitos/ images/ shared/ services/ \
-            -x "*.bak" "*.swa.bak" "__pycache__/*" \
-            "terraform/*" ".github/*" "tests/*" "docs/*" \
-            "node_modules/.package-lock.json" "node_modules/.cache/*"
+          # ── git archive + node_modules ──────────────────────────────────
+          # Usar git archive elimina a fragilidade da whitelist manual de
+          # diretórios (causa do SITE DOWN em 28/mai/2026 quando lib/ foi
+          # esquecido). Tudo que está no HEAD entra automaticamente; o que
+          # não deve ir para produção fica fora via `.gitattributes export-ignore`.
+          rm -rf /tmp/site_stage && mkdir -p /tmp/site_stage
+          git archive --worktree-attributes --format=tar HEAD | tar -x -C /tmp/site_stage
+          cp -r node_modules /tmp/site_stage/
+
+          # node_modules artifacts não necessários
+          rm -rf /tmp/site_stage/node_modules/.package-lock.json \
+                 /tmp/site_stage/node_modules/.cache 2>/dev/null || true
+
+          ( cd /tmp/site_stage && zip -qr "${GITHUB_WORKSPACE}/site.zip" . \
+              -x "*.bak" "*.swa.bak" )
 
           SIZE=$(wc -c < site.zip)
-          echo "📦 site.zip: ${SIZE} bytes (inclui node_modules)"
+          echo "📦 site.zip: ${SIZE} bytes (HEAD + node_modules)"
+          unzip -l site.zip | tail -3
 
       - name: Verificar infraestrutura
         id: infra_check

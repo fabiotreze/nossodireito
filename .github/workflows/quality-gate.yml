@@ -57,6 +57,12 @@ jobs:
           echo "🧪 Executando testes Node..."
           npm run test:js
 
+      # ── Doc links 404 guard (preveniu o caso REPLICATION.md em 28/mai) ──
+      - name: Validar links relativos em docs
+        run: |
+          echo "🔗 Validando links relativos em README.md e docs/..."
+          node scripts/check_doc_links.mjs
+
       # ── Testes Python (pytest) ──
       - name: Executar testes Python
         run: |
