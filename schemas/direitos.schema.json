@@ -370,6 +370,16 @@
                 "aplicavel_a_todas_deficiencias": {
                     "type": "boolean",
                     "description": "true = direito universal a todas as deficienciencias do dicion\u00e1rio PcD; false = restrito a CIDs espec\u00edficos em cids_relacionados."                },
+                "aplicabilidade": {
+                    "type": "string",
+                    "enum": [
+                        "condicao_medica",
+                        "documento_administrativo",
+                        "publico_fechado",
+                        "servico_universal"
+                    ],
+                    "description": "Tipo do direito — determina se cids_relacionados é exigível. 'condicao_medica' = restrito por CIDs (precisa lista não-vazia). 'documento_administrativo' = é documento, não condição (cids vazio por design). 'publico_fechado' = grupo legal específico (talidomida/hanseníase/zika, CID público da OMS). 'servico_universal' = atende qualquer PcD do dicionário. Determinístico — gerado por scripts/classify_aplicabilidade.py. NÃO editar manualmente: ajustar a regra no script e re-rodar."
+                },
                 "data_ultima_verificacao": {
                     "type": "string",
                     "format": "date",
