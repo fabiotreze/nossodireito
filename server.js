@@ -103,6 +103,15 @@ let redisClient = null;
 let redisInitPromise = null;
 let redisInitError = null;
 let redisSecretClient = null;
+let azureCredential = null;
+
+function getCredential() {
+  if (!azureCredential) {
+    const { DefaultAzureCredential } = require("@azure/identity");
+    azureCredential = new DefaultAzureCredential();
+  }
+  return azureCredential;
+}
 
 function redisConfigured() {
   return REDIS_RATE_LIMIT_ENABLED && REDIS_HOSTNAME && KEY_VAULT_URI;
