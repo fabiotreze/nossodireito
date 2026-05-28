@@ -378,7 +378,30 @@
                 "canal_de_atendimento_oficial": {
                     "type": "string",
                     "minLength": 5,
-                    "description": "Canal oficial onde o direito é efetivamente peticionado/concedido (ex: 'Meu INSS', 'CRAS', 'SAC ANEEL'). Surfaceado pela UI para deixar claro que o site não é a porta de entrada do direito. Tipicamente alias de `onde` ou versão normalizada."                }
+                    "description": "Canal oficial onde o direito é efetivamente peticionado/concedido (ex: 'Meu INSS', 'CRAS', 'SAC ANEEL'). Surfaceado pela UI para deixar claro que o site não é a porta de entrada do direito. Tipicamente alias de `onde` ou versão normalizada."
+                },
+                "requer_consulta_especializada": {
+                    "type": "boolean",
+                    "description": "True quando o direito tipicamente exige advogado/defensor/perito para obtenção ou manutenção segura. Determinístico — gerado por scripts/classify_consulta_especializada.py. NÃO editar manualmente: ajustar a regra no script e re-rodar."
+                },
+                "criterio_classificacao": {
+                    "type": "object",
+                    "description": "Auditoria da classificação automática. Documenta qual regra disparou e quais sinais foram detectados.",
+                    "required": ["regra", "sinais"],
+                    "properties": {
+                        "regra": {
+                            "type": "string",
+                            "minLength": 3,
+                            "description": "Nome da regra aplicada (ex: 'pericia_medica_inss', 'default_administrativo')."
+                        },
+                        "sinais": {
+                            "type": "array",
+                            "items": {"type": "string"},
+                            "description": "Substrings/marcadores que dispararam a regra. Default vazio."
+                        }
+                    },
+                    "additionalProperties": false
+                }
             },
             "additionalProperties": false
         },
