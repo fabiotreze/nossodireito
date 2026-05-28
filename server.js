@@ -23,6 +23,7 @@ const { resolveFile } = require("./lib/file-resolver");
 const { createAnalytics } = require("./lib/analytics");
 const { createRateLimiter } = require("./lib/rate-limit");
 const { createRedisClient } = require("./lib/redis-client");
+const { createAiAnalyzeHandler } = require("./lib/ai-analyze");
 void ALLOWED_EXT;
 
 // ── IA opt-in (Azure OpenAI) ──
@@ -125,6 +126,17 @@ const rateLimiter = createRateLimiter({
   },
 });
 const isRateLimitedAdaptive = (ip) => rateLimiter.check(ip);
+
+// ── AI Analyze Handler (lib/ai-analyze.js) ──
+const aiAnalyzeHandler = createAiAnalyzeHandler({
+  aiEnabled: AI_ANALYSIS_ENABLED,
+  maxBodyBytes: MAX_ANALYSIS_BODY_BYTES,
+  securityHeaders: SECURITY_HEADERS,
+  anonymize,
+  containsPII,
+  getAppInsightsClient: () => (appInsights ? appInsights.defaultClient : null),
+  loadAnalyzer: () => require("./services/ai-analysis").analyzeText,
+});
 
 // MIME, CACHE, CSP/SECURITY_HEADERS, ALLOWED_EXT, COMPRESSIBLE, BLOCKED_DIRS,
 // MAX_URL_LENGTH e resolveFile() foram extraídos para lib/* na Onda 7.
@@ -344,156 +356,9 @@ const server = http.createServer(async (req, res) => {
   }
 
   // ── IA opt-in: Análise de documento via Azure OpenAI ──
-  // Fluxo:
-  //  1. Cliente anonimiza no browser (shared/anonymizer.js)
-  //  2. POST { text: "..." } com Content-Type: application/json
-  //  3. Server re-anonimiza e VALIDA que não há PII residual
-  //  4. Chama Doc Intelligence (MSI, brazilsouth)
-  //  5. Retorna estrutura { cids, dates, paragraphs } — zero conteúdo bruto logado
+  // Lógica completa em lib/ai-analyze.js (Onda 7c).
   if (isAnalyzeEndpoint && req.method === "POST") {
-    if (!AI_ANALYSIS_ENABLED) {
-      res.writeHead(503, { "Content-Type": "application/json", ...SECURITY_HEADERS });
-      res.end(
-        JSON.stringify({
-          error: "AI analysis disabled",
-          localAnalysisFallback: true,
-        }),
-      );
-      return;
-    }
-    if ((req.headers["content-type"] || "").split(";")[0].trim() !== "application/json") {
-      res.writeHead(415, { "Content-Type": "application/json", ...SECURITY_HEADERS });
-      res.end(JSON.stringify({ error: "Content-Type must be application/json" }));
-      return;
-    }
-    // Coleta body com limite estrito (CWE-400).
-    const chunks = [];
-    let received = 0;
-    let aborted = false;
-    req.on("data", (chunk) => {
-      received += chunk.length;
-      if (received > MAX_ANALYSIS_BODY_BYTES) {
-        aborted = true;
-        res.writeHead(413, { "Content-Type": "application/json", ...SECURITY_HEADERS });
-        res.end(JSON.stringify({ error: "Payload too large", maxBytes: MAX_ANALYSIS_BODY_BYTES }));
-        req.destroy();
-        return;
-      }
-      chunks.push(chunk);
-    });
-    req.on("end", async () => {
-      if (aborted) return;
-      let payload;
-      try {
-        payload = JSON.parse(Buffer.concat(chunks).toString("utf8"));
-      } catch {
-        res.writeHead(400, { "Content-Type": "application/json", ...SECURITY_HEADERS });
-        res.end(JSON.stringify({ error: "Invalid JSON" }));
-        return;
-      }
-      const rawText = typeof payload.text === "string" ? payload.text : "";
-      if (!rawText || rawText.length < 10) {
-        res.writeHead(400, { "Content-Type": "application/json", ...SECURITY_HEADERS });
-        res.end(JSON.stringify({ error: "Field 'text' is required (min 10 chars)" }));
-        return;
-      }
-      // Double-check: roda anonimizador no server mesmo se cliente já fez.
-      // Defense in depth — cliente pode ter sido modificado/burlado.
-      const { text: cleanText, stats: anonStats } = anonymize(rawText);
-      const check = containsPII(cleanText);
-      if (!check.clean) {
-        // Recusa explícita — não enviamos PII para serviço de IA, NUNCA.
-        if (appInsights && appInsights.defaultClient) {
-          appInsights.defaultClient.trackEvent({
-            name: "AI.Analysis.Rejected.PII",
-            properties: { reasons: check.found.join(",") },
-          });
-        }
-        res.writeHead(422, { "Content-Type": "application/json", ...SECURITY_HEADERS });
-        res.end(
-          JSON.stringify({
-            error: "Text contains residual PII after anonymization",
-            found: check.found,
-            hint: "Run shared/anonymizer.js on the client BEFORE POSTing",
-          }),
-        );
-        return;
-      }
-      try {
-        const { analyzeText } = require("./services/ai-analysis");
-        const result = await analyzeText(cleanText);
-        // LGPD: anexa metadados de transparência ao payload (Art. 6º V + Art. 9º)
-        result.lgpd = {
-          retention_seconds: 0,
-          legal_basis: "LGPD Art. 7º I (consentimento)",
-          anonymized_client_side: true,
-          anonymized_server_side: true,
-          data_residency: "brazil-south",
-          ai_provider: "azure-openai",
-          ai_model: result.model || "gpt-4o-mini",
-        };
-        if (appInsights && appInsights.defaultClient) {
-          appInsights.defaultClient.trackEvent({
-            name: "AI.Analysis.Success",
-            properties: {
-              contentHash: result.contentHash,
-              cidsFound: String((result.cids || []).length),
-              direitosSugeridos: String((result.direitos_sugeridos || []).length),
-              durationMs: String(result.durationMs),
-              tokensInput: String(result.tokens ? result.tokens.input : 0),
-              tokensOutput: String(result.tokens ? result.tokens.output : 0),
-              confianca: String(result.confianca || "baixa"),
-              anonPatterns: Object.keys(anonStats).join(","),
-            },
-          });
-        }
-        const okHeaders = {
-          "Content-Type": "application/json",
-          "Cache-Control": "no-store",
-          "X-Data-Retention": "0",
-          "X-LGPD-Legal-Basis": "Art-7-I-Consentimento",
-          "X-AI-Provider": "azure-openai",
-          ...SECURITY_HEADERS,
-        };
-        if (corsOrigin) okHeaders["Access-Control-Allow-Origin"] = corsOrigin;
-        res.writeHead(200, okHeaders);
-        res.end(JSON.stringify(result));
-      } catch (err) {
-        const errMsg = String(err && err.message).slice(0, 500);
-        const errCode = String((err && err.code) || "");
-        const retryAfter = Number((err && err.retryAfter) || 0);
-        if (appInsights && appInsights.defaultClient) {
-          appInsights.defaultClient.trackEvent({
-            name: "AI.Analysis.Error",
-            properties: {
-              message: errMsg,
-              code: errCode,
-              status: String((err && err.status) || ""),
-            },
-          });
-        }
-        const status = errCode === "CIRCUIT_OPEN" || errCode === "ETIMEDOUT" ? 503 : 502;
-        const errorHeaders = {
-          "Content-Type": "application/json",
-          ...SECURITY_HEADERS,
-        };
-        if (retryAfter > 0) errorHeaders["Retry-After"] = String(retryAfter);
-        res.writeHead(status, errorHeaders);
-        res.end(
-          JSON.stringify({
-            error: "AI service unavailable",
-            localAnalysisFallback: true,
-            retryAfterSeconds: retryAfter || undefined,
-          }),
-        );
-      }
-    });
-    req.on("error", () => {
-      if (!res.headersSent) {
-        res.writeHead(400, { "Content-Type": "application/json", ...SECURITY_HEADERS });
-        res.end(JSON.stringify({ error: "Bad Request" }));
-      }
-    });
+    aiAnalyzeHandler(req, res, corsOrigin);
     return;
   }
 
