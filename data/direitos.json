@@ -1,5 +1,5 @@
 {
-  "versao": "1.34.3",
+  "versao": "1.34.4",
   "ultima_atualizacao": "2026-05-28",
   "aviso": "Informações compiladas de fontes oficiais do governo brasileiro (gov.br). Podem estar desatualizadas. Verifique sempre as fontes originais.",
   "fontes": [
@@ -855,14 +855,16 @@
       "tipo": "referencia",
       "url": "https://processo.stj.jus.br/SCON/jurisprudencia/toc.jsp?livre=curatela+sa%FAde",
       "orgao": "Superior Tribunal de Justiça",
-      "consultado_em": "2026-05-28"
+      "consultado_em": "2026-05-28",
+      "estabilidade": "volatil"
     },
     {
       "nome": "STJ — Representação em Atos de Saúde Exige Curatela Regularmente Constituída",
       "tipo": "referencia",
       "url": "https://www.stj.jus.br/sites/portalp/Inicio",
       "orgao": "Superior Tribunal de Justiça",
-      "consultado_em": "2026-05-28"
+      "consultado_em": "2026-05-28",
+      "estabilidade": "volatil"
     }
   ],
   "documentos_mestre": [

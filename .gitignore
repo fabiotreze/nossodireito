@@ -80,3 +80,4 @@ index.backup_*
 # Plan binaries — nunca commitar
 terraform/tfplan*
 terraform/*.tfplan
+.lychee-exclude.txt
