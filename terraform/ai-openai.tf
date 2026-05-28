@@ -71,7 +71,6 @@ resource "azurerm_cognitive_account" "openai" {
   tags = merge(local.tags, {
     "LGPDClassification" = "ai-opt-in"
     "DataResidency"      = "brazil-south"
-    "Purpose"            = "rights-analysis-llm"
     "lgpd_compliant"     = "true"
     "Model"              = var.ai_openai_model_name
   })

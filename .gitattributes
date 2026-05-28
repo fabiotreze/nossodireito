@@ -1,0 +1,30 @@
+# =================================================================
+# git archive export-ignore
+# -----------------------------------------------------------------
+# Estes paths estão versionados (para CI/CD, docs, IaC) mas NÃO devem
+# entrar no pacote de deploy do App Service. O workflow deploy.yml
+# usa `git archive HEAD` para empacotar, evitando whitelist manual
+# (que foi a causa do incidente SITE DOWN em 28/mai/2026).
+# =================================================================
+
+terraform/         export-ignore
+.github/           export-ignore
+.githooks/         export-ignore
+tests/             export-ignore
+docs/              export-ignore
+scripts/           export-ignore
+schemas/           export-ignore
+*.md               export-ignore
+.gitignore         export-ignore
+.gitattributes     export-ignore
+.editorconfig      export-ignore
+.coveragerc        export-ignore
+.coverage          export-ignore
+.checkov.yaml      export-ignore
+pytest.ini         export-ignore
+requirements*.txt  export-ignore
+lighthouserc.json  export-ignore
+validation_report.json export-ignore
+.eslintrc*         export-ignore
+.prettierrc*       export-ignore
+SECURITY_AUDIT.md  export-ignore
