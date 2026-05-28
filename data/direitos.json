@@ -118,7 +118,7 @@
       "tipo": "servico",
       "url": "https://www.gov.br/pt-br/servicos/solicitar-beneficio-assistencial-a-pessoa-com-deficiencia",
       "orgao": "Ministério do Desenvolvimento e Assistência Social",
-      "consultado_em": "2026-05-24"
+      "consultado_em": "2026-05-28"
     },
     {
       "nome": "Meu INSS",
@@ -496,9 +496,9 @@
     {
       "nome": "Portal de Acessibilidade Digital (eMAG) — Governo Digital",
       "tipo": "servico",
-      "url": "https://www.gov.br/governodigital/pt-br/acessibilidade-digital",
+      "url": "https://www.gov.br/governodigital/pt-br/acessibilidade-e-usuario/acessibilidade-digital",
       "orgao": "Secretaria de Governo Digital / Ministério da Gestão",
-      "consultado_em": "2026-05-24"
+      "consultado_em": "2026-05-28"
     },
     {
       "nome": "Isenção IRPF por Moléstia Grave — Receita Federal",
@@ -538,9 +538,9 @@
     {
       "nome": "PCDT — Protocolos Clínicos e Diretrizes Terapêuticas (Ministério da Saúde)",
       "tipo": "servico",
-      "url": "https://www.gov.br/saude/pt-br/assuntos/protocolos-clinicos-e-diretrizes-terapeuticas-pcdt",
+      "url": "https://www.gov.br/saude/pt-br/assuntos/pcdt",
       "orgao": "Ministério da Saúde / SECTICS",
-      "consultado_em": "2026-05-24"
+      "consultado_em": "2026-05-28"
     },
     {
       "nome": "Formulário LME — Laudo de Medicamentos Especializados (SUS)",
@@ -608,9 +608,9 @@
     {
       "nome": "CPA — Comissão Permanente de Acessibilidade (Barueri/SP)",
       "tipo": "servico",
-      "url": "https://portal.barueri.sp.gov.br/cidadao/pessoa-com-deficiencia",
+      "url": "https://portal.barueri.sp.gov.br/cidadao/pessoa-com-deficiencia/cpa",
       "orgao": "Prefeitura de Barueri",
-      "consultado_em": "2026-04-20"
+      "consultado_em": "2026-05-28"
     },
     {
       "nome": "SATRANS — Transporte Municipal (Santo André/SP)",
@@ -717,16 +717,16 @@
     {
       "nome": "INSS — BPC (Benefício de Prestação Continuada)",
       "tipo": "servico",
-      "url": "https://www.gov.br/inss/pt-br/assuntos/beneficios-assistenciais/bpc-beneficio-de-prestacao-continuada",
+      "url": "https://www.gov.br/pt-br/servicos/solicitar-beneficio-assistencial-a-pessoa-com-deficiencia",
       "orgao": "INSS",
-      "consultado_em": "2026-05-27"
+      "consultado_em": "2026-05-28"
     },
     {
       "nome": "INSS — Aposentadoria por Idade",
       "tipo": "servico",
-      "url": "https://www.gov.br/inss/pt-br/assuntos/beneficios/aposentadoria/aposentadoria-por-idade",
+      "url": "https://www.gov.br/pt-br/servicos/solicitar-aposentadoria-por-idade-de-pessoa-com-deficiencia",
       "orgao": "INSS",
-      "consultado_em": "2026-05-27"
+      "consultado_em": "2026-05-28"
     },
     {
       "nome": "INSS — Inscrição e Contribuição",
@@ -759,23 +759,23 @@
     {
       "nome": "INSS — Seja um Segurado Facultativo",
       "tipo": "referencia",
-      "url": "https://www.gov.br/inss/pt-br/saiba-mais/seja-um-segurado-facultativo",
+      "url": "https://www.gov.br/pt-br/servicos/solicitar-validacao-de-facultativo-baixa-renda",
       "orgao": "INSS",
-      "consultado_em": "2026-05-27"
+      "consultado_em": "2026-05-28"
     },
     {
       "nome": "INSS — Aposentadoria da Pessoa com Deficiência por Invalidez",
       "tipo": "servico",
-      "url": "https://www.gov.br/inss/pt-br/servicos/aposentadoria-da-pessoa-com-deficiencia-por-invalidez",
+      "url": "https://www.gov.br/inss/pt-br/direitos-e-deveres/aposentadorias/aposentadoria-por-tempo-de-contribuicao-da-pessoa-com-deficiencia",
       "orgao": "INSS",
-      "consultado_em": "2026-05-27"
+      "consultado_em": "2026-05-28"
     },
     {
       "nome": "INSS — Cadastrar ou Manter Contribuinte Facultativo",
       "tipo": "servico",
-      "url": "https://www.gov.br/inss/pt-br/servicos/cadastrar-ou-manter-contribuinte-facultativo",
+      "url": "https://www.gov.br/pt-br/servicos/solicitar-validacao-de-facultativo-baixa-renda",
       "orgao": "INSS",
-      "consultado_em": "2026-05-27"
+      "consultado_em": "2026-05-28"
     },
     {
       "nome": "Gov.br — Emissão de Guia da Previdência Social (GPS)",
@@ -794,16 +794,16 @@
     {
       "nome": "Gov.br — Receber o Benefício de Prestação Continuada (BPC/LOAS)",
       "tipo": "servico",
-      "url": "https://www.gov.br/pt-br/servicos/receber-o-beneficio-de-prestacao-continuada-bpc-loas",
+      "url": "https://www.gov.br/pt-br/servicos/solicitar-beneficio-assistencial-a-pessoa-com-deficiencia",
       "orgao": "Governo Federal",
-      "consultado_em": "2026-05-27"
+      "consultado_em": "2026-05-28"
     },
     {
       "nome": "Lei 14.724/2024",
       "tipo": "legislacao",
-      "url": "https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2024/lei/l14724.htm",
+      "url": "https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2023/lei/l14724.htm",
       "orgao": "Presidência da República",
-      "consultado_em": "2026-05-27"
+      "consultado_em": "2026-05-28"
     },
     {
       "nome": "Lei 9.250/1995 — Imposto de Renda das Pessoas Físicas",
@@ -846,9 +846,9 @@
     {
       "nome": "CNJ — Cartilha de Curatela (PDF)",
       "tipo": "referencia",
-      "url": "https://www.cnj.jus.br/wp-content/uploads/2022/03/cartilha-curatela.pdf",
+      "url": "https://www.gov.br/mdh/pt-br/assuntos/noticias/2020-2/fevereiro/ministerio-lanca-cartilha-em-beneficio-da-populacao-idosa/cartilha-curatela.pdf/view",
       "orgao": "Conselho Nacional de Justiça",
-      "consultado_em": "2026-05-27"
+      "consultado_em": "2026-05-28"
     },
     {
       "nome": "STJ — Busca por Curatela em Saúde",
@@ -2087,11 +2087,11 @@
         },
         {
           "titulo": "Receber BPC/LOAS (gov.br)",
-          "url": "https://www.gov.br/pt-br/servicos/receber-o-beneficio-de-prestacao-continuada-bpc-loas"
+          "url": "https://www.gov.br/pt-br/servicos/solicitar-beneficio-assistencial-a-pessoa-com-deficiencia"
         },
         {
           "titulo": "INSS — BPC (orientações oficiais)",
-          "url": "https://www.gov.br/inss/pt-br/assuntos/beneficios-assistenciais/bpc-beneficio-de-prestacao-continuada"
+          "url": "https://www.gov.br/pt-br/servicos/solicitar-beneficio-assistencial-a-pessoa-com-deficiencia"
         },
         {
           "titulo": "Meu INSS",
@@ -2306,7 +2306,7 @@
         },
         {
           "titulo": "PCDT — Protocolos Clínicos para TEA e Paralisia Cerebral",
-          "url": "https://www.gov.br/saude/pt-br/assuntos/protocolos-clinicos-e-diretrizes-terapeuticas-pcdt"
+          "url": "https://www.gov.br/saude/pt-br/assuntos/pcdt"
         },
         {
           "titulo": "Novo Viver sem Limite — Plano Nacional PcD",
@@ -2891,7 +2891,7 @@
         },
         {
           "titulo": "PCDT — Protocolos Clínicos e Diretrizes Terapêuticas (SUS)",
-          "url": "https://www.gov.br/saude/pt-br/assuntos/protocolos-clinicos-e-diretrizes-terapeuticas-pcdt"
+          "url": "https://www.gov.br/saude/pt-br/assuntos/pcdt"
         },
         {
           "titulo": "CNES — Cadastro Nacional de Estabelecimentos de Saúde (buscar CER, CAPS, UBS)",
@@ -3181,7 +3181,7 @@
         },
         {
           "titulo": "Barueri — Comissão Permanente de Acessibilidade (CPA)",
-          "url": "https://portal.barueri.sp.gov.br/cidadao/pessoa-com-deficiencia"
+          "url": "https://portal.barueri.sp.gov.br/cidadao/pessoa-com-deficiencia/cpa"
         },
         {
           "titulo": "Santo André — SATRANS (transporte municipal)",
@@ -3716,7 +3716,7 @@
         {
           "lei": "NBR 9050/2020 (ABNT)",
           "artigo": "Norma técnica completa",
-          "link": "https://www.gov.br/governodigital/pt-br/acessibilidade-digital",
+          "link": "https://www.gov.br/governodigital/pt-br/acessibilidade-e-usuario/acessibilidade-digital",
           "nota": "Norma técnica ABNT de acessibilidade — referência via portal Governo Digital"
         },
         {
@@ -4850,7 +4850,7 @@
         {
           "lei": "NBR 9050:2020 (ABNT)",
           "artigo": "Seção 6.13",
-          "link": "https://www.gov.br/governodigital/pt-br/acessibilidade-digital"
+          "link": "https://www.gov.br/governodigital/pt-br/acessibilidade-e-usuario/acessibilidade-digital"
         },
         {
           "lei": "Código de Trânsito Brasileiro (Lei 9.503/1997)",
@@ -4903,7 +4903,7 @@
         },
         {
           "titulo": "Acessibilidade Digital — Governo Digital (eMAG/NBR 9050)",
-          "url": "https://www.gov.br/governodigital/pt-br/acessibilidade-digital"
+          "url": "https://www.gov.br/governodigital/pt-br/acessibilidade-e-usuario/acessibilidade-digital"
         },
         {
           "titulo": "Cartão DEFIS — Credencial de Estacionamento PcD (SENATRAN)",
@@ -5100,7 +5100,7 @@
         },
         {
           "titulo": "INSS — Aposentadoria da Pessoa com Deficiência por Invalidez",
-          "url": "https://www.gov.br/inss/pt-br/servicos/aposentadoria-da-pessoa-com-deficiencia-por-invalidez"
+          "url": "https://www.gov.br/inss/pt-br/direitos-e-deveres/aposentadorias/aposentadoria-por-tempo-de-contribuicao-da-pessoa-com-deficiencia"
         }
       ],
       "tags": [
@@ -5469,7 +5469,7 @@
         },
         {
           "titulo": "Acessibilidade Digital — Leitores de Tela e Ferramentas (gov.br)",
-          "url": "https://www.gov.br/governodigital/pt-br/acessibilidade-digital"
+          "url": "https://www.gov.br/governodigital/pt-br/acessibilidade-e-usuario/acessibilidade-digital"
         },
         {
           "titulo": "Novo Viver sem Limite — Plano Nacional PcD",
@@ -5477,7 +5477,7 @@
         },
         {
           "titulo": "Portal de Acessibilidade Digital (eMAG) — Governo Digital",
-          "url": "https://www.gov.br/governodigital/pt-br/acessibilidade-digital"
+          "url": "https://www.gov.br/governodigital/pt-br/acessibilidade-e-usuario/acessibilidade-digital"
         }
       ],
       "tags": [
@@ -7480,7 +7480,7 @@
         {
           "lei": "NBR 9050:2020 (ABNT) — Acessibilidade em Edificações",
           "artigo": "Norma técnica completa",
-          "link": "https://www.gov.br/governodigital/pt-br/acessibilidade-digital"
+          "link": "https://www.gov.br/governodigital/pt-br/acessibilidade-e-usuario/acessibilidade-digital"
         }
       ],
       "requisitos": [
@@ -7517,7 +7517,7 @@
       "links": [
         {
           "titulo": "Portal de Acessibilidade Digital — Governo Federal",
-          "url": "https://www.gov.br/governodigital/pt-br/acessibilidade-digital"
+          "url": "https://www.gov.br/governodigital/pt-br/acessibilidade-e-usuario/acessibilidade-digital"
         },
         {
           "titulo": "ONDH — Ouvidoria Nacional de Direitos Humanos (Disque 100)",
@@ -7714,7 +7714,7 @@
         },
         {
           "titulo": "CNJ — Cartilha de Curatela",
-          "url": "https://www.cnj.jus.br/wp-content/uploads/2022/03/cartilha-curatela.pdf"
+          "url": "https://www.gov.br/mdh/pt-br/assuntos/noticias/2020-2/fevereiro/ministerio-lanca-cartilha-em-beneficio-da-populacao-idosa/cartilha-curatela.pdf/view"
         },
         {
           "titulo": "STJ — Representação em atos de saúde exige curatela regularmente constituída",
@@ -8103,7 +8103,7 @@
       "links": [
         {
           "titulo": "Portal de Acessibilidade Digital (eMAG) — Governo Digital",
-          "url": "https://www.gov.br/governodigital/pt-br/acessibilidade-digital"
+          "url": "https://www.gov.br/governodigital/pt-br/acessibilidade-e-usuario/acessibilidade-digital"
         },
         {
           "titulo": "Fala.BR — Denúncia e Ouvidoria",
@@ -9439,7 +9439,7 @@
         },
         {
           "titulo": "CNJ — Cartilha de Curatela (PDF)",
-          "url": "https://www.cnj.jus.br/wp-content/uploads/2022/03/cartilha-curatela.pdf"
+          "url": "https://www.gov.br/mdh/pt-br/assuntos/noticias/2020-2/fevereiro/ministerio-lanca-cartilha-em-beneficio-da-populacao-idosa/cartilha-curatela.pdf/view"
         },
         {
           "titulo": "STJ — Jurisprudência e notícias sobre curatela em saúde",
