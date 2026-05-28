@@ -78,7 +78,7 @@ Para rodar testes: veja [`docs/OPERATIONS.md`](docs/OPERATIONS.md)
 
 1. **Simplificação operacional:** 14 workflows GitHub Actions desativados (renomeados para `.yml.disabled`) — agentes de monitoramento contínuo (`legal-source-auditor`, `lexml-law-drift`, `conecta-govbr-sync`, `content-freshness-monitor`, `compliance-drift-detector`, `dependency-intelligence`, `community-insights`, `performance-watchdog`, `documentation-keeper`, `replication`, `scorecard`, `security-baseline`, `weekly-review`, `discover-benefits`). Permanecem ativos os 8 workflows essenciais de CI/CD e segurança.
 2. **Arquivamento de scripts:** 14 scripts movidos para `scripts/legacy/` (9 agentes + 3 migrações pontuais já aplicadas + 2 utilitários de cron). Histórico preservado, sem confusão sobre o que é runtime ativo.
-3. **Guard automático contra drift de docs:** novo `check_workflow_references()` em [check_docs_sync.py](scripts/check_docs_sync.py) — bloqueia commits quando README/docs referenciam workflows inexistentes. Catch automático do tipo de drift descoberto neste release.
+3. **Guard automático contra links 404 em docs:** novo [check_doc_links.mjs](scripts/check_doc_links.mjs) — bloqueia PRs quando README/docs referenciam arquivos inexistentes. Catch automático do tipo de drift descoberto em 28/mai/2026 (refs para REPLICATION.md/COST-ESTIMATE.md órfãs após cleanup #170).
 4. **Documentação ressincronizada:** README, docs/ARCHITECTURE, docs/OPERATIONS, docs/SECURITY-LGPD atualizados para refletir o inventário real (badges, tree, infra).
 5. **Quality Gate reforçado:** branch protection com 7 required checks (CodeQL × 2 + gitleaks + Quality Gate + Lighthouse + A11y × 3 engines), comments-resolution required, admin override apenas para rebases de release.
 
