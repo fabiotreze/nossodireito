@@ -33,7 +33,8 @@
 2. Deploy do pacote da aplicação:
    - `gh workflow run deploy.yml -R fabiotreze/nossodireito`
 3. Smoke test pós-deploy:
-   - `curl -s https://nossodireito.fabiotreze.com/ | grep -E "aiConsentRevokeInline|v=1.21.0"`
+   - `curl -s https://nossodireito.fabiotreze.com/ | grep -E "aiConsentRevokeInline|v=[0-9]+\.[0-9]+\.[0-9]+"`
+   - (a versão exata deve bater com `jq -r .version package.json`)
 
 ## Triagem de Incidentes
 
