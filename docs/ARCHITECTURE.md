@@ -78,7 +78,7 @@ flowchart LR
 
 1. Usuario acessa `https://nossodireito.fabiotreze.com`.
 2. Cloudflare aplica protecao de borda e encaminha para App Service.
-3. O App Service entrega UI/PWA e ativos versionados.
+3. O App Service entrega a UI estática e os ativos versionados.
 4. Em analise por IA, o frontend exige consentimento explicito.
 5. O backend anonimiza o texto e chama Azure OpenAI via Private Endpoint.
 6. A resposta volta para o cliente sem persistencia de dados pessoais no servidor.
@@ -87,32 +87,14 @@ flowchart LR
 
 - `GET /` -> aplicacao web
 - `GET /health` -> health check da aplicacao
-- `GET /direitos/<slug>/` -> pagina estatica SEO de um direito (1 por categoria)
 - `POST /api/analyze-document` -> analise de texto com IA (opt-in)
 - `GET /data/*.json` -> base de direitos e mecanismos de busca
 
-## SEO — Paginas Pre-renderizadas
+## SEO
 
-Para evitar o problema de SPA com hash-routing (Google indexa apenas `/`),
-o repositorio mantem 42 paginas HTML estaticas em `direitos/<slug>/index.html`,
-geradas a partir de `data/direitos.json` pelo script `scripts/prerender_direitos.py`.
+A SPA usa hash-routing internamente. O sitemap publicado atualmente lista apenas a home; `scripts/prerender_direitos.py` pode gerar páginas profundas em `direitos/<slug>/index.html` a partir de `data/direitos.json`, mas os arquivos gerados ficam em `.gitignore` e o `deploy.yml` não executa o pré-render — portanto, hoje, não há páginas SEO por categoria em produção. Restaurar requer: rodar o script, ajustar o sitemap e ligar o passo no workflow de deploy.
 
-Cada pagina contem: title/description/canonical unicos, H1 com o titulo da
-categoria, secoes Base legal/Requisitos/Documentos/Passo-a-passo, JSON-LD
-Article + BreadcrumbList, link de retorno para a home. Sao paginas leves
-(~13 KB) sem dependencia da SPA — Googlebot indexa diretamente.
-
-`server.js` resolve URLs limpas via `resolveFile`: requisicoes sem extensao
-(ex. `/direitos/bpc/`) tentam `<path>/index.html` -> `<path>.html` -> fallback SPA.
-
-`sitemap.xml` lista as 43 URLs (home + 42 direitos) e e regenerado pelo mesmo
-script. `master_compliance.py` valida sincronia (paginas presentes + sitemap
-atualizado) na categoria SEO.
-
-Regenerar apos editar `data/direitos.json`:
-```bash
-python3 scripts/prerender_direitos.py
-```
+`server.js` resolve URLs limpas via `resolveFile`: requisições sem extensão tentam `<path>/index.html` -> `<path>.html` -> fallback SPA.
 
 ## Privacidade e LGPD
 
@@ -141,23 +123,21 @@ python3 scripts/prerender_direitos.py
 
 ## Gates de Qualidade (CI/CD)
 
-Desde v1.33.x, todo PR para `main` precisa passar nos 7 required checks abaixo antes do merge (configurado em branch protection):
+Todo PR para `main` precisa passar nos checks abaixo (configurado em branch protection):
 
-| Check                                       | Ferramenta                       | Bloqueia? |
-| ------------------------------------------- | -------------------------------- | --------- |
-| `CodeQL`                                    | GitHub Code Scanning (py + js/ts)| sim       |
-| `gitleaks scan`                             | gitleaks                         | sim       |
-| `Quality Gate (36 categorias)`              | `scripts/master_compliance.py`   | sim       |
-| `Lighthouse (perf/seo/a11y/bp/pwa)`         | `@lhci/cli` + `lighthouserc.json`| sim       |
-| `A11y (axe-core WCAG 2.1 AA) (chromium)`    | `tests/a11y.mjs` + Playwright    | sim       |
-| `A11y (axe-core WCAG 2.1 AA) (firefox)`     | `tests/a11y.mjs` + Playwright    | sim       |
-| `A11y (axe-core WCAG 2.1 AA) (webkit)`      | `tests/a11y.mjs` + Playwright    | sim       |
+| Check                                       | Ferramenta                              | Bloqueia? |
+| ------------------------------------------- | --------------------------------------- | --------- |
+| `CodeQL`                                    | GitHub Code Scanning (py + js/ts)       | sim       |
+| `gitleaks scan`                             | gitleaks                                | sim       |
+| `Quality Gate`                              | `scripts/validate_all.py --quick`       | sim       |
+| `Lighthouse (perf/seo/a11y/bp)`             | `@lhci/cli` + `lighthouserc.json`       | sim       |
+| `A11y (axe-core WCAG 2.1 AA) (chromium)`    | `tests/a11y.mjs` + Playwright           | sim       |
+| `A11y (axe-core WCAG 2.1 AA) (firefox)`     | `tests/a11y.mjs` + Playwright           | sim       |
+| `A11y (axe-core WCAG 2.1 AA) (webkit)`      | `tests/a11y.mjs` + Playwright           | sim       |
+| `Doc-link guard`                            | `scripts/check_doc_links.mjs`           | sim       |
+| `Docs-truth guard`                          | `scripts/check_docs_truth.mjs`          | sim       |
 
-Thresholds atuais (Lighthouse): perf ≥ 0.85, a11y ≥ 0.90, best-practices ≥ 0.90, seo ≥ 0.90, pwa ≥ 0.50 (warn). 4 URLs auditadas: home, `direitos/bpc/`, `direitos/educacao/`, `direitos/moradia_assistida_pcd/`.
-
-Testes PWA reais em `tests/test_e2e_playwright.py::TestPWA` validam `manifest.json` (campos + ícone ≥192px), `sw.js` (Content-Type + `CACHE_VERSION`) e fallback offline via `page.context.set_offline(True)`.
-
-Master Compliance score atual: **1248.5 / 1268.5 = 98.42%** (36 categorias).
+Thresholds atuais (Lighthouse): perf ≥ 0.85, a11y ≥ 0.90, best-practices ≥ 0.90, seo ≥ 0.90. URL auditada: `index.html` servido localmente pelo Lighthouse CI.
 
 ## Diagramas
 

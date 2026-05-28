@@ -1,11 +1,10 @@
 # Contribuindo para o NossoDireito (Guia Técnico)
 
 Obrigado por considerar contribuir! Este guia descreve o fluxo de trabalho
-obrigatório para enviar mudanças **de código** ao repositório.
-
-> 📣 **Contribuindo com conteúdo (leis, links quebrados, informações desatualizadas)?**
-> Veja [`docs/CONTRIBUTING.md`](docs/CONTRIBUTING.md) — guia voltado à comunidade,
-> sem pré-requisitos técnicos.
+obrigatório para enviar mudanças **de código** ao repositório. Para contribuir
+com conteúdo (leis, links quebrados, informações desatualizadas), abra uma
+[issue](https://github.com/fabiotreze/nossodireito/issues/new) descrevendo o
+que precisa ser corrigido.
 
 ## Antes de começar
 
@@ -13,12 +12,11 @@ obrigatório para enviar mudanças **de código** ao repositório.
   localmente.
 - Leia o [`SECURITY.md`](SECURITY.md) para reportar vulnerabilidades de
   forma responsável (não abra issue pública).
-- Leia o [`docs/COMPLIANCE.md`](docs/COMPLIANCE.md) para entender os
-  gates obrigatórios de CI (versão, LGPD, telemetria anônima).
-- Consulte o diagrama de arquitetura:
-  [`docs/ARCHITECTURE.drawio`](docs/ARCHITECTURE.drawio) (abra no
-  [draw.io desktop](https://github.com/jgraph/drawio-desktop) ou em
-  <https://app.diagrams.net>).
+- Leia o [`GOVERNANCE.md`](GOVERNANCE.md) para entender os critérios de
+  fontes oficiais, schema obrigatório de cada categoria e fluxo de revisão.
+- Consulte os diagramas em [`docs/diagrams/`](docs/diagrams/) (abra os
+  `.drawio` no [draw.io desktop](https://github.com/jgraph/drawio-desktop) ou em
+  <https://app.diagrams.net>) e o [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).
 
 ## Fluxo de Pull Request (mini-tutorial)
 
@@ -77,25 +75,23 @@ chore: bump version 1.16.0 → 1.16.1
 
 ## Versionamento
 
-Mudanças no produto (não em docs/CI) exigem bump de versão. Use o script:
-
-```bash
-python3 scripts/bump_version.py 1.16.1
-```
-
-Isso propaga a versão para todos os arquivos rastreados (HTML, manifest,
-service worker, package.json etc). O gate `master_compliance.py` falha o
-CI se as versões não estiverem alinhadas.
+Mudanças no produto (não em docs/CI) exigem bump de versão em [`package.json`](package.json)
+seguindo [SemVer](https://semver.org/lang/pt-BR/). Use Conventional Commit (`chore: bump version X.Y.Z`).
+Mantenha `package.json` alinhado com as referências de cache-bust no `index.html`.
 
 ## CI obrigatório (status checks)
 
 Os seguintes checks devem passar antes de fazer merge em `main`:
 
-| Check          | O que valida                                            |
-| -------------- | ------------------------------------------------------- |
-| **Quality Gate** | `master_compliance.py`: versão, LGPD, telemetria, SRI |
-| **CodeQL**       | Análise estática de segurança (SAST)                  |
-| **gitleaks**     | Varredura por secrets vazados                         |
+| Check          | O que valida                                                          |
+| -------------- | --------------------------------------------------------------------- |
+| **Quality Gate** | `scripts/validate_all.py --quick` (schema, conteúdo, base legal, etc.) |
+| **CodeQL**       | Análise estática de segurança (Python + JavaScript/TypeScript)        |
+| **gitleaks**     | Varredura por secrets vazados                                         |
+| **Lighthouse**   | Performance / SEO / a11y / best-practices em `index.html`             |
+| **A11y axe-core**| WCAG 2.1 AA em chromium / firefox / webkit                            |
+| **Doc-link**     | `scripts/check_doc_links.mjs` — nenhum link relativo 404 em docs      |
+| **Docs-truth**   | `scripts/check_docs_truth.mjs` — docs não citam features removidas    |
 
 Além disso o repositório exige **linear history** (rebase ou squash, sem
 merge commits) e bloqueia `force push`.
@@ -104,12 +100,13 @@ merge commits) e bloqueia `force push`.
 
 - `index.html` — SPA single-file (UI + lógica de consulta)
 - `js/` — módulos JavaScript (chamadas a Document Intelligence)
+- `lib/` — módulos extraídos do `server.js` (MIME, security headers, file resolver, analytics, rate limit, Redis, AI analyze, gov.br proxy, infra handlers)
 - `services/` — wrappers para Azure (Doc Intelligence, App Insights)
-- `scripts/` — Python: compliance, bump de versão, deploy helpers
-- `terraform/` — IaC do App Service + Application Insights
-- `tests/` — testes Pytest (compliance, smoke)
-- `docs/` — documentação técnica e diagrama de arquitetura
-- `.github/workflows/` — pipelines de CI/CD (Quality Gate, deploy OIDC)
+- `scripts/` — Python: validate_all + validações de schema/conteúdo/fontes; JS: a11y_audit, check_doc_links, check_docs_truth
+- `terraform/` — IaC do App Service + Key Vault + Redis + OpenAI + VNet
+- `tests/` — testes Pytest + node:test
+- `docs/` — documentação técnica e diagramas em `docs/diagrams/`
+- `.github/workflows/` — pipelines de CI/CD (deploy, Quality Gate, CodeQL, gitleaks, Lighthouse, accessibility, link-check, terraform, dependabot-auto-merge)
 
 ## Reportando bugs e sugestões
 

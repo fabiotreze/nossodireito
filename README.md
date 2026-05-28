@@ -10,7 +10,7 @@
 [![Accessibility](https://img.shields.io/badge/Accessibility-ARIA%20%7C%20VLibras%20%7C%20WCAG-blue?style=flat-square&logo=accessible-icon)](docs/OPERATIONS.md)
 [![LGPD](https://img.shields.io/badge/LGPD-Zero%20Data%20Collection-blue?style=flat-square)](docs/SECURITY-LGPD.md)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow?style=flat-square)](LICENSE)
-[![Version](https://img.shields.io/github/v/tag/fabiotreze/nossodireito?style=flat-square&label=version)](CHANGELOG.md)
+[![Version](https://img.shields.io/github/v/tag/fabiotreze/nossodireito?style=flat-square&label=version)](https://github.com/fabiotreze/nossodireito/releases)
 [![Quality Gate](https://github.com/fabiotreze/nossodireito/actions/workflows/quality-gate.yml/badge.svg)](https://github.com/fabiotreze/nossodireito/actions/workflows/quality-gate.yml)
 [![Tests](https://img.shields.io/github/actions/workflow/status/fabiotreze/nossodireito/quality-gate.yml?label=tests&style=flat-square&logo=pytest)](docs/OPERATIONS.md)
 [![CodeQL](https://github.com/fabiotreze/nossodireito/actions/workflows/codeql.yml/badge.svg)](https://github.com/fabiotreze/nossodireito/actions/workflows/codeql.yml)
@@ -44,7 +44,7 @@ Este projeto responde essa pergunta de forma clara, objetiva e validada.
 <!-- ABOUT-EN:START -->
 ### 🌐 About (English)
 
-**NossoDireito — Rights Portal for People with Disabilities.** Regional project — interface and content in Portuguese (pt-BR) for Brazilian citizens. Web portal with **42 rights categories**, official-source references, keyword-based document analysis, accessibility tools (VLibras sign language, TTS, high contrast, font scaling), PWA offline support, and encrypted storage via Web Crypto API. **Zero data collection (LGPD compliant).** Master Compliance score 1248.5/1268.5 (98.42%) across 36 validation categories. CI quality gates: CodeQL, gitleaks, Quality Gate, Lighthouse (perf/seo/a11y/bp/pwa) and axe-core WCAG 2.1 AA in 3 browser engines (chromium/firefox/webkit). Deployed to Azure App Service (region `brazilsouth`) via ZIP deploy; Terraform for infrastructure replication. CI/CD via GitHub Actions with automated Quality Gate.
+**NossoDireito — Rights Portal for People with Disabilities.** Regional project — interface and content in Portuguese (pt-BR) for Brazilian citizens. Web portal with **42 rights categories**, official-source references, keyword-based document analysis, accessibility tools (VLibras sign language, TTS, high contrast, font scaling), and encrypted client-side storage via Web Crypto API (AES-GCM-256). **Zero personal data collection (LGPD compliant).** CI quality gates: CodeQL, gitleaks, Quality Gate (`scripts/validate_all.py`), Lighthouse (perf/seo/a11y/bp) and axe-core WCAG 2.1 AA in 3 browser engines (chromium/firefox/webkit). Deployed to Azure App Service (region `brazilsouth`) via ZIP deploy; Terraform for infrastructure replication.
 <!-- ABOUT-EN:END -->
 
 ---
@@ -70,25 +70,21 @@ Para rodar testes: veja [`docs/OPERATIONS.md`](docs/OPERATIONS.md)
 
 ---
 
-## 🎉 NOVIDADES v1.34.2 (27/05/2026) — simplificação operacional + guard de drift de docs
+## � Estado atual (v1.34.2)
 
-**🏆 Status atual:** 513 testes Python passando (excluindo E2E browsers), CodeQL/gitleaks/Quality Gate/Lighthouse/axe-core (3 engines) verdes, 0 issues abertas, 0 alertas de segurança.
+Após o big-bang cleanup (#170) e a modularização do `server.js` (Onda 7, PRs #179–#182), o repositório é deliberadamente enxuto. **A documentação descreve apenas o que realmente existe no main**, e dois guards de CI impedem regressão:
 
-### ✅ O que mudou em v1.34.2
+- [`scripts/check_doc_links.mjs`](scripts/check_doc_links.mjs) — falha se README/docs apontarem para arquivos inexistentes.
+- [`scripts/check_docs_truth.mjs`](scripts/check_docs_truth.mjs) — falha se README/docs voltarem a citar features removidas (Service Worker, master-compliance, scripts em pasta legacy, workflows desativados, etc.). Se a feature for restaurada, o guard automaticamente para de bloquear. <!-- docs-truth: allow -->
 
-1. **Simplificação operacional:** 14 workflows GitHub Actions desativados (renomeados para `.yml.disabled`) — agentes de monitoramento contínuo (`legal-source-auditor`, `lexml-law-drift`, `conecta-govbr-sync`, `content-freshness-monitor`, `compliance-drift-detector`, `dependency-intelligence`, `community-insights`, `performance-watchdog`, `documentation-keeper`, `replication`, `scorecard`, `security-baseline`, `weekly-review`, `discover-benefits`). Permanecem ativos os 8 workflows essenciais de CI/CD e segurança.
-2. **Arquivamento de scripts:** 14 scripts movidos para `scripts/legacy/` (9 agentes + 3 migrações pontuais já aplicadas + 2 utilitários de cron). Histórico preservado, sem confusão sobre o que é runtime ativo.
-3. **Guard automático contra links 404 em docs:** novo [check_doc_links.mjs](scripts/check_doc_links.mjs) — bloqueia PRs quando README/docs referenciam arquivos inexistentes. Catch automático do tipo de drift descoberto em 28/mai/2026 (refs para REPLICATION.md/COST-ESTIMATE.md órfãs após cleanup #170).
-4. **Documentação ressincronizada:** README, docs/ARCHITECTURE, docs/OPERATIONS, docs/SECURITY-LGPD atualizados para refletir o inventário real (badges, tree, infra).
-5. **Quality Gate reforçado:** branch protection com 7 required checks (CodeQL × 2 + gitleaks + Quality Gate + Lighthouse + A11y × 3 engines), comments-resolution required, admin override apenas para rebases de release.
+### Pipeline de gates ativos
 
-### ⚙️ Pipeline de gates (continua)
-
-- Lighthouse CI (perf ≥ 0.85, a11y ≥ 0.90, bp ≥ 0.90, seo ≥ 0.90, pwa ≥ 0.50 warn) em 4 URLs
+- Quality Gate via [`scripts/validate_all.py`](scripts/validate_all.py) (`--quick` em PR)
+- Lighthouse CI (perf ≥ 0.85, a11y ≥ 0.90, bp ≥ 0.90, seo ≥ 0.90) em `index.html` local
 - axe-core WCAG 2.1 AA em 3 browser engines (chromium/firefox/webkit)
-- CodeQL Python + JavaScript/TypeScript
-- gitleaks secret scanning
-- Quality Gate (36 categorias master_compliance)
+- CodeQL (Python + JavaScript/TypeScript)
+- gitleaks (secret scanning)
+- Doc-link + docs-truth guards
 
 ### 📚 Documentação:
 
@@ -128,7 +124,6 @@ Para rodar testes: veja [`docs/OPERATIONS.md`](docs/OPERATIONS.md)
 - **Leitura em voz alta** (Web Speech API nativa)
 - **Ajuste de fonte** (aumentar/diminuir)
 - **Modo alto contraste**
-- **PWA** (instalável, funciona offline)
 - **Design responsivo** (mobile-first)
 
 ### 🔒 **100% Privado**
@@ -158,13 +153,6 @@ Para rodar testes: veja [`docs/OPERATIONS.md`](docs/OPERATIONS.md)
 4. **Leia** requisitos, documentos necessários e passo a passo
 5. **Ative acessibilidade** (VLibras, voz, contraste) conforme necessidade
 
-### Para Instalação Offline (PWA)
-
-1. No navegador (Chrome/Edge/Safari), acesse o site
-2. Clique no ícone de **Instalar** (canto superior direito)
-3. App será instalado no dispositivo
-4. Funciona **sem internet** após primeira visita
-
 ### Para Desenvolvedores
 
 ```bash
@@ -175,9 +163,8 @@ cd nossodireito
 # Instale Python (se necessário para validação)
 python3 --version  # Requer 3.10+
 
-# Execute validações
-python3 scripts/validate_content.py
-python3 scripts/master_compliance.py
+# Execute Quality Gate (rápido)
+python3 scripts/validate_all.py --quick
 
 # Inicie servidor local
 node server.js
@@ -194,7 +181,6 @@ node server.js
 - **CSS3** — Design responsivo, mobile-first, variáveis CSS
 - **JavaScript (Vanilla)** — Zero dependências externas
 - **Web Speech API** — Leitura em voz alta nativa
-- **Service Worker** — Cache inteligente, funcionalidade offline
 
 ### **Dados**
 
@@ -211,11 +197,13 @@ node server.js
 ### **Validação e Qualidade**
 
 - **Python 3.10+** — Scripts de validação
-- **validate_content.py** — 147 verificações de dados e código
-- **validate_sources.py** — Teste de HTTP status de 40+ URLs
-- **validate_legal_sources.py** — Extração automática de artigos de leis
-- **master_compliance.py** — 21 categorias de compliance (score 100%)
-- **Pre-commit Hook** — Validação automática antes de cada commit
+- **validate_all.py** — Quality Gate agregado (entry-point único, modo `--quick` no CI)
+- **validate_content.py** — verificações de conteúdo JSON
+- **validate_schema.py** — JSON Schema (Draft 7)
+- **validate_sources.py** — HTTP status das fontes oficiais
+- **validate_legal_sources.py** — extração de artigos das leis citadas
+- **validate_legal_compliance.py** — auditoria legal profunda
+- **Pre-commit Hook** — validação automática antes de cada commit
 
 ### **Segurança**
 
@@ -235,16 +223,10 @@ node server.js
 ### **SEO**
 
 - **Meta tags** completas (description, keywords, og:title, og:description)
-- **sitemap.xml** com 43 URLs (home + 42 direitos pré-renderizados)
+- **sitemap.xml** publicado para a home
 - **robots.txt** configurado
 - **Schema.org** markup (FAQPage, BreadcrumbList, Article)
-- **Pré-render estático**: 30 páginas profundas em `/direitos/<slug>/` geradas
-  por `scripts/prerender_direitos.py` a partir de `data/direitos.json`.
-  Reexecutar após alterar o dataset:
-  ```bash
-  python3 scripts/prerender_direitos.py        # gera
-  python3 scripts/prerender_direitos.py --check  # valida (CI)
-  ```
+- **Pré-render estático opcional**: [`scripts/prerender_direitos.py`](scripts/prerender_direitos.py) gera páginas SEO em `direitos/<slug>/index.html` a partir de `data/direitos.json`. Os arquivos gerados ficam em `.gitignore` e **não são publicados pelo deploy atual** — restaurar requer ligar o passo no `deploy.yml` e regenerar o sitemap.
 - **Performance** Lighthouse 95+
 
 ## ♿ Acessibilidade
@@ -253,7 +235,6 @@ node server.js
 - **🤟 Libras** — Tradução em Libras via VLibras (governo federal)
 - **A± Fonte** — Ajuste de tamanho de fonte
 - **🔲 Contraste** — Modo alto contraste
-- **PWA** — Instalável no celular, funciona offline
 
 ## 🔒 Privacidade (LGPD)
 
@@ -268,7 +249,6 @@ node server.js
 | -------------------- | ------------------------------------------ |
 | Frontend             | HTML5 + CSS3 + Vanilla JavaScript          |
 | Acessibilidade       | Web Speech API (TTS) + VLibras (Libras)    |
-| PWA                  | Service Worker + manifest.json (offline)   |
 | Server               | Node.js 22 LTS (`server.js`)               |
 | Base de dados        | JSON estático (`data/direitos.json`)       |
 | Criptografia         | AES-GCM-256 via Web Crypto API             |
@@ -284,83 +264,55 @@ node server.js
 
 ```
 nossodireito/
-├── index.html              # Página principal
-├── index.min.html          # HTML minificado (produção)
-├── server.js               # Servidor Node.js (App Service)
-├── package.json            # Dependências (applicationinsights)
-├── sw.js                   # Service Worker (PWA offline)
-├── manifest.json           # PWA manifest
-├── robots.txt              # Diretivas de rastreamento
-├── sitemap.xml             # Mapa do site para SEO (regenerado por prerender_direitos.py)
-├── direitos/               # Páginas estáticas SEO (1 por categoria)
-│   ├── bpc/index.html
-│   ├── ciptea/index.html
-│   └── ... (42 categorias)
-├── css/
-│   └── styles.css          # CSS responsivo + dark mode
-├── js/
-│   ├── app.js              # Busca, navegação, TTS, VLibras, criptografia
-│   └── sw-register.js      # Registro do Service Worker
+├── index.html              # SPA single-file (UI + lógica de consulta)
+├── server.js               # Bootstrap do servidor (wiring das libs)
+├── package.json            # Dependências (Azure SDKs, openai, redis)
+├── robots.txt
+├── sitemap.xml
+├── css/styles.css
+├── js/app.js               # Busca, navegação, TTS, VLibras, criptografia
 ├── data/
-│   ├── direitos.json       # Base de conhecimento (42 categorias + IPVA inline)
-│   ├── matching_engine.json # Keywords e motor de busca
-│   └── dicionario_pcd.json  # Dicionário PcD (deficiências, CIDs, leis)
-├── images/                 # Favicons, OG image e logo
-├── schemas/
-│   ├── direitos.schema.json # JSON Schema (Draft 7) para direitos.json
-│   ├── matching_engine.schema.json
-│   └── dicionario_pcd.schema.json
-├── lib/                    # Módulos extraídos do server.js
-│   ├── mime.js             # MIME, CACHE, ALLOWED_EXT
-│   ├── security-headers.js # CSP + cabeçalhos de segurança
-│   ├── file-resolver.js    # Resolução segura de arquivos estáticos
-│   ├── analytics.js        # Fábrica de telemetria (App Insights)
-│   └── rate-limit.js       # Rate limit (Redis + memória)
+│   ├── direitos.json
+│   ├── matching_engine.json
+│   ├── dicionario_pcd.json
+│   └── municipios_br.json
+├── schemas/                # JSON Schemas (Draft 7) dos arquivos data/
+├── lib/                    # Módulos extraídos do server.js (Onda 7)
+│   ├── mime.js
+│   ├── security-headers.js
+│   ├── file-resolver.js
+│   ├── analytics.js
+│   ├── rate-limit.js
+│   ├── redis-client.js
+│   ├── ai-analyze.js
+│   ├── govbr-proxy.js
+│   └── infra-handlers.js
 ├── docs/
-│   ├── README.md           # Índice da documentação
-│   ├── ARCHITECTURE.md     # Arquitetura completa + diagrama Mermaid
-│   ├── OPERATIONS.md       # Runbook e operação
-│   └── SECURITY-LGPD.md    # Baseline de segurança e LGPD
-├── tests/
-│   ├── test_matching_engine.py     # Pytest do motor de busca
-│   ├── anonymizer.test.mjs         # node:test do anonimizador
-│   ├── geo-search-contract.test.mjs
-│   ├── week-plan-contract.test.mjs
-│   ├── a11y.mjs                    # Smoke axe-core
-│   └── conftest.py                 # Fixtures pytest
+│   ├── README.md
+│   ├── ARCHITECTURE.md
+│   ├── OPERATIONS.md
+│   ├── SECURITY-LGPD.md
+│   └── diagrams/           # *.drawio
+├── tests/                  # pytest + node:test
 ├── scripts/
 │   ├── validate_all.py             # Quality Gate agregado (--quick)
-│   ├── validate_content.py         # Validação de conteúdo JSON
-│   ├── validate_schema.py          # Validação JSON Schema
-│   ├── validate_sources.py         # Drift externo (HTTP)
-│   ├── validate_legal_compliance.py # Auditoria legal profunda
-│   ├── validate_legal_sources.py   # Extração de artigos de leis
-│   ├── prerender_direitos.py       # SSG das páginas /direitos/<slug>/
-│   ├── a11y_audit.mjs              # Lighthouse + axe smoke
-│   ├── security_headers_check.sh   # Headers HTTP
-│   └── setup-hooks.mjs             # Instalação de hooks git
-├── terraform/                      # Infraestrutura como código
-│   ├── main.tf                     # App Service + Key Vault + SSL
-│   ├── ai-openai.tf                # Azure OpenAI + private endpoint
-│   ├── openai-private-network.tf   # VNet + PE para OpenAI
-│   ├── keyvault-redis-private-network.tf # VNet + PE para KV e Redis
-│   ├── budget.tf                   # Budget mensal
-│   ├── imports.tf                  # Imports de recursos preexistentes
-│   ├── variables.tf
-│   ├── outputs.tf
-│   └── providers.tf
-├── .github/workflows/
-│   ├── deploy.yml                  # CI/CD push → deploy Azure
-│   ├── quality-gate.yml            # Quality Gate PR/push check
-│   ├── codeql.yml                  # Análise estática de segurança
-│   ├── gitleaks.yml                # Detecção de segredos
-│   ├── lighthouse.yml              # Perf/SEO/A11y budgets
-│   ├── accessibility.yml           # axe-core WCAG 2.1 AA (3 engines)
-│   ├── link-check.yml              # Detecção de links quebrados
-│   ├── terraform.yml               # IaC manual dispatch
-│   └── dependabot-auto-merge.yml   # Auto-merge Dependabot PRs
-├── CHANGELOG.md
+│   ├── validate_content.py
+│   ├── validate_schema.py
+│   ├── validate_sources.py
+│   ├── validate_legal_compliance.py
+│   ├── validate_legal_sources.py
+│   ├── prerender_direitos.py       # SSG opcional (não usado no deploy atual)
+│   ├── a11y_audit.mjs
+│   ├── security_headers_check.sh
+│   ├── setup-hooks.mjs
+│   ├── check_doc_links.mjs         # Guard de links 404 em docs
+│   └── check_docs_truth.mjs        # Guard de drift de docs
+├── terraform/                      # IaC (App Service, KV, Redis, OpenAI, VNet)
+├── .github/workflows/              # 9 workflows ativos (deploy, quality-gate,
+│                                   #   codeql, gitleaks, lighthouse, accessibility,
+│                                   #   link-check, terraform, dependabot-auto-merge)
 ├── GOVERNANCE.md
+├── CONTRIBUTING.md
 ├── SECURITY.md
 ├── SECURITY_AUDIT.md
 ├── LICENSE
