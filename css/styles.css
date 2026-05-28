@@ -954,13 +954,15 @@ html.high-contrast ::selection {
 
 .btn-white {
     background: #fff;
-    color: var(--primary-dark);
+    /* Pin to deep blue: var(--primary-dark) em dark mode é #3b82f6 (azul claro)
+       e perde contraste sobre fundo branco. Fixo: #1e3a8a (~12:1 sobre #fff). */
+    color: #1e3a8a;
     border-color: #fff;
 }
 
 .btn-white:hover {
     background: #f0f4ff;
-    color: var(--primary-dark);
+    color: #1e3a8a;
 }
 
 .btn-outline-white {
@@ -1103,8 +1105,11 @@ html.high-contrast ::selection {
 }
 
 /* ---------- Hero ---------- */
+/* Hero é área de marca: gradiente deep-blue intencional em AMBOS os modos
+   (em dark mode, --primary/--primary-dark viram tons claros e o texto branco
+   perde contraste; por isso fixamos os deep blues aqui). */
 .hero {
-    background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+    background: linear-gradient(135deg, #1e3a8a, #1e40af);
     color: #fff;
     padding: 80px 0 40px;
 }
