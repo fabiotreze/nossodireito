@@ -670,6 +670,7 @@
             transLastUpdate: $('#transLastUpdate'),
             transVersion: $('#transVersion'),
             footerVersion: $('#footerVersion'),
+            dataAviso: $('#dataAviso'),
             linksGrid: $('#linksGrid'),
             stalenessBanner: $('#stalenessBanner'),
             staleDays: $('#staleDays'),
@@ -3495,6 +3496,10 @@ ${renderWeekPlan(priorityOrder, titleById)}
         if (dom.footerVersion && jsonMeta && jsonMeta.versao) {
             dom.footerVersion.textContent = `v${jsonMeta.versao}`;
             dom.footerVersion.title = `Versão dos dados: ${jsonMeta.versao}`;
+        }
+        if (dom.dataAviso && jsonMeta && jsonMeta.aviso) {
+            const small = dom.dataAviso.querySelector('small') || dom.dataAviso;
+            small.textContent = jsonMeta.aviso;
         }
     }
     function localGet(key) {
