@@ -69,7 +69,9 @@ jobs:
             './**/*.html'
             './**/*.md'
             './data/**/*.json'
-          fail: false # não quebra CI; tracker issue é a sinalização
+          # Em PRs → falha o check (bloqueia merge se PR introduzir URL quebrada).
+          # Em schedule/dispatch → fail:false e abre issue tracker (caça link-rot semanal).
+          fail: ${{ github.event_name == 'pull_request' }}
           output: ./lychee-report.md
 
       - name: Upload report
@@ -79,6 +81,14 @@ jobs:
           name: lychee-report
           path: ./lychee-report.md
           retention-days: 30
+
+      - name: Comentar resumo no PR (em failure)
+        if: failure() && github.event_name == 'pull_request'
+        uses: peter-evans/create-or-update-comment@v4
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          body-path: ./lychee-report.md
+          edit-mode: replace
 
       - name: Create or update tracker issue
         if: steps.lychee.outputs.exit_code != 0 && github.event_name != 'pull_request'
