@@ -305,8 +305,15 @@ def _http_head(url: str, timeout: int = HTTP_TIMEOUT) -> tuple[int, str]:
             with urllib.request.urlopen(req, timeout=timeout, context=ctx) as resp:
                 return resp.status, ""
         except urllib.error.HTTPError as e:
-            # Alguns sites bloqueiam HEAD — tenta GET como fallback
-            if e.code in (403, 405, 406):
+            # HEAD não é confiável em portais gov.br / WAFs — quase qualquer 4xx/5xx
+            # pode ser falsa-negativa onde GET retorna 200. Faz fallback para GET
+            # em todos os códigos que comprovadamente já mentiram em produção:
+            #   - 403 (anti-bot), 405/406 (método não permitido)
+            #   - 404 (Barueri portal — HEAD retorna 404, GET retorna 200)
+            #   - 500/502/503 (WAFs Cloudflare/Akamai degradam HEAD para erro 5xx)
+            # 410/451 e códigos sem padrão conhecido continuam sem fallback (são
+            # sinalizações explícitas do servidor que devem ser respeitadas).
+            if e.code in (403, 404, 405, 406, 500, 502, 503):
                 return _make_request(url, timeout=timeout)
             return e.code, ""
         except urllib.error.URLError as url_err:
