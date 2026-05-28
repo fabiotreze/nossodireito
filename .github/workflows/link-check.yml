@@ -34,6 +34,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v5
+        with:
+          # Precisa do histórico até a base do PR para `git diff`.
+          # Em schedule/dispatch, depth=1 basta (escaneia repo inteiro).
+          fetch-depth: ${{ github.event_name == 'pull_request' && 0 || 1 }}
 
       - name: Restore lychee cache
         uses: actions/cache@v4
@@ -48,8 +52,59 @@ jobs:
       - name: Extrair URLs voláteis (schema estabilidade=volatil)
         run: node scripts/extract_volatil_urls.mjs
 
+      - name: Compute scan scope (diff-only em PR; repo inteiro em cron/dispatch)
+        id: scope
+        shell: bash
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          BASE_REF: ${{ github.base_ref }}
+        run: |
+          set -euo pipefail
+          if [ "${EVENT_NAME}" = "pull_request" ]; then
+            # Lychee gov.br + ~470 arquivos = timeout >20min. Em PRs, escaneamos
+            # apenas o que o PR mudou (paths relevantes ao link-check).
+            git fetch --no-tags --depth=50 origin "${BASE_REF}"
+            changed_workflow="false"
+            if git diff --name-only "origin/${BASE_REF}...HEAD" \
+                | grep -qx '.github/workflows/link-check.yml'; then
+              changed_workflow="true"
+            fi
+            mapfile -t files < <(
+              git diff --name-only "origin/${BASE_REF}...HEAD" -- \
+                'direitos/**' 'data/**' 'docs/**' '*.md' \
+                2>/dev/null \
+                | grep -E '\.(html|md|json)$' \
+                | grep -Ev '^(node_modules|terraform|\.venv|\.git)/' \
+                || true
+            )
+            if [ "${#files[@]}" -eq 0 ] && [ "${changed_workflow}" = "true" ]; then
+              # PR mexe só no workflow → smoke-test em README.md para validar pipeline.
+              echo "ℹ️ Só o workflow link-check.yml mudou — smoke-test em README.md."
+              echo "skip=false" >> "$GITHUB_OUTPUT"
+              echo "files=./README.md" >> "$GITHUB_OUTPUT"
+            elif [ "${#files[@]}" -eq 0 ]; then
+              echo "ℹ️ Nenhum arquivo relevante alterado neste PR — skip lychee."
+              echo "skip=true" >> "$GITHUB_OUTPUT"
+              echo "files=" >> "$GITHUB_OUTPUT"
+            else
+              echo "ℹ️ ${#files[@]} arquivo(s) alterado(s) para escanear:"
+              printf '  - %s\n' "${files[@]}"
+              # Lychee aceita paths como args posicionais (separados por espaço).
+              # Repo não tem espaços em nomes — concat seguro.
+              joined=""
+              for f in "${files[@]}"; do joined+=" ./${f}"; done
+              echo "skip=false" >> "$GITHUB_OUTPUT"
+              echo "files=${joined# }" >> "$GITHUB_OUTPUT"
+            fi
+          else
+            # Cron semanal / workflow_dispatch → repo inteiro.
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+            echo "files=./**/*.html ./**/*.md ./data/**/*.json" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Run lychee
         id: lychee
+        if: steps.scope.outputs.skip != 'true'
         uses: lycheeverse/lychee-action@v2
         with:
           # --cache evita marteladas em gov.br em runs sucessivos
@@ -70,16 +125,14 @@ jobs:
             --exclude-path .git
             --exclude-path terraform
             --exclude-file .lychee-exclude.txt
-            './**/*.html'
-            './**/*.md'
-            './data/**/*.json'
+            ${{ steps.scope.outputs.files }}
           # Em PRs → falha o check (bloqueia merge se PR introduzir URL quebrada).
           # Em schedule/dispatch → fail:false e abre issue tracker (caça link-rot semanal).
           fail: ${{ github.event_name == 'pull_request' }}
           output: ./lychee-report.md
 
       - name: Upload report
-        if: always()
+        if: always() && steps.scope.outputs.skip != 'true'
         uses: actions/upload-artifact@v4
         with:
           name: lychee-report
@@ -87,7 +140,7 @@ jobs:
           retention-days: 30
 
       - name: Comentar resumo no PR (em failure)
-        if: failure() && github.event_name == 'pull_request'
+        if: failure() && github.event_name == 'pull_request' && steps.scope.outputs.skip != 'true'
         uses: peter-evans/create-or-update-comment@v4
         with:
           issue-number: ${{ github.event.pull_request.number }}
