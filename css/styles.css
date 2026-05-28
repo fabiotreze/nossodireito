@@ -3572,12 +3572,21 @@ html.high-contrast .disclaimer-alert {
 .trilha-tab__count {
     font-size: 0.9rem;
     font-weight: 700;
-    color: var(--primary);
-    background: var(--primary-light, #dbeafe);
+    /* WCAG AA: #1e3a8a on #dbeafe = ~10:1 (was --primary on --primary-light = ~2:1) */
+    color: #1e3a8a;
+    background: #dbeafe;
     border-radius: 999px;
     padding: 4px 10px;
     min-width: 32px;
     text-align: center;
+}
+
+@media (prefers-color-scheme: dark) {
+    .trilha-tab__count {
+        /* WCAG AA: #dbeafe on #1e3a8a = ~10:1 */
+        color: #dbeafe;
+        background: #1e3a8a;
+    }
 }
 
 .trilha-tab:hover {
