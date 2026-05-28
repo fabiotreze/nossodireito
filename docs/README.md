@@ -1,27 +1,27 @@
-# Documentation Index
+# Índice da Documentação
 
-**Version:** 1.34.2
-**Updated:** 2026-05-27
+**Versão:** 1.34.2
+**Atualizado:** 2026-05-27
 
-## Core Documents
+## Documentos Principais
 
-- [Architecture](ARCHITECTURE.md)
-- [Operations](OPERATIONS.md)
-- [Security and LGPD](SECURITY-LGPD.md)
-- [Replication](REPLICATION.md)
-- [Cost Estimate](COST-ESTIMATE.md)
+- [Arquitetura](ARCHITECTURE.md)
+- [Operações](OPERATIONS.md)
+- [Segurança e LGPD](SECURITY-LGPD.md)
+- [Replicação](REPLICATION.md)
+- [Estimativa de Custos](COST-ESTIMATE.md)
 
-## Diagrams
+## Diagramas
 
-- [Architecture E2E (.drawio)](ARCHITECTURE.drawio)
-- [AI Flow E2E (.drawio)](diagrams/02-ia-flow.drawio)
-- [Replication E2E (.drawio)](diagrams/03-replication.drawio)
-- [Architecture E2E (Mermaid in doc)](ARCHITECTURE.md)
+- [Arquitetura E2E (.drawio)](ARCHITECTURE.drawio)
+- [Fluxo de IA E2E (.drawio)](diagrams/02-ia-flow.drawio)
+- [Replicação E2E (.drawio)](diagrams/03-replication.drawio)
+- [Arquitetura E2E (Mermaid no documento)](ARCHITECTURE.md)
 
-## Infra References
+## Referências de Infraestrutura
 
-- [Terraform main](../terraform/main.tf)
-- [Terraform private OpenAI network](../terraform/openai-private-network.tf)
-- [Terraform private Key Vault and Redis network](../terraform/keyvault-redis-private-network.tf)
-- [Terraform variables](../terraform/variables.tf)
+- [Terraform principal](../terraform/main.tf)
+- [Terraform rede privada do OpenAI](../terraform/openai-private-network.tf)
+- [Terraform rede privada do Key Vault e Redis](../terraform/keyvault-redis-private-network.tf)
+- [Terraform variáveis](../terraform/variables.tf)
 - [Terraform outputs](../terraform/outputs.tf)

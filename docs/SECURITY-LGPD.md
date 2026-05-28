@@ -1,35 +1,35 @@
-# Security and LGPD
+# Segurança e LGPD
 
-**Version:** 1.34.2
-**Updated:** 2026-05-27
+**Versão:** 1.34.2
+**Atualizado:** 2026-05-27
 
-## Security Baseline
+## Baseline de Segurança
 
-- HTTPS-only with HSTS (`strict-transport-security`)
-- CSP enabled with explicit allowlist
+- HTTPS-only com HSTS (`strict-transport-security`)
+- CSP habilitado com allowlist explícita
 - `x-frame-options: DENY`
 - `x-content-type-options: nosniff`
-- `referrer-policy` and `permissions-policy` enabled
-- Rate limit for abuse protection in server runtime
-- App Service ingress restricted to Cloudflare edge ranges (default deny)
-- Azure OpenAI in private mode (`publicNetworkAccess=Disabled`)
-- Key Vault in private mode by default (`public_network_access_enabled=false`)
-- Redis in private mode (`publicNetworkAccess=Disabled`, TLS 1.2)
+- `referrer-policy` e `permissions-policy` habilitados
+- Rate limit para proteção contra abuso no runtime do servidor
+- Ingresso do App Service restrito às faixas de IP da edge da Cloudflare (deny por padrão)
+- Azure OpenAI em modo privado (`publicNetworkAccess=Disabled`)
+- Key Vault em modo privado por padrão (`public_network_access_enabled=false`)
+- Redis em modo privado (`publicNetworkAccess=Disabled`, TLS 1.2)
 
-Run baseline check:
+Executar verificação de baseline:
 
 ```bash
 bash scripts/security_headers_check.sh
 ```
 
-## LGPD Position
+## Posicionamento LGPD
 
-- Legal basis for AI analysis: consent (Art. 7º, I)
-- Consent revocation: available in permanent UI (Art. 8º, §5)
-- Data subject rights (Art. 18): documented in consent modal
-- Default analysis is local; AI analysis sends anonymized text only
-- Server rejects obvious PII payloads (HTTP 422)
-- Retention target for AI analysis output: no prompt/content retention
+- Base legal para análise por IA: consentimento (Art. 7º, I)
+- Revogação de consentimento: disponível em UI permanente (Art. 8º, §5)
+- Direitos do titular (Art. 18): documentados no modal de consentimento
+- Análise padrão é local; análise por IA envia apenas texto anonimizado
+- Servidor rejeita payloads com PII evidente (HTTP 422)
+- Meta de retenção para saída da análise por IA: zero retenção de prompt/conteúdo
 
 ```mermaid
 flowchart LR
@@ -44,26 +44,26 @@ flowchart LR
   O --> RS[Resposta estruturada]
 ```
 
-## Network Security Notes
+## Notas de Segurança de Rede
 
-- Dominio oficial (`nossodireito.fabiotreze.com`) permanece publico para usuarios.
+- Domínio oficial (`nossodireito.fabiotreze.com`) permanece público para os usuários.
 - Hostname direto do App Service (`*.azurewebsites.net`) deve retornar 403.
 - Tráfego App Service -> OpenAI, Key Vault e Redis ocorre por VNet + Private Endpoint + Private DNS.
-- Segredo `redis-primary-key` por padrao nao e atualizado por Terraform em runners externos a VNet.
+- Segredo `redis-primary-key` por padrão não é atualizado pelo Terraform em runners externos à VNet.
 
-## DPO Flow
+## Fluxo do DPO
 
-- Contact channel: `dpo@fabiotreze.com`
-- Recommended response SLA: up to 15 calendar days
-- Intake checklist:
-  1. Request received and logged
-  2. Identity and request scope confirmed
-  3. Data map reviewed (local browser data vs server telemetry)
-  4. Response sent with action summary
+- Canal de contato: `dpo@fabiotreze.com`
+- SLA recomendado de resposta: até 15 dias corridos
+- Checklist de entrada:
+  1. Solicitação recebida e registrada
+  2. Identidade e escopo da solicitação confirmados
+  3. Mapa de dados revisado (dados locais no navegador vs telemetria do servidor)
+  4. Resposta enviada com resumo das ações
 
-## Compliance Controls
+## Controles de Conformidade
 
-- CI checks for tests and content quality
-- GitHub security workflows (CodeQL, gitleaks)
-- Terraform validation + policy checks in pipeline
-- App Insights telemetry configured with privacy-safe controls
+- Checagens de CI para testes e qualidade de conteúdo
+- Workflows de segurança do GitHub (CodeQL, gitleaks)
+- Validação do Terraform + checagens de policy no pipeline
+- Telemetria do App Insights configurada com controles que preservam privacidade
