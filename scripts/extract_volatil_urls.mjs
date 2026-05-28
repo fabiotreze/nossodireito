@@ -1,13 +1,15 @@
 #!/usr/bin/env node
 /**
  * Extrai URLs com estabilidade='volatil' de data/direitos.json
- * e emite arquivo --exclude para lychee (uma URL regex por linha).
+ * e ANEXA ao .lycheeignore (formato regex, uma por linha) para que
+ * lychee as descubra automaticamente.
+ *
+ * IMPORTANTE: usa appendFileSync para PRESERVAR as exclusões manuais
+ * versionadas em .lycheeignore (hosts gov.br com anti-bot por IP).
  *
  * Usado em CI para configurar lychee dinamicamente sem hardcoded list.
- *
- * Output: .lychee-exclude.txt (regex, uma por linha)
  */
-import { readFileSync, writeFileSync } from "node:fs";
+import { appendFileSync, readFileSync } from "node:fs";
 
 const obj = JSON.parse(readFileSync("data/direitos.json", "utf8"));
 const volatil = new Set();
@@ -24,9 +26,15 @@ function walk(n) {
 }
 walk(obj);
 
-// Escapar regex chars para uso literal em lychee --exclude
+// Escapar regex chars para uso literal em lychee (.lycheeignore = regex)
 const escaped = [...volatil].map((u) =>
   u.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
 );
-writeFileSync(".lychee-exclude.txt", escaped.join("\n") + "\n");
-console.log(`→ ${volatil.size} URLs voláteis exportadas para .lychee-exclude.txt`);
+if (escaped.length > 0) {
+  const block =
+    "\n# === URLs voláteis (gerado automaticamente por extract_volatil_urls.mjs) ===\n" +
+    escaped.join("\n") +
+    "\n";
+  appendFileSync(".lycheeignore", block);
+}
+console.log(`→ ${volatil.size} URLs voláteis anexadas ao .lycheeignore`);
