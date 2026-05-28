@@ -164,6 +164,21 @@
                         "type": "string"
                     },
                     "description": "Artigos específicos referenciados"
+                },
+                "estabilidade": {
+                    "type": "string",
+                    "enum": [
+                        "estavel",
+                        "volatil"
+                    ],
+                    "default": "estavel",
+                    "description": "Estabilidade do URL. 'volatil' = sujeito a link-rot (notícias datadas, sites municipais, conteúdo Plone reorganizado). URLs marcadas como 'volatil' são excluídas do check bloqueante de PR no lychee, mas continuam no scheduler semanal."
+                },
+                "snapshot_url": {
+                    "type": "string",
+                    "format": "uri",
+                    "pattern": "^https?://web\\.archive\\.org/",
+                    "description": "Snapshot Wayback Machine como fallback. Recomendado para fontes 'volatil'. Formato: https://web.archive.org/web/YYYYMMDDHHMMSS/{url}"
                 }
             }
         },
