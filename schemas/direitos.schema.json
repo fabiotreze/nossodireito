@@ -369,8 +369,16 @@
                 },
                 "aplicavel_a_todas_deficiencias": {
                     "type": "boolean",
-                    "description": "true = direito universal a todas as deficienciencias do dicion\u00e1rio PcD; false = restrito a CIDs espec\u00edficos em cids_relacionados."
-                }
+                    "description": "true = direito universal a todas as deficienciencias do dicion\u00e1rio PcD; false = restrito a CIDs espec\u00edficos em cids_relacionados."                },
+                "data_ultima_verificacao": {
+                    "type": "string",
+                    "format": "date",
+                    "description": "Data (YYYY-MM-DD) da última verificação manual desta categoria por mantenedor/jurista. Permite ao front-end alertar quando o conteúdo está obsoleto (>180 dias). Opcional em v1; obrigatório em v2 do schema."
+                },
+                "canal_de_atendimento_oficial": {
+                    "type": "string",
+                    "minLength": 5,
+                    "description": "Canal oficial onde o direito é efetivamente peticionado/concedido (ex: 'Meu INSS', 'CRAS', 'SAC ANEEL'). Surfaceado pela UI para deixar claro que o site não é a porta de entrada do direito. Tipicamente alias de `onde` ou versão normalizada."                }
             },
             "additionalProperties": false
         },
