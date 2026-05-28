@@ -25,6 +25,11 @@ const { createRateLimiter } = require("./lib/rate-limit");
 const { createRedisClient } = require("./lib/redis-client");
 const { createAiAnalyzeHandler } = require("./lib/ai-analyze");
 const { createGovBrProxy } = require("./lib/govbr-proxy");
+const {
+  createHealthHandler,
+  createStatsHandler,
+  createSecurityTxtHandler,
+} = require("./lib/infra-handlers");
 void ALLOWED_EXT;
 
 // ── IA opt-in (Azure OpenAI) ──
@@ -150,6 +155,22 @@ const MAX_URL_LENGTH = 2048;
 // Cache package.json version at startup (avoid readFileSync on every health check)
 const PKG_VERSION = JSON.parse(fs.readFileSync(path.join(__dirname, "package.json"), "utf8")).version;
 
+// ── Infra Handlers (lib/infra-handlers.js) ──
+const healthHandler = createHealthHandler({
+  aiEnabled: AI_ANALYSIS_ENABLED,
+  pkgVersion: PKG_VERSION,
+  loadAIHealth: () => require("./services/ai-analysis").getAIHealth(),
+});
+const statsHandler = createStatsHandler({
+  analytics,
+  rotateIfNeeded: analyticsRotateIfNeeded,
+  securityHeaders: SECURITY_HEADERS,
+});
+const securityTxtHandler = createSecurityTxtHandler({
+  canonicalHost: "nossodireito.fabiotreze.com",
+  securityHeaders: SECURITY_HEADERS,
+});
+
 const server = http.createServer(async (req, res) => {
   // ── Suppress server identification (CWE-200) ──
   res.removeHeader("X-Powered-By");
@@ -168,79 +189,15 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
-  // ── Health check endpoint (Azure App Service probe) ──
-  // Must respond 200 on ALL hosts (including *.azurewebsites.net)
-  // before the domain redirect, otherwise probe marks app unhealthy.
+  // ── Health check endpoint (lib/infra-handlers.js) ──
   if (req.url === "/healthz" || req.url === "/health") {
-    let ai = {
-      enabled: AI_ANALYSIS_ENABLED,
-      configured: false,
-      circuitOpen: false,
-      retryAfterSeconds: 0,
-    };
-    try {
-      const { getAIHealth } = require("./services/ai-analysis");
-      ai = getAIHealth();
-    } catch {
-      // Service optional for health endpoint; do not fail health probe.
-    }
-    res.writeHead(200, {
-      "Content-Type": "application/json",
-      "Cache-Control": "no-cache, no-store",
-    });
-    res.end(
-      JSON.stringify({
-        status: "healthy",
-        version: PKG_VERSION,
-        localAnalysisAvailable: true,
-        ai,
-      }),
-    );
+    healthHandler(req, res);
     return;
   }
 
-  // ── Privacy Analytics Stats Endpoint ──
-  // Returns aggregated, anonymous visitor statistics.
-  // No PII is ever exposed. Protected by optional STATS_KEY env var.
+  // ── Privacy Analytics Stats Endpoint (lib/infra-handlers.js) ──
   if (req.url === "/api/stats" || req.url === "/api/stats/") {
-    // Optional auth: if STATS_KEY is set, require ?key= parameter
-    const statsKey = process.env.STATS_KEY || "";
-    if (statsKey) {
-      let requestKey = "";
-      try {
-        requestKey = new URL(req.url, `http://${req.headers.host || "localhost"}`).searchParams.get("key") || "";
-      } catch {
-        /* ignore */
-      }
-      if (requestKey !== statsKey) {
-        res.writeHead(403, { "Content-Type": "text/plain", ...SECURITY_HEADERS });
-        res.end("Forbidden");
-        return;
-      }
-    }
-    analyticsRotateIfNeeded();
-    const topPages = [...analytics.byPath.entries()]
-      .sort((a, b) => b[1] - a[1])
-      .slice(0, 10)
-      .map(([p, c]) => ({ path: p, views: c }));
-    const stats = {
-      date: analytics.date,
-      today: {
-        pageViews: analytics.pageViews,
-        uniqueVisitors: analytics.uniqueVisitors.size,
-        devices: { ...analytics.byDevice },
-        topPages,
-        hourly: [...analytics.hourly],
-      },
-      history: analytics.history,
-      privacy: "Nenhum dado pessoal é coletado. IPs são anonimizados via SHA-256 com salt rotativo diário.",
-    };
-    res.writeHead(200, {
-      "Content-Type": "application/json",
-      "Cache-Control": "no-cache, no-store",
-      ...SECURITY_HEADERS,
-    });
-    res.end(JSON.stringify(stats, null, 2));
+    statsHandler(req, res);
     return;
   }
 
@@ -373,28 +330,9 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
-  // ── /.well-known/security.txt (RFC 9116) ──
-  // resolveFile rejeita paths começando com "." por segurança, então
-  // servimos via rota explícita.
+  // ── /.well-known/security.txt (lib/infra-handlers.js) ──
   if (urlPath === "/.well-known/security.txt") {
-    const expires = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString();
-    const txt = `# NossoDireito — Security Policy
-# RFC 9116: https://www.rfc-editor.org/rfc/rfc9116
-
-Contact: mailto:dpo@fabiotreze.com
-Contact: mailto:38567767+fabiotreze@users.noreply.github.com
-Expires: ${expires}
-Preferred-Languages: pt-BR, en
-Canonical: https://${CANONICAL_HOST}/.well-known/security.txt
-Policy: https://github.com/fabiotreze/nossodireito/security/policy
-Acknowledgments: https://github.com/fabiotreze/nossodireito/security/advisories
-`;
-    res.writeHead(200, {
-      "Content-Type": "text/plain; charset=utf-8",
-      "Cache-Control": "public, max-age=86400",
-      ...SECURITY_HEADERS,
-    });
-    res.end(req.method === "HEAD" ? "" : txt);
+    securityTxtHandler(req, res);
     return;
   }
 
