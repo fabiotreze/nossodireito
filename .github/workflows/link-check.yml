@@ -24,6 +24,7 @@ concurrency:
 permissions:
   contents: read
   issues: write # cria/atualiza issue tracking de links quebrados
+  pull-requests: write # comentar resumo em PRs
 
 jobs:
   link-check:
