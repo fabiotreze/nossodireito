@@ -20,6 +20,26 @@ from validate_sources import classify_url_result, _is_oficial_br  # noqa: E402
 from freshness_open_issue import has_real_drift, render_body  # noqa: E402
 
 
+# ─── HEAD→GET fallback policy ──────────────────────────────────────
+# Gate determinístico: validade a lista de códigos onde HEAD deve fazer
+# fallback para GET. Foi expandida no PR #209-fix após Barueri retornar
+# 404 em HEAD mas 200 em GET (fonte: gh run 26593844075 vs teste local).
+def test_head_fallback_codes_documented():
+    """Garante que a lista de códigos com fallback HEAD→GET não regrida.
+
+    Códigos que comprovadamente mentem em HEAD (provam que fallback é necessário):
+      - 403: anti-bot (STJ, infoms.saude)
+      - 404: WAF gov.br (Barueri portal)
+      - 405/406: método não permitido
+      - 500/502/503: WAFs Cloudflare/Akamai
+    """
+    import inspect
+    from validate_sources import _http_head
+    src = inspect.getsource(_http_head)
+    for code in (403, 404, 405, 406, 500, 502, 503):
+        assert str(code) in src, f"código {code} deveria estar no fallback HEAD→GET"
+
+
 # ─── _is_oficial_br ─────────────────────────────────────────────────
 @pytest.mark.parametrize(
     "url,expected",
