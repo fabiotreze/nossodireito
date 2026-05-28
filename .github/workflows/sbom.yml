@@ -1,0 +1,53 @@
+# SBOM (Software Bill of Materials) — SPDX format
+#
+# Gera SBOM SPDX-compatível das deps npm+pip a cada push em main.
+# Útil para auditoria de compliance (LGPD, eventual procurement gov) e
+# para resposta rápida a CVEs (saber o que está em produção).
+#
+# Docs: https://github.com/anchore/sbom-action
+name: SBOM Generation
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "package.json"
+      - "package-lock.json"
+      - "requirements.txt"
+      - "requirements-dev.txt"
+      - ".github/workflows/sbom.yml"
+  workflow_dispatch:
+  release:
+    types: [published]
+
+permissions:
+  contents: write # anexar SBOM em release
+  id-token: write # attestation futura
+
+concurrency:
+  group: sbom-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  generate-sbom:
+    name: Gerar SBOM SPDX
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Generate SBOM (anchore syft)
+        uses: anchore/sbom-action@v0
+        with:
+          path: .
+          format: spdx-json
+          output-file: nossodireito.sbom.spdx.json
+          upload-artifact: true
+          upload-artifact-retention: 90
+
+      - name: Anexar em release (se aplicável)
+        if: github.event_name == 'release'
+        uses: softprops/action-gh-release@v2
+        with:
+          files: nossodireito.sbom.spdx.json

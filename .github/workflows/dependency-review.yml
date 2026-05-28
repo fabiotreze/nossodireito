@@ -1,0 +1,45 @@
+# Dependency Review — bloqueia PRs com vulnerabilidades novas em dependências
+#
+# Roda em PRs (push + diff) e identifica deps adicionadas/atualizadas com CVEs.
+# Complementa Dependabot (que atua DEPOIS do merge) — aqui o bloqueio é ANTES.
+#
+# Docs: https://github.com/actions/dependency-review-action
+name: Dependency Review
+
+on:
+  pull_request:
+    paths:
+      - "package.json"
+      - "package-lock.json"
+      - "requirements.txt"
+      - "requirements-dev.txt"
+      - ".github/workflows/dependency-review.yml"
+
+permissions:
+  contents: read
+  pull-requests: write # comenta no PR com resumo
+
+concurrency:
+  group: dep-review-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  dependency-review:
+    name: Review deps (CVE + licenças)
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Dependency Review
+        uses: actions/dependency-review-action@v4
+        with:
+          # Falha PR se severidade ≥ moderate (deixa low passar p/ não bloquear demais)
+          fail-on-severity: moderate
+          # Bloqueia licenças incompatíveis com projeto público gov-adjacente
+          deny-licenses: GPL-3.0, AGPL-3.0
+          # Comenta resumo no PR
+          comment-summary-in-pr: on-failure
+          # Lista CVEs em ouput do job
+          warn-only: false
