@@ -17,7 +17,7 @@ const zlib = require("node:zlib");
 const crypto = require("node:crypto");
 
 // ── Lib modules (Onda 7 — modularização) ──
-const { MIME, CACHE, ALLOWED_EXT, COMPRESSIBLE } = require("./lib/mime");
+const { MIME, CACHE, COMPRESSIBLE } = require("./lib/mime");
 const { SECURITY_HEADERS } = require("./lib/security-headers");
 const { resolveFile } = require("./lib/file-resolver");
 const { createAnalytics } = require("./lib/analytics");
@@ -30,7 +30,6 @@ const {
   createStatsHandler,
   createSecurityTxtHandler,
 } = require("./lib/infra-handlers");
-void ALLOWED_EXT;
 
 // ── IA opt-in (Azure OpenAI) ──
 // Anonymizer roda em Node + browser. Aqui é o double-check de PII.
