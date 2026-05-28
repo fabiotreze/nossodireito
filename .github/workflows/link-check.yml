@@ -30,7 +30,7 @@ jobs:
   link-check:
     name: Check external links
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 20
     steps:
       - name: Checkout
         uses: actions/checkout@v5
@@ -39,8 +39,11 @@ jobs:
         uses: actions/cache@v4
         with:
           path: .lycheecache
-          key: lychee-${{ github.run_id }}
-          restore-keys: lychee-
+          # Cache estável: rehidrata entre runs enquanto o conjunto de URLs não muda.
+          # Antes usava ${{ github.run_id }} (único por run) -> cache nunca tinha hit.
+          key: lychee-${{ hashFiles('data/direitos.json', 'direitos/**/*.html', 'docs/**/*.md', 'README.md') }}
+          restore-keys: |
+            lychee-
 
       - name: Extrair URLs voláteis (schema estabilidade=volatil)
         run: node scripts/extract_volatil_urls.mjs
@@ -50,16 +53,16 @@ jobs:
         uses: lycheeverse/lychee-action@v2
         with:
           # --cache evita marteladas em gov.br em runs sucessivos
-          # --max-concurrency 4 é gentil com servidores gov (alguns rate-limitam)
+          # --max-concurrency 2 é gentil com servidores gov.br (alguns rate-limitam agressivo)
           # --exclude-loopback / --exclude-private remove ruído (mailto excluído por padrão em lychee v0.23+)
           # --accept 200..=299,403,429 evita falso-positivo em sites que bloqueiam HEAD
           args: >-
             --cache
             --max-cache-age 7d
-            --max-concurrency 4
+            --max-concurrency 2
             --max-redirects 5
-            --timeout 20
-            --retry-wait-time 5
+            --timeout 30
+            --retry-wait-time 10
             --exclude-loopback
             --exclude-private
             --accept 200..=299,403,429
