@@ -13,7 +13,7 @@
  * Considera apenas links que NÃO começam com http(s):// nem mailto: nem #.
  * Tira fragments (#anchor) e query (?...).
  */
-import { readFileSync, existsSync, statSync } from "node:fs";
+import { readFileSync, existsSync } from "node:fs";
 import { join, dirname, resolve, relative } from "node:path";
 import { glob } from "node:fs/promises";
 
