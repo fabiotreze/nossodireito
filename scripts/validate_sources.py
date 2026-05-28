@@ -102,6 +102,70 @@ SSL_EXCEPTION_DOMAINS = [
     "www.confaz.fazenda.gov.br",  # Certificado auto-assinado/proxy issue
 ]
 
+# TLDs/sufixos de portais oficiais brasileiros — usados para classificar
+# falhas no CI (geo-fence + anti-bot WAFs dos runners US do GitHub Actions)
+# como `warning` em vez de `error`. A política é determinística:
+#   - 404 real          → `error` (mesmo em gov.br): página realmente sumiu
+#   - 403 em gov/jus/leg → `warning ci_blocked` (anti-bot, não bug de conteúdo)
+#   - timeout/unreachable em gov/jus/leg → `warning ci_blocked` (geo-fence)
+#   - 4xx em domínio NÃO oficial → `error`
+#   - 5xx em qualquer → `warning` (temporário)
+OFICIAL_BR_SUFFIXES = (".gov.br", ".jus.br", ".leg.br", ".mp.br", ".def.br")
+
+
+def _is_oficial_br(url: str) -> bool:
+    """True se o domínio termina em sufixo oficial brasileiro."""
+    host = (urllib.parse.urlparse(url).hostname or "").lower()
+    return any(host.endswith(s) for s in OFICIAL_BR_SUFFIXES)
+
+
+def classify_url_result(url: str, status: int, err_msg: str = "") -> tuple[str, str, bool]:
+    """Classifica o resultado de uma checagem HTTP em (status, message, ci_blocked).
+
+    Política determinística — não precisa de override humano:
+      - 2xx/3xx                              → ok
+      - 404 em qualquer domínio              → error (página sumiu de verdade)
+      - 403 em domínio oficial BR            → warning + ci_blocked (anti-bot)
+      - 4xx em domínio não-oficial           → error
+      - 5xx                                  → warning (transitório)
+      - falha de conexão em oficial BR       → warning + ci_blocked (geo-fence)
+      - falha de conexão fora de oficial BR  → error
+    """
+    if 200 <= status < 400:
+        return "ok", f"HTTP {status}", False
+
+    oficial = _is_oficial_br(url)
+
+    if status == 404:
+        return "error", "HTTP 404 — página não encontrada", False
+
+    if status == 403 and oficial:
+        return (
+            "warning",
+            "HTTP 403 em domínio oficial BR — provável anti-bot/WAF contra runner CI (não bug de conteúdo)",
+            True,
+        )
+
+    if 400 <= status < 500:
+        return "error", f"HTTP {status} — página não encontrada", False
+
+    if status >= 500:
+        return (
+            "warning",
+            f"HTTP {status} — erro do servidor (pode ser temporário)",
+            False,
+        )
+
+    # status == 0 → falha de conexão
+    snippet = (err_msg or "timeout")[:80]
+    if oficial:
+        return (
+            "warning",
+            f"Conexão bloqueada em domínio oficial BR — provável geo-fence do CI: {snippet}",
+            True,
+        )
+    return "error", f"Falha na conexão: {snippet}", False
+
 
 # ─── Modelos ────────────────────────────────────────────────────────
 @dataclass
@@ -113,6 +177,7 @@ class ValidationResult:
     message: str
     url: str = ""
     http_code: int = 0
+    ci_blocked: bool = False  # True quando warning é falso-positivo do CI (anti-bot/geo-fence)
 
 
 @dataclass
@@ -151,6 +216,7 @@ class ValidationReport:
                     "message": r.message,
                     "url": r.url,
                     "http_code": r.http_code,
+                    "ci_blocked": r.ci_blocked,
                 }
                 for r in self.results
             ],
@@ -359,34 +425,20 @@ def validate_urls(report: ValidationReport, json_data: dict, quick: bool = False
         if not url.startswith("http"):
             continue
 
-        status, _ = _http_head(url)
+        status, err = _http_head(url)
+        status_label, message, ci_blocked = classify_url_result(url, status, err)
 
-        if 200 <= status < 400:
-            report.add(ValidationResult(
-                source="url", item=name, status="ok",
-                message=f"HTTP {status}", url=url, http_code=status,
-            ))
+        report.add(ValidationResult(
+            source="url", item=name, status=status_label,
+            message=message, url=url, http_code=status,
+            ci_blocked=ci_blocked,
+        ))
+
+        if status_label == "ok":
             icon = "✅"
-        elif 400 <= status < 500:
-            report.add(ValidationResult(
-                source="url", item=name, status="error",
-                message=f"HTTP {status} — página não encontrada",
-                url=url, http_code=status,
-            ))
-            icon = "❌"
-        elif status >= 500:
-            report.add(ValidationResult(
-                source="url", item=name, status="warning",
-                message=f"HTTP {status} — erro do servidor (pode ser temporário)",
-                url=url, http_code=status,
-            ))
-            icon = "⚠️"
+        elif status_label == "warning":
+            icon = "🟡" if ci_blocked else "⚠️"
         else:
-            report.add(ValidationResult(
-                source="url", item=name, status="error",
-                message=f"Falha na conexão: {_[:80] if _ else 'timeout'}",
-                url=url, http_code=0,
-            ))
             icon = "❌"
 
         print(f"  [{i:3d}/{len(all_urls)}] {icon} {name:<50} → HTTP {status or 'FAIL'}")

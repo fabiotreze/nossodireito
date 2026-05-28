@@ -61,10 +61,17 @@ def find_open_issue() -> int | None:
 
 
 def render_body(report: dict, repo: str, run_id: str) -> str:
-    by_source: dict[str, list[dict]] = {}
+    # Separa resultados em 3 buckets determinísticos:
+    #   - real_actionable: errors + warnings NÃO bloqueados pelo CI (ação humana)
+    #   - ci_blocked: warnings com flag ci_blocked=True (informativo, sem ação)
+    real_actionable: dict[str, list[dict]] = {}
+    ci_blocked: list[dict] = []
     for r in report.get("results", []):
-        if r.get("status") in {"warning", "error"}:
-            by_source.setdefault(r.get("source", "?"), []).append(r)
+        status = r.get("status")
+        if status == "error" or (status == "warning" and not r.get("ci_blocked")):
+            real_actionable.setdefault(r.get("source", "?"), []).append(r)
+        elif status == "warning" and r.get("ci_blocked"):
+            ci_blocked.append(r)
 
     lines: list[str] = [
         "> Issue auto-gerada por `.github/workflows/content-freshness.yml`.",
@@ -78,7 +85,7 @@ def render_body(report: dict, repo: str, run_id: str) -> str:
         "",
     ]
 
-    if not by_source:
+    if not real_actionable and not ci_blocked:
         lines += [
             "✅ **Nenhum drift detectado nesta execução.**",
             "",
@@ -94,21 +101,50 @@ def render_body(report: dict, repo: str, run_id: str) -> str:
         "cid": "Códigos CID (OMS ICD API)",
     }
 
-    for source, items in sorted(by_source.items()):
-        label = source_labels.get(source, source)
-        lines.append(f"## {label} ({len(items)})")
-        lines.append("")
-        for r in items[:MAX_LIST]:
-            icon = icons.get(r.get("status"), "·")
+    if real_actionable:
+        for source, items in sorted(real_actionable.items()):
+            label = source_labels.get(source, source)
+            lines.append(f"## {label} ({len(items)})")
+            lines.append("")
+            for r in items[:MAX_LIST]:
+                icon = icons.get(r.get("status"), "·")
+                item = r.get("item", "?")
+                msg = r.get("message", "")
+                url = r.get("url", "")
+                code = r.get("http_code", 0)
+                extra = f" — HTTP {code}" if code else ""
+                link = f" — {url}" if url else ""
+                lines.append(f"- {icon} **{item}**{extra}: {msg}{link}")
+            if len(items) > MAX_LIST:
+                lines.append(f"- _…{len(items) - MAX_LIST} item(ns) adicional(is) — ver artifact do run_")
+            lines.append("")
+    else:
+        lines += [
+            "✅ **Nenhum drift acionável.** Todos os warnings desta execução são bloqueios",
+            "de ambiente CI (anti-bot/geo-fence em portais oficiais BR), não problemas de conteúdo.",
+            "",
+        ]
+
+    # Seção informativa (sempre que houver ci_blocked) — registra auditoria
+    if ci_blocked:
+        lines += [
+            f"## 🛈 Bloqueios de ambiente CI ({len(ci_blocked)})",
+            "",
+            "Itens abaixo respondem **HTTP 200** em navegador comum mas são bloqueados",
+            "no runner do GitHub Actions (anti-bot WAF / geo-fence de portais oficiais BR).",
+            "**Não exigem ação** — listados apenas para auditoria. Política em `classify_url_result`",
+            "no `scripts/validate_sources.py`.",
+            "",
+        ]
+        for r in ci_blocked[:MAX_LIST]:
             item = r.get("item", "?")
-            msg = r.get("message", "")
             url = r.get("url", "")
             code = r.get("http_code", 0)
-            extra = f" — HTTP {code}" if code else ""
+            extra = f" — HTTP {code}" if code else " — sem resposta"
             link = f" — {url}" if url else ""
-            lines.append(f"- {icon} **{item}**{extra}: {msg}{link}")
-        if len(items) > MAX_LIST:
-            lines.append(f"- _…{len(items) - MAX_LIST} item(ns) adicional(is) — ver artifact do run_")
+            lines.append(f"- 🟡 **{item}**{extra}{link}")
+        if len(ci_blocked) > MAX_LIST:
+            lines.append(f"- _…{len(ci_blocked) - MAX_LIST} item(ns) adicional(is) — ver artifact do run_")
         lines.append("")
 
     lines += [
@@ -119,10 +155,26 @@ def render_body(report: dict, repo: str, run_id: str) -> str:
         "1. **URL quebrada** → atualizar `data/direitos.json` (campo `links` ou `base_legal.link`) e rodar `python scripts/validate_sources.py --urls`.",
         "2. **Lei revogada/inexistente no Senado** → conferir vigência no Planalto e ajustar `base_legal`.",
         "3. **CID inválido na OMS** → revisar `cids_relacionados` da categoria afetada; se for CID-11, confirmar mapeamento contra `id.who.int/icd`.",
+        "4. **Bloqueio de ambiente CI** → nenhuma ação. A política está em código (`classify_url_result`); ajuste lá se um novo padrão aparecer.",
         "",
         "Após correção, re-rodar manualmente o workflow ou aguardar próxima execução (segunda 05:00 UTC).",
     ]
     return "\n".join(lines)
+
+
+def has_real_drift(report: dict) -> bool:
+    """True quando há pelo menos 1 error real ou warning não-bloqueado pelo CI.
+
+    Bloqueios de ambiente CI (ci_blocked=True) são tratados como informativos:
+    não disparam abertura/manutenção de issue.
+    """
+    for r in report.get("results", []):
+        status = r.get("status")
+        if status == "error":
+            return True
+        if status == "warning" and not r.get("ci_blocked"):
+            return True
+    return False
 
 
 def main() -> int:
@@ -138,7 +190,7 @@ def main() -> int:
     with report_path.open(encoding="utf-8") as f:
         report = json.load(f)
 
-    has_drift = report.get("errors", 0) > 0 or report.get("warnings", 0) > 0
+    has_drift = has_real_drift(report)
     repo = os.environ.get("GITHUB_REPOSITORY", "fabiotreze/nossodireito")
     run_id = os.environ.get("GITHUB_RUN_ID", "")
 
@@ -160,14 +212,23 @@ def main() -> int:
             )
     else:
         if existing:
-            print(f"Fechando issue #{existing} (drift resolvido)")
+            ci_blocked_count = sum(
+                1 for r in report.get("results", [])
+                if r.get("status") == "warning" and r.get("ci_blocked")
+            )
+            extra = (
+                f" ({ci_blocked_count} bloqueio(s) de ambiente CI permanecem,"
+                " mas não exigem ação — política em `classify_url_result`)"
+                if ci_blocked_count else ""
+            )
+            print(f"Fechando issue #{existing} (drift acionável resolvido)")
             gh(
                 "issue", "comment", str(existing),
-                "--body", "✅ Execução semanal sem drift. Fechando automaticamente.",
+                "--body", f"✅ Execução semanal sem drift acionável{extra}. Fechando automaticamente.",
             )
             gh("issue", "close", str(existing), "--reason", "completed")
         else:
-            print("Sem drift e sem issue existente — nada a fazer.")
+            print("Sem drift acionável e sem issue existente — nada a fazer.")
     return 0
 
 
