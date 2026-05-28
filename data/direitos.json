@@ -2233,7 +2233,15 @@
       ],
       "aplicavel_a_todas_deficiencias": true,
       "data_ultima_verificacao": "2026-05-28",
-      "canal_de_atendimento_oficial": "CRAS (CadÚnico) → INSS (agendamento pelo 135 ou meu.inss.gov.br)"
+      "canal_de_atendimento_oficial": "CRAS (CadÚnico) → INSS (agendamento pelo 135 ou meu.inss.gov.br)",
+      "requer_consulta_especializada": true,
+      "criterio_classificacao": {
+        "regra": "pericia_medica_inss",
+        "sinais": [
+          "pericia_medica",
+          "vinculo_inss"
+        ]
+      }
     },
     {
       "id": "ciptea",
@@ -2373,7 +2381,14 @@
       ],
       "aplicavel_a_todas_deficiencias": false,
       "data_ultima_verificacao": "2026-05-28",
-      "canal_de_atendimento_oficial": "Prefeitura do seu município (Secretaria de Assistência Social ou de Saúde)"
+      "canal_de_atendimento_oficial": "Prefeitura do seu município (Secretaria de Assistência Social ou de Saúde)",
+      "requer_consulta_especializada": false,
+      "criterio_classificacao": {
+        "regra": "default_administrativo",
+        "sinais": [
+          "default_administrativo"
+        ]
+      }
     },
     {
       "id": "educacao",
@@ -2576,7 +2591,14 @@
       ],
       "aplicavel_a_todas_deficiencias": true,
       "data_ultima_verificacao": "2026-05-28",
-      "canal_de_atendimento_oficial": "Escola + Secretaria de Educação do seu município"
+      "canal_de_atendimento_oficial": "Escola + Secretaria de Educação do seu município",
+      "requer_consulta_especializada": false,
+      "criterio_classificacao": {
+        "regra": "default_administrativo",
+        "sinais": [
+          "default_administrativo"
+        ]
+      }
     },
     {
       "id": "plano_saude",
@@ -2774,7 +2796,14 @@
       ],
       "aplicavel_a_todas_deficiencias": true,
       "data_ultima_verificacao": "2026-05-28",
-      "canal_de_atendimento_oficial": "Operadora do plano → ANS → Defensoria Pública"
+      "canal_de_atendimento_oficial": "Operadora do plano → ANS → Defensoria Pública",
+      "requer_consulta_especializada": false,
+      "criterio_classificacao": {
+        "regra": "default_administrativo",
+        "sinais": [
+          "default_administrativo"
+        ]
+      }
     },
     {
       "id": "sus_terapias",
@@ -3103,7 +3132,14 @@
       ],
       "aplicavel_a_todas_deficiencias": true,
       "data_ultima_verificacao": "2026-05-28",
-      "canal_de_atendimento_oficial": "UBS → CER ou CAPS → Farmácia Popular → Farmácia Estadual (CEAF)"
+      "canal_de_atendimento_oficial": "UBS → CER ou CAPS → Farmácia Popular → Farmácia Estadual (CEAF)",
+      "requer_consulta_especializada": false,
+      "criterio_classificacao": {
+        "regra": "default_administrativo",
+        "sinais": [
+          "default_administrativo"
+        ]
+      }
     },
     {
       "id": "transporte",
@@ -3326,7 +3362,14 @@
       ],
       "aplicavel_a_todas_deficiencias": true,
       "data_ultima_verificacao": "2026-05-28",
-      "canal_de_atendimento_oficial": "gov.br (federal) / Prefeitura (municipal) / Detran (estadual)"
+      "canal_de_atendimento_oficial": "gov.br (federal) / Prefeitura (municipal) / Detran (estadual)",
+      "requer_consulta_especializada": false,
+      "criterio_classificacao": {
+        "regra": "default_administrativo",
+        "sinais": [
+          "default_administrativo"
+        ]
+      }
     },
     {
       "id": "trabalho",
@@ -3529,7 +3572,14 @@
       ],
       "aplicavel_a_todas_deficiencias": true,
       "data_ultima_verificacao": "2026-05-28",
-      "canal_de_atendimento_oficial": "SINE / Sites de emprego / SRTE"
+      "canal_de_atendimento_oficial": "SINE / Sites de emprego / SRTE",
+      "requer_consulta_especializada": false,
+      "criterio_classificacao": {
+        "regra": "default_administrativo",
+        "sinais": [
+          "default_administrativo"
+        ]
+      }
     },
     {
       "id": "fgts",
@@ -3703,7 +3753,15 @@
       ],
       "aplicavel_a_todas_deficiencias": true,
       "data_ultima_verificacao": "2026-05-28",
-      "canal_de_atendimento_oficial": "Caixa Econômica Federal (agência)"
+      "canal_de_atendimento_oficial": "Caixa Econômica Federal (agência)",
+      "requer_consulta_especializada": true,
+      "criterio_classificacao": {
+        "regra": "indeferimento_recurso",
+        "sinais": [
+          "indeferimento",
+          "defensoria pública"
+        ]
+      }
     },
     {
       "id": "moradia",
@@ -3929,7 +3987,14 @@
       ],
       "aplicavel_a_todas_deficiencias": true,
       "data_ultima_verificacao": "2026-05-28",
-      "canal_de_atendimento_oficial": "Síndico/Administradora → Defensoria Pública ou MP (se negado) / Prefeitura (programas habitacionais)"
+      "canal_de_atendimento_oficial": "Síndico/Administradora → Defensoria Pública ou MP (se negado) / Prefeitura (programas habitacionais)",
+      "requer_consulta_especializada": false,
+      "criterio_classificacao": {
+        "regra": "default_administrativo",
+        "sinais": [
+          "default_administrativo"
+        ]
+      }
     },
     {
       "id": "isencoes_tributarias",
@@ -4615,7 +4680,14 @@
       ],
       "aplicavel_a_todas_deficiencias": true,
       "data_ultima_verificacao": "2026-05-28",
-      "canal_de_atendimento_oficial": "SISEN (sisen.receita.fazenda.gov.br) para IPI/IOF → SEFAZ do estado para ICMS/IPVA → Prefeitura para IPTU"
+      "canal_de_atendimento_oficial": "SISEN (sisen.receita.fazenda.gov.br) para IPI/IOF → SEFAZ do estado para ICMS/IPVA → Prefeitura para IPTU",
+      "requer_consulta_especializada": true,
+      "criterio_classificacao": {
+        "regra": "isencao_tributaria",
+        "sinais": [
+          "id_pre_classificado_tributario"
+        ]
+      }
     },
     {
       "id": "atendimento_prioritario",
@@ -4858,7 +4930,15 @@
       ],
       "aplicavel_a_todas_deficiencias": true,
       "data_ultima_verificacao": "2026-05-28",
-      "canal_de_atendimento_oficial": "Aplicável em todos os estabelecimentos: bancos, repartições, hospitais, supermercados, shoppings, etc."
+      "canal_de_atendimento_oficial": "Aplicável em todos os estabelecimentos: bancos, repartições, hospitais, supermercados, shoppings, etc.",
+      "requer_consulta_especializada": true,
+      "criterio_classificacao": {
+        "regra": "indeferimento_recurso",
+        "sinais": [
+          "ação judicial",
+          "defensoria pública"
+        ]
+      }
     },
     {
       "id": "estacionamento_especial",
@@ -5060,7 +5140,14 @@
       ],
       "aplicavel_a_todas_deficiencias": true,
       "data_ultima_verificacao": "2026-05-28",
-      "canal_de_atendimento_oficial": "Detran estadual, Junta Médica do Detran ou órgão de trânsito municipal"
+      "canal_de_atendimento_oficial": "Detran estadual, Junta Médica do Detran ou órgão de trânsito municipal",
+      "requer_consulta_especializada": false,
+      "criterio_classificacao": {
+        "regra": "default_administrativo",
+        "sinais": [
+          "default_administrativo"
+        ]
+      }
     },
     {
       "id": "aposentadoria_especial_pcd",
@@ -5246,7 +5333,14 @@
       ],
       "aplicavel_a_todas_deficiencias": true,
       "data_ultima_verificacao": "2026-05-28",
-      "canal_de_atendimento_oficial": "INSS — agendamento pelo 135 ou meu.inss.gov.br"
+      "canal_de_atendimento_oficial": "INSS — agendamento pelo 135 ou meu.inss.gov.br",
+      "requer_consulta_especializada": true,
+      "criterio_classificacao": {
+        "regra": "aposentadoria_pcd",
+        "sinais": [
+          "id_pre_classificado_previdenciario"
+        ]
+      }
     },
     {
       "id": "prioridade_judicial",
@@ -5428,7 +5522,14 @@
       ],
       "aplicavel_a_todas_deficiencias": true,
       "data_ultima_verificacao": "2026-05-28",
-      "canal_de_atendimento_oficial": "Tribunal ou Vara judicial onde tramita o processo — requerer via advogado ou Defensoria Pública"
+      "canal_de_atendimento_oficial": "Tribunal ou Vara judicial onde tramita o processo — requerer via advogado ou Defensoria Pública",
+      "requer_consulta_especializada": true,
+      "criterio_classificacao": {
+        "regra": "prioridade_judicial",
+        "sinais": [
+          "id_pre_classificado"
+        ]
+      }
     },
     {
       "id": "tecnologia_assistiva",
@@ -5632,7 +5733,14 @@
       ],
       "aplicavel_a_todas_deficiencias": true,
       "data_ultima_verificacao": "2026-05-28",
-      "canal_de_atendimento_oficial": "Bancos credenciados BNDES, CRAS, UBS, instituições especializadas (APAE, AMA, Jô Clemente)"
+      "canal_de_atendimento_oficial": "Bancos credenciados BNDES, CRAS, UBS, instituições especializadas (APAE, AMA, Jô Clemente)",
+      "requer_consulta_especializada": false,
+      "criterio_classificacao": {
+        "regra": "default_administrativo",
+        "sinais": [
+          "default_administrativo"
+        ]
+      }
     },
     {
       "id": "meia_entrada",
@@ -5806,7 +5914,14 @@
       ],
       "aplicavel_a_todas_deficiencias": true,
       "data_ultima_verificacao": "2026-05-28",
-      "canal_de_atendimento_oficial": "Cinemas, teatros, casas de show, estádios, museus, circos e demais espaços culturais"
+      "canal_de_atendimento_oficial": "Cinemas, teatros, casas de show, estádios, museus, circos e demais espaços culturais",
+      "requer_consulta_especializada": false,
+      "criterio_classificacao": {
+        "regra": "default_administrativo",
+        "sinais": [
+          "default_administrativo"
+        ]
+      }
     },
     {
       "id": "prouni_fies_sisu",
@@ -6021,7 +6136,14 @@
       ],
       "aplicavel_a_todas_deficiencias": true,
       "data_ultima_verificacao": "2026-05-28",
-      "canal_de_atendimento_oficial": "Inscrições online nos sites oficiais do MEC (prouniportal.mec.gov.br, sisu.mec.gov.br, fies.mec.gov.br)"
+      "canal_de_atendimento_oficial": "Inscrições online nos sites oficiais do MEC (prouniportal.mec.gov.br, sisu.mec.gov.br, fies.mec.gov.br)",
+      "requer_consulta_especializada": false,
+      "criterio_classificacao": {
+        "regra": "default_administrativo",
+        "sinais": [
+          "default_administrativo"
+        ]
+      }
     },
     {
       "id": "isencao_ir",
@@ -6240,7 +6362,14 @@
       ],
       "aplicavel_a_todas_deficiencias": true,
       "data_ultima_verificacao": "2026-05-28",
-      "canal_de_atendimento_oficial": "Receita Federal — site gov.br/receitafederal ou programa IRPF (download gratuito)"
+      "canal_de_atendimento_oficial": "Receita Federal — site gov.br/receitafederal ou programa IRPF (download gratuito)",
+      "requer_consulta_especializada": true,
+      "criterio_classificacao": {
+        "regra": "isencao_tributaria",
+        "sinais": [
+          "id_pre_classificado_tributario"
+        ]
+      }
     },
     {
       "id": "bolsa_familia",
@@ -6436,7 +6565,14 @@
       ],
       "aplicavel_a_todas_deficiencias": true,
       "data_ultima_verificacao": "2026-05-28",
-      "canal_de_atendimento_oficial": "CRAS mais próximo (Centro de Referência de Assistência Social) — buscar no site do MDS"
+      "canal_de_atendimento_oficial": "CRAS mais próximo (Centro de Referência de Assistência Social) — buscar no site do MDS",
+      "requer_consulta_especializada": false,
+      "criterio_classificacao": {
+        "regra": "default_administrativo",
+        "sinais": [
+          "default_administrativo"
+        ]
+      }
     },
     {
       "id": "tarifa_social_energia",
@@ -6620,7 +6756,14 @@
       ],
       "aplicavel_a_todas_deficiencias": true,
       "data_ultima_verificacao": "2026-05-28",
-      "canal_de_atendimento_oficial": "Distribuidora de energia da sua região (Enel, CPFL, Light, Cemig, etc.) + CRAS (CadÚnico)"
+      "canal_de_atendimento_oficial": "Distribuidora de energia da sua região (Enel, CPFL, Light, Cemig, etc.) + CRAS (CadÚnico)",
+      "requer_consulta_especializada": false,
+      "criterio_classificacao": {
+        "regra": "default_administrativo",
+        "sinais": [
+          "default_administrativo"
+        ]
+      }
     },
     {
       "id": "auxilio_inclusao",
@@ -6811,7 +6954,15 @@
       ],
       "aplicavel_a_todas_deficiencias": true,
       "data_ultima_verificacao": "2026-05-28",
-      "canal_de_atendimento_oficial": "Meu INSS (site/app) / Central 135 / Agências do INSS"
+      "canal_de_atendimento_oficial": "Meu INSS (site/app) / Central 135 / Agências do INSS",
+      "requer_consulta_especializada": true,
+      "criterio_classificacao": {
+        "regra": "pericia_medica_inss",
+        "sinais": [
+          "pericia_medica",
+          "vinculo_inss"
+        ]
+      }
     },
     {
       "id": "protecao_social",
@@ -7007,7 +7158,14 @@
       ],
       "aplicavel_a_todas_deficiencias": true,
       "data_ultima_verificacao": "2026-05-28",
-      "canal_de_atendimento_oficial": "CRAS (Proteção Básica) / CREAS (Proteção Especial) / Centro-Dia / Residência Inclusiva"
+      "canal_de_atendimento_oficial": "CRAS (Proteção Básica) / CREAS (Proteção Especial) / Centro-Dia / Residência Inclusiva",
+      "requer_consulta_especializada": false,
+      "criterio_classificacao": {
+        "regra": "default_administrativo",
+        "sinais": [
+          "default_administrativo"
+        ]
+      }
     },
     {
       "id": "pensao_zika",
@@ -7104,7 +7262,14 @@
       ],
       "aplicavel_a_todas_deficiencias": false,
       "data_ultima_verificacao": "2026-05-28",
-      "canal_de_atendimento_oficial": "Meu INSS (site/app) / Central 135 / Agências do INSS"
+      "canal_de_atendimento_oficial": "Meu INSS (site/app) / Central 135 / Agências do INSS",
+      "requer_consulta_especializada": true,
+      "criterio_classificacao": {
+        "regra": "pensoes_especiais",
+        "sinais": [
+          "id_pre_classificado"
+        ]
+      }
     },
     {
       "id": "esporte_paralimpico",
@@ -7302,7 +7467,15 @@
       ],
       "aplicavel_a_todas_deficiencias": true,
       "data_ultima_verificacao": "2026-05-28",
-      "canal_de_atendimento_oficial": "Ministério do Esporte (editais) / Comitê Paralímpico Brasileiro / Confederações de modalidades"
+      "canal_de_atendimento_oficial": "Ministério do Esporte (editais) / Comitê Paralímpico Brasileiro / Confederações de modalidades",
+      "requer_consulta_especializada": true,
+      "criterio_classificacao": {
+        "regra": "indeferimento_recurso",
+        "sinais": [
+          "indeferimento",
+          "defensoria pública"
+        ]
+      }
     },
     {
       "id": "turismo_acessivel",
@@ -7506,7 +7679,14 @@
       ],
       "aplicavel_a_todas_deficiencias": true,
       "data_ultima_verificacao": "2026-05-28",
-      "canal_de_atendimento_oficial": "Portal do Turismo (gov.br/turismo) / Companhias aéreas / ANAC (163) / Procon / Consumidor.gov.br"
+      "canal_de_atendimento_oficial": "Portal do Turismo (gov.br/turismo) / Companhias aéreas / ANAC (163) / Procon / Consumidor.gov.br",
+      "requer_consulta_especializada": false,
+      "criterio_classificacao": {
+        "regra": "default_administrativo",
+        "sinais": [
+          "default_administrativo"
+        ]
+      }
     },
     {
       "id": "acessibilidade_arquitetonica",
@@ -7702,7 +7882,14 @@
       ],
       "aplicavel_a_todas_deficiencias": true,
       "data_ultima_verificacao": "2026-05-28",
-      "canal_de_atendimento_oficial": "Ministério Público / Defensoria Pública / Procon / Prefeitura (ouvidoria) / Disque 100"
+      "canal_de_atendimento_oficial": "Ministério Público / Defensoria Pública / Procon / Prefeitura (ouvidoria) / Disque 100",
+      "requer_consulta_especializada": false,
+      "criterio_classificacao": {
+        "regra": "default_administrativo",
+        "sinais": [
+          "default_administrativo"
+        ]
+      }
     },
     {
       "id": "capacidade_legal",
@@ -7902,7 +8089,14 @@
       ],
       "aplicavel_a_todas_deficiencias": true,
       "data_ultima_verificacao": "2026-05-28",
-      "canal_de_atendimento_oficial": "Defensoria Pública (gratuito) / Vara de Família ou Vara Cível / Ministério Público"
+      "canal_de_atendimento_oficial": "Defensoria Pública (gratuito) / Vara de Família ou Vara Cível / Ministério Público",
+      "requer_consulta_especializada": true,
+      "criterio_classificacao": {
+        "regra": "capacidade_legal",
+        "sinais": [
+          "id_pre_classificado"
+        ]
+      }
     },
     {
       "id": "crimes_contra_pcd",
@@ -8098,7 +8292,14 @@
       ],
       "aplicavel_a_todas_deficiencias": true,
       "data_ultima_verificacao": "2026-05-28",
-      "canal_de_atendimento_oficial": "Disque 100 / Delegacia de Polícia / Ministério Público / Defensoria Pública / Procon / Fala.BR"
+      "canal_de_atendimento_oficial": "Disque 100 / Delegacia de Polícia / Ministério Público / Defensoria Pública / Procon / Fala.BR",
+      "requer_consulta_especializada": true,
+      "criterio_classificacao": {
+        "regra": "crimes_pcd",
+        "sinais": [
+          "id_pre_classificado"
+        ]
+      }
     },
     {
       "id": "acessibilidade_digital",
@@ -8300,7 +8501,14 @@
       ],
       "aplicavel_a_todas_deficiencias": true,
       "data_ultima_verificacao": "2026-05-28",
-      "canal_de_atendimento_oficial": "Fala.BR / ANATEL (1331) / Ministério Público / Defensoria Pública / Portal eMAG (gov.br/governodigital)"
+      "canal_de_atendimento_oficial": "Fala.BR / ANATEL (1331) / Ministério Público / Defensoria Pública / Portal eMAG (gov.br/governodigital)",
+      "requer_consulta_especializada": false,
+      "criterio_classificacao": {
+        "regra": "default_administrativo",
+        "sinais": [
+          "default_administrativo"
+        ]
+      }
     },
     {
       "id": "reabilitacao",
@@ -8499,7 +8707,14 @@
       ],
       "aplicavel_a_todas_deficiencias": true,
       "data_ultima_verificacao": "2026-05-28",
-      "canal_de_atendimento_oficial": "UBS → CER (Centro Especializado em Reabilitação) / INSS (reabilitação profissional) / Mapa CNES (cnes.datasus.gov.br)"
+      "canal_de_atendimento_oficial": "UBS → CER (Centro Especializado em Reabilitação) / INSS (reabilitação profissional) / Mapa CNES (cnes.datasus.gov.br)",
+      "requer_consulta_especializada": false,
+      "criterio_classificacao": {
+        "regra": "default_administrativo",
+        "sinais": [
+          "default_administrativo"
+        ]
+      }
     },
     {
       "id": "politica_nacional_cuidados",
@@ -8690,7 +8905,14 @@
       ],
       "aplicavel_a_todas_deficiencias": true,
       "data_ultima_verificacao": "2026-05-28",
-      "canal_de_atendimento_oficial": "CRAS (referência básica), CREAS (situação de violência/risco), UBS/CAPS (saúde mental do cuidador), Conselho Municipal dos Direitos da PcD"
+      "canal_de_atendimento_oficial": "CRAS (referência básica), CREAS (situação de violência/risco), UBS/CAPS (saúde mental do cuidador), Conselho Municipal dos Direitos da PcD",
+      "requer_consulta_especializada": false,
+      "criterio_classificacao": {
+        "regra": "default_administrativo",
+        "sinais": [
+          "default_administrativo"
+        ]
+      }
     },
     {
       "id": "horario_especial_servidor_pcd",
@@ -8876,7 +9098,14 @@
       ],
       "aplicavel_a_todas_deficiencias": true,
       "data_ultima_verificacao": "2026-05-28",
-      "canal_de_atendimento_oficial": "RH do órgão público (federal: SIASS); para estados/municípios, consultar Procuradoria/RH do ente respectivo"
+      "canal_de_atendimento_oficial": "RH do órgão público (federal: SIASS); para estados/municípios, consultar Procuradoria/RH do ente respectivo",
+      "requer_consulta_especializada": false,
+      "criterio_classificacao": {
+        "regra": "default_administrativo",
+        "sinais": [
+          "default_administrativo"
+        ]
+      }
     },
     {
       "id": "cota_emprego_pcd_empresa",
@@ -9069,7 +9298,14 @@
       ],
       "aplicavel_a_todas_deficiencias": true,
       "data_ultima_verificacao": "2026-05-28",
-      "canal_de_atendimento_oficial": "SINE/Sistema Nacional de Emprego, agências do SINE, MPT (denúncias), Ministério do Trabalho e Emprego"
+      "canal_de_atendimento_oficial": "SINE/Sistema Nacional de Emprego, agências do SINE, MPT (denúncias), Ministério do Trabalho e Emprego",
+      "requer_consulta_especializada": true,
+      "criterio_classificacao": {
+        "regra": "cota_trabalho",
+        "sinais": [
+          "id_pre_classificado_trabalhista"
+        ]
+      }
     },
     {
       "id": "saque_fgts_doenca_grave",
@@ -9279,7 +9515,14 @@
       ],
       "aplicavel_a_todas_deficiencias": true,
       "data_ultima_verificacao": "2026-05-28",
-      "canal_de_atendimento_oficial": "Agências da Caixa Econômica Federal, app FGTS (iOS/Android), site caixa.gov.br/fgts"
+      "canal_de_atendimento_oficial": "Agências da Caixa Econômica Federal, app FGTS (iOS/Android), site caixa.gov.br/fgts",
+      "requer_consulta_especializada": false,
+      "criterio_classificacao": {
+        "regra": "default_administrativo",
+        "sinais": [
+          "default_administrativo"
+        ]
+      }
     },
     {
       "id": "caa_comunicacao_alternativa",
@@ -9442,7 +9685,14 @@
       ],
       "aplicavel_a_todas_deficiencias": false,
       "data_ultima_verificacao": "2026-05-28",
-      "canal_de_atendimento_oficial": "UBS → CER (Centro Especializado em Reabilitação) | Escola pública → AEE/SRM (PDDE Acessibilidade) | Plano de saúde (terapias e equipamentos prescritos)"
+      "canal_de_atendimento_oficial": "UBS → CER (Centro Especializado em Reabilitação) | Escola pública → AEE/SRM (PDDE Acessibilidade) | Plano de saúde (terapias e equipamentos prescritos)",
+      "requer_consulta_especializada": false,
+      "criterio_classificacao": {
+        "regra": "default_administrativo",
+        "sinais": [
+          "default_administrativo"
+        ]
+      }
     },
     {
       "id": "curatela_decisao_apoiada",
@@ -9640,7 +9890,14 @@
       ],
       "aplicavel_a_todas_deficiencias": true,
       "data_ultima_verificacao": "2026-05-28",
-      "canal_de_atendimento_oficial": "Vara de Família/Sucessões da comarca, Defensoria Pública Estadual, Ministério Público (fiscaliza)"
+      "canal_de_atendimento_oficial": "Vara de Família/Sucessões da comarca, Defensoria Pública Estadual, Ministério Público (fiscaliza)",
+      "requer_consulta_especializada": true,
+      "criterio_classificacao": {
+        "regra": "capacidade_legal",
+        "sinais": [
+          "id_pre_classificado"
+        ]
+      }
     },
     {
       "id": "certificado_pcd_inss",
@@ -9726,7 +9983,15 @@
       "cids_relacionados": [],
       "aplicavel_a_todas_deficiencias": true,
       "data_ultima_verificacao": "2026-05-28",
-      "canal_de_atendimento_oficial": "Meu INSS (app ou meu.inss.gov.br) e agências do INSS"
+      "canal_de_atendimento_oficial": "Meu INSS (app ou meu.inss.gov.br) e agências do INSS",
+      "requer_consulta_especializada": true,
+      "criterio_classificacao": {
+        "regra": "pericia_medica_inss",
+        "sinais": [
+          "pericia_medica",
+          "vinculo_inss"
+        ]
+      }
     },
     {
       "id": "carteira_identificacao_pcd",
@@ -9812,7 +10077,14 @@
       "cids_relacionados": [],
       "aplicavel_a_todas_deficiencias": true,
       "data_ultima_verificacao": "2026-05-28",
-      "canal_de_atendimento_oficial": "Órgão emissor designado pela União, estado ou município (geralmente Secretaria de Direitos da PcD)"
+      "canal_de_atendimento_oficial": "Órgão emissor designado pela União, estado ou município (geralmente Secretaria de Direitos da PcD)",
+      "requer_consulta_especializada": false,
+      "criterio_classificacao": {
+        "regra": "default_administrativo",
+        "sinais": [
+          "default_administrativo"
+        ]
+      }
     },
     {
       "id": "reabilitacao_profissional_inss",
@@ -9898,7 +10170,14 @@
       "cids_relacionados": [],
       "aplicavel_a_todas_deficiencias": true,
       "data_ultima_verificacao": "2026-05-28",
-      "canal_de_atendimento_oficial": "Agências do INSS, Centros de Referência Profissional e Meu INSS"
+      "canal_de_atendimento_oficial": "Agências do INSS, Centros de Referência Profissional e Meu INSS",
+      "requer_consulta_especializada": true,
+      "criterio_classificacao": {
+        "regra": "cota_trabalho",
+        "sinais": [
+          "id_pre_classificado_trabalhista"
+        ]
+      }
     },
     {
       "id": "pensao_talidomida",
@@ -9989,7 +10268,14 @@
       "cids_relacionados": [],
       "aplicavel_a_todas_deficiencias": false,
       "data_ultima_verificacao": "2026-05-28",
-      "canal_de_atendimento_oficial": "Meu INSS (app ou meu.inss.gov.br) e agências do INSS"
+      "canal_de_atendimento_oficial": "Meu INSS (app ou meu.inss.gov.br) e agências do INSS",
+      "requer_consulta_especializada": true,
+      "criterio_classificacao": {
+        "regra": "pensoes_especiais",
+        "sinais": [
+          "id_pre_classificado"
+        ]
+      }
     },
     {
       "id": "pensao_hanseniase",
@@ -10081,7 +10367,14 @@
       "cids_relacionados": [],
       "aplicavel_a_todas_deficiencias": false,
       "data_ultima_verificacao": "2026-05-28",
-      "canal_de_atendimento_oficial": "Ministério dos Direitos Humanos e Cidadania (MDHC) e Disque 100"
+      "canal_de_atendimento_oficial": "Ministério dos Direitos Humanos e Cidadania (MDHC) e Disque 100",
+      "requer_consulta_especializada": true,
+      "criterio_classificacao": {
+        "regra": "pensoes_especiais",
+        "sinais": [
+          "id_pre_classificado"
+        ]
+      }
     },
     {
       "id": "moradia_assistida_pcd",
@@ -10182,7 +10475,14 @@
       ],
       "aplicavel_a_todas_deficiencias": true,
       "data_ultima_verificacao": "2026-05-28",
-      "canal_de_atendimento_oficial": "CRAS (porta de entrada) → CREAS (média complexidade) → Residência Inclusiva (alta complexidade SUAS). Em casos de negativa: Defensoria Pública da União ou Estadual."
+      "canal_de_atendimento_oficial": "CRAS (porta de entrada) → CREAS (média complexidade) → Residência Inclusiva (alta complexidade SUAS). Em casos de negativa: Defensoria Pública da União ou Estadual.",
+      "requer_consulta_especializada": false,
+      "criterio_classificacao": {
+        "regra": "default_administrativo",
+        "sinais": [
+          "default_administrativo"
+        ]
+      }
     }
   ],
   "dica_seguranca": {
