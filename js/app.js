@@ -1126,6 +1126,12 @@ ${t.descricao ? `<span class="trilha-tab__desc">${escapeHtml(t.descricao)}</span
 <article>
 <h2>${cat.icone} ${escapeHtml(cat.titulo)}</h2>
 <p class="detalhe-resumo">${escapeHtml(cat.resumo)}</p>`;
+        if (cat.requer_consulta_especializada === true) {
+            html += `<aside class="aviso-consulta-juridica" role="note" aria-label="Aviso de consulta jurídica recomendada">
+<p><strong>ℹ️ Recomendamos orientação jurídica para este direito.</strong></p>
+<p>Este benefício costuma envolver perícia, prazos ou recursos. A <a href="https://www.defensoria.gov.br/" target="_blank" rel="noopener noreferrer">Defensoria Pública</a> oferece atendimento gratuito; também é possível procurar um(a) advogado(a) de sua confiança.</p>
+</aside>`;
+        }
         if (cat.valor) {
             html += `<div class="detalhe-section">
 <h3>💰 Valor</h3>
@@ -1164,9 +1170,11 @@ ${t.descricao ? `<span class="trilha-tab__desc">${escapeHtml(t.descricao)}</span
 </div>`;
         }
         if (cat.onde) {
+            const canal = cat.canal_de_atendimento_oficial || cat.onde;
             html += `<div class="detalhe-section">
-<h3>📍 Onde Solicitar</h3>
-<p>${escapeHtml(cat.onde)}</p>
+<h3>📍 Onde Solicitar (canal oficial)</h3>
+<p>${escapeHtml(canal)}</p>
+<p class="canal-aviso"><small>Este site não é o canal oficial — apenas orienta. O direito é peticionado/concedido pelo canal acima.</small></p>
 </div>`;
         }
         if (cat.dicas && cat.dicas.length) {
@@ -1268,8 +1276,14 @@ class="btn btn-sm btn-whatsapp" aria-label="Compartilhar no WhatsApp">
 📥 Salvar PDF
 </button>
 </div>
-</div>
-</article>`;
+</div>`;
+        if (cat.data_ultima_verificacao) {
+            const d = cat.data_ultima_verificacao;
+            const m = d.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+            const dataFmt = m ? `${m[3]}/${m[2]}/${m[1]}` : d;
+            html += `<p class="detalhe-verificacao"><small>✓ Conteúdo verificado em <time datetime="${escapeHtml(d)}">${escapeHtml(dataFmt)}</time>. Sempre confirme com a fonte oficial antes de agir.</small></p>`;
+        }
+        html += `</article>`;
         dom.detalheContent.innerHTML = html;
         const exportDetalheBtn = document.getElementById('exportDetalhePdf');
         if (exportDetalheBtn) {

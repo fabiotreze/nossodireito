@@ -1497,6 +1497,70 @@ html.high-contrast ::selection {
     background: #1351b4;
 }
 
+/* ── Aviso de consulta jurídica recomendada (PR C #193) ───────────────── */
+/* Padrão gov.br: banner informativo, não-alarmante. Cor: azul institucional. */
+.aviso-consulta-juridica {
+    background: #eaf2fb;
+    border-left: 4px solid #1351b4;
+    color: #14213d;
+    padding: 12px 16px;
+    margin: 0 0 24px;
+    border-radius: var(--radius-sm);
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+.aviso-consulta-juridica p {
+    margin: 0 0 6px;
+}
+.aviso-consulta-juridica p:last-child {
+    margin-bottom: 0;
+}
+.aviso-consulta-juridica a {
+    color: #1351b4;
+    font-weight: 600;
+    text-decoration: underline;
+}
+.aviso-consulta-juridica a:hover,
+.aviso-consulta-juridica a:focus-visible {
+    color: #0d3c8e;
+}
+
+/* Modo escuro */
+@media (prefers-color-scheme: dark) {
+    .aviso-consulta-juridica {
+        background: rgba(19, 81, 180, 0.18);
+        border-left-color: #4d8ee0;
+        color: var(--text);
+    }
+    .aviso-consulta-juridica a {
+        color: #6aa6e8;
+    }
+    .aviso-consulta-juridica a:hover,
+    .aviso-consulta-juridica a:focus-visible {
+        color: #8cbbef;
+    }
+}
+
+/* ── Aviso curto sob "Onde Solicitar" ─────────────────────────────────── */
+.canal-aviso {
+    margin: 6px 0 0;
+    color: var(--text-muted);
+    font-style: italic;
+}
+
+/* ── Rodapé de verificação editorial ──────────────────────────────────── */
+.detalhe-verificacao {
+    margin: 16px 0 0;
+    padding: 8px 0 0;
+    border-top: 1px dashed var(--border, rgba(0, 0, 0, 0.1));
+    color: var(--text-muted);
+    text-align: center;
+    font-size: 0.85rem;
+}
+.detalhe-verificacao time {
+    font-weight: 600;
+}
+
 .table-note {
     margin-top: 16px;
     padding: 12px 16px;
