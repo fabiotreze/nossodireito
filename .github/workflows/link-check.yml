@@ -113,6 +113,10 @@ jobs:
           # --max-concurrency 2 é gentil com servidores gov.br (alguns rate-limitam agressivo)
           # --exclude-loopback / --exclude-private remove ruído (mailto excluído por padrão em lychee v0.23+)
           # --accept 200..=299,403,429 evita falso-positivo em sites que bloqueiam HEAD
+          # --exclude-file .lychee-exclude.txt: hosts que bloqueiam IPs de cloud
+          #   (planalto.gov.br, in.gov.br). Validação dessas fontes é feita por
+          #   scripts/validate_legal_sources.py no Quality Gate (path independente
+          #   de HTTP-ping). Ver .lychee-exclude.txt para contexto completo.
           args: >-
             --cache
             --max-cache-age 7d

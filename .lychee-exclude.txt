@@ -1,0 +1,30 @@
+# .lychee-exclude.txt — URLs excluídas do link-check (lychee)
+#
+# CONTEXTO:
+# Servidores gov.br (planalto.gov.br, in.gov.br, etc.) bloqueiam/rate-limitam
+# faixas de IP de datacenters (Azure/AWS/GCP onde runners do GitHub Actions
+# vivem). O resultado é "Network error: Connection failed" no CI mesmo
+# quando a URL funciona perfeitamente para usuários reais (testado com curl
+# de máquina residencial: handshake TLS + resposta HTTP normal).
+#
+# Excluir esses hosts do lychee evita PRs falsamente bloqueados por flake
+# de WAF/anti-bot externo.
+#
+# COMPENSAÇÃO (validação contínua das fontes legais por OUTRA via):
+# - scripts/validate_legal_sources.py → roda no Quality Gate em todo PR,
+#   verifica que as leis citadas existem e estão íntegras (parsing dos
+#   artigos), independente de HTTP-ping.
+# - scripts/validate_sources.py → idem, focada em estrutura JSON de fontes.
+# - Schema 'estabilidade' + 'snapshot_url' (#192) → URLs marcadas como
+#   estáveis com snapshot arquivado.
+#
+# REGRAS (regex compatível com lychee):
+# - Uma URL/pattern por linha
+# - Linhas começando com # são comentários
+# - Linhas em branco são ignoradas
+
+# === Servidores gov.br federais — bloqueio anti-bot por faixa de IP ===
+# Confirmado em 2026-05-28: handshake TLS OK do runner, mas servidor não
+# responde HTTP (timeout). Mesmas URLs respondem 200 de IPs residenciais.
+^https?://(www\.)?planalto\.gov\.br/
+^https?://(www\.)?in\.gov\.br/
