@@ -8,12 +8,9 @@
 - [Arquitetura](ARCHITECTURE.md)
 - [Operações](OPERATIONS.md)
 - [Segurança e LGPD](SECURITY-LGPD.md)
-- [Replicação](REPLICATION.md)
-- [Estimativa de Custos](COST-ESTIMATE.md)
 
 ## Diagramas
 
-- [Arquitetura E2E (.drawio)](ARCHITECTURE.drawio)
 - [Fluxo de IA E2E (.drawio)](diagrams/02-ia-flow.drawio)
 - [Replicação E2E (.drawio)](diagrams/03-replication.drawio)
 - [Arquitetura E2E (Mermaid no documento)](ARCHITECTURE.md)

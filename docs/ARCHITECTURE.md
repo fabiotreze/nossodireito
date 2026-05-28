@@ -161,7 +161,6 @@ Master Compliance score atual: **1248.5 / 1268.5 = 98.42%** (36 categorias).
 
 ## Diagramas
 
-- Arquitetura E2E: [ARCHITECTURE.drawio](ARCHITECTURE.drawio)
 - Fluxo de IA: [diagrams/02-ia-flow.drawio](diagrams/02-ia-flow.drawio)
 - Replicacao: [diagrams/03-replication.drawio](diagrams/03-replication.drawio)
 
@@ -177,4 +176,3 @@ Master Compliance score atual: **1248.5 / 1268.5 = 98.42%** (36 categorias).
 
 - Operacao e runbook: [OPERATIONS.md](OPERATIONS.md)
 - Seguranca e LGPD: [SECURITY-LGPD.md](SECURITY-LGPD.md)
-- Replicacao: [REPLICATION.md](REPLICATION.md)
