@@ -67,8 +67,6 @@ Para rodar testes: veja [`docs/OPERATIONS.md`](docs/OPERATIONS.md)
 - [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) — arquitetura e diagrama E2E
 - [`docs/OPERATIONS.md`](docs/OPERATIONS.md) — operação e runbook
 - [`docs/SECURITY-LGPD.md`](docs/SECURITY-LGPD.md) — baseline de segurança e LGPD
-- [`docs/REPLICATION.md`](docs/REPLICATION.md) — replicação para novo tenant/subscription
-- [`docs/COST-ESTIMATE.md`](docs/COST-ESTIMATE.md) — itens e baseline para Azure Pricing Calculator
 
 ---
 
@@ -81,7 +79,7 @@ Para rodar testes: veja [`docs/OPERATIONS.md`](docs/OPERATIONS.md)
 1. **Simplificação operacional:** 14 workflows GitHub Actions desativados (renomeados para `.yml.disabled`) — agentes de monitoramento contínuo (`legal-source-auditor`, `lexml-law-drift`, `conecta-govbr-sync`, `content-freshness-monitor`, `compliance-drift-detector`, `dependency-intelligence`, `community-insights`, `performance-watchdog`, `documentation-keeper`, `replication`, `scorecard`, `security-baseline`, `weekly-review`, `discover-benefits`). Permanecem ativos os 8 workflows essenciais de CI/CD e segurança.
 2. **Arquivamento de scripts:** 14 scripts movidos para `scripts/legacy/` (9 agentes + 3 migrações pontuais já aplicadas + 2 utilitários de cron). Histórico preservado, sem confusão sobre o que é runtime ativo.
 3. **Guard automático contra drift de docs:** novo `check_workflow_references()` em [check_docs_sync.py](scripts/check_docs_sync.py) — bloqueia commits quando README/docs referenciam workflows inexistentes. Catch automático do tipo de drift descoberto neste release.
-4. **Documentação ressincronizada:** README, docs/REPLICATION, docs/SECURITY-LGPD, docs/COST-ESTIMATE atualizados para refletir o inventário real (badges, tree, infra, custos com Redis).
+4. **Documentação ressincronizada:** README, docs/ARCHITECTURE, docs/OPERATIONS, docs/SECURITY-LGPD atualizados para refletir o inventário real (badges, tree, infra).
 5. **Quality Gate reforçado:** branch protection com 7 required checks (CodeQL × 2 + gitleaks + Quality Gate + Lighthouse + A11y × 3 engines), comments-resolution required, admin override apenas para rebases de release.
 
 ### ⚙️ Pipeline de gates (continua)
@@ -98,8 +96,6 @@ Para rodar testes: veja [`docs/OPERATIONS.md`](docs/OPERATIONS.md)
 - [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) — arquitetura atual
 - [`docs/OPERATIONS.md`](docs/OPERATIONS.md) — runbook e operação
 - [`docs/SECURITY-LGPD.md`](docs/SECURITY-LGPD.md) — segurança e LGPD
-- [`docs/REPLICATION.md`](docs/REPLICATION.md) — replicação em novo ambiente
-- [`docs/COST-ESTIMATE.md`](docs/COST-ESTIMATE.md) — custos estimados e cenários
 
 ---
 
@@ -314,51 +310,55 @@ nossodireito/
 │   ├── direitos.schema.json # JSON Schema (Draft 7) para direitos.json
 │   ├── matching_engine.schema.json
 │   └── dicionario_pcd.schema.json
+├── lib/                    # Módulos extraídos do server.js
+│   ├── mime.js             # MIME, CACHE, ALLOWED_EXT
+│   ├── security-headers.js # CSP + cabeçalhos de segurança
+│   ├── file-resolver.js    # Resolução segura de arquivos estáticos
+│   ├── analytics.js        # Fábrica de telemetria (App Insights)
+│   └── rate-limit.js       # Rate limit (Redis + memória)
 ├── docs/
-│   ├── ARCHITECTURE.md     # Arquitetura completa do sistema
-│   ├── ARCHITECTURE.drawio.xml # Diagrama visual (draw.io)
-│   ├── ACCESSIBILITY.md    # WCAG/eMAG, correções, widgets
-│   ├── COMPLIANCE.md       # LGPD, LBI, ISO, Azure
-│   ├── CONTRIBUTING.md     # Guia de contribuição
-│   ├── KNOWN_ISSUES.md     # Bugs, VLibras, limitações
-│   ├── QUALITY_GUIDE.md    # Quick Start, pipeline, scripts, testes
-│   └── REFERENCE.md        # 31+ benefícios PcD, dependências
+│   ├── README.md           # Índice da documentação
+│   ├── ARCHITECTURE.md     # Arquitetura completa + diagrama Mermaid
+│   ├── OPERATIONS.md       # Runbook e operação
+│   └── SECURITY-LGPD.md    # Baseline de segurança e LGPD
 ├── tests/
-│   ├── test_comprehensive.py           # Testes unitários abrangentes
-│   ├── test_comprehensive_validation.py # Validação completa de dados
-│   ├── test_cross_browser.py           # Compatibilidade cross-browser
-│   ├── test_e2e_playwright.py          # Testes E2E (Playwright)
-│   ├── test_master_compliance.py       # Validação de compliance
-│   └── conftest.py                     # Fixtures compartilhadas
+│   ├── test_matching_engine.py     # Pytest do motor de busca
+│   ├── anonymizer.test.mjs         # node:test do anonimizador
+│   ├── geo-search-contract.test.mjs
+│   ├── week-plan-contract.test.mjs
+│   ├── a11y.mjs                    # Smoke axe-core
+│   └── conftest.py                 # Fixtures pytest
 ├── scripts/
-│   ├── master_compliance.py # Compliance 360° (21 categorias, score 100%)
-│   ├── validate_all.py     # Quality Gate agregado (--quick)
-│   ├── validate_content.py # Validação de conteúdo JSON
-│   ├── validate_schema.py  # Validação JSON Schema
-│   ├── validate_sources.py # Drift externo (HTTP + API Senado + ICD)
-│   ├── validate_url_policy.py # Política de URLs (whitelist .gov.br)
+│   ├── validate_all.py             # Quality Gate agregado (--quick)
+│   ├── validate_content.py         # Validação de conteúdo JSON
+│   ├── validate_schema.py          # Validação JSON Schema
+│   ├── validate_sources.py         # Drift externo (HTTP)
 │   ├── validate_legal_compliance.py # Auditoria legal profunda
-│   ├── validate_legal_sources.py # Extração de artigos de leis
-│   ├── analise360.py       # Análise 360° de cobertura
-│   ├── audit_automation.py # Auditoria de automação
-│   ├── complete_beneficios.py # Auto-completar benefícios
-│   ├── discover_benefits.py # Descob. de benefícios gov.br
-│   ├── bump_version.py     # Semver automático
-│   └── pre-commit          # Hook de pré-commit
-├── terraform/              # Infraestrutura como código
-│   ├── main.tf             # App Service + Key Vault + SSL
-│   ├── variables.tf        # Variáveis multi-ambiente
-│   ├── outputs.tf          # Outputs pós-apply
-│   └── providers.tf        # Provider azurerm ~>4.0
+│   ├── validate_legal_sources.py   # Extração de artigos de leis
+│   ├── prerender_direitos.py       # SSG das páginas /direitos/<slug>/
+│   ├── a11y_audit.mjs              # Lighthouse + axe smoke
+│   ├── security_headers_check.sh   # Headers HTTP
+│   └── setup-hooks.mjs             # Instalação de hooks git
+├── terraform/                      # Infraestrutura como código
+│   ├── main.tf                     # App Service + Key Vault + SSL
+│   ├── ai-openai.tf                # Azure OpenAI + private endpoint
+│   ├── openai-private-network.tf   # VNet + PE para OpenAI
+│   ├── keyvault-redis-private-network.tf # VNet + PE para KV e Redis
+│   ├── budget.tf                   # Budget mensal
+│   ├── imports.tf                  # Imports de recursos preexistentes
+│   ├── variables.tf
+│   ├── outputs.tf
+│   └── providers.tf
 ├── .github/workflows/
-│   ├── deploy.yml              # CI/CD push → deploy Azure
-│   ├── quality-gate.yml        # Quality Gate PR/push check
-│   ├── codeql.yml              # Análise estática de segurança
-│   ├── gitleaks.yml            # Detecção de segredos
-│   ├── lighthouse.yml          # Perf/SEO/A11y/PWA budgets
-│   ├── accessibility.yml       # axe-core WCAG 2.1 AA (3 engines)
-│   ├── terraform.yml           # IaC manual dispatch
-│   └── dependabot-auto-merge.yml # Auto-merge Dependabot PRs
+│   ├── deploy.yml                  # CI/CD push → deploy Azure
+│   ├── quality-gate.yml            # Quality Gate PR/push check
+│   ├── codeql.yml                  # Análise estática de segurança
+│   ├── gitleaks.yml                # Detecção de segredos
+│   ├── lighthouse.yml              # Perf/SEO/A11y budgets
+│   ├── accessibility.yml           # axe-core WCAG 2.1 AA (3 engines)
+│   ├── link-check.yml              # Detecção de links quebrados
+│   ├── terraform.yml               # IaC manual dispatch
+│   └── dependabot-auto-merge.yml   # Auto-merge Dependabot PRs
 ├── CHANGELOG.md
 ├── GOVERNANCE.md
 ├── SECURITY.md
