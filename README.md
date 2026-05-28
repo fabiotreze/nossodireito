@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="images/nossodireito-400.png" alt="NossoDireito" width="120">
+  <img src="images/nossodireito-400.webp" alt="NossoDireito" width="120">
 </p>
 
 # ⚖️ NossoDireito
