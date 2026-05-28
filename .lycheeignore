@@ -1,4 +1,4 @@
-# .lychee-exclude.txt — URLs excluídas do link-check (lychee)
+# .lycheeignore — URLs excluídas do link-check (lychee descobre automaticamente)
 #
 # CONTEXTO:
 # Servidores gov.br (planalto.gov.br, in.gov.br, etc.) bloqueiam/rate-limitam
@@ -22,6 +22,9 @@
 # - Uma URL/pattern por linha
 # - Linhas começando com # são comentários
 # - Linhas em branco são ignoradas
+#
+# NOTA: scripts/extract_volatil_urls.mjs ANEXA dinamicamente em CI as URLs
+# com estabilidade='volatil' do schema. Não edite manualmente esse bloco.
 
 # === Servidores gov.br federais — bloqueio anti-bot por faixa de IP ===
 # Confirmado em 2026-05-28: handshake TLS OK do runner, mas servidor não
