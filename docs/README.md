@@ -8,6 +8,7 @@
 - [Arquitetura](ARCHITECTURE.md)
 - [Operações](OPERATIONS.md)
 - [Segurança e LGPD](SECURITY-LGPD.md)
+- [LGPD — Checklist Auditável](LGPD-COMPLIANCE.md)
 
 ## Diagramas
 
