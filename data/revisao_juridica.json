@@ -1,0 +1,65 @@
+{
+  "versao": "2026-05-28",
+  "ultima_atualizacao": "2026-05-28",
+  "issue": 204,
+  "issue_url": "https://github.com/fabiotreze/nossodireito/issues/204",
+  "itens": [
+    {
+      "id": "issue-204-item-1",
+      "issue": 204,
+      "issue_url": "https://github.com/fabiotreze/nossodireito/issues/204",
+      "titulo": "Lei 8.112/90 Art. 5o, par. 2o",
+      "status": "RESOLVED_EDITORIAL",
+      "categoria_ids": [
+        "trabalho",
+        "cota_emprego_pcd_empresa"
+      ],
+      "termos_busca": [
+        "concurso pcd",
+        "cota concurso",
+        "lei 8112",
+        "art 5 par 2"
+      ],
+      "aviso_curto": "Redacao ajustada para referencia conservadora de reserva de vagas sem percentual fixo.",
+      "nota_sistema": "Resolvido por decisao editorial registrada no chat; sem revisao juridica externa."
+    },
+    {
+      "id": "issue-204-item-2",
+      "issue": 204,
+      "issue_url": "https://github.com/fabiotreze/nossodireito/issues/204",
+      "titulo": "Lei 13.977/2020 (CIPTEA) x prioridade ampla",
+      "status": "RESOLVED_EDITORIAL",
+      "categoria_ids": [
+        "ciptea",
+        "atendimento_prioritario"
+      ],
+      "termos_busca": [
+        "ciptea",
+        "carteira autismo",
+        "prioridade autista",
+        "lei romeo mion"
+      ],
+      "aviso_curto": "Texto ajustado para CIPTEA como identificacao e prioridade conforme legislacao especifica aplicavel.",
+      "nota_sistema": "Resolvido por decisao editorial registrada no chat; sem revisao juridica externa."
+    },
+    {
+      "id": "issue-204-item-3",
+      "issue": 204,
+      "issue_url": "https://github.com/fabiotreze/nossodireito/issues/204",
+      "titulo": "Vigencia do Decreto 3.298/1999 apos LBI 13.146/2015",
+      "status": "RESOLVED_EDITORIAL",
+      "categoria_ids": [
+        "bpc",
+        "capacidade_legal"
+      ],
+      "termos_busca": [
+        "decreto 3298",
+        "lbi",
+        "criterio biopsicossocial",
+        "capacidade legal"
+      ],
+      "aviso_curto": "Trechos com Decreto 3.298/1999 ajustados para leitura conjunta com LBI e criterios atuais.",
+      "nota_sistema": "Resolvido por decisao editorial registrada no chat; sem revisao juridica externa."
+    }
+  ]
+}
