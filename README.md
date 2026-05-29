@@ -61,7 +61,7 @@ node server.js                                    # → http://localhost:8080
 
 Para rodar testes: veja [`docs/OPERATIONS.md`](docs/OPERATIONS.md)
 
-## 📘 Documentação consolidada (v1.34.2)
+## 📘 Documentação consolidada (v1.34.4)
 
 - [`docs/README.md`](docs/README.md) — índice da documentação
 - [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) — arquitetura e diagrama E2E
@@ -70,7 +70,7 @@ Para rodar testes: veja [`docs/OPERATIONS.md`](docs/OPERATIONS.md)
 
 ---
 
-## � Estado atual (v1.34.2)
+## � Estado atual (v1.34.4)
 
 Após o big-bang cleanup (#170) e a modularização do `server.js` (Onda 7, PRs #179–#182), o repositório é deliberadamente enxuto. **A documentação descreve apenas o que realmente existe no main**, e dois guards de CI impedem regressão:
 
