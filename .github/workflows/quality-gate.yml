@@ -33,6 +33,8 @@ jobs:
     name: Quality Gate (36 categorias)
     permissions:
       contents: read
+    env:
+      SEO_PRERENDER_MODE: ${{ vars.SEO_PRERENDER_MODE || 'home-only' }}
 
     steps:
       - name: Checkout
@@ -135,6 +137,12 @@ jobs:
         run: |
           echo "🔎 Executando Quality Gate..."
           python scripts/validate_all.py --quick
+
+      # ── SEO mode gate (home-only|prerender) ──
+      - name: Validar consistência SEO do modo ativo
+        run: |
+          echo "🔎 Validando modo SEO: ${SEO_PRERENDER_MODE}"
+          python3 scripts/prerender_direitos.py --check --mode "${SEO_PRERENDER_MODE}"
 
       # ── Salvar relatório como artefato ──
       - name: Copiar relatório JSON
