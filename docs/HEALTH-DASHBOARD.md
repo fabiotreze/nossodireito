@@ -179,7 +179,7 @@
 
 ### 🟠 P1 — Fix em Q2 2026
 
-- [ ] **Confirmar necessidade prerender_direitos.py** (DATA-ENRICHMENT.md)
+- [ ] **Decidir se o pre-render SEO opcional volta ao deploy** (`prerender_direitos.py`)
 - [ ] **Implementar auto-refresh de dados** (SOFTWARE-LIFECYCLE.md proposta)
 - [ ] **Aumentar E2E para 15+ cenários**
 

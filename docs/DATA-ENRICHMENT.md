@@ -15,7 +15,7 @@
 | `classify_consulta_especializada.py` | Data enrichment | Manual ou periódico | ✅ **MANTER** | @dev |
 | `enrich_cids_canonicos.py` | Data enrichment | Manual ou periódico | ✅ **MANTER** | @dev |
 | `migrate_categoria_metadata.py` | One-off migration | Executado 2026-05 | ⚠️ **MANTER (histórico)** | @dev |
-| `prerender_direitos.py` | Static pre-rendering | Descontinuado? | ❓ **AVALIAR** | @dev |
+| `prerender_direitos.py` | Static SEO pre-rendering | Manual e opcional | ✅ **MANTER (opcional)** | @dev |
 
 ---
 
@@ -92,22 +92,28 @@ python scripts/enrich_cids_canonicos.py  # aplica e salva
 
 ---
 
-## ❓ AVALIAR — Script Descontinuado?
+## ✅ MANTER (Opcional) — Pre-render SEO
 
 ### 5. `prerender_direitos.py`
 
-**Objetivo:** (Ambíguo) Parece pre-renderizar dados estáticos.
+**Objetivo:** Gera páginas HTML estáticas por categoria em `direitos/<slug>/index.html` e regenera `sitemap.xml` para indexação SEO.
 
 **Histórico:** Última atualização em feat #138 (v1.28.0, 2024-11).
 
-**Status:** Não é chamado em nenhum workflow. Finalidade desconhecida.
+**Status:** Script documentado no `README.md`, em `docs/ARCHITECTURE.md` e no próprio cabeçalho do arquivo. Não roda no deploy atual, mas continua útil como recurso opcional para restaurar páginas profundas de SEO.
+
+**Uso:**
+```bash
+python3 scripts/prerender_direitos.py
+python3 scripts/prerender_direitos.py --check
+```
 
 **Recomendação:** 
-- [ ] Verificar se ainda é necessário (pre-rendering já é feito pelo app.js?)
-- [ ] Se não: Deletar
-- [ ] Se sim: Documentar e adicionar a workflows ou `npm scripts`
+- [x] Manter como script opcional, fora do fluxo padrão de deploy
+- [ ] Se voltar para produção: ligar passo no `deploy.yml`
+- [ ] Se voltar para produção: regenerar `sitemap.xml` junto com o deploy
 
-**Ação:** Revisar com dev antes de deletar.
+**Ação:** Não deletar. Apenas decidir separadamente se vale reativar no pipeline.
 
 ---
 
@@ -163,7 +169,7 @@ jobs:
 - [x] Triggers (manual/periódico/workflow) clarificados
 - [ ] Adicionar descrição de cada script em `README.md`
 - [ ] Adicionar exemplos de execução em docs
-- [ ] Revisar `prerender_direitos.py` (BLOCKER)
+- [x] Classificar `prerender_direitos.py` como opcional, não órfão
 
 ---
 
