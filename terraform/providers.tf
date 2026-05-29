@@ -19,9 +19,12 @@ terraform {
     }
   }
 
-  # Backend local — sem remote state.
-  # O state é salvo como artifact no GitHub Actions para persistência.
-  # Para destroy, baixe o artifact antes de rodar.
+  # Backend local por padrão.
+  # State é persistido como artifact no GitHub Actions
+  # (.github/workflows/terraform.yml).
+  #
+  # Migração para backend remoto Azure Storage com lock nativo é opt-in;
+  # ver guia operacional em BACKEND-REMOTE.md (mesma pasta).
 }
 
 provider "azurerm" {
