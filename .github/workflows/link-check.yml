@@ -30,7 +30,12 @@ jobs:
   link-check:
     name: Check external links
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    # PRs que mexem em data/direitos.json podem expandir o escopo para centenas
+    # de URLs externas (gov.br, planalto, OMS). Com --max-concurrency 2 (gentil
+    # com servidores gov) e --retry-wait-time 10, 20min era insuficiente e
+    # gerava cancelamentos sistemáticos. 45min absorve esse pico mantendo
+    # margem de segurança para o agendamento semanal full-repo.
+    timeout-minutes: 45
     steps:
       - name: Checkout
         uses: actions/checkout@v5
