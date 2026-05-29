@@ -6,10 +6,7 @@
 - [Operações](OPERATIONS.md)
 - [Segurança e LGPD](SECURITY-LGPD.md)
 - [LGPD — Checklist Auditável](LGPD-COMPLIANCE.md)
-- [Ciclo de Vida de Software](SOFTWARE-LIFECYCLE.md)
 - [Scripts de Dados e Enriquecimento](DATA-ENRICHMENT.md)
-- [Painel de Saúde e Ratings](HEALTH-DASHBOARD.md)
-- [Consolidação de Ferramentas](TOOLS-CONSOLIDATION.md)
 
 ## Diagramas
 
