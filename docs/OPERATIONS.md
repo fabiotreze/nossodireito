@@ -1,5 +1,7 @@
 # Runbook de Operações
 
+**Versão:** 1.34.4
+
 ## Escopo
 
 - Runtime: Azure App Service (app-nossodireito-br)

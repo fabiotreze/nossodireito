@@ -1,5 +1,7 @@
 # Índice da Documentação
 
+**Versão:** 1.34.4
+
 ## Documentos Principais
 
 - [Arquitetura](ARCHITECTURE.md)
