@@ -67,6 +67,10 @@ Para rodar testes: veja [`docs/OPERATIONS.md`](docs/OPERATIONS.md)
 - [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) — arquitetura e diagrama E2E
 - [`docs/OPERATIONS.md`](docs/OPERATIONS.md) — operação e runbook
 - [`docs/SECURITY-LGPD.md`](docs/SECURITY-LGPD.md) — baseline de segurança e LGPD
+- [`docs/SOFTWARE-LIFECYCLE.md`](docs/SOFTWARE-LIFECYCLE.md) — ciclo de vida, gates e automação
+- [`docs/DATA-ENRICHMENT.md`](docs/DATA-ENRICHMENT.md) — classificação dos scripts de dados
+- [`docs/HEALTH-DASHBOARD.md`](docs/HEALTH-DASHBOARD.md) — ratings, métricas e calendário de auditoria
+- [`docs/TOOLS-CONSOLIDATION.md`](docs/TOOLS-CONSOLIDATION.md) — stack essencial e descartes
 
 ---
 
@@ -92,6 +96,10 @@ Após o big-bang cleanup (#170) e a modularização do `server.js` (Onda 7, PRs 
 - [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) — arquitetura atual
 - [`docs/OPERATIONS.md`](docs/OPERATIONS.md) — runbook e operação
 - [`docs/SECURITY-LGPD.md`](docs/SECURITY-LGPD.md) — segurança e LGPD
+- [`docs/SOFTWARE-LIFECYCLE.md`](docs/SOFTWARE-LIFECYCLE.md) — ciclo de vida e automação
+- [`docs/DATA-ENRICHMENT.md`](docs/DATA-ENRICHMENT.md) — scripts de dados
+- [`docs/HEALTH-DASHBOARD.md`](docs/HEALTH-DASHBOARD.md) — ratings e auditoria
+- [`docs/TOOLS-CONSOLIDATION.md`](docs/TOOLS-CONSOLIDATION.md) — ferramentas essenciais
 
 ---
 
