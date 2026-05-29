@@ -74,3 +74,31 @@ com `Retry-After` e o frontend mantém a análise local como fallback padrão.
 - Mantenha `main` deployável e com versões consistentes (`package.json`, `data/*.json`, cache-bust em `index.html`).
 - Nunca commite `terraform/terraform.tfvars` nem arquivos de certificado.
 - Em runner fora da VNet, manter `manage_redis_secret_with_terraform=false` para evitar erro 403 no refresh de segredo em Key Vault privado.
+
+## SEO Pilot (prerender controlado)
+
+### Modo operacional
+
+- Default seguro: `SEO_PRERENDER_MODE=home-only`
+- Piloto controlado: `SEO_PRERENDER_MODE=prerender`
+
+Rollback é imediato ao retornar para `home-only`.
+
+### Critérios
+
+- Go: ganho mensurável em impressões/cliques para `/direitos/*` sem aumento de incidentes de deploy/conteúdo.
+- No-Go: sem ganho material ou com custo operacional/editorial alto.
+
+### Monitoramento automático
+
+- Workflow diário: `.github/workflows/seo-pilot-watchdog.yml`
+- Monitora falhas das workflows `quality-gate.yml` e `deploy.yml` nas últimas 24h.
+- Abre/atualiza issue de alerta com label `seo-pilot-alert`.
+- Integra opcional com GSC para alerta automático de queda em `/direitos/*`.
+
+### Segredos opcionais para GSC
+
+- `GSC_PROPERTY_URL` (ex.: `sc-domain:nossodireito.fabiotreze.com`)
+- `GSC_SERVICE_ACCOUNT_JSON` (JSON da service account com acesso de leitura)
+
+Sem esses segredos, o watchdog continua monitorando CI/deploy e sinaliza no resumo que o monitor de GSC não está configurado.

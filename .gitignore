@@ -32,6 +32,7 @@ credentials/
 auth.json
 service-principal*.json
 azure-credentials*.json
+gsc_oauth_client.json
 
 # Terraform
 terraform/.terraform/
