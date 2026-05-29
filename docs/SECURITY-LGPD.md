@@ -1,7 +1,7 @@
 # Segurança e LGPD
 
-**Versão:** 1.34.2
-**Atualizado:** 2026-05-27
+**Versão:** 1.34.4
+**Atualizado:** 2026-05-28
 
 ## Baseline de Segurança
 
@@ -30,6 +30,8 @@ bash scripts/security_headers_check.sh
 - Análise padrão é local; análise por IA envia apenas texto anonimizado
 - Servidor rejeita payloads com PII evidente (HTTP 422)
 - Meta de retenção para saída da análise por IA: zero retenção de prompt/conteúdo
+
+> Checklist auditável recorrente: [LGPD-COMPLIANCE.md](LGPD-COMPLIANCE.md)
 
 ```mermaid
 flowchart LR

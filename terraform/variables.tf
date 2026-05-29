@@ -100,6 +100,23 @@ variable "key_vault_public_network_access_enabled" {
   default     = false
 }
 
+variable "key_vault_purge_protection_enabled" {
+  description = "Habilita purge protection no Key Vault. Recomendado true em PROD; false aceitável em DEV/POC para permitir recriação rápida."
+  type        = bool
+  default     = false
+}
+
+variable "key_vault_soft_delete_retention_days" {
+  description = "Período (em dias) de soft-delete do Key Vault. Min 7, max 90. Recomendado >=30 em PROD."
+  type        = number
+  default     = 7
+
+  validation {
+    condition     = var.key_vault_soft_delete_retention_days >= 7 && var.key_vault_soft_delete_retention_days <= 90
+    error_message = "soft_delete_retention_days deve estar entre 7 e 90."
+  }
+}
+
 variable "web_rp_object_id" {
   description = "Object ID do Service Principal Microsoft.Web RP (abfa0a7c-a6b6-4736-8310-5855508787cd). Descoberto via az ad sp show."
   type        = string

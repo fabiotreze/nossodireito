@@ -1,7 +1,7 @@
 # Runbook de Operações
 
-**Versão:** 1.34.2
-**Atualizado:** 2026-05-27
+**Versão:** 1.34.4
+**Atualizado:** 2026-05-28
 
 ## Escopo
 

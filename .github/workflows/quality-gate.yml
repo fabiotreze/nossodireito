@@ -76,6 +76,12 @@ jobs:
           echo "🧭 Validando que docs não citam features removidas..."
           node scripts/check_docs_truth.mjs
 
+      # ── Version sync guard (preveniu drift package.json vs data/direitos.json em 28/mai) ──
+      - name: Validar sincronização de versão
+        run: |
+          echo "🔢 Validando sincronização de versão entre package.json, docs, index.html e data/..."
+          node scripts/check_version_sync.mjs
+
       # ── Testes Python (pytest) ──
       - name: Executar testes Python
         run: |

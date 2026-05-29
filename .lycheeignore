@@ -31,3 +31,20 @@
 # responde HTTP (timeout). Mesmas URLs respondem 200 de IPs residenciais.
 ^https?://(www\.)?planalto\.gov\.br/
 ^https?://(www\.)?in\.gov\.br/
+
+# === Receita Federal / SISEN — anti-bot + WAF ===
+# Confirmado em 2026-05-29 (PR #217): sisen.receita.fazenda.gov.br retorna
+# "Network error" do runner; URLs em www.gov.br/receitafederal/* retornam
+# 404 a bots mas servem 200 a navegadores reais. Validadas por
+# validate_legal_sources.py e snapshot_url.
+^https?://sisen\.receita\.fazenda\.gov\.br/
+^https?://(www\.)?gov\.br/receitafederal/
+
+# === Caixa Econômica Federal — cadeia de redirects ===
+# www.caixa.gov.br/ → 302 → CDN → loop ultrapassa max-redirects do lychee.
+# Site funcional em navegador. Não é fonte legal primária.
+^https?://(www\.)?caixa\.gov\.br/
+
+# === www.gov.br rotas específicas que bloqueiam User-Agent de bot ===
+# Esporte/Bolsa Atleta retorna 401 a clientes sem cookie/sessão.
+^https?://(www\.)?gov\.br/esporte/

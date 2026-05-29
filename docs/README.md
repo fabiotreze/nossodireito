@@ -1,13 +1,14 @@
 # Índice da Documentação
 
-**Versão:** 1.34.2
-**Atualizado:** 2026-05-27
+**Versão:** 1.34.4
+**Atualizado:** 2026-05-28
 
 ## Documentos Principais
 
 - [Arquitetura](ARCHITECTURE.md)
 - [Operações](OPERATIONS.md)
 - [Segurança e LGPD](SECURITY-LGPD.md)
+- [LGPD — Checklist Auditável](LGPD-COMPLIANCE.md)
 
 ## Diagramas
 

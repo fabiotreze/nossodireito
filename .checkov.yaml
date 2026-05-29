@@ -1,4 +1,4 @@
-# Checkov configuration for NossoDireito (ambiente DEV / POC público).
+# Checkov configuration for NossoDireito.
 # Cada skip abaixo é documentado com justificativa explícita.
 # Auditor: revise periodicamente se ainda fazem sentido.
 
@@ -8,14 +8,13 @@ framework:
 directory:
   - terraform/
 
-# Pula checks que NÃO se aplicam a um site público estático/POC em B1.
-# Para um ambiente PROD com dados sensíveis, REMOVER os skips e implementar.
+# Pula checks que NÃO se aplicam ao perfil atual do site (informativo público,
+# com plano de controle privado para serviços PaaS).
+# Para reforçar postura PROD, revise cada item e remova quando o controle for implementado.
 skip-check:
   # -------- Networking público é REQUISITO funcional (site público) --------
   - CKV_AZURE_222   # Public network access on Web App — site é público, alvo são pessoas
   - CKV_AZURE_17    # Incoming client cert mandatory — site público, sem mTLS
-  - CKV2_AZURE_32   # Private endpoint p/ Key Vault — overkill em DEV, sem VNet integration no B1
-  - CKV2_AZURE_22   # Cognitive Services customer-managed key — POC, Microsoft-managed OK em DEV
 
   # -------- App Service Auth (AAD) — site público sem login --------
   - CKV_AZURE_13    # App Service Authentication — site é informativo, sem área restrita
@@ -23,13 +22,16 @@ skip-check:
   # -------- Azure Files mount — desnecessário (stateless, deploy via zip) --------
   - CKV_AZURE_88    # App Services use Azure Files — stateless, sem write em disco
 
-  # -------- Mínimo TLS para a Cognitive Service do Doc Intelligence --------
-  # Já forçamos TLS 1.2 via api_properties; checkov não detecta o setting nested.
-  - CKV_AZURE_134   # Cognitive Services public access disable — POC opt-in, sem VNet
+  # -------- Cognitive Services (Azure OpenAI) --------
+  # Já operamos com Private Endpoint + Private DNS via openai-private-network.tf,
+  # mas mantemos skips abaixo enquanto a IaC convive com perfis sem VNet (POC).
+  - CKV_AZURE_134   # Cognitive Services public access disable — controle aplicado por var
   - CKV_AZURE_236   # Cognitive Services storage account encryption — endpoint sem storage attach
   - CKV_AZURE_247   # Cognitive Services local auth disable — desabilitado mas check tem falso positivo
+  - CKV2_AZURE_22   # Cognitive Services customer-managed key — Microsoft-managed OK no escopo atual
 
 # Severidade mínima a reportar
 check:
   - HIGH
   - CRITICAL
+
