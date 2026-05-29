@@ -10,12 +10,17 @@
 # ============================================================
 
 terraform {
-  required_version = ">= 1.6"
+  # Terraform version — testado e validado em 1.15.5 (2026-05-29)
+  # Upgrade: brew upgrade terraform
+  # CI/CD usa OIDC sem access keys
+  required_version = ">= 1.6, <= 2.0"
 
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "~> 4.0"
+      version = "~> 4.74"  # Locked a 4.74.0 (2026-05-29)
+      # Pin habilitado via .terraform.lock.hcl para reproducibilidade
+      # Atualizações de provider: terraform init -upgrade
     }
   }
 
