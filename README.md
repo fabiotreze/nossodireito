@@ -242,6 +242,7 @@ node server.js
 - **Zero cookies** de rastreamento
 - Todo o processamento ocorre **no navegador do usuário**
 - Enquadramento: LGPD Art. 4º, I — tratamento por pessoa natural para fins exclusivamente privados e não econômicos
+- Checklist auditável de conformidade: [`docs/LGPD-COMPLIANCE.md`](docs/LGPD-COMPLIANCE.md)
 
 ## 🛠 Tecnologia
 

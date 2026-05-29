@@ -31,6 +31,8 @@ bash scripts/security_headers_check.sh
 - Servidor rejeita payloads com PII evidente (HTTP 422)
 - Meta de retenção para saída da análise por IA: zero retenção de prompt/conteúdo
 
+> Checklist auditável recorrente: [LGPD-COMPLIANCE.md](LGPD-COMPLIANCE.md)
+
 ```mermaid
 flowchart LR
   U[Usuario] --> A[Browser anonymiza texto]
