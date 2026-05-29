@@ -1,16 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-  Sitemap NossoDireito.
-  Hoje publicamos apenas a home. As páginas profundas em /direitos/<slug>/
-  podem ser regeneradas por scripts/prerender_direitos.py, mas não fazem
-  parte do deploy atual (ficam em .gitignore). Restaurar o pré-render
-  exige: rodar o script localmente, ligar o passo no deploy.yml e
-  regenerar este sitemap a partir de data/direitos.json.
--->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://nossodireito.fabiotreze.com/</loc>
-    <lastmod>2026-05-28</lastmod>
+    <lastmod>2026-05-29</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
