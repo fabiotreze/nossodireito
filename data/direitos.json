@@ -1610,7 +1610,7 @@
       "cid10": "E34.3 / Q77",
       "cid11": "5B51",
       "criterio": "Baixa estatura acentuada (geralmente abaixo de 1,45m para homens e 1,40m para mulheres).",
-      "detalhes": "Acondroplasia é a causa mais comum. Reconhecido como deficiência física pelo Decreto 3.298/1999."
+      "detalhes": "Acondroplasia é a causa mais comum. Referência histórica no Decreto 3.298/1999; na prática atual, considerar também os critérios da LBI e a avaliação biopsicossocial."
     },
     {
       "tipo": "Deficiência Mental / Psicossocial",
@@ -1637,7 +1637,7 @@
       "tipo": "Ostomizados (colostomia, ileostomia, urostomia)",
       "cid10": "K63.2, Z93",
       "cid11": "DA96, QC60",
-      "criterio": "Reconhecidos como PcD pelo Decreto 3.298/1999 Art. 4º. Elegíveis a isenções tributárias, estacionamento especial, BPC e demais direitos.",
+      "criterio": "Reconhecimento com referência histórica no Decreto 3.298/1999 Art. 4º; na aplicação atual, observar LBI e avaliação biopsicossocial para acesso aos direitos.",
       "detalhes": "Inclui colostomia, ileostomia e urostomia. Pessoas ostomizadas frequentemente desconhecem que têm os mesmos direitos de PcD."
     },
     {
@@ -2288,11 +2288,11 @@
         "A emissão é GRATUITA por lei (Lei 9.265/1996, Art. 1º, VII)",
         "O órgão emissor varia por cidade — ligue para a prefeitura e pergunte",
         "Em alguns estados, pode ser solicitada online (verifique o site da prefeitura)",
-        "A CIPTEA garante prioridade em filas de bancos, supermercados, hospitais e escolas",
+        "A CIPTEA facilita a identificação da pessoa com TEA para exercício do atendimento prioritário conforme legislação aplicável",
         "Se seus direitos forem negados, denuncie pelo Disque 100 (24h, gratuito) ou WhatsApp (61) 99611-0100",
         "Em São Paulo, consulte a Secretaria de Estado dos Direitos da Pessoa com Deficiência para localizar o canal vigente de emissão da CIPTEA — outros estados podem ter portais próprios ou emitir pelo município",
         "Programa Caregiver Skills Training (CST/OMS): treinamento GRATUITO pelo SUS para pais e cuidadores de crianças com TEA — pergunte no CER ou CAPS da sua cidade",
-        "A CIPTEA garante atendimento PRIORITÁRIO em saúde, educação, bancos, mercados e todos os serviços públicos e privados (Lei 13.977/2020 — Lei Romeo Mion)"
+        "Atendimento prioritário é regulado por legislação específica (como Lei 10.048/2000) e normas locais; a CIPTEA atua como instrumento de identificação"
       ],
       "valor": "Gratuito",
       "onde": "Prefeitura do seu município (Secretaria de Assistência Social ou de Saúde)",
@@ -3395,7 +3395,7 @@
         },
         {
           "lei": "Lei 8.112/1990 — Estatuto do Servidor Público Federal",
-          "artigo": "Art. 5º, § 2º (reserva de 5% a 20% de vagas em concursos para PcD)",
+          "artigo": "Art. 5º, § 2º (reserva de vagas em concursos para PcD, conforme regulamentação do edital e normas aplicáveis)",
           "link": "https://www.planalto.gov.br/ccivil_03/leis/l8112cons.htm"
         },
         {
@@ -8562,7 +8562,7 @@
         },
         {
           "lei": "Decreto 3.298/1999 — Política Nacional para Integração da PcD",
-          "artigo": "Art. 17 a 25",
+          "artigo": "Art. 17 a 25 (aplicação em conjunto com a LBI e critérios atuais de avaliação)",
           "link": "https://www.planalto.gov.br/ccivil_03/decreto/d3298.htm"
         }
       ],
@@ -8963,7 +8963,7 @@
         },
         {
           "lei": "Decreto 3.298/1999 — regulamenta a Lei 7.853/1989",
-          "artigo": "Art. 35 e 36 — adaptações no serviço público",
+          "artigo": "Art. 35 e 36 — adaptações no serviço público (leitura conjunta com LBI e normativas vigentes)",
           "link": "https://www.planalto.gov.br/ccivil_03/decreto/d3298.htm"
         }
       ],
@@ -9152,7 +9152,7 @@
         },
         {
           "lei": "Decreto 3.298/1999",
-          "artigo": "Art. 36 — regulamento da cota",
+          "artigo": "Art. 36 — regulamento da cota (interpretação atual deve observar a LBI e jurisprudência vigente)",
           "link": "https://www.planalto.gov.br/ccivil_03/decreto/d3298.htm"
         },
         {

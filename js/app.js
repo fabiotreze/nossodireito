@@ -17,6 +17,7 @@
     const _earlyDireitos = _earlyFetch('data/direitos.json');
     const _earlyMatching = _earlyFetch('data/matching_engine.json');
     const _earlyDicionario = _earlyFetch('data/dicionario_pcd.json');
+    const _earlyLegalReview = _earlyFetch('data/revisao_juridica.json');
     // Geo snapshot (IBGE, 5570 municípios, ~80 KB gzipped). Non-blocking on first paint.
     const _earlyMunicipios = _earlyFetch('data/municipios_br.json');
     function safeJsonParse(str) {
@@ -71,6 +72,8 @@
     let CID_RANGE_MAP = {};
     let KEYWORD_MAP = {};
     let dicionarioData = null;  // dicionario_pcd.json deficiencies for search enrichment
+    let legalReviewMeta = null;
+    let legalReviewByCategory = {};
     const STORAGE_PREFIX = 'nossodireito_';
     const DB_NAME = 'NossoDireitoDB';
     const DB_VERSION = 2;
@@ -955,6 +958,37 @@
         } catch (err) {
             console.warn('Dicionário PcD não carregou — busca por sinônimos limitada:', err.message);
         }
+        // Load optional legal-review sidecar file for human-validation warnings.
+        // Non-fatal by design: app must keep working even without this file.
+        try {
+            const reviewRes = (await _earlyLegalReview) || await resilientFetch('data/revisao_juridica.json');
+            const review = await reviewRes.json();
+            legalReviewMeta = Object.freeze({
+                versao: review.versao || null,
+                ultima_atualizacao: review.ultima_atualizacao || null,
+                issue: review.issue || null,
+            });
+            const byCategory = {};
+            (review.itens || []).forEach((item) => {
+                if (!item || item.status !== 'PENDING_HUMAN_REVIEW') return;
+                const categories = Array.isArray(item.categoria_ids) ? item.categoria_ids : [];
+                const normalized = deepFreeze({
+                    id: item.id || '',
+                    issue: Number.isInteger(item.issue) ? item.issue : null,
+                    issue_url: item.issue_url || '',
+                    titulo: item.titulo || 'Item sob revisão jurídica',
+                    aviso_curto: item.aviso_curto || 'Legislação em verificação jurídica humana.',
+                    nota_sistema: item.nota_sistema || '',
+                });
+                categories.forEach((catId) => {
+                    if (!byCategory[catId]) byCategory[catId] = [];
+                    byCategory[catId].push(normalized);
+                });
+            });
+            legalReviewByCategory = deepFreeze(byCategory);
+        } catch (err) {
+            console.warn('Arquivo de revisão jurídica não carregou — avisos de validação humana podem ficar indisponíveis:', err.message);
+        }
         // Load IBGE municipios snapshot (5570 entries, ~80 KB gzipped).
         // Non-fatal: detectLocation falls back to UF-only detection if absent.
         try {
@@ -1113,6 +1147,47 @@ ${t.descricao ? `<span class="trilha-tab__desc">${escapeHtml(t.descricao)}</span
             card.style.display = show ? '' : 'none';
         });
     }
+
+    function getPendingLegalReviews(catId) {
+        if (!catId || !legalReviewByCategory) return [];
+        return legalReviewByCategory[catId] || [];
+    }
+
+    function renderLegalReviewNotice(cat) {
+        const reviews = getPendingLegalReviews(cat && cat.id);
+        if (!reviews.length) return '';
+        const refs = reviews.map((r) => {
+            if (r.issue_url && isSafeUrl(r.issue_url)) {
+                return `<li><strong>${escapeHtml(r.titulo)}</strong>: ${escapeHtml(r.aviso_curto)} <a href="${escapeHtml(r.issue_url)}" target="_blank" rel="noopener noreferrer">(Issue #${escapeHtml(String(r.issue || ''))})</a></li>`;
+            }
+            return `<li><strong>${escapeHtml(r.titulo)}</strong>: ${escapeHtml(r.aviso_curto)}</li>`;
+        }).join('');
+        return `<aside class="aviso-revisao-juridica" role="note" aria-label="Aviso de revisão jurídica pendente">
+<p><strong>⚖️ Conteúdo com revisão jurídica humana pendente.</strong></p>
+<ul>${refs}</ul>
+<p>Nota do sistema: esta informação é educacional e não substitui orientação profissional.</p>
+</aside>`;
+    }
+
+    function renderSearchLegalReviewBanner(scored) {
+        if (!Array.isArray(scored) || scored.length === 0) return '';
+        const seen = new Set();
+        const flaggedTitles = [];
+        scored.forEach(({ cat }) => {
+            getPendingLegalReviews(cat.id).forEach((review) => {
+                const key = review.id || `${review.titulo}:${review.aviso_curto}`;
+                if (!seen.has(key)) {
+                    seen.add(key);
+                    flaggedTitles.push(review.titulo);
+                }
+            });
+        });
+        if (!flaggedTitles.length) return '';
+        return `<div class="search-suggestion search-review-warning" role="note">
+<p><strong>⚖️ Atenção:</strong> esta busca retornou conteúdo com validação jurídica humana pendente. Confira as fontes oficiais e, se necessário, busque Defensoria/advogado.</p>
+</div>`;
+    }
+
     function showDetalhe(id, skipHistory) {
         const cat = direitosData && direitosData.find((c) => c.id === id);
         if (!cat || !dom.categoriasSection || !dom.detalheSection) return;
@@ -1139,6 +1214,7 @@ ${t.descricao ? `<span class="trilha-tab__desc">${escapeHtml(t.descricao)}</span
                 }
             }
         }
+        html += renderLegalReviewNotice(cat);
         if (cat.requer_consulta_especializada === true) {
             html += `<aside class="aviso-consulta-juridica" role="note" aria-label="Aviso de consulta jurídica recomendada">
 <p><strong>ℹ️ Recomendamos orientação jurídica para este direito.</strong></p>
@@ -1617,7 +1693,7 @@ ${municipalNote}
 ${filterNote}
 <p class="search-hint">💡 Clique em qualquer direito para ver detalhes, documentos e passo a passo.</p>
 </div>` +
-            renderSearchResults(cats);
+            renderSearchResults(cats, { showReviewBanner: Boolean(filteredCats) });
         bindSearchResultEvents();
     }
     // Stopwords PT-BR: common words that add no search value
@@ -1669,7 +1745,7 @@ ${filterNote}
                 if (rescored.length > 0) {
                     dom.searchResults.innerHTML =
                         `<div class="search-suggestion"><p>Mostrando resultados para "<strong>${escapeHtml(correctedQuery)}</strong>" <span class="search-original">(você pesquisou "${escapeHtml(query)}")</span></p></div>` +
-                        renderSearchResults(rescored);
+                        renderSearchResults(rescored, { showReviewBanner: true });
                     bindSearchResultEvents();
                     return;
                 }
@@ -1689,7 +1765,7 @@ ${filterNote}
 </div>`;
             return;
         }
-        dom.searchResults.innerHTML = renderSearchResults(scored);
+        dom.searchResults.innerHTML = renderSearchResults(scored, { showReviewBanner: true });
         bindSearchResultEvents();
     }
     function scoreSearch(terms, rawTerms) {
@@ -1751,8 +1827,10 @@ ${filterNote}
             .filter((r) => r.score > 0 && r.termsHit >= minTermsHit)
             .sort((a, b) => b.score - a.score);
     }
-    function renderSearchResults(scored) {
-        return scored
+    function renderSearchResults(scored, options = {}) {
+        const showReviewBanner = options.showReviewBanner !== false;
+        const reviewBanner = showReviewBanner ? renderSearchLegalReviewBanner(scored) : '';
+        const resultsHtml = scored
             .map(
                 ({ cat }) => `
 <div class="search-result-item" data-id="${cat.id}" tabindex="0" role="button">
@@ -1760,10 +1838,12 @@ ${filterNote}
 <div class="search-result-info">
 <h3>${escapeHtml(cat.titulo)}</h3>
 <p>${escapeHtml(cat.resumo)}</p>
+${getPendingLegalReviews(cat.id).length ? '<span class="search-result-badge search-result-badge--review">⚖️ Revisão jurídica</span>' : ''}
 </div>
 </div>`
             )
             .join('');
+        return reviewBanner + resultsHtml;
     }
     function bindSearchResultEvents() {
         dom.searchResults.querySelectorAll('.search-result-item').forEach((item) => {
@@ -3646,17 +3726,28 @@ ${renderWeekPlan(priorityOrder, titleById)}
         const btn = document.getElementById('aiConsentRevokeInline');
         const status = document.getElementById('aiConsentStatus');
         if (!btn || !status) return;
+        const animateStatusBadge = () => {
+            status.classList.remove('ai-consent-status-badge--updated');
+            // Restart animation class reliably on repeated state updates.
+            void status.offsetWidth;
+            status.classList.add('ai-consent-status-badge--updated');
+            setTimeout(() => status.classList.remove('ai-consent-status-badge--updated'), 260);
+        };
         const render = () => {
             const granted = getStoredAIConsent();
+            status.classList.remove('ai-consent-status-badge--active', 'ai-consent-status-badge--inactive');
             if (granted) {
-                status.textContent = 'ativo (lembrado por 30 dias)';
-                status.style.color = '#0f5132';
+                status.textContent = 'Ativo por ate 30 dias';
+                status.classList.add('ai-consent-status-badge--active');
+                btn.disabled = false;
                 btn.textContent = '🔓 Revogar consentimento de IA';
             } else {
-                status.textContent = 'não armazenado (será solicitado ao analisar laudo)';
-                status.style.color = '#664d03';
+                status.textContent = 'Nao armazenado';
+                status.classList.add('ai-consent-status-badge--inactive');
+                btn.disabled = true;
                 btn.textContent = '🔓 Revogar consentimento de IA';
             }
+            animateStatusBadge();
         };
         btn.addEventListener('click', () => {
             const granted = getStoredAIConsent();
@@ -3685,15 +3776,27 @@ ${renderWeekPlan(priorityOrder, titleById)}
         const btn = document.getElementById('aiConsentRevokeQuick');
         const status = document.getElementById('aiConsentQuickStatus');
         if (!btn || !status) return;
+        const animateStatusBadge = () => {
+            status.classList.remove('ai-consent-status-badge--updated');
+            void status.offsetWidth;
+            status.classList.add('ai-consent-status-badge--updated');
+            setTimeout(() => status.classList.remove('ai-consent-status-badge--updated'), 260);
+        };
         const render = () => {
             const granted = getStoredAIConsent();
+            status.classList.remove('ai-consent-status-badge--active', 'ai-consent-status-badge--inactive');
             if (granted) {
-                status.textContent = 'Consentimento atualmente ativo.';
+                status.textContent = 'Consentimento ativo';
+                status.classList.add('ai-consent-status-badge--active');
+                btn.disabled = false;
                 btn.textContent = '🔓 Revogar consentimento salvo';
             } else {
-                status.textContent = 'Nenhum consentimento salvo no momento.';
-                btn.textContent = '🧠 Consentimento será solicitado ao usar IA';
+                status.textContent = 'Nenhum consentimento salvo';
+                status.classList.add('ai-consent-status-badge--inactive');
+                btn.disabled = true;
+                btn.textContent = '🔓 Revogar consentimento salvo';
             }
+            animateStatusBadge();
         };
         btn.addEventListener('click', () => {
             const granted = getStoredAIConsent();
