@@ -504,90 +504,9 @@
         display: none;
       }
 
-      .top-legal-banner {
-        position: sticky;
-        top: 64px;
-        z-index: 950;
-        background: linear-gradient(90deg, #fff4cf 0%, #ffefbf 100%);
-        border-bottom: 1px solid #f1c84a;
-        box-shadow: 0 4px 10px rgba(30, 58, 138, 0.1);
-      }
-
-      .top-legal-banner .container {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 12px;
-        padding-top: 8px;
-        padding-bottom: 8px;
-      }
-
-      .top-legal-banner__text {
-        color: #5f4500;
-        font-size: 0.92rem;
-        line-height: 1.35;
-      }
-
-      .top-legal-banner__text strong {
-        color: #3f2f00;
-      }
-
-      .top-legal-banner__link {
-        flex-shrink: 0;
-        color: #6d4500;
-        font-weight: 700;
-        text-decoration: underline;
-      }
-
-      .top-legal-banner__link:hover,
-      .top-legal-banner__link:focus-visible {
-        color: #4f3100;
-      }
-
-      @media (prefers-color-scheme: dark) {
-        .top-legal-banner {
-          background: linear-gradient(90deg, rgba(226, 185, 71, 0.26) 0%, rgba(226, 185, 71, 0.18) 100%);
-          border-bottom-color: #e2b947;
-          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
-        }
-
-        .top-legal-banner__text {
-          color: #f7e2a8;
-        }
-
-        .top-legal-banner__text strong {
-          color: #ffe9b5;
-        }
-
-        .top-legal-banner__link {
-          color: #ffe19a;
-        }
-
-        .top-legal-banner__link:hover,
-        .top-legal-banner__link:focus-visible {
-          color: #fff0c7;
-        }
-      }
-
       @media (max-width: 768px) {
         html {
           font-size: 15px;
-        }
-
-        .top-legal-banner {
-          top: 64px;
-        }
-
-        .top-legal-banner .container {
-          flex-direction: column;
-          align-items: flex-start;
-          gap: 4px;
-          padding-top: 7px;
-          padding-bottom: 7px;
-        }
-
-        .top-legal-banner__text {
-          font-size: 0.86rem;
         }
 
         .hero {
@@ -1574,16 +1493,6 @@
         </div>
       </nav>
     </header>
-
-    <div class="top-legal-banner" role="note" aria-label="Aviso jurídico importante">
-      <div class="container">
-        <p class="top-legal-banner__text">
-          <strong>⚠️ Importante:</strong> o conteúdo é educativo e não substitui orientação profissional.
-          Direitos podem exigir revisão humana conforme o caso.
-        </p>
-        <a class="top-legal-banner__link" href="#disclaimerInline">Ler aviso completo</a>
-      </div>
-    </div>
 
     <noscript>
       <div
