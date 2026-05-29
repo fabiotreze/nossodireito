@@ -98,8 +98,8 @@
 
       html {
         scroll-behavior: smooth;
-        /* Compensa apenas a navbar sticky (64px) — banner legal não é mais sticky. */
-        scroll-padding-top: 80px;
+        /* Compensa navbar (64px) + faixa legal sticky */
+        scroll-padding-top: 132px;
         font-size: 16px;
       }
 
@@ -108,18 +108,18 @@
       #disclaimerInline,
       [id^="benefit-"],
       section[id] {
-        scroll-margin-top: 80px;
+        scroll-margin-top: 132px;
       }
 
       @media (max-width: 600px) {
         html {
-          scroll-padding-top: 96px;
+          scroll-padding-top: 148px;
         }
         :target,
         #disclaimerInline,
         [id^="benefit-"],
         section[id] {
-          scroll-margin-top: 96px;
+          scroll-margin-top: 148px;
         }
       }
 
@@ -279,6 +279,26 @@
         .hero-highlight {
           color: #fde68a;
         }
+
+        .hero-legal-highlight {
+          background: rgba(226, 185, 71, 0.2);
+          color: #fbe8b2;
+          border-color: #e2b947;
+          box-shadow: 0 8px 22px rgba(0, 0, 0, 0.35);
+        }
+
+        .hero-legal-highlight strong {
+          color: #ffe8ad;
+        }
+
+        .hero-legal-highlight a {
+          color: #ffe09a;
+        }
+
+        .hero-legal-highlight a:hover,
+        .hero-legal-highlight a:focus-visible {
+          color: #fff0c2;
+        }
       }
 
       .hero-tagline {
@@ -303,6 +323,37 @@
         flex-wrap: wrap;
         margin-bottom: 0;
         min-height: 52px;
+      }
+
+      .hero-legal-highlight {
+        margin-top: 18px;
+        padding: 14px 16px;
+        border-radius: 12px;
+        background: rgba(255, 248, 225, 0.96);
+        color: #5f4500;
+        border: 2px solid #f7c948;
+        box-shadow: 0 8px 22px rgba(30, 58, 138, 0.2);
+      }
+
+      .hero-legal-highlight p {
+        margin: 0;
+        font-size: 0.96rem;
+        line-height: 1.45;
+      }
+
+      .hero-legal-highlight strong {
+        color: #3d2d00;
+      }
+
+      .hero-legal-highlight a {
+        color: #7a4b00;
+        font-weight: 700;
+        text-decoration: underline;
+      }
+
+      .hero-legal-highlight a:hover,
+      .hero-legal-highlight a:focus-visible {
+        color: #5b3900;
       }
 
       .hero-stats {
@@ -453,9 +504,90 @@
         display: none;
       }
 
+      .top-legal-banner {
+        position: sticky;
+        top: 64px;
+        z-index: 950;
+        background: linear-gradient(90deg, #fff4cf 0%, #ffefbf 100%);
+        border-bottom: 1px solid #f1c84a;
+        box-shadow: 0 4px 10px rgba(30, 58, 138, 0.1);
+      }
+
+      .top-legal-banner .container {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding-top: 8px;
+        padding-bottom: 8px;
+      }
+
+      .top-legal-banner__text {
+        color: #5f4500;
+        font-size: 0.92rem;
+        line-height: 1.35;
+      }
+
+      .top-legal-banner__text strong {
+        color: #3f2f00;
+      }
+
+      .top-legal-banner__link {
+        flex-shrink: 0;
+        color: #6d4500;
+        font-weight: 700;
+        text-decoration: underline;
+      }
+
+      .top-legal-banner__link:hover,
+      .top-legal-banner__link:focus-visible {
+        color: #4f3100;
+      }
+
+      @media (prefers-color-scheme: dark) {
+        .top-legal-banner {
+          background: linear-gradient(90deg, rgba(226, 185, 71, 0.26) 0%, rgba(226, 185, 71, 0.18) 100%);
+          border-bottom-color: #e2b947;
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+        }
+
+        .top-legal-banner__text {
+          color: #f7e2a8;
+        }
+
+        .top-legal-banner__text strong {
+          color: #ffe9b5;
+        }
+
+        .top-legal-banner__link {
+          color: #ffe19a;
+        }
+
+        .top-legal-banner__link:hover,
+        .top-legal-banner__link:focus-visible {
+          color: #fff0c7;
+        }
+      }
+
       @media (max-width: 768px) {
         html {
           font-size: 15px;
+        }
+
+        .top-legal-banner {
+          top: 64px;
+        }
+
+        .top-legal-banner .container {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 4px;
+          padding-top: 7px;
+          padding-bottom: 7px;
+        }
+
+        .top-legal-banner__text {
+          font-size: 0.86rem;
         }
 
         .hero {
@@ -475,6 +607,10 @@
 
         .hero-actions {
           justify-content: center;
+        }
+
+        .hero-legal-highlight {
+          text-align: left;
         }
 
         .hero-stats {
@@ -1439,6 +1575,16 @@
       </nav>
     </header>
 
+    <div class="top-legal-banner" role="note" aria-label="Aviso jurídico importante">
+      <div class="container">
+        <p class="top-legal-banner__text">
+          <strong>⚠️ Importante:</strong> o conteúdo é educativo e não substitui orientação profissional.
+          Direitos podem exigir revisão humana conforme o caso.
+        </p>
+        <a class="top-legal-banner__link" href="#disclaimerInline">Ler aviso completo</a>
+      </div>
+    </div>
+
     <noscript>
       <div
         style="
@@ -1660,6 +1806,14 @@
               <a href="#busca" class="btn btn-lg btn-white"> 🔍 Buscar meus direitos </a
               ><a href="#categorias" class="btn btn-lg btn-outline-white"> 📋 Ver por área </a
               ><a href="#documentos" class="btn btn-lg btn-outline-white" id="heroDocsBtn"> 📄 Meus documentos </a>
+            </div>
+            <div class="hero-legal-highlight" role="note" aria-label="Aviso importante">
+              <p>
+                <strong>⚠️ Aviso importante:</strong> este conteúdo é educativo e de apoio. Cada caso exige análise
+                individual e pode precisar de revisão humana. Em dúvida, busque
+                <strong>Defensoria Pública</strong>, <strong>CRAS</strong> ou orientação profissional.
+                <a href="#disclaimerInline">Ler aviso completo</a>.
+              </p>
             </div>
           </div>
         </div>
@@ -1912,18 +2066,26 @@
               <strong>Azure OpenAI (gpt-4o-mini)</strong> em região Brasil. Requer seu consentimento explícito (LGPD Art. 7º I).
             </p>
             <div id="aiConsentQuickActions" class="ai-consent-quick-actions" role="region" aria-label="Gerenciamento rápido de consentimento de IA">
+              <div class="ai-consent-quick-header">
+                <p class="ai-consent-quick-title">
+                  ⚖️ Consentimento de IA (LGPD Art. 8º §5)
+                </p>
+                <span id="aiConsentQuickStatus" class="ai-consent-status-badge" aria-live="polite">Verificando status...</span>
+              </div>
               <p class="ai-consent-quick-text">
-                ⚖️ LGPD Art. 8º §5: revogar deve ser tão fácil quanto aceitar.
-                <span id="aiConsentQuickStatus" aria-live="polite">Verificando status…</span>
+                Você pode revogar a qualquer momento. Se não houver consentimento salvo,
+                a solicitação aparecerá antes da próxima análise com IA.
               </p>
-              <button
-                id="aiConsentRevokeQuick"
-                class="btn btn-secondary btn-consent-quick"
-                type="button"
-                aria-describedby="aiConsentQuickStatus"
-              >
-                🔓 Revogar consentimento salvo
-              </button>
+              <div class="ai-consent-quick-actions-row">
+                <button
+                  id="aiConsentRevokeQuick"
+                  class="btn btn-consent-revoke btn-consent-quick"
+                  type="button"
+                  aria-describedby="aiConsentQuickStatus"
+                >
+                  🔓 Revogar consentimento salvo
+                </button>
+              </div>
             </div>
             <div class="upload-privacy">
               <p>
@@ -2213,23 +2375,21 @@
                   contatar o Encarregado para qualquer dúvida sobre proteção de dados.
                 </p>
               </details>
-              <div
-                id="aiConsentManager"
-                style="margin-top: 1rem; padding: 0.75rem; background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 4px"
-              >
-                <p style="margin: 0 0 0.5rem 0; font-size: 0.9rem">
-                  <strong>🤖 Consentimento de análise por IA (opcional):</strong>
-                  <span id="aiConsentStatus" aria-live="polite">verificando…</span>
-                </p>
-                <p style="margin: 0 0 0.5rem 0; font-size: 0.85rem; color: #555">
-                  Caso tenha marcado "lembrar minha escolha por 30 dias", você pode revogar a qualquer momento
-                  (LGPD Art. 8º §5). Próxima análise solicitará novo consentimento.
+              <div id="aiConsentManager" class="ai-consent-manager">
+                <div class="ai-consent-manager-head">
+                  <p class="ai-consent-manager-title">
+                    🤖 Consentimento de análise por IA (opcional)
+                  </p>
+                  <span id="aiConsentStatus" class="ai-consent-status-badge" aria-live="polite">Verificando status...</span>
+                </div>
+                <p class="ai-consent-manager-text">
+                  Se você marcou "lembrar por 30 dias", pode revogar agora.
+                  A próxima análise com IA pedirá novo consentimento.
                 </p>
                 <button
                   id="aiConsentRevokeInline"
                   type="button"
-                  class="btn btn-secondary"
-                  style="font-size: 0.85rem; padding: 0.4rem 0.8rem"
+                  class="btn btn-consent-revoke"
                   aria-describedby="aiConsentStatus"
                 >
                   🔓 Revogar consentimento de IA
@@ -2460,12 +2620,12 @@
       </div>
     </aside>
     <!-- LGPD Consent Modal — análise com IA (opt-in) -->
-    <div id="aiConsentModal" class="modal-overlay" role="dialog" aria-modal="true"
+    <div id="aiConsentModal" class="modal-overlay ai-consent-modal" role="dialog" aria-modal="true"
          aria-labelledby="aiConsentTitle" aria-describedby="aiConsentBody"
-         style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:9999;align-items:center;justify-content:center;padding:20px;">
-      <div class="modal-content" style="background:#fff;max-width:560px;width:100%;border-radius:8px;padding:24px;box-shadow:0 10px 40px rgba(0,0,0,0.3);max-height:90vh;overflow-y:auto;">
-        <h2 id="aiConsentTitle" style="margin-top:0;">🧠 Análise com Inteligência Artificial</h2>
-        <div id="aiConsentBody" style="font-size:0.95rem;line-height:1.5;">
+         style="display:none;">
+      <div class="modal-content ai-consent-modal-content">
+        <h2 id="aiConsentTitle" class="ai-consent-modal-title">🧠 Análise com Inteligência Artificial</h2>
+        <div id="aiConsentBody" class="ai-consent-modal-body">
           <p><strong>O que será enviado:</strong></p>
           <ul style="margin:8px 0 16px 20px;">
             <li>✅ Texto extraído do PDF, <strong>já anonimizado no seu navegador</strong></li>
@@ -2486,17 +2646,17 @@
             <li>📊 Categorias de direitos sugeridas com justificativa</li>
             <li>📝 Resumo orientativo (não substitui avaliação profissional)</li>
           </ul>
-          <p style="background:#fff3cd;padding:10px;border-left:3px solid #ffc107;border-radius:4px;font-size:0.85rem;">
+          <p class="ai-consent-modal-note">
             ⚖️ Base legal: <strong>consentimento</strong> (LGPD Art. 7º I). Você pode revogar a qualquer momento
             limpando os dados do site. Esta análise é orientação preliminar — <strong>não substitui</strong>
             avaliação profissional.
           </p>
-          <label style="display:flex;align-items:center;gap:8px;margin:12px 0;cursor:pointer;">
+          <label class="ai-consent-remember">
             <input type="checkbox" id="aiConsentRemember" />
-            <span style="font-size:0.85rem;">Lembrar minha escolha por 30 dias</span>
+            <span>Lembrar minha escolha por 30 dias</span>
           </label>
-          <details style="margin-top:12px;font-size:0.85rem;">
-            <summary style="cursor:pointer;color:#0066cc;">⚖️ Seus direitos como titular (LGPD Art. 18) e contato do Encarregado</summary>
+          <details class="ai-consent-modal-details">
+            <summary>⚖️ Seus direitos como titular (LGPD Art. 18) e contato do Encarregado</summary>
             <ul style="margin:8px 0 0 20px;line-height:1.4;">
               <li><strong>Confirmação</strong> da existência de tratamento (Art. 18 I)</li>
               <li><strong>Acesso</strong> aos seus dados (Art. 18 II)</li>
@@ -2513,8 +2673,8 @@
             <p><strong>Retenção no servidor:</strong> 0 segundos (header <code>X-Data-Retention: 0</code>)</p>
           </details>
         </div>
-        <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:16px;flex-wrap:wrap;">
-          <button id="aiConsentRevoke" type="button" class="btn btn-secondary" title="Revoga consentimento previamente armazenado" style="margin-right:auto;">🔓 Revogar consentimento</button>
+        <div class="ai-consent-modal-actions">
+          <button id="aiConsentRevoke" type="button" class="btn btn-consent-revoke" title="Revoga consentimento previamente armazenado">🔓 Revogar consentimento</button>
           <button id="aiConsentCancel" type="button" class="btn btn-secondary">Cancelar</button>
           <button id="aiConsentAccept" type="button" class="btn btn-primary">✅ Concordo e enviar</button>
         </div>
