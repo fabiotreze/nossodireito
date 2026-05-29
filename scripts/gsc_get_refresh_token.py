@@ -21,31 +21,35 @@ Uso:
   python3 scripts/gsc_get_refresh_token.py
 
 Saída:
-  Salva os 3 valores em .gsc_secrets.local.env (permissão 600):
-    GSC_OAUTH_CLIENT_ID
-    GSC_OAUTH_CLIENT_SECRET
-    GSC_OAUTH_REFRESH_TOKEN
+  Define diretamente os secrets/variables no GitHub (sem exibir segredos):
+    secret GSC_OAUTH_CLIENT_ID
+    secret GSC_OAUTH_CLIENT_SECRET
+    secret GSC_OAUTH_REFRESH_TOKEN
+    secret GSC_PROPERTY_URL
 """
 
 from __future__ import annotations
 
 import json
+import subprocess
 import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 CLIENT_SECRETS_FILE = ROOT / "gsc_oauth_client.json"
-OUTPUT_ENV_FILE = ROOT / ".gsc_secrets.local.env"
 SCOPES = ["https://www.googleapis.com/auth/webmasters.readonly"]
 REDIRECT_URI = "urn:ietf:wg:oauth:2.0:oob"
 
 
-def mask(value: str, keep: int = 4) -> str:
-  if not value:
-    return "(vazio)"
-  if len(value) <= keep:
-    return "*" * len(value)
-  return "*" * (len(value) - keep) + value[-keep:]
+def gh_set_secret(name: str, value: str) -> None:
+    subprocess.run(
+        ["gh", "secret", "set", name],
+        input=value,
+        text=True,
+        check=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+    )
 
 
 def main() -> int:
@@ -67,25 +71,30 @@ def main() -> int:
     flow = InstalledAppFlow.from_client_secrets_file(str(CLIENT_SECRETS_FILE), scopes=SCOPES)
     creds = flow.run_local_server(port=0)
 
-    output = (
-      f"GSC_OAUTH_CLIENT_ID={client_id}\n"
-      f"GSC_OAUTH_CLIENT_SECRET={client_secret}\n"
-      f"GSC_OAUTH_REFRESH_TOKEN={creds.refresh_token}\n"
-      "GSC_PROPERTY_URL=https://nossodireito.fabiotreze.com/\n"
-    )
-    OUTPUT_ENV_FILE.write_text(output, encoding="utf-8")
-    OUTPUT_ENV_FILE.chmod(0o600)
+    refresh_token = creds.refresh_token or ""
+    if not client_id or not client_secret or not refresh_token:
+      print("FAIL: OAuth não retornou credenciais completas", file=sys.stderr)
+      return 1
 
-    print("\n" + "=" * 60)
-    print(f"Arquivo local gerado: {OUTPUT_ENV_FILE}")
-    print("Permissão aplicada: 600")
-    print("Copie os valores para os GitHub Secrets/Variables usando esse arquivo.")
-    print("\nResumo (mascarado):")
-    print(f"- GSC_OAUTH_CLIENT_ID: {mask(client_id)}")
-    print(f"- GSC_OAUTH_CLIENT_SECRET: {mask(client_secret)}")
-    print(f"- GSC_OAUTH_REFRESH_TOKEN: {mask(creds.refresh_token or '')}")
-    print("- GSC_PROPERTY_URL: https://nossodireito.fabiotreze.com/")
-    print("=" * 60)
+    try:
+      gh_set_secret("GSC_OAUTH_CLIENT_ID", client_id)
+      gh_set_secret("GSC_OAUTH_CLIENT_SECRET", client_secret)
+      gh_set_secret("GSC_OAUTH_REFRESH_TOKEN", refresh_token)
+      gh_set_secret("GSC_PROPERTY_URL", "https://nossodireito.fabiotreze.com/")
+    except FileNotFoundError:
+      print("FAIL: GitHub CLI (gh) não encontrado no PATH", file=sys.stderr)
+      return 1
+    except subprocess.CalledProcessError:
+      print("FAIL: não foi possível definir os secrets no GitHub", file=sys.stderr)
+      print("Confirme autenticação com: gh auth status", file=sys.stderr)
+      return 1
+
+    print("\nSecrets atualizados com sucesso no repositório:")
+    print("- GSC_OAUTH_CLIENT_ID")
+    print("- GSC_OAUTH_CLIENT_SECRET")
+    print("- GSC_OAUTH_REFRESH_TOKEN")
+    print("- GSC_PROPERTY_URL")
+    print("Próximo passo: definir variável SEO_PRERENDER_MODE=prerender.")
 
     return 0
 

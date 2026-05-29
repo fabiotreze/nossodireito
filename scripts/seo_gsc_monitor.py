@@ -195,10 +195,7 @@ def main() -> int:
     )
 
     if report["alert"]:
-        print(
-            f"ALERT: queda detectada (clicks {clicks_delta:.2f}%, impressions {impr_delta:.2f}%)",
-            file=sys.stderr,
-        )
+        print("ALERT: queda detectada", file=sys.stderr)
         return 3
 
     return 0
