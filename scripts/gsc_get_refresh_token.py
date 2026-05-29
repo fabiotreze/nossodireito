@@ -21,7 +21,7 @@ Uso:
   python3 scripts/gsc_get_refresh_token.py
 
 Saída:
-  Imprime os 3 valores para salvar nos GitHub Secrets:
+  Salva os 3 valores em .gsc_secrets.local.env (permissão 600):
     GSC_OAUTH_CLIENT_ID
     GSC_OAUTH_CLIENT_SECRET
     GSC_OAUTH_REFRESH_TOKEN
@@ -35,8 +35,17 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 CLIENT_SECRETS_FILE = ROOT / "gsc_oauth_client.json"
+OUTPUT_ENV_FILE = ROOT / ".gsc_secrets.local.env"
 SCOPES = ["https://www.googleapis.com/auth/webmasters.readonly"]
 REDIRECT_URI = "urn:ietf:wg:oauth:2.0:oob"
+
+
+def mask(value: str, keep: int = 4) -> str:
+  if not value:
+    return "(vazio)"
+  if len(value) <= keep:
+    return "*" * len(value)
+  return "*" * (len(value) - keep) + value[-keep:]
 
 
 def main() -> int:
@@ -58,14 +67,24 @@ def main() -> int:
     flow = InstalledAppFlow.from_client_secrets_file(str(CLIENT_SECRETS_FILE), scopes=SCOPES)
     creds = flow.run_local_server(port=0)
 
+    output = (
+      f"GSC_OAUTH_CLIENT_ID={client_id}\n"
+      f"GSC_OAUTH_CLIENT_SECRET={client_secret}\n"
+      f"GSC_OAUTH_REFRESH_TOKEN={creds.refresh_token}\n"
+      "GSC_PROPERTY_URL=https://nossodireito.fabiotreze.com/\n"
+    )
+    OUTPUT_ENV_FILE.write_text(output, encoding="utf-8")
+    OUTPUT_ENV_FILE.chmod(0o600)
+
     print("\n" + "=" * 60)
-    print("Salve estes 3 valores nos GitHub Secrets do repositório:")
-    print("=" * 60)
-    print(f"\nGSC_OAUTH_CLIENT_ID\n  {client_id}")
-    print(f"\nGSC_OAUTH_CLIENT_SECRET\n  {client_secret}")
-    print(f"\nGSC_OAUTH_REFRESH_TOKEN\n  {creds.refresh_token}")
-    print("\nE configure também:")
-    print("GSC_PROPERTY_URL\n  https://nossodireito.fabiotreze.com/")
+    print(f"Arquivo local gerado: {OUTPUT_ENV_FILE}")
+    print("Permissão aplicada: 600")
+    print("Copie os valores para os GitHub Secrets/Variables usando esse arquivo.")
+    print("\nResumo (mascarado):")
+    print(f"- GSC_OAUTH_CLIENT_ID: {mask(client_id)}")
+    print(f"- GSC_OAUTH_CLIENT_SECRET: {mask(client_secret)}")
+    print(f"- GSC_OAUTH_REFRESH_TOKEN: {mask(creds.refresh_token or '')}")
+    print("- GSC_PROPERTY_URL: https://nossodireito.fabiotreze.com/")
     print("=" * 60)
 
     return 0

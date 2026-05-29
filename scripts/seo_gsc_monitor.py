@@ -132,8 +132,8 @@ def main() -> int:
 
     try:
         service, auth_mode = get_service()
-    except Exception as exc:
-        print(f"FAIL: erro ao autenticar: {exc}", file=sys.stderr)
+    except Exception:
+        print("FAIL: erro ao autenticar no GSC", file=sys.stderr)
         return 1
 
     if service is None:
@@ -166,8 +166,8 @@ def main() -> int:
             prev_end.isoformat(),
             args.path_prefix,
         )
-    except Exception as exc:
-        print(f"FAIL: erro consultando GSC: {exc}", file=sys.stderr)
+    except Exception:
+        print("FAIL: erro consultando GSC", file=sys.stderr)
         return 1
 
     clicks_delta = pct_delta(cur_clicks, prev_clicks)
@@ -189,7 +189,10 @@ def main() -> int:
     with open(args.json_out, "w", encoding="utf-8") as fh:
         json.dump(report, fh, ensure_ascii=False, indent=2)
 
-    print(json.dumps(report, ensure_ascii=False))
+    print(
+        "OK: relatório gerado "
+        f"(auth={auth_mode}, clicks_delta={clicks_delta:.2f}%, impressions_delta={impr_delta:.2f}%)"
+    )
 
     if report["alert"]:
         print(
