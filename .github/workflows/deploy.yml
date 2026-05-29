@@ -48,6 +48,8 @@ jobs:
     needs: quality-gate
     runs-on: ubuntu-latest
     name: Deploy to App Service
+    env:
+      SEO_PRERENDER_MODE: ${{ vars.SEO_PRERENDER_MODE || 'home-only' }}
     steps:
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.0
@@ -56,6 +58,11 @@ jobs:
         uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
         with:
           node-version: "22"
+
+      - name: Setup Python
+        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+        with:
+          python-version: "3.11"
 
       - name: Azure Login
         uses: azure/login@532459ea530d8321f2fb9bb10d1e0bcf23869a43 # v3.0.0
@@ -68,11 +75,23 @@ jobs:
               "tenantId": "${{ secrets.ARM_TENANT_ID }}"
             }
 
-      - name: Atualizar sitemap.xml lastmod (SEO)
+      - name: Preparar sitemap.xml conforme modo SEO
         run: |
-          TODAY=$(date -u +%Y-%m-%d)
-          sed -i "s|<lastmod>[0-9]\{4\}-[0-9]\{2\}-[0-9]\{2\}</lastmod>|<lastmod>${TODAY}</lastmod>|" sitemap.xml
-          echo "✅ sitemap.xml lastmod → ${TODAY}"
+          echo "🔎 SEO_PRERENDER_MODE=${SEO_PRERENDER_MODE}"
+          case "${SEO_PRERENDER_MODE}" in
+            home-only)
+              TODAY=$(date -u +%Y-%m-%d)
+              sed -i "s|<lastmod>[0-9]\{4\}-[0-9]\{2\}-[0-9]\{2\}</lastmod>|<lastmod>${TODAY}</lastmod>|" sitemap.xml
+              echo "✅ sitemap.xml lastmod (home-only) → ${TODAY}"
+              ;;
+            prerender)
+              echo "ℹ️ Modo prerender: sitemap será regenerado no stage por scripts/prerender_direitos.py"
+              ;;
+            *)
+              echo "::error::SEO_PRERENDER_MODE inválido: ${SEO_PRERENDER_MODE}. Use home-only ou prerender."
+              exit 1
+              ;;
+          esac
 
       - name: Minificar HTML, JS e CSS
         run: |
@@ -111,6 +130,28 @@ jobs:
           rm -rf /tmp/site_stage && mkdir -p /tmp/site_stage
           git archive --worktree-attributes --format=tar HEAD | tar -x -C /tmp/site_stage
           cp -r node_modules /tmp/site_stage/
+
+          # SEO mode validation/generation roda no workspace (scripts/ pode estar
+          # export-ignore no archive) e copia apenas os artefatos finais ao stage.
+          case "${SEO_PRERENDER_MODE}" in
+            home-only)
+              python3 scripts/prerender_direitos.py --check --mode home-only
+              cp sitemap.xml /tmp/site_stage/sitemap.xml
+              echo "✅ SEO home-only validado e sitemap sincronizado no stage"
+              ;;
+            prerender)
+              python3 scripts/prerender_direitos.py
+              python3 scripts/prerender_direitos.py --check --mode prerender
+              rm -rf /tmp/site_stage/direitos
+              cp -R direitos /tmp/site_stage/direitos
+              cp sitemap.xml /tmp/site_stage/sitemap.xml
+              echo "✅ SEO prerender gerado, validado e copiado para o stage"
+              ;;
+            *)
+              echo "::error::SEO_PRERENDER_MODE inválido: ${SEO_PRERENDER_MODE}."
+              exit 1
+              ;;
+          esac
 
           # node_modules artifacts não necessários
           rm -rf /tmp/site_stage/node_modules/.package-lock.json \

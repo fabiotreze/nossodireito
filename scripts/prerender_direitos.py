@@ -18,13 +18,15 @@ clean-URL resolution (sem necessidade de .htaccess/Nginx rewrites).
 
 Uso:
     python3 scripts/prerender_direitos.py
-    python3 scripts/prerender_direitos.py --check    # somente valida, não escreve
+    python3 scripts/prerender_direitos.py --check --mode home-only
+    python3 scripts/prerender_direitos.py --check --mode prerender
 """
 from __future__ import annotations
 
 import argparse
 import html
 import json
+import re
 import sys
 from datetime import date
 from pathlib import Path
@@ -418,6 +420,51 @@ def render_sitemap(slugs: list[str], lastmod: str) -> str:
     )
 
 
+def check_home_only_mode() -> int:
+    if not SITEMAP_FILE.exists():
+        print("FAIL: sitemap.xml ausente", file=sys.stderr)
+        return 1
+
+    sitemap = SITEMAP_FILE.read_text(encoding="utf-8")
+    locs = re.findall(r"<loc>(.*?)</loc>", sitemap)
+    if f"{BASE_URL}/" not in locs:
+        print("FAIL: sitemap.xml sem URL da home", file=sys.stderr)
+        return 1
+
+    deep_urls = [u for u in locs if u.startswith(f"{BASE_URL}/direitos/")]
+    if deep_urls:
+        print("FAIL: sitemap.xml contém URLs profundas em modo home-only", file=sys.stderr)
+        return 1
+
+    print("OK: modo home-only válido (sitemap com home apenas)")
+    return 0
+
+
+def check_prerender_mode(slugs: list[str]) -> int:
+    missing = []
+    for slug in slugs:
+        f = OUT_DIR / slug / "index.html"
+        if not f.exists():
+            missing.append(slug)
+
+    if not SITEMAP_FILE.exists():
+        print("FAIL: sitemap.xml ausente", file=sys.stderr)
+        return 1
+
+    sitemap = SITEMAP_FILE.read_text(encoding="utf-8")
+    sitemap_ok = all(f"/direitos/{s}/" in sitemap for s in slugs)
+    if missing:
+        print(f"FAIL: páginas faltando ({len(missing)}): {missing}", file=sys.stderr)
+    if not sitemap_ok:
+        print("FAIL: sitemap.xml desatualizado para modo prerender", file=sys.stderr)
+    if missing or not sitemap_ok:
+        print("Rode: python3 scripts/prerender_direitos.py", file=sys.stderr)
+        return 1
+
+    print(f"OK: modo prerender válido ({len(slugs)} páginas + sitemap sincronizados)")
+    return 0
+
+
 # ─────────────────────────── Main ───────────────────────────
 
 
@@ -427,6 +474,15 @@ def main() -> int:
         "--check",
         action="store_true",
         help="Não escreve arquivos; apenas valida que páginas existem e estão sincronizadas.",
+    )
+    p.add_argument(
+        "--mode",
+        choices=["home-only", "prerender"],
+        default="prerender",
+        help=(
+            "Modo de validação quando usado com --check. "
+            "home-only valida sitemap com home apenas; prerender valida páginas profundas + sitemap."
+        ),
     )
     args = p.parse_args()
 
@@ -442,23 +498,9 @@ def main() -> int:
     lastmod = meta["ultima_atualizacao"]
 
     if args.check:
-        missing = []
-        for slug in slugs:
-            f = OUT_DIR / slug / "index.html"
-            if not f.exists():
-                missing.append(slug)
-        sitemap_ok = SITEMAP_FILE.exists() and all(
-            f"/direitos/{s}/" in SITEMAP_FILE.read_text(encoding="utf-8") for s in slugs
-        )
-        if missing:
-            print(f"FAIL: páginas faltando ({len(missing)}): {missing}", file=sys.stderr)
-        if not sitemap_ok:
-            print("FAIL: sitemap.xml desatualizado", file=sys.stderr)
-        if missing or not sitemap_ok:
-            print("Rode: python3 scripts/prerender_direitos.py", file=sys.stderr)
-            return 1
-        print(f"OK: {len(slugs)} páginas + sitemap sincronizados")
-        return 0
+        if args.mode == "home-only":
+            return check_home_only_mode()
+        return check_prerender_mode(slugs)
 
     # Generate
     OUT_DIR.mkdir(exist_ok=True)
