@@ -1,0 +1,200 @@
+name: SEO Pilot Watchdog
+
+on:
+  schedule:
+    - cron: "15 10 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+  issues: write
+
+jobs:
+  watchdog:
+    runs-on: ubuntu-latest
+    env:
+      GSC_PROPERTY_URL: ${{ secrets.GSC_PROPERTY_URL }}
+      # Modo 1 (recomendado): OAuth refresh token do owner da propriedade
+      GSC_OAUTH_CLIENT_ID: ${{ secrets.GSC_OAUTH_CLIENT_ID }}
+      GSC_OAUTH_CLIENT_SECRET: ${{ secrets.GSC_OAUTH_CLIENT_SECRET }}
+      GSC_OAUTH_REFRESH_TOKEN: ${{ secrets.GSC_OAUTH_REFRESH_TOKEN }}
+      # Modo 2 (alternativo): service account com acesso na propriedade
+      GSC_SERVICE_ACCOUNT_JSON: ${{ secrets.GSC_SERVICE_ACCOUNT_JSON }}
+      SEO_DROP_THRESHOLD_PCT: "-20"
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.0
+
+      - name: Evaluate CI/Deploy failures (last 24h)
+        id: incidents
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+        with:
+          script: |
+            const now = Date.now();
+            const sinceMs = now - 24 * 60 * 60 * 1000;
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const workflows = ['quality-gate.yml', 'deploy.yml'];
+
+            let failures = [];
+            for (const wf of workflows) {
+              const runs = await github.paginate(github.rest.actions.listWorkflowRuns, {
+                owner,
+                repo,
+                workflow_id: wf,
+                per_page: 50,
+              });
+              for (const run of runs) {
+                const created = new Date(run.created_at).getTime();
+                if (created < sinceMs) continue;
+                if (run.conclusion === 'failure' || run.conclusion === 'timed_out') {
+                  failures.push({
+                    workflow: wf,
+                    run_number: run.run_number,
+                    conclusion: run.conclusion,
+                    url: run.html_url,
+                    created_at: run.created_at,
+                  });
+                }
+              }
+            }
+
+            core.setOutput('count', String(failures.length));
+            core.setOutput('json', JSON.stringify(failures));
+
+      - name: Setup Python for optional GSC check
+        if: ${{ env.GSC_PROPERTY_URL != '' && (env.GSC_OAUTH_REFRESH_TOKEN != '' || env.GSC_SERVICE_ACCOUNT_JSON != '') }}
+        uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
+        with:
+          python-version: "3.11"
+
+      - name: Install optional GSC dependencies
+        if: ${{ env.GSC_PROPERTY_URL != '' && (env.GSC_OAUTH_REFRESH_TOKEN != '' || env.GSC_SERVICE_ACCOUNT_JSON != '') }}
+        run: |
+          python -m pip install --upgrade pip
+          pip install google-api-python-client google-auth
+
+      - name: Run GSC trend monitor (optional)
+        if: ${{ env.GSC_PROPERTY_URL != '' && (env.GSC_OAUTH_REFRESH_TOKEN != '' || env.GSC_SERVICE_ACCOUNT_JSON != '') }}
+        id: gsc
+        run: |
+          set +e
+          python3 scripts/seo_gsc_monitor.py \
+            --property-url "$GSC_PROPERTY_URL" \
+            --path-prefix "/direitos/" \
+            --drop-threshold-pct "$SEO_DROP_THRESHOLD_PCT" \
+            --json-out gsc_report.json
+          code=$?
+          echo "exit_code=$code" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Mark GSC monitor as not configured
+        if: ${{ env.GSC_PROPERTY_URL == '' || (env.GSC_OAUTH_REFRESH_TOKEN == '' && env.GSC_SERVICE_ACCOUNT_JSON == '') }}
+        id: gsc_missing
+        run: |
+          echo "exit_code=2" >> "$GITHUB_OUTPUT"
+
+      - name: Upload optional GSC report
+        if: ${{ hashFiles('gsc_report.json') != '' }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.0
+        with:
+          name: gsc-report
+          path: gsc_report.json
+          retention-days: 14
+
+      - name: Open/Update watchdog issue when needed
+        if: ${{ steps.incidents.outputs.count != '0' || steps.gsc.outputs.exit_code == '3' || steps.gsc_missing.outputs.exit_code == '2' }}
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+        env:
+          INCIDENTS_JSON: ${{ steps.incidents.outputs.json }}
+          INCIDENTS_COUNT: ${{ steps.incidents.outputs.count }}
+          GSC_CODE: ${{ steps.gsc.outputs.exit_code || steps.gsc_missing.outputs.exit_code }}
+        with:
+          script: |
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const title = '[SEO Pilot] Watchdog Alert';
+            const label = 'seo-pilot-alert';
+
+            // Ensure label exists
+            try {
+              await github.rest.issues.getLabel({ owner, repo, name: label });
+            } catch {
+              await github.rest.issues.createLabel({
+                owner,
+                repo,
+                name: label,
+                color: 'B60205',
+                description: 'Alertas do piloto de SEO (/direitos/*)',
+              });
+            }
+
+            const incidents = JSON.parse(process.env.INCIDENTS_JSON || '[]');
+            const incidentsCount = Number(process.env.INCIDENTS_COUNT || '0');
+            const gscCode = String(process.env.GSC_CODE || '');
+
+            let body = '## Watchdog diário SEO piloto\n\n';
+            body += `- Data UTC: ${new Date().toISOString()}\n`;
+            body += `- Falhas CI/Deploy (24h): ${incidentsCount}\n`;
+            body += `- Status GSC monitor: ${gscCode === '3' ? 'queda detectada' : gscCode === '2' ? 'não configurado' : 'ok'}\n\n`;
+
+            if (incidents.length) {
+              body += '### Falhas detectadas\n';
+              for (const f of incidents) {
+                body += `- ${f.workflow} #${f.run_number} (${f.conclusion}) — ${f.url}\n`;
+              }
+              body += '\n';
+            }
+
+            if (gscCode === '2') {
+              body += '### Ação necessária para alertas automáticos de impressões/cliques\n';
+              body += '- Configurar secret `GSC_PROPERTY_URL`\n';
+              body += '- Opção A (recomendado): configurar `GSC_OAUTH_CLIENT_ID` + `GSC_OAUTH_CLIENT_SECRET` + `GSC_OAUTH_REFRESH_TOKEN`\n';
+              body += '  (execute `python3 scripts/gsc_get_refresh_token.py` localmente para obter os valores)\n';
+              body += '- Opção B: configurar `GSC_SERVICE_ACCOUNT_JSON` (service account adicionado como usuário na propriedade)\n\n';
+            }
+
+            if (gscCode === '3') {
+              body += '### Alerta GSC\n';
+              body += '- Queda >= threshold em `/direitos/*` (ver artefato `gsc-report`).\n\n';
+            }
+
+            const open = await github.paginate(github.rest.issues.listForRepo, {
+              owner,
+              repo,
+              state: 'open',
+              labels: label,
+              per_page: 100,
+            });
+            const existing = open.find(i => i.title === title);
+
+            if (existing) {
+              await github.rest.issues.createComment({
+                owner,
+                repo,
+                issue_number: existing.number,
+                body,
+              });
+            } else {
+              await github.rest.issues.create({
+                owner,
+                repo,
+                title,
+                body,
+                labels: [label],
+              });
+            }
+
+      - name: Summary
+        run: |
+          echo "## SEO Pilot Watchdog" >> "$GITHUB_STEP_SUMMARY"
+          echo "- CI/Deploy failures (24h): ${{ steps.incidents.outputs.count }}" >> "$GITHUB_STEP_SUMMARY"
+          if [ "${{ steps.gsc.outputs.exit_code || steps.gsc_missing.outputs.exit_code }}" = "2" ]; then
+            echo "- GSC monitor: not configured (missing secrets)" >> "$GITHUB_STEP_SUMMARY"
+          elif [ "${{ steps.gsc.outputs.exit_code || steps.gsc_missing.outputs.exit_code }}" = "3" ]; then
+            echo "- GSC monitor: drop alert triggered" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "- GSC monitor: OK" >> "$GITHUB_STEP_SUMMARY"
+          fi
