@@ -189,10 +189,7 @@ def main() -> int:
     with open(args.json_out, "w", encoding="utf-8") as fh:
         json.dump(report, fh, ensure_ascii=False, indent=2)
 
-    print(
-        "OK: relatório gerado "
-        f"(auth={auth_mode}, clicks_delta={clicks_delta:.2f}%, impressions_delta={impr_delta:.2f}%)"
-    )
+    print("OK: relatório GSC gerado")
 
     if report["alert"]:
         print("ALERT: queda detectada", file=sys.stderr)
