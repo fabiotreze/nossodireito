@@ -34,8 +34,8 @@ jobs:
     permissions:
       contents: read
     env:
-      # Em PR, validamos sempre no modo seguro para não exigir artefatos de prerender.
-      SEO_PRERENDER_MODE: ${{ github.event_name == 'pull_request' && 'home-only' || (vars.SEO_PRERENDER_MODE || 'home-only') }}
+      # PR e deploy precisam validar o mesmo modo SEO versionado no repositório.
+      SEO_PRERENDER_MODE: ${{ vars.SEO_PRERENDER_MODE || 'prerender' }}
 
     steps:
       - name: Checkout
