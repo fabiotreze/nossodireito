@@ -1481,11 +1481,24 @@
             <li><a href="#categorias">Categorias</a></li>
             <li><a href="#checklist">Primeiros Passos</a></li>
             <li><a href="#documentos">Documentos</a></li>
-            <li><a href="#links">Sites Oficiais</a></li>
-            <li><a href="#classificacao">CID-10/11</a></li>
-            <li><a href="#orgaos-estaduais">Estados</a></li>
-            <li><a href="#instituicoes">Instituições</a></li>
-            <li><a href="#transparencia">Fontes</a></li>
+            <li class="nav-submenu">
+              <details class="nav-submenu-details" data-nav-submenu>
+                <summary
+                  class="nav-submenu-summary"
+                  aria-haspopup="true"
+                  data-nav-submenu-toggle
+                >
+                  Referências <span class="nav-submenu-caret" aria-hidden="true">▾</span>
+                </summary>
+                <ul class="nav-submenu-list" role="list">
+                  <li><a href="#links" data-ref-target="#links">🔗 Sites Oficiais</a></li>
+                  <li><a href="#classificacao" data-ref-target="#classificacao">🏥 CID-10/11</a></li>
+                  <li><a href="#orgaos-estaduais" data-ref-target="#orgaos-estaduais">🏢 Estados</a></li>
+                  <li><a href="#instituicoes" data-ref-target="#instituicoes">🤝 Instituições</a></li>
+                  <li><a href="#transparencia" data-ref-target="#transparencia">📚 Fontes</a></li>
+                </ul>
+              </details>
+            </li>
             <li class="nav-aviso-item">
               <a href="#disclaimerInline" class="nav-aviso" aria-label="Aviso Legal e Isenção de Responsabilidade" title="Aviso legal: conteúdo educacional, não substitui orientação profissional">⚠️ Aviso</a>
             </li>
@@ -1743,53 +1756,6 @@
           </div>
         </div>
       </section>
-      <nav
-        class="section-nav"
-        id="sectionNav"
-        aria-label="Navegação rápida por área"
-        data-section-nav
-      >
-        <div class="container">
-          <div class="section-nav-tabs" role="tablist" aria-label="Áreas do site">
-            <button
-              type="button"
-              role="tab"
-              class="section-nav-tab"
-              id="sectionNavTab-guia"
-              aria-selected="true"
-              aria-controls="categorias"
-              data-target="#categorias"
-              tabindex="0"
-            >
-              📚 <span>Guia rápido</span>
-            </button>
-            <button
-              type="button"
-              role="tab"
-              class="section-nav-tab"
-              id="sectionNavTab-acoes"
-              aria-selected="false"
-              aria-controls="checklist"
-              data-target="#checklist"
-              tabindex="-1"
-            >
-              ✅ <span>Ações imediatas</span>
-            </button>
-            <button
-              type="button"
-              role="tab"
-              class="section-nav-tab"
-              id="sectionNavTab-referencia"
-              aria-selected="false"
-              aria-controls="links"
-              data-target="#links"
-              tabindex="-1"
-            >
-              📖 <span>Referência</span>
-            </button>
-          </div>
-        </div>
-      </nav>
       <section class="section" id="busca">
         <div class="container">
           <h2>🔍 O que você precisa saber?</h2>
@@ -2069,76 +2035,164 @@
           <div id="docsChecklist" class="docs-checklist"></div>
         </div>
       </section>
-      <section class="section section-alt" id="links">
+      <section class="section section-alt" id="referencias" aria-labelledby="referenciasTitle">
         <div class="container">
-          <h2>🔗 Sites Oficiais do Governo</h2>
+          <h2 id="referenciasTitle">📚 Central de Referências</h2>
           <p class="section-desc">
-            Todos os links abaixo são de sites oficiais do governo brasileiro. Gerados automaticamente a partir da base
-            de dados.
+            Sites oficiais, classificação CID, órgãos estaduais, instituições de apoio e fontes consultadas — tudo em um só lugar, com abas para você ir direto ao ponto.
           </p>
-          <div id="linksGrid" class="links-grid"></div>
-        </div>
-      </section>
-      <section class="section" id="classificacao">
-        <div class="container">
-          <h2>🏥 Classificação de Deficiência — CID-10 / CID-11</h2>
-          <p class="section-desc">
-            Tabela de referência com os códigos CID usados em laudos médicos para cada tipo de deficiência. O sistema
-            identifica automaticamente estes códigos ao analisar seus documentos.
-          </p>
-          <div id="classificacaoGrid"></div>
-          <div class="table-note" role="note" aria-label="Nota sobre a tabela de classificação de deficiência">
-            ℹ️ Esta tabela utiliza códigos CID-10 e CID-11 oficiais da OMS e critérios técnicos baseados na legislação
-            brasileira. Consulte sempre as fontes oficiais para informações atualizadas:
-            <a href="https://icd.who.int/" target="_blank" rel="noopener noreferrer">OMS ICD (site externo)</a>,
-            <a href="https://www.gov.br/saude/pt-br" target="_blank" rel="noopener noreferrer"
-              >Ministério da Saúde (site externo)</a
-            >.
+          <div
+            id="referenciasTabs"
+            class="referencias-tabs"
+            role="tablist"
+            aria-label="Selecione o tipo de referência"
+          >
+            <button
+              type="button"
+              role="tab"
+              class="referencias-tab"
+              id="referenciasTab-links"
+              aria-selected="true"
+              aria-controls="links"
+              data-target="#links"
+              tabindex="0"
+            >🔗 <span>Sites Oficiais</span></button
+            ><button
+              type="button"
+              role="tab"
+              class="referencias-tab"
+              id="referenciasTab-classificacao"
+              aria-selected="false"
+              aria-controls="classificacao"
+              data-target="#classificacao"
+              tabindex="-1"
+            >🏥 <span>CID-10/11</span></button
+            ><button
+              type="button"
+              role="tab"
+              class="referencias-tab"
+              id="referenciasTab-orgaos-estaduais"
+              aria-selected="false"
+              aria-controls="orgaos-estaduais"
+              data-target="#orgaos-estaduais"
+              tabindex="-1"
+            >🏢 <span>Estados</span></button
+            ><button
+              type="button"
+              role="tab"
+              class="referencias-tab"
+              id="referenciasTab-instituicoes"
+              aria-selected="false"
+              aria-controls="instituicoes"
+              data-target="#instituicoes"
+              tabindex="-1"
+            >🤝 <span>Instituições</span></button
+            ><button
+              type="button"
+              role="tab"
+              class="referencias-tab"
+              id="referenciasTab-transparencia"
+              aria-selected="false"
+              aria-controls="transparencia"
+              data-target="#transparencia"
+              tabindex="-1"
+            >📚 <span>Fontes &amp; Aviso</span></button>
           </div>
-        </div>
-      </section>
-      <section class="section section-alt" id="orgaos-estaduais">
-        <div class="container">
-          <h2>🏢 Órgãos Estaduais de Apoio à Pessoa com Deficiência</h2>
-          <p class="section-desc">
-            Secretarias e órgãos de cada estado brasileiro responsáveis por políticas públicas para pessoas com
-            deficiência. Todos os links são de domínios oficiais
-            <code>.gov.br</code>.
-          </p>
-          <div class="orgao-filter-bar" role="group" aria-label="Filtrar por região">
-            <button type="button" class="orgao-filter-btn active" data-filter="todos" aria-pressed="true">Todos</button
-            ><button type="button" class="orgao-filter-btn" data-filter="Norte" aria-pressed="false">Norte</button
-            ><button type="button" class="orgao-filter-btn" data-filter="Nordeste" aria-pressed="false">Nordeste</button
-            ><button type="button" class="orgao-filter-btn" data-filter="Centro-Oeste" aria-pressed="false">
-              Centro-Oeste</button
-            ><button type="button" class="orgao-filter-btn" data-filter="Sudeste" aria-pressed="false">Sudeste</button
-            ><button type="button" class="orgao-filter-btn" data-filter="Sul" aria-pressed="false">Sul</button>
+
+          <div
+            class="referencias-panel"
+            id="links"
+            role="tabpanel"
+            aria-labelledby="referenciasTab-links"
+          >
+            <h3 class="referencias-panel-title">🔗 Sites Oficiais do Governo</h3>
+            <p class="section-desc">
+              Todos os links abaixo são de sites oficiais do governo brasileiro. Gerados automaticamente a partir da base
+              de dados.
+            </p>
+            <div id="linksGrid" class="links-grid"></div>
           </div>
-          <div id="orgaosEstaduaisGrid" class="orgaos-grid"></div>
-        </div>
-      </section>
-      <section class="section" id="instituicoes">
-        <div class="container">
-          <h2>🤝 Instituições de Apoio</h2>
-          <p class="section-desc">
-            Organizações governamentais e ONGs que oferecem suporte gratuito ou de baixo custo para famílias de pessoas
-            com deficiência.
-          </p>
-          <div class="inst-filter" role="group" aria-label="Filtrar por tipo de instituição">
-            <button type="button" class="inst-filter-btn active" data-filter="todos" aria-pressed="true">Todos</button
-            ><button type="button" class="inst-filter-btn" data-filter="governamental" aria-pressed="false">
-              🏛️ Governamental</button
-            ><button type="button" class="inst-filter-btn" data-filter="ong" aria-pressed="false">💚 ONGs</button
-            ><button type="button" class="inst-filter-btn" data-filter="profissional" aria-pressed="false">
-              ⚖️ Profissional
-            </button>
+
+          <div
+            class="referencias-panel"
+            id="classificacao"
+            role="tabpanel"
+            aria-labelledby="referenciasTab-classificacao"
+            hidden
+          >
+            <h3 class="referencias-panel-title">🏥 Classificação de Deficiência — CID-10 / CID-11</h3>
+            <p class="section-desc">
+              Tabela de referência com os códigos CID usados em laudos médicos para cada tipo de deficiência. O sistema
+              identifica automaticamente estes códigos ao analisar seus documentos.
+            </p>
+            <div id="classificacaoGrid"></div>
+            <div class="table-note" role="note" aria-label="Nota sobre a tabela de classificação de deficiência">
+              ℹ️ Esta tabela utiliza códigos CID-10 e CID-11 oficiais da OMS e critérios técnicos baseados na legislação
+              brasileira. Consulte sempre as fontes oficiais para informações atualizadas:
+              <a href="https://icd.who.int/" target="_blank" rel="noopener noreferrer">OMS ICD (site externo)</a>,
+              <a href="https://www.gov.br/saude/pt-br" target="_blank" rel="noopener noreferrer"
+                >Ministério da Saúde (site externo)</a
+              >.
+            </div>
           </div>
-          <div id="instituicoesGrid" class="instituicoes-grid"></div>
-        </div>
-      </section>
-      <section class="section section-alt" id="transparencia">
-        <div class="container">
-          <h2>🔍 Transparência e Fontes Oficiais</h2>
+
+          <div
+            class="referencias-panel"
+            id="orgaos-estaduais"
+            role="tabpanel"
+            aria-labelledby="referenciasTab-orgaos-estaduais"
+            hidden
+          >
+            <h3 class="referencias-panel-title">🏢 Órgãos Estaduais de Apoio à Pessoa com Deficiência</h3>
+            <p class="section-desc">
+              Secretarias e órgãos de cada estado brasileiro responsáveis por políticas públicas para pessoas com
+              deficiência. Todos os links são de domínios oficiais
+              <code>.gov.br</code>.
+            </p>
+            <div class="orgao-filter-bar" role="group" aria-label="Filtrar por região">
+              <button type="button" class="orgao-filter-btn active" data-filter="todos" aria-pressed="true">Todos</button
+              ><button type="button" class="orgao-filter-btn" data-filter="Norte" aria-pressed="false">Norte</button
+              ><button type="button" class="orgao-filter-btn" data-filter="Nordeste" aria-pressed="false">Nordeste</button
+              ><button type="button" class="orgao-filter-btn" data-filter="Centro-Oeste" aria-pressed="false">
+                Centro-Oeste</button
+              ><button type="button" class="orgao-filter-btn" data-filter="Sudeste" aria-pressed="false">Sudeste</button
+              ><button type="button" class="orgao-filter-btn" data-filter="Sul" aria-pressed="false">Sul</button>
+            </div>
+            <div id="orgaosEstaduaisGrid" class="orgaos-grid"></div>
+          </div>
+
+          <div
+            class="referencias-panel"
+            id="instituicoes"
+            role="tabpanel"
+            aria-labelledby="referenciasTab-instituicoes"
+            hidden
+          >
+            <h3 class="referencias-panel-title">🤝 Instituições de Apoio</h3>
+            <p class="section-desc">
+              Organizações governamentais e ONGs que oferecem suporte gratuito ou de baixo custo para famílias de pessoas
+              com deficiência.
+            </p>
+            <div class="inst-filter" role="group" aria-label="Filtrar por tipo de instituição">
+              <button type="button" class="inst-filter-btn active" data-filter="todos" aria-pressed="true">Todos</button
+              ><button type="button" class="inst-filter-btn" data-filter="governamental" aria-pressed="false">
+                🏛️ Governamental</button
+              ><button type="button" class="inst-filter-btn" data-filter="ong" aria-pressed="false">💚 ONGs</button
+              ><button type="button" class="inst-filter-btn" data-filter="profissional" aria-pressed="false">
+                ⚖️ Profissional
+              </button>
+            </div>
+            <div id="instituicoesGrid" class="instituicoes-grid"></div>
+          </div>
+
+          <div
+            class="referencias-panel"
+            id="transparencia"
+            role="tabpanel"
+            aria-labelledby="referenciasTab-transparencia"
+            hidden
+          >
+            <h3 class="referencias-panel-title">🔍 Transparência e Fontes Oficiais</h3>
           <p class="section-desc">
             Todas as informações deste site são compiladas de <strong>fontes oficiais</strong>
             do governo brasileiro e organismos internacionais (OMS, ONU, INSS, Ministério da Saúde, ANS, entre outros).
@@ -2307,7 +2361,8 @@
             </div>
           </div>
         </div>
-      </section>
+      </div>
+    </section>
     </main>
     <footer class="footer">
       <div class="container">
