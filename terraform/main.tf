@@ -244,6 +244,10 @@ resource "azurerm_linux_web_app" "main" {
       # Codeless agent DESABILITADO — o server.js já usa o SDK applicationinsights manualmente.
       # Ter ambos causa: "Attempted duplicate registration of API: propagation"
       ApplicationInsightsAgent_EXTENSION_VERSION = "disabled"
+      # AI resilience tuning — reduz worst-case de bloqueio por retry do OpenAI (incidente 2026-05-30)
+      # worst-case = AI_TIMEOUT_MS * (AI_MAX_RETRIES + 1) + backoff ≈ 17s com estes valores
+      AI_TIMEOUT_MS  = "8000"
+      AI_MAX_RETRIES = "1"
     },
     local.openai_app_settings, # Azure OpenAI gpt-4o-mini (v1.18.0+)
     local.redis_app_settings,
