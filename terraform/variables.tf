@@ -101,9 +101,9 @@ variable "key_vault_public_network_access_enabled" {
 }
 
 variable "key_vault_purge_protection_enabled" {
-  description = "Habilita purge protection no Key Vault. Recomendado true em PROD; false aceitável em DEV/POC para permitir recriação rápida."
+  description = "Habilita purge protection no Key Vault. Recomendado true em PROD; false aceitável em DEV/POC para permitir recriação rápida. Ativado em PROD desde 2026-05-31."
   type        = bool
-  default     = false
+  default     = true
 }
 
 variable "key_vault_soft_delete_retention_days" {

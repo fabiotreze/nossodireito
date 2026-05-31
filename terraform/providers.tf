@@ -24,12 +24,16 @@ terraform {
     }
   }
 
-  # Backend local por padrão.
-  # State é persistido como artifact no GitHub Actions
-  # (.github/workflows/terraform.yml).
-  #
-  # Migração para backend remoto Azure Storage com lock nativo é opt-in;
-  # ver guia operacional em BACKEND-REMOTE.md (mesma pasta).
+  # Backend remoto Azure Storage com lock nativo (provisionado em 2026-05-31).
+  # Storage Account: stnossodireitobr (RG rg-tfstate-nossodireito, brazilsouth).
+  # Auth via Azure AD (sem access key armazenada). Guia: BACKEND-REMOTE.md.
+  backend "azurerm" {
+    resource_group_name  = "rg-tfstate-nossodireito"
+    storage_account_name = "stnossodireitobr"
+    container_name       = "tfstate"
+    key                  = "nossodireito.prod.tfstate"
+    use_azuread_auth     = true
+  }
 }
 
 provider "azurerm" {
