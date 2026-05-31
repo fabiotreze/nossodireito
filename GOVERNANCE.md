@@ -4,7 +4,7 @@
 > confiável e sempre embasado em fontes oficiais do governo brasileiro.
 
 **Última revisão:** 2026-05-28
-**Versão:** 1.34.4
+**Versão:** 1.35.0
 
 ---
 
