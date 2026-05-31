@@ -2372,6 +2372,48 @@ html.high-contrast .valor-destaque {
     font-size: 0.85rem;
 }
 
+.ai-consent-sensitive {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    margin: 16px 0 8px;
+    padding: 12px;
+    border: 2px solid var(--primary);
+    border-radius: 8px;
+    background: rgba(0, 80, 160, 0.04);
+    cursor: pointer;
+    font-size: 0.85rem;
+    line-height: 1.4;
+}
+
+.ai-consent-sensitive input[type="checkbox"] {
+    margin-top: 2px;
+    flex-shrink: 0;
+}
+
+.ai-consent-plain-language {
+    margin: 8px 0;
+    font-size: 0.85rem;
+}
+
+.ai-consent-plain-language summary {
+    cursor: pointer;
+    color: var(--primary);
+    font-weight: 500;
+}
+
+.ai-consent-plain-text {
+    margin-top: 8px;
+    padding: 10px 12px;
+    background: var(--bg-alt, #f8f9fa);
+    border-radius: 6px;
+    line-height: 1.5;
+}
+
+.ai-consent-plain-text p {
+    margin: 6px 0;
+}
+
 .ai-consent-remember {
     display: flex;
     align-items: center;
