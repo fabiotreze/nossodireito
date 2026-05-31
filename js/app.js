@@ -3941,45 +3941,13 @@ ${renderWeekPlan(priorityOrder, titleById)}
         });
     }
 
-    // ---------- Submenu "Referências ▾" no header ----------
-    function setupNavSubmenu() {
-        const detailsList = document.querySelectorAll('details[data-nav-submenu]');
-        if (!detailsList.length) return;
-
-        detailsList.forEach((details) => {
-            // Fecha ao clicar em um link interno (UX esperada)
-            details.querySelectorAll('a').forEach((a) => {
-                a.addEventListener('click', () => {
-                    details.open = false;
-                });
-            });
-            // Esc fecha o submenu e devolve foco ao summary
-            details.addEventListener('keydown', (e) => {
-                if (e.key === 'Escape' && details.open) {
-                    details.open = false;
-                    const summary = details.querySelector('summary');
-                    if (summary) summary.focus();
-                }
-            });
-        });
-
-        // Click fora → fecha todos os submenus abertos
-        document.addEventListener('click', (e) => {
-            detailsList.forEach((details) => {
-                if (!details.open) return;
-                if (!details.contains(e.target)) details.open = false;
-            });
-        });
-    }
-
     if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', () => { init(); setupNavAvisoScroll(); setupAIConsentManager(); setupAIConsentQuickActions(); setupReferenciasTabs(); setupNavSubmenu(); });
+        document.addEventListener('DOMContentLoaded', () => { init(); setupNavAvisoScroll(); setupAIConsentManager(); setupAIConsentQuickActions(); setupReferenciasTabs(); });
     } else {
         init();
         setupNavAvisoScroll();
         setupAIConsentManager();
         setupAIConsentQuickActions();
         setupReferenciasTabs();
-        setupNavSubmenu();
     }
 })();
