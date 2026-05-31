@@ -2927,6 +2927,7 @@ Ver detalhes e passo a passo →
         html += `</div>
     ${aiResult ? renderAIPracticalSummary(aiResult, results) : ''}
     ${aiResult ? renderAIResult(aiResult) : ''}
+    ${aiResult ? renderHumanReviewButton() : ''}
 <div class="analysis-footer">
 <p>⚠️ <strong>Atenção:</strong> Esta análise é uma <strong>orientação preliminar</strong>
 baseada em correspondência de palavras-chave. <strong>Não substitui</strong> orientação
@@ -3029,6 +3030,16 @@ um advogado ou o <strong>CRAS</strong> da sua cidade.</p>
                         showToast('Não foi possível copiar automaticamente. Selecione e copie manualmente.', 'warning');
                     }
                 }
+            });
+        });
+        // LGPD Art. 20: human review button toggle
+        dom.analysisContent.querySelectorAll('.human-review-btn').forEach((btn) => {
+            btn.addEventListener('click', () => {
+                const info = btn.nextElementSibling;
+                if (!info) return;
+                const isOpen = info.style.display === 'block';
+                info.style.display = isOpen ? 'none' : 'block';
+                btn.setAttribute('aria-expanded', String(!isOpen));
             });
         });
     }
@@ -3411,6 +3422,26 @@ ${renderWeekPlan(priorityOrder, titleById)}
         // CID-10: letra + 2 dígitos + opcional .N ou .NN
         return /^[A-Z]\d{2}(\.\d{1,2})?$/.test(String(code || '').trim());
     }
+
+    // ── Revisão humana (LGPD Art. 20) ──
+    function renderHumanReviewButton() {
+        return `<div class="analysis-human-review" role="region" aria-labelledby="humanReviewTitle">
+<h4 id="humanReviewTitle">⚖️ Direito à revisão humana (LGPD Art. 20)</h4>
+<p>Você tem o direito de solicitar a revisão desta análise automatizada por uma pessoa.</p>
+<button class="btn btn-outline human-review-btn" type="button"
+  aria-describedby="humanReviewTitle">
+  📋 Pedir revisão humana
+</button>
+<div class="human-review-info" style="display:none;" aria-live="polite">
+<p>Para solicitar revisão humana desta análise, envie um e-mail para
+<a href="mailto:dpo@fabiotreze.com?subject=Revisão humana — Art. 20 LGPD">dpo@fabiotreze.com</a>
+com o assunto <strong>"Revisão humana — Art. 20 LGPD"</strong>.</p>
+<p>Prazo de resposta: até 15 dias corridos.</p>
+<p><small>Nenhum dado pessoal é enviado automaticamente. Você decide o que incluir no e-mail.</small></p>
+</div>
+</div>`;
+    }
+
     function renderAIResult(ai) {
         // v1.18.0: novo schema do Azure OpenAI gpt-4o-mini (vs. legacy Doc Intelligence)
         const cids = Array.isArray(ai.cids) ? ai.cids : [];
