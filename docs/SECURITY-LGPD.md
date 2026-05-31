@@ -1,6 +1,6 @@
 # Segurança e LGPD
 
-**Versão:** 1.35.0
+**Versão:** 1.35.1
 **Atualizado:** 2026-05-28
 
 ## Baseline de Segurança
