@@ -8,7 +8,7 @@
 **Data:** 2026-05-31  
 **Controlador:** Fabio Rodrigues Vieira Costa  
 **Encarregado (DPO):** Fabio Rodrigues Vieira Costa — `dpo@fabiotreze.com`  
-**Portal:** [nossodireito.tech](https://nossodireito.tech)
+**Portal:** [nossodireito.fabiotreze.com](https://nossodireito.fabiotreze.com)
 
 ---
 

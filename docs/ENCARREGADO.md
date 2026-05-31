@@ -11,7 +11,7 @@
 | **Cargo** | Encarregado pelo Tratamento de Dados Pessoais |
 | **E-mail** | `dpo@fabiotreze.com` |
 | **Controlador** | Fabio Rodrigues Vieira Costa (pessoa natural) |
-| **Portal** | [nossodireito.tech](https://nossodireito.tech) |
+| **Portal** | [nossodireito.fabiotreze.com](https://nossodireito.fabiotreze.com) |
 
 ## Ato de designação
 

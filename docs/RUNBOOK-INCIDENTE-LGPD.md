@@ -95,7 +95,7 @@ az keyvault secret set-attributes --vault-name kv-nossodireito \
 ### 5.4 Comunicação aos titulares (até T+3 dias úteis)
 
 - [ ] Redigir comunicação com os 7 campos (Seção 4).
-- [ ] Publicar banner no portal ([nossodireito.tech](https://nossodireito.tech)).
+- [ ] Publicar banner no portal ([nossodireito.fabiotreze.com](https://nossodireito.fabiotreze.com)).
 - [ ] Se e-mail disponível, enviar individualmente.
 - [ ] Registrar canal e data de comunicação.
 
