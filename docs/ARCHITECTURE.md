@@ -1,6 +1,6 @@
 # Arquitetura Atual — NossoDireito
 
-**Versão:** 1.36.1
+**Versão:** 1.39.0
 **Atualizado:** 2026-05-28
 
 ## Visao Geral
