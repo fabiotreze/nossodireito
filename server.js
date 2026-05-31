@@ -180,7 +180,8 @@ const server = http.createServer(async (req, res) => {
   // POST é aceito APENAS no endpoint /api/analyze-document (IA opt-in).
   // Todos os outros endpoints continuam restritos a GET/HEAD/OPTIONS.
   const isAnalyzeEndpoint = req.url === "/api/analyze-document" || req.url === "/api/analyze-document/";
-  const allowedMethods = isAnalyzeEndpoint ? ["GET", "HEAD", "OPTIONS", "POST"] : ["GET", "HEAD", "OPTIONS"];
+  const isCspReport = req.url === "/csp-report";
+  const allowedMethods = (isAnalyzeEndpoint || isCspReport) ? ["GET", "HEAD", "OPTIONS", "POST"] : ["GET", "HEAD", "OPTIONS"];
   if (!allowedMethods.includes(req.method)) {
     res.writeHead(405, {
       "Content-Type": "text/plain",
@@ -199,6 +200,29 @@ const server = http.createServer(async (req, res) => {
   // ── Privacy Analytics Stats Endpoint (lib/infra-handlers.js) ──
   if (req.url === "/api/stats" || req.url === "/api/stats/") {
     statsHandler(req, res);
+    return;
+  }
+
+  // ── CSP Violation Reports (Reporting API + report-uri) ──
+  if (req.url === "/csp-report" && req.method === "POST") {
+    let body = "";
+    req.on("data", (chunk) => {
+      body += chunk;
+      if (body.length > 8192) { req.destroy(); return; }
+    });
+    req.on("end", () => {
+      try {
+        const report = JSON.parse(body);
+        const violation = report["csp-report"] || report.body || report;
+        console.warn("[CSP-VIOLATION]", JSON.stringify({
+          blockedUri: violation["blocked-uri"] || violation.blockedURL || "",
+          directive: violation["violated-directive"] || violation.effectiveDirective || "",
+          documentUri: violation["document-uri"] || violation.documentURL || "",
+        }));
+      } catch { /* ignore malformed reports */ }
+      res.writeHead(204);
+      res.end();
+    });
     return;
   }
 
