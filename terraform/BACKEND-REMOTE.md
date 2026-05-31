@@ -61,8 +61,16 @@ az role assignment create \
 |---------|------|-------|
 | Resource group | `rg-tfstate-nossodireito` | região `brazilsouth` |
 | Storage account | `stnossodireitobr` | Standard_LRS, Cool, TLS1.2, public access OFF |
-| Container | `tfstate` | private, blob versioning recomendado |
+| Container | `tfstate` | private, blob versioning ATIVO |
 | Blob key | `nossodireito.prod.tfstate` | state principal |
+
+Proteções de durabilidade (ligadas em 2026-05-31):
+
+- Blob versioning: **ATIVO** (toda escrita gera nova versão).
+- Blob soft-delete: **7 dias**.
+- Container soft-delete: **7 dias**.
+- Lifecycle policy `appi-logs-retention-180d` afeta apenas `appi-logs/`;
+  `tfstate/` não tem TTL.
 
 ## Provisionamento histórico (para replicar em outro ambiente)
 
