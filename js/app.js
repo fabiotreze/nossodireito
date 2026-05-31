@@ -3836,90 +3836,150 @@ ${renderWeekPlan(priorityOrder, titleById)}
                     drawer.classList.remove('open');
                     if (toggle) toggle.setAttribute('aria-expanded', 'false');
                 }
+                // Garante que a tab "Fontes & Aviso" da Central de Referências esteja ativa
+                // (caso contrário o #disclaimerInline ficaria dentro de um tabpanel hidden).
+                activateReferenciasTabByHash('#transparencia');
                 // Atualiza hash sem disparar scroll nativo, depois faz scroll suave preciso
                 if (history.replaceState) history.replaceState(null, '', '#disclaimerInline');
                 target.scrollIntoView({ behavior: 'smooth', block: 'start' });
             });
         });
     }
-    function setupSectionNav() {
-        const nav = document.getElementById('sectionNav');
-        if (!nav) return;
-        const tabs = Array.from(nav.querySelectorAll('.section-nav-tab'));
-        if (!tabs.length) return;
 
-        const targets = tabs
-            .map((t) => {
-                const sel = t.getAttribute('data-target');
-                return sel ? document.querySelector(sel) : null;
-            });
+    // ---------- Central de Referências (tabs ARIA) ----------
+    // Mapa: hash → tab id. Cobre anchors antigas para preservar compatibilidade.
+    const REFERENCIAS_HASH_MAP = {
+        '#links': 'referenciasTab-links',
+        '#classificacao': 'referenciasTab-classificacao',
+        '#orgaos-estaduais': 'referenciasTab-orgaos-estaduais',
+        '#instituicoes': 'referenciasTab-instituicoes',
+        '#transparencia': 'referenciasTab-transparencia',
+        '#disclaimerInline': 'referenciasTab-transparencia',
+        '#compromissoAtualizacao': 'referenciasTab-transparencia',
+    };
 
-        function activate(idx, { focus = false, scroll = false } = {}) {
-            tabs.forEach((t, i) => {
-                const sel = i === idx;
-                t.setAttribute('aria-selected', sel ? 'true' : 'false');
-                t.setAttribute('tabindex', sel ? '0' : '-1');
-            });
-            if (focus) tabs[idx].focus();
-            if (scroll && targets[idx]) {
-                const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-                targets[idx].scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'start' });
+    function activateReferenciasTabByHash(hash) {
+        const tabId = REFERENCIAS_HASH_MAP[hash];
+        if (!tabId) return false;
+        const tab = document.getElementById(tabId);
+        if (!tab) return false;
+        const tabs = Array.from(document.querySelectorAll('#referenciasTabs .referencias-tab'));
+        const idx = tabs.indexOf(tab);
+        if (idx < 0) return false;
+        activateReferenciasTab(tabs, idx, { focus: false, scroll: false });
+        return true;
+    }
+
+    function activateReferenciasTab(tabs, idx, { focus = false, scroll = false } = {}) {
+        tabs.forEach((t, i) => {
+            const selected = i === idx;
+            t.setAttribute('aria-selected', selected ? 'true' : 'false');
+            t.setAttribute('tabindex', selected ? '0' : '-1');
+            const panelId = t.getAttribute('aria-controls');
+            const panel = panelId ? document.getElementById(panelId) : null;
+            if (panel) {
+                if (selected) panel.removeAttribute('hidden');
+                else panel.setAttribute('hidden', '');
             }
+        });
+        if (focus) tabs[idx].focus();
+        if (scroll) {
+            const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            const wrapper = document.getElementById('referencias');
+            if (wrapper) wrapper.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'start' });
         }
+    }
+
+    function setupReferenciasTabs() {
+        const tablist = document.getElementById('referenciasTabs');
+        if (!tablist) return;
+        const tabs = Array.from(tablist.querySelectorAll('.referencias-tab'));
+        if (!tabs.length) return;
 
         tabs.forEach((tab, i) => {
             tab.addEventListener('click', (e) => {
                 e.preventDefault();
-                activate(i, { scroll: true });
+                activateReferenciasTab(tabs, i, { focus: false, scroll: false });
             });
             tab.addEventListener('keydown', (e) => {
                 if (e.key === 'ArrowRight') {
                     e.preventDefault();
-                    activate((i + 1) % tabs.length, { focus: true });
+                    const next = (i + 1) % tabs.length;
+                    activateReferenciasTab(tabs, next, { focus: true });
                 } else if (e.key === 'ArrowLeft') {
                     e.preventDefault();
-                    activate((i - 1 + tabs.length) % tabs.length, { focus: true });
+                    const prev = (i - 1 + tabs.length) % tabs.length;
+                    activateReferenciasTab(tabs, prev, { focus: true });
                 } else if (e.key === 'Home') {
                     e.preventDefault();
-                    activate(0, { focus: true });
+                    activateReferenciasTab(tabs, 0, { focus: true });
                 } else if (e.key === 'End') {
                     e.preventDefault();
-                    activate(tabs.length - 1, { focus: true });
-                } else if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault();
-                    activate(i, { scroll: true });
+                    activateReferenciasTab(tabs, tabs.length - 1, { focus: true });
                 }
             });
         });
 
-        // Scrollspy: ativa a tab cuja seção alvo (ou QUALQUER seção entre o alvo deste e o do próximo)
-        // está mais visível. Implementação simples: observa as 3 seções alvo.
-        if ('IntersectionObserver' in window) {
-            const observer = new IntersectionObserver(
-                (entries) => {
-                    // pega a entry mais visível
-                    let best = null;
-                    for (const e of entries) {
-                        if (!e.isIntersecting) continue;
-                        if (!best || e.intersectionRatio > best.intersectionRatio) best = e;
-                    }
-                    if (!best) return;
-                    const idx = targets.findIndex((t) => t === best.target);
-                    if (idx >= 0) activate(idx, { focus: false, scroll: false });
-                },
-                { rootMargin: '-30% 0px -55% 0px', threshold: [0, 0.1, 0.5, 1] }
-            );
-            targets.forEach((t) => { if (t) observer.observe(t); });
+        // Compatibilidade com anchors antigas (#links, #classificacao etc.)
+        function syncFromHash() {
+            const hash = window.location.hash;
+            if (!hash) return;
+            activateReferenciasTabByHash(hash);
         }
+        window.addEventListener('hashchange', syncFromHash);
+        // Initial sync (caso a página abra direto em /#orgaos-estaduais etc.)
+        syncFromHash();
+
+        // Clique em qualquer link [href="#<panelId>"] do submenu/footer → ativa tab + scrolla
+        document.addEventListener('click', (e) => {
+            const link = e.target instanceof Element ? e.target.closest('a[href^="#"]') : null;
+            if (!link) return;
+            const hash = link.getAttribute('href');
+            if (!hash || !(hash in REFERENCIAS_HASH_MAP)) return;
+            // Deixa o scroll nativo do anchor agir, mas garante a tab ativa antes
+            activateReferenciasTabByHash(hash);
+        });
+    }
+
+    // ---------- Submenu "Referências ▾" no header ----------
+    function setupNavSubmenu() {
+        const detailsList = document.querySelectorAll('details[data-nav-submenu]');
+        if (!detailsList.length) return;
+
+        detailsList.forEach((details) => {
+            // Fecha ao clicar em um link interno (UX esperada)
+            details.querySelectorAll('a').forEach((a) => {
+                a.addEventListener('click', () => {
+                    details.open = false;
+                });
+            });
+            // Esc fecha o submenu e devolve foco ao summary
+            details.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && details.open) {
+                    details.open = false;
+                    const summary = details.querySelector('summary');
+                    if (summary) summary.focus();
+                }
+            });
+        });
+
+        // Click fora → fecha todos os submenus abertos
+        document.addEventListener('click', (e) => {
+            detailsList.forEach((details) => {
+                if (!details.open) return;
+                if (!details.contains(e.target)) details.open = false;
+            });
+        });
     }
 
     if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', () => { init(); setupNavAvisoScroll(); setupAIConsentManager(); setupAIConsentQuickActions(); setupSectionNav(); });
+        document.addEventListener('DOMContentLoaded', () => { init(); setupNavAvisoScroll(); setupAIConsentManager(); setupAIConsentQuickActions(); setupReferenciasTabs(); setupNavSubmenu(); });
     } else {
         init();
         setupNavAvisoScroll();
         setupAIConsentManager();
         setupAIConsentQuickActions();
-        setupSectionNav();
+        setupReferenciasTabs();
+        setupNavSubmenu();
     }
 })();
