@@ -3366,7 +3366,7 @@ ${renderWeekPlan(priorityOrder, titleById)}
                 cleanup(true);
             };
             const onCancel = () => cleanup(false);
-            // 1.36.1: botao "Revogar" foi removido do modal — por definicao,
+            // 1.37.0: botao "Revogar" foi removido do modal — por definicao,
             // este modal so abre quando nao ha consentimento salvo. Revogacao
             // vive nos paineis permanentes da secao LGPD (cadeado dinamico).
             const onKey = (e) => { if (e.key === 'Escape') cleanup(false); };
