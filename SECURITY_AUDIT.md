@@ -1,4 +1,4 @@
-# 🔒 NossoDireito — Auditoria de Segurança v1.35.1
+# 🔒 NossoDireito — Auditoria de Segurança v1.35.2
 
 **Data**: 2026-05-19
 **Escopo**: Aplicação client-side (HTML5 + CSS3 + Vanilla JS) + servidor Node.js (`server.js`)

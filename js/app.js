@@ -690,7 +690,14 @@
         const safeRunAsync = async (name, fn) => {
             try { await fn(); } catch (e) { console.error('[init]', name, 'falhou:', e); }
         };
-        // ── Phase 1: Critical above-fold (nav, search, data) ──
+        // ── Phase 1: Critical above-fold (nav, search, a11y, data) ──
+        // setupAccessibilityPanel PRECEDE loadData/renderCategories porque
+        // não depende de dados e é prioridade WCAG (usuário com baixa visão
+        // pode precisar aumentar a fonte ANTES do site terminar de carregar).
+        // Antes ficava em Phase 2 e em conexões lentas (iPhone Safari 3G/4G)
+        // o usuário tocava no botão flutuante antes do handler ser anexado
+        // — tap se perdia silenciosamente.
+        safeRun('setupAccessibilityPanel', setupAccessibilityPanel);
         safeRun('setupNavigation', setupNavigation);
         safeRun('setupSearch', setupSearch);
         await safeRunAsync('loadData', loadData);
@@ -701,7 +708,6 @@
         await yieldToMain();
 
         // ── Phase 2: Interactive features ──
-        safeRun('setupAccessibilityPanel', setupAccessibilityPanel);
         safeRun('setupSkipLinks', setupSkipLinks);
         safeRun('setupChecklist', setupChecklist);
         safeRun('setupFooter', setupFooter);
@@ -1047,7 +1053,13 @@ data-trilha="${escapeHtml(getTrilhaId(cat.id))}">
     }
 
     // ---------- Trilhas (agrupamento de categorias) ----------
+    // Ordem das trilhas: "Todas" vem primeiro (default) para que o usuário que
+    // clica em "Categorias" no menu veja TODAS as 42 categorias e use os botões
+    // por área para filtrar. Isto resolve a confusão de filtro silencioso
+    // (issue UX: usuário não percebia que os botões eram filtros quando o
+    // default mostrava apenas uma trilha).
     const TRILHAS = [
+        { id: 'todas', label: 'Todas as categorias', icone: '📋', descricao: 'Lista completa dos 42 direitos', ids: null },
         {
             id: 'renda', label: 'Renda & Benefícios', icone: '💰',
             descricao: 'BPC, auxílios, isenções e saques especiais',
@@ -1078,7 +1090,6 @@ data-trilha="${escapeHtml(getTrilhaId(cat.id))}">
             descricao: 'CIPTEA, atendimento prioritário, capacidade legal e acessibilidade',
             ids: ['ciptea', 'atendimento_prioritario', 'prioridade_judicial', 'capacidade_legal', 'curatela_decisao_apoiada', 'crimes_contra_pcd', 'protecao_social', 'politica_nacional_cuidados', 'meia_entrada', 'acessibilidade_arquitetonica', 'acessibilidade_digital', 'esporte_paralimpico'],
         },
-        { id: 'todas', label: 'Ver todas', icone: '📋', descricao: 'Lista completa das categorias', ids: null },
     ];
 
     function getTrilhaId(catId) {
@@ -1129,8 +1140,10 @@ ${t.descricao ? `<span class="trilha-tab__desc">${escapeHtml(t.descricao)}</span
             });
         });
 
-        // Aplica filtro inicial (default = primeira trilha, 'renda') para não
-        // despejar 42 cards no usuário. Mantém "Ver todas" como opção final.
+        // Default = primeira trilha ('todas'). Mostra as 42 categorias e os
+        // botões por área funcionam como filtro visível. Resolve a confusão
+        // de filtro silencioso onde o usuário não percebia que os botões
+        // eram filtros.
         selectTrilha(TRILHAS[0].id);
     }
 
