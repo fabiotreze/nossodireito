@@ -3290,6 +3290,32 @@ html.high-contrast .valor-destaque {
     margin: 0;
 }
 
+/* ── Revisão humana (LGPD Art. 20) ── */
+.analysis-human-review {
+    margin-top: 20px;
+    padding: 16px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+}
+
+.analysis-human-review h4 {
+    margin: 0 0 8px;
+    font-size: 1rem;
+}
+
+.analysis-human-review .human-review-btn {
+    margin-top: 8px;
+}
+
+.analysis-human-review .human-review-info {
+    margin-top: 12px;
+    padding: 12px;
+    background: var(--bg-alt, #f8f9fa);
+    border-radius: var(--radius-sm);
+    font-size: 0.875rem;
+}
+
 .analysis-empty,
 .analysis-error {
     text-align: center;
