@@ -76,12 +76,15 @@ flowchart LR
   ambiente controlado e seguro. Cumprido em duas camadas:
   - **Hot (30 dias):** App Insights `appi-nossodireito-br` com IP anonimizado
     para consulta operacional rápida.
-  - **Cold (≥ 6 meses):** Data Export `export-appi-to-storage` envia
-    continuamente `AppRequests`, `AppTraces`, `AppExceptions`,
+  - **Cold (180 dias — TTL máximo):** Data Export `export-appi-to-storage`
+    envia continuamente `AppRequests`, `AppTraces`, `AppExceptions`,
     `AppDependencies` e `AppCustomEvents` para o container `appi-logs`
-    em `stnossodireitobr` (Cool tier, imutável por padrão de SA).
-    Atende também LGPD Art. 16 (comprovação de tratamento) e provê base
-    para ordens judiciais de preservação específica.
+    em `stnossodireitobr` (Cool tier). Lifecycle policy
+    `appi-logs-retention-180d` deleta automaticamente blobs com mais de
+    180 dias — cumpre mínimo legal do Marco Civil (6 meses) e atende
+    LGPD Art. 16 (princípio da necessidade / eliminação após fim do
+    tratamento). Provê base para ordens judiciais de preservação
+    específica dentro da janela.
 - **Art. 7º, VII:** Não fornecimento a terceiros de registros de conexão e
   acesso sem consentimento livre, expresso e informado ou determinação judicial.
 

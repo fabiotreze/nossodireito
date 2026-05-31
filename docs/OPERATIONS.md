@@ -66,7 +66,7 @@ Sem esses secrets, o watchdog continua válido para monitorar CI/deploy.
 - Storage: `stnossodireitobr` / container `tfstate` / blob `nossodireito.prod.tfstate`.
 - Lock nativo via blob lease (não há mais corrida entre runs paralelos).
 - Auth: Azure AD (RBAC `Storage Blob Data Contributor` no SA) — não há chave compartilhada.
-- Recuperação: blob versioning + soft-delete do SA permitem `az storage blob undelete` em até 7 dias.
+- **Recuperação:** blob versioning ATIVO + blob soft-delete 7d + container soft-delete 7d (ligados em 2026-05-31). Permitem `az storage blob undelete` e restore de versões anteriores do state.
 
 ### Telemetria de longo prazo (Marco Civil + LGPD Art. 16)
 
@@ -75,6 +75,10 @@ Sem esses secrets, o watchdog continua válido para monitorar CI/deploy.
   `AppCustomEvents` do workspace `log-nossodireito-br` para o container
   `appi-logs` no SA `stnossodireitobr`.
 - Permite reter logs além dos 30 dias do App Insights por custo Cool tier.
+- **Retenção máxima:** lifecycle policy `appi-logs-retention-180d` deleta
+  blobs do prefixo `appi-logs/` 180 dias após a última modificação
+  (cumpre Marco Civil Art. 15 — mínimo 6 meses — e atende LGPD Art. 16
+  princípio da necessidade).
 - Consulta: `az storage blob list -c appi-logs --account-name stnossodireitobr --auth-mode login -o table`.
 
 ### Key Vault (segredos)
