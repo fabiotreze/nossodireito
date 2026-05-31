@@ -157,6 +157,12 @@ jobs:
           rm -rf /tmp/site_stage/node_modules/.package-lock.json \
                  /tmp/site_stage/node_modules/.cache 2>/dev/null || true
 
+          # Pre-compress static text assets (.br + .gz siblings).
+          # Eliminates request-time CPU for large JSON/HTML/CSS/JS files.
+          # Root cause fix for 2026-05-30 SEV2: 419KB JSON at Brotli q11
+          # took 5–10s of CPU per request, blocking the single worker.
+          node scripts/precompress_static.mjs /tmp/site_stage
+
           ( cd /tmp/site_stage && zip -qr "${GITHUB_WORKSPACE}/site.zip" . \
               -x "*.bak" "*.swa.bak" )
 

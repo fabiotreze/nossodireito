@@ -81,3 +81,7 @@ index.backup_*
 # Plan binaries — nunca commitar
 terraform/tfplan*
 terraform/*.tfplan
+
+# Pre-compressed static siblings (gerados por scripts/precompress_static.mjs no deploy)
+*.br
+*.gz
