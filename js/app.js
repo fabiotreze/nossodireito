@@ -1155,6 +1155,14 @@ ${t.descricao ? `<span class="trilha-tab__desc">${escapeHtml(t.descricao)}</span
             tab.setAttribute('tabindex', active ? '0' : '-1');
         });
         dom.categoryGrid.setAttribute('aria-labelledby', `trilhaTab-${trilhaId}`);
+        // Pinta os cards conforme trilha selecionada via data-active-trilha
+        // (CSS aplica cor de destaque por trilha). 'todas' não pinta — visual
+        // neutro para evitar arco-íris de 42 cards.
+        if (trilhaId === 'todas') {
+            dom.categoryGrid.removeAttribute('data-active-trilha');
+        } else {
+            dom.categoryGrid.setAttribute('data-active-trilha', trilhaId);
+        }
         dom.categoryGrid.querySelectorAll('.category-card').forEach((card) => {
             const show = trilhaId === 'todas' || card.dataset.trilha === trilhaId;
             card.style.display = show ? '' : 'none';
@@ -3753,12 +3761,14 @@ ${renderWeekPlan(priorityOrder, titleById)}
                 status.textContent = 'Ativo por ate 30 dias';
                 status.classList.add('ai-consent-status-badge--active');
                 btn.disabled = false;
+                // 🔓 cadeado aberto = consentimento ativo (dados em uso), clicável
                 btn.textContent = '🔓 Revogar consentimento de IA';
             } else {
                 status.textContent = 'Nao armazenado';
                 status.classList.add('ai-consent-status-badge--inactive');
                 btn.disabled = true;
-                btn.textContent = '🔓 Revogar consentimento de IA';
+                // 🔒 cadeado fechado = nenhum dado armazenado (trancado/seguro)
+                btn.textContent = '🔒 Nenhum consentimento ativo';
             }
             animateStatusBadge();
         };
@@ -3802,12 +3812,14 @@ ${renderWeekPlan(priorityOrder, titleById)}
                 status.textContent = 'Consentimento ativo';
                 status.classList.add('ai-consent-status-badge--active');
                 btn.disabled = false;
+                // 🔓 cadeado aberto = consentimento ativo (dados em uso), clicável
                 btn.textContent = '🔓 Revogar consentimento salvo';
             } else {
                 status.textContent = 'Nenhum consentimento salvo';
                 status.classList.add('ai-consent-status-badge--inactive');
                 btn.disabled = true;
-                btn.textContent = '🔓 Revogar consentimento salvo';
+                // 🔒 cadeado fechado = nenhum dado armazenado (trancado/seguro)
+                btn.textContent = '🔒 Nenhum consentimento ativo';
             }
             animateStatusBadge();
         };

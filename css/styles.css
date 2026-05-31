@@ -4182,6 +4182,60 @@ html.high-contrast .disclaimer-alert {
     }
 }
 
+/* ---------- Cores por Trilha (visual cue quando filtro está ativo) ---------- */
+/* Quando o usuário seleciona uma trilha (ex: Renda & Benefícios), os cards
+   filtrados herdam uma cor de destaque coerente com o domínio. Resolve a
+   confusão de UX: "selecionei Renda e os itens abaixo não dão feedback visual".
+   Trilha 'todas' não pinta — visual neutro para evitar arco-íris de 42 cards.
+   Cores atendem WCAG AA: borda + leve tinge no ícone (não usa cor como único
+   meio de transmitir informação, há também título da trilha + filtro de cards). */
+.card-grid[data-active-trilha] .category-card {
+    border-left: 4px solid var(--trilha-color, var(--primary));
+}
+
+.card-grid[data-active-trilha] .category-icon {
+    background: var(--trilha-tint, rgba(30, 64, 175, 0.08));
+    border-radius: 10px;
+    padding: 6px;
+    width: 44px;
+    height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.card-grid[data-active-trilha="renda"]     { --trilha-color: #15803d; --trilha-tint: rgba(21, 128, 61, 0.10); } /* verde — dinheiro */
+.card-grid[data-active-trilha="saude"]     { --trilha-color: #b91c1c; --trilha-tint: rgba(185, 28, 28, 0.10); } /* vermelho — saúde */
+.card-grid[data-active-trilha="educacao"]  { --trilha-color: #6d28d9; --trilha-tint: rgba(109, 40, 217, 0.10); } /* roxo — academia */
+.card-grid[data-active-trilha="trabalho"]  { --trilha-color: #92400e; --trilha-tint: rgba(146, 64, 14, 0.10); } /* âmbar — profissional */
+.card-grid[data-active-trilha="mobilidade"] { --trilha-color: #c2410c; --trilha-tint: rgba(194, 65, 12, 0.10); } /* laranja — transporte */
+.card-grid[data-active-trilha="cidadania"] { --trilha-color: #1e40af; --trilha-tint: rgba(30, 64, 175, 0.10); } /* azul — justiça */
+
+/* Hover: borda esquerda mais grossa para reforçar afinidade */
+.card-grid[data-active-trilha] .category-card:hover {
+    border-color: var(--trilha-color, var(--primary));
+    border-left-width: 6px;
+}
+
+/* Dark mode: cores levemente mais claras para contraste em fundo escuro */
+@media (prefers-color-scheme: dark) {
+    .card-grid[data-active-trilha="renda"]     { --trilha-color: #22c55e; --trilha-tint: rgba(34, 197, 94, 0.15); }
+    .card-grid[data-active-trilha="saude"]     { --trilha-color: #f87171; --trilha-tint: rgba(248, 113, 113, 0.15); }
+    .card-grid[data-active-trilha="educacao"]  { --trilha-color: #a78bfa; --trilha-tint: rgba(167, 139, 250, 0.15); }
+    .card-grid[data-active-trilha="trabalho"]  { --trilha-color: #fbbf24; --trilha-tint: rgba(251, 191, 36, 0.15); }
+    .card-grid[data-active-trilha="mobilidade"] { --trilha-color: #fb923c; --trilha-tint: rgba(251, 146, 60, 0.15); }
+    .card-grid[data-active-trilha="cidadania"] { --trilha-color: #60a5fa; --trilha-tint: rgba(96, 165, 250, 0.15); }
+}
+
+/* High-contrast mode: respeita o modo de alto contraste do site */
+html.high-contrast .card-grid[data-active-trilha] .category-card {
+    border-left-color: var(--primary);
+}
+html.high-contrast .card-grid[data-active-trilha] .category-icon {
+    background: transparent;
+    padding: 0;
+}
+
 /* ---------- Responsivo ---------- */
 @media (max-width: 768px) {
     html {
