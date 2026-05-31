@@ -3303,14 +3303,27 @@ ${renderWeekPlan(priorityOrder, titleById)}
     function emitAIConsentChanged() {
         document.dispatchEvent(new Event('ai-consent-changed'));
     }
-    function getStoredAIConsent() {
+    function getStoredAIConsentMeta() {
         try {
             const raw = localStorage.getItem(AI_CONSENT_KEY);
-            if (!raw) return false;
+            if (!raw) return { granted: false, remainingDays: 0, exp: 0 };
             const { granted, exp } = JSON.parse(raw);
-            if (!granted || !exp || Date.now() > exp) return false;
-            return true;
-        } catch { return false; }
+            const expTs = Number(exp);
+            if (!granted || !Number.isFinite(expTs)) {
+                return { granted: false, remainingDays: 0, exp: 0 };
+            }
+            const remainingMs = expTs - Date.now();
+            if (remainingMs <= 0) {
+                return { granted: false, remainingDays: 0, exp: expTs };
+            }
+            const remainingDays = Math.max(1, Math.ceil(remainingMs / 86400000));
+            return { granted: true, remainingDays, exp: expTs };
+        } catch {
+            return { granted: false, remainingDays: 0, exp: 0 };
+        }
+    }
+    function getStoredAIConsent() {
+        return getStoredAIConsentMeta().granted;
     }
     function setStoredAIConsent(granted, sensitive) {
         try {
@@ -3799,10 +3812,11 @@ com o assunto <strong>"Revisão humana — Art. 20 LGPD"</strong>.</p>
             setTimeout(() => status.classList.remove('ai-consent-status-badge--updated'), 260);
         };
         const render = () => {
-            const granted = getStoredAIConsent();
+            const consent = getStoredAIConsentMeta();
             status.classList.remove('ai-consent-status-badge--active', 'ai-consent-status-badge--inactive');
-            if (granted) {
-                status.textContent = 'Ativo por ate 30 dias';
+            if (consent.granted) {
+                const diaLabel = consent.remainingDays === 1 ? 'dia' : 'dias';
+                status.textContent = `Ativo - faltam ${consent.remainingDays} ${diaLabel}`;
                 status.classList.add('ai-consent-status-badge--active');
                 btn.disabled = false;
                 // 🔓 cadeado aberto = consentimento ativo (dados em uso), clicável
@@ -3850,10 +3864,11 @@ com o assunto <strong>"Revisão humana — Art. 20 LGPD"</strong>.</p>
             setTimeout(() => status.classList.remove('ai-consent-status-badge--updated'), 260);
         };
         const render = () => {
-            const granted = getStoredAIConsent();
+            const consent = getStoredAIConsentMeta();
             status.classList.remove('ai-consent-status-badge--active', 'ai-consent-status-badge--inactive');
-            if (granted) {
-                status.textContent = 'Consentimento ativo';
+            if (consent.granted) {
+                const diaLabel = consent.remainingDays === 1 ? 'dia' : 'dias';
+                status.textContent = `Consentimento ativo - faltam ${consent.remainingDays} ${diaLabel}`;
                 status.classList.add('ai-consent-status-badge--active');
                 btn.disabled = false;
                 // 🔓 cadeado aberto = consentimento ativo (dados em uso), clicável
