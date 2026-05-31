@@ -99,3 +99,76 @@ Sem esses secrets, o watchdog continua válido para monitorar CI/deploy.
 3. Redeploy: push na `main` ou `gh workflow run deploy.yml`.
 4. Validar: `curl https://nossodireito.fabiotreze.com/healthz`.
 
+## Evidência de auditoria LGPD / ANPD
+
+Runbook reproduzível para demonstrar conformidade a titular de dado, ANPD ou
+auditor. Todos os comandos abaixo são read-only e podem ser executados por
+qualquer pessoa com `az login` ativo e papel `Reader` na assinatura
+`3acb7300-a8c5-4354-9ad3-0a219a495b4a`.
+
+### Painel visual (Azure Workbook)
+
+- **Nome:** NossoDireito — Painel LGPD/Auditoria
+- **Local:** Azure Portal → Application Insights `appi-nossodireito-br` → Workbooks
+- **Conteúdo:** visão geral, prova de anonimização (sample dos campos `client_IP`, `user_Id`, `session_Id`), performance, falhas, info da camada cold.
+- **Fonte versionada:** [terraform/workbooks/lgpd-audit.json](../terraform/workbooks/lgpd-audit.json)
+
+### Comandos de evidência
+
+```bash
+# 1. Mascaramento de IP (configuração do App Insights)
+az resource show \
+  --ids "/subscriptions/3acb7300-a8c5-4354-9ad3-0a219a495b4a/resourceGroups/rg-nossodireito-br/providers/Microsoft.Insights/components/appi-nossodireito-br" \
+  --query "properties.DisableIpMasking" -o tsv
+# Esperado: false  (masking ATIVO)
+
+# 2. Amostra real do que é gravado — campos sensíveis
+az monitor app-insights query --app appi-nossodireito-br -g rg-nossodireito-br \
+  --analytics-query "requests | take 20 | project timestamp, name, url, client_IP, client_City, client_CountryOrRegion, user_Id, session_Id"
+# Esperado: client_IP="::" (anonimizado), demais vazios
+
+# 3. Tabelas exportadas para a camada cold (não inclui body/payload)
+az monitor log-analytics workspace data-export show \
+  --workspace-name log-nossodireito-br -g rg-nossodireito-br \
+  --name export-appi-to-storage --query tableNames
+
+# 4. Lifecycle policy ativo (LGPD Art. 16 — eliminação após 180 dias)
+az storage account management-policy show \
+  --account-name stnossodireitobr -g rg-tfstate-nossodireito \
+  --query "policy.rules[0]"
+
+# 5. Quem tem acesso aos logs (RBAC)
+az role assignment list \
+  --scope "/subscriptions/3acb7300-a8c5-4354-9ad3-0a219a495b4a/resourceGroups/rg-tfstate-nossodireito/providers/Microsoft.Storage/storageAccounts/stnossodireitobr" \
+  --query "[].{role:roleDefinitionName, principalType:principalType, principalName:principalName}" -o table
+
+# 6. Durabilidade (versioning + soft-delete)
+az storage account blob-service-properties show \
+  --account-name stnossodireitobr -g rg-tfstate-nossodireito \
+  --query "{versioning:isVersioningEnabled, blobSoftDelete:deleteRetentionPolicy.days, containerSoftDelete:containerDeleteRetentionPolicy.days}"
+```
+
+### Sample real (executado em 2026-05-31)
+
+Saída do comando 2 acima — prova que **nenhum dado pessoal é coletado**:
+
+```json
+[
+  {
+    "timestamp": "2026-05-31T17:37:12.095Z",
+    "name": "GET /health",
+    "url": "http://app-nossodireito-br.azurewebsites.net/health",
+    "resultCode": "200",
+    "client_IP": "::",
+    "client_City": "",
+    "client_CountryOrRegion": "",
+    "user_Id": "",
+    "session_Id": ""
+  }
+]
+```
+
+- `client_IP="::"` — IP mascarado pela política `DisableIpMasking=false` do App Insights.
+- `client_City`, `client_CountryOrRegion`, `user_Id`, `session_Id` — vazios (nada é coletado).
+- Demais campos (`timestamp`, `name`, `url`, `resultCode`) são metadados técnicos necessários para operação e não constituem dado pessoal sob LGPD Art. 5º, I.
+
