@@ -87,3 +87,85 @@ flowchart LR
 | Res. CD/ANPD nº 4/2023 | RIPD | [docs/RIPD.md](RIPD.md) |
 | Res. CD/ANPD nº 15/2024 | Comunicação de incidentes | [RUNBOOK-INCIDENTE-LGPD.md](RUNBOOK-INCIDENTE-LGPD.md) |
 | Res. CD/ANPD nº 18/2024 | Encarregado (DPO) | [docs/ENCARREGADO.md](ENCARREGADO.md) |
+
+## Fluxo do laudo / PDF do titular — segurança fim a fim
+
+Esta seção descreve o que acontece, em ordem, com o arquivo (PDF, imagem
+ou texto) que o titular envia ao formulário de análise por IA. **O
+binário do arquivo nunca é enviado ao servidor.**
+
+```mermaid
+flowchart TD
+    U[Titular seleciona PDF/imagem] --> B1[Browser: PDF.js / OCR local<br>extrai texto na memória da aba]
+    B1 --> B2[shared/anonymizer.js<br>remove CPF, RG, nome, e-mail,<br>telefone, endereço, datas]
+    B2 --> C{Consentimento<br>específico dado?}
+    C -->|Não| STOP[Envio bloqueado]
+    C -->|Sim| TLS[POST JSON via TLS 1.2+<br>HSTS, certificado gerenciado<br>{ text: 'texto anonimizado' }]
+    TLS --> S[App Service Linux<br>brazilsouth, Managed Identity]
+    S --> RE[lib/ai-analyze.js<br>re-anonimização defense-in-depth]
+    RE --> V{PII residual<br>detectada?}
+    V -->|Sim| R422[HTTP 422 — rejeita,<br>nada chega à IA]
+    V -->|Não| PE[Azure OpenAI brazilsouth<br>Private Endpoint<br>publicNetworkAccess=Disabled]
+    PE --> NR[Sem retenção de prompt/resposta<br>configuração Azure OpenAI]
+    NR --> S
+    S --> RESP[Resposta estruturada<br>cids, dates, paragraphs]
+    RESP --> B3[Browser exibe resultado]
+    B3 --> CLOSE[Usuário fecha aba<br>→ texto e PDF apagados<br>da memória]
+```
+
+### Onde mora o dado em cada etapa
+
+| Etapa | Local | Persistência | Criptografia |
+|-------|-------|--------------|--------------|
+| 1. PDF selecionado | RAM da aba do navegador | **Volátil** — só enquanto a aba está aberta | N/A (local) |
+| 2. Texto extraído (PDF.js) | RAM da aba | Volátil | N/A (local) |
+| 3. Texto anonimizado | RAM da aba | Volátil | N/A (local) |
+| 4. Envio HTTP | Internet → Azure brazilsouth | Em trânsito | **TLS 1.2+ obrigatório, HSTS, cert gerenciado Azure** |
+| 5. Recebimento no App Service | Memória do processo Node.js | Volátil (não grava em disco) | **TLS terminado em front-end Azure** |
+| 6. Validação de PII residual | Memória do processo | Volátil | N/A (em memória) |
+| 7. Chamada Azure OpenAI | Rede privada Azure (Private Endpoint) | Volátil | **TLS interno Azure backbone + isolamento de VNet** |
+| 8. Processamento na IA | Azure OpenAI brazilsouth | **Sem retenção** (config oficial Azure) | TLS interno + criptografia em repouso AES-256 (mesmo durante processamento) |
+| 9. Resposta para o servidor | Rede privada Azure | Volátil | TLS interno |
+| 10. Resposta ao navegador | Internet → cliente | Em trânsito | **TLS 1.2+ + HSTS** |
+| 11. Exibição ao usuário | RAM da aba | Volátil | N/A (local) |
+| 12. Aba fechada | — | **Apagado da RAM** | — |
+
+### Garantias técnicas verificáveis
+
+- **Sem upload de binário:** o endpoint `/api/analyze-document` aceita
+  apenas `Content-Type: application/json` (HTTP 415 caso contrário —
+  [lib/ai-analyze.js](../lib/ai-analyze.js)). Multipart/form-data,
+  octet-stream e qualquer outro tipo são bloqueados na entrada.
+- **Sem disco no servidor:** o handler processa em memória e responde,
+  sem `fs.write`, sem fila, sem banco de dados.
+- **Sem logs com conteúdo:** App Insights registra apenas metadados
+  operacionais (duração, status HTTP, contagem de PII residual). Texto
+  enviado e resposta da IA **não** são logados.
+- **Anti-vazamento por IA:** Azure OpenAI no portal está com **data
+  retention zero** (sem retenção de prompts para abuse monitoring),
+  configuração aprovada pela MS quando solicitada.
+- **Isolamento de rede:** Azure OpenAI e Key Vault com Private Endpoint,
+  `publicNetworkAccess=Disabled`. Tráfego não sai da VNet Azure.
+- **Identidade sem segredo:** App Service acessa Azure OpenAI via Managed
+  Identity (sem API key armazenada em variável de ambiente ou código).
+- **TLS reforçado:** `Strict-Transport-Security: max-age=63072000;
+  includeSubDomains; preload`, TLS 1.2+ apenas, cert ECDSA gerenciado
+  pelo Azure App Service.
+
+### O que o servidor NUNCA recebe
+
+- PDF binário ou qualquer arquivo
+- CPF, RG, nome, e-mail, telefone, endereço (anonimizados no browser
+  e re-filtrados no servidor)
+- Nome do arquivo original
+- Tamanho original do arquivo
+- Geolocalização do usuário
+- IP real (anonimizado para `0.0.0.0` em telemetria)
+
+### Referências de implementação
+
+- Anonimização cliente: `shared/anonymizer.js`
+- Handler servidor: [lib/ai-analyze.js](../lib/ai-analyze.js)
+- Headers de segurança: [lib/security-headers.js](../lib/security-headers.js)
+- Análise de risco completa: [docs/RIPD.md](RIPD.md)
+
