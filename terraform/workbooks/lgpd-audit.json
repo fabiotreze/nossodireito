@@ -1,0 +1,187 @@
+{
+  "version": "Notebook/1.0",
+  "items": [
+    {
+      "type": 1,
+      "content": {
+        "json": "<div style=\"background:linear-gradient(135deg,#1e3a8a 0%,#3b82f6 100%);padding:24px;border-radius:12px;color:white;display:flex;align-items:center;gap:20px\"><img src=\"https://nossodireito.fabiotreze.com/images/nossodireito-200.webp\" alt=\"NossoDireito\" width=\"72\" height=\"72\" style=\"border-radius:50%;background:white;padding:6px\"/><div><h1 style=\"margin:0;font-size:28px\">⚖️ NossoDireito — Painel Operacional</h1><p style=\"margin:4px 0 0 0;opacity:0.9\">Guia gratuito de direitos para famílias PcD no Brasil · <a href=\"https://nossodireito.fabiotreze.com\" style=\"color:#bfdbfe\">nossodireito.fabiotreze.com</a></p><p style=\"margin:8px 0 0 0;font-size:13px;opacity:0.85\">🔒 LGPD-compliant · Zero coleta de dados pessoais · IP anonimizado · Retenção máx. 180 dias</p></div></div>"
+      },
+      "name": "header"
+    },
+    {
+      "type": 9,
+      "content": {
+        "version": "KqlParameterItem/1.0",
+        "parameters": [
+          {
+            "id": "timerange-param",
+            "version": "KqlParameterItem/1.0",
+            "name": "TimeRange",
+            "label": "Janela",
+            "type": 4,
+            "value": { "durationMs": 86400000 },
+            "typeSettings": {
+              "selectableValues": [
+                { "durationMs": 3600000 },
+                { "durationMs": 14400000 },
+                { "durationMs": 86400000 },
+                { "durationMs": 604800000 },
+                { "durationMs": 2592000000 }
+              ]
+            }
+          }
+        ],
+        "style": "pills",
+        "queryType": 0,
+        "resourceType": "microsoft.insights/components"
+      },
+      "name": "parameters"
+    },
+    {
+      "type": 1,
+      "content": {
+        "json": "## 📊 Visão geral"
+      },
+      "name": "h-overview"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "requests\n| summarize Total=count(), Sucesso=countif(success==true), Falha=countif(success==false), P95_ms=percentile(duration,95), Usuarios_Unicos=dcount(user_Id)",
+        "size": 3,
+        "title": "Requests na janela",
+        "timeContext": { "durationMs": 86400000 },
+        "timeContextFromParameter": "TimeRange",
+        "queryType": 0,
+        "resourceType": "microsoft.insights/components",
+        "visualization": "tiles",
+        "tileSettings": {
+          "showBorder": true,
+          "titleContent": { "columnMatch": "Total", "formatter": 12, "formatOptions": { "palette": "blue" } },
+          "leftContent": { "columnMatch": "Sucesso", "formatter": 12, "formatOptions": { "palette": "green" } }
+        }
+      },
+      "name": "tiles-overview"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "requests\n| summarize Requests=count() by bin(timestamp, 15m)\n| render timechart",
+        "size": 1,
+        "title": "Requests ao longo do tempo",
+        "timeContextFromParameter": "TimeRange",
+        "queryType": 0,
+        "resourceType": "microsoft.insights/components"
+      },
+      "name": "chart-timeline"
+    },
+    {
+      "type": 1,
+      "content": {
+        "json": "## 🛡️ Evidência LGPD — o que **NÃO** é coletado\n\n> Sample real das requisições. Verifique que `client_IP`, `client_City`, `user_Id` e `session_Id` aparecem **vazios ou mascarados**."
+      },
+      "name": "h-lgpd"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "requests\n| take 20\n| project timestamp, name, resultCode, client_IP, client_City, client_CountryOrRegion, user_Id, session_Id\n| order by timestamp desc",
+        "size": 1,
+        "title": "Últimos 20 requests — campos de identificação (PROVA de anonimização)",
+        "timeContextFromParameter": "TimeRange",
+        "queryType": 0,
+        "resourceType": "microsoft.insights/components"
+      },
+      "name": "table-pii-evidence"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "requests\n| summarize\n    Total=count(),\n    Com_IP_Real=countif(isnotempty(client_IP) and client_IP != \"::\" and client_IP != \"0.0.0.0\"),\n    Com_User_Id=countif(isnotempty(user_Id)),\n    Com_Session_Id=countif(isnotempty(session_Id)),\n    Com_City=countif(isnotempty(client_City))\n| extend Pct_IP_Real=round(100.0*Com_IP_Real/Total,2), Pct_User_Id=round(100.0*Com_User_Id/Total,2)",
+        "size": 3,
+        "title": "Contadores de campos pessoais (devem ser 0)",
+        "timeContextFromParameter": "TimeRange",
+        "queryType": 0,
+        "resourceType": "microsoft.insights/components",
+        "visualization": "table"
+      },
+      "name": "table-pii-counters"
+    },
+    {
+      "type": 1,
+      "content": {
+        "json": "## ⚡ Performance e disponibilidade"
+      },
+      "name": "h-perf"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "requests\n| summarize Count=count(), Avg_ms=avg(duration), P95_ms=percentile(duration,95) by name\n| order by Count desc\n| take 15",
+        "size": 1,
+        "title": "Top 15 rotas",
+        "timeContextFromParameter": "TimeRange",
+        "queryType": 0,
+        "resourceType": "microsoft.insights/components",
+        "visualization": "table",
+        "gridSettings": {
+          "formatters": [
+            { "columnMatch": "Count", "formatter": 4, "formatOptions": { "palette": "blue" } },
+            { "columnMatch": "Avg_ms", "formatter": 8, "formatOptions": { "palette": "yellowOrangeRed", "min": 0, "max": 2000 } },
+            { "columnMatch": "P95_ms", "formatter": 8, "formatOptions": { "palette": "yellowOrangeRed", "min": 0, "max": 5000 } }
+          ]
+        }
+      },
+      "name": "table-routes"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "requests\n| where success == false\n| summarize Count=count() by name, resultCode\n| order by Count desc",
+        "size": 1,
+        "title": "Falhas",
+        "timeContextFromParameter": "TimeRange",
+        "queryType": 0,
+        "resourceType": "microsoft.insights/components"
+      },
+      "name": "table-failures"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "exceptions\n| summarize Count=count() by type, outerMessage\n| order by Count desc\n| take 10",
+        "size": 1,
+        "title": "Top exceções",
+        "timeContextFromParameter": "TimeRange",
+        "queryType": 0,
+        "resourceType": "microsoft.insights/components"
+      },
+      "name": "table-exceptions"
+    },
+    {
+      "type": 1,
+      "content": {
+        "json": "## 📂 Camada cold — exportação para Storage (LGPD Art. 16)\n\n- **Storage account:** `stnossodireitobr` / container `appi-logs`\n- **Lifecycle:** delete automático após **180 dias** (cumpre Marco Civil Art. 15 mínimo 6 meses)\n- **Tabelas exportadas:** `AppRequests`, `AppTraces`, `AppExceptions`, `AppDependencies`, `AppCustomEvents`\n- **Não exportado:** corpo de request, payload de OpenAI, headers de auth\n\n```bash\n# Inspecionar blobs exportados\naz storage blob list -c appi-logs --account-name stnossodireitobr \\\n  --auth-mode login -o table\n```"
+      },
+      "name": "cold-info"
+    },
+    {
+      "type": 1,
+      "content": {
+        "json": "---\n<div style=\"text-align:center;color:#64748b;font-size:12px;padding:12px\">NossoDireito · Painel de auditoria LGPD/ANPD · Última atualização: dinâmica · <a href=\"https://github.com/fabiotreze/nossodireito\">Repositório</a></div>"
+      },
+      "name": "footer"
+    }
+  ],
+  "fallbackResourceIds": [
+    "/subscriptions/3acb7300-a8c5-4354-9ad3-0a219a495b4a/resourceGroups/rg-nossodireito-br/providers/microsoft.insights/components/appi-nossodireito-br"
+  ],
+  "$schema": "https://github.com/Microsoft/Application-Insights-Workbooks/blob/master/schema/workbook.json"
+}
