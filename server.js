@@ -11,6 +11,7 @@
 
 const http = require("node:http");
 const fs = require("node:fs");
+const fsPromises = require("node:fs/promises");
 const path = require("node:path");
 const zlib = require("node:zlib");
 
@@ -146,7 +147,10 @@ const govbrProxy = createGovBrProxy({ securityHeaders: SECURITY_HEADERS });
 
 // MIME, CACHE, CSP/SECURITY_HEADERS, ALLOWED_EXT, COMPRESSIBLE, BLOCKED_DIRS,
 // MAX_URL_LENGTH e resolveFile() foram extraídos para lib/* na Onda 7.
-const ROOT = __dirname;
+// ROOT é overridable via env (testes); produção sempre usa __dirname.
+const ROOT = process.env.STATIC_ROOT
+  ? path.resolve(process.env.STATIC_ROOT)
+  : __dirname;
 const MAX_URL_LENGTH = 2048;
 
 // Cache package.json version at startup (avoid readFileSync on every health check)
@@ -378,11 +382,55 @@ const server = http.createServer(async (req, res) => {
   }
 
   // Compression for text-based content (Brotli > Gzip > None)
+  //
+  // Strategy (perf fix — 2026-05-30 SEV2 incident):
+  //  1. Prefer pre-compressed siblings (.br / .gz) — zero CPU at request time.
+  //     Generated at build time by scripts/precompress_static.mjs.
+  //  2. Fallback to on-the-fly compression with Brotli quality 4 (fast).
+  //     Default quality 11 took 5–10s of CPU per 400KB JSON, blocking the
+  //     single worker and causing 26s tail latency.
   const acceptEncoding = req.headers["accept-encoding"] || "";
-  const useBrotli = COMPRESSIBLE.has(ext) && acceptEncoding.includes("br");
-  const useGzip = !useBrotli && COMPRESSIBLE.has(ext) && acceptEncoding.includes("gzip");
+  const acceptsBr = acceptEncoding.includes("br");
+  const acceptsGzip = acceptEncoding.includes("gzip");
+  const canCompress = COMPRESSIBLE.has(ext);
 
-  if (useBrotli) {
+  // Try pre-compressed siblings first (fastest path)
+  let precompressedPath = null;
+  let precompressedEncoding = null;
+  if (canCompress) {
+    if (acceptsBr) {
+      const candidate = `${fullPath}.br`;
+      try {
+        const st = await fsPromises.stat(candidate);
+        if (st.isFile()) {
+          precompressedPath = candidate;
+          precompressedEncoding = "br";
+        }
+      } catch {
+        /* sibling missing — fall through */
+      }
+    }
+    if (!precompressedPath && acceptsGzip) {
+      const candidate = `${fullPath}.gz`;
+      try {
+        const st = await fsPromises.stat(candidate);
+        if (st.isFile()) {
+          precompressedPath = candidate;
+          precompressedEncoding = "gzip";
+        }
+      } catch {
+        /* sibling missing — fall through */
+      }
+    }
+  }
+
+  const useBrotli = !precompressedPath && canCompress && acceptsBr;
+  const useGzip = !precompressedPath && !useBrotli && canCompress && acceptsGzip;
+
+  if (precompressedEncoding) {
+    headers["Content-Encoding"] = precompressedEncoding;
+    headers["Vary"] = "Accept-Encoding";
+  } else if (useBrotli) {
     headers["Content-Encoding"] = "br";
     headers["Vary"] = "Accept-Encoding";
   } else if (useGzip) {
@@ -397,15 +445,24 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
-  const stream = fs.createReadStream(fullPath);
-  if (useBrotli) {
-    const compressor = zlib.createBrotliCompress();
+  const stream = fs.createReadStream(precompressedPath || fullPath);
+  if (precompressedPath) {
+    // Pre-compressed: pipe raw bytes, no transform.
+    stream.pipe(res);
+  } else if (useBrotli) {
+    const compressor = zlib.createBrotliCompress({
+      params: {
+        // Quality 4 = ~50× faster than default (11) with ~5% bigger output.
+        // Acceptable trade-off: a 400KB JSON compresses in ~50ms instead of 5s.
+        [zlib.constants.BROTLI_PARAM_QUALITY]: 4,
+      },
+    });
     compressor.on("error", () => {
       if (!res.writableEnded) res.end();
     });
     stream.pipe(compressor).pipe(res);
   } else if (useGzip) {
-    const compressor = zlib.createGzip();
+    const compressor = zlib.createGzip({ level: 6 });
     compressor.on("error", () => {
       if (!res.writableEnded) res.end();
     });
