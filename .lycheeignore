@@ -55,7 +55,7 @@
 # Mesmos URLs respondem normal em navegador residencial. Conteúdo validado
 # por validate_legal_sources.py (path independente de HTTP-ping).
 ^https?://(www\.)?detran\.(ac|am|ba|ce|df|mt|rn|ro|rs|to)\.gov\.br/
-^https?://(www\.)?sefaz\.(ac|ma|se|to)\.gov\.br/
+^https?://(www\.)?sefaz\.(ac|ma|rs|se|to)\.gov\.br/
 ^https?://sistemas1\.sefaz\.ma\.gov\.br/
 ^https?://internet\.sefaz\.es\.gov\.br/
 ^https?://(www\.)?sefa\.pa\.gov\.br/
