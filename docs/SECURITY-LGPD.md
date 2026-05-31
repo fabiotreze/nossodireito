@@ -73,9 +73,15 @@ flowchart LR
 ## Marco Civil da Internet (Lei 12.965/2014)
 
 - **Art. 15:** Retenção de registros de acesso a aplicações por 6 meses em
-  ambiente controlado e seguro (cumprido via App Insights com IP anonimizado;
-  retenção configurada para 30 dias — inferior ao mínimo legal; ajustar se
-  ordem judicial exigir preservação específica).
+  ambiente controlado e seguro. Cumprido em duas camadas:
+  - **Hot (30 dias):** App Insights `appi-nossodireito-br` com IP anonimizado
+    para consulta operacional rápida.
+  - **Cold (≥ 6 meses):** Data Export `export-appi-to-storage` envia
+    continuamente `AppRequests`, `AppTraces`, `AppExceptions`,
+    `AppDependencies` e `AppCustomEvents` para o container `appi-logs`
+    em `stnossodireitobr` (Cool tier, imutável por padrão de SA).
+    Atende também LGPD Art. 16 (comprovação de tratamento) e provê base
+    para ordens judiciais de preservação específica.
 - **Art. 7º, VII:** Não fornecimento a terceiros de registros de conexão e
   acesso sem consentimento livre, expresso e informado ou determinação judicial.
 

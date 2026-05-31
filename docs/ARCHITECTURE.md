@@ -151,6 +151,8 @@ Thresholds atuais (Lighthouse): perf ≥ 0.85, a11y ≥ 0.90, best-practices ≥
 - [terraform/keyvault-redis-private-network.tf](../terraform/keyvault-redis-private-network.tf)
 - [terraform/variables.tf](../terraform/variables.tf)
 - [terraform/outputs.tf](../terraform/outputs.tf)
+- [terraform/providers.tf](../terraform/providers.tf) — backend remoto `azurerm` (state em `stnossodireitobr/tfstate`)
+- [terraform/BACKEND-REMOTE.md](../terraform/BACKEND-REMOTE.md) — guia operacional do state remoto
 
 ## Referencias Operacionais
 

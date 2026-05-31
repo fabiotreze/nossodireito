@@ -57,3 +57,41 @@
 - `GSC_OAUTH_REFRESH_TOKEN`
 
 Sem esses secrets, o watchdog continua válido para monitorar CI/deploy.
+
+## Backup e Recuperação de Desastre
+
+### Estado Terraform
+
+- Backend remoto `azurerm` ATIVO desde 2026-05-31 — ver [terraform/BACKEND-REMOTE.md](../terraform/BACKEND-REMOTE.md).
+- Storage: `stnossodireitobr` / container `tfstate` / blob `nossodireito.prod.tfstate`.
+- Lock nativo via blob lease (não há mais corrida entre runs paralelos).
+- Auth: Azure AD (RBAC `Storage Blob Data Contributor` no SA) — não há chave compartilhada.
+- Recuperação: blob versioning + soft-delete do SA permitem `az storage blob undelete` em até 7 dias.
+
+### Telemetria de longo prazo (Marco Civil + LGPD Art. 16)
+
+- Data Export `export-appi-to-storage` envia continuamente as tabelas
+  `AppRequests`, `AppTraces`, `AppExceptions`, `AppDependencies`,
+  `AppCustomEvents` do workspace `log-nossodireito-br` para o container
+  `appi-logs` no SA `stnossodireitobr`.
+- Permite reter logs além dos 30 dias do App Insights por custo Cool tier.
+- Consulta: `az storage blob list -c appi-logs --account-name stnossodireitobr --auth-mode login -o table`.
+
+### Key Vault (segredos)
+
+- Soft-delete: 7 dias (imutável após criação).
+- Purge-protection: **ATIVO** (segredos deletados não podem ser purgados antes do prazo).
+- Restore: `az keyvault secret recover --vault-name kv-nossodireito-br --name <secret>`.
+
+### Aplicação
+
+- Backup do filesystem do App Service: não há (stateless — código vem do repo Git, dados vêm de Azure OpenAI e do navegador).
+- Recuperação: redeploy a partir da última tag estável (`gh workflow run deploy.yml --ref v1.39.0`).
+
+### Procedimento de DR completo
+
+1. Reinstanciar infra: `gh workflow run terraform.yml -f action=apply` (lê state do SA).
+2. Restaurar segredos via `az keyvault secret recover` se aplicável.
+3. Redeploy: push na `main` ou `gh workflow run deploy.yml`.
+4. Validar: `curl https://nossodireito.fabiotreze.com/healthz`.
+
