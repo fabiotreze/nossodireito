@@ -1,5 +1,5 @@
 {
-  "versao": "1.36.1",
+  "versao": "1.39.0",
   "ultima_atualizacao": "2026-05-28",
   "aviso": "Informações compiladas de fontes oficiais do governo brasileiro (gov.br). Podem estar desatualizadas. Verifique sempre as fontes originais.",
   "fontes": [
@@ -219,7 +219,7 @@
     {
       "nome": "CNES — Cadastro Nacional de Estabelecimentos de Saúde e Profissionais",
       "tipo": "servico",
-      "url": "https://cnes.datasus.gov.br/",
+      "url": "https://cnes2.datasus.gov.br/",
       "orgao": "Ministério da Saúde / DATASUS",
       "consultado_em": "2026-05-24"
     },
@@ -1367,7 +1367,7 @@
         "Consulta de especialidades e RQE (Registro de Qualificação de Especialista)",
         "Validação de prescrição eletrônica"
       ],
-      "url": "https://datasus.saude.gov.br/cnes-cadastro-nacional-de-estabelecimentos-de-saude/",
+      "url": "https://datasus.saude.gov.br/",
       "como_acessar": "Use o CNES/DATASUS para verificar profissionais e estabelecimentos de saúde cadastrados, ou procure o CRM do seu estado para validar o registro médico.",
       "categorias": [
         "bpc",
@@ -1387,7 +1387,7 @@
         "Consulta de pessoa jurídica (clínicas de psicologia)",
         "Verificação de habilitação profissional"
       ],
-      "url": "https://datasus.saude.gov.br/cnes-cadastro-nacional-de-estabelecimentos-de-saude/",
+      "url": "https://datasus.saude.gov.br/",
       "como_acessar": "Use o CNES/DATASUS para verificar profissionais de saúde cadastrados, ou procure o CRP do seu estado para validar o registro do psicólogo.",
       "categorias": [
         "sus_terapias",
@@ -1681,7 +1681,7 @@
       "uf": "AC",
       "nome": "Secretaria de Estado de Saúde (SESACRE)",
       "url": "https://saude.ac.gov.br",
-      "sefaz": "https://sefaznet.ac.gov.br/",
+      "sefaz": "https://sefaz.ac.gov.br/",
       "detran": "https://detran.ac.gov.br",
       "beneficios_destaque": [
         "Isenção IPVA: consulte a SEFAZ/AC para condições e limites",
@@ -2365,7 +2365,7 @@
         "orgao_denuncia": {
           "nome": "Disque 100 — Direitos Humanos",
           "contato": "Disque 100 (ligação gratuita)",
-          "url": "https://www.gov.br/mdh/pt-br/acesso-a-informacao/disque-100-1"
+          "url": "https://www.gov.br/mdh/pt-br/acesso-a-informacao/disque-100"
         },
         "aviso": "⚠️ Este protocolo é de caráter informativo e NÃO substitui orientação jurídica profissional. Procure a Defensoria Pública ou o CRAS da sua cidade para assistência gratuita."
       },
@@ -2506,7 +2506,7 @@
         "orgao_denuncia": {
           "nome": "Conselho Tutelar local / Disque 100",
           "contato": "Conselho Tutelar da sua cidade ou Disque 100",
-          "url": "https://www.gov.br/mdh/pt-br/acesso-a-informacao/disque-100-1"
+          "url": "https://www.gov.br/mdh/pt-br/acesso-a-informacao/disque-100"
         },
         "aviso": "⚠️ Este protocolo é de caráter informativo e NÃO substitui orientação jurídica profissional. Procure a Defensoria Pública ou o CRAS da sua cidade para assistência gratuita."
       },
@@ -2938,7 +2938,7 @@
         },
         {
           "titulo": "CNES — Cadastro Nacional de Estabelecimentos de Saúde (buscar CER, CAPS, UBS)",
-          "url": "https://cnes.datasus.gov.br/"
+          "url": "https://cnes2.datasus.gov.br/"
         },
         {
           "titulo": "Condições clínicas contempladas pelo CEAF (PDF)",
@@ -4102,7 +4102,7 @@
           "uf": "AC",
           "lei": "LC 114/2002",
           "art": "Art. 7º",
-          "sefaz": "https://sefaznet.ac.gov.br/"
+          "sefaz": "https://sefaz.ac.gov.br/"
         },
         {
           "uf": "AL",
@@ -4269,7 +4269,7 @@
           "artigo": "Art. 7º",
           "condicoes": "Isenção para veículo de propriedade de PcD. Veículo único. Geralmente exige laudo médico e veículo adaptado conforme a deficiência.",
           "limite_valor": "Segue referência do Convênio CONFAZ (verificar valor atualizado)",
-          "sefaz": "https://sefaznet.ac.gov.br/"
+          "sefaz": "https://sefaz.ac.gov.br/"
         },
         {
           "uf": "AL",
@@ -8028,7 +8028,7 @@
         "orgao_denuncia": {
           "nome": "Defensoria Pública / Ministério Público",
           "contato": "Defensoria Pública da sua comarca",
-          "url": "https://www.gov.br/mdh/pt-br/acesso-a-informacao/disque-100-1"
+          "url": "https://www.gov.br/mdh/pt-br/acesso-a-informacao/disque-100"
         },
         "aviso": "⚠️ Este protocolo é de caráter informativo e NÃO substitui orientação jurídica profissional. Procure a Defensoria Pública ou o CRAS da sua cidade para assistência gratuita."
       },
@@ -8232,7 +8232,7 @@
         "orgao_denuncia": {
           "nome": "Disque 100 — Direitos Humanos / Polícia Civil",
           "contato": "Disque 100 (24h) ou 190 (emergência)",
-          "url": "https://www.gov.br/mdh/pt-br/acesso-a-informacao/disque-100-1"
+          "url": "https://www.gov.br/mdh/pt-br/acesso-a-informacao/disque-100"
         },
         "aviso": "⚠️ Este protocolo é de caráter informativo e NÃO substitui orientação jurídica profissional. Procure a Defensoria Pública ou o CRAS da sua cidade para assistência gratuita."
       },
@@ -8590,14 +8590,14 @@
       "dicas": [
         "O SUS fornece GRATUITAMENTE: cadeira de rodas, próteses auditivas (aparelho auditivo), próteses de membro, órteses, coletes, bengalas, andadores, muletas",
         "A fila para próteses e órteses pode ser longa — insista e acompanhe seu protocolo; se demorar demais, acione a Defensoria Pública",
-        "CERs (Centros Especializados em Reabilitação) existem em todos os estados — consulte no CNES (cnes.datasus.gov.br)",
+        "CERs (Centros Especializados em Reabilitação) existem em todos os estados — consulte no CNES (cnes2.datasus.gov.br)",
         "Crianças com risco de atraso no desenvolvimento têm direito a estimulação precoce IMEDIATA — não espere diagnóstico definitivo",
         "A reabilitação profissional do INSS inclui cursos, capacitação e até equipamentos para nova atividade laboral",
         "Se o SUS negar órtese ou prótese prescrita, peça a negativa POR ESCRITO e procure a Defensoria — há jurisprudência consolidada",
         "Sempre verifique se o site termina em .gov.br antes de fornecer dados pessoais"
       ],
       "valor": "Gratuito pelo SUS — órteses, próteses, reabilitação e terapias. Reabilitação profissional pelo INSS também gratuita.",
-      "onde": "UBS → CER (Centro Especializado em Reabilitação) / INSS (reabilitação profissional) / Mapa CNES (cnes.datasus.gov.br)",
+      "onde": "UBS → CER (Centro Especializado em Reabilitação) / INSS (reabilitação profissional) / Mapa CNES (cnes2.datasus.gov.br)",
       "links": [
         {
           "titulo": "Rede de Cuidados à Pessoa com Deficiência — SUS",
@@ -8605,7 +8605,7 @@
         },
         {
           "titulo": "CNES — Cadastro de Estabelecimentos de Saúde (localizar CER)",
-          "url": "https://cnes.datasus.gov.br/"
+          "url": "https://cnes2.datasus.gov.br/"
         },
         {
           "titulo": "Meu INSS — Reabilitação Profissional",
@@ -8737,7 +8737,7 @@
       "aplicavel_a_todas_deficiencias": true,
       "aplicabilidade": "condicao_medica",
       "data_ultima_verificacao": "2026-05-28",
-      "canal_de_atendimento_oficial": "UBS → CER (Centro Especializado em Reabilitação) / INSS (reabilitação profissional) / Mapa CNES (cnes.datasus.gov.br)",
+      "canal_de_atendimento_oficial": "UBS → CER (Centro Especializado em Reabilitação) / INSS (reabilitação profissional) / Mapa CNES (cnes2.datasus.gov.br)",
       "requer_consulta_especializada": false,
       "criterio_classificacao": {
         "regra": "default_administrativo",

@@ -3312,10 +3312,11 @@ ${renderWeekPlan(priorityOrder, titleById)}
             return true;
         } catch { return false; }
     }
-    function setStoredAIConsent(granted) {
+    function setStoredAIConsent(granted, sensitive) {
         try {
             localStorage.setItem(AI_CONSENT_KEY, JSON.stringify({
                 granted: !!granted,
+                sensitive: !!sensitive,
                 exp: Date.now() + AI_CONSENT_TTL_MS,
             }));
             emitAIConsentChanged();
@@ -3327,21 +3328,41 @@ ${renderWeekPlan(priorityOrder, titleById)}
         const btnAccept = document.getElementById('aiConsentAccept');
         const btnCancel = document.getElementById('aiConsentCancel');
         const cbRemember = document.getElementById('aiConsentRemember');
+        const cbSensitive = document.getElementById('aiConsentSensitive');
         if (!modal || !btnAccept || !btnCancel) {
-            return Promise.resolve(window.confirm('Permitir envio do texto anonimizado para análise com IA (Azure OpenAI gpt-4o-mini, Brasil Sul)?'));
+            return Promise.resolve(window.confirm(
+                'Permitir envio do texto anonimizado (que pode conter dados de saúde) '
+                + 'para análise com IA (Azure OpenAI gpt-4o-mini, Brasil Sul)? '
+                + 'Art. 11 LGPD: consentimento específico para dados sensíveis.'
+            ));
         }
+        if (modal.style.display === 'flex') return Promise.resolve(false);
         modal.style.display = 'flex';
         if (cbRemember) cbRemember.checked = false;
+        if (cbSensitive) {
+            cbSensitive.checked = false;
+            btnAccept.disabled = true;
+            btnAccept.setAttribute('aria-disabled', 'true');
+        }
         return new Promise((resolve) => {
             const cleanup = (result) => {
                 modal.style.display = 'none';
                 btnAccept.removeEventListener('click', onAccept);
                 btnCancel.removeEventListener('click', onCancel);
+                if (cbSensitive) cbSensitive.removeEventListener('change', onSensitiveChange);
                 document.removeEventListener('keydown', onKey);
                 resolve(result);
             };
+            const onSensitiveChange = () => {
+                const checked = cbSensitive.checked;
+                btnAccept.disabled = !checked;
+                btnAccept.setAttribute('aria-disabled', String(!checked));
+            };
             const onAccept = () => {
-                if (cbRemember && cbRemember.checked) setStoredAIConsent(true);
+                if (cbSensitive && !cbSensitive.checked) return;
+                if (cbRemember && cbRemember.checked) {
+                    setStoredAIConsent(true, !!(cbSensitive && cbSensitive.checked));
+                }
                 cleanup(true);
             };
             const onCancel = () => cleanup(false);
@@ -3351,6 +3372,7 @@ ${renderWeekPlan(priorityOrder, titleById)}
             const onKey = (e) => { if (e.key === 'Escape') cleanup(false); };
             btnAccept.addEventListener('click', onAccept);
             btnCancel.addEventListener('click', onCancel);
+            if (cbSensitive) cbSensitive.addEventListener('change', onSensitiveChange);
             document.addEventListener('keydown', onKey);
             setTimeout(() => btnAccept.focus(), 50);
         });
