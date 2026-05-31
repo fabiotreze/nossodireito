@@ -135,8 +135,15 @@ const SYSTEM_PROMPT = [
 
 function getCredential() {
   if (_credential) return _credential;
-  const { DefaultAzureCredential } = require("@azure/identity");
-  _credential = new DefaultAzureCredential();
+  // Em App Service usamos Managed Identity direto: pular EnvironmentCredential
+  // evita ruído de "CredentialUnavailableError" em telemetria (issue #250).
+  if (process.env.WEBSITE_SITE_NAME) {
+    const { ManagedIdentityCredential } = require("@azure/identity");
+    _credential = new ManagedIdentityCredential();
+  } else {
+    const { DefaultAzureCredential } = require("@azure/identity");
+    _credential = new DefaultAzureCredential();
+  }
   return _credential;
 }
 
