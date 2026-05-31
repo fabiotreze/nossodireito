@@ -153,6 +153,12 @@ const ROOT = process.env.STATIC_ROOT
   : __dirname;
 const MAX_URL_LENGTH = 2048;
 
+// ── Scanner / vulnerability-probe paths (issue #251) ──
+// Bots scan estes paths em busca de configs vazadas. Sempre retornamos 404,
+// mas centralizar aqui evita poluir logs com stack traces de resolveFile()
+// e permite contar tentativas no App Insights para análise/WAF futura.
+const SCANNER_PATH_RE = /^\/(\.env|\.git|__env|application\.(yml|properties)|config\/secrets|firebase-config|wp-admin|wp-login|phpmyadmin|\.well-known\/(jwks\.json|openid-configuration)|server-status|actuator|\.aws|\.ssh)/i;
+
 // Cache package.json version at startup (avoid readFileSync on every health check)
 const PKG_VERSION = JSON.parse(fs.readFileSync(path.join(__dirname, "package.json"), "utf8")).version;
 
@@ -194,6 +200,20 @@ const server = http.createServer(async (req, res) => {
   // ── Health check endpoint (lib/infra-handlers.js) ──
   if (req.url === "/healthz" || req.url === "/health") {
     healthHandler(req, res);
+    return;
+  }
+
+  // ── Scanner / probe paths (issue #251) ──
+  // Return 404 fast, no static-file lookup, e contabiliza no AI como custom event.
+  if (SCANNER_PATH_RE.test(req.url)) {
+    if (appInsights?.defaultClient) {
+      appInsights.defaultClient.trackEvent({
+        name: "ScannerProbeBlocked",
+        properties: { path: req.url.split("?")[0].slice(0, 128) },
+      });
+    }
+    res.writeHead(404, { "Content-Type": "text/plain", ...SECURITY_HEADERS });
+    res.end("Not Found");
     return;
   }
 
