@@ -3315,7 +3315,6 @@ ${renderWeekPlan(priorityOrder, titleById)}
         const modal = document.getElementById('aiConsentModal');
         const btnAccept = document.getElementById('aiConsentAccept');
         const btnCancel = document.getElementById('aiConsentCancel');
-        const btnRevoke = document.getElementById('aiConsentRevoke');
         const cbRemember = document.getElementById('aiConsentRemember');
         if (!modal || !btnAccept || !btnCancel) {
             return Promise.resolve(window.confirm('Permitir envio do texto anonimizado para análise com IA (Azure OpenAI gpt-4o-mini, Brasil Sul)?'));
@@ -3327,7 +3326,6 @@ ${renderWeekPlan(priorityOrder, titleById)}
                 modal.style.display = 'none';
                 btnAccept.removeEventListener('click', onAccept);
                 btnCancel.removeEventListener('click', onCancel);
-                if (btnRevoke) btnRevoke.removeEventListener('click', onRevoke);
                 document.removeEventListener('keydown', onKey);
                 resolve(result);
             };
@@ -3336,19 +3334,12 @@ ${renderWeekPlan(priorityOrder, titleById)}
                 cleanup(true);
             };
             const onCancel = () => cleanup(false);
-            const onRevoke = () => {
-                // LGPD Art. 8º §5: revogação do consentimento a qualquer momento
-                try { localStorage.removeItem(AI_CONSENT_KEY); } catch { /* silencioso */ }
-                emitAIConsentChanged();
-                if (typeof showToast === 'function') {
-                    showToast('Consentimento de IA revogado. Será solicitado novamente na próxima análise.', 'info');
-                }
-                cleanup(false);
-            };
+            // 1.36.1: botao "Revogar" foi removido do modal — por definicao,
+            // este modal so abre quando nao ha consentimento salvo. Revogacao
+            // vive nos paineis permanentes da secao LGPD (cadeado dinamico).
             const onKey = (e) => { if (e.key === 'Escape') cleanup(false); };
             btnAccept.addEventListener('click', onAccept);
             btnCancel.addEventListener('click', onCancel);
-            if (btnRevoke) btnRevoke.addEventListener('click', onRevoke);
             document.addEventListener('keydown', onKey);
             setTimeout(() => btnAccept.focus(), 50);
         });

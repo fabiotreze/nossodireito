@@ -585,9 +585,9 @@
         }
       }
     </style>
-    <link rel="stylesheet" href="css/styles.css?v=1.36.0" media="print" id="deferredCSS" />
+    <link rel="stylesheet" href="css/styles.css?v=1.36.1" media="print" id="deferredCSS" />
     <noscript>
-      <link rel="stylesheet" href="css/styles.css?v=1.36.0" />
+      <link rel="stylesheet" href="css/styles.css?v=1.36.1" />
     </noscript>
     <script type="application/ld+json">
       {
@@ -2624,7 +2624,15 @@
           </details>
         </div>
         <div class="ai-consent-modal-actions">
-          <button id="aiConsentRevoke" type="button" class="btn btn-consent-revoke" title="Revoga consentimento previamente armazenado">🔓 Revogar consentimento</button>
+          <!--
+            Botao "Revogar" foi removido do modal de aceitacao (1.36.1):
+            por definicao, o modal so abre quando nao ha consentimento salvo
+            (getAIConsent retorna direto se ja existe). Mostrar "Revogar"
+            aqui sugeria que havia algo armazenado quando nao havia.
+            Gerenciamento de revogacao vive nos paineis permanentes da
+            secao LGPD (#aiConsentRevokeQuick e #aiConsentRevokeInline),
+            ambos com cadeado dinamico refletindo o estado real.
+          -->
           <button id="aiConsentCancel" type="button" class="btn btn-secondary">Cancelar</button>
           <button id="aiConsentAccept" type="button" class="btn btn-primary">✅ Concordo e enviar</button>
         </div>
@@ -2632,7 +2640,7 @@
     </div>
 
     <!-- Anonymizer compartilhado (Node + Browser) — DEVE carregar ANTES de app.js -->
-    <script src="shared/anonymizer.js?v=1.36.0" defer></script>
-    <script src="js/app.js?v=1.36.0" defer></script>
+    <script src="shared/anonymizer.js?v=1.36.1" defer></script>
+    <script src="js/app.js?v=1.36.1" defer></script>
   </body>
 </html>
