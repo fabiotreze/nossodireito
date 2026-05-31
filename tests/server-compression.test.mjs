@@ -14,9 +14,8 @@
  * crafted asset tree, hit it over HTTP, and assert headers / payload size.
  */
 
-import { afterEach, before, after, test } from "node:test";
+import { before, after, test } from "node:test";
 import assert from "node:assert/strict";
-import fs from "node:fs";
 import fsPromises from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
