@@ -1,6 +1,6 @@
 # Runbook de Operações
 
-**Versão:** 1.36.1
+**Versão:** 1.37.0
 
 ## Escopo
 

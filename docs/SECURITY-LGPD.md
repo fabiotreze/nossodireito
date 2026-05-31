@@ -1,7 +1,7 @@
 # Segurança e LGPD
 
-**Versão:** 1.36.1
-**Atualizado:** 2026-05-28
+**Versão:** 1.37.0
+**Atualizado:** 2026-05-31
 
 ## Baseline de Segurança
 
@@ -69,3 +69,21 @@ flowchart LR
 - Workflows de segurança do GitHub (CodeQL, gitleaks)
 - Validação do Terraform + checagens de policy no pipeline
 - Telemetria do App Insights configurada com controles que preservam privacidade
+
+## Marco Civil da Internet (Lei 12.965/2014)
+
+- **Art. 15:** Retenção de registros de acesso a aplicações por 6 meses em
+  ambiente controlado e seguro (cumprido via App Insights com IP anonimizado;
+  retenção configurada para 30 dias — inferior ao mínimo legal; ajustar se
+  ordem judicial exigir preservação específica).
+- **Art. 7º, VII:** Não fornecimento a terceiros de registros de conexão e
+  acesso sem consentimento livre, expresso e informado ou determinação judicial.
+
+## Referências normativas ANPD
+
+| Resolução | Assunto | Impacto no portal |
+|-----------|---------|-------------------|
+| Res. CD/ANPD nº 2/2022 | Agentes de tratamento de pequeno porte | Portal NÃO se enquadra (dados sensíveis, IA, idosos, crianças) |
+| Res. CD/ANPD nº 4/2023 | RIPD | [docs/RIPD.md](RIPD.md) |
+| Res. CD/ANPD nº 15/2024 | Comunicação de incidentes | [RUNBOOK-INCIDENTE-LGPD.md](RUNBOOK-INCIDENTE-LGPD.md) |
+| Res. CD/ANPD nº 18/2024 | Encarregado (DPO) | [docs/ENCARREGADO.md](ENCARREGADO.md) |

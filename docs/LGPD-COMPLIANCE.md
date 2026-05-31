@@ -169,3 +169,26 @@ Este documento atende ao item explícito do issue
 A partir desta revisão, esta página é o ponto único de auditoria recorrente
 para textos legais, disclaimers, termos informativos e postura LGPD do
 NossoDireito.
+
+## 11. Referências normativas ANPD
+
+| Resolução | Assunto | Documento relacionado |
+|-----------|---------|----------------------|
+| Res. CD/ANPD nº 2/2022 | Agentes de pequeno porte | N/A — portal não se enquadra |
+| Res. CD/ANPD nº 4/2023 | RIPD | [docs/RIPD.md](RIPD.md) |
+| Res. CD/ANPD nº 15/2024 | Comunicação de incidentes | [RUNBOOK-INCIDENTE-LGPD.md](RUNBOOK-INCIDENTE-LGPD.md) |
+| Res. CD/ANPD nº 18/2024 | Encarregado (DPO) | [docs/ENCARREGADO.md](ENCARREGADO.md) |
+
+### Dados sensíveis (Art. 11, II, a)
+
+O titular pode inserir dados de saúde (CIDs, laudos, diagnósticos) no
+formulário de análise por IA. O tratamento é autorizado com base em
+**consentimento específico e destacado** (Art. 11, II, a) coletado via
+modal dedicado antes do envio. O RIPD documenta os riscos e mitigações.
+
+### Marco Civil da Internet (Lei 12.965/2014, Art. 15)
+
+Registros de acesso à aplicação são retidos por 30 dias em ambiente
+controlado (App Insights, IP anonimizado). Nota: o mínimo legal é 6 meses;
+a retenção reduzida é uma decisão de minimização, ajustável sob ordem
+judicial (Art. 15, §2º).
