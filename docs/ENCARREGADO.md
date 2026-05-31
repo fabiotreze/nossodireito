@@ -33,6 +33,15 @@ portal e neste documento, conforme Res. 18/2024, Art. 4º, §1º.
 4. Executar as demais atribuições determinadas pelo controlador ou
    estabelecidas em normas complementares.
 
+> **Nota operacional:** o portal é mantido por operação unipessoal
+> (controlador = encarregado). Não há, nesta data, funcionários ou
+> contratados com acesso a dados pessoais de titulares. A atribuição
+> nº 3 aplica-se imediatamente no momento em que qualquer terceiro
+> (prestador de serviço, voluntário, contratado) for incorporado ao
+> tratamento, com termo de confidencialidade e treinamento prévio
+> obrigatórios. A atribuição permanece declarada por exigência do
+> Art. 41, §2º, III da LGPD e da Res. CD/ANPD nº 18/2024, Art. 6º.
+
 ## Canal de atendimento ao titular
 
 - **E-mail:** `dpo@fabiotreze.com`
