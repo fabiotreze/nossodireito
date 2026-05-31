@@ -1681,7 +1681,7 @@
       "uf": "AC",
       "nome": "Secretaria de Estado de Saúde (SESACRE)",
       "url": "https://saude.ac.gov.br",
-      "sefaz": "https://sefaznet.ac.gov.br/",
+      "sefaz": "https://sefaz.ac.gov.br/",
       "detran": "https://detran.ac.gov.br",
       "beneficios_destaque": [
         "Isenção IPVA: consulte a SEFAZ/AC para condições e limites",
@@ -4102,7 +4102,7 @@
           "uf": "AC",
           "lei": "LC 114/2002",
           "art": "Art. 7º",
-          "sefaz": "https://sefaznet.ac.gov.br/"
+          "sefaz": "https://sefaz.ac.gov.br/"
         },
         {
           "uf": "AL",
@@ -4269,7 +4269,7 @@
           "artigo": "Art. 7º",
           "condicoes": "Isenção para veículo de propriedade de PcD. Veículo único. Geralmente exige laudo médico e veículo adaptado conforme a deficiência.",
           "limite_valor": "Segue referência do Convênio CONFAZ (verificar valor atualizado)",
-          "sefaz": "https://sefaznet.ac.gov.br/"
+          "sefaz": "https://sefaz.ac.gov.br/"
         },
         {
           "uf": "AL",
