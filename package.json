@@ -19,7 +19,7 @@
     "@azure/monitor-opentelemetry": "^1.18.0",
     "applicationinsights": "^3.14.0",
     "openai": "^6.39.0",
-    "redis": "^5.9.0"
+    "redis": "^6.0.0"
   },
   "engines": {
     "node": ">=22"
