@@ -1,6 +1,6 @@
 # Segurança e LGPD
 
-**Versão:** 1.39.0
+**Versão:** 1.40.0
 **Atualizado:** 2026-05-28
 
 ## Baseline de Segurança
@@ -74,7 +74,7 @@ flowchart LR
 
 - **Art. 15:** Retenção de registros de acesso a aplicações por 6 meses em
   ambiente controlado e seguro. Cumprido em duas camadas:
-  - **Hot (30 dias):** App Insights `appi-nossodireito-br` com IP anonimizado
+  - **Hot (30 dias):** App Insights `appi-nossodireito-br` sem IP e sem geolocalização
     para consulta operacional rápida.
   - **Cold (180 dias — TTL máximo):** Data Export `export-appi-to-storage`
     envia continuamente `AppRequests`, `AppTraces`, `AppExceptions`,
@@ -169,7 +169,7 @@ flowchart TD
 - Nome do arquivo original
 - Tamanho original do arquivo
 - Geolocalização do usuário
-- IP real (anonimizado para `0.0.0.0` em telemetria)
+- IP real
 
 ### Referências de implementação
 

@@ -61,9 +61,9 @@ Operacionalmente:
 | Fluxo | Dado | Coleta | Armazenamento | Retenção | Compartilhamento |
 |-------|------|--------|---------------|----------|------------------|
 | Navegação | Nenhum dado pessoal | Não | Não | Não | Não |
-| Telemetria App Insights | IP anonimizado para `0.0.0.0`, sem User-Agent, sem query string | Servidor | Azure (Brasil) | 30 dias | Não |
+| Telemetria App Insights | Sem IP, sem geolocalização, sem User-Agent, sem query string | Servidor | Azure (Brasil) | 30 dias | Não |
 | Análise IA opcional | Texto anonimizado pelo navegador | Servidor recebe e repassa à IA | Azure OpenAI (Brasil) | Sem retenção de prompt/conteúdo | Azure OpenAI no tenant do operador |
-| Rate limit | Hash anonimizado em Redis privado | Cache Redis privado | Azure (Brasil) | TTL curto operacional | Não |
+| Rate limit | Bucket global sem identificador por cliente | Cache Redis privado | Azure (Brasil) | TTL curto operacional | Não |
 
 Notas:
 
@@ -126,7 +126,7 @@ Marque cada item ao final de cada revisão recorrente da postura LGPD.
 
 - [x] Sem cookies de tracking.
 - [x] Sem coleta de dado pessoal por padrão.
-- [x] Telemetria com IP anonimizado e sem User-Agent.
+- [x] Telemetria sem IP, sem geolocalização e sem User-Agent.
 - [x] Retenção de telemetria limitada (30 dias).
 - [x] Rejeição automática de payloads com PII evidente na análise por IA.
 - [x] Anonimização do texto antes do envio à IA.
@@ -188,7 +188,7 @@ modal dedicado antes do envio. O RIPD documenta os riscos e mitigações.
 
 ### Marco Civil da Internet (Lei 12.965/2014, Art. 15)
 
-Registros de acesso à aplicação são retidos por 30 dias em ambiente
-controlado (App Insights, IP anonimizado). Nota: o mínimo legal é 6 meses;
+Registros técnicos de acesso à aplicação são retidos por 30 dias em ambiente
+controlado (App Insights, sem IP e sem geolocalização). Nota: o mínimo legal é 6 meses;
 a retenção reduzida é uma decisão de minimização, ajustável sob ordem
 judicial (Art. 15, §2º).

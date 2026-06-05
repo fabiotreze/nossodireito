@@ -18,7 +18,7 @@ terraform {
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "~> 4.74"  # Locked a 4.74.0 (2026-05-29)
+      version = "~> 4.74" # Locked a 4.74.0 (2026-05-29)
       # Pin habilitado via .terraform.lock.hcl para reproducibilidade
       # Atualizações de provider: terraform init -upgrade
     }
