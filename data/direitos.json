@@ -1,6 +1,6 @@
 {
-  "versao": "1.40.0",
-  "ultima_atualizacao": "2026-05-28",
+  "versao": "1.41.0",
+  "ultima_atualizacao": "2026-06-05",
   "aviso": "Informações compiladas de fontes oficiais do governo brasileiro (gov.br). Podem estar desatualizadas. Verifique sempre as fontes originais.",
   "fontes": [
     {
@@ -2068,7 +2068,7 @@
         "Compareça à perícia médica e à avaliação social no INSS na data agendada",
         "Acompanhe o resultado pelo Meu INSS ou pelo 135",
         "Se aprovado, o benefício é pago mensalmente pelo banco indicado",
-        "6. Acompanhe o andamento pelo protocolo fornecido e aguarde retorno oficial"
+        "Acompanhe o andamento pelo protocolo fornecido e aguarde retorno oficial"
       ],
       "dicas": [
         "Mesmo que a renda familiar ultrapasse 1/4 do SM, peça — o INSS analisa caso a caso considerando gastos com saúde e medicamentos",
@@ -2282,7 +2282,7 @@
         "Preencha o requerimento e entregue os documentos",
         "Aguarde a emissão (prazo varia por município)",
         "A carteira tem validade de 5 anos",
-        "6. Acompanhe o andamento pelo protocolo fornecido e aguarde retorno oficial"
+        "Acompanhe o andamento pelo protocolo fornecido e aguarde retorno oficial"
       ],
       "dicas": [
         "A emissão é GRATUITA por lei (Lei 9.265/1996, Art. 1º, VII)",
@@ -2438,7 +2438,7 @@
         "Informe sobre a necessidade de apoio especializado (se houver)",
         "Solicite acompanhante especializado se houver comprovada necessidade (laudo)",
         "Se a escola recusar, denuncie à Secretaria de Educação, ao Ministério Público ou ao Conselho Tutelar",
-        "6. Acompanhe o andamento pelo protocolo fornecido e aguarde retorno oficial"
+        "Acompanhe o andamento pelo protocolo fornecido e aguarde retorno oficial"
       ],
       "dicas": [
         "A escola NÃO pode cobrar taxa extra por inclusão",
@@ -2644,7 +2644,7 @@
         "Se negado, peça a negativa POR ESCRITO",
         "Com a negativa em mãos, reclame na ANS (ans.gov.br ou 0800 701 9656)",
         "Se não resolver, procure a Defensoria Pública ou o Procon",
-        "6. Acompanhe o andamento pelo protocolo fornecido e aguarde retorno oficial"
+        "Acompanhe o andamento pelo protocolo fornecido e aguarde retorno oficial"
       ],
       "dicas": [
         "O plano NÃO pode limitar número de sessões de terapia quando há indicação médica",
@@ -3193,7 +3193,7 @@
         "Envie a documentação pelos Correios ou presencialmente",
         "Aguarde a carteirinha do Passe Livre (enviada pelos Correios)",
         "Para transporte municipal, procure a empresa de transporte local ou a prefeitura",
-        "6. Acompanhe o andamento pelo protocolo fornecido e aguarde retorno oficial"
+        "Acompanhe o andamento pelo protocolo fornecido e aguarde retorno oficial"
       ],
       "dicas": [
         "O Passe Livre Federal vale para ônibus, trem e barco INTERESTADUAL — não vale para avião",
@@ -3427,8 +3427,8 @@
         "Cadastre-se na SRTE (Superintendência Regional do Trabalho) ou no SINE da sua cidade",
         "Apresente o laudo médico no processo de admissão",
         "Você tem os mesmos direitos trabalhistas de qualquer empregado + proteções adicionais",
-        "5. Aguarde análise do pedido (prazo geralmente de 30 a 60 dias)",
-        "6. Acompanhe o andamento pelo protocolo fornecido e aguarde retorno oficial"
+        "Aguarde análise do pedido (prazo geralmente de 30 a 60 dias)",
+        "Acompanhe o andamento pelo protocolo fornecido e aguarde retorno oficial"
       ],
       "dicas": [
         "A empresa NÃO pode demitir PcD de cota sem contratar outro PcD no lugar",
@@ -3619,8 +3619,8 @@
         "Vá a uma agência da Caixa Econômica Federal (ou use o app FGTS para agendamento)",
         "Solicite o saque do FGTS por motivo de deficiência",
         "O saque é liberado após análise dos documentos",
-        "5. Aguarde análise do pedido (prazo geralmente de 30 a 60 dias)",
-        "6. Acompanhe o andamento pelo app FGTS ou pelo protocolo fornecido na agência"
+        "Aguarde análise do pedido (prazo geralmente de 30 a 60 dias)",
+        "Acompanhe o andamento pelo app FGTS ou pelo protocolo fornecido na agência"
       ],
       "dicas": [
         "Pode sacar para o trabalhador OU para dependente com deficiência (filho, por exemplo)",
@@ -4745,9 +4745,9 @@
         "Caso não exista fila preferencial, solicite atendimento prioritário ao responsável",
         "Em caso de recusa, exija o livro de reclamações e denuncie ao Procon",
         "Denúncias podem ser feitas pelo site/app Consumidor.gov.br",
-        "6. Para assistência jurídica gratuita: procure a Defensoria Pública do seu estado (presencial ou online)",
-        "7. Defensoria atende demandas como: negativa de benefícios, discriminação, acessibilidade, ações contra INSS, planos de saúde, etc.",
-        "8. Agendamento geralmente online pelo site da Defensoria do seu estado ou presencial"
+        "Para assistência jurídica gratuita: procure a Defensoria Pública do seu estado (presencial ou online)",
+        "Defensoria atende demandas como: negativa de benefícios, discriminação, acessibilidade, ações contra INSS, planos de saúde, etc.",
+        "Agendamento geralmente online pelo site da Defensoria do seu estado ou presencial"
       ],
       "dicas": [
         "O estabelecimento DEVE ter assentos preferenciais em áreas de espera",
@@ -4993,7 +4993,7 @@
         "Agende atendimento presencial no Detran, Junta Médica ou órgão responsável",
         "Entregue documentos e aguarde análise (geralmente 10-30 dias)",
         "Receba credencial física (cartão Defis) para afixar no veículo durante uso da vaga",
-        "6. Acompanhe o andamento pelo protocolo fornecido e aguarde retorno oficial"
+        "Acompanhe o andamento pelo protocolo fornecido e aguarde retorno oficial"
       ],
       "dicas": [
         "O cartão Defis é pessoal — você pode usar em qualquer veículo que estiver dirigindo ou sendo transportado",
@@ -5391,7 +5391,7 @@
         "Advogado ou Defensor protocola petição no processo requerendo prioridade",
         "Juiz analisa pedido e defere prioridade (geralmente de plano, sem audiência)",
         "Processo passa a tramitar em regime prioritário (prazos reduzidos, julgamento antecipado)",
-        "6. Acompanhe o andamento pelo protocolo fornecido e aguarde retorno oficial"
+        "Acompanhe o andamento pelo protocolo fornecido e aguarde retorno oficial"
       ],
       "dicas": [
         "Prioridade se aplica a TODOS os atos processuais: audiências, perícias, julgamentos, recursos",

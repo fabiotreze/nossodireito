@@ -9,6 +9,7 @@ on:
   workflow_dispatch:
   pull_request:
     paths:
+      - "index.html"
       - "direitos/**/*.html"
       - "direitos/**/*.json"
       - "data/**/*.json"
@@ -78,7 +79,7 @@ jobs:
             fi
             mapfile -t files < <(
               git diff --name-only --diff-filter=ACMR "origin/${BASE_REF}...HEAD" -- \
-                'direitos/**' 'data/**' 'docs/**' '*.md' \
+                'index.html' 'direitos/**' 'data/**' 'docs/**' '*.md' \
                 2>/dev/null \
                 | grep -E '\.(html|md|json)$' \
                 | grep -Ev '^(node_modules|terraform|\.venv|\.git)/' \
