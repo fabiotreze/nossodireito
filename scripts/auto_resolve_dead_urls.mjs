@@ -47,9 +47,27 @@ const RATE_MS = Math.max(100, parseInt(flag("rate-ms", "500"), 10));
 
 const WAYBACK_API = "https://archive.org/wayback/available";
 
+/* Defense-in-depth: validation_report.json é gerado por validate_sources.py
+ * a partir de data/direitos.json (schema-validated allowlist .gov.br/.jus.br
+ * etc.), mas o arquivo poderia ser commitado adulterado. Como medida extra
+ * antes de incluir a URL como query param no Wayback API, validamos que ela
+ * é uma URL HTTP(S) bem-formada com host na allowlist oficial brasileira. */
+const ALLOWED_HOST_RE = /^(?:[a-z0-9-]+\.)*(?:gov\.br|jus\.br|def\.br|leg\.br|mp\.br|org\.br|edu\.br|com\.br|icd\.who\.int|archive\.org|planalto\.gov\.br)$/i;
+
+function isAllowedUrl(raw) {
+  try {
+    const u = new URL(raw);
+    if (u.protocol !== "https:" && u.protocol !== "http:") return false;
+    return ALLOWED_HOST_RE.test(u.hostname);
+  } catch {
+    return false;
+  }
+}
+
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 async function queryWayback(url) {
+  if (!isAllowedUrl(url)) return { error: "url rejected (host not in allowlist)" };
   const apiUrl = `${WAYBACK_API}?url=${encodeURIComponent(url)}`;
   try {
     const ctrl = new AbortController();
