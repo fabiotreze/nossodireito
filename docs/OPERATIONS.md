@@ -149,26 +149,21 @@ az storage account blob-service-properties show \
   --query "{versioning:isVersioningEnabled, blobSoftDelete:deleteRetentionPolicy.days, containerSoftDelete:containerDeleteRetentionPolicy.days}"
 ```
 
-### Evidência complementar de anonimização (executado em 2026-05-31)
+### Evidência complementar de anonimização (atualizado em 2026-06-05)
 
-Saída do comando 2 acima — prova complementar de que **nenhum dado pessoal é coletado**:
+Desde **2026-06-05**, a integração do Application Insights está desativada na aplicação (a `APPLICATIONINSIGHTS_CONNECTION_STRING` foi removida do `azurerm_linux_web_app`). Resultado esperado da consulta 2:
 
-```json
-[
-  {
-    "timestamp": "2026-05-31T17:37:12.095Z",
-    "name": "GET /health",
-    "url": "http://app-nossodireito-br.azurewebsites.net/health",
-    "resultCode": "200",
-    "client_IP": "::",
-    "client_City": "",
-    "client_CountryOrRegion": "",
-    "user_Id": "",
-    "session_Id": ""
-  }
-]
+```text
+0 registros
 ```
 
-- `client_IP`, `client_City`, `client_CountryOrRegion`, `user_Id`, `session_Id` — vazios após o hardening. Se algum valor surgir, existe coleta residual na origem.
-- Demais campos (`timestamp`, `name`, `url`, `resultCode`) são metadados técnicos necessários para operação e não constituem dado pessoal sob LGPD Art. 5º, I.
+Reexecução reprodutível:
+
+```bash
+az monitor log-analytics query -w e7763940-430e-44c8-9d77-95937d9ca562 \
+  --analytics-query "AppRequests | where TimeGenerated >= ago(1h) | summarize Total=count(), Com_IP=countif(isnotempty(ClientIP) and ClientIP != '::' and ClientIP != '0.0.0.0'), Com_City=countif(isnotempty(ClientCity)), Com_Country=countif(isnotempty(ClientCountryOrRegion)), Com_User_Id=countif(isnotempty(UserId)), Com_Session_Id=countif(isnotempty(SessionId))" -o table
+# Esperado: Total=0 (sem coleta na origem)
+```
+
+Histórico anterior a 2026-06-05 foi expurgado via Purge API (`Microsoft.OperationalInsights/.../purge`).
 

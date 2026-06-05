@@ -129,13 +129,20 @@ resource "azurerm_log_analytics_workspace" "main" {
 }
 
 # --- Application Insights ---
-# Telemetria anonymous-only (LGPD):
-#   - Telemetry processor no server.js remove IP, geolocalização, user/session IDs,
-#     User-Agent e query strings antes do envelope sair do processo
-#   - disable_ip_masking = false permanece como defesa complementar caso algum IP
-#     escape do processor por regressão futura
-#   - Retenção mínima (30d) + daily cap para limitar exposição
-# Portal: portal.azure.com > App Insights.
+# STATUS: COLETA DESATIVADA EM 2026-06-05 POR LGPD (zero-PII).
+#
+# Histórico:
+#   - A integração SDK (applicationinsights@3.x) injetava ClientCity/ClientCountryOrRegion
+#     via OpenTelemetry HTTP instrumentation. As APIs legacy v2 que tentamos usar
+#     (setAutoCollectRequests(false), addTelemetryProcessor) são no-op no caminho OTEL.
+#   - O leak foi confirmado em produção (~6% dos requests com geolocalização) e a única
+#     mitigação 100% efetiva sem reescrita foi cortar a coleta na origem removendo a
+#     APPLICATIONINSIGHTS_CONNECTION_STRING do app_settings (ver bloco azurerm_linux_web_app).
+#
+# O recurso é mantido aqui para:
+#   - Reativação futura via Azure Monitor OpenTelemetry distro + SpanProcessor que filtra IP
+#     (ver issue de follow-up no GitHub).
+#   - Custo zero enquanto nenhum envelope é ingerido.
 resource "azurerm_application_insights" "main" {
   name                = local.app_insights_name
   location            = azurerm_resource_group.main.location
@@ -242,9 +249,10 @@ resource "azurerm_linux_web_app" "main" {
       WEBSITE_REDIRECT_ALL_TRAFFIC_TO_HTTPS = "1"
       NODE_ENV                              = "production"
       SCM_DO_BUILD_DURING_DEPLOYMENT        = "false"
-      APPLICATIONINSIGHTS_CONNECTION_STRING = azurerm_application_insights.main.connection_string
-      # Codeless agent DESABILITADO — o server.js já usa o SDK applicationinsights manualmente.
-      # Ter ambos causa: "Attempted duplicate registration of API: propagation"
+      # APPLICATIONINSIGHTS_CONNECTION_STRING removida em 2026-06-05 (LGPD).
+      # Ver comentário no recurso azurerm_application_insights.main acima.
+      # Para reativar sem PII, primeiro implementar SpanProcessor de strip de client.address.
+      # Codeless agent permanece DESABILITADO (defesa em profundidade).
       ApplicationInsightsAgent_EXTENSION_VERSION = "disabled"
       # AI resilience tuning — reduz worst-case de bloqueio por retry do OpenAI (incidente 2026-05-30)
       # worst-case = AI_TIMEOUT_MS * (AI_MAX_RETRIES + 1) + backoff ≈ 17s com estes valores
