@@ -164,9 +164,6 @@ jobs:
           import_if_missing "azurerm_log_analytics_workspace.main" \
             "${BASE}/providers/Microsoft.OperationalInsights/workspaces/log-${PROJECT}"
 
-          import_if_missing "azurerm_application_insights.main" \
-            "${BASE}/providers/Microsoft.Insights/components/appi-${PROJECT}"
-
           import_if_missing "azurerm_key_vault.main[0]" \
             "${BASE}/providers/Microsoft.KeyVault/vaults/kv-${PROJECT}"
 

@@ -143,14 +143,8 @@ const server = http.createServer(async (req, res) => {
   }
 
   // ── Scanner / probe paths (issue #251) ──
-  // Return 404 fast, no static-file lookup, e contabiliza no AI como custom event.
+  // Return 404 fast, no static-file lookup.
   if (SCANNER_PATH_RE.test(req.url)) {
-    if (appInsights?.defaultClient) {
-      appInsights.defaultClient.trackEvent({
-        name: "ScannerProbeBlocked",
-        properties: { path: req.url.split("?")[0].slice(0, 128) },
-      });
-    }
     res.writeHead(404, { "Content-Type": "text/plain", ...SECURITY_HEADERS });
     res.end("Not Found");
     return;
