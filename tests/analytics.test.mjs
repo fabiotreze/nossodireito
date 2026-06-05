@@ -8,14 +8,7 @@ const require = createRequire(import.meta.url);
 const { createAnalytics } = require("../lib/analytics");
 
 test("analytics agrega sem identificador por visitante", () => {
-  const pageViews = [];
-  const analytics = createAnalytics({
-    getAppInsightsClient: () => ({
-      trackPageView(payload) {
-        pageViews.push(payload);
-      },
-    }),
-  });
+  const analytics = createAnalytics();
 
   analytics.track("Mozilla/5.0 (iPhone)", "/guia?utm_source=test");
   analytics.track("Mozilla/5.0 (Windows NT 10.0)", "/guia");
@@ -25,5 +18,8 @@ test("analytics agrega sem identificador por visitante", () => {
   assert.equal(snapshot.uniqueVisitors, 0);
   assert.equal(snapshot.byDevice.mobile, 1);
   assert.equal(snapshot.byDevice.desktop, 1);
-  assert.deepEqual(pageViews.map((item) => item.url), ["/guia", "/guia"]);
+  assert.deepEqual(
+    snapshot.byPath.map((p) => p.path),
+    ["/guia"],
+  );
 });

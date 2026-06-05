@@ -69,7 +69,7 @@ O tratamento NÃO se enquadra como agente de pequeno porte porque:
 | R3 | TLS 1.2 mínimo, HSTS, certificado gerenciado | ✅ Implementado |
 | R4 | Managed Identity, sem credenciais embutidas, RBAC mínimo | ✅ Implementado |
 | R4 | Key Vault com Private Endpoint, soft-delete (7d) e purge-protection ATIVA | ✅ Implementado |
-| R5 | Telemetria de aplicação desativada (Application Insights provisionado, processo não emite envelopes) | ✅ Implementado (2026-06-05) |
+| R5 | Sem telemetria de aplicação (Application Insights removido) | ✅ Implementado (2026-06-05) |
 | R5 | Rate-limit global sem identificador por cliente | ✅ Implementado |
 
 ## 6. Mapa de fluxo de dados
@@ -85,7 +85,7 @@ flowchart LR
     S -->|classificação| B
     B -->|exibe resultado| T
 
-    %% Telemetria de aplicação desativada em 2026-06-05 — App Insights provisionado mas sem coleta.
+    %% Ausência de telemetria de aplicação: nenhum SDK emite envelopes a partir do servidor (decisão 2026-06-05).
 ```
 
 ## 7. Direitos do titular

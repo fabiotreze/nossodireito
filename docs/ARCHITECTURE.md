@@ -13,7 +13,7 @@ A plataforma roda em Azure App Service Linux (Node.js 22) com entrega via domini
 - Aplicacao: Azure App Service (`app-nossodireito-br`)
 - Runtime: Node.js 22 LTS
 - Regiao: Brazil South (`brazilsouth`)
-- Observabilidade: Log Analytics (Azure Monitor platform metrics). Application Insights provisionado porém sem coleta desde 2026-06-05 (LGPD).
+- Observabilidade: Azure Monitor platform metrics (App Service) + http logs do App Service (3d).
 - Segredos: Azure Key Vault + Managed Identity
 - Cache/rate limit: Azure Cache for Redis (TLS 1.2)
 - Rede privada: VNet + subnets dedicadas + Private Endpoints
@@ -42,8 +42,6 @@ flowchart LR
 	CF -->|HTTPS 443| APP[App Service app-nossodireito-br]
 
 	subgraph AZ[Azure - brazilsouth]
-		APP -. coleta desativada 2026-06-05 .-> AI[Application Insights]
-		AI --> LAW[Log Analytics Workspace]
 
 		subgraph VNET[vnet-nossodireito-br 10.42.0.0/16]
 			APPINT[snet-appsvc-prod 10.42.1.0/24]

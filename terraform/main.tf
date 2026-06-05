@@ -117,7 +117,7 @@ resource "azurerm_key_vault_certificate" "wildcard" {
   depends_on = [azurerm_key_vault_access_policy.deployer]
 }
 
-# --- Log Analytics Workspace (required by App Insights) ---
+# --- Log Analytics Workspace (App Service diagnostics) ---
 resource "azurerm_log_analytics_workspace" "main" {
   name                = local.log_analytics_name
   location            = azurerm_resource_group.main.location
@@ -126,50 +126,6 @@ resource "azurerm_log_analytics_workspace" "main" {
   retention_in_days   = 30
 
   tags = local.tags
-}
-
-# --- Application Insights ---
-# STATUS: COLETA DESATIVADA EM 2026-06-05 POR LGPD (zero-PII).
-#
-# Histórico:
-#   - A integração SDK (applicationinsights@3.x) injetava ClientCity/ClientCountryOrRegion
-#     via OpenTelemetry HTTP instrumentation. As APIs legacy v2 que tentamos usar
-#     (setAutoCollectRequests(false), addTelemetryProcessor) são no-op no caminho OTEL.
-#   - O leak foi confirmado em produção (~6% dos requests com geolocalização) e a única
-#     mitigação 100% efetiva sem reescrita foi cortar a coleta na origem removendo a
-#     APPLICATIONINSIGHTS_CONNECTION_STRING do app_settings (ver bloco azurerm_linux_web_app).
-#
-# O recurso é mantido aqui para:
-#   - Reativação futura via Azure Monitor OpenTelemetry distro + SpanProcessor que filtra IP
-#     (ver issue de follow-up no GitHub).
-#   - Custo zero enquanto nenhum envelope é ingerido.
-resource "azurerm_application_insights" "main" {
-  name                = local.app_insights_name
-  location            = azurerm_resource_group.main.location
-  resource_group_name = azurerm_resource_group.main.name
-  workspace_id        = azurerm_log_analytics_workspace.main.id
-  application_type    = "Node.JS"
-
-  # Defesa complementar: mantém o IP masking ATIVO no serviço caso algum evento
-  # chegue com IP por regressão. A coleta primária deve sair do processo sem IP.
-  # Microsoft API contra-intuitiva: false = masking ON.
-  # Ref: https://learn.microsoft.com/azure/azure-monitor/app/ip-collection
-  disable_ip_masking = false
-
-  # Retenção mínima necessária para troubleshooting (LGPD: princípio da necessidade — Art. 6º III).
-  retention_in_days = 30
-
-  # Daily cap previne explosão de custos e limita superficie de dados retidos.
-  daily_data_cap_in_gb                  = 1
-  daily_data_cap_notifications_disabled = false
-
-  # Sampling reduz volume sem comprometer análise estatística.
-  sampling_percentage = 100
-
-  tags = merge(local.tags, {
-    "LGPDClassification" = "no-pii"
-    "DataCollection"     = "anonymous-only"
-  })
 }
 
 # --- App Service Plan (Linux) ---
@@ -249,11 +205,6 @@ resource "azurerm_linux_web_app" "main" {
       WEBSITE_REDIRECT_ALL_TRAFFIC_TO_HTTPS = "1"
       NODE_ENV                              = "production"
       SCM_DO_BUILD_DURING_DEPLOYMENT        = "false"
-      # APPLICATIONINSIGHTS_CONNECTION_STRING removida em 2026-06-05 (LGPD).
-      # Ver comentário no recurso azurerm_application_insights.main acima.
-      # Para reativar sem PII, primeiro implementar SpanProcessor de strip de client.address.
-      # Codeless agent permanece DESABILITADO (defesa em profundidade).
-      ApplicationInsightsAgent_EXTENSION_VERSION = "disabled"
       # AI resilience tuning — reduz worst-case de bloqueio por retry do OpenAI (incidente 2026-05-30)
       # worst-case = AI_TIMEOUT_MS * (AI_MAX_RETRIES + 1) + backoff ≈ 17s com estes valores
       AI_TIMEOUT_MS  = "8000"
