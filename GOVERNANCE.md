@@ -3,8 +3,8 @@
 > Documento que define os critérios, fluxos e boas práticas para manter o portal atualizado,
 > confiável e sempre embasado em fontes oficiais do governo brasileiro.
 
-**Última revisão:** 2026-05-28
-**Versão:** 1.40.0
+**Última revisão:** 2026-06-05
+**Versão:** 1.41.0
 
 ---
 
