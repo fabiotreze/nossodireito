@@ -2304,10 +2304,10 @@
                 <li>"Meus Documentos", checklists e preferências ficam no localStorage/IndexedDB do seu dispositivo</li>
                 <li>VLibras (Gov.br) carrega bibliotecas externas sem envio dos seus dados</li>
                 <li>
-                  <strong>Telemetria anônima:</strong> usamos Azure Application Insights para métricas operacionais
-                  (contagem de page views, performance). Endereços IP são mascarados (armazenados como 0.0.0.0) e apenas
-                  agregados geográficos (país/estado) são derivados. Nenhum dado pessoal é armazenado. Retenção: 30
-                  dias.
+                  <strong>Sem telemetria de aplicação:</strong> não usamos Application Insights nem nenhum SDK de
+                  APM/observabilidade no servidor (decisão de 2026-06-05). Métricas operacionais limitam-se a
+                  contadores agregados da plataforma Azure (App Service) e a http logs de acesso retidos por 3 dias
+                  (método + path + status, sem corpo nem identificadores).
                 </li>
               </ul>
               <p style="margin: 0.5rem 0 0 0; font-size: 0.9rem">

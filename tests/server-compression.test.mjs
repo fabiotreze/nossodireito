@@ -138,7 +138,6 @@ before(async () => {
       NODE_ENV: "test",
       // Disable optional integrations that try to reach external services.
       DISABLE_REDIS: "1",
-      DISABLE_APP_INSIGHTS: "1",
       KEYVAULT_NAME: "",
       OPENAI_ENDPOINT: "",
       AZURE_CLIENT_ID: "",
