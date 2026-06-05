@@ -1426,7 +1426,6 @@ ${cat.tags.map((t) => `<span class="tag">${escapeHtml(t)}</span>`).join('')}
         /* ── Protocolo de Emergência ── */
         if (cat.emergencia) {
             const em = cat.emergencia;
-            const copyId = `copyNotif_${cat.id}`;
             html += `<div class="detalhe-section emergencia-section" role="region" aria-label="Protocolo de Emergência">
 <h3>🚨 ${escapeHtml(em.titulo)}</h3>
 <p class="emergencia-conflito"><strong>Conflito:</strong> ${escapeHtml(em.conflito)}</p>
@@ -1434,10 +1433,6 @@ ${cat.tags.map((t) => `<span class="tag">${escapeHtml(t)}</span>`).join('')}
 <div class="emergencia-passos">
 <h4>⚡ Ação Imediata</h4>
 <ol>${em.acao_imediata.map(p => `<li>${escapeHtml(p)}</li>`).join('')}</ol>
-</div>
-<div class="emergencia-modelo">
-<h4>📋 Modelo de Notificação <button type="button" class="btn-copy-notif" id="${copyId}" aria-label="Copiar texto da notificação">📋 Copiar</button></h4>
-<blockquote class="notificacao-text">${escapeHtml(em.modelo_notificacao)}</blockquote>
 </div>
 <div class="emergencia-denuncia">
 <h4>📞 Onde Denunciar</h4>
@@ -1503,28 +1498,6 @@ class="btn btn-sm btn-whatsapp" aria-label="Compartilhar no WhatsApp">
                     ? `Mostrar mais ${hidden.children.length} dica${hidden.children.length > 1 ? 's' : ''} ▼`
                     : 'Mostrar menos ▲';
             });
-        }
-        /* Copy notification text to clipboard */
-        const copyBtn = document.getElementById(`copyNotif_${cat.id}`);
-        if (copyBtn && cat.emergencia) {
-            copyBtn.addEventListener('click', () => {
-                const txt = cat.emergencia.modelo_notificacao;
-                if (navigator.clipboard && navigator.clipboard.writeText) {
-                    navigator.clipboard.writeText(txt).then(() => {
-                        copyBtn.textContent = '✅ Copiado!';
-                        setTimeout(() => { copyBtn.textContent = '📋 Copiar'; }, 2000);
-                    }).catch(() => { fallbackCopyNotif(txt, copyBtn); });
-                } else { fallbackCopyNotif(txt, copyBtn); }
-            });
-        }
-        function fallbackCopyNotif(text, btn) {
-            const ta = document.createElement('textarea');
-            ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
-            document.body.appendChild(ta); ta.select();
-            try { document.execCommand('copy'); btn.textContent = '✅ Copiado!'; }
-            catch (e) { btn.textContent = '❌ Erro'; }
-            document.body.removeChild(ta);
-            setTimeout(() => { btn.textContent = '📋 Copiar'; }, 2000);
         }
         if (cat.ipva_estados_detalhado && cat.ipva_estados_detalhado.length) {
             const ipvaSelect = $('#ipvaEstadoSelect');

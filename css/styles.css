@@ -1847,7 +1847,6 @@ html.high-contrast ::selection {
 }
 
 .emergencia-passos h4,
-.emergencia-modelo h4,
 .emergencia-denuncia h4 {
     font-size: 1rem;
     margin-bottom: 8px;
@@ -1862,49 +1861,6 @@ html.high-contrast ::selection {
 .emergencia-passos li {
     margin-bottom: 8px;
     line-height: 1.6;
-}
-
-.emergencia-modelo {
-    margin-bottom: 16px;
-}
-
-.emergencia-modelo h4 {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    flex-wrap: wrap;
-}
-
-.btn-copy-notif {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    padding: 4px 12px;
-    font-size: 0.8rem;
-    font-weight: 600;
-    background: var(--primary);
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background var(--transition);
-    font-family: var(--font);
-}
-
-.btn-copy-notif:hover {
-    background: var(--primary-dark);
-}
-
-.notificacao-text {
-    background: var(--surface-alt);
-    border-left: 4px solid var(--primary);
-    padding: 16px;
-    margin: 8px 0;
-    font-style: italic;
-    line-height: 1.7;
-    border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
-    user-select: all;
-    font-size: 0.95rem;
 }
 
 .emergencia-denuncia {
@@ -1961,17 +1917,6 @@ html.high-contrast .emergencia-legal,
 html.high-contrast .emergencia-denuncia {
     background: #111;
     border-color: #ff0;
-}
-
-html.high-contrast .notificacao-text {
-    background: #111;
-    border-color: #ff0;
-    color: #fff;
-}
-
-html.high-contrast .btn-copy-notif {
-    background: #ff0;
-    color: #000;
 }
 
 .detalhe-tags {
@@ -4805,10 +4750,6 @@ html.high-contrast .card-grid[data-active-trilha] .category-icon {
         background: #f8f8f8 !important;
         -webkit-print-color-adjust: exact;
         print-color-adjust: exact;
-    }
-
-    body.printing-detalhe .btn-copy-notif {
-        display: none !important;
     }
 }
 
