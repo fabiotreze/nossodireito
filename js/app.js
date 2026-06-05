@@ -1317,12 +1317,14 @@ ${t.descricao ? `<span class="trilha-tab__desc">${escapeHtml(t.descricao)}</span
         if (cat.requisitos && cat.requisitos.length) {
             html += `<div class="detalhe-section">
 <h3>📋 Requisitos</h3>
+${renderAtribuicao(cat, 'requisitos')}
 <ul>${cat.requisitos.map((r) => `<li>${escapeHtml(r)}</li>`).join('')}</ul>
 </div>`;
         }
         if (cat.documentos && cat.documentos.length) {
             html += `<div class="detalhe-section">
 <h3>📄 Documentos Necessários</h3>
+${renderAtribuicao(cat, 'documentos')}
 <ul>${cat.documentos.map((d) => `<li>${escapeHtml(d)}</li>`).join('')}</ul>
 </div>`;
         }
@@ -1362,7 +1364,7 @@ ${passosHtml}
             const visibleDicas = cat.dicas.slice(0, DICAS_LIMIT);
             const hiddenDicas = cat.dicas.slice(DICAS_LIMIT);
             html += `<div class="detalhe-section">
-<h3>� Observações citadas pela fonte oficial</h3>
+<h3>📝 Observações citadas pela fonte oficial</h3>
 ${renderAtribuicao(cat, 'observações')}
 <p class="observacoes-aviso"><small>⚠️ Trechos reproduzidos da fonte oficial. NossoDireito não opina, não orienta e não garante aplicabilidade ao seu caso.</small></p>
 ${visibleDicas.map((d) => `<div class="dica-item">${escapeHtml(d)}</div>`).join('')}
