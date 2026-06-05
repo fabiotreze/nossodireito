@@ -1,5 +1,5 @@
 {
-  "versao": "1.43.3",
+  "versao": "1.43.4",
   "ultima_atualizacao": "2026-06-05",
   "aviso": "Informações compiladas de fontes oficiais do governo brasileiro (gov.br). Podem estar desatualizadas. Verifique sempre as fontes originais.",
   "fontes": [
@@ -2142,7 +2142,6 @@
           "Solicite revisão administrativa pelo Meu INSS (meu.inss.gov.br) ou pelo telefone 135, anexando os comprovantes",
           "Se mantida a negativa, procure a Defensoria Pública da União (DPU) para ação judicial — é gratuito"
         ],
-        "modelo_notificacao": "Solicito a revisão da análise de renda do protocolo [Nº do Protocolo], anexando os comprovantes de gastos mensais com saúde e assistência que, conforme a Lei 14.176/2021 e o Tema 106 do STJ, devem ser deduzidos da renda bruta familiar para fins de concessão do BPC.",
         "orgao_denuncia": {
           "nome": "Ouvidoria do INSS / Fala.BR",
           "contato": "Fala.BR ou telefone 135",
@@ -2361,7 +2360,6 @@
           "Registre reclamação na Ouvidoria da Prefeitura e no Disque 100 (Direitos Humanos)",
           "Procure a Defensoria Pública para garantir a emissão"
         ],
-        "modelo_notificacao": "Prezado(a) responsável, conforme a Lei 13.977/2020 (Lei Romeo Mion), a emissão da CIPTEA é um direito garantido a toda pessoa diagnosticada com Transtorno do Espectro Autista. A exigência de documentos além do laudo médico com CID e identidade configura descumprimento legal. Solicito a emissão imediata da carteira.",
         "orgao_denuncia": {
           "nome": "Disque 100 — Direitos Humanos",
           "contato": "Disque 100 (ligação gratuita)",
@@ -2502,7 +2500,6 @@
           "Acione imediatamente o Conselho Tutelar da sua cidade",
           "Registre a ocorrência no Disque 100 e na Secretaria de Educação do município"
         ],
-        "modelo_notificacao": "Prezada Direção, a Lei Brasileira de Inclusão (Art. 28) e a Lei 7.853/89 proíbem a recusa de matrícula ou cobrança de taxas extras para alunos com deficiência. Esta conduta é tipificada como crime (Art. 8º, I, Lei 7.853/89, pena de 2 a 5 anos). Solicito a reserva da vaga e o suporte necessário conforme o laudo médico apresentado, evitando a denúncia ao Ministério Público.",
         "orgao_denuncia": {
           "nome": "Conselho Tutelar local / Disque 100",
           "contato": "Conselho Tutelar da sua cidade ou Disque 100",
@@ -2708,7 +2705,6 @@
           "Registre reclamação imediata na ANS pelo Disque ANS (0800 701 9656) ou pelo site",
           "Paralelamente, registre no Consumidor.gov.br — os planos respondem em até 10 dias"
         ],
-        "modelo_notificacao": "À Ouvidoria da [Nome do Plano], conforme a RN 539/2022 da ANS, informo que a negativa ou limitação de sessões para o tratamento multidisciplinar prescrito ao paciente com [diagnóstico] é ilegal. O Rol de Procedimentos da ANS determina cobertura ilimitada. Solicito a autorização imediata sob pena de reclamação junto à ANS e medidas judiciais por interrupção de tratamento essencial.",
         "orgao_denuncia": {
           "nome": "ANS — Agência Nacional de Saúde Suplementar",
           "contato": "Disque ANS: 0800 701 9656",
@@ -3045,7 +3041,6 @@
           "Para medicamentos fora da lista (RENARE), solicite via Defensoria Pública — Temas 106 e 1234 do STF garantem acesso",
           "Em caso de urgência, procure o CAPS ou CER mais próximo e peça encaminhamento direto"
         ],
-        "modelo_notificacao": "Ao responsável pela unidade de saúde, conforme a Lei 13.146/2015 (Art. 18) e a Lei 8.080/90, solicito o encaminhamento imediato para as terapias prescritas no laudo médico anexo. A demora injustificada no atendimento à pessoa com deficiência configura violação de direito fundamental à saúde. Solicito resposta formal com prazo para atendimento.",
         "orgao_denuncia": {
           "nome": "Ouvidoria do SUS",
           "contato": "Disque Saúde: 136",
@@ -3276,7 +3271,6 @@
           "Solicite identificação do motorista/cobrador que recusou",
           "Registre a reclamação na ANTT (interestadual, fone 166) ou na Secretaria de Transportes do município"
         ],
-        "modelo_notificacao": "À gerência da empresa [Nome], comunico o impedimento de embarque do passageiro PcD portador de Passe Livre ocorrido no dia [Data] às [Hora], no veículo [Prefixo/Placa], linha [Número]. Tal conduta viola a Lei 8.899/94 e o Decreto 3.691/2000. Solicito providências imediatas, incluindo orientação à equipe, sob pena de denúncia à ANTT e Ministério Público.",
         "orgao_denuncia": {
           "nome": "ANTT (Interestadual) / Secretaria de Transportes (Municipal)",
           "contato": "ANTT: 166 / Secretaria de Transportes do município",
@@ -3487,7 +3481,6 @@
           "Denuncie ao Ministério do Trabalho (Superintendência Regional) e à Delegacia Regional do Trabalho",
           "Procure o sindicato da categoria ou a Defensoria Pública para orientação"
         ],
-        "modelo_notificacao": "Prezada empresa, informo que a recusa de contratação de pessoa com deficiência com base em critérios discriminatórios viola o Art. 93 da Lei 8.213/91 e o Art. 34 da LBI (Lei 13.146/2015). A empresa com [Nº] ou mais empregados deve reservar de 2% a 5% das vagas para PcD. Solicito a revisão da decisão sob pena de denúncia ao Ministério Público do Trabalho.",
         "orgao_denuncia": {
           "nome": "Ministério Público do Trabalho (MPT)",
           "contato": "MPT da sua região",
@@ -3669,7 +3662,6 @@
           "Solicite por escrito o motivo da negativa com protocolo de atendimento",
           "Registre reclamação na Ouvidoria da Caixa (0800 726 0101) ou no Fala.BR"
         ],
-        "modelo_notificacao": "À Ouvidoria da Caixa Econômica Federal, conforme o Art. 20, XVII da Lei 8.036/90, solicito a liberação do saque do FGTS em razão de [deficiência do titular/dependente PcD], conforme laudo médico anexo. O indeferimento sem justificativa legal configura descumprimento da legislação vigente.",
         "orgao_denuncia": {
           "nome": "Ouvidoria da Caixa Econômica Federal",
           "contato": "0800 726 0101",
@@ -3904,7 +3896,6 @@
           "Registre reclamação no Procon e na Defensoria Pública",
           "Para financiamento habitacional: verifique prioridade PcD no Minha Casa Minha Vida"
         ],
-        "modelo_notificacao": "Prezado(a) Síndico(a)/Administradora, conforme o Art. 58 da Lei 13.146/2015 (LBI), solicito a realização de [descrever adaptação] nas áreas comuns do condomínio, necessária para garantir a acessibilidade do(a) morador(a) com deficiência. A lei veda a cobrança de valores adicionais ao condômino PcD. Solicito resposta formal em até 30 dias.",
         "orgao_denuncia": {
           "nome": "Procon / Defensoria Pública",
           "contato": "Procon da sua cidade ou Defensoria Pública",
@@ -4598,7 +4589,6 @@
           "Para IPI/IOF: conteste pelo SISEN (Receita Federal). Para IPVA: recurso na SEFAZ do estado",
           "Procure a Defensoria Pública para contestação judicial se necessário"
         ],
-        "modelo_notificacao": "À Secretaria da Fazenda, contesto o indeferimento da isenção de [IPVA/IPI/IOF/ICMS] baseando-me na Lei 14.287/2021 e na jurisprudência do STF (ADI 6536). A condição de pessoa com deficiência está devidamente comprovada pelo laudo médico anexo, sendo irrelevante a necessidade de adaptação no veículo para o gozo do direito tributário.",
         "orgao_denuncia": {
           "nome": "Ouvidoria da SEFAZ do estado / Receita Federal",
           "contato": "SEFAZ do seu estado ou Receita Federal (146)",
@@ -4849,7 +4839,6 @@
           "Registre reclamação no Procon e no Consumidor.gov.br",
           "Para bancos: reclame também no Banco Central (bcb.gov.br)"
         ],
-        "modelo_notificacao": "Prezada gerência, o atendimento prioritário à pessoa com deficiência é garantido pela Lei 10.048/2000 e pela LBI (Lei 13.146/2015). A recusa ou demora injustificada no atendimento prioritário ocorrida em [data/hora] neste estabelecimento configura infração sujeita a sanções administrativas. Solicito providências imediatas.",
         "orgao_denuncia": {
           "nome": "Procon / Consumidor.gov.br",
           "contato": "Procon da cidade ou Consumidor.gov.br",
@@ -5060,7 +5049,6 @@
           "Registre a ocorrência na Prefeitura/DETRAN e no Procon",
           "Para uso indevido: acione a Guarda Municipal ou PM para autuação"
         ],
-        "modelo_notificacao": "Prezada administração, informo a irregularidade na disponibilização de vagas especiais para PcD neste estabelecimento, em descumprimento ao Art. 47 da LBI (Lei 13.146/2015). A legislação exige reserva de no mínimo 2% das vagas. Solicito regularização imediata sob pena de denúncia ao Ministério Público.",
         "orgao_denuncia": {
           "nome": "DETRAN / Prefeitura / Procon",
           "contato": "DETRAN estadual ou Prefeitura",
@@ -5254,7 +5242,6 @@
           "Solicite revisão administrativa pelo Meu INSS (recurso de 1ª instância)",
           "Se mantida, procure a Defensoria Pública da União para ação judicial"
         ],
-        "modelo_notificacao": "Ao INSS, solicito a revisão do indeferimento da aposentadoria especial (LC 142/2013) do segurado [Nome], tendo em vista que o grau de deficiência [leve/moderada/grave] está comprovado pelos laudos médicos anexos. O referido segurado cumpre o tempo de contribuição necessário conforme o Art. 3º da LC 142/2013.",
         "orgao_denuncia": {
           "nome": "Ouvidoria do INSS / DPU",
           "contato": "Fala.BR ou DPU da sua região",
@@ -5444,7 +5431,6 @@
           "Se negado, interponha agravo de instrumento ou reclamação correcional",
           "Registre no CNJ (Conselho Nacional de Justiça) se o tribunal se recusar"
         ],
-        "modelo_notificacao": "MM. Juízo, requeiro a concessão de PRIORIDADE DE TRAMITAÇÃO ao presente feito, nos termos do Art. 1.048 do CPC c/c Art. 9º, VII da Lei 13.146/2015 (Estatuto da Pessoa com Deficiência), conforme laudo médico acostado que comprova a condição de pessoa com deficiência.",
         "orgao_denuncia": {
           "nome": "Conselho Nacional de Justiça (CNJ)",
           "contato": "Ouvidoria do CNJ",
@@ -5656,7 +5642,6 @@
           "Procure o BNDES ou cooperativas de crédito com linhas específicas para tecnologia assistiva",
           "Registre no Banco Central se houver discriminação na concessão de crédito"
         ],
-        "modelo_notificacao": "Prezada instituição financeira, conforme o Art. 74 da LBI (Lei 13.146/2015), solicito a concessão de linha de crédito para aquisição de [equipamento de tecnologia assistiva]. A recusa de crédito a pessoa com deficiência sem justificativa objetiva configura discriminação vedada pela legislação.",
         "orgao_denuncia": {
           "nome": "Banco Central do Brasil",
           "contato": "bcb.gov.br ou 145",
@@ -5838,7 +5823,6 @@
           "Registre no Procon e no Consumidor.gov.br",
           "Lembre: o acompanhante também tem direito à meia-entrada"
         ],
-        "modelo_notificacao": "Prezada administração, a Lei 12.933/2013 garante meia-entrada para pessoas com deficiência e seus acompanhantes em casas de espetáculo, cinemas, teatros e eventos esportivos. A recusa configura infração ao Código de Defesa do Consumidor. Solicito o cumprimento da lei.",
         "orgao_denuncia": {
           "nome": "Procon / Consumidor.gov.br",
           "contato": "Procon da cidade",
@@ -6061,7 +6045,6 @@
           "Registre reclamação no MEC e na Ouvidoria da universidade",
           "Procure a Defensoria Pública para garantir a matrícula"
         ],
-        "modelo_notificacao": "À Reitoria/Direção, conforme a Lei 13.409/2016 e o Art. 28 da LBI, solicito a revisão da negativa de matrícula via cotas PcD. O candidato atende aos requisitos legais conforme documentação apresentada. A recusa injustificada será levada ao conhecimento do MEC e do Ministério Público.",
         "orgao_denuncia": {
           "nome": "MEC — Ministério da Educação",
           "contato": "Ouvidoria do MEC: 0800 616 161",
@@ -6272,7 +6255,6 @@
           "Apresente recurso administrativo na Receita Federal com toda documentação médica",
           "PcD tem prioridade no recebimento da restituição (1º lote, após idosos 80+)"
         ],
-        "modelo_notificacao": "À Receita Federal, solicito a revisão do indeferimento da isenção de Imposto de Renda, nos termos do Art. 6º, XIV da Lei 7.713/88, tendo em vista que o contribuinte é portador de [diagnóstico com CID], conforme laudo médico oficial anexo. A condição enquadra-se nas hipóteses legais de isenção.",
         "orgao_denuncia": {
           "nome": "Receita Federal",
           "contato": "Receita Federal: 146",
@@ -6492,7 +6474,6 @@
           "Solicite revisão cadastral no CRAS da sua cidade",
           "Se mantida a negativa, procure a Defensoria Pública"
         ],
-        "modelo_notificacao": "Ao CRAS, solicito a revisão do cadastro da família [nome] no CadÚnico para inclusão do benefício variável PcD conforme a Lei 14.601/2023, Art. 5º. O membro da família [nome] possui laudo médico com CID comprovando a condição de pessoa com deficiência. Solicito atualização cadastral e concessão do benefício.",
         "orgao_denuncia": {
           "nome": "CRAS / Ouvidoria do MDS",
           "contato": "CRAS da sua cidade ou Disque 121",
@@ -6684,7 +6665,6 @@
           "Se recusado, registre reclamação na ANEEL (0800 727 0167)",
           "Registre também no Procon da cidade"
         ],
-        "modelo_notificacao": "À concessionária [Nome], solicito a aplicação da Tarifa Social de Energia Elétrica conforme a Lei 12.212/2010 para o imóvel [endereço]. A família está inscrita no CadÚnico (NIS [número]) e possui membro PcD. O descumprimento será denunciado à ANEEL.",
         "orgao_denuncia": {
           "nome": "ANEEL — Agência Nacional de Energia Elétrica",
           "contato": "ANEEL: 0800 727 0167",
@@ -6883,7 +6863,6 @@
           "Reúna: carteira de trabalho assinada, último comprovante de BPC e laudo médico",
           "Se negado, solicite revisão e procure a DPU"
         ],
-        "modelo_notificacao": "Ao INSS, solicito a concessão do Auxílio-Inclusão nos termos da Lei 14.176/2021 (Art. 26). O requerente é pessoa com deficiência, ex-beneficiário do BPC (NB [número]), atualmente vinculado formalmente ao emprego [empresa]. Todos os requisitos legais estão preenchidos conforme documentação anexa.",
         "orgao_denuncia": {
           "nome": "Ouvidoria do INSS",
           "contato": "INSS: 135 ou Fala.BR",
@@ -7088,7 +7067,6 @@
           "Procure o CREAS da sua região para proteção social especial",
           "Acione a Defensoria Pública se houver risco à integridade da PcD"
         ],
-        "modelo_notificacao": "À Coordenação do CRAS/CREAS, solicito o atendimento e encaminhamento da pessoa com deficiência [nome] aos serviços de proteção social, conforme previsto na LOAS (Art. 18-A) e na LBI (Art. 39). A recusa de atendimento a pessoas em situação de vulnerabilidade será denunciada à Ouvidoria do MDS.",
         "orgao_denuncia": {
           "nome": "Ouvidoria do MDS / SUAS",
           "contato": "Disque 121 ou Fala.BR",
@@ -7269,7 +7247,6 @@
           "Solicite pelo Meu INSS ou telefone 135",
           "Se negado, procure a DPU imediatamente"
         ],
-        "modelo_notificacao": "Ao INSS, solicito a concessão da Pensão Especial nos termos da Lei 13.985/2020 para [nome da criança], nascida em [data], diagnosticada com Síndrome Congênita do Zika Vírus conforme laudo médico anexo.",
         "orgao_denuncia": {
           "nome": "DPU / Ouvidoria do INSS",
           "contato": "INSS: 135 ou DPU da região",
@@ -7399,7 +7376,6 @@
           "Solicite revisão pela Ouvidoria do Ministério do Esporte",
           "Procure apoio do Comitê Paralímpico Brasileiro (CPB)"
         ],
-        "modelo_notificacao": "Ao Ministério do Esporte, solicito a revisão do indeferimento da Bolsa-Atleta para [nome], atleta paralímpico na modalidade [modalidade], conforme os critérios da Lei 10.891/2004. O atleta possui os resultados comprovados e atende aos requisitos do edital.",
         "orgao_denuncia": {
           "nome": "Ouvidoria do Ministério do Esporte",
           "contato": "Fala.BR",
@@ -7612,7 +7588,6 @@
           "Se o embarque for recusado, exija declaração por escrito com motivo e protocolo",
           "Registre reclamação na ANAC (163) e no Consumidor.gov.br"
         ],
-        "modelo_notificacao": "À [companhia aérea], informo que a recusa de embarque/cobrança indevida viola a Resolução ANAC 280/2013. O passageiro PcD tem direito ao transporte gratuito da cadeira de rodas e ao desconto de 80% para acompanhante. Solicito providências imediatas sob pena de denúncia à ANAC.",
         "orgao_denuncia": {
           "nome": "ANAC — Agência Nacional de Aviação Civil",
           "contato": "ANAC: 163",
@@ -7816,7 +7791,6 @@
           "Para órgãos públicos: Registre no Fala.BR e na Ouvidoria do órgão",
           "Denuncie ao Ministério Público se a barreira impedir acesso a serviço essencial"
         ],
-        "modelo_notificacao": "Prezada administração, informo a existência de barreiras de acessibilidade neste estabelecimento: [descrever barreiras]. O descumprimento da Lei 10.098/2000, Decreto 5.296/2004 e Art. 56-58 da LBI sujeita o estabelecimento a multas e interdição. Solicito a adequação em prazo razoável.",
         "orgao_denuncia": {
           "nome": "Prefeitura / Ministério Público",
           "contato": "Prefeitura da cidade ou MP estadual",
@@ -8024,7 +7998,6 @@
           "Se já houver curatela total, é possível solicitar revisão judicial para TDA",
           "A PcD deve ser OUVIDA no processo — isso é obrigatório pela LBI"
         ],
-        "modelo_notificacao": "MM. Juízo, requeiro que seja considerada a possibilidade de Tomada de Decisão Apoiada (Art. 1.783-A do CC c/c Art. 84 da LBI) como alternativa à curatela total, preservando a autonomia da pessoa com deficiência conforme determina a Lei 13.146/2015. A PcD manifesta capacidade para os atos da vida civil com o apoio de [nomes dos apoiadores].",
         "orgao_denuncia": {
           "nome": "Defensoria Pública / Ministério Público",
           "contato": "Defensoria Pública da sua comarca",
@@ -8228,7 +8201,6 @@
           "Reúna provas: prints, fotos, áudios, testemunhas, protocolos",
           "Procure o CREAS para acolhimento e apoio psicossocial"
         ],
-        "modelo_notificacao": "Registro a ocorrência de [tipo de violação: discriminação/maus-tratos/abandono/violência] contra a pessoa com deficiência [nome], ocorrida em [data/local]. A conduta configura crime tipificado na Lei 7.853/89 e no Art. 88 da LBI (Lei 13.146/2015). Solicito as providências cabíveis.",
         "orgao_denuncia": {
           "nome": "Disque 100 — Direitos Humanos / Polícia Civil",
           "contato": "Disque 100 (24h) ou 190 (emergência)",
@@ -8438,7 +8410,6 @@
           "Para sites governamentais: registre no Fala.BR citando o eMAG 3.1",
           "Para apps privados: registre no Procon e no Consumidor.gov.br"
         ],
-        "modelo_notificacao": "À Ouvidoria do [Órgão/Empresa], informo que o site/aplicativo [URL] apresenta barreiras de acessibilidade digital em descumprimento ao Art. 63 da LBI (Lei 13.146/2015). Especificamente: [descrever barreiras]. Solicito a adequação conforme WCAG 2.1 AA e eMAG 3.1.",
         "orgao_denuncia": {
           "nome": "Fala.BR / Procon",
           "contato": "Fala.BR (gov) ou Procon (privado)",
@@ -8645,7 +8616,6 @@
           "Registre na Ouvidoria do SUS (136) e na Secretaria de Saúde do município",
           "Se urgente, procure a Defensoria Pública para obter liminar judicial"
         ],
-        "modelo_notificacao": "À Secretaria de Saúde, solicito o fornecimento de [órtese/prótese/cadeira de rodas/equipamento] prescrito no laudo médico anexo, conforme o Art. 18 da LBI (Lei 13.146/2015) e a Portaria GM/MS 1.526/2023. O atraso no fornecimento compromete a reabilitação e a qualidade de vida da pessoa com deficiência.",
         "orgao_denuncia": {
           "nome": "Ouvidoria do SUS / Secretaria de Saúde",
           "contato": "Disque Saúde: 136",
@@ -8844,7 +8814,6 @@
           "Procure o CAPS/UBS para acompanhamento psicológico do cuidador (gratuito pelo SUS)",
           "Em risco iminente (negligência por exaustão, autolesão), acione Disque 100 e/ou CREAS"
         ],
-        "modelo_notificacao": "Ao CRAS [município], solicito avaliação prioritária do PAIF para minha família. Sou cuidador(a) único(a) de [nome — PcD/idoso] e enfrento sobrecarga que compromete minha saúde, conforme a Lei 14.844/2024 e o Art. 8º da LBI. Requeiro inclusão em Centro-Dia, SCFV ou outro serviço da rede SUAS que viabilize revezamento.",
         "orgao_denuncia": {
           "nome": "Ouvidoria Nacional dos Direitos Humanos",
           "contato": "Disque 100 ou Fala.BR",
@@ -9038,7 +9007,6 @@
           "Procure o sindicato da categoria para assessoria jurídica gratuita",
           "Defensoria Pública da União (DPU) ou advogado pode impetrar mandado de segurança na Justiça Federal"
         ],
-        "modelo_notificacao": "À chefia/RH do órgão [nome], requeiro a concessão de horário especial sem compensação e sem redução de vencimentos, conforme o Art. 98 §3º da Lei 8.112/90 c/c Art. 34 §3º da Lei 13.146/2015, para acompanhar [nome], meu(minha) [grau de parentesco] com deficiência atestada pelo laudo anexo. Eventual negativa deverá ser fundamentada por escrito.",
         "orgao_denuncia": {
           "nome": "Defensoria Pública da União (DPU)",
           "contato": "129 ou dpu.def.br",
@@ -9239,7 +9207,6 @@
           "Procure a Defensoria Pública ou sindicato da categoria",
           "Em caso de assédio/discriminação por deficiência, registre BO e procure CREAS"
         ],
-        "modelo_notificacao": "Ao MPT [PRT da região], denuncio a empresa [razão social/CNPJ] por descumprimento da cota legal de PcD prevista no Art. 93 da Lei 8.213/91, bem como por [discriminação salarial / recusa de contratação / demissão sem substituição]. Anexo provas documentais e requeiro instauração de procedimento investigatório.",
         "orgao_denuncia": {
           "nome": "Ministério Público do Trabalho (MPT)",
           "contato": "Pje-MPT (online)",
@@ -9441,7 +9408,6 @@
           "Procure a Defensoria Pública da União (DPU) — ação na Justiça Federal é gratuita e em geral procedente",
           "Para urgências, peça tutela antecipada (liminar) com prova da necessidade do tratamento"
         ],
-        "modelo_notificacao": "À Caixa Econômica Federal, requeiro a liberação integral do meu FGTS com fundamento no Art. 20 [inciso aplicável] da Lei 8.036/90, conforme laudo médico anexo. Esclareço que [titular/dependente nome, CPF] foi diagnosticado com [doença, CID], e que o valor será utilizado para [tratamento, equipamentos, despesas]. Eventual negativa deverá ser fundamentada por escrito para fins de exercício de direito recursal.",
         "orgao_denuncia": {
           "nome": "Defensoria Pública da União (DPU)",
           "contato": "129 ou dpu.def.br",
@@ -9672,7 +9638,6 @@
           "Procure a Defensoria Pública — ação com tutela antecipada costuma ser deferida rapidamente",
           "Em caso de plano de saúde, registre na ANS (0800 701 9656)"
         ],
-        "modelo_notificacao": "Ao [CER / Secretaria de Educação / Plano de Saúde], requeiro o fornecimento de [avaliação fonoaudiológica / equipamento de CAA / atendimento AEE / cobertura de terapia] para [nome, CPF], com base na Lei 13.146/2015 Arts. 18, 28 e 74; Lei 12.764/2012 Art. 3º; e laudo médico anexo. Eventual negativa deverá ser fundamentada por escrito.",
         "orgao_denuncia": {
           "nome": "Ouvidoria do SUS / ANS / MPF",
           "contato": "Disque Saúde 136 | ANS 0800 701 9656",
@@ -9834,7 +9799,6 @@
           "Disque 100 para violações de direitos humanos",
           "Solicite revisão judicial com novo laudo multiprofissional"
         ],
-        "modelo_notificacao": "À Vara de Família e ao MP, requeiro a IMPUGNAÇÃO/REVISÃO do pedido/sentença de curatela em desfavor de [nome, CPF], com fundamento nos Arts. 84-87 da Lei 13.146/2015 e no Art. 12 da Convenção da ONU (Decreto 6.949/2009). A curatela deve ser PARCIAL e proporcional, preservando os atos relativos ao próprio corpo, sexualidade, casamento, voto, religião e trabalho.",
         "orgao_denuncia": {
           "nome": "Defensoria Pública / Ministério Público / Disque 100",
           "contato": "Defensoria local | MP-Vara de Família | Disque 100",

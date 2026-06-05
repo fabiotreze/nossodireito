@@ -779,7 +779,6 @@
                 "conflito",
                 "base_legal_resgate",
                 "acao_imediata",
-                "modelo_notificacao",
                 "orgao_denuncia"
             ],
             "properties": {
@@ -806,11 +805,6 @@
                         "minLength": 10
                     },
                     "description": "Passos imediatos que o usuário deve tomar no momento do conflito"
-                },
-                "modelo_notificacao": {
-                    "type": "string",
-                    "minLength": 20,
-                    "description": "Texto formal para enviar à instituição infratora (WhatsApp/E-mail)"
                 },
                 "orgao_denuncia": {
                     "type": "object",

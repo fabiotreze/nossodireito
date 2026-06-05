@@ -356,11 +356,6 @@ def render_emergencia(e: Any) -> str:
     if e.get("acao_imediata"):
         parts.append("        <p><strong>Ação imediata:</strong></p>")
         parts.append(render_list(e["acao_imediata"], ordered=True))
-    if e.get("modelo_notificacao"):
-        parts.append(
-            f"        <p><strong>Modelo de notificação:</strong></p>\n"
-            f"        <blockquote>{esc(e['modelo_notificacao'])}</blockquote>"
-        )
     od = e.get("orgao_denuncia")
     if isinstance(od, dict):
         nome = esc(od.get("nome", ""))
