@@ -585,9 +585,9 @@
         }
       }
     </style>
-    <link rel="stylesheet" href="css/styles.css?v=1.43.0&rev=256.0" media="all" id="deferredCSS" />
+    <link rel="stylesheet" href="css/styles.css?v=1.43.1&rev=256.0" media="all" id="deferredCSS" />
     <noscript>
-      <link rel="stylesheet" href="css/styles.css?v=1.43.0&rev=256.0" />
+      <link rel="stylesheet" href="css/styles.css?v=1.43.1&rev=256.0" />
     </noscript>
     <script type="application/ld+json">
       {
@@ -1910,31 +1910,36 @@
             </div>
             <div id="analysisContent"></div>
           </div>
-          <div class="docs-checklist-actions-bar">
-            <h3 class="docs-checklist-title">📋 Documentos Necessários por Direito</h3>
-            <div style="display: flex; gap: 8px">
-              <button
-                id="shareDocsWhatsApp"
-                class="btn btn-sm btn-whatsapp"
-                type="button"
-                aria-label="Compartilhar documentos no WhatsApp"
-              >
-                📲 WhatsApp</button
-              ><button
-                id="exportDocsChecklistPdf"
-                class="btn btn-sm btn-outline"
-                type="button"
-                aria-label="Salvar documentos como PDF"
-              >
-                📥 Salvar PDF
-              </button>
+          <details class="docs-checklist-collapsible" style="margin-top: 2rem; border-top: 1px solid var(--border, #e5e7eb); padding-top: 1rem;">
+            <summary style="cursor: pointer; font-weight: 600; font-size: 1.1rem; padding: 8px 0;">
+              📋 Documentos Necessários por Direito (clique para ver lista completa)
+            </summary>
+            <div class="docs-checklist-actions-bar" style="margin-top: 1rem;">
+              <h3 class="docs-checklist-title">📋 Documentos Necessários por Direito</h3>
+              <div style="display: flex; gap: 8px">
+                <button
+                  id="shareDocsWhatsApp"
+                  class="btn btn-sm btn-whatsapp"
+                  type="button"
+                  aria-label="Compartilhar documentos no WhatsApp"
+                >
+                  📲 WhatsApp</button
+                ><button
+                  id="exportDocsChecklistPdf"
+                  class="btn btn-sm btn-outline"
+                  type="button"
+                  aria-label="Salvar documentos como PDF"
+                >
+                  📥 Salvar PDF
+                </button>
+              </div>
             </div>
-          </div>
-          <p class="section-desc" style="margin-bottom: 16px">
-            Com base nas categorias de direitos, estes são os documentos que você pode precisar. Marque os que já tem em
-            mãos.
-          </p>
-          <div id="docsChecklist" class="docs-checklist"></div>
+            <p class="section-desc" style="margin-bottom: 16px">
+              Com base nas categorias de direitos, estes são os documentos que você pode precisar. Marque os que já tem em
+              mãos.
+            </p>
+            <div id="docsChecklist" class="docs-checklist"></div>
+          </details>
         </div>
       </section>
       <section class="section section-alt" id="referencias" aria-labelledby="referenciasTitle">
@@ -1954,10 +1959,10 @@
               role="tab"
               class="referencias-tab"
               id="referenciasTab-links"
-              aria-selected="true"
+              aria-selected="false"
               aria-controls="links"
               data-target="#links"
-              tabindex="0"
+              tabindex="-1"
             >🔗 <span>Sites Oficiais</span></button
             ><button
               type="button"
@@ -1994,10 +1999,10 @@
               role="tab"
               class="referencias-tab"
               id="referenciasTab-transparencia"
-              aria-selected="false"
+              aria-selected="true"
               aria-controls="transparencia"
               data-target="#transparencia"
-              tabindex="-1"
+              tabindex="0"
             >📚 <span>Fontes &amp; Aviso</span></button>
           </div>
 
@@ -2006,6 +2011,7 @@
             id="links"
             role="tabpanel"
             aria-labelledby="referenciasTab-links"
+            hidden
           >
             <h3 class="referencias-panel-title">🔗 Sites Oficiais do Governo</h3>
             <p class="section-desc">
@@ -2092,7 +2098,6 @@
             id="transparencia"
             role="tabpanel"
             aria-labelledby="referenciasTab-transparencia"
-            hidden
           >
             <h3 class="referencias-panel-title">🔍 Transparência e Fontes Oficiais</h3>
           <p class="section-desc">
@@ -2309,17 +2314,6 @@
       </div>
     </section>
 
-    <!-- Apoie — GitHub Sponsors -->
-    <section id="apoie" class="section" aria-labelledby="apoie-title">
-      <div class="container">
-        <h2 id="apoie-title">Apoie o projeto</h2>
-        <p>
-          NossoDireito é um projeto sem fins lucrativos mantido por voluntários.
-          Em breve: <strong>GitHub Sponsors</strong>.
-        </p>
-      </div>
-    </section>
-
     <footer class="footer">
       <div class="container">
         <div class="footer-content">
@@ -2366,7 +2360,6 @@
               <a href="#disclaimerInline">Aviso Legal</a> ·
               <a href="https://github.com/fabiotreze/nossodireito/blob/main/docs/TERMOS-DE-USO.md" target="_blank" rel="noopener noreferrer">Termos de Uso</a> ·
               <a href="#encarregado">Encarregado (DPO)</a> ·
-              <a href="#apoie">Apoie</a> ·
               <span>Projeto open source educacional — não presta serviços jurídicos</span>
             </p>
           </div>
@@ -2641,7 +2634,7 @@
     </div>
 
     <!-- Anonymizer compartilhado (Node + Browser) — DEVE carregar ANTES de app.js -->
-    <script src="shared/anonymizer.js?v=1.43.0&rev=256.0" defer></script>
-    <script src="js/app.js?v=1.43.0&rev=256.0" defer></script>
+    <script src="shared/anonymizer.js?v=1.43.1&rev=256.0" defer></script>
+    <script src="js/app.js?v=1.43.1&rev=256.0" defer></script>
   </body>
 </html>
