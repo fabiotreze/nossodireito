@@ -25,7 +25,6 @@ aqui.
 |------------|------------|------------|
 | Navegação geral, leitura de conteúdo | Não há tratamento de dado pessoal | LGPD Art. 5º I (não aplicável) |
 | Análise opcional de documento por IA | Consentimento livre, informado e específico | LGPD Art. 7º, I e Art. 8º |
-| Telemetria operacional de aplicação | **Desativada desde 2026-06-05** (não há tratamento) | LGPD Art. 6º, III (necessidade) |
 | Anonimização técnica antes do envio à IA | Anonimização (não é dado pessoal) | LGPD Art. 12 |
 
 ## 3. Direitos do titular (Art. 18)
@@ -61,7 +60,6 @@ Operacionalmente:
 | Fluxo | Dado | Coleta | Armazenamento | Retenção | Compartilhamento |
 |-------|------|--------|---------------|----------|------------------|
 | Navegação | Nenhum dado pessoal | Não | Não | Não | Não |
-| Telemetria App Insights | **Desativada (2026-06-05)** — recurso provisionado, processo não emite envelopes | — | — | — | Não |
 | Análise IA opcional | Texto anonimizado pelo navegador | Servidor recebe e repassa à IA | Azure OpenAI (Brasil) | Sem retenção de prompt/conteúdo | Azure OpenAI no tenant do operador |
 | Rate limit | Bucket global sem identificador por cliente | Cache Redis privado | Azure (Brasil) | TTL curto operacional | Não |
 
@@ -126,7 +124,7 @@ Marque cada item ao final de cada revisão recorrente da postura LGPD.
 
 - [x] Sem cookies de tracking.
 - [x] Sem coleta de dado pessoal por padrão.
-- [x] Telemetria de aplicação totalmente desativada (2026-06-05) — sem coleta de IP, geolocalização, IDs ou User-Agent.
+- [x] Sem telemetria de aplicação (nenhum SDK de APM/observabilidade emite envelopes a partir do servidor).
 - [x] Rejeição automática de payloads com PII evidente na análise por IA.
 - [x] Anonimização do texto antes do envio à IA.
 
@@ -187,7 +185,4 @@ modal dedicado antes do envio. O RIPD documenta os riscos e mitigações.
 
 ### Marco Civil da Internet (Lei 12.965/2014, Art. 15)
 
-Registros técnicos de acesso à aplicação são retidos por 30 dias em ambiente
-controlado (App Insights, sem IP e sem geolocalização). Nota: o mínimo legal é 6 meses;
-a retenção reduzida é uma decisão de minimização, ajustável sob ordem
-judicial (Art. 15, §2º).
+O serviço é educacional e não opera com fins econômicos, não se enquadrando na hipótese do Art. 15 do Marco Civil (que exige provedor de aplicações com fins econômicos). Ainda assim, mantém-se um mínimo operacional: http logs do App Service (3 dias) para troubleshooting, com IPs anonimizados pela edge Cloudflare.

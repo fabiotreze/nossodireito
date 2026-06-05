@@ -101,7 +101,7 @@ merge commits) e bloqueia `force push`.
 - `index.html` — SPA single-file (UI + lógica de consulta)
 - `js/` — módulos JavaScript (chamadas a Document Intelligence)
 - `lib/` — módulos extraídos do `server.js` (MIME, security headers, file resolver, analytics, rate limit, Redis, AI analyze, gov.br proxy, infra handlers)
-- `services/` — wrappers para Azure (Doc Intelligence, App Insights)
+- `services/` — wrappers para Azure (Doc Intelligence)
 - `scripts/` — Python: validate_all + validações de schema/conteúdo/fontes; JS: a11y_audit, check_doc_links, check_docs_truth
 - `terraform/` — IaC do App Service + Key Vault + Redis + OpenAI + VNet
 - `tests/` — testes Pytest + node:test

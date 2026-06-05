@@ -80,23 +80,6 @@ output "ssl_state" {
   value       = var.enable_keyvault && var.pfx_file_path != "" && var.enable_custom_domain ? "SNI Enabled (PFX via Key Vault)" : "Sem custom SSL"
 }
 
-# --- Application Insights ---
-output "app_insights_name" {
-  description = "Nome do Application Insights"
-  value       = azurerm_application_insights.main.name
-}
-
-output "app_insights_connection_string" {
-  description = "Connection string do App Insights (injetada automaticamente no App Service)"
-  value       = azurerm_application_insights.main.connection_string
-  sensitive   = true
-}
-
-output "app_insights_portal_url" {
-  description = "URL direta para o dashboard do App Insights no portal Azure"
-  value       = "https://portal.azure.com/#@/resource${azurerm_application_insights.main.id}/overview"
-}
-
 
 # --- Monitoring Outputs ---
 output "alert_email" {

@@ -69,8 +69,7 @@ Proteções de durabilidade (ligadas em 2026-05-31):
 - Blob versioning: **ATIVO** (toda escrita gera nova versão).
 - Blob soft-delete: **7 dias**.
 - Container soft-delete: **7 dias**.
-- Lifecycle policy `appi-logs-retention-180d` afeta apenas `appi-logs/`;
-  `tfstate/` não tem TTL.
+- `tfstate/` não tem TTL.
 
 ## Provisionamento histórico (para replicar em outro ambiente)
 

@@ -260,7 +260,6 @@ locals {
   app_service_plan_name   = "plan-${local.project}${local.suffix}"
   web_app_name            = "app-${local.project}${local.suffix}"
   key_vault_name          = "kv-${local.project}${local.suffix}"
-  app_insights_name       = "appi-${local.project}${local.suffix}"
   log_analytics_name      = "log-${local.project}${local.suffix}"
   vnet_name               = "vnet-${local.project}${local.suffix}"
   appsvc_subnet_name      = "snet-appsvc-${var.environment}"

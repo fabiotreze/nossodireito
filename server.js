@@ -3,8 +3,7 @@
  * Serve static files with defense-in-depth security.
  * Azure App Service (Node.js 22 LTS)
  *
- * Security posture: EASM-hardened (Defender EASM / Qualys / Shodan-proof)
- * Integrates with Azure Application Insights for telemetry.
+ * Security posture: EASM-hardened (Defender EASM / Qualys / Shodan-proof).
  */
 
 "use strict";
@@ -22,7 +21,6 @@ const { resolveFile } = require("./lib/file-resolver");
 const { createAnalytics } = require("./lib/analytics");
 const { createRateLimiter } = require("./lib/rate-limit");
 const { createRedisClient } = require("./lib/redis-client");
-const { sanitizeTelemetryEnvelope } = require("./lib/telemetry-sanitizer");
 const { createAiAnalyzeHandler } = require("./lib/ai-analyze");
 const { createGovBrProxy } = require("./lib/govbr-proxy");
 const {
@@ -46,83 +44,6 @@ const PORT = process.env.PORT || 8080;
 // Limite do body POST /api/analyze-document (CWE-400 — DoS por payload grande).
 // 200 KB cobre laudo médico típico (~10 páginas de texto puro anonimizado).
 const MAX_ANALYSIS_BODY_BYTES = 200 * 1024;
-const TELEMETRY_BASE_URL = `https://${process.env.WEBSITE_HOSTNAME || "nossodireito.fabiotreze.com"}`;
-
-function safeRequestPath(reqUrl) {
-  try {
-    return new URL(reqUrl, "http://localhost").pathname;
-  } catch {
-    return (reqUrl || "/").split("?")[0] || "/";
-  }
-}
-
-function attachAnonymousRequestTelemetry(req, res) {
-  const startedAt = process.hrtime.bigint();
-  const requestPath = safeRequestPath(req.url);
-  let tracked = false;
-
-  const track = () => {
-    if (tracked) return;
-    tracked = true;
-
-    const client = appInsights?.defaultClient;
-    if (!client) return;
-
-    const durationMs = Number(process.hrtime.bigint() - startedAt) / 1e6;
-    const resultCode = Number(res.statusCode || 0);
-
-    client.trackRequest({
-      name: `${req.method || "GET"} ${requestPath}`,
-      url: `${TELEMETRY_BASE_URL}${requestPath}`,
-      duration: durationMs,
-      resultCode,
-      success: resultCode > 0 && resultCode < 400,
-      properties: {
-        route: requestPath,
-      },
-    });
-  };
-
-  res.once("finish", track);
-  res.once("close", track);
-}
-
-// ── Application Insights (server-side telemetry) ──
-// Connection string is injected by Terraform via app_settings.
-// If not present (local dev), telemetry is silently skipped.
-let appInsights = null;
-const AI_CONN = process.env.APPLICATIONINSIGHTS_CONNECTION_STRING || "";
-if (AI_CONN) {
-  try {
-    appInsights = require("applicationinsights");
-    appInsights
-      .setup(AI_CONN)
-      .setAutoCollectRequests(false)
-      .setAutoCollectPerformance(true, true)
-      .setAutoCollectExceptions(true)
-      .setAutoCollectDependencies(false)
-      .setAutoCollectConsole(false)
-      .setDistributedTracingMode(appInsights.DistributedTracingModes.AI_AND_W3C)
-      .setSendLiveMetrics(true)
-      .start();
-
-    // ── LGPD: telemetry anonymous-only ──
-    // Strips IP, geolocation, user/session identifiers, high-entropy headers,
-    // and query strings before the envelope leaves the process.
-    // See SECURITY.md ("Telemetria anônima") and docs/COMPLIANCE.md §3.
-    appInsights.defaultClient.addTelemetryProcessor(sanitizeTelemetryEnvelope);
-
-    // Periodic flush — minimize data loss on App Service restart.
-    setInterval(() => {
-      if (appInsights.defaultClient) appInsights.defaultClient.flush();
-    }, 3600_000).unref(); // 1h, .unref() to not block graceful shutdown
-
-    console.log("✅ Application Insights initialized (LGPD: anonymous-only telemetry)");
-  } catch (err) {
-    console.log("ℹ️ applicationinsights package not available — telemetry disabled");
-    appInsights = null;
-  }
-}
 
 // ── Redis-backed rate limiting (optional) ──
 // Usado quando Redis + Key Vault estão configurados; caso contrário,
@@ -136,9 +57,7 @@ const redis = createRedisClient({
 });
 
 // ── Privacy-Respecting Visitor Analytics (lib/analytics.js) ──
-const analytics = createAnalytics({
-  getAppInsightsClient: () => (appInsights ? appInsights.defaultClient : null),
-});
+const analytics = createAnalytics();
 const analyticsTrack = (ua, urlPath) => analytics.track(ua, urlPath);
 const analyticsRotateIfNeeded = () => analytics.rotateIfNeeded();
 
@@ -160,7 +79,6 @@ const aiAnalyzeHandler = createAiAnalyzeHandler({
   securityHeaders: SECURITY_HEADERS,
   anonymize,
   containsPII,
-  getAppInsightsClient: () => (appInsights ? appInsights.defaultClient : null),
   loadAnalyzer: () => require("./services/ai-analysis").analyzeText,
 });
 
@@ -177,8 +95,7 @@ const MAX_URL_LENGTH = 2048;
 
 // ── Scanner / vulnerability-probe paths (issue #251) ──
 // Bots scan estes paths em busca de configs vazadas. Sempre retornamos 404,
-// mas centralizar aqui evita poluir logs com stack traces de resolveFile()
-// e permite contar tentativas no App Insights para análise/WAF futura.
+// mas centralizar aqui evita poluir logs com stack traces de resolveFile().
 const SCANNER_PATH_RE = /^\/(\.env|\.git|__env|application\.(yml|properties)|config\/secrets|firebase-config|wp-admin|wp-login|phpmyadmin|\.well-known\/(jwks\.json|openid-configuration)|server-status|actuator|\.aws|\.ssh)/i;
 
 // Cache package.json version at startup (avoid readFileSync on every health check)
@@ -203,7 +120,6 @@ const securityTxtHandler = createSecurityTxtHandler({
 const server = http.createServer(async (req, res) => {
   // ── Suppress server identification (CWE-200) ──
   res.removeHeader("X-Powered-By");
-  attachAnonymousRequestTelemetry(req, res);
 
   // ── Method allowlist ──
   // POST é aceito APENAS no endpoint /api/analyze-document (IA opt-in).

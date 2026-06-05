@@ -33,8 +33,8 @@
 
 1. Estado do app:
    - `az webapp show -n app-nossodireito-br -g rg-nossodireito-br --query state -o tsv`
-2. Falhas 24h no App Insights:
-   - `az monitor app-insights query --app appi-nossodireito-br --analytics-query "requests | where timestamp > ago(24h) and success == false | summarize count() by name" -o table`
+2. Falhas 24h (App Service HTTP logs via Log stream):
+   - `az webapp log tail -n app-nossodireito-br -g rg-nossodireito-br`
 3. OpenAI em modo privado:
    - `az cognitiveservices account show -n cog-nossodireito-br-openai -g rg-nossodireito-br --query properties.publicNetworkAccess -o tsv`
 4. Key Vault em modo privado:
@@ -68,19 +68,6 @@ Sem esses secrets, o watchdog continua válido para monitorar CI/deploy.
 - Auth: Azure AD (RBAC `Storage Blob Data Contributor` no SA) — não há chave compartilhada.
 - **Recuperação:** blob versioning ATIVO + blob soft-delete 7d + container soft-delete 7d (ligados em 2026-05-31). Permitem `az storage blob undelete` e restore de versões anteriores do state.
 
-### Telemetria de longo prazo (Marco Civil + LGPD Art. 16)
-
-- Data Export `export-appi-to-storage` envia continuamente as tabelas
-  `AppRequests`, `AppTraces`, `AppExceptions`, `AppDependencies`,
-  `AppCustomEvents` do workspace `log-nossodireito-br` para o container
-  `appi-logs` no SA `stnossodireitobr`.
-- Permite reter logs além dos 30 dias do App Insights por custo Cool tier.
-- **Retenção máxima:** lifecycle policy `appi-logs-retention-180d` deleta
-  blobs do prefixo `appi-logs/` 180 dias após a última modificação
-  (cumpre Marco Civil Art. 15 — mínimo 6 meses — e atende LGPD Art. 16
-  princípio da necessidade).
-- Consulta: `az storage blob list -c appi-logs --account-name stnossodireitobr --auth-mode login -o table`.
-
 ### Key Vault (segredos)
 
 - Soft-delete: 7 dias (imutável após criação).
@@ -106,64 +93,34 @@ auditor. Todos os comandos abaixo são read-only e podem ser executados por
 qualquer pessoa com `az login` ativo e papel `Reader` na assinatura
 `3acb7300-a8c5-4354-9ad3-0a219a495b4a`.
 
-### Painel visual (Azure Workbook)
-
-- **Nome:** NossoDireito — Painel de Atenção
-- **Local:** Azure Portal → Application Insights `appi-nossodireito-br` → Workbooks
-- **Conteúdo:** sinais que exigem atenção para LGPD e saúde do portal, contadores de resíduos pessoais, falhas reais (exclui 404/429 esperados), 429 em rotas do portal e info da camada cold.
-- **Observação:** o workbook diário não exibe amostra bruta; ele só mostra itens acionáveis. A amostra de não-coleta abaixo serve como evidência complementar do hardening.
-- **Fonte versionada:** [terraform/workbooks/lgpd-audit.json](../terraform/workbooks/lgpd-audit.json)
-
 ### Comandos de evidência
 
 ```bash
-# 1. Mascaramento de IP (configuração do App Insights)
-az resource show \
-  --ids "/subscriptions/3acb7300-a8c5-4354-9ad3-0a219a495b4a/resourceGroups/rg-nossodireito-br/providers/Microsoft.Insights/components/appi-nossodireito-br" \
-  --query "properties.DisableIpMasking" -o tsv
-# Esperado: false  (masking ATIVO)
+# 1. Ausência de Application Insights / SDK de telemetria no resource group
+az resource list -g rg-nossodireito-br \
+  --resource-type Microsoft.Insights/components -o table
+# Esperado: nenhum resultado (desde 2026-06-05).
 
-# 2. Amostra real do que é gravado — campos sensíveis
-az monitor app-insights query --app appi-nossodireito-br -g rg-nossodireito-br \
-  --analytics-query "requests | take 20 | project timestamp, name, url, client_IP, client_City, client_CountryOrRegion, user_Id, session_Id"
-# Esperado: client_IP="::" (anonimizado), demais vazios
+# 2. Ausência do pacote applicationinsights nas dependências
+grep -E '"applicationinsights"' package.json || echo 'OK: dependência removida'
 
-# 3. Tabelas exportadas para a camada cold (não inclui body/payload)
-az monitor log-analytics workspace data-export show \
-  --workspace-name log-nossodireito-br -g rg-nossodireito-br \
-  --name export-appi-to-storage --query tableNames
+# 3. Ausência da connection string em runtime
+az webapp config appsettings list -g rg-nossodireito-br -n app-nossodireito-br \
+  --query "[?name=='APPLICATIONINSIGHTS_CONNECTION_STRING']" -o tsv
+# Esperado: vazio
 
-# 4. Lifecycle policy ativo (LGPD Art. 16 — eliminação após 180 dias)
-az storage account management-policy show \
-  --account-name stnossodireitobr -g rg-tfstate-nossodireito \
-  --query "policy.rules[0]"
-
-# 5. Quem tem acesso aos logs (RBAC)
+# 4. Key Vault — quem tem acesso
 az role assignment list \
-  --scope "/subscriptions/3acb7300-a8c5-4354-9ad3-0a219a495b4a/resourceGroups/rg-tfstate-nossodireito/providers/Microsoft.Storage/storageAccounts/stnossodireitobr" \
+  --scope "/subscriptions/3acb7300-a8c5-4354-9ad3-0a219a495b4a/resourceGroups/rg-nossodireito-br/providers/Microsoft.KeyVault/vaults/kv-nossodireito-br" \
   --query "[].{role:roleDefinitionName, principalType:principalType, principalName:principalName}" -o table
 
-# 6. Durabilidade (versioning + soft-delete)
+# 5. Storage do tfstate — durabilidade (versioning + soft-delete)
 az storage account blob-service-properties show \
   --account-name stnossodireitobr -g rg-tfstate-nossodireito \
   --query "{versioning:isVersioningEnabled, blobSoftDelete:deleteRetentionPolicy.days, containerSoftDelete:containerDeleteRetentionPolicy.days}"
 ```
 
-### Evidência complementar de anonimização (atualizado em 2026-06-05)
+### Histórico de telemetria (2026-05 — 2026-06-05)
 
-Desde **2026-06-05**, a integração do Application Insights está desativada na aplicação (a `APPLICATIONINSIGHTS_CONNECTION_STRING` foi removida do `azurerm_linux_web_app`). Resultado esperado da consulta 2:
-
-```text
-0 registros
-```
-
-Reexecução reprodutível:
-
-```bash
-az monitor log-analytics query -w e7763940-430e-44c8-9d77-95937d9ca562 \
-  --analytics-query "AppRequests | where TimeGenerated >= ago(1h) | summarize Total=count(), Com_IP=countif(isnotempty(ClientIP) and ClientIP != '::' and ClientIP != '0.0.0.0'), Com_City=countif(isnotempty(ClientCity)), Com_Country=countif(isnotempty(ClientCountryOrRegion)), Com_User_Id=countif(isnotempty(UserId)), Com_Session_Id=countif(isnotempty(SessionId))" -o table
-# Esperado: Total=0 (sem coleta na origem)
-```
-
-Histórico anterior a 2026-06-05 foi expurgado via Purge API (`Microsoft.OperationalInsights/.../purge`).
+Até 2026-06-05 o portal usava Application Insights via SDK `applicationinsights@3.x` (auto-instrumentação OpenTelemetry). A integração foi **removida por completo** pela impossibilidade de impedir o enrichment server-side de `ClientCity` / `ClientCountryOrRegion` a partir de `client.address`. Registros históricos foram expurgados via Purge API antes da desativação do workspace.
 

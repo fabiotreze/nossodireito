@@ -68,23 +68,13 @@ flowchart LR
 - Checagens de CI para testes e qualidade de conteúdo
 - Workflows de segurança do GitHub (CodeQL, gitleaks)
 - Validação do Terraform + checagens de policy no pipeline
-- **Telemetria de aplicação desativada (2026-06-05)** — Application Insights provisionado, porém sem `APPLICATIONINSIGHTS_CONNECTION_STRING` no App Service. Nenhum envelope é emitido pelo processo. Métricas operacionais usam Azure Monitor platform metrics (App Service).
+- **Sem telemetria de aplicação** — nenhum SDK de APM/observabilidade está instalado no servidor (decisão de 2026-06-05). Métricas operacionais usam Azure Monitor platform metrics (App Service) e http logs do App Service (3d).
 
 ## Marco Civil da Internet (Lei 12.965/2014)
 
-- **Art. 15:** Retenção de registros de acesso a aplicações por 6 meses em
-  ambiente controlado e seguro. Estado atual:
-  - **Hot (App Insights):** **sem coleta** desde 2026-06-05 (vide seção anterior). Não há mais alimentação de `appi-nossodireito-br`.
-  - **Cold (180 dias — TTL máximo):** Data Export `export-appi-to-storage`
-    permanece configurado para `AppRequests`, `AppTraces`, `AppExceptions`,
-    `AppDependencies` e `AppCustomEvents` no container `appi-logs` em
-    `stnossodireitobr` (Cool tier). Como a fonte está vazia, o pipeline
-    continua existindo porém sem novos blobs. Lifecycle policy
-    `appi-logs-retention-180d` deleta automaticamente blobs com mais de
-    180 dias — cumpre mínimo legal do Marco Civil (6 meses) e atende
-    LGPD Art. 16 (princípio da necessidade / eliminação após fim do
-    tratamento). Provê base para ordens judiciais de preservação
-    específica dentro da janela.
+- **Art. 15:** O serviço é educacional e não opera com fins econômicos, não se enquadrando na hipótese do Art. 15 do Marco Civil. Ainda assim, mantemos para troubleshooting:
+  - **App Service http logs** (filesystem, retenção de 3 dias) com IPs anonimizados pela edge da Cloudflare.
+  - **Azure Monitor platform metrics** do plano (request count, response time, CPU/memory) — métricas agregadas sem PII.
 - **Art. 7º, VII:** Não fornecimento a terceiros de registros de conexão e
   acesso sem consentimento livre, expresso e informado ou determinação judicial.
 
@@ -147,9 +137,7 @@ flowchart TD
   octet-stream e qualquer outro tipo são bloqueados na entrada.
 - **Sem disco no servidor:** o handler processa em memória e responde,
   sem `fs.write`, sem fila, sem banco de dados.
-- **Sem logs com conteúdo:** App Insights registra apenas metadados
-  operacionais (duração, status HTTP, contagem de PII residual). Texto
-  enviado e resposta da IA **não** são logados.
+- **Sem logs com conteúdo:** o servidor não registra texto enviado nem resposta da IA. Não há SDK de telemetria de aplicação; somente os http logs do App Service (3d) capturam linha de acesso (método + path + status).
 - **Anti-vazamento por IA:** Azure OpenAI no portal está com **data
   retention zero** (sem retenção de prompts para abuse monitoring),
   configuração aprovada pela MS quando solicitada.

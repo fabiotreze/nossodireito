@@ -28,7 +28,7 @@ Se você encontrar uma vulnerabilidade de segurança neste projeto, por favor re
 - **Zero coleta de dados pessoais** — nenhum dado identificável é armazenado
 - Todo processamento de conteúdo ocorre **localmente no navegador** do usuário
 - **Nenhum cookie** de rastreamento, analytics ou fingerprinting
-- **Telemetria anônima (server-side):** Azure Application Insights coleta apenas métricas operacionais. O servidor remove IP, geolocalização (`client_City`/`client_CountryOrRegion`) e identificadores de usuário/sessão antes do envio. O masking nativo do serviço permanece apenas como defesa complementar em caso de regressão. Retenção: 30 dias. Zero PII.
+- **Sem telemetria de aplicação:** nenhum SDK de APM/observabilidade emite envelopes a partir do servidor (Application Insights removido em 2026-06-05). Métricas operacionais usam Azure Monitor platform metrics (App Service) e http logs do App Service (3d). Zero PII.
 - Conformidade voluntária com LGPD (Lei 13.709/2018) — Art. 4º, I (não aplicabilidade para pessoa natural sem fins econômicos)
 
 ### Criptografia
@@ -86,6 +86,5 @@ Sem `'unsafe-eval'` no CSP, o VLibras não carrega e o avatar de Libras não apa
 | Dependência | Uso | Escopo |
 |---|---|---|
 | pdf.js (CDN) | Análise de PDFs | Client-side, com SRI |
-| applicationinsights | Telemetria server-side | Server-side apenas |
 
 Nenhuma outra dependência externa é utilizada no frontend.
