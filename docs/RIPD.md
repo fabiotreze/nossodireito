@@ -54,7 +54,7 @@ O tratamento NÃO se enquadra como agente de pequeno porte porque:
 | R2 | Resposta da IA contém orientação incorreta e titular deixa de buscar atendimento | Baixa | Alto | Médio |
 | R3 | Vazamento de dados em trânsito por falha TLS | Muito baixa | Alto | Baixo |
 | R4 | Acesso não autorizado ao ambiente Azure (Key Vault, OpenAI) | Muito baixa | Alto | Baixo |
-| R5 | Reidentificação a partir de telemetria operacional | Muito baixa | Médio | Baixo |
+| R5 | Reidentificação a partir de telemetria operacional | **Eliminado** (telemetria desativada em 2026-06-05) | Médio | Eliminado |
 
 ## 5. Medidas de mitigação
 
@@ -69,7 +69,7 @@ O tratamento NÃO se enquadra como agente de pequeno porte porque:
 | R3 | TLS 1.2 mínimo, HSTS, certificado gerenciado | ✅ Implementado |
 | R4 | Managed Identity, sem credenciais embutidas, RBAC mínimo | ✅ Implementado |
 | R4 | Key Vault com Private Endpoint, soft-delete (7d) e purge-protection ATIVA | ✅ Implementado |
-| R5 | Telemetria sem IP/geolocalização/User-Agent e sem IDs de usuário/sessão | ✅ Implementado |
+| R5 | Telemetria de aplicação desativada (Application Insights provisionado, processo não emite envelopes) | ✅ Implementado (2026-06-05) |
 | R5 | Rate-limit global sem identificador por cliente | ✅ Implementado |
 
 ## 6. Mapa de fluxo de dados
@@ -85,7 +85,7 @@ flowchart LR
     S -->|classificação| B
     B -->|exibe resultado| T
 
-    S -.->|telemetria anônima| AI2[App Insights<br>sem IP / sem geolocalização]
+    %% Telemetria de aplicação desativada em 2026-06-05 — App Insights provisionado mas sem coleta.
 ```
 
 ## 7. Direitos do titular

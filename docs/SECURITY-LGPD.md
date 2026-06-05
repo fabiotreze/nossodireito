@@ -68,18 +68,18 @@ flowchart LR
 - Checagens de CI para testes e qualidade de conteúdo
 - Workflows de segurança do GitHub (CodeQL, gitleaks)
 - Validação do Terraform + checagens de policy no pipeline
-- Telemetria do App Insights configurada com controles que preservam privacidade
+- **Telemetria de aplicação desativada (2026-06-05)** — Application Insights provisionado, porém sem `APPLICATIONINSIGHTS_CONNECTION_STRING` no App Service. Nenhum envelope é emitido pelo processo. Métricas operacionais usam Azure Monitor platform metrics (App Service).
 
 ## Marco Civil da Internet (Lei 12.965/2014)
 
 - **Art. 15:** Retenção de registros de acesso a aplicações por 6 meses em
-  ambiente controlado e seguro. Cumprido em duas camadas:
-  - **Hot (30 dias):** App Insights `appi-nossodireito-br` sem IP e sem geolocalização
-    para consulta operacional rápida.
+  ambiente controlado e seguro. Estado atual:
+  - **Hot (App Insights):** **sem coleta** desde 2026-06-05 (vide seção anterior). Não há mais alimentação de `appi-nossodireito-br`.
   - **Cold (180 dias — TTL máximo):** Data Export `export-appi-to-storage`
-    envia continuamente `AppRequests`, `AppTraces`, `AppExceptions`,
-    `AppDependencies` e `AppCustomEvents` para o container `appi-logs`
-    em `stnossodireitobr` (Cool tier). Lifecycle policy
+    permanece configurado para `AppRequests`, `AppTraces`, `AppExceptions`,
+    `AppDependencies` e `AppCustomEvents` no container `appi-logs` em
+    `stnossodireitobr` (Cool tier). Como a fonte está vazia, o pipeline
+    continua existindo porém sem novos blobs. Lifecycle policy
     `appi-logs-retention-180d` deleta automaticamente blobs com mais de
     180 dias — cumpre mínimo legal do Marco Civil (6 meses) e atende
     LGPD Art. 16 (princípio da necessidade / eliminação após fim do

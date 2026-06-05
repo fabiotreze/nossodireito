@@ -25,7 +25,7 @@ aqui.
 |------------|------------|------------|
 | Navegação geral, leitura de conteúdo | Não há tratamento de dado pessoal | LGPD Art. 5º I (não aplicável) |
 | Análise opcional de documento por IA | Consentimento livre, informado e específico | LGPD Art. 7º, I e Art. 8º |
-| Telemetria operacional anônima | Legítimo interesse (mínimo necessário) | LGPD Art. 7º, IX |
+| Telemetria operacional de aplicação | **Desativada desde 2026-06-05** (não há tratamento) | LGPD Art. 6º, III (necessidade) |
 | Anonimização técnica antes do envio à IA | Anonimização (não é dado pessoal) | LGPD Art. 12 |
 
 ## 3. Direitos do titular (Art. 18)
@@ -61,7 +61,7 @@ Operacionalmente:
 | Fluxo | Dado | Coleta | Armazenamento | Retenção | Compartilhamento |
 |-------|------|--------|---------------|----------|------------------|
 | Navegação | Nenhum dado pessoal | Não | Não | Não | Não |
-| Telemetria App Insights | Sem IP, sem geolocalização, sem User-Agent, sem query string | Servidor | Azure (Brasil) | 30 dias | Não |
+| Telemetria App Insights | **Desativada (2026-06-05)** — recurso provisionado, processo não emite envelopes | — | — | — | Não |
 | Análise IA opcional | Texto anonimizado pelo navegador | Servidor recebe e repassa à IA | Azure OpenAI (Brasil) | Sem retenção de prompt/conteúdo | Azure OpenAI no tenant do operador |
 | Rate limit | Bucket global sem identificador por cliente | Cache Redis privado | Azure (Brasil) | TTL curto operacional | Não |
 
@@ -126,8 +126,7 @@ Marque cada item ao final de cada revisão recorrente da postura LGPD.
 
 - [x] Sem cookies de tracking.
 - [x] Sem coleta de dado pessoal por padrão.
-- [x] Telemetria sem IP, sem geolocalização e sem User-Agent.
-- [x] Retenção de telemetria limitada (30 dias).
+- [x] Telemetria de aplicação totalmente desativada (2026-06-05) — sem coleta de IP, geolocalização, IDs ou User-Agent.
 - [x] Rejeição automática de payloads com PII evidente na análise por IA.
 - [x] Anonimização do texto antes do envio à IA.
 
