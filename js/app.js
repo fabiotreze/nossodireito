@@ -709,7 +709,6 @@
 
         // ── Phase 2: Interactive features ──
         safeRun('setupSkipLinks', setupSkipLinks);
-        safeRun('setupChecklist', setupChecklist);
         safeRun('setupFooter', setupFooter);
         safeRun('setupBackToTop', setupBackToTop);
         safeRunAsync('enrichGovBr', enrichGovBr);
@@ -1273,7 +1272,7 @@ ${t.descricao ? `<span class="trilha-tab__desc">${escapeHtml(t.descricao)}</span
 <h2>${cat.icone} ${escapeHtml(cat.titulo)}</h2>
 <p class="detalhe-resumo">${escapeHtml(cat.resumo)}</p>
 <aside class="banner-glossario" role="note" aria-label="Sobre este conteúdo">
-<p><strong>📚 Glossário público de direitos PcD.</strong> Esta página <em>reproduz</em> informações de fontes oficiais brasileiras (.gov.br, .jus.br, .def.br, .leg.br, .mp.br) e da Organização Mundial da Saúde (icd.who.int — adotada pelo Ministério da Saúde) listadas abaixo. Não verifica em tempo real, não interpreta a lei, não substitui profissional habilitado. <strong>Confirme sempre na fonte oficial.</strong></p>
+<p><strong>📚 Catálogo público de direitos PcD.</strong> Esta página <em>reúne referências</em> a fontes oficiais brasileiras (.gov.br, .jus.br, .def.br, .leg.br, .mp.br) e à Organização Mundial da Saúde (icd.who.int — adotada pelo Ministério da Saúde) listadas abaixo. <strong>Não verificamos em tempo real, não interpretamos a lei, não orientamos casos individuais.</strong> Confirme sempre na fonte oficial linkada.</p>
 </aside>`;
         if (cat.data_ultima_verificacao) {
             const STALENESS_DAYS = 180;
@@ -1297,8 +1296,9 @@ ${t.descricao ? `<span class="trilha-tab__desc">${escapeHtml(t.descricao)}</span
         }
         if (cat.valor) {
             html += `<div class="detalhe-section">
-<h3>💰 Valor</h3>
+<h3>💰 Valor citado pela fonte oficial</h3>
 <span class="valor-destaque">${escapeHtml(cat.valor)}</span>
+<p class="valor-aviso"><small>⚠️ Valor publicado em fonte oficial — pode ter sido reajustado. Confirme na fonte linkada em "Base Legal" antes de tomar decisões.</small></p>
 </div>`;
         }
         if (cat.base_legal && cat.base_legal.length) {
@@ -1329,19 +1329,22 @@ ${t.descricao ? `<span class="trilha-tab__desc">${escapeHtml(t.descricao)}</span
         if (cat.passo_a_passo && cat.passo_a_passo.length) {
             const passosHtml = `<ol>${cat.passo_a_passo.map((p) => `<li>${escapeHtml(p)}</li>`).join('')}</ol>`;
             const atribuicaoPasso = renderAtribuicao(cat, 'passo-a-passo');
+            const procedimentoAviso = `<p class="procedimento-aviso"><small>⚠️ Este é o <strong>procedimento descrito pela fonte oficial</strong> linkada abaixo. NossoDireito apenas reproduz — não orienta seu caso. Confirme na fonte oficial antes de seguir qualquer etapa.</small></p>`;
             if (cat.requer_consulta_especializada === true) {
                 // Atrito inline (não-bloqueante): leitor abre deliberadamente após ver aviso jurídico
                 html += `<div class="detalhe-section">
 <details class="passo-a-passo-atrito">
-<summary><h3 style="display:inline">👣 Passo a Passo</h3> <span class="atrito-hint">(clique para abrir — ler aviso acima primeiro)</span></summary>
+<summary><h3 style="display:inline">📋 Procedimento descrito pela fonte oficial</h3> <span class="atrito-hint">(clique para abrir — ler aviso acima primeiro)</span></summary>
 ${atribuicaoPasso}
+${procedimentoAviso}
 ${passosHtml}
 </details>
 </div>`;
             } else {
                 html += `<div class="detalhe-section">
-<h3>👣 Passo a Passo</h3>
+<h3>📋 Procedimento descrito pela fonte oficial</h3>
 ${atribuicaoPasso}
+${procedimentoAviso}
 ${passosHtml}
 </div>`;
             }
@@ -1359,11 +1362,12 @@ ${passosHtml}
             const visibleDicas = cat.dicas.slice(0, DICAS_LIMIT);
             const hiddenDicas = cat.dicas.slice(DICAS_LIMIT);
             html += `<div class="detalhe-section">
-<h3>💡 Dicas Importantes</h3>
-${renderAtribuicao(cat, 'dicas')}
+<h3>� Observações citadas pela fonte oficial</h3>
+${renderAtribuicao(cat, 'observações')}
+<p class="observacoes-aviso"><small>⚠️ Trechos reproduzidos da fonte oficial. NossoDireito não opina, não orienta e não garante aplicabilidade ao seu caso.</small></p>
 ${visibleDicas.map((d) => `<div class="dica-item">${escapeHtml(d)}</div>`).join('')}
 ${hiddenDicas.length ? `<div class="dicas-hidden" id="dicasHidden_${cat.id}" style="display:none">${hiddenDicas.map((d) => `<div class="dica-item">${escapeHtml(d)}</div>`).join('')}</div>
-<button type="button" class="btn-ver-mais" id="dicasToggle_${cat.id}" aria-expanded="false" aria-controls="dicasHidden_${cat.id}">Mostrar mais ${hiddenDicas.length} dica${hiddenDicas.length > 1 ? 's' : ''} ▼</button>` : ''}
+<button type="button" class="btn-ver-mais" id="dicasToggle_${cat.id}" aria-expanded="false" aria-controls="dicasHidden_${cat.id}">Mostrar mais ${hiddenDicas.length} observação${hiddenDicas.length > 1 ? 'es' : ''} ▼</button>` : ''}
 </div>`;
         }
         if (cat.ipva_estados && cat.ipva_estados.length) {
@@ -1937,61 +1941,6 @@ ${getPendingLegalReviews(cat.id).length ? '<span class="search-result-badge sear
             });
         });
     }
-    function setupChecklist() {
-        const checkboxes = $$('.checklist-item input[type="checkbox"]');
-        const saved = localGet('checklist') || {};
-        const total = checkboxes.length;
-        const progressText = $('#checklistProgress');
-        const progressBar = $('#checklistProgressBar');
-        function updateProgress() {
-            const done = $$('.checklist-item input[type="checkbox"]:checked').length;
-            if (progressText) progressText.textContent = `${done} de ${total} concluídos`;
-            if (progressBar) {
-                progressBar.style.width = `${Math.round(done / total * 100)}%`;
-                progressBar.closest('.progress-bar')?.setAttribute('aria-valuenow', done);
-            }
-        }
-        function checkDependencies(checkbox) {
-            const step = parseInt(checkbox.dataset.step, 10);
-            if (step === 7 && checkbox.checked) {
-                const step4 = document.querySelector('[data-step="4"]');
-                if (step4 && !step4.checked) {
-                    showToast('⚠️ Atenção: O BPC/LOAS (passo 7) exige inscrição no CadÚnico (passo 4). O INSS não agenda sem o NIS. Complete o passo 4 primeiro.', 'warning');
-                    checkbox.checked = false;
-                    return false;
-                }
-            }
-            if ([4, 6, 7, 8].includes(step) && checkbox.checked) {
-                const step3 = document.querySelector('[data-step="3"]');
-                if (step3 && !step3.checked) {
-                    const names = { 4: 'CadÚnico', 6: 'CIPTEA', 7: 'BPC', 8: 'UBS/CER/CAPS' };
-                    showToast(`⚠️ Atenção: ${names[step]} precisa de laudo médico válido (passo 3). Valide seu laudo primeiro: CID, data, assinatura, CRM.`, 'warning');
-                    checkbox.checked = false;
-                    return false;
-                }
-            }
-            return true;
-        }
-        checkboxes.forEach((cb) => {
-            const step = cb.dataset.step;
-            if (saved[step]) cb.checked = true;
-            cb.addEventListener('change', () => {
-                if (!checkDependencies(cb)) {
-                    updateProgress();
-                    return;
-                }
-                const state = localGet('checklist') || {};
-                if (cb.checked) {
-                    state[step] = true;
-                } else {
-                    delete state[step];
-                }
-                localSet('checklist', state);
-                updateProgress();
-            });
-        });
-        updateProgress();
-    }
     function renderTransparency() {
         if (!fontesData || !jsonMeta) return;
         if (dom.transLastUpdate) {
@@ -2510,23 +2459,6 @@ No Brasil, a maioria dos laudos ainda usa CID-10. O sistema aceita ambas as codi
                 }
             });
         }
-        const exportChecklistBtn = document.getElementById('exportChecklistPdf');
-        if (exportChecklistBtn) {
-            exportChecklistBtn.addEventListener('click', () => {
-                const container = document.querySelector('#checklist > .container');
-                if (container) {
-                    container.setAttribute('data-print-date', new Date().toLocaleDateString('pt-BR'));
-                }
-                document.body.classList.add('printing-checklist');
-                window.print();
-                const cleanup = () => {
-                    document.body.classList.remove('printing-checklist');
-                    window.removeEventListener('afterprint', cleanup);
-                };
-                window.addEventListener('afterprint', cleanup);
-                setTimeout(cleanup, 5000);
-            });
-        }
         const exportDocsChecklistBtn = document.getElementById('exportDocsChecklistPdf');
         if (exportDocsChecklistBtn) {
             exportDocsChecklistBtn.addEventListener('click', () => {
@@ -2542,28 +2474,6 @@ No Brasil, a maioria dos laudos ainda usa CID-10. O sistema aceita ambas as codi
                 };
                 window.addEventListener('afterprint', cleanup);
                 setTimeout(cleanup, 5000);
-            });
-        }
-        const shareChecklistBtn = document.getElementById('shareChecklistWhatsApp');
-        if (shareChecklistBtn) {
-            shareChecklistBtn.addEventListener('click', () => {
-                const checkboxes = document.querySelectorAll('#checklist input[type="checkbox"]');
-                const completed = Array.from(checkboxes).filter(cb => cb.checked).length;
-                const total = checkboxes.length;
-                const shareText = encodeURIComponent(
-                    `✅ Primeiros Passos Após o Laudo - Guia Completo\n\n` +
-                    `📊 Progresso: ${completed} de ${total} etapas concluídas\n\n` +
-                    `📋 Checklist completo com ordem obrigatória dos passos para garantir todos os direitos.\n\n` +
-                    `🔗 Acesse: https://nossodireito.fabiotreze.com\n\n` +
-                    `💡 100% gratuito | Zero coleta de dados | Baseado na legislação brasileira`
-                );
-                const url = `https://wa.me/?text=${shareText}`;
-                const win = window.open(url, '_blank', 'noopener,noreferrer');
-                if (!win) {
-                    const a = document.createElement('a');
-                    a.href = url; a.target = '_blank'; a.rel = 'noopener noreferrer';
-                    document.body.appendChild(a); a.click(); a.remove();
-                }
             });
         }
         const shareDocsBtn = document.getElementById('shareDocsWhatsApp');
@@ -2990,8 +2900,8 @@ Ver detalhes e passo a passo →
     ${aiResult ? renderHumanReviewButton() : ''}
 <div class="analysis-footer">
 <p>⚠️ <strong>Atenção:</strong> Esta análise é uma <strong>correspondência de palavras-chave</strong>
-com o glossário; <strong>não é parecer profissional</strong>. A confirmação cabe à
-<strong>Defensoria Pública</strong>, a um(a) advogado(a) ou ao <strong>CRAS</strong> da sua cidade.</p>
+com o catálogo; <strong>não é parecer profissional</strong>. A confirmação cabe à
+<strong>Defensoria Pública</strong> (CF Art. 134), a um(a) advogado(a) (Lei 8.906/1994) ou ao <strong>CRAS</strong> (Lei 8.742/1993) da sua cidade.</p>
 </div>`;
         dom.analysisContent.innerHTML = html;
         dom.analysisContent.querySelectorAll('.analysis-see-more').forEach((btn) => {
@@ -3186,7 +3096,7 @@ Abrir passo a passo: ${escapeHtml(titleById[id] || id)}
 </button>
 ${renderAIDocsChecklist()}
 ${renderWeekPlan(priorityOrder, titleById)}
-<p class="analysis-ai-disclaimer"><strong>⚠️ Importante:</strong> esta sugestão de IA é informativa, baseada em fontes oficiais já indexadas pelo glossário, e <strong>não substitui</strong> parecer profissional. A confirmação de elegibilidade cabe à <strong>Defensoria Pública</strong> ou ao <strong>CRAS</strong> da sua cidade.</p>`
+<p class="analysis-ai-disclaimer"><strong>⚠️ Importante:</strong> esta sugestão de IA é informativa, baseada em fontes oficiais já indexadas pelo catálogo, e <strong>não substitui</strong> parecer profissional. A confirmação de elegibilidade cabe à <strong>Defensoria Pública</strong> (CF Art. 134) ou ao <strong>CRAS</strong> (Lei 8.742/1993) da sua cidade.</p>`
             : '';
 
         return `

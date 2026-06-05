@@ -5,7 +5,7 @@
 
 ## 1. Natureza do serviço
 
-O **NossoDireito** é um **glossário público** — não governamental, sem fins lucrativos, mantido em ambiente de desenvolvimento (POC) — que **reproduz e organiza** informações já publicadas em **fontes oficiais brasileiras** sobre direitos de pessoas com deficiência (PcD). Cada conteúdo cita explicitamente a base legal e o canal oficial de origem.
+O **NossoDireito** é um **catálogo público** — não governamental, sem fins lucrativos, mantido em ambiente de desenvolvimento (POC) — que **reúne referências** a informações já publicadas em **fontes oficiais brasileiras** sobre direitos de pessoas com deficiência (PcD). Cada conteúdo cita explicitamente a base legal e o canal oficial de origem.
 
 O site **não é** órgão público, **não substitui** profissional habilitado (advogado, médico, assistente social, psicólogo) e **não tem competência legal ou administrativa** para conceder, negar, peticionar ou interpretar direitos. Pedidos, recursos, perícias e benefícios são tratados **exclusivamente pelos órgãos oficiais** listados em cada direito.
 
@@ -24,7 +24,7 @@ Qualquer alteração nessa allowlist exige PR público com justificativa.
 - **Não há verificação em tempo real** das fontes. A frequência de atualização manual está descrita em `data[i].data_ultima_verificacao` para cada direito; após 180 dias o site exibe banner de "conteúdo possivelmente desatualizado".
 - **Não há aconselhamento personalizado.** O conteúdo é genérico — sua situação concreta pode ter peculiaridades que mudam o resultado.
 - **A legislação muda.** Confirme sempre na fonte oficial citada antes de tomar qualquer decisão.
-- **O recurso de IA (quando habilitado)** é uma sugestão informativa baseada apenas nas fontes já indexadas pelo glossário e nas regras descritas em [`services/ai-analysis.js`](../services/ai-analysis.js); não dá parecer jurídico.
+- **O recurso de IA (quando habilitado)** é uma sugestão informativa baseada apenas nas fontes já indexadas pelo catálogo e nas regras descritas em [`services/ai-analysis.js`](../services/ai-analysis.js); não dá parecer jurídico.
 
 ## 4. Privacidade
 
