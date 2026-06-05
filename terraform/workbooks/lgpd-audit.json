@@ -4,7 +4,7 @@
     {
       "type": 1,
       "content": {
-        "json": "<div style=\"background:linear-gradient(135deg,#1e3a8a 0%,#3b82f6 100%);padding:24px;border-radius:12px;color:white;display:flex;align-items:center;gap:20px\"><img src=\"https://nossodireito.fabiotreze.com/images/nossodireito-200.webp\" alt=\"NossoDireito\" width=\"72\" height=\"72\" style=\"border-radius:50%;background:white;padding:6px\"/><div><h1 style=\"margin:0;font-size:28px\">⚖️ NossoDireito — Painel Operacional</h1><p style=\"margin:4px 0 0 0;opacity:0.9\">Guia gratuito de direitos para famílias PcD no Brasil · <a href=\"https://nossodireito.fabiotreze.com\" style=\"color:#bfdbfe\">nossodireito.fabiotreze.com</a></p><p style=\"margin:8px 0 0 0;font-size:13px;opacity:0.85\">🔒 LGPD-compliant · Zero coleta de dados pessoais · Sem IP e sem geolocalização · Retenção máx. 180 dias</p></div></div>"
+        "json": "<div style=\"background:linear-gradient(135deg,#1e3a8a 0%,#3b82f6 100%);padding:24px;border-radius:12px;color:white;display:flex;align-items:center;gap:20px\"><img src=\"https://nossodireito.fabiotreze.com/images/nossodireito-200.webp\" alt=\"NossoDireito\" width=\"72\" height=\"72\" style=\"border-radius:50%;background:white;padding:6px\"/><div><h1 style=\"margin:0;font-size:28px\">⚖️ NossoDireito — Painel de Atenção</h1><p style=\"margin:4px 0 0 0;opacity:0.9\">LGPD em primeiro plano, com visibilidade operacional do portal · <a href=\"https://nossodireito.fabiotreze.com\" style=\"color:#bfdbfe\">nossodireito.fabiotreze.com</a></p><p style=\"margin:8px 0 0 0;font-size:13px;opacity:0.85\">🔒 Zero coleta de dados pessoais, exceto evidência de desvio · Saúde do portal visível só quando for acionável · Retenção máx. 180 dias</p></div></div>"
       },
       "name": "header"
     },
@@ -40,7 +40,7 @@
     {
       "type": 1,
       "content": {
-        "json": "## 📊 Visão geral"
+        "json": "## 📊 Indicadores acionáveis"
       },
       "name": "h-overview"
     },
@@ -48,19 +48,14 @@
       "type": 3,
       "content": {
         "version": "KqlItem/1.0",
-        "query": "requests\n| summarize Total=count(), Sucesso=countif(success==true), Falha=countif(success==false), P95_ms=percentile(duration,95), Usuarios_Unicos=dcount(user_Id)",
+        "query": "requests\n| summarize\n    Erros_5xx=countif(tostring(resultCode) startswith \"5\"),\n    Http_429_criticas=countif(resultCode == \"429\" and name !in (\"GET /health\", \"GET /healthz\")),\n    Violacoes_LGPD=countif((isnotempty(client_IP) and client_IP != \"::\" and client_IP != \"0.0.0.0\") or isnotempty(client_City) or isnotempty(client_CountryOrRegion) or isnotempty(user_Id) or isnotempty(session_Id))",
         "size": 3,
-        "title": "Requests na janela",
+        "title": "Resumo acionável da janela",
         "timeContext": { "durationMs": 86400000 },
         "timeContextFromParameter": "TimeRange",
         "queryType": 0,
         "resourceType": "microsoft.insights/components",
-        "visualization": "tiles",
-        "tileSettings": {
-          "showBorder": true,
-          "titleContent": { "columnMatch": "Total", "formatter": 12, "formatOptions": { "palette": "blue" } },
-          "leftContent": { "columnMatch": "Sucesso", "formatter": 12, "formatOptions": { "palette": "green" } }
-        }
+        "visualization": "table"
       },
       "name": "tiles-overview"
     },
@@ -68,9 +63,9 @@
       "type": 3,
       "content": {
         "version": "KqlItem/1.0",
-        "query": "requests\n| summarize Requests=count() by bin(timestamp, 15m)\n| render timechart",
+        "query": "requests\n| summarize\n    Erros_5xx=countif(tostring(resultCode) startswith \"5\"),\n    Http_429_criticas=countif(resultCode == \"429\" and name !in (\"GET /health\", \"GET /healthz\")),\n    Violacoes_LGPD=countif((isnotempty(client_IP) and client_IP != \"::\" and client_IP != \"0.0.0.0\") or isnotempty(client_City) or isnotempty(client_CountryOrRegion) or isnotempty(user_Id) or isnotempty(session_Id)) by bin(timestamp, 15m)\n| render timechart",
         "size": 1,
-        "title": "Requests ao longo do tempo",
+        "title": "Tendência de eventos acionáveis",
         "timeContextFromParameter": "TimeRange",
         "queryType": 0,
         "resourceType": "microsoft.insights/components"
@@ -80,7 +75,7 @@
     {
       "type": 1,
       "content": {
-        "json": "## 🛡️ Evidência LGPD — o que **NÃO** é coletado\n\n> Sample real das requisições. Após o hardening, `client_IP`, `client_City`, `client_CountryOrRegion`, `user_Id` e `session_Id` devem aparecer **vazios**. Se algum valor surgir, há coleta residual a corrigir na origem."
+        "json": "## 🛡️ LGPD — só o que exige atenção\n\n> Se esta janela retornar linhas, há coleta residual a corrigir na origem. Se vier vazia, o estado está adequado. 404 de scanner/probe e 429 de rate limit global não entram como evidência de LGPD; são tratados em saúde do portal e hardening."
       },
       "name": "h-lgpd"
     },
@@ -88,9 +83,9 @@
       "type": 3,
       "content": {
         "version": "KqlItem/1.0",
-        "query": "requests\n| take 20\n| project timestamp, name, resultCode, client_IP, client_City, client_CountryOrRegion, user_Id, session_Id\n| order by timestamp desc",
+        "query": "requests\n| summarize\n    Com_IP_Real=countif(isnotempty(client_IP) and client_IP != \"::\" and client_IP != \"0.0.0.0\"),\n    Com_City=countif(isnotempty(client_City)),\n    Com_Country=countif(isnotempty(client_CountryOrRegion)),\n    Com_User_Id=countif(isnotempty(user_Id)),\n    Com_Session_Id=countif(isnotempty(session_Id))\n| extend Violacoes_LGPD = Com_IP_Real + Com_City + Com_Country + Com_User_Id + Com_Session_Id\n| where Violacoes_LGPD > 0",
         "size": 1,
-        "title": "Últimos 20 requests — campos de identificação (PROVA de anonimização)",
+        "title": "Campos pessoais detectados (deve ficar vazio)",
         "timeContextFromParameter": "TimeRange",
         "queryType": 0,
         "resourceType": "microsoft.insights/components"
@@ -101,9 +96,9 @@
       "type": 3,
       "content": {
         "version": "KqlItem/1.0",
-        "query": "requests\n| summarize\n    Total=count(),\n    Com_IP_Qualquer=countif(isnotempty(client_IP)),\n    Com_IP_Real=countif(isnotempty(client_IP) and client_IP != \"::\" and client_IP != \"0.0.0.0\"),\n    Com_User_Id=countif(isnotempty(user_Id)),\n    Com_Session_Id=countif(isnotempty(session_Id)),\n    Com_City=countif(isnotempty(client_City)),\n    Com_Country=countif(isnotempty(client_CountryOrRegion))\n| extend Pct_IP_Qualquer=round(100.0*Com_IP_Qualquer/Total,2), Pct_IP_Real=round(100.0*Com_IP_Real/Total,2), Pct_User_Id=round(100.0*Com_User_Id/Total,2)",
+        "query": "requests\n| summarize\n    Com_IP_Real=countif(isnotempty(client_IP) and client_IP != \"::\" and client_IP != \"0.0.0.0\"),\n    Com_City=countif(isnotempty(client_City)),\n    Com_Country=countif(isnotempty(client_CountryOrRegion)),\n    Com_User_Id=countif(isnotempty(user_Id)),\n    Com_Session_Id=countif(isnotempty(session_Id))\n| extend Violacoes_LGPD = Com_IP_Real + Com_City + Com_Country + Com_User_Id + Com_Session_Id\n| where Violacoes_LGPD > 0",
         "size": 3,
-        "title": "Contadores de campos potencialmente pessoais (devem ser 0 sem masking)",
+        "title": "Resumo de resíduos LGPD (deve ficar vazio)",
         "timeContextFromParameter": "TimeRange",
         "queryType": 0,
         "resourceType": "microsoft.insights/components",
@@ -114,7 +109,7 @@
     {
       "type": 1,
       "content": {
-        "json": "## ⚡ Performance e disponibilidade"
+        "json": "## ⚡ Saúde do portal"
       },
       "name": "h-perf"
     },
@@ -122,9 +117,9 @@
       "type": 3,
       "content": {
         "version": "KqlItem/1.0",
-        "query": "requests\n| summarize Count=count(), Avg_ms=avg(duration), P95_ms=percentile(duration,95) by name\n| order by Count desc\n| take 15",
+        "query": "requests\n| where name in (\"GET /\", \"GET /health\", \"GET /healthz\", \"POST /api/analyze-document\")\n| summarize Count=count(), Avg_ms=avg(duration), P95_ms=percentile(duration,95) by name\n| order by Count desc",
         "size": 1,
-        "title": "Top 15 rotas",
+        "title": "Rotas críticas",
         "timeContextFromParameter": "TimeRange",
         "queryType": 0,
         "resourceType": "microsoft.insights/components",
@@ -143,9 +138,9 @@
       "type": 3,
       "content": {
         "version": "KqlItem/1.0",
-        "query": "requests\n| where success == false\n| summarize Count=count() by name, resultCode\n| order by Count desc",
+        "query": "requests\n| where success == false and resultCode !in (\"404\", \"429\")\n| summarize Count=count() by name, resultCode\n| order by Count desc",
         "size": 1,
-        "title": "Falhas",
+        "title": "Falhas reais (exclui 404/429 esperados)",
         "timeContextFromParameter": "TimeRange",
         "queryType": 0,
         "resourceType": "microsoft.insights/components"
@@ -156,9 +151,22 @@
       "type": 3,
       "content": {
         "version": "KqlItem/1.0",
+        "query": "requests\n| where resultCode == \"429\" and name !in (\"GET /health\", \"GET /healthz\")\n| summarize Count=count() by name\n| order by Count desc\n| take 10",
+        "size": 1,
+        "title": "429 em rotas do portal",
+        "timeContextFromParameter": "TimeRange",
+        "queryType": 0,
+        "resourceType": "microsoft.insights/components"
+      },
+      "name": "table-429"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
         "query": "exceptions\n| summarize Count=count() by type, outerMessage\n| order by Count desc\n| take 10",
         "size": 1,
-        "title": "Top exceções",
+        "title": "Exceções relevantes",
         "timeContextFromParameter": "TimeRange",
         "queryType": 0,
         "resourceType": "microsoft.insights/components"
@@ -168,7 +176,7 @@
     {
       "type": 1,
       "content": {
-        "json": "## 📂 Camada cold — exportação para Storage (LGPD Art. 16)\n\n- **Storage account:** `stnossodireitobr` / container `appi-logs`\n- **Lifecycle:** delete automático após **180 dias** (cumpre Marco Civil Art. 15 mínimo 6 meses)\n- **Tabelas exportadas:** `AppRequests`, `AppTraces`, `AppExceptions`, `AppDependencies`, `AppCustomEvents`\n- **Não exportado:** corpo de request, payload de OpenAI, headers de auth\n\n```bash\n# Inspecionar blobs exportados\naz storage blob list -c appi-logs --account-name stnossodireitobr \\\n  --auth-mode login -o table\n```"
+        "json": "## 📂 Camada cold — retenção e auditoria\n\n- **Storage account:** `stnossodireitobr` / container `appi-logs`\n- **Lifecycle:** delete automático após **180 dias** (cumpre Marco Civil Art. 15 mínimo de 6 meses)\n- **Tabelas exportadas:** `AppRequests`, `AppTraces`, `AppExceptions`, `AppDependencies`, `AppCustomEvents`\n- **Não exportado:** corpo de request, payload de OpenAI, headers de auth\n\n```bash\n# Inspecionar blobs exportados\naz storage blob list -c appi-logs --account-name stnossodireitobr \\\n  --auth-mode login -o table\n```"
       },
       "name": "cold-info"
     },
