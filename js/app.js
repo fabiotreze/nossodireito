@@ -845,11 +845,35 @@
             }
         });
         dom.navLinks.querySelectorAll('a').forEach((link) => {
-            link.addEventListener('click', () => {
+            link.addEventListener('click', (e) => {
                 dom.navLinks.classList.remove('open');
                 dom.menuToggle.classList.remove('open');
                 dom.menuToggle.setAttribute('aria-expanded', 'false');
                 dom.menuToggle.setAttribute('aria-label', 'Abrir menu');
+
+                /* v1.43.7 — Anchor scroll offset fix.
+                 * Sections como #busca/#categorias/#documentos têm padding-top: 64px,
+                 * fazendo o h2 aterrissar a ~196px do topo (132px scroll-padding + 64px
+                 * padding). Refs (#links etc.) usam o div interno da tab e funcionam OK.
+                 * Aqui interceptamos para posicionar o h2 ~80px do topo (navbar + gap). */
+                const href = link.getAttribute('href');
+                if (!href || !href.startsWith('#') || href.length < 2) return;
+                /* Links de Refs e Aviso têm handlers próprios — não interferir. */
+                const REF_HASHES = new Set(['#links', '#classificacao', '#orgaos-estaduais', '#instituicoes', '#transparencia', '#compromissoAtualizacao', '#disclaimerInline']);
+                if (REF_HASHES.has(href)) return;
+                const target = document.querySelector(href);
+                if (!target) return;
+                e.preventDefault();
+                const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+                if (href === '#inicio') {
+                    window.scrollTo({ top: 0, behavior: reduced ? 'auto' : 'smooth' });
+                } else {
+                    const heading = target.querySelector('h2') || target;
+                    const rect = heading.getBoundingClientRect();
+                    const top = window.scrollY + rect.top - 80; /* 64 navbar + 16 gap */
+                    window.scrollTo({ top: Math.max(0, top), behavior: reduced ? 'auto' : 'smooth' });
+                }
+                if (history.replaceState) history.replaceState(null, '', href);
             });
         });
         const sections = $$('section[id]');
