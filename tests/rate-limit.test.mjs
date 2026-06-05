@@ -82,3 +82,12 @@ test("redis mode com falha: cai para memória e chama callback de erro", async (
   assert.equal(await rl.check("4.4.4.4"), true);
   assert.equal(onErrorCalls, 2);
 });
+
+test("memory mode: contador e global, sem chave por IP", async () => {
+  const rl = createRateLimiter({ windowMs: 60_000, max: 2, redisConfigured: () => false });
+
+  assert.equal(await rl.check("1.1.1.1"), false);
+  assert.equal(await rl.check("2.2.2.2"), false);
+  assert.equal(await rl.check("3.3.3.3"), true);
+  assert.equal(typeof rl._state.memoryEntry.count, "number");
+});

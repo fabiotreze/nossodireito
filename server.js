@@ -22,6 +22,7 @@ const { resolveFile } = require("./lib/file-resolver");
 const { createAnalytics } = require("./lib/analytics");
 const { createRateLimiter } = require("./lib/rate-limit");
 const { createRedisClient } = require("./lib/redis-client");
+const { sanitizeTelemetryEnvelope } = require("./lib/telemetry-sanitizer");
 const { createAiAnalyzeHandler } = require("./lib/ai-analyze");
 const { createGovBrProxy } = require("./lib/govbr-proxy");
 const {
@@ -65,37 +66,18 @@ if (AI_CONN) {
       .setSendLiveMetrics(true)
       .start();
 
-    // ── LGPD: Zero IP Collection telemetry processor ──
-    // Strips IP, User-Agent, Referer, and query strings before ingestion.
+    // ── LGPD: telemetry anonymous-only ──
+    // Strips IP, geolocation, user/session identifiers, high-entropy headers,
+    // and query strings before the envelope leaves the process.
     // See SECURITY.md ("Telemetria anônima") and docs/COMPLIANCE.md §3.
-    appInsights.defaultClient.addTelemetryProcessor((envelope) => {
-      if (envelope.tags) {
-        envelope.tags["ai.location.ip"] = "0.0.0.0";
-        delete envelope.tags["ai.user.id"];
-        delete envelope.tags["ai.user.authUserId"];
-        delete envelope.tags["ai.session.id"];
-      }
-      const baseData = envelope.data && envelope.data.baseData;
-      if (baseData) {
-        if (typeof baseData.url === "string") {
-          baseData.url = baseData.url.split("?")[0];
-        }
-        if (baseData.properties) {
-          delete baseData.properties["User-Agent"];
-          delete baseData.properties["Referer"];
-          delete baseData.properties["X-Forwarded-For"];
-          delete baseData.properties["client-ip"];
-        }
-      }
-      return true;
-    });
+    appInsights.defaultClient.addTelemetryProcessor(sanitizeTelemetryEnvelope);
 
     // Periodic flush — minimize data loss on App Service restart.
     setInterval(() => {
       if (appInsights.defaultClient) appInsights.defaultClient.flush();
     }, 3600_000).unref(); // 1h, .unref() to not block graceful shutdown
 
-    console.log("✅ Application Insights initialized (LGPD: zero IP collection)");
+    console.log("✅ Application Insights initialized (LGPD: anonymous-only telemetry)");
   } catch (err) {
     console.log("ℹ️ applicationinsights package not available — telemetry disabled");
     appInsights = null;
@@ -117,7 +99,7 @@ const redis = createRedisClient({
 const analytics = createAnalytics({
   getAppInsightsClient: () => (appInsights ? appInsights.defaultClient : null),
 });
-const analyticsTrack = (ip, ua, urlPath) => analytics.track(ip, ua, urlPath);
+const analyticsTrack = (ua, urlPath) => analytics.track(ua, urlPath);
 const analyticsRotateIfNeeded = () => analytics.rotateIfNeeded();
 
 // ── Rate Limiting (lib/rate-limit.js) ──
@@ -247,13 +229,8 @@ const server = http.createServer(async (req, res) => {
   }
 
   // ── Rate limiting (CWE-770) ──
-  // Use X-Forwarded-For only when behind a trusted reverse proxy (Azure App Service).
-  // In local dev / direct exposure, fall back to socket address to prevent spoofing.
-  const TRUST_PROXY = process.env.TRUST_PROXY === "1" || process.env.WEBSITE_SITE_NAME; // Azure injects WEBSITE_SITE_NAME
-  const clientIp = TRUST_PROXY
-    ? req.headers["x-forwarded-for"]?.split(",")[0]?.trim() || req.socket.remoteAddress || ""
-    : req.socket.remoteAddress || "";
-  if (await isRateLimitedAdaptive(clientIp)) {
+  // Bucket global por janela, sem armazenar identificadores do request.
+  if (await isRateLimitedAdaptive()) {
     res.writeHead(429, {
       "Content-Type": "text/plain",
       "Retry-After": "60",
@@ -396,7 +373,7 @@ const server = http.createServer(async (req, res) => {
   // Only track HTML page loads (not static assets like CSS/JS/images)
   const reqExt = path.extname(fullPath).toLowerCase();
   if (reqExt === ".html" || reqExt === "") {
-    analyticsTrack(clientIp, req.headers["user-agent"] || "", urlPath);
+    analyticsTrack(req.headers["user-agent"] || "", urlPath);
   }
 
   const ext = path.extname(fullPath).toLowerCase();

@@ -1,6 +1,6 @@
 # Runbook de Operações
 
-**Versão:** 1.39.0
+**Versão:** 1.40.0
 
 ## Escopo
 
@@ -90,7 +90,7 @@ Sem esses secrets, o watchdog continua válido para monitorar CI/deploy.
 ### Aplicação
 
 - Backup do filesystem do App Service: não há (stateless — código vem do repo Git, dados vêm de Azure OpenAI e do navegador).
-- Recuperação: redeploy a partir da última tag estável (`gh workflow run deploy.yml --ref v1.39.0`).
+- Recuperação: redeploy a partir da última tag estável (`gh workflow run deploy.yml --ref v1.40.0`).
 
 ### Procedimento de DR completo
 
@@ -168,7 +168,6 @@ Saída do comando 2 acima — prova que **nenhum dado pessoal é coletado**:
 ]
 ```
 
-- `client_IP="::"` — IP mascarado pela política `DisableIpMasking=false` do App Insights.
-- `client_City`, `client_CountryOrRegion`, `user_Id`, `session_Id` — vazios (nada é coletado).
+- `client_IP`, `client_City`, `client_CountryOrRegion`, `user_Id`, `session_Id` — vazios após o hardening. Se algum valor surgir, existe coleta residual na origem.
 - Demais campos (`timestamp`, `name`, `url`, `resultCode`) são metadados técnicos necessários para operação e não constituem dado pessoal sob LGPD Art. 5º, I.
 

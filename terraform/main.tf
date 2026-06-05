@@ -129,10 +129,11 @@ resource "azurerm_log_analytics_workspace" "main" {
 }
 
 # --- Application Insights ---
-# Telemetria 100% anônima (LGPD Zero IP Collection):
-#   - disable_ip_masking = false  → IPs armazenados como 0.0.0.0 na ingestão
-#   - Telemetry processor no server.js remove ai.location.ip + User-Agent + query strings
-#   - Geolocalização desabilitada (sem país/estado derivado de IP)
+# Telemetria anonymous-only (LGPD):
+#   - Telemetry processor no server.js remove IP, geolocalização, user/session IDs,
+#     User-Agent e query strings antes do envelope sair do processo
+#   - disable_ip_masking = false permanece como defesa complementar caso algum IP
+#     escape do processor por regressão futura
 #   - Retenção mínima (30d) + daily cap para limitar exposição
 # Portal: portal.azure.com > App Insights.
 resource "azurerm_application_insights" "main" {
@@ -142,8 +143,9 @@ resource "azurerm_application_insights" "main" {
   workspace_id        = azurerm_log_analytics_workspace.main.id
   application_type    = "Node.JS"
 
-  # LGPD: mantém o IP masking ATIVO (false = não desabilita masking → IP vira 0.0.0.0).
-  # Microsoft API contra-intuitiva: o nome é "disable_ip_masking" mas false = masking ON.
+  # Defesa complementar: mantém o IP masking ATIVO no serviço caso algum evento
+  # chegue com IP por regressão. A coleta primária deve sair do processo sem IP.
+  # Microsoft API contra-intuitiva: false = masking ON.
   # Ref: https://learn.microsoft.com/azure/azure-monitor/app/ip-collection
   disable_ip_masking = false
 

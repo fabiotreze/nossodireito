@@ -69,8 +69,8 @@ O tratamento NÃO se enquadra como agente de pequeno porte porque:
 | R3 | TLS 1.2 mínimo, HSTS, certificado gerenciado | ✅ Implementado |
 | R4 | Managed Identity, sem credenciais embutidas, RBAC mínimo | ✅ Implementado |
 | R4 | Key Vault com Private Endpoint, soft-delete (7d) e purge-protection ATIVA | ✅ Implementado |
-| R5 | IP anonimizado para `0.0.0.0` em App Insights, sem User-Agent | ✅ Implementado |
-| R5 | Rate-limit via hash anônimo com TTL curto | ✅ Implementado |
+| R5 | Telemetria sem IP/geolocalização/User-Agent e sem IDs de usuário/sessão | ✅ Implementado |
+| R5 | Rate-limit global sem identificador por cliente | ✅ Implementado |
 
 ## 6. Mapa de fluxo de dados
 
@@ -85,7 +85,7 @@ flowchart LR
     S -->|classificação| B
     B -->|exibe resultado| T
 
-    S -.->|telemetria anônima| AI2[App Insights<br>IP=0.0.0.0]
+    S -.->|telemetria anônima| AI2[App Insights<br>sem IP / sem geolocalização]
 ```
 
 ## 7. Direitos do titular

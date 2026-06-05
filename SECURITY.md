@@ -28,7 +28,7 @@ Se você encontrar uma vulnerabilidade de segurança neste projeto, por favor re
 - **Zero coleta de dados pessoais** — nenhum dado identificável é armazenado
 - Todo processamento de conteúdo ocorre **localmente no navegador** do usuário
 - **Nenhum cookie** de rastreamento, analytics ou fingerprinting
-- **Telemetria anônima (server-side):** Azure Application Insights coleta métricas operacionais (page views, performance, erros). IPs são mascarados na ingestão (armazenados como `0.0.0.0`). Apenas agregados geográficos (país/estado) são derivados. Retenção: 30 dias. Zero PII.
+- **Telemetria anônima (server-side):** Azure Application Insights coleta apenas métricas operacionais. O servidor remove IP, geolocalização (`client_City`/`client_CountryOrRegion`) e identificadores de usuário/sessão antes do envio. O masking nativo do serviço permanece apenas como defesa complementar em caso de regressão. Retenção: 30 dias. Zero PII.
 - Conformidade voluntária com LGPD (Lei 13.709/2018) — Art. 4º, I (não aplicabilidade para pessoa natural sem fins econômicos)
 
 ### Criptografia
