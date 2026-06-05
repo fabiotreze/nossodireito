@@ -1,0 +1,88 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://nossodireito.com.br/schemas/fontes_oficiais.schema.json",
+  "title": "NossoDireito - Allowlist de Fontes Oficiais (SSoT)",
+  "description": "Define os domínios e APIs aceitos como fonte oficial em qualquer conteúdo citado pelo NossoDireito.",
+  "type": "object",
+  "required": [
+    "versao",
+    "ultima_atualizacao",
+    "politica",
+    "dominios"
+  ],
+  "properties": {
+    "$schema": { "type": "string" },
+    "versao": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "ultima_atualizacao": {
+      "type": "string",
+      "format": "date"
+    },
+    "descricao": { "type": "string" },
+    "politica": {
+      "type": "object",
+      "required": ["regra_basica", "como_adicionar"],
+      "properties": {
+        "regra_basica": { "type": "string", "minLength": 20 },
+        "como_adicionar": { "type": "string", "minLength": 20 },
+        "exceptions_dir": { "type": "string" }
+      },
+      "additionalProperties": false
+    },
+    "dominios": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["padrao", "categoria", "justificativa"],
+        "properties": {
+          "padrao": {
+            "type": "string",
+            "pattern": "^(\\*\\.)?[a-z0-9.-]+$",
+            "description": "Glob simples: '*.gov.br' (qualquer subdomínio) ou 'www.in.gov.br' (exato)."
+          },
+          "categoria": { "type": "string" },
+          "justificativa": { "type": "string", "minLength": 10 }
+        },
+        "additionalProperties": false
+      }
+    },
+    "apis_oficiais": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["nome", "url", "uso", "ativo"],
+        "properties": {
+          "nome": { "type": "string" },
+          "url": { "type": "string", "format": "uri" },
+          "uso": { "type": "string" },
+          "implementado_em": { "type": ["string", "null"] },
+          "consumido_em": { "type": "string" },
+          "ativo": { "type": "boolean" },
+          "follow_up_issue": { "type": ["string", "integer", "null"] }
+        },
+        "additionalProperties": false
+      }
+    },
+    "fonte_propria": {
+      "type": "object",
+      "properties": {
+        "sitemap": {
+          "type": "object",
+          "required": ["url", "origem", "natureza"],
+          "properties": {
+            "url": { "type": "string", "format": "uri" },
+            "origem": { "type": "string" },
+            "natureza": { "type": "string", "enum": ["saida-interna-nao-fonte"] },
+            "nota": { "type": "string" }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

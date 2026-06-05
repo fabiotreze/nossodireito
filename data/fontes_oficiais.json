@@ -1,0 +1,136 @@
+{
+  "$schema": "../schemas/fontes_oficiais.schema.json",
+  "versao": "1.42.0",
+  "ultima_atualizacao": "2026-06-05",
+  "descricao": "Allowlist única (SSoT) de fontes oficiais aceitáveis em qualquer artefato citado pelo NossoDireito (data/direitos.json, services/ai-analysis.js, validators). Atualizações exigem revisão em PR.",
+  "politica": {
+    "regra_basica": "Toda URL exposta ao usuário final em campos 'link', 'links[].url', 'base_legal[].link', 'canal_de_atendimento_oficial', dicas e passo_a_passo deve casar com um dos padrões em 'dominios[].padrao'.",
+    "como_adicionar": "Abrir PR alterando este arquivo + justificativa em 'justificativa'. Para domínios fora de .br, exige citação de norma brasileira que o adote.",
+    "exceptions_dir": "data/fontes_oficiais_exceptions.json (não versionado em CI; usado apenas para waivers temporários)."
+  },
+  "dominios": [
+    {
+      "padrao": "*.gov.br",
+      "categoria": "executivo-federal-estadual-municipal",
+      "justificativa": "Domínio oficial do governo brasileiro (Decreto 1.800/1996 e Resolução CGI.br nº 008/2008)."
+    },
+    {
+      "padrao": "*.planalto.gov.br",
+      "categoria": "legislacao-federal",
+      "justificativa": "Subconjunto de *.gov.br listado separadamente para clareza — leis, decretos, MPs federais."
+    },
+    {
+      "padrao": "*.jus.br",
+      "categoria": "judiciario",
+      "justificativa": "STF, STJ, TJs, TRFs, TRTs, TSE — domínio oficial do Poder Judiciário brasileiro."
+    },
+    {
+      "padrao": "*.def.br",
+      "categoria": "defensoria-publica",
+      "justificativa": "Defensorias Públicas estaduais e federal."
+    },
+    {
+      "padrao": "*.leg.br",
+      "categoria": "legislativo",
+      "justificativa": "Câmara dos Deputados, Senado Federal, Assembleias Legislativas, Câmaras Municipais."
+    },
+    {
+      "padrao": "*.mp.br",
+      "categoria": "ministerio-publico",
+      "justificativa": "Ministério Público da União e estaduais."
+    },
+    {
+      "padrao": "*.mil.br",
+      "categoria": "militar",
+      "justificativa": "Forças Armadas (relevante para isenção IPI veículos militares PcD, pensão especial)."
+    },
+    {
+      "padrao": "www.in.gov.br",
+      "categoria": "diario-oficial",
+      "justificativa": "Imprensa Nacional — Diário Oficial da União."
+    },
+    {
+      "padrao": "bvsms.saude.gov.br",
+      "categoria": "saude-normativa",
+      "justificativa": "Biblioteca Virtual em Saúde do Ministério da Saúde — portarias e protocolos. Já é *.gov.br; listado para rastreabilidade."
+    },
+    {
+      "padrao": "datasus.saude.gov.br",
+      "categoria": "saude-dados",
+      "justificativa": "DataSUS — dados públicos de saúde. Já é *.gov.br; listado para rastreabilidade."
+    },
+    {
+      "padrao": "cnes2.datasus.gov.br",
+      "categoria": "saude-cnes",
+      "justificativa": "Cadastro Nacional de Estabelecimentos de Saúde. Já é *.gov.br; listado para rastreabilidade."
+    },
+    {
+      "padrao": "icd.who.int",
+      "categoria": "saude-internacional",
+      "justificativa": "Classificação Internacional de Doenças (CID-10/CID-11) da OMS. Adotada oficialmente pelo Ministério da Saúde do Brasil (Portaria GM/MS nº 1.405/2022 e SUS via DataSUS). Única exceção a domínios .br."
+    },
+    {
+      "padrao": "www.who.int",
+      "categoria": "saude-internacional",
+      "justificativa": "Documentos institucionais da OMS citados em normas brasileiras de saúde (ex.: critérios diagnósticos). Domínio raiz da Organização Mundial da Saúde, agência especializada da ONU à qual o Brasil é Estado-membro."
+    }
+  ],
+  "apis_oficiais": [
+    {
+      "nome": "servicos.gov.br API v1",
+      "url": "https://servicos.gov.br/api/v1/servicos/{id}",
+      "uso": "Confirmar status, canal e prazo do serviço digital citado em cada direito.",
+      "implementado_em": "lib/govbr-proxy.js",
+      "consumido_em": "js/app.js (cat.govbr_servico_id)",
+      "ativo": true
+    },
+    {
+      "nome": "dados.gov.br CKAN API",
+      "url": "https://dados.gov.br/api/3/action/package_search",
+      "uso": "Listar datasets oficiais (BPC ativo, RAIS PcD, CadÚnico).",
+      "implementado_em": null,
+      "ativo": false,
+      "follow_up_issue": null
+    },
+    {
+      "nome": "LexML SRU",
+      "url": "https://www.lexml.gov.br/busca/SRU",
+      "uso": "Validar vigência de leis (detectar revogação/alteração) citadas em base_legal.",
+      "implementado_em": null,
+      "ativo": false,
+      "follow_up_issue": null
+    },
+    {
+      "nome": "Câmara dos Deputados - Dados Abertos",
+      "url": "https://dadosabertos.camara.leg.br/api/v2",
+      "uso": "Listar PLs em tramitação sobre direitos PcD para alertas.",
+      "implementado_em": null,
+      "ativo": false,
+      "follow_up_issue": null
+    },
+    {
+      "nome": "IBGE Localidades",
+      "url": "https://servicodados.ibge.gov.br/api/v1/localidades/municipios",
+      "uso": "Validar municípios listados em data/municipios_br.json.",
+      "implementado_em": null,
+      "ativo": false,
+      "follow_up_issue": null
+    },
+    {
+      "nome": "WHO ICD API",
+      "url": "https://icd.who.int/icdapi",
+      "uso": "Validar códigos CID-10/CID-11 citados em direitos.",
+      "implementado_em": null,
+      "ativo": false,
+      "follow_up_issue": null
+    }
+  ],
+  "fonte_propria": {
+    "sitemap": {
+      "url": "https://nossodireito.fabiotreze.com/sitemap.xml",
+      "origem": "scripts/prerender_direitos.py",
+      "natureza": "saida-interna-nao-fonte",
+      "nota": "Sitemap próprio do projeto. NÃO é fonte externa; serve apenas para indexação."
+    }
+  }
+}

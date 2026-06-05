@@ -126,12 +126,66 @@ const SYSTEM_PROMPT = [
   "4. Use confiança 'alta' apenas quando CID + contexto explicitam a condição.",
   "5. Resumo deve ser informativo, neutro, em pt-BR — lembre que NÃO substitui orientação profissional.",
   "6. Se o texto for irrelevante (não médico/jurídico), retorne arrays vazios e confianca='baixa'.",
+  "7. NUNCA cite URLs no resumo. Se referenciar legislação, escreva apenas o nome (ex.: 'Lei 8.742/1993'); o site renderiza os links a partir do glossário oficial.",
+  "8. NÃO cite fontes que não sejam .gov.br, .jus.br, .def.br, .leg.br, .mp.br, .mil.br ou icd.who.int. Se em dúvida sobre uma fonte, não a cite.",
+  "9. NÃO invente serviços, prazos, valores ou números de processos. Só reproduza informação verificável em norma brasileira ou na CID/OMS adotada pelo MS.",
   "",
   "CATEGORIAS DISPONÍVEIS (use exatamente estes IDs):",
   "bpc_loas, ciptea, educacao, terapias_plano, terapias_sus, transporte, trabalho,",
   "fgts, habitacao, ipva, ir, prioridade_filas, tecnologia_assistiva, aposentadoria,",
   "auxilio_inclusao, meia_entrada, cotas_pcd, isencao_ipi, passe_livre",
 ].join("\n");
+
+/**
+ * G3 — Pós-validador da resposta da IA.
+ * Verifica que nenhum URL fora da allowlist apareceu no campo `resumo`.
+ * Não confia no LLM: regex agressivo sobre a string final.
+ *
+ * Allowlist (sincronizada com data/fontes_oficiais.json):
+ *  - *.gov.br, *.planalto.gov.br, *.jus.br, *.def.br, *.leg.br, *.mp.br, *.mil.br
+ *  - www.in.gov.br
+ *  - icd.who.int, www.who.int
+ *
+ * @param {object} parsed resposta JSON já parseada
+ * @returns {{ok: boolean, sanitized: object, violations: string[]}}
+ */
+function postValidateAIResponse(parsed) {
+  const URL_RE = /https?:\/\/[^\s)>\]"'`]+/gi;
+  const ALLOW_HOST_RE =
+    /^(?:[a-z0-9-]+\.)*(?:gov\.br|jus\.br|def\.br|leg\.br|mp\.br|mil\.br|who\.int)$|^www\.in\.gov\.br$/i;
+
+  const violations = [];
+  const resumo = typeof parsed.resumo === "string" ? parsed.resumo : "";
+  const found = resumo.match(URL_RE) || [];
+
+  for (const url of found) {
+    let host = "";
+    try {
+      host = new URL(url).hostname.toLowerCase();
+    } catch {
+      violations.push(url);
+      continue;
+    }
+    if (!ALLOW_HOST_RE.test(host)) {
+      violations.push(url);
+    }
+  }
+
+  if (violations.length === 0) {
+    return { ok: true, sanitized: parsed, violations: [] };
+  }
+
+  // Estratégia: remover o resumo inteiro e devolver mensagem segura.
+  // Não vale a pena tentar "limpar" URLs porque o texto adjacente pode estar
+  // contaminado por uma alucinação maior.
+  const sanitized = {
+    ...parsed,
+    resumo:
+      "A resposta automática foi descartada porque citou fontes fora da allowlist oficial. Consulte os direitos sugeridos abaixo, cuja Base Legal aponta para fontes verificadas.",
+    confianca: "baixa",
+  };
+  return { ok: false, sanitized, violations };
+}
 
 function getCredential() {
   if (_credential) return _credential;
@@ -310,6 +364,11 @@ async function analyzeText(anonymizedText) {
     };
   }
 
+  // G3: descartar resumo se conter URLs fora da allowlist (sanitização defensiva).
+  const validation = postValidateAIResponse(parsed);
+  parsed = validation.sanitized;
+  const allowlistViolations = validation.violations;
+
   return {
     contentHash,
     durationMs: Date.now() - t0,
@@ -320,6 +379,7 @@ async function analyzeText(anonymizedText) {
     direitos_sugeridos: parsed.direitos_sugeridos || [],
     resumo: parsed.resumo || "",
     confianca: parsed.confianca || "baixa",
+    allowlistViolations,
     tokens: {
       input: completion.usage?.prompt_tokens || 0,
       output: completion.usage?.completion_tokens || 0,
@@ -343,4 +403,4 @@ function getAIHealth() {
   };
 }
 
-module.exports = { analyzeText, getAIHealth };
+module.exports = { analyzeText, getAIHealth, postValidateAIResponse };

@@ -1,0 +1,70 @@
+# Termos de Uso — NossoDireito
+
+**Última atualização:** 2026-06-05
+**Versão:** 1.42.0
+
+## 1. Natureza do serviço
+
+O **NossoDireito** é um **glossário público** — não governamental, sem fins lucrativos, mantido em ambiente de desenvolvimento (POC) — que **reproduz e organiza** informações já publicadas em **fontes oficiais brasileiras** sobre direitos de pessoas com deficiência (PcD). Cada conteúdo cita explicitamente a base legal e o canal oficial de origem.
+
+O site **não é** órgão público, **não substitui** profissional habilitado (advogado, médico, assistente social, psicólogo) e **não tem competência legal ou administrativa** para conceder, negar, peticionar ou interpretar direitos. Pedidos, recursos, perícias e benefícios são tratados **exclusivamente pelos órgãos oficiais** listados em cada direito.
+
+## 2. Fontes utilizadas
+
+Todo conteúdo cita fontes oficiais conforme allowlist registrada em [`data/fontes_oficiais.json`](../data/fontes_oficiais.json):
+
+- Domínios oficiais brasileiros: `*.gov.br`, `*.planalto.gov.br`, `*.jus.br`, `*.def.br`, `*.leg.br`, `*.mp.br`, `*.mil.br`, `www.in.gov.br`.
+- Organização Mundial da Saúde (`icd.who.int`, `www.who.int`) — adotada pelo Ministério da Saúde via Portaria GM/MS nº 1.405/2022 (CID).
+- APIs públicas integradas: `servicos.gov.br/api/v1` (servidor proxy SSRF-hardened em [`lib/govbr-proxy.js`](../lib/govbr-proxy.js)).
+
+Qualquer alteração nessa allowlist exige PR público com justificativa.
+
+## 3. Limitações conhecidas
+
+- **Não há verificação em tempo real** das fontes. A frequência de atualização manual está descrita em `data[i].data_ultima_verificacao` para cada direito; após 180 dias o site exibe banner de "conteúdo possivelmente desatualizado".
+- **Não há aconselhamento personalizado.** O conteúdo é genérico — sua situação concreta pode ter peculiaridades que mudam o resultado.
+- **A legislação muda.** Confirme sempre na fonte oficial citada antes de tomar qualquer decisão.
+- **O recurso de IA (quando habilitado)** é uma sugestão informativa baseada apenas nas fontes já indexadas pelo glossário e nas regras descritas em [`services/ai-analysis.js`](../services/ai-analysis.js); não dá parecer jurídico.
+
+## 4. Privacidade
+
+- **Nenhum dado pessoal é coletado pelo site.** Não há cadastro, cookies de rastreamento, fingerprinting ou telemetria de aplicação (Application Insights e SDKs equivalentes foram removidos em 2026-06-05).
+- Documentos PDF eventualmente analisados pelo usuário **são processados localmente no navegador** — não são transmitidos.
+- Preferências (Meus Documentos, checklists) ficam em `localStorage`/`IndexedDB` no dispositivo do usuário e podem ser apagadas a qualquer momento via "Limpar dados do navegador".
+- Detalhes em [`docs/SECURITY-LGPD.md`](SECURITY-LGPD.md).
+
+## 5. Aceite (browse-wrap)
+
+Ao continuar a navegar no `https://nossodireito.fabiotreze.com` (ou em qualquer instância derivada do projeto), o usuário declara estar ciente destes termos e do aviso legal exibido em `#disclaimerInline`. Não há clique de aceite — modelo *browse-wrap* já reconhecido pelo Superior Tribunal de Justiça (REsp 1.819.075/RS, 3ª Turma, Min. Ricardo Villas Bôas Cueva, j. 25/08/2020) desde que o aviso seja claro e visível, como é o caso aqui.
+
+## 6. Limitação de responsabilidade
+
+O autor, mantenedores e contribuidores **não se responsabilizam** por:
+
+- Decisões tomadas com base no conteúdo do site.
+- Desatualizações, erros, omissões, mudanças regulatórias supervenientes.
+- Indisponibilidade do serviço.
+- Conteúdo de sites de terceiros referenciados (mesmo sendo oficiais).
+- Resultados práticos (deferimento/indeferimento de benefícios, pareceres médicos, atendimentos).
+
+A responsabilidade do usuário pela validação independente com profissional habilitado é **integral**.
+
+## 7. Sugestões de correção
+
+Encontrou conteúdo errado, desatualizado ou impreciso? Abra uma issue em [github.com/fabiotreze/nossodireito/issues](https://github.com/fabiotreze/nossodireito/issues) usando o template "Sugerir correção". Toda alteração editorial é registrada em `data/revisao_juridica.json`.
+
+## 8. Licença do código
+
+O código-fonte está sob a licença descrita em [`LICENSE`](../LICENSE). O conteúdo editorial (texto compilado a partir de fontes oficiais) é disponibilizado nos termos da licença do código e das licenças das fontes originais (em geral, conteúdo público do Governo Federal — uso livre conforme Lei 9.610/1998, art. 8º, IV).
+
+## 9. Foro e legislação aplicável
+
+Estes termos são regidos pela legislação brasileira. Eventuais questões serão resolvidas no foro do domicílio do mantenedor ou em foro eleito por acordo entre as partes.
+
+## 10. Contato
+
+E-mail técnico/jurídico (Encarregado/DPO informal): `38567767+fabiotreze@users.noreply.github.com`.
+
+---
+
+*Este documento é versionado em `docs/TERMOS-DE-USO.md` e segue o mesmo ciclo de release do projeto (`check_version_sync.mjs` valida paridade quando relevante).*

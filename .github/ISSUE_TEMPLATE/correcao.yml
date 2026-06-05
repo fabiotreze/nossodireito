@@ -1,0 +1,63 @@
+name: 📚 Sugerir correção de conteúdo
+description: Apontar conteúdo desatualizado, errado ou impreciso em um direito específico
+title: "[correção] "
+labels: [conteudo, revisao-editorial]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Obrigado por ajudar a manter o glossário público correto e atualizado.
+        Este formulário é para **conteúdo editorial** (texto, leis, links de fontes). Para defeitos de software, use *Bug report*.
+        **Não inclua dados pessoais** (CPF, RG, e-mail, nome real).
+  - type: input
+    id: direito_id
+    attributes:
+      label: ID ou título do direito
+      description: Ex. `bpc`, `cota_emprego_pcd_empresa`, "Aposentadoria especial PcD" — pode vir pré-preenchido pela URL.
+      placeholder: bpc
+    validations:
+      required: true
+  - type: dropdown
+    id: tipo
+    attributes:
+      label: Tipo de correção
+      options:
+        - Lei revogada ou alterada — base_legal precisa atualização
+        - Link quebrado ou que mudou de endereço
+        - Procedimento desatualizado (passo a passo)
+        - Documento listado não é mais exigido (ou falta um)
+        - Valor monetário ou prazo desatualizado
+        - Erro factual sem mudança de norma
+        - Outro (descrever em "Detalhes")
+    validations:
+      required: true
+  - type: textarea
+    id: detalhes
+    attributes:
+      label: Detalhes
+      description: O que está errado e o que deveria estar lá. Cite a fonte oficial onde você verificou.
+      placeholder: |
+        Texto atual: "..."
+        Texto correto: "..."
+        Fonte oficial confirmando: https://www.planalto.gov.br/...
+    validations:
+      required: true
+  - type: input
+    id: fonte_oficial
+    attributes:
+      label: URL da fonte oficial (allowlist)
+      description: "Deve estar em domínio listado em data/fontes_oficiais.json (*.gov.br, *.jus.br, *.def.br, *.leg.br, *.mp.br, icd.who.int etc.)."
+      placeholder: https://www.planalto.gov.br/ccivil_03/leis/l8742.htm
+    validations:
+      required: false
+  - type: checkboxes
+    id: confirmacoes
+    attributes:
+      label: Confirmações
+      options:
+        - label: A fonte que citei está em domínio oficial (`.gov.br`, `.jus.br`, `.def.br`, `.leg.br`, `.mp.br`, `icd.who.int` etc.)
+          required: true
+        - label: Não incluí dados pessoais nesta issue
+          required: true
+        - label: Entendo que o NossoDireito é glossário público, sem competência para conceder direitos — esta correção atualiza apenas a reprodução do conteúdo público
+          required: true
