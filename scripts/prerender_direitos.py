@@ -214,8 +214,6 @@ PAGE_TEMPLATE = """<!doctype html>
     .meta-info{{font-size:.85rem;color:var(--muted);margin-top:2rem;padding-top:1rem;border-top:1px solid var(--border)}}
     .aviso{{background:#fef3c7;border-left:4px solid #f59e0b;padding:1rem;margin:1.5rem 0;border-radius:4px;font-size:.9rem;color:#78350f}}
     @media (prefers-color-scheme:dark){{.aviso{{background:#451a03;color:#fde68a}}}}
-    .emergencia-box{{background:#fef2f2;border-left:4px solid #dc2626;padding:1rem;border-radius:6px;margin:1rem 0}}
-    @media (prefers-color-scheme:dark){{.emergencia-box{{background:#450a0a;color:#fecaca}}}}
     footer{{text-align:center;padding:2rem 1rem;border-top:1px solid var(--border);font-size:.85rem;color:var(--muted);margin-top:3rem}}
   </style>
   {jsonld}
@@ -328,45 +326,7 @@ def build_sections(cat: dict) -> str:
         elif isinstance(onde, list):
             section("Onde solicitar", render_list(onde), sid="onde-solicitar")
     section("Links oficiais", render_links(cat.get("links", [])), sid="links-oficiais")
-    if cat.get("emergencia"):
-        emerg_body = render_emergencia(cat["emergencia"])
-        wrapped = f'        <div class="emergencia-box">\n{emerg_body}\n        </div>'
-        parts.append(
-            f'      <section id="emergencia">\n        <h2>Em caso de emergência ou recusa</h2>\n{wrapped}\n      </section>'
-        )
 
-    return "\n".join(parts)
-
-
-def render_emergencia(e: Any) -> str:
-    """Renderiza bloco de emergência (dict ou string)."""
-    if isinstance(e, str):
-        return f"        <p>{esc(e)}</p>"
-    if not isinstance(e, dict):
-        return ""
-    parts: list[str] = []
-    if e.get("titulo"):
-        parts.append(f"        <h3>{esc(e['titulo'])}</h3>")
-    if e.get("conflito"):
-        parts.append(f"        <p><strong>Situação:</strong> {esc(e['conflito'])}</p>")
-    if e.get("base_legal_resgate"):
-        parts.append(
-            f"        <p><strong>Base legal:</strong> {esc(e['base_legal_resgate'])}</p>"
-        )
-    if e.get("acao_imediata"):
-        parts.append("        <p><strong>Ação imediata:</strong></p>")
-        parts.append(render_list(e["acao_imediata"], ordered=True))
-    od = e.get("orgao_denuncia")
-    if isinstance(od, dict):
-        nome = esc(od.get("nome", ""))
-        contato = esc(od.get("contato", ""))
-        url = esc(od.get("url", ""))
-        link = f' — <a href="{url}" rel="external noopener" target="_blank">{url}</a>' if url else ""
-        parts.append(
-            f"        <p><strong>Onde denunciar:</strong> {nome} ({contato}){link}</p>"
-        )
-    if e.get("aviso"):
-        parts.append(f'        <p class="aviso-inline"><em>{esc(e["aviso"])}</em></p>')
     return "\n".join(parts)
 
 

@@ -1,5 +1,5 @@
 {
-  "versao": "1.43.5",
+  "versao": "1.43.6",
   "ultima_atualizacao": "2026-06-05",
   "aviso": "Informações compiladas de fontes oficiais do governo brasileiro (gov.br). Podem estar desatualizadas. Verifique sempre as fontes originais.",
   "fontes": [
@@ -2132,23 +2132,6 @@
         "renda per capita",
         "perícia biopsicossocial"
       ],
-      "emergencia": {
-        "titulo": "BPC Negado?",
-        "conflito": "Benefício negado pelo INSS por renda familiar acima do limite ou laudo médico insuficiente.",
-        "base_legal_resgate": "Art. 20, § 11 da Lei 8.742/93 (LOAS) e Tema 106 do STJ — gastos com saúde e assistência devem ser deduzidos da renda bruta familiar. Lei 14.176/2021 amplia critério de renda para ½ salário mínimo per capita.",
-        "acao_imediata": [
-          "Verifique se o INSS descontou os gastos com medicamentos, fraldas, alimentação especial e transporte do cálculo da renda — o sistema automático muitas vezes não faz isso",
-          "Reúna todos os comprovantes de gastos mensais com saúde e assistência (recibos, notas fiscais, receitas médicas)",
-          "Solicite revisão administrativa pelo Meu INSS (meu.inss.gov.br) ou pelo telefone 135, anexando os comprovantes",
-          "Se mantida a negativa, procure a Defensoria Pública da União (DPU) para ação judicial — é gratuito"
-        ],
-        "orgao_denuncia": {
-          "nome": "Ouvidoria do INSS / Fala.BR",
-          "contato": "Fala.BR ou telefone 135",
-          "url": "https://falabr.cgu.gov.br/"
-        },
-        "aviso": "⚠️ Este protocolo é de caráter informativo e NÃO substitui orientação jurídica profissional. Procure a Defensoria Pública ou o CRAS da sua cidade para assistência gratuita."
-      },
       "cids_relacionados": [
         "5B51",
         "6A00",
@@ -2350,23 +2333,6 @@
         "CST",
         "Caregiver Skills Training"
       ],
-      "emergencia": {
-        "titulo": "CIPTEA Negada?",
-        "conflito": "Prefeitura ou órgão emissor recusa a emissão da CIPTEA ou exige documentos não previstos em lei.",
-        "base_legal_resgate": "Lei 13.977/2020 (Lei Romeo Mion), Art. 2º — o direito à CIPTEA é garantido a toda pessoa com TEA mediante laudo médico que ateste o diagnóstico. Decreto 10.502/2020.",
-        "acao_imediata": [
-          "Exija por escrito o motivo da recusa, com nome do servidor e protocolo",
-          "Verifique se seu laudo tem CID (F84.0 a F84.9 ou 6A02), data, CRM e assinatura do médico",
-          "Registre reclamação na Ouvidoria da Prefeitura e no Disque 100 (Direitos Humanos)",
-          "Procure a Defensoria Pública para garantir a emissão"
-        ],
-        "orgao_denuncia": {
-          "nome": "Disque 100 — Direitos Humanos",
-          "contato": "Disque 100 (ligação gratuita)",
-          "url": "https://www.gov.br/mdh/pt-br/acesso-a-informacao/disque-100"
-        },
-        "aviso": "⚠️ Este protocolo é de caráter informativo e NÃO substitui orientação jurídica profissional. Procure a Defensoria Pública ou o CRAS da sua cidade para assistência gratuita."
-      },
       "cids_relacionados": [
         "6A02",
         "F84.0",
@@ -2490,23 +2456,6 @@
         "AT escolar",
         "profissional de apoio"
       ],
-      "emergencia": {
-        "titulo": "Matrícula Negada?",
-        "conflito": "Escola recusa matrícula, cobra taxa extra para monitor/acompanhante terapêutico ou nega adaptações pedagógicas.",
-        "base_legal_resgate": "Art. 28 da LBI (Lei 13.146/2015) e Lei 7.853/89, Art. 8º, I — recusa de matrícula é CRIME com pena de 2 a 5 anos de reclusão e multa de 3 a 20 salários mínimos.",
-        "acao_imediata": [
-          "Grave a conversa (é legal em defesa própria no Brasil) e peça o motivo da recusa por escrito",
-          "A escola não pode alegar 'falta de vagas' apenas para o aluno PcD se houver vagas para outros",
-          "Acione imediatamente o Conselho Tutelar da sua cidade",
-          "Registre a ocorrência no Disque 100 e na Secretaria de Educação do município"
-        ],
-        "orgao_denuncia": {
-          "nome": "Conselho Tutelar local / Disque 100",
-          "contato": "Conselho Tutelar da sua cidade ou Disque 100",
-          "url": "https://www.gov.br/mdh/pt-br/acesso-a-informacao/disque-100"
-        },
-        "aviso": "⚠️ Este protocolo é de caráter informativo e NÃO substitui orientação jurídica profissional. Procure a Defensoria Pública ou o CRAS da sua cidade para assistência gratuita."
-      },
       "cids_relacionados": [
         "5B51",
         "6A00",
@@ -2695,23 +2644,6 @@
         "obesidade",
         "bariátrica"
       ],
-      "emergencia": {
-        "titulo": "Terapia Negada pelo Plano?",
-        "conflito": "Plano de saúde nega cobertura de terapias (ABA, fonoaudiologia, TO) ou limita número de sessões.",
-        "base_legal_resgate": "RN 539/2022 da ANS — cobertura ilimitada de sessões para transtornos globais do desenvolvimento. RN 395/2016 — obrigatoriedade de negativa formal por escrito com protocolo.",
-        "acao_imediata": [
-          "Exija o número do protocolo de atendimento e a negativa formal POR ESCRITO — é obrigatório pela RN 395/2016 da ANS",
-          "Se a atendente se recusar a fornecer por escrito, anote data, hora e nome do atendente",
-          "Registre reclamação imediata na ANS pelo Disque ANS (0800 701 9656) ou pelo site",
-          "Paralelamente, registre no Consumidor.gov.br — os planos respondem em até 10 dias"
-        ],
-        "orgao_denuncia": {
-          "nome": "ANS — Agência Nacional de Saúde Suplementar",
-          "contato": "Disque ANS: 0800 701 9656",
-          "url": "https://www.gov.br/ans/pt-br/assuntos/consumidor"
-        },
-        "aviso": "⚠️ Este protocolo é de caráter informativo e NÃO substitui orientação jurídica profissional. Procure a Defensoria Pública ou o CRAS da sua cidade para assistência gratuita."
-      },
       "cids_relacionados": [
         "5B51",
         "6A00",
@@ -3031,23 +2963,6 @@
         "Portaria 424/2013",
         "bariátrica SUS"
       ],
-      "emergencia": {
-        "titulo": "Terapia SUS Negada ou com Fila?",
-        "conflito": "UBS nega encaminhamento para terapias, fila de espera ultrapassa tempo razoável ou medicamento não está disponível.",
-        "base_legal_resgate": "Art. 18 da LBI (Lei 13.146/2015) — direito à saúde garantido em igualdade. Lei 8.080/90, Art. 2º — saúde é direito fundamental. Portaria GM/MS 1.526/2023 (PNAISPD).",
-        "acao_imediata": [
-          "Solicite por escrito a negativa ou previsão de espera na UBS, com protocolo e data",
-          "Registre reclamação na Ouvidoria do SUS pelo telefone 136",
-          "Para medicamentos fora da lista (RENARE), solicite via Defensoria Pública — Temas 106 e 1234 do STF garantem acesso",
-          "Em caso de urgência, procure o CAPS ou CER mais próximo e peça encaminhamento direto"
-        ],
-        "orgao_denuncia": {
-          "nome": "Ouvidoria do SUS",
-          "contato": "Disque Saúde: 136",
-          "url": "https://falabr.cgu.gov.br/"
-        },
-        "aviso": "⚠️ Este protocolo é de caráter informativo e NÃO substitui orientação jurídica profissional. Procure a Defensoria Pública ou o CRAS da sua cidade para assistência gratuita."
-      },
       "cids_relacionados": [
         "5B51",
         "6A00",
@@ -3261,23 +3176,6 @@
         "cão-guia",
         "Resolução 280"
       ],
-      "emergencia": {
-        "titulo": "Passe Livre Recusado?",
-        "conflito": "Motorista ou empresa de transporte recusa embarque com Passe Livre ou cobra passagem indevidamente.",
-        "base_legal_resgate": "Lei 8.899/94 (Passe Livre Interestadual), Decreto 3.691/2000. Leis municipais e estaduais para transporte urbano.",
-        "acao_imediata": [
-          "Anote o número de ordem do veículo (prefixo), a placa, linha e o horário exato",
-          "Tire foto do cartão de Passe Livre e do laudo médico",
-          "Solicite identificação do motorista/cobrador que recusou",
-          "Registre a reclamação na ANTT (interestadual, fone 166) ou na Secretaria de Transportes do município"
-        ],
-        "orgao_denuncia": {
-          "nome": "ANTT (Interestadual) / Secretaria de Transportes (Municipal)",
-          "contato": "ANTT: 166 / Secretaria de Transportes do município",
-          "url": "https://www.gov.br/antt/pt-br"
-        },
-        "aviso": "⚠️ Este protocolo é de caráter informativo e NÃO substitui orientação jurídica profissional. Procure a Defensoria Pública ou o CRAS da sua cidade para assistência gratuita."
-      },
       "cids_relacionados": [
         "5B51",
         "6A00",
@@ -3471,23 +3369,6 @@
         "servidor PcD",
         "Lei 8.112 Art. 98"
       ],
-      "emergencia": {
-        "titulo": "Vaga de Cota Negada?",
-        "conflito": "Empresa recusa contratação de PcD, exige tipo específico de deficiência ou não oferece adaptações razoáveis.",
-        "base_legal_resgate": "Art. 93 da Lei 8.213/91 (cotas de 2% a 5%) e Art. 34 da LBI (Lei 13.146/2015) — vedada qualquer forma de discriminação na contratação.",
-        "acao_imediata": [
-          "Solicite por escrito o motivo da não contratação — a empresa não pode exigir tipo específico de deficiência",
-          "Reúna provas: e-mails, prints de conversas, testemunhas",
-          "Denuncie ao Ministério do Trabalho (Superintendência Regional) e à Delegacia Regional do Trabalho",
-          "Procure o sindicato da categoria ou a Defensoria Pública para orientação"
-        ],
-        "orgao_denuncia": {
-          "nome": "Ministério Público do Trabalho (MPT)",
-          "contato": "MPT da sua região",
-          "url": "https://mpt.mp.br/"
-        },
-        "aviso": "⚠️ Este protocolo é de caráter informativo e NÃO substitui orientação jurídica profissional. Procure a Defensoria Pública ou o CRAS da sua cidade para assistência gratuita."
-      },
       "cids_relacionados": [
         "5B51",
         "6A00",
@@ -3652,23 +3533,6 @@
         "tecnologia assistiva",
         "órtese"
       ],
-      "emergencia": {
-        "titulo": "Saque FGTS Negado?",
-        "conflito": "Caixa Econômica Federal nega saque do FGTS para pessoa com deficiência ou seus dependentes.",
-        "base_legal_resgate": "Art. 20, XVII da Lei 8.036/90 — permite saque quando o trabalhador ou seu dependente for PcD. Necessário laudo médico e comprovação de vínculo.",
-        "acao_imediata": [
-          "Verifique se o laudo médico está atualizado e contém CID, CRM e data de emissão",
-          "Confirme se há vínculo familiar comprovado (certidão de nascimento, casamento ou tutela)",
-          "Solicite por escrito o motivo da negativa com protocolo de atendimento",
-          "Registre reclamação na Ouvidoria da Caixa (0800 726 0101) ou no Fala.BR"
-        ],
-        "orgao_denuncia": {
-          "nome": "Ouvidoria da Caixa Econômica Federal",
-          "contato": "0800 726 0101",
-          "url": "https://falabr.cgu.gov.br/"
-        },
-        "aviso": "⚠️ Este protocolo é de caráter informativo e NÃO substitui orientação jurídica profissional. Procure a Defensoria Pública ou o CRAS da sua cidade para assistência gratuita."
-      },
       "cids_relacionados": [
         "5B51",
         "6A00",
@@ -3886,23 +3750,6 @@
         "invalidez permanente",
         "financiamento"
       ],
-      "emergencia": {
-        "titulo": "Adaptação Negada no Condomínio?",
-        "conflito": "Condomínio recusa adaptações de acessibilidade nas áreas comuns ou impede obras no imóvel próprio.",
-        "base_legal_resgate": "Art. 58 da LBI (Lei 13.146/2015) — a PcD tem direito a adaptações razoáveis nas áreas comuns, sendo vedada a cobrança de valores adicionais. Lei 14.620/2023 (Minha Casa Minha Vida) — prioridade para PcD.",
-        "acao_imediata": [
-          "Solicite por escrito ao síndico/administradora a adaptação necessária, citando o Art. 58 da LBI",
-          "Se recusado, registre em ata de assembleia e solicite cópia da ata",
-          "Registre reclamação no Procon e na Defensoria Pública",
-          "Para financiamento habitacional: verifique prioridade PcD no Minha Casa Minha Vida"
-        ],
-        "orgao_denuncia": {
-          "nome": "Procon / Defensoria Pública",
-          "contato": "Procon da sua cidade ou Defensoria Pública",
-          "url": "https://www.gov.br/mj/pt-br/assuntos/seus-direitos/consumidor"
-        },
-        "aviso": "⚠️ Este protocolo é de caráter informativo e NÃO substitui orientação jurídica profissional. Procure a Defensoria Pública ou o CRAS da sua cidade para assistência gratuita."
-      },
       "cids_relacionados": [
         "5B51",
         "6A00",
@@ -4579,23 +4426,6 @@
         "discriminação financeira",
         "previdência complementar"
       ],
-      "emergencia": {
-        "titulo": "Isenção de Imposto Negada?",
-        "conflito": "SEFAZ, Receita Federal ou Detran indeferiu isenção de IPVA, IPI, IOF ou ICMS argumentando falta de adaptação no veículo.",
-        "base_legal_resgate": "Lei 14.287/2021, STF (ADI 6536) — a deficiência é a base da isenção, NÃO a adaptação do veículo. Convênio CONFAZ ICMS 38/2012.",
-        "acao_imediata": [
-          "Verifique se o laudo médico atesta a deficiência com CID — a isenção é concedida mesmo sem adaptação física no veículo (TEA, deficiência visual, etc.)",
-          "Solicite cópia do indeferimento por escrito, com fundamentação legal",
-          "Para IPI/IOF: conteste pelo SISEN (Receita Federal). Para IPVA: recurso na SEFAZ do estado",
-          "Procure a Defensoria Pública para contestação judicial se necessário"
-        ],
-        "orgao_denuncia": {
-          "nome": "Ouvidoria da SEFAZ do estado / Receita Federal",
-          "contato": "SEFAZ do seu estado ou Receita Federal (146)",
-          "url": "https://www.gov.br/receitafederal/pt-br"
-        },
-        "aviso": "⚠️ Este protocolo é de caráter informativo e NÃO substitui orientação jurídica profissional. Procure a Defensoria Pública ou o CRAS da sua cidade para assistência gratuita."
-      },
       "cids_relacionados": [
         "5B51",
         "6A00",
@@ -4829,23 +4659,6 @@
         "doenças raras",
         "identificação visual"
       ],
-      "emergencia": {
-        "titulo": "Prioridade Ignorada?",
-        "conflito": "Estabelecimento comercial, banco ou órgão público recusa atendimento prioritário à PcD.",
-        "base_legal_resgate": "Lei 10.048/2000, Art. 1º e Art. 2º — atendimento prioritário é obrigatório em todos os serviços públicos e privados.",
-        "acao_imediata": [
-          "Solicite a identificação do responsável pelo atendimento e o número do protocolo",
-          "Registre a ocorrência por foto, vídeo ou anotação com data, hora e local",
-          "Registre reclamação no Procon e no Consumidor.gov.br",
-          "Para bancos: reclame também no Banco Central (bcb.gov.br)"
-        ],
-        "orgao_denuncia": {
-          "nome": "Procon / Consumidor.gov.br",
-          "contato": "Procon da cidade ou Consumidor.gov.br",
-          "url": "https://www.consumidor.gov.br/"
-        },
-        "aviso": "⚠️ Este protocolo é de caráter informativo e NÃO substitui orientação jurídica profissional. Procure a Defensoria Pública ou o CRAS da sua cidade para assistência gratuita."
-      },
       "cids_relacionados": [
         "5B51",
         "6A00",
@@ -5039,23 +4852,6 @@
         "SENATRAN",
         "SP156"
       ],
-      "emergencia": {
-        "titulo": "Vaga Especial Negada?",
-        "conflito": "Estabelecimento não possui vagas reservadas ou se recusa a respeitar o cartão de estacionamento PcD (Cartão Defis).",
-        "base_legal_resgate": "Art. 47 da LBI (Lei 13.146/2015) e Resolução CONTRAN 304/2008 — 2% das vagas devem ser reservadas para PcD.",
-        "acao_imediata": [
-          "Fotografe a ausência de vagas reservadas ou o uso indevido por veículos sem credencial",
-          "Anote endereço completo, data e hora da ocorrência",
-          "Registre a ocorrência na Prefeitura/DETRAN e no Procon",
-          "Para uso indevido: acione a Guarda Municipal ou PM para autuação"
-        ],
-        "orgao_denuncia": {
-          "nome": "DETRAN / Prefeitura / Procon",
-          "contato": "DETRAN estadual ou Prefeitura",
-          "url": "https://www.gov.br/mj/pt-br/assuntos/seus-direitos/consumidor"
-        },
-        "aviso": "⚠️ Este protocolo é de caráter informativo e NÃO substitui orientação jurídica profissional. Procure a Defensoria Pública ou o CRAS da sua cidade para assistência gratuita."
-      },
       "cids_relacionados": [
         "5B51",
         "6A00",
@@ -5232,23 +5028,6 @@
         "seguridade social",
         "benefício previdenciário"
       ],
-      "emergencia": {
-        "titulo": "Aposentadoria Especial Negada?",
-        "conflito": "INSS nega aposentadoria com tempo reduzido para PcD ou classifica grau de deficiência incorretamente.",
-        "base_legal_resgate": "Lei Complementar 142/2013, Art. 3º — redução de 2, 6 ou 10 anos conforme grau de deficiência (leve, moderada, grave).",
-        "acao_imediata": [
-          "Solicite cópia do laudo pericial do INSS e verifique a classificação do grau de deficiência",
-          "Reúna laudos médicos particulares que comprovem o grau correto de deficiência",
-          "Solicite revisão administrativa pelo Meu INSS (recurso de 1ª instância)",
-          "Se mantida, procure a Defensoria Pública da União para ação judicial"
-        ],
-        "orgao_denuncia": {
-          "nome": "Ouvidoria do INSS / DPU",
-          "contato": "Fala.BR ou DPU da sua região",
-          "url": "https://falabr.cgu.gov.br/"
-        },
-        "aviso": "⚠️ Este protocolo é de caráter informativo e NÃO substitui orientação jurídica profissional. Procure a Defensoria Pública ou o CRAS da sua cidade para assistência gratuita."
-      },
       "cids_relacionados": [
         "5B51",
         "6A00",
@@ -5421,23 +5200,6 @@
         "audiência",
         "LBI"
       ],
-      "emergencia": {
-        "titulo": "Processo Judicial sem Prioridade?",
-        "conflito": "Vara ou tribunal não concede tramitação prioritária a processo envolvendo PcD.",
-        "base_legal_resgate": "Art. 1.048 do CPC (Lei 13.105/2015) e Art. 9º, VII da LBI (Lei 13.146/2015) — PcD tem direito a tramitação prioritária em todos os atos judiciais.",
-        "acao_imediata": [
-          "Peça ao advogado ou defensor público para protocolar requerimento de tramitação prioritária",
-          "Anexe laudo médico atualizado comprovando a deficiência",
-          "Se negado, interponha agravo de instrumento ou reclamação correcional",
-          "Registre no CNJ (Conselho Nacional de Justiça) se o tribunal se recusar"
-        ],
-        "orgao_denuncia": {
-          "nome": "Conselho Nacional de Justiça (CNJ)",
-          "contato": "Ouvidoria do CNJ",
-          "url": "https://www.cnj.jus.br/"
-        },
-        "aviso": "⚠️ Este protocolo é de caráter informativo e NÃO substitui orientação jurídica profissional. Procure a Defensoria Pública ou o CRAS da sua cidade para assistência gratuita."
-      },
       "cids_relacionados": [
         "5B51",
         "6A00",
@@ -5632,23 +5394,6 @@
         "ABNT NBR 17225",
         "site acessível"
       ],
-      "emergencia": {
-        "titulo": "Financiamento Negado?",
-        "conflito": "Banco ou instituição nega crédito para aquisição de tecnologia assistiva ou cadeira de rodas motorizada.",
-        "base_legal_resgate": "Art. 74 da LBI (Lei 13.146/2015) — linhas de crédito específicas para PcD. BNDES Tecnologia Assistiva.",
-        "acao_imediata": [
-          "Solicite por escrito o motivo da negativa com protocolo",
-          "Verifique se o equipamento consta na lista do SUS (se coberto pelo SUS, solicite na UBS)",
-          "Procure o BNDES ou cooperativas de crédito com linhas específicas para tecnologia assistiva",
-          "Registre no Banco Central se houver discriminação na concessão de crédito"
-        ],
-        "orgao_denuncia": {
-          "nome": "Banco Central do Brasil",
-          "contato": "bcb.gov.br ou 145",
-          "url": "https://www.bcb.gov.br/"
-        },
-        "aviso": "⚠️ Este protocolo é de caráter informativo e NÃO substitui orientação jurídica profissional. Procure a Defensoria Pública ou o CRAS da sua cidade para assistência gratuita."
-      },
       "cids_relacionados": [
         "5B51",
         "6A00",
@@ -5813,23 +5558,6 @@
         "circo",
         "ingresso"
       ],
-      "emergencia": {
-        "titulo": "Meia-Entrada Recusada?",
-        "conflito": "Estabelecimento cultural, cinema ou evento recusa conceder meia-entrada para PcD e acompanhante.",
-        "base_legal_resgate": "Lei 12.933/2013, Art. 1º, § 8º e § 10 — PcD e acompanhante têm direito a meia-entrada. Não exige carteirinha específica.",
-        "acao_imediata": [
-          "Apresente o laudo médico ou CIPTEA — não é obrigatório ter carteirinha específica",
-          "Solicite por escrito a negativa e fotografe a bilheteria",
-          "Registre no Procon e no Consumidor.gov.br",
-          "Lembre: o acompanhante também tem direito à meia-entrada"
-        ],
-        "orgao_denuncia": {
-          "nome": "Procon / Consumidor.gov.br",
-          "contato": "Procon da cidade",
-          "url": "https://www.consumidor.gov.br/"
-        },
-        "aviso": "⚠️ Este protocolo é de caráter informativo e NÃO substitui orientação jurídica profissional. Procure a Defensoria Pública ou o CRAS da sua cidade para assistência gratuita."
-      },
       "cids_relacionados": [
         "5B51",
         "6A00",
@@ -6035,23 +5763,6 @@
         "Lei 10.260",
         "Lei 13.409"
       ],
-      "emergencia": {
-        "titulo": "Cota Universitária Negada?",
-        "conflito": "Universidade recusa matrícula via cotas PcD ou não oferece acessibilidade no processo seletivo.",
-        "base_legal_resgate": "Lei 13.409/2016 (cotas PcD em universidades federais). Art. 28 da LBI (Lei 13.146/2015) — adaptações obrigatórias no processo seletivo.",
-        "acao_imediata": [
-          "Verifique no edital se as cotas PcD estão previstas e se seu laudo atende aos requisitos",
-          "Solicite por escrito o motivo da recusa com protocolo da instituição",
-          "Registre reclamação no MEC e na Ouvidoria da universidade",
-          "Procure a Defensoria Pública para garantir a matrícula"
-        ],
-        "orgao_denuncia": {
-          "nome": "MEC — Ministério da Educação",
-          "contato": "Ouvidoria do MEC: 0800 616 161",
-          "url": "https://www.gov.br/mec/pt-br"
-        },
-        "aviso": "⚠️ Este protocolo é de caráter informativo e NÃO substitui orientação jurídica profissional. Procure a Defensoria Pública ou o CRAS da sua cidade para assistência gratuita."
-      },
       "cids_relacionados": [
         "5B51",
         "6A00",
@@ -6245,23 +5956,6 @@
         "lote restituição",
         "IN RFB 2.055"
       ],
-      "emergencia": {
-        "titulo": "Isenção de IR Negada?",
-        "conflito": "Receita Federal não reconhece a isenção de Imposto de Renda por moléstia grave ou deficiência.",
-        "base_legal_resgate": "Lei 7.713/88, Art. 6º, XIV — isenção para portadores de moléstia grave listada. Prioridade na restituição para PcD.",
-        "acao_imediata": [
-          "Verifique se o laudo médico especifica uma das moléstias graves previstas na Lei 7.713/88",
-          "Solicite laudo de junta médica oficial (SUS ou perícia) para comprovar a condição",
-          "Apresente recurso administrativo na Receita Federal com toda documentação médica",
-          "PcD tem prioridade no recebimento da restituição (1º lote, após idosos 80+)"
-        ],
-        "orgao_denuncia": {
-          "nome": "Receita Federal",
-          "contato": "Receita Federal: 146",
-          "url": "https://www.gov.br/receitafederal/pt-br"
-        },
-        "aviso": "⚠️ Este protocolo é de caráter informativo e NÃO substitui orientação jurídica profissional. Procure a Defensoria Pública ou o CRAS da sua cidade para assistência gratuita."
-      },
       "cids_relacionados": [
         "5B51",
         "6A00",
@@ -6464,23 +6158,6 @@
         "Decreto 11.016",
         "pobreza"
       ],
-      "emergencia": {
-        "titulo": "Benefício Variável PcD Negado?",
-        "conflito": "Bolsa Família não concede o benefício variável adicional para família com PcD.",
-        "base_legal_resgate": "Lei 14.601/2023, Art. 5º — famílias com PcD recebem benefício variável adicional. Necessário atualização do CadÚnico.",
-        "acao_imediata": [
-          "Atualize o CadÚnico no CRAS com o laudo médico da PcD incluído no cadastro familiar",
-          "Verifique se o membro PcD está corretamente marcado no CadÚnico",
-          "Solicite revisão cadastral no CRAS da sua cidade",
-          "Se mantida a negativa, procure a Defensoria Pública"
-        ],
-        "orgao_denuncia": {
-          "nome": "CRAS / Ouvidoria do MDS",
-          "contato": "CRAS da sua cidade ou Disque 121",
-          "url": "https://falabr.cgu.gov.br/"
-        },
-        "aviso": "⚠️ Este protocolo é de caráter informativo e NÃO substitui orientação jurídica profissional. Procure a Defensoria Pública ou o CRAS da sua cidade para assistência gratuita."
-      },
       "cids_relacionados": [
         "5B51",
         "6A00",
@@ -6655,23 +6332,6 @@
         "CRAS",
         "NIS"
       ],
-      "emergencia": {
-        "titulo": "Desconto na Energia Negado?",
-        "conflito": "Concessionária de energia não aplica o desconto da Tarifa Social para família com PcD cadastrada no CadÚnico.",
-        "base_legal_resgate": "Lei 12.212/2010, Art. 2º, § 1º — famílias com PcD inscritas no CadÚnico têm direito a desconto de até 65% na conta de luz.",
-        "acao_imediata": [
-          "Verifique se o CadÚnico está atualizado e se o NIS está ativo",
-          "Solicite a Tarifa Social diretamente na concessionária de energia, apresentando NIS e documento PcD",
-          "Se recusado, registre reclamação na ANEEL (0800 727 0167)",
-          "Registre também no Procon da cidade"
-        ],
-        "orgao_denuncia": {
-          "nome": "ANEEL — Agência Nacional de Energia Elétrica",
-          "contato": "ANEEL: 0800 727 0167",
-          "url": "https://www.gov.br/aneel/pt-br"
-        },
-        "aviso": "⚠️ Este protocolo é de caráter informativo e NÃO substitui orientação jurídica profissional. Procure a Defensoria Pública ou o CRAS da sua cidade para assistência gratuita."
-      },
       "cids_relacionados": [
         "5B51",
         "6A00",
@@ -6853,23 +6513,6 @@
         "mercado de trabalho",
         "RGPS"
       ],
-      "emergencia": {
-        "titulo": "Auxílio-Inclusão Negado?",
-        "conflito": "INSS nega Auxílio-Inclusão para PcD que ingressou no mercado de trabalho formal.",
-        "base_legal_resgate": "Lei 14.176/2021, Art. 26 e 26-A — PcD que era beneficiário do BPC e ingressa no mercado formal tem direito ao Auxílio-Inclusão (½ salário mínimo).",
-        "acao_imediata": [
-          "Confirme se você era beneficiário do BPC antes de começar a trabalhar formalmente",
-          "Solicite o Auxílio-Inclusão pelo Meu INSS ou telefone 135",
-          "Reúna: carteira de trabalho assinada, último comprovante de BPC e laudo médico",
-          "Se negado, solicite revisão e procure a DPU"
-        ],
-        "orgao_denuncia": {
-          "nome": "Ouvidoria do INSS",
-          "contato": "INSS: 135 ou Fala.BR",
-          "url": "https://falabr.cgu.gov.br/"
-        },
-        "aviso": "⚠️ Este protocolo é de caráter informativo e NÃO substitui orientação jurídica profissional. Procure a Defensoria Pública ou o CRAS da sua cidade para assistência gratuita."
-      },
       "cids_relacionados": [
         "5B51",
         "6A00",
@@ -7057,23 +6700,6 @@
         "serviço público",
         "LOAS"
       ],
-      "emergencia": {
-        "titulo": "Acolhimento Social Negado?",
-        "conflito": "CRAS ou CREAS recusa atendimento ou encaminhamento para serviços de proteção social à PcD.",
-        "base_legal_resgate": "Art. 18-A da Lei 8.742/93 (LOAS) e Art. 39 da LBI (Lei 13.146/2015) — PcD tem direito a serviços de proteção social especial (CREAS, Centro-Dia, Residência Inclusiva).",
-        "acao_imediata": [
-          "Solicite por escrito o motivo da recusa, com protocolo de atendimento",
-          "Registre na Ouvidoria do SUAS (Sistema Único de Assistência Social)",
-          "Procure o CREAS da sua região para proteção social especial",
-          "Acione a Defensoria Pública se houver risco à integridade da PcD"
-        ],
-        "orgao_denuncia": {
-          "nome": "Ouvidoria do MDS / SUAS",
-          "contato": "Disque 121 ou Fala.BR",
-          "url": "https://falabr.cgu.gov.br/"
-        },
-        "aviso": "⚠️ Este protocolo é de caráter informativo e NÃO substitui orientação jurídica profissional. Procure a Defensoria Pública ou o CRAS da sua cidade para assistência gratuita."
-      },
       "cids_relacionados": [
         "5B51",
         "6A00",
@@ -7237,23 +6863,6 @@
         "salário mínimo",
         "licença-maternidade"
       ],
-      "emergencia": {
-        "titulo": "Pensão Zika Negada?",
-        "conflito": "INSS nega pensão especial para crianças com microcefalia por Síndrome Congênita do Zika Vírus.",
-        "base_legal_resgate": "Lei 13.985/2020 — pensão vitalícia de 1 salário mínimo para crianças com microcefalia decorrente do Zika Vírus nascidas entre 2015 e 2019.",
-        "acao_imediata": [
-          "Verifique se a criança nasceu entre 01/01/2015 e 31/12/2019 e possui diagnóstico de microcefalia por Zika",
-          "Reúna certidão de nascimento, laudo médico com CID e comprovante de residência",
-          "Solicite pelo Meu INSS ou telefone 135",
-          "Se negado, procure a DPU imediatamente"
-        ],
-        "orgao_denuncia": {
-          "nome": "DPU / Ouvidoria do INSS",
-          "contato": "INSS: 135 ou DPU da região",
-          "url": "https://falabr.cgu.gov.br/"
-        },
-        "aviso": "⚠️ Este protocolo é de caráter informativo e NÃO substitui orientação jurídica profissional. Procure a Defensoria Pública ou o CRAS da sua cidade para assistência gratuita."
-      },
       "cids_relacionados": [
         "LD2F",
         "P35.4",
@@ -7366,23 +6975,6 @@
         "inclusão",
         "Lei 10.891"
       ],
-      "emergencia": {
-        "titulo": "Bolsa-Atleta Negada?",
-        "conflito": "Ministério do Esporte nega Bolsa-Atleta para atleta PcD ou não reconhece a modalidade paralímpica.",
-        "base_legal_resgate": "Lei 10.891/2004 e Decreto 5.342/2005 — Bolsa-Atleta abrange modalidades paralímpicas. Art. 42 da LBI — direito ao esporte e lazer.",
-        "acao_imediata": [
-          "Verifique se sua modalidade está na lista do Comitê Paralímpico Brasileiro",
-          "Confirme se os resultados em competições atendem aos critérios mínimos do edital",
-          "Solicite revisão pela Ouvidoria do Ministério do Esporte",
-          "Procure apoio do Comitê Paralímpico Brasileiro (CPB)"
-        ],
-        "orgao_denuncia": {
-          "nome": "Ouvidoria do Ministério do Esporte",
-          "contato": "Fala.BR",
-          "url": "https://falabr.cgu.gov.br/"
-        },
-        "aviso": "⚠️ Este protocolo é de caráter informativo e NÃO substitui orientação jurídica profissional. Procure a Defensoria Pública ou o CRAS da sua cidade para assistência gratuita."
-      },
       "cids_relacionados": [
         "5B51",
         "6A00",
@@ -7578,23 +7170,6 @@
         "embarque prioritário",
         "Resolução 280"
       ],
-      "emergencia": {
-        "titulo": "Acessibilidade Aérea Negada?",
-        "conflito": "Companhia aérea recusa embarque de PcD, cobra pelo transporte de cadeira de rodas ou nega acompanhante com desconto.",
-        "base_legal_resgate": "Resolução ANAC 280/2013 (PNAE) — desconto de 80% para acompanhante (formulário MEDIF/FREMEC obrigatório). Cadeira de rodas é bagagem gratuita.",
-        "acao_imediata": [
-          "Envie o formulário MEDIF à companhia aérea com pelo menos 72h de antecedência",
-          "Cadeira de rodas e equipamentos assistivos devem ser transportados GRATUITAMENTE — exija isso",
-          "Se o embarque for recusado, exija declaração por escrito com motivo e protocolo",
-          "Registre reclamação na ANAC (163) e no Consumidor.gov.br"
-        ],
-        "orgao_denuncia": {
-          "nome": "ANAC — Agência Nacional de Aviação Civil",
-          "contato": "ANAC: 163",
-          "url": "https://www.gov.br/anac/pt-br"
-        },
-        "aviso": "⚠️ Este protocolo é de caráter informativo e NÃO substitui orientação jurídica profissional. Procure a Defensoria Pública ou o CRAS da sua cidade para assistência gratuita."
-      },
       "cids_relacionados": [
         "5B51",
         "6A00",
@@ -7781,23 +7356,6 @@
         "Ministério Público",
         "denúncia"
       ],
-      "emergencia": {
-        "titulo": "Falta de Acessibilidade?",
-        "conflito": "Estabelecimento público ou privado não possui acessibilidade (rampas, elevadores, banheiros adaptados, sinalização).",
-        "base_legal_resgate": "Lei 10.098/2000, Decreto 5.296/2004 e Art. 56-58 da LBI (Lei 13.146/2015) — acessibilidade é obrigatória em todos os espaços públicos e privados de uso coletivo.",
-        "acao_imediata": [
-          "Documente a barreira (foto/vídeo) com endereço, data e hora",
-          "Registre reclamação na Prefeitura (setor de fiscalização) e no Procon",
-          "Para órgãos públicos: Registre no Fala.BR e na Ouvidoria do órgão",
-          "Denuncie ao Ministério Público se a barreira impedir acesso a serviço essencial"
-        ],
-        "orgao_denuncia": {
-          "nome": "Prefeitura / Ministério Público",
-          "contato": "Prefeitura da cidade ou MP estadual",
-          "url": "https://falabr.cgu.gov.br/"
-        },
-        "aviso": "⚠️ Este protocolo é de caráter informativo e NÃO substitui orientação jurídica profissional. Procure a Defensoria Pública ou o CRAS da sua cidade para assistência gratuita."
-      },
       "cids_relacionados": [
         "5B51",
         "6A00",
@@ -7988,23 +7546,6 @@
         "LBI Art. 84",
         "Art. 85"
       ],
-      "emergencia": {
-        "titulo": "Curatela Abusiva?",
-        "conflito": "Familiar ou tutor solicita interdição total quando a Lei Brasileira de Inclusão prevê a Tomada de Decisão Apoiada (TDA) como alternativa menos restritiva.",
-        "base_legal_resgate": "Art. 84-87 da LBI (Lei 13.146/2015) e Art. 1.783-A do Código Civil — a TDA é o instrumento preferencial, mantendo a autonomia da PcD com apoiadores.",
-        "acao_imediata": [
-          "Entenda a diferença: Interdição (curatela) retira a capacidade; TDA mantém a autonomia com apoio",
-          "Converse com a Defensoria Pública sobre qual instrumento é mais adequado",
-          "Se já houver curatela total, é possível solicitar revisão judicial para TDA",
-          "A PcD deve ser OUVIDA no processo — isso é obrigatório pela LBI"
-        ],
-        "orgao_denuncia": {
-          "nome": "Defensoria Pública / Ministério Público",
-          "contato": "Defensoria Pública da sua comarca",
-          "url": "https://www.gov.br/mdh/pt-br/acesso-a-informacao/disque-100"
-        },
-        "aviso": "⚠️ Este protocolo é de caráter informativo e NÃO substitui orientação jurídica profissional. Procure a Defensoria Pública ou o CRAS da sua cidade para assistência gratuita."
-      },
       "cids_relacionados": [
         "5B51",
         "6A00",
@@ -8191,23 +7732,6 @@
         "Procon",
         "Fala.BR"
       ],
-      "emergencia": {
-        "titulo": "Sofreu Discriminação?",
-        "conflito": "Pessoa com deficiência sofre discriminação, preconceito, abandono, maus-tratos ou violência.",
-        "base_legal_resgate": "Lei 7.853/89, Art. 8º — crimes contra PcD com pena de 1 a 4 anos. Art. 88 da LBI — discriminação é crime. Art. 4º da LBI — toda forma de discriminação é proibida.",
-        "acao_imediata": [
-          "Registre Boletim de Ocorrência na delegacia mais próxima ou online (Delegacia Digital)",
-          "Ligue para o Disque 100 (Direitos Humanos) — funciona 24h, inclusive feriados",
-          "Reúna provas: prints, fotos, áudios, testemunhas, protocolos",
-          "Procure o CREAS para acolhimento e apoio psicossocial"
-        ],
-        "orgao_denuncia": {
-          "nome": "Disque 100 — Direitos Humanos / Polícia Civil",
-          "contato": "Disque 100 (24h) ou 190 (emergência)",
-          "url": "https://www.gov.br/mdh/pt-br/acesso-a-informacao/disque-100"
-        },
-        "aviso": "⚠️ Este protocolo é de caráter informativo e NÃO substitui orientação jurídica profissional. Procure a Defensoria Pública ou o CRAS da sua cidade para assistência gratuita."
-      },
       "cids_relacionados": [
         "5B51",
         "6A00",
@@ -8400,23 +7924,6 @@
         "internet acessível",
         "Marco Civil"
       ],
-      "emergencia": {
-        "titulo": "Site ou App Inacessível?",
-        "conflito": "Site governamental ou aplicativo não possui acessibilidade (sem Libras, sem alto contraste, sem leitor de tela compatível).",
-        "base_legal_resgate": "Art. 63 da LBI (Lei 13.146/2015) — acessibilidade digital obrigatória. eMAG 3.1 para sites governamentais. Lei 10.436/2002 (Libras).",
-        "acao_imediata": [
-          "Documente as barreiras encontradas (prints com descrição do problema)",
-          "Registre reclamação na Ouvidoria do órgão responsável pelo site/app",
-          "Para sites governamentais: registre no Fala.BR citando o eMAG 3.1",
-          "Para apps privados: registre no Procon e no Consumidor.gov.br"
-        ],
-        "orgao_denuncia": {
-          "nome": "Fala.BR / Procon",
-          "contato": "Fala.BR (gov) ou Procon (privado)",
-          "url": "https://falabr.cgu.gov.br/"
-        },
-        "aviso": "⚠️ Este protocolo é de caráter informativo e NÃO substitui orientação jurídica profissional. Procure a Defensoria Pública ou o CRAS da sua cidade para assistência gratuita."
-      },
       "cids_relacionados": [
         "5B51",
         "6A00",
@@ -8606,23 +8113,6 @@
         "muleta",
         "andador"
       ],
-      "emergencia": {
-        "titulo": "Órtese/Prótese Negada pelo SUS?",
-        "conflito": "SUS nega fornecimento de órtese, prótese, cadeira de rodas ou equipamento de reabilitação.",
-        "base_legal_resgate": "Art. 18 da LBI (Lei 13.146/2015) e Portaria GM/MS 1.526/2023 — PcD tem direito a órteses, próteses e meios auxiliares pelo SUS através dos CER (Centros Especializados em Reabilitação).",
-        "acao_imediata": [
-          "Solicite encaminhamento ao CER (Centro Especializado em Reabilitação) pela UBS",
-          "Se a fila for longa, solicite por escrito a previsão de espera com protocolo",
-          "Registre na Ouvidoria do SUS (136) e na Secretaria de Saúde do município",
-          "Se urgente, procure a Defensoria Pública para obter liminar judicial"
-        ],
-        "orgao_denuncia": {
-          "nome": "Ouvidoria do SUS / Secretaria de Saúde",
-          "contato": "Disque Saúde: 136",
-          "url": "https://falabr.cgu.gov.br/"
-        },
-        "aviso": "⚠️ Este protocolo é de caráter informativo e NÃO substitui orientação jurídica profissional. Procure a Defensoria Pública ou o CRAS da sua cidade para assistência gratuita."
-      },
       "cids_relacionados": [
         "5B51",
         "6A00",
@@ -8804,23 +8294,6 @@
         "PAIF",
         "PAEFI"
       ],
-      "emergencia": {
-        "titulo": "Cuidador em Sobrecarga ou Adoecimento?",
-        "conflito": "Cuidador familiar exausto, com saúde física/mental comprometida e sem rede de apoio para revezamento ou pausa.",
-        "base_legal_resgate": "Lei 14.844/2024 (Política Nacional de Cuidados) Art. 3º — direito ao autocuidado; LBI Art. 8º — dever do Estado de prover apoio às famílias; LOAS Art. 23 — Serviços de Acolhimento.",
-        "acao_imediata": [
-          "Procure o CRAS e solicite avaliação do PAIF com prioridade — relate exaustão",
-          "Solicite vaga em Centro-Dia ou SCFV para pausa diurna do dependente",
-          "Procure o CAPS/UBS para acompanhamento psicológico do cuidador (gratuito pelo SUS)",
-          "Em risco iminente (negligência por exaustão, autolesão), acione Disque 100 e/ou CREAS"
-        ],
-        "orgao_denuncia": {
-          "nome": "Ouvidoria Nacional dos Direitos Humanos",
-          "contato": "Disque 100 ou Fala.BR",
-          "url": "https://www.gov.br/mdh/pt-br/acesso-a-informacao/disque-100"
-        },
-        "aviso": "⚠️ Este protocolo é de caráter informativo e NÃO substitui orientação jurídica profissional. Procure a Defensoria Pública ou o CRAS da sua cidade para assistência gratuita."
-      },
       "cids_relacionados": [
         "5B51",
         "6A00",
@@ -8997,23 +8470,6 @@
         "perícia oficial",
         "estatutário"
       ],
-      "emergencia": {
-        "titulo": "Órgão Nega Horário Especial?",
-        "conflito": "Órgão público federal/estadual/municipal nega ou descumpre o horário especial previsto na Lei 8.112/90 Art. 98 §3º para servidor com dependente PcD.",
-        "base_legal_resgate": "Lei 8.112/90 Art. 98 §3º — direito SEM compensação de horário nem redução salarial. STJ REsp 1.953.180 e jurisprudência pacífica reconhecem como direito subjetivo.",
-        "acao_imediata": [
-          "Solicite negativa POR ESCRITO com fundamentação e número de protocolo",
-          "Acione a Corregedoria/Ouvidoria do órgão",
-          "Procure o sindicato da categoria para assessoria jurídica gratuita",
-          "Defensoria Pública da União (DPU) ou advogado pode impetrar mandado de segurança na Justiça Federal"
-        ],
-        "orgao_denuncia": {
-          "nome": "Defensoria Pública da União (DPU)",
-          "contato": "129 ou dpu.def.br",
-          "url": "https://www.dpu.def.br/"
-        },
-        "aviso": "⚠️ Este protocolo é de caráter informativo e NÃO substitui orientação jurídica profissional. Procure a Defensoria Pública ou o CRAS da sua cidade para assistência gratuita."
-      },
       "cids_relacionados": [
         "5B51",
         "6A00",
@@ -9197,23 +8653,6 @@
         "vaga PcD",
         "SINE"
       ],
-      "emergencia": {
-        "titulo": "Empresa Descumpre a Cota ou Discrimina?",
-        "conflito": "Empresa com 100+ empregados recusa contratar PcD, demite sem substituir, paga menos ou nega função compatível.",
-        "base_legal_resgate": "Lei 8.213/91 Art. 93 (cota obrigatória) + LBI Art. 4º e 34 §3º (vedação à discriminação). MPT tem competência para investigar e firmar TAC.",
-        "acao_imediata": [
-          "Reúna provas: e-mails, anúncios da vaga, áudios da entrevista, comprovantes salariais",
-          "Registre denúncia no MPT pelo Pje (procedimento gratuito e anônimo)",
-          "Procure a Defensoria Pública ou sindicato da categoria",
-          "Em caso de assédio/discriminação por deficiência, registre BO e procure CREAS"
-        ],
-        "orgao_denuncia": {
-          "nome": "Ministério Público do Trabalho (MPT)",
-          "contato": "Pje-MPT (online)",
-          "url": "https://mpt.mp.br/"
-        },
-        "aviso": "⚠️ Este protocolo é de caráter informativo e NÃO substitui orientação jurídica profissional. Procure a Defensoria Pública ou o CRAS da sua cidade para assistência gratuita."
-      },
       "cids_relacionados": [
         "5B51",
         "6A00",
@@ -9398,23 +8837,6 @@
         "isenção IR",
         "tratamento médico"
       ],
-      "emergencia": {
-        "titulo": "Caixa Nega Saque do FGTS?",
-        "conflito": "Caixa nega o saque sob alegação de documentação insuficiente, CID não previsto ou problemas no formulário médico.",
-        "base_legal_resgate": "Lei 8.036/90 Art. 20 XI, XIII, XIV. STJ tem jurisprudência ampliando rol de doenças graves quando a moléstia for tão grave quanto as listadas (interpretação extensiva — REsp 1.846.158).",
-        "acao_imediata": [
-          "Solicite negativa por escrito com fundamentação",
-          "Refaça o laudo no formulário oficial da Caixa, com CID detalhado e prognóstico",
-          "Procure a Defensoria Pública da União (DPU) — ação na Justiça Federal é gratuita e em geral procedente",
-          "Para urgências, peça tutela antecipada (liminar) com prova da necessidade do tratamento"
-        ],
-        "orgao_denuncia": {
-          "nome": "Defensoria Pública da União (DPU)",
-          "contato": "129 ou dpu.def.br",
-          "url": "https://www.dpu.def.br/"
-        },
-        "aviso": "⚠️ Este protocolo é de caráter informativo e NÃO substitui orientação jurídica profissional. Procure a Defensoria Pública ou o CRAS da sua cidade para assistência gratuita."
-      },
       "cids_relacionados": [
         "5B51",
         "6A00",
@@ -9628,23 +9050,6 @@
         "tecnologia assistiva",
         "fonoaudiologia"
       ],
-      "emergencia": {
-        "titulo": "SUS ou Escola Negam Recurso de CAA?",
-        "conflito": "CER demora meses para avaliar, escola se recusa a ofertar AEE ou plano de saúde nega cobertura de terapias/equipamentos de CAA.",
-        "base_legal_resgate": "LBI Arts. 18, 28, 74-75. Lei 12.764/12 (Berenice Piana). Decreto 7.611/11 (AEE). STJ Súmula 102 — vedada negativa de cobertura pelo plano para tratamento prescrito.",
-        "acao_imediata": [
-          "Solicite negativa por escrito (CER, escola ou plano) com fundamentação",
-          "Registre no Disque 100, Ouvidoria do SUS (136) e Fala.BR (CGU)",
-          "Procure a Defensoria Pública — ação com tutela antecipada costuma ser deferida rapidamente",
-          "Em caso de plano de saúde, registre na ANS (0800 701 9656)"
-        ],
-        "orgao_denuncia": {
-          "nome": "Ouvidoria do SUS / ANS / MPF",
-          "contato": "Disque Saúde 136 | ANS 0800 701 9656",
-          "url": "https://www.gov.br/ans/pt-br"
-        },
-        "aviso": "⚠️ Este protocolo é de caráter informativo e NÃO substitui orientação jurídica profissional. Procure a Defensoria Pública ou o CRAS da sua cidade para assistência gratuita."
-      },
       "cids_relacionados": [
         "6A00",
         "6A01",
@@ -9789,23 +9194,6 @@
         "autonomia",
         "Defensoria Pública"
       ],
-      "emergencia": {
-        "titulo": "Curatela Total ou Abusiva sendo Imposta?",
-        "conflito": "Familiar ou hospital tenta interditar adulto PcD para todos os atos, sem respeitar a autonomia preservada pela LBI; ou curador atual abusa do poder.",
-        "base_legal_resgate": "LBI Arts. 84-87 + Convenção ONU Art. 12. Curatela é EXCEPCIONAL e PROPORCIONAL. Atos sobre o próprio corpo, sexualidade, voto, casamento, trabalho são INDELEGÁVEIS.",
-        "acao_imediata": [
-          "Procure a Defensoria Pública para impugnar pedido de curatela total ou revisar curatela existente",
-          "Em abuso por curador (uso indevido de bens, isolamento, violência), denuncie ao Ministério Público",
-          "Disque 100 para violações de direitos humanos",
-          "Solicite revisão judicial com novo laudo multiprofissional"
-        ],
-        "orgao_denuncia": {
-          "nome": "Defensoria Pública / Ministério Público / Disque 100",
-          "contato": "Defensoria local | MP-Vara de Família | Disque 100",
-          "url": "https://www.gov.br/mdh/pt-br/acesso-a-informacao/disque-100"
-        },
-        "aviso": "⚠️ Este protocolo é de caráter informativo e NÃO substitui orientação jurídica profissional. Procure a Defensoria Pública ou o CRAS da sua cidade para assistência gratuita."
-      },
       "cids_relacionados": [
         "5B51",
         "6A00",

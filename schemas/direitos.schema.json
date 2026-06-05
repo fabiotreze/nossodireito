@@ -355,10 +355,7 @@
                         "$ref": "#/definitions/ipva_estado_detalhado"
                     }
                 },
-                "emergencia": {
-                    "$ref": "#/definitions/emergencia_protocolo",
-                    "description": "Protocolo de emerg\u00eancia para conflitos e negativas de direitos"
-                },
+
                 "cids_relacionados": {
                     "type": "array",
                     "items": {
@@ -771,73 +768,6 @@
                 }
             },
             "additionalProperties": false
-        },
-        "emergencia_protocolo": {
-            "type": "object",
-            "required": [
-                "titulo",
-                "conflito",
-                "base_legal_resgate",
-                "acao_imediata",
-                "orgao_denuncia"
-            ],
-            "properties": {
-                "titulo": {
-                    "type": "string",
-                    "minLength": 5,
-                    "description": "Título curto do conflito (ex: Matrícula Negada?)"
-                },
-                "conflito": {
-                    "type": "string",
-                    "minLength": 10,
-                    "description": "Descrição do gatilho de conflito (negação comum)"
-                },
-                "base_legal_resgate": {
-                    "type": "string",
-                    "minLength": 10,
-                    "description": "Artigos específicos da lei que protegem o cidadão"
-                },
-                "acao_imediata": {
-                    "type": "array",
-                    "minItems": 1,
-                    "items": {
-                        "type": "string",
-                        "minLength": 10
-                    },
-                    "description": "Passos imediatos que o usuário deve tomar no momento do conflito"
-                },
-                "orgao_denuncia": {
-                    "type": "object",
-                    "required": [
-                        "nome",
-                        "contato"
-                    ],
-                    "properties": {
-                        "nome": {
-                            "type": "string",
-                            "minLength": 3,
-                            "description": "Nome do órgão de denúncia"
-                        },
-                        "contato": {
-                            "type": "string",
-                            "minLength": 3,
-                            "description": "Telefone ou URL oficial de denúncia"
-                        },
-                        "url": {
-                            "type": "string",
-                            "format": "uri",
-                            "pattern": "^https://",
-                            "description": "URL oficial do órgão (.gov.br ou regulador)"
-                        }
-                    },
-                    "description": "Órgão oficial para denúncia direta"
-                },
-                "aviso": {
-                    "type": "string",
-                    "description": "Aviso adicional (disclaimer do protocolo)"
-                }
-            },
-            "description": "Protocolo de emergência para quando um direito é negado"
         }
     }
 }
