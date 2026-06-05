@@ -108,9 +108,10 @@ qualquer pessoa com `az login` ativo e papel `Reader` na assinatura
 
 ### Painel visual (Azure Workbook)
 
-- **Nome:** NossoDireito — Painel LGPD/Auditoria
+- **Nome:** NossoDireito — Painel de Atenção
 - **Local:** Azure Portal → Application Insights `appi-nossodireito-br` → Workbooks
-- **Conteúdo:** visão geral, prova de anonimização (sample dos campos `client_IP`, `user_Id`, `session_Id`), performance, falhas, info da camada cold.
+- **Conteúdo:** sinais que exigem atenção para LGPD e saúde do portal, contadores de resíduos pessoais, falhas reais (exclui 404/429 esperados), 429 em rotas do portal e info da camada cold.
+- **Observação:** o workbook diário não exibe amostra bruta; ele só mostra itens acionáveis. A amostra de não-coleta abaixo serve como evidência complementar do hardening.
 - **Fonte versionada:** [terraform/workbooks/lgpd-audit.json](../terraform/workbooks/lgpd-audit.json)
 
 ### Comandos de evidência
@@ -148,9 +149,9 @@ az storage account blob-service-properties show \
   --query "{versioning:isVersioningEnabled, blobSoftDelete:deleteRetentionPolicy.days, containerSoftDelete:containerDeleteRetentionPolicy.days}"
 ```
 
-### Sample real (executado em 2026-05-31)
+### Evidência complementar de anonimização (executado em 2026-05-31)
 
-Saída do comando 2 acima — prova que **nenhum dado pessoal é coletado**:
+Saída do comando 2 acima — prova complementar de que **nenhum dado pessoal é coletado**:
 
 ```json
 [
