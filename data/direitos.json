@@ -1,5 +1,5 @@
 {
-  "versao": "1.42.0",
+  "versao": "1.43.0",
   "ultima_atualizacao": "2026-06-05",
   "aviso": "Informações compiladas de fontes oficiais do governo brasileiro (gov.br). Podem estar desatualizadas. Verifique sempre as fontes originais.",
   "fontes": [
@@ -2063,12 +2063,12 @@
         "Comprovante de renda de todos da família"
       ],
       "passo_a_passo": [
-        "Inscreva-se ou atualize o CadÚnico no CRAS da sua cidade (leve documentos de toda a família)",
-        "Agende o pedido pelo Meu INSS (meu.inss.gov.br) ou pelo telefone 135",
-        "Compareça à perícia médica e à avaliação social no INSS na data agendada",
-        "Acompanhe o resultado pelo Meu INSS ou pelo 135",
+        "Realizar inscrição ou atualizar o CadÚnico no CRAS da sua cidade (leve documentos de toda a família)",
+        "Agendar o pedido pelo Meu INSS (meu.inss.gov.br) ou pelo telefone 135",
+        "Comparecer à perícia médica e à avaliação social no INSS na data agendada",
+        "Acompanhar o resultado pelo Meu INSS ou pelo 135",
         "Se aprovado, o benefício é pago mensalmente pelo banco indicado",
-        "Acompanhe o andamento pelo protocolo fornecido e aguarde retorno oficial"
+        "Acompanhar o andamento pelo protocolo fornecido e aguardar retorno oficial"
       ],
       "dicas": [
         "Mesmo que a renda familiar ultrapasse 1/4 do SM, peça — o INSS analisa caso a caso considerando gastos com saúde e medicamentos",
@@ -2277,12 +2277,12 @@
         "Documento do responsável legal (se menor ou dependente)"
       ],
       "passo_a_passo": [
-        "Obtenha relatório médico com CID de TEA (pode ser médico particular ou SUS)",
-        "Procure o órgão emissor da sua cidade (geralmente Secretaria de Assistência Social ou de Saúde)",
-        "Preencha o requerimento e entregue os documentos",
-        "Aguarde a emissão (prazo varia por município)",
+        "Obter relatório médico com CID de TEA (pode ser médico particular ou SUS)",
+        "Procurar o órgão emissor da sua cidade (geralmente Secretaria de Assistência Social ou de Saúde)",
+        "Preencher o requerimento e entregar os documentos",
+        "Aguardar a emissão (prazo varia por município)",
         "A carteira tem validade de 5 anos",
-        "Acompanhe o andamento pelo protocolo fornecido e aguarde retorno oficial"
+        "Acompanhar o andamento pelo protocolo fornecido e aguardar retorno oficial"
       ],
       "dicas": [
         "A emissão é GRATUITA por lei (Lei 9.265/1996, Art. 1º, VII)",
@@ -2433,12 +2433,12 @@
         "Relatório da escola anterior (se houver)"
       ],
       "passo_a_passo": [
-        "Procure a escola de sua preferência (pública ou particular)",
-        "Solicite a matrícula normalmente — a escola NÃO pode recusar",
+        "Procurar a escola de sua preferência (pública ou particular)",
+        "Solicitar a matrícula normalmente — a escola NÃO pode recusar",
         "Informe sobre a necessidade de apoio especializado (se houver)",
-        "Solicite acompanhante especializado se houver comprovada necessidade (laudo)",
+        "Solicitar acompanhante especializado se houver comprovada necessidade (laudo)",
         "Se a escola recusar, denuncie à Secretaria de Educação, ao Ministério Público ou ao Conselho Tutelar",
-        "Acompanhe o andamento pelo protocolo fornecido e aguarde retorno oficial"
+        "Acompanhar o andamento pelo protocolo fornecido e aguardar retorno oficial"
       ],
       "dicas": [
         "A escola NÃO pode cobrar taxa extra por inclusão",
@@ -2640,11 +2640,11 @@
       ],
       "passo_a_passo": [
         "O médico prescreve o tratamento necessário (ABA, fono, TO, psicologia etc.)",
-        "Solicite autorização ao plano de saúde (geralmente pelo app ou site do plano)",
+        "Solicitar autorização ao plano de saúde (geralmente pelo app ou site do plano)",
         "Se negado, peça a negativa POR ESCRITO",
         "Com a negativa em mãos, reclame na ANS (ans.gov.br ou 0800 701 9656)",
         "Se não resolver, procure a Defensoria Pública ou o Procon",
-        "Acompanhe o andamento pelo protocolo fornecido e aguarde retorno oficial"
+        "Acompanhar o andamento pelo protocolo fornecido e aguardar retorno oficial"
       ],
       "dicas": [
         "O plano NÃO pode limitar número de sessões de terapia quando há indicação médica",
@@ -2860,14 +2860,14 @@
         "Laudo médico com CID"
       ],
       "passo_a_passo": [
-        "Procure a UBS (Unidade Básica de Saúde) mais próxima de casa",
-        "Faça o Cartão SUS (se ainda não tiver)",
-        "Peça encaminhamento para o CER (Centro Especializado em Reabilitação) ou CAPS (Centro de Atenção Psicossocial)",
-        "Aguarde agendamento para avaliação multiprofissional",
+        "Procurar a UBS (Unidade Básica de Saúde) mais próxima de casa",
+        "Realizar o Cartão SUS (se ainda não tiver)",
+        "Solicitar encaminhamento para o CER (Centro Especializado em Reabilitação) ou CAPS (Centro de Atenção Psicossocial)",
+        "Aguardar agendamento para avaliação multiprofissional",
         "Para medicamentos básicos (12 indicações), vá à Farmácia Popular com receita médica — desde fev/2025 são 100% gratuitos",
-        "Para medicamentos especializados (CEAF): peça ao médico o preenchimento do formulário LME e entregue na farmácia estadual de referência",
+        "Para medicamentos especializados (CEAF): peça ao médico o preenchimento do formulário LME e entregar na farmácia estadual de referência",
         "Para fraldas geriátricas (PcD de qualquer idade): apresente laudo médico com CID + receita na Farmácia Popular",
-        "Acompanhe o andamento pelo protocolo fornecido e aguarde retorno oficial"
+        "Acompanhar o andamento pelo protocolo fornecido e aguardar retorno oficial"
       ],
       "dicas": [
         "NOVIDADE fev/2025: o Programa Farmácia Popular agora oferece 100% dos medicamentos gratuitamente para toda a população — não precisa ser PcD, basta receita médica e CPF",
@@ -3188,12 +3188,12 @@
         "Comprovante de renda"
       ],
       "passo_a_passo": [
-        "Acesse o site do Passe Livre (gov.br) e preencha o requerimento",
-        "Obtenha o laudo médico no modelo exigido",
-        "Envie a documentação pelos Correios ou presencialmente",
-        "Aguarde a carteirinha do Passe Livre (enviada pelos Correios)",
+        "Acessar o site do Passe Livre (gov.br) e preencher o requerimento",
+        "Obter o laudo médico no modelo exigido",
+        "Enviar a documentação pelos Correios ou presencialmente",
+        "Aguardar a carteirinha do Passe Livre (enviada pelos Correios)",
         "Para transporte municipal, procure a empresa de transporte local ou a prefeitura",
-        "Acompanhe o andamento pelo protocolo fornecido e aguarde retorno oficial"
+        "Acompanhar o andamento pelo protocolo fornecido e aguardar retorno oficial"
       ],
       "dicas": [
         "O Passe Livre Federal vale para ônibus, trem e barco INTERESTADUAL — não vale para avião",
@@ -3423,12 +3423,12 @@
         "CTPS (Carteira de Trabalho)"
       ],
       "passo_a_passo": [
-        "Procure vagas PcD em sites de emprego (filtre por 'PcD' ou 'pessoa com deficiência')",
-        "Cadastre-se na SRTE (Superintendência Regional do Trabalho) ou no SINE da sua cidade",
-        "Apresente o laudo médico no processo de admissão",
+        "Procurar vagas PcD em sites de emprego (filtre por 'PcD' ou 'pessoa com deficiência')",
+        "Realizar cadastro na SRTE (Superintendência Regional do Trabalho) ou no SINE da sua cidade",
+        "Apresentar o laudo médico no processo de admissão",
         "Você tem os mesmos direitos trabalhistas de qualquer empregado + proteções adicionais",
-        "Aguarde análise do pedido (prazo geralmente de 30 a 60 dias)",
-        "Acompanhe o andamento pelo protocolo fornecido e aguarde retorno oficial"
+        "Aguardar análise do pedido (prazo geralmente de 30 a 60 dias)",
+        "Acompanhar o andamento pelo protocolo fornecido e aguardar retorno oficial"
       ],
       "dicas": [
         "A empresa NÃO pode demitir PcD de cota sem contratar outro PcD no lugar",
@@ -3614,13 +3614,13 @@
         "Comprovante de dependência (Certidão de Nascimento, por exemplo)"
       ],
       "passo_a_passo": [
-        "Reúna os documentos listados acima",
-        "Acesse o app FGTS da Caixa ou o portal oficial do FGTS para consultar saldo e iniciar o pedido",
+        "Reunir os documentos listados acima",
+        "Acessar o app FGTS da Caixa ou o portal oficial do FGTS para consultar saldo e iniciar o pedido",
         "Vá a uma agência da Caixa Econômica Federal (ou use o app FGTS para agendamento)",
-        "Solicite o saque do FGTS por motivo de deficiência",
+        "Solicitar o saque do FGTS por motivo de deficiência",
         "O saque é liberado após análise dos documentos",
-        "Aguarde análise do pedido (prazo geralmente de 30 a 60 dias)",
-        "Acompanhe o andamento pelo app FGTS ou pelo protocolo fornecido na agência"
+        "Aguardar análise do pedido (prazo geralmente de 30 a 60 dias)",
+        "Acompanhar o andamento pelo app FGTS ou pelo protocolo fornecido na agência"
       ],
       "dicas": [
         "Pode sacar para o trabalhador OU para dependente com deficiência (filho, por exemplo)",
@@ -3830,12 +3830,12 @@
         "Fotos ou laudos técnicos demonstrando barreiras de acessibilidade"
       ],
       "passo_a_passo": [
-        "Identifique as barreiras (falta de rampa, vaga sem reserva, portas estreitas, etc.)",
-        "Solicite a adaptação por ESCRITO ao síndico ou administradora do condomínio",
+        "Identificar as barreiras (falta de rampa, vaga sem reserva, portas estreitas, etc.)",
+        "Solicitar a adaptação por ESCRITO ao síndico ou administradora do condomínio",
         "Cite a Lei 13.146/2015, Art. 58, §1º (o condomínio não pode impedir adaptações de acessibilidade)",
         "Se o condomínio negar, registre a recusa por escrito e denuncie à Defensoria Pública ou ao Ministério Público",
         "Para vagas reservadas: solicite em assembleia ou diretamente ao síndico, com base na NBR 9050 (mínimo 2% das vagas)",
-        "Para programas habitacionais (Minha Casa Minha Vida): inscreva-se no CadÚnico e procure a prefeitura"
+        "Para programas habitacionais (Minha Casa Minha Vida): inscreva-se no CadÚnico e procurar a prefeitura"
       ],
       "dicas": [
         "O condomínio NÃO pode impedir adaptações de acessibilidade, mesmo em áreas comuns (Art. 58, §1º da LBI)",
@@ -4071,12 +4071,12 @@
         "Requerimento SISEN preenchido (para IPI e IOF — gerado automaticamente no sistema)"
       ],
       "passo_a_passo": [
-        "1. Obtenha laudo médico detalhado com CID e descrição funcional da deficiência",
+        "1. Obter laudo médico detalhado com CID e descrição funcional da deficiência",
         "2. Se for conduzir o veículo: tire ou renove a CNH especial no DETRAN do seu estado",
-        "3. Acesse o sistema SISEN em sisen.receita.fazenda.gov.br (100% digital, serviço gratuito)",
-        "4. Preencha o requerimento online de isenção de IPI (e IOF, se aplicável)",
-        "5. Anexe todos os documentos digitalizados (laudo, CNH, RG/CPF)",
-        "6. Aguarde análise da Receita Federal (~3 dias úteis; acompanhe pelo SISEN)",
+        "3. Acessar o sistema SISEN em sisen.receita.fazenda.gov.br (100% digital, serviço gratuito)",
+        "4. Preencher o requerimento online de isenção de IPI (e IOF, se aplicável)",
+        "5. Anexar todos os documentos digitalizados (laudo, CNH, RG/CPF)",
+        "6. Aguardar análise da Receita Federal (~3 dias úteis; acompanhe pelo SISEN)",
         "7. Com a isenção de IPI aprovada, solicite a isenção de ICMS na SEFAZ do seu estado",
         "8. Após comprar o veículo com as isenções, solicite a isenção de IPVA na SEFAZ do estado",
         "9. Para IPTU: procure a Secretaria de Fazenda ou Finanças do seu município com laudo médico e comprovante de propriedade"
@@ -4740,8 +4740,8 @@
         "Documento de identidade (RG ou CPF)"
       ],
       "passo_a_passo": [
-        "Dirija-se ao local e identifique a fila prioritária (sinalização laranja ou azul)",
-        "Apresente documento comprobatório ao atendente se solicitado",
+        "Dirigir-se ao local e identificar a fila prioritária (sinalização laranja ou azul)",
+        "Apresentar documento comprobatório ao atendente se solicitado",
         "Caso não exista fila preferencial, solicite atendimento prioritário ao responsável",
         "Em caso de recusa, exija o livro de reclamações e denuncie ao Procon",
         "Denúncias podem ser feitas pelo site/app Consumidor.gov.br",
@@ -4988,12 +4988,12 @@
         "Formulário de solicitação (disponível no Detran ou Prefeitura)"
       ],
       "passo_a_passo": [
-        "Consulte o site do Detran ou Prefeitura do seu estado/município para procedimento local",
-        "Reúna documentos necessários (laudo, RG, CPF, comprovante de residência)",
-        "Agende atendimento presencial no Detran, Junta Médica ou órgão responsável",
-        "Entregue documentos e aguarde análise (geralmente 10-30 dias)",
-        "Receba credencial física (cartão Defis) para afixar no veículo durante uso da vaga",
-        "Acompanhe o andamento pelo protocolo fornecido e aguarde retorno oficial"
+        "Consultar o site do Detran ou Prefeitura do seu estado/município para procedimento local",
+        "Reunir documentos necessários (laudo, RG, CPF, comprovante de residência)",
+        "Agendar atendimento presencial no Detran, Junta Médica ou órgão responsável",
+        "Entregue documentos e aguardar análise (geralmente 10-30 dias)",
+        "Receber credencial física (cartão Defis) para afixar no veículo durante uso da vaga",
+        "Acompanhar o andamento pelo protocolo fornecido e aguardar retorno oficial"
       ],
       "dicas": [
         "O cartão Defis é pessoal — você pode usar em qualquer veículo que estiver dirigindo ou sendo transportado",
@@ -5193,9 +5193,9 @@
         "Comprovante de vínculo empregatício ou autônomo durante período contributivo"
       ],
       "passo_a_passo": [
-        "Reúna toda documentação médica que comprove deficiência desde o início da contribuição",
-        "Agende perícia médica pelo Meu INSS (meu.inss.gov.br) ou telefone 135",
-        "Compareça à perícia com todos os laudos e exames",
+        "Reunir toda documentação médica que comprove deficiência desde o início da contribuição",
+        "Agendar perícia médica pelo Meu INSS (meu.inss.gov.br) ou telefone 135",
+        "Comparecer à perícia com todos os laudos e exames",
         "Perito avaliará grau de deficiência (leve, moderada ou grave)",
         "INSS calculará tempo de contribuição necessário e concederá aposentadoria se atingido",
         "Se negado, recorra administrativamente (dentro de 30 dias) ou judicialmente com advogado/Defensoria"
@@ -5386,12 +5386,12 @@
         "Cópia de RG e CPF"
       ],
       "passo_a_passo": [
-        "Consulte seu advogado ou Defensoria Pública sobre possibilidade de prioridade",
-        "Obtenha laudo médico atualizado com CID e descrição da deficiência",
+        "Consultar seu advogado ou Defensoria Pública sobre possibilidade de prioridade",
+        "Obter laudo médico atualizado com CID e descrição da deficiência",
         "Advogado ou Defensor protocola petição no processo requerendo prioridade",
         "Juiz analisa pedido e defere prioridade (geralmente de plano, sem audiência)",
         "Processo passa a tramitar em regime prioritário (prazos reduzidos, julgamento antecipado)",
-        "Acompanhe o andamento pelo protocolo fornecido e aguarde retorno oficial"
+        "Acompanhar o andamento pelo protocolo fornecido e aguardar retorno oficial"
       ],
       "dicas": [
         "Prioridade se aplica a TODOS os atos processuais: audiências, perícias, julgamentos, recursos",
@@ -5582,11 +5582,11 @@
         "Formulário de solicitação de crédito (banco credenciado BNDES)"
       ],
       "passo_a_passo": [
-        "Consulte médico especialista para prescrição do produto assistivo necessário",
-        "Pesquise bancos e instituições credenciadas ao BNDES para linha PcD",
-        "Reúna documentação (laudo, orçamento, comprovante de renda)",
-        "Solicite análise de crédito no banco escolhido",
-        "Aprovado o crédito, adquira o produto e apresente nota fiscal ao banco",
+        "Consultar médico especialista para prescrição do produto assistivo necessário",
+        "Pesquisar bancos e instituições credenciadas ao BNDES para linha PcD",
+        "Reunir documentação (laudo, orçamento, comprovante de renda)",
+        "Solicitar análise de crédito no banco escolhido",
+        "Aprovado o crédito, adquira o produto e apresentar nota fiscal ao banco",
         "Banco libera financiamento e você paga parcelas com juros reduzidos"
       ],
       "dicas": [
@@ -5784,8 +5784,8 @@
       ],
       "passo_a_passo": [
         "Na bilheteria ou plataforma online, solicite meia-entrada PcD",
-        "Apresente documento de identificação + comprovante da deficiência",
-        "Se necessitar acompanhante, informe e apresente documentação",
+        "Apresentar documento de identificação + comprovante da deficiência",
+        "Se necessitar acompanhante, informe e apresentar documentação",
         "Estabelecimento deve conceder desconto de 50% no valor do ingresso inteiro",
         "Em caso de recusa, exija atendimento do responsável e registre reclamação no livro de ocorrências",
         "Denuncie ao Procon ou Ministério Público se houver discriminação"
@@ -6622,11 +6622,11 @@
         "comprovante_bpc"
       ],
       "passo_a_passo": [
-        "Inscreva-se ou atualize o CadÚnico no CRAS mais próximo",
+        "Realizar inscrição ou atualizar o CadÚnico no CRAS mais próximo",
         "Se usa equipamento médico elétrico: obtenha laudo médico e prescrição detalhando o aparelho",
-        "Acesse o site ou app da distribuidora de energia da sua região",
-        "Solicite inscrição na Tarifa Social de Energia Elétrica",
-        "Anexe documentação: NIS, comprovante de residência, laudo médico (se aplicável) ou comprovante BPC",
+        "Acessar o site ou app da distribuidora de energia da sua região",
+        "Solicitar inscrição na Tarifa Social de Energia Elétrica",
+        "Anexar documentação: NIS, comprovante de residência, laudo médico (se aplicável) ou comprovante BPC",
         "Distribuidora analisa e, se aprovado, desconto é aplicado automaticamente na conta seguinte",
         "Desconto é renovado automaticamente enquanto requisitos forem mantidos"
       ],
@@ -6823,10 +6823,10 @@
       ],
       "passo_a_passo": [
         "Ao conseguir emprego formal, o BPC é automaticamente suspenso (não cancelado)",
-        "Solicite o Auxílio-Inclusão pelo Meu INSS (meu.inss.gov.br), app Meu INSS ou pelo telefone 135",
+        "Solicitar o Auxílio-Inclusão pelo Meu INSS (meu.inss.gov.br), app Meu INSS ou pelo telefone 135",
         "Também pode solicitar presencialmente em uma agência do INSS",
         "A concessão pode ser automática (Lei 14.441/2022) se os requisitos forem identificados pelo sistema",
-        "Acompanhe o andamento pelo Meu INSS ou ligue 135",
+        "Acompanhar o andamento pelo Meu INSS ou ligue 135",
         "Se perder o emprego, o BPC pode ser reativado sem necessidade de nova avaliação da deficiência"
       ],
       "dicas": [
@@ -7016,12 +7016,12 @@
         "Laudo médico com CID (quando disponível)"
       ],
       "passo_a_passo": [
-        "Procure o CRAS mais próximo da sua residência — é a porta de entrada para todos os serviços",
+        "Procurar o CRAS mais próximo da sua residência — é a porta de entrada para todos os serviços",
         "No CRAS: faça o CadÚnico, receba orientação sobre benefícios e seja encaminhado para outros serviços",
         "Se houver violação de direitos, negligência ou situação de risco: será encaminhado ao CREAS",
         "PcD com dependência funcional (18-59 anos): pode ser encaminhado ao Centro-Dia de Referência",
         "PcD em situação de acolhimento institucional: pode ser encaminhado à Residência Inclusiva",
-        "Acompanhe o atendimento pelo CRAS — a equipe faz visitas domiciliares e acompanhamento familiar"
+        "Acompanhar o atendimento pelo CRAS — a equipe faz visitas domiciliares e acompanhamento familiar"
       ],
       "dicas": [
         "O CRAS é GRATUITO e atende toda a comunidade — não precisa ter deficiência para ir ao CRAS",
@@ -7216,8 +7216,8 @@
         "Documento do responsável legal"
       ],
       "passo_a_passo": [
-        "Reúna a documentação médica que comprova a Síndrome Congênita do Zika Vírus",
-        "Solicite a pensão pelo Meu INSS (meu.inss.gov.br), app Meu INSS ou pelo telefone 135",
+        "Reunir a documentação médica que comprova a Síndrome Congênita do Zika Vírus",
+        "Solicitar a pensão pelo Meu INSS (meu.inss.gov.br), app Meu INSS ou pelo telefone 135",
         "Também pode solicitar presencialmente em agência do INSS",
         "A criança passará por perícia com perito médico federal para confirmar a relação com o Zika Vírus",
         "Se aprovada, a pensão substitui o BPC — não é possível receber ambos",
@@ -7331,12 +7331,12 @@
         "Dados bancários (conta corrente ou poupança em nome do atleta)"
       ],
       "passo_a_passo": [
-        "Verifique se está vinculado a entidade de administração do desporto paralímpico reconhecida (Comitê Paralímpico Brasileiro ou confederação específica da modalidade)",
-        "Confirme que participou de competição nacional ou internacional nos últimos 2 anos",
-        "Acesse o site do Ministério do Esporte para verificar editais abertos de Bolsa Atleta",
-        "Preencha o formulário de inscrição dentro do prazo do edital com toda a documentação",
+        "Verificar se está vinculado a entidade de administração do desporto paralímpico reconhecida (Comitê Paralímpico Brasileiro ou confederação específica da modalidade)",
+        "Confirmar que participou de competição nacional ou internacional nos últimos 2 anos",
+        "Acessar o site do Ministério do Esporte para verificar editais abertos de Bolsa Atleta",
+        "Preencher o formulário de inscrição dentro do prazo do edital com toda a documentação",
         "A entidade esportiva confirma a indicação e os resultados esportivos",
-        "Acompanhe a publicação do resultado no Diário Oficial da União",
+        "Acompanhar a publicação do resultado no Diário Oficial da União",
         "Se aprovado, a Bolsa Atleta é paga mensalmente por 1 ano, renovável"
       ],
       "dicas": [
@@ -7752,11 +7752,11 @@
         "Protocolo de reclamação anterior (se houver)"
       ],
       "passo_a_passo": [
-        "Identifique a barreira de acessibilidade (rampa ausente, banheiro inacessível, calçada irregular, falta de piso tátil, etc.)",
+        "Identificar a barreira de acessibilidade (rampa ausente, banheiro inacessível, calçada irregular, falta de piso tátil, etc.)",
         "Notifique o responsável pelo estabelecimento ou espaço público, solicitando adequação por escrito",
         "Se não houver resposta, registre denúncia no Ministério Público (promotoria de acessibilidade), Defensoria Pública ou Procon",
         "Para espaços públicos municipais, acione a Prefeitura pelo canal de ouvidoria (ex: SP156, 156, Fala.BR)",
-        "Acompanhe o andamento da denúncia pelo protocolo recebido",
+        "Acompanhar o andamento da denúncia pelo protocolo recebido",
         "Em caso de obra nova ou reforma, exija que o projeto inclua acessibilidade conforme NBR 9050"
       ],
       "dicas": [
@@ -8159,8 +8159,8 @@
         "Boletim de Ocorrência (lavrado na delegacia ou delegacia online)"
       ],
       "passo_a_passo": [
-        "Identifique o tipo de crime: discriminação (Art. 88), abandono (Art. 90), retenção de documentos (Art. 89), apropriação de benefício (Art. 91)",
-        "Reúna provas: gravações, fotos, prints de mensagens, testemunhas — tudo é válido",
+        "Identificar o tipo de crime: discriminação (Art. 88), abandono (Art. 90), retenção de documentos (Art. 89), apropriação de benefício (Art. 91)",
+        "Reunir provas: gravações, fotos, prints de mensagens, testemunhas — tudo é válido",
         "Registre Boletim de Ocorrência na delegacia mais próxima ou pela delegacia online do seu estado",
         "Ligue para o Disque 100 (ligação gratuita, 24h) para denunciar violações de direitos humanos de PcD",
         "Registre denúncia também no Fala.BR (falabr.cgu.gov.br) ou no Ministério Público",
@@ -8370,9 +8370,9 @@
         "Para intérprete de Libras em serviço público: solicite por escrito ao órgão com antecedência mínima de 5 dias úteis",
         "Para acessibilidade em site governamental: envie reclamação pelo Fala.BR informando a URL e a barreira encontrada",
         "Para legendas/audiodescrição em TV: registre reclamação na ANATEL (ligando 1331 ou pelo site)",
-        "Para plano telefônico acessível: procure a operadora e solicite o plano com desconto para PcD (Resolução ANATEL 667/2016)",
+        "Para plano telefônico acessível: procure a operadora e solicitar o plano com desconto para PcD (Resolução ANATEL 667/2016)",
         "Para publicações em formato acessível (Braille, áudio, texto digital): solicite à editora ou biblioteca pública",
-        "Acompanhe o protocolo da solicitação e, se não atendido, acione o MP ou Defensoria"
+        "Acompanhar o protocolo da solicitação e, se não atendido, acione o MP ou Defensoria"
       ],
       "dicas": [
         "Todo site do governo federal DEVE seguir o eMAG (Modelo de Acessibilidade de Governo Eletrônico) — se não seguir, denuncie",
@@ -8580,12 +8580,12 @@
         "Para próteses/órteses: prescrição médica detalhada"
       ],
       "passo_a_passo": [
-        "Procure a Unidade Básica de Saúde (UBS) mais próxima e solicite encaminhamento para reabilitação",
+        "Procurar a Unidade Básica de Saúde (UBS) mais próxima e solicitar encaminhamento para reabilitação",
         "A UBS encaminhará ao Centro Especializado em Reabilitação (CER) mais próximo — são 4 modalidades: auditiva, física, intelectual e visual",
         "No CER, será feita avaliação multidisciplinar (fisioterapia, fonoaudiologia, terapia ocupacional, psicologia, etc.)",
         "Se necessário, será prescrita órtese, prótese ou meio auxiliar de locomoção (cadeira de rodas, muleta, andador) — tudo GRATUITO pelo SUS",
         "Para intervenção precoce (crianças 0-3 anos): solicite encaminhamento direto ao serviço de estimulação precoce",
-        "Para reabilitação profissional: procure a agência do INSS e solicite inclusão no Programa de Reabilitação Profissional"
+        "Para reabilitação profissional: procure a agência do INSS e solicitar inclusão no Programa de Reabilitação Profissional"
       ],
       "dicas": [
         "O SUS fornece GRATUITAMENTE: cadeira de rodas, próteses auditivas (aparelho auditivo), próteses de membro, órteses, coletes, bengalas, andadores, muletas",
@@ -8782,12 +8782,12 @@
         "Comprovante da CIPTEA (se TEA) ou cartão BPC (se aplicável)"
       ],
       "passo_a_passo": [
-        "Procure o CRAS do seu município com documentos da pessoa cuidada",
-        "Solicite inclusão da família no CadÚnico (NIS) — gratuito",
-        "Peça avaliação do PAIF (Proteção e Atendimento Integral à Família) para mapear rede de apoio",
+        "Procurar o CRAS do seu município com documentos da pessoa cuidada",
+        "Solicitar inclusão da família no CadÚnico (NIS) — gratuito",
+        "Solicitar avaliação do PAIF (Proteção e Atendimento Integral à Família) para mapear rede de apoio",
         "Em caso de violência, sobrecarga ou risco, solicite encaminhamento ao CREAS (PAEFI)",
-        "Acesse Centro-Dia, SCFV (Serviço de Convivência) ou Residência Inclusiva conforme necessidade",
-        "Acompanhe ações da Política Nacional de Cuidados no Observatório Novo Viver sem Limite"
+        "Acessar Centro-Dia, SCFV (Serviço de Convivência) ou Residência Inclusiva conforme necessidade",
+        "Acompanhar ações da Política Nacional de Cuidados no Observatório Novo Viver sem Limite"
       ],
       "dicas": [
         "BPC do PcD (LOAS Art. 20) é a principal renda da família cuidadora — vale R$ 1.518 (salário mínimo 2026) e NÃO impede a família de receber Bolsa Família/Auxílio",
@@ -8983,10 +8983,10 @@
         "CIPTEA (se TEA) ou cartão BPC (se aplicável)"
       ],
       "passo_a_passo": [
-        "Reúna laudo médico atualizado do dependente com CID e prescrição de acompanhamento",
+        "Reunir laudo médico atualizado do dependente com CID e prescrição de acompanhamento",
         "Protocole requerimento no RH/setor de gestão de pessoas do órgão público",
-        "Aguarde marcação da perícia médica oficial (SIASS)",
-        "Apresente-se à junta com toda a documentação",
+        "Aguardar marcação da perícia médica oficial (SIASS)",
+        "Comparecer à junta com toda a documentação",
         "Aprovado, a redução é concedida sem compensação de horário nem desconto salarial",
         "A concessão é revisada periodicamente (em geral a cada 1-2 anos) conforme manutenção da condição"
       ],
@@ -9180,8 +9180,8 @@
         "Currículo profissional"
       ],
       "passo_a_passo": [
-        "Cadastre-se em bancos de talentos especializados (SINE/Empregabrasil, instituições PcD)",
-        "Procure agências do SINE/CAGED do município com indicação de cota PcD",
+        "Realizar cadastro em bancos de talentos especializados (SINE/Empregabrasil, instituições PcD)",
+        "Procurar agências do SINE/CAGED do município com indicação de cota PcD",
         "Em entrevista, apresente laudo e tipo de deficiência — empresa NÃO pode discriminar",
         "Assinada CTPS, todos os direitos trabalhistas são iguais (CLT integral)",
         "Em caso de descumprimento da cota, denuncie ao Ministério Público do Trabalho (MPT)"
@@ -9376,9 +9376,9 @@
         "Cartão Cidadão ou inscrição PIS/Pasep"
       ],
       "passo_a_passo": [
-        "Solicite ao médico assistente o laudo no modelo da Caixa (disponível em caixa.gov.br/fgts)",
-        "Reúna exames e documentos de dependência (se for saque por dependente)",
-        "Compareça à agência da Caixa ou agende pelo app FGTS",
+        "Solicitar ao médico assistente o laudo no modelo da Caixa (disponível em caixa.gov.br/fgts)",
+        "Reunir exames e documentos de dependência (se for saque por dependente)",
+        "Comparecer à agência da Caixa ou agendar pelo app FGTS",
         "Caixa analisa em até 5 dias úteis e libera o saque integral das contas ativas + inativas",
         "Valor é depositado em conta indicada (sem IR, conforme Lei 7.713/88 Art. 6º XIV)",
         "Saque pode ser repetido a cada novo período (geralmente 60 dias) enquanto persistir a condição"
@@ -9599,11 +9599,11 @@
         "Declaração de matrícula escolar (para via AEE)"
       ],
       "passo_a_passo": [
-        "Procure a UBS e peça encaminhamento à equipe multiprofissional (fono, TO, fisio) e ao CER",
+        "Procurar a UBS e solicitar encaminhamento à equipe multiprofissional (fono, TO, fisio) e ao CER",
         "No CER, será feita avaliação para indicar o recurso de CAA mais adequado (prancha baixa/alta tecnologia)",
-        "Para via educacional, matricule em escola pública e solicite AEE — a Sala de Recursos Multifuncionais (SRM) recebe tablets via PDDE Acessibilidade",
-        "Receba o equipamento e treinamento; familiares e cuidadores devem ser capacitados",
-        "Acompanhe revisões periódicas (a evolução muda a necessidade do recurso)",
+        "Para via educacional, matricule em escola pública e solicitar AEE — a Sala de Recursos Multifuncionais (SRM) recebe tablets via PDDE Acessibilidade",
+        "Receber o equipamento e treinamento; familiares e cuidadores devem ser capacitados",
+        "Acompanhar revisões periódicas (a evolução muda a necessidade do recurso)",
         "Se o CER demorar ou negar, acione Defensoria/Ministério Público com base na LBI Art. 18 e 28"
       ],
       "dicas": [
@@ -9766,9 +9766,9 @@
       "passo_a_passo": [
         "Avalie com profissionais (psiquiatra, neurologista, psicólogo, assistente social) se há necessidade real de apoio",
         "PREFIRA a Tomada de Decisão Apoiada (Art. 1.783-A CC) — preserva autonomia",
-        "Escolha 2 pessoas de confiança com vínculo com a pessoa apoiada",
-        "Procure a Defensoria Pública ou advogado para ingressar com a ação na Vara de Família",
-        "Apresente em juízo: petição, laudo, termo da TDA assinado pelos 3 (pessoa + 2 apoiadores)",
+        "Escolher 2 pessoas de confiança com vínculo com a pessoa apoiada",
+        "Procurar a Defensoria Pública ou advogado para ingressar com a ação na Vara de Família",
+        "Apresentar em juízo: petição, laudo, termo da TDA assinado pelos 3 (pessoa + 2 apoiadores)",
         "Se for indispensável a curatela: ela é PARCIAL e restrita a atos patrimoniais/negociais — NUNCA decide sobre corpo, casamento, voto, religião, trabalho"
       ],
       "dicas": [
@@ -9972,11 +9972,11 @@
         "Histórico de contribuições ao INSS"
       ],
       "passo_a_passo": [
-        "Acesse Meu INSS (app ou meu.inss.gov.br) e faça login com gov.br",
-        "Escolha 'Novo Pedido' e procure por 'Aposentadoria da Pessoa com Deficiência' ou 'Avaliação Biopsicossocial'",
-        "Anexe laudo médico, documentos pessoais e histórico clínico",
-        "Agende e compareça à perícia médica e à avaliação social do INSS",
-        "Aguarde o resultado da avaliação (grau leve, moderado ou grave)",
+        "Acessar Meu INSS (app ou meu.inss.gov.br) e realizar login com gov.br",
+        "Escolher 'Novo Pedido' e procurar por 'Aposentadoria da Pessoa com Deficiência' ou 'Avaliação Biopsicossocial'",
+        "Anexar laudo médico, documentos pessoais e histórico clínico",
+        "Agendar e comparecer à perícia médica e à avaliação social do INSS",
+        "Aguardar o resultado da avaliação (grau leve, moderado ou grave)",
         "O certificado fica disponível em Meu INSS para uso em outros direitos federais"
       ],
       "dicas": [
@@ -10067,11 +10067,11 @@
         "Documento do responsável legal (se aplicável)"
       ],
       "passo_a_passo": [
-        "Verifique no site da prefeitura ou da Secretaria Estadual de Direitos da PcD qual órgão emissor da sua cidade/estado",
-        "Reúna os documentos exigidos (laudo, identidade, CPF, comprovante de residência, foto)",
-        "Faça o requerimento presencialmente ou online (varia conforme o local)",
-        "Aguarde a emissão (prazo varia, geralmente 30 a 90 dias)",
-        "Retire a carteira no local indicado ou receba por correio",
+        "Verificar no site da prefeitura ou da Secretaria Estadual de Direitos da PcD qual órgão emissor da sua cidade/estado",
+        "Reunir os documentos exigidos (laudo, identidade, CPF, comprovante de residência, foto)",
+        "Realizar o requerimento presencialmente ou online (varia conforme o local)",
+        "Aguardar a emissão (prazo varia, geralmente 30 a 90 dias)",
+        "Retire a carteira no local indicado ou receber por correio",
         "A CIPCD tem validade nacional e deve ser apresentada em todo o território brasileiro"
       ],
       "dicas": [
@@ -10161,11 +10161,11 @@
         "Currículo ou histórico profissional (quando aplicável)"
       ],
       "passo_a_passo": [
-        "Procure uma agência do INSS ou Meu INSS e solicite encaminhamento à reabilitação profissional",
-        "Compareça à perícia médica para avaliação inicial e definição do plano",
+        "Procurar uma agência do INSS ou Meu INSS e solicitar encaminhamento à reabilitação profissional",
+        "Comparecer à perícia médica para avaliação inicial e definição do plano",
         "Participe das avaliações multidisciplinares (médico, assistente social, psicólogo, fisioterapeuta)",
         "Adira ao programa de reabilitação (cursos, treinamentos, próteses ou órteses, se necessário)",
-        "Conclua o programa e receba o Certificado de Reabilitação Profissional",
+        "Conclua o programa e receber o Certificado de Reabilitação Profissional",
         "Acompanhamento pós-reabilitação por até 1 ano para garantir o retorno ao trabalho"
       ],
       "dicas": [
@@ -10260,10 +10260,10 @@
         "Histórico médico desde o nascimento (quando disponível)"
       ],
       "passo_a_passo": [
-        "Procure uma agência do INSS ou acesse Meu INSS e solicite a Pensão Especial Talidomida (Lei 7.070/1982)",
-        "Anexe laudos médicos comprovando a deficiência física e o nexo causal com a talidomida",
-        "Compareça à perícia médica do INSS para avaliação",
-        "Aguarde a análise e o reconhecimento do direito",
+        "Procurar uma agência do INSS ou acessar Meu INSS e solicitar a Pensão Especial Talidomida (Lei 7.070/1982)",
+        "Anexar laudos médicos comprovando a deficiência física e o nexo causal com a talidomida",
+        "Comparecer à perícia médica do INSS para avaliação",
+        "Aguardar a análise e o reconhecimento do direito",
         "Em caso de deferimento, a pensão é vitalícia, mensal e cumulativa com outros benefícios",
         "Para a indenização adicional (Lei 12.190/2010), faça pedido separado pela mesma via"
       ],
@@ -10356,11 +10356,11 @@
         "Certidão de nascimento"
       ],
       "passo_a_passo": [
-        "Reúna documentos que comprovem o isolamento compulsório no hospital-colônia (prontuário, declarações)",
-        "Acesse o site do Ministério dos Direitos Humanos e Cidadania (MDHC) ou ligue para o Disque 100",
-        "Faça o requerimento da Pensão Especial Hanseníase (Lei 11.520/2007)",
-        "Anexe toda a documentação comprobatória",
-        "Aguarde a análise do MDHC e a publicação da concessão",
+        "Reunir documentos que comprovem o isolamento compulsório no hospital-colônia (prontuário, declarações)",
+        "Acessar o site do Ministério dos Direitos Humanos e Cidadania (MDHC) ou ligue para o Disque 100",
+        "Realizar o requerimento da Pensão Especial Hanseníase (Lei 11.520/2007)",
+        "Anexar toda a documentação comprobatória",
+        "Aguardar a análise do MDHC e a publicação da concessão",
         "A pensão é vitalícia e mensal, paga pelo INSS após a concessão"
       ],
       "dicas": [

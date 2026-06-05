@@ -1701,7 +1701,7 @@ html.high-contrast ::selection {
     }
 }
 
-/* ── Banner glossário público (universal em todo direito) ── */
+/* ── Banner do catálogo público (universal em todo direito) ── */
 .banner-glossario {
     background: #eef4ff;
     border-left: 4px solid #1e40af;
@@ -1737,6 +1737,25 @@ html.high-contrast ::selection {
 }
 .atribuicao-fonte strong {
     font-style: normal;
+}
+
+/* ── v1.43.0: avisos de não-orientação reforçados nos blocos prescritivos ── */
+.procedimento-aviso,
+.observacoes-aviso,
+.valor-aviso {
+    margin: 8px 0 12px;
+    padding: 8px 10px;
+    background: #fff7ed;
+    border-left: 3px solid #f59e0b;
+    color: #78350f;
+    font-size: 0.85rem;
+    border-radius: 4px;
+}
+.procedimento-aviso small,
+.observacoes-aviso small,
+.valor-aviso small {
+    font-size: inherit;
+    line-height: 1.5;
 }
 
 /* ── Botão "Sugerir correção" (M6) — discreto, no rodapé do detalhe ── */
