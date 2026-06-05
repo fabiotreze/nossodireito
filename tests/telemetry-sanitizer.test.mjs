@@ -22,11 +22,20 @@ test("sanitizeTelemetryEnvelope remove identificadores e geolocalizacao", () => 
     data: {
       baseData: {
         url: "https://nossodireito.fabiotreze.com/?utm_source=test",
+        client_IP: "203.0.113.10",
+        client_City: "Cotia",
+        client_CountryOrRegion: "Brazil",
+        user_Id: "user-123",
+        session_Id: "session-789",
         properties: {
           "User-Agent": "Mozilla/5.0",
           Referer: "https://example.com",
           "X-Forwarded-For": "203.0.113.10",
           "client-ip": "203.0.113.10",
+          client_City: "Cotia",
+          client_CountryOrRegion: "Brazil",
+          user_Id: "user-123",
+          session_Id: "session-789",
           safe: "value",
         },
       },
@@ -38,6 +47,11 @@ test("sanitizeTelemetryEnvelope remove identificadores e geolocalizacao", () => 
     "ai.operation.id": "keep-me",
   });
   assert.equal(envelope.data.baseData.url, "https://nossodireito.fabiotreze.com/");
+  assert.equal(envelope.data.baseData.client_IP, undefined);
+  assert.equal(envelope.data.baseData.client_City, undefined);
+  assert.equal(envelope.data.baseData.client_CountryOrRegion, undefined);
+  assert.equal(envelope.data.baseData.user_Id, undefined);
+  assert.equal(envelope.data.baseData.session_Id, undefined);
   assert.deepEqual(envelope.data.baseData.properties, {
     safe: "value",
   });

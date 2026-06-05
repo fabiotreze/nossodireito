@@ -46,6 +46,46 @@ const PORT = process.env.PORT || 8080;
 // Limite do body POST /api/analyze-document (CWE-400 — DoS por payload grande).
 // 200 KB cobre laudo médico típico (~10 páginas de texto puro anonimizado).
 const MAX_ANALYSIS_BODY_BYTES = 200 * 1024;
+const TELEMETRY_BASE_URL = `https://${process.env.WEBSITE_HOSTNAME || "nossodireito.fabiotreze.com"}`;
+
+function safeRequestPath(reqUrl) {
+  try {
+    return new URL(reqUrl, "http://localhost").pathname;
+  } catch {
+    return (reqUrl || "/").split("?")[0] || "/";
+  }
+}
+
+function attachAnonymousRequestTelemetry(req, res) {
+  const startedAt = process.hrtime.bigint();
+  const requestPath = safeRequestPath(req.url);
+  let tracked = false;
+
+  const track = () => {
+    if (tracked) return;
+    tracked = true;
+
+    const client = appInsights?.defaultClient;
+    if (!client) return;
+
+    const durationMs = Number(process.hrtime.bigint() - startedAt) / 1e6;
+    const resultCode = Number(res.statusCode || 0);
+
+    client.trackRequest({
+      name: `${req.method || "GET"} ${requestPath}`,
+      url: `${TELEMETRY_BASE_URL}${requestPath}`,
+      duration: durationMs,
+      resultCode,
+      success: resultCode > 0 && resultCode < 400,
+      properties: {
+        route: requestPath,
+      },
+    });
+  };
+
+  res.once("finish", track);
+  res.once("close", track);
+}
 
 // ── Application Insights (server-side telemetry) ──
 // Connection string is injected by Terraform via app_settings.
@@ -57,7 +97,7 @@ if (AI_CONN) {
     appInsights = require("applicationinsights");
     appInsights
       .setup(AI_CONN)
-      .setAutoCollectRequests(true)
+      .setAutoCollectRequests(false)
       .setAutoCollectPerformance(true, true)
       .setAutoCollectExceptions(true)
       .setAutoCollectDependencies(false)
@@ -163,6 +203,7 @@ const securityTxtHandler = createSecurityTxtHandler({
 const server = http.createServer(async (req, res) => {
   // ── Suppress server identification (CWE-200) ──
   res.removeHeader("X-Powered-By");
+  attachAnonymousRequestTelemetry(req, res);
 
   // ── Method allowlist ──
   // POST é aceito APENAS no endpoint /api/analyze-document (IA opt-in).
