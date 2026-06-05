@@ -154,7 +154,6 @@ input,
 [role="button"],
 .category-card,
 .search-result-item,
-.checklist-item,
 .upload-zone,
 .inst-card {
     touch-action: manipulation;
@@ -666,7 +665,6 @@ html.high-contrast .link-card,
 html.high-contrast .inst-card,
 html.high-contrast .orgao-card,
 html.high-contrast .analysis-match,
-html.high-contrast .checklist-card,
 html.high-contrast .file-item,
 html.high-contrast .fonte-item,
 html.high-contrast .tmeta-item,
@@ -847,36 +845,6 @@ html.high-contrast ::selection {
         opacity: 0;
         transform: translateX(-50%) translateY(20px);
     }
-}
-
-/* ---------- Checklist Progress ---------- */
-.checklist-progress {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 16px;
-    font-size: 0.9rem;
-    color: var(--text-muted);
-}
-
-.checklist-progress-text {
-    white-space: nowrap;
-    font-weight: 600;
-}
-
-.progress-bar {
-    flex: 1;
-    height: 8px;
-    background: var(--border);
-    border-radius: 4px;
-    overflow: hidden;
-}
-
-.progress-fill {
-    height: 100%;
-    background: var(--success);
-    border-radius: 4px;
-    transition: width 0.4s ease;
 }
 
 /* ---------- WhatsApp Share ---------- */
@@ -2097,62 +2065,6 @@ html.high-contrast .valor-destaque {
 .btn-ver-mais:focus-visible {
     outline: 3px solid var(--focus-ring);
     outline-offset: 2px;
-}
-
-/* ---------- Checklist ---------- */
-.checklist-card {
-    max-width: 700px;
-    margin: 0 auto;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    overflow: hidden;
-}
-
-.checklist-item {
-    display: flex;
-    align-items: flex-start;
-    gap: 12px;
-    padding: 16px 20px;
-    border-bottom: 1px solid var(--border);
-    cursor: pointer;
-    transition: background var(--transition);
-}
-
-.checklist-item:last-child {
-    border-bottom: none;
-}
-
-.checklist-item:hover {
-    background: var(--surface-hover);
-}
-
-.checklist-item input[type="checkbox"] {
-    width: 20px;
-    height: 20px;
-    margin-top: 3px;
-    flex-shrink: 0;
-    accent-color: #0056b3;
-    cursor: pointer;
-}
-
-.checklist-item input:checked+span {
-    color: var(--text-muted);
-    text-decoration: line-through;
-}
-
-.checklist-note {
-    text-align: center;
-    color: var(--text-light);
-    font-size: 0.875rem;
-    margin-top: 16px;
-}
-
-.checklist-actions-bar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 12px;
 }
 
 .docs-checklist-actions-bar {
@@ -4568,7 +4480,6 @@ html.high-contrast .card-grid[data-active-trilha] .category-icon {
 
     /* Regras globais para PDFs específicos - evita páginas em branco */
     body.printing-analysis,
-    body.printing-checklist,
     body.printing-docs-checklist,
     body.printing-detalhe {
         orphans: 3;
@@ -4576,11 +4487,9 @@ html.high-contrast .card-grid[data-active-trilha] .category-icon {
     }
 
     body.printing-analysis .footer,
-    body.printing-checklist .footer,
     body.printing-docs-checklist .footer,
     body.printing-detalhe .footer,
     body.printing-analysis #backToTop,
-    body.printing-checklist #backToTop,
     body.printing-docs-checklist #backToTop,
     body.printing-detalhe #backToTop {
         display: none !important;
@@ -4689,101 +4598,6 @@ html.high-contrast .card-grid[data-active-trilha] .category-icon {
 
     body.printing-analysis .analysis-legend {
         display: none !important;
-    }
-
-    /* ══════════════════════════════════════════════════
-       CHECKLIST — Primeiros Passos (printing-checklist)
-       ══════════════════════════════════════════════════ */
-    body.printing-checklist {
-        background: #fff !important;
-    }
-
-    body.printing-checklist>* {
-        visibility: hidden !important;
-        height: 0 !important;
-        overflow: hidden !important;
-        margin: 0 !important;
-        padding: 0 !important;
-    }
-
-    body.printing-checklist main,
-    body.printing-checklist main #checklist,
-    body.printing-checklist main #checklist>.container {
-        visibility: visible !important;
-        display: block !important;
-        height: auto !important;
-        overflow: visible !important;
-        margin: 0 !important;
-        padding: 20px 0 !important;
-    }
-
-    body.printing-checklist main>*:not(#checklist) {
-        visibility: hidden !important;
-        display: none !important;
-        height: 0 !important;
-        overflow: hidden !important;
-        margin: 0 !important;
-        padding: 0 !important;
-    }
-
-    body.printing-checklist main #checklist>.container>* {
-        visibility: visible !important;
-    }
-
-    body.printing-checklist .section-desc,
-    body.printing-checklist .checklist-note {
-        visibility: visible !important;
-    }
-
-    body.printing-checklist main #checklist {
-        background: #fff !important;
-        color: #000 !important;
-        margin: 0;
-        padding: 20px 0;
-    }
-
-    body.printing-checklist .checklist-card {
-        border: 1px solid #ddd !important;
-        box-shadow: none !important;
-    }
-
-    body.printing-checklist .checklist-card * {
-        visibility: visible !important;
-    }
-
-    body.printing-checklist .checklist-item {
-        page-break-inside: avoid;
-    }
-
-    body.printing-checklist .checklist-actions-bar {
-        display: none !important;
-    }
-
-    body.printing-checklist #checklist>.container::before {
-        visibility: visible !important;
-        content: "NossoDireito — Primeiros Passos Após o Laudo";
-        display: block;
-        font-size: 16pt;
-        font-weight: 700;
-        margin-bottom: 8pt;
-        color: #1e3a8a;
-    }
-
-    body.printing-checklist #checklist>.container::after {
-        visibility: visible !important;
-        content: "Gerado em " attr(data-print-date) " · nossodireito.fabiotreze.com · Consulte um advogado para orientação personalizada.";
-        display: block;
-        margin-top: 16pt;
-        font-size: 8pt;
-        color: #666;
-        border-top: 1px solid #ccc;
-        padding-top: 8pt;
-    }
-
-    body.printing-checklist .progress-bar,
-    body.printing-checklist .progress-fill {
-        -webkit-print-color-adjust: exact;
-        print-color-adjust: exact;
     }
 
     /* ══════════════════════════════════════════════════
@@ -5075,8 +4889,7 @@ html.high-contrast .card-grid[data-active-trilha] .category-icon {
     }
 
     .category-card,
-    .link-card,
-    .checklist-card {
+    .link-card {
         border: 2px solid ButtonText;
     }
 
