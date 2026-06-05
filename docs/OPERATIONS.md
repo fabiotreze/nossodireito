@@ -84,7 +84,7 @@ Sem esses secrets, o watchdog continua válido para monitorar CI/deploy.
 1. Reinstanciar infra: `gh workflow run terraform.yml -f action=apply` (lê state do SA).
 2. Restaurar segredos via `az keyvault secret recover` se aplicável.
 3. Redeploy: push na `main` ou `gh workflow run deploy.yml`.
-4. Validar: `curl https://nossodireito.fabiotreze.com/healthz`.
+4. Validar: `curl https://nossodireito.fabiotreze.com/health`.
 
 ## Evidência de auditoria LGPD / ANPD
 
