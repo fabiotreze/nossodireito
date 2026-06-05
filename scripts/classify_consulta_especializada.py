@@ -50,9 +50,6 @@ def _text_blob(cat: dict) -> str:
     for bl in cat.get("base_legal", []):
         parts.append(bl.get("lei", ""))
         parts.append(bl.get("artigo", ""))
-    em = cat.get("emergencia") or {}
-    if isinstance(em, dict):
-        parts.append(json.dumps(em, ensure_ascii=False))
     return " ".join(parts).lower()
 
 

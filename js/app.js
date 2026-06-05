@@ -1426,25 +1426,6 @@ ${cat.ipva_estados_detalhado.map(e =>
 ${cat.tags.map((t) => `<span class="tag">${escapeHtml(t)}</span>`).join('')}
 </div>`;
         }
-        /* ── Protocolo de Emergência ── */
-        if (cat.emergencia) {
-            const em = cat.emergencia;
-            html += `<div class="detalhe-section emergencia-section" role="region" aria-label="Protocolo de Emergência">
-<h3>🚨 ${escapeHtml(em.titulo)}</h3>
-<p class="emergencia-conflito"><strong>Conflito:</strong> ${escapeHtml(em.conflito)}</p>
-<p class="emergencia-legal"><strong>📜 Base Legal:</strong> ${escapeHtml(em.base_legal_resgate)}</p>
-<div class="emergencia-passos">
-<h4>⚡ Ação Imediata</h4>
-<ol>${em.acao_imediata.map(p => `<li>${escapeHtml(p)}</li>`).join('')}</ol>
-</div>
-<div class="emergencia-denuncia">
-<h4>📞 Onde Denunciar</h4>
-<p><strong>${escapeHtml(em.orgao_denuncia.nome)}</strong> — ${escapeHtml(em.orgao_denuncia.contato)}</p>
-${em.orgao_denuncia.url ? `<a href="${escapeHtml(em.orgao_denuncia.url)}" target="_blank" rel="noopener noreferrer" class="legal-link">🌐 Acessar site oficial</a>` : ''}
-</div>
-${em.aviso ? `<p class="emergencia-aviso"><small>${escapeHtml(em.aviso)}</small></p>` : ''}
-</div>`;
-        }
         const shareText = encodeURIComponent(
             `${cat.icone} ${cat.titulo}\n${cat.resumo}\n\nVeja mais em: https://nossodireito.fabiotreze.com`
         );
