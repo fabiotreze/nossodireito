@@ -75,3 +75,20 @@
 # Detectado em 2026-06-01 na issue #259: timeout pontual no endpoint do Censo 2022
 # apesar de disponibilidade normal em navegador. Mantido fora do blocking link-check.
 ^https?://(www\.)?ibge\.gov\.br/estatisticas/sociais/populacao/22827-censo-demografico-2022\.html$
+
+# === APIs gov.br inventariadas em data/fontes_oficiais.json (#278) ===
+# Endpoints documentais (campo `endpoint_exemplo`) — não são páginas navegáveis.
+# - dados.gov.br/api/* exige token (retorna 401 sem auth, esperado)
+# - servicos.gov.br/api/v1/servicos/{id} é template com placeholder {id}
+# - dadosabertos.camara.leg.br/api/v2 e lexml.gov.br/busca/SRU têm latência alta
+# Estes endpoints são consumidos server-side via lib/govbr-proxy.js (run-time),
+# não precisam ser validados como hyperlinks navegáveis.
+^https?://dados\.gov\.br/api/
+^https?://servicos\.gov\.br/api/
+^https?://dadosabertos\.camara\.leg\.br/api/
+^https?://(www\.)?lexml\.gov\.br/busca/SRU
+
+# === Auto-referências github.com/fabiotreze/nossodireito/blob/main/* (#278) ===
+# Chicken-and-egg: arquivos novos referenciados antes de existirem em main.
+# Após merge do PR, o link funciona. Lychee não acessa branch atual via GitHub.
+^https?://github\.com/fabiotreze/nossodireito/blob/main/docs/

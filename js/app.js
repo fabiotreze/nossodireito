@@ -1209,6 +1209,56 @@ ${t.descricao ? `<span class="trilha-tab__desc">${escapeHtml(t.descricao)}</span
 </div>`;
     }
 
+    /**
+     * Renderiza uma linha de atribuição editorial reforçando que o bloco
+     * (dicas, passo-a-passo) é uma reprodução de fonte oficial — não opinião.
+     * Usa a primeira base_legal como fonte primária; cai em texto genérico se ausente.
+     * @param {object} cat       direito atual
+     * @param {string} blocoNome label curto do bloco (ex.: 'dicas', 'passo-a-passo')
+     * @returns {string} HTML seguro (sem dependência de innerHTML externa)
+     */
+    function renderAtribuicao(cat, blocoNome) {
+        const primaria = cat.base_legal && cat.base_legal[0];
+        const dataStr = cat.data_ultima_verificacao
+            ? new Date(cat.data_ultima_verificacao + 'T00:00:00Z').toLocaleDateString('pt-BR')
+            : 'data não informada';
+        if (primaria && primaria.lei) {
+            return `<p class="atribuicao-fonte"><small>📚 <strong>Reproduzido de:</strong> ${escapeHtml(primaria.lei)}${primaria.artigo ? ' — ' + escapeHtml(primaria.artigo) : ''}. Última consulta: ${escapeHtml(dataStr)}.</small></p>`;
+        }
+        return `<p class="atribuicao-fonte"><small>📚 <strong>Reproduzido das fontes oficiais</strong> listadas em "Base Legal" e "Fonte oficial deste conteúdo". Última consulta: ${escapeHtml(dataStr)}.</small></p>`;
+    }
+
+    /**
+     * G4 — classifica um URL e devolve um badge curto + tooltip indicando
+     * a natureza da fonte (governo BR, judiciário, OMS, etc.).
+     * Domínios sincronizados com data/fontes_oficiais.json.
+     * @param {string} url URL absoluta
+     * @returns {string} HTML do badge (vazio se host não-allowlisted — não deveria acontecer
+     *                   porque G1 impede isso, mas é defensivo)
+     */
+    function renderFonteBadge(url) {
+        if (!url || typeof url !== 'string') return '';
+        let host;
+        try { host = new URL(url).hostname.toLowerCase(); } catch { return ''; }
+        const matches = [
+            { re: /\.planalto\.gov\.br$/, label: '✓ fonte oficial', title: 'Planalto — legislação federal' },
+            { re: /\.in\.gov\.br$/, label: '✓ fonte oficial', title: 'Imprensa Nacional — Diário Oficial' },
+            { re: /\.jus\.br$/, label: '✓ fonte oficial', title: 'Poder Judiciário brasileiro' },
+            { re: /\.def\.br$/, label: '✓ fonte oficial', title: 'Defensoria Pública' },
+            { re: /\.leg\.br$/, label: '✓ fonte oficial', title: 'Poder Legislativo brasileiro' },
+            { re: /\.mp\.br$/, label: '✓ fonte oficial', title: 'Ministério Público' },
+            { re: /\.mil\.br$/, label: '✓ fonte oficial', title: 'Forças Armadas brasileiras' },
+            { re: /icd\.who\.int$|^www\.who\.int$/, label: '📋 fonte OMS', title: 'Organização Mundial da Saúde (adotada pelo Ministério da Saúde — Portaria GM/MS 1.405/2022)' },
+            { re: /\.gov\.br$/, label: '✓ fonte oficial', title: 'Governo brasileiro (.gov.br)' },
+        ];
+        for (const m of matches) {
+            if (m.re.test(host)) {
+                return ` <span class="fonte-badge" title="${escapeHtml(m.title)}">${escapeHtml(m.label)}</span>`;
+            }
+        }
+        return '';
+    }
+
     function showDetalhe(id, skipHistory) {
         const cat = direitosData && direitosData.find((c) => c.id === id);
         if (!cat || !dom.categoriasSection || !dom.detalheSection) return;
@@ -1221,7 +1271,10 @@ ${t.descricao ? `<span class="trilha-tab__desc">${escapeHtml(t.descricao)}</span
         let html = `
 <article>
 <h2>${cat.icone} ${escapeHtml(cat.titulo)}</h2>
-<p class="detalhe-resumo">${escapeHtml(cat.resumo)}</p>`;
+<p class="detalhe-resumo">${escapeHtml(cat.resumo)}</p>
+<aside class="banner-glossario" role="note" aria-label="Sobre este conteúdo">
+<p><strong>📚 Glossário público de direitos PcD.</strong> Esta página <em>reproduz</em> informações de fontes oficiais brasileiras (.gov.br, .jus.br, .def.br, .leg.br, .mp.br) e da Organização Mundial da Saúde (icd.who.int — adotada pelo Ministério da Saúde) listadas abaixo. Não verifica em tempo real, não interpreta a lei, não substitui profissional habilitado. <strong>Confirme sempre na fonte oficial.</strong></p>
+</aside>`;
         if (cat.data_ultima_verificacao) {
             const STALENESS_DAYS = 180;
             const verifDate = new Date(cat.data_ultima_verificacao + 'T00:00:00Z');
@@ -1237,9 +1290,9 @@ ${t.descricao ? `<span class="trilha-tab__desc">${escapeHtml(t.descricao)}</span
         }
         html += renderLegalReviewNotice(cat);
         if (cat.requer_consulta_especializada === true) {
-            html += `<aside class="aviso-consulta-juridica" role="note" aria-label="Aviso de consulta jurídica recomendada">
-<p><strong>ℹ️ Recomendamos orientação jurídica para este direito.</strong></p>
-<p>Este benefício costuma envolver perícia, prazos ou recursos. A <a href="https://www.defensoria.gov.br/" target="_blank" rel="noopener noreferrer">Defensoria Pública</a> oferece atendimento gratuito; também é possível procurar um(a) advogado(a) de sua confiança.</p>
+            html += `<aside class="aviso-consulta-juridica" role="note" aria-label="Aviso de orientação jurídica especializada">
+<p><strong>ℹ️ Este direito costuma exigir orientação jurídica especializada.</strong></p>
+<p>Envolve perícia, prazos ou recursos. A <a href="https://www.defensoria.gov.br/" target="_blank" rel="noopener noreferrer">Defensoria Pública</a> oferece atendimento gratuito; também é possível consultar um(a) advogado(a) de sua confiança.</p>
 </aside>`;
         }
         if (cat.valor) {
@@ -1256,7 +1309,7 @@ ${t.descricao ? `<span class="trilha-tab__desc">${escapeHtml(t.descricao)}</span
                         (l) =>
                             `<a class="legal-link" href="${escapeHtml(l.link)}" target="_blank" rel="noopener noreferrer">
 📄 ${escapeHtml(l.lei)}${l.artigo ? ' — ' + escapeHtml(l.artigo) : ''}
-</a>`
+</a>${renderFonteBadge(l.link)}`
                     )
                     .join('')}</div>
 </div>`;
@@ -1275,17 +1328,20 @@ ${t.descricao ? `<span class="trilha-tab__desc">${escapeHtml(t.descricao)}</span
         }
         if (cat.passo_a_passo && cat.passo_a_passo.length) {
             const passosHtml = `<ol>${cat.passo_a_passo.map((p) => `<li>${escapeHtml(p)}</li>`).join('')}</ol>`;
+            const atribuicaoPasso = renderAtribuicao(cat, 'passo-a-passo');
             if (cat.requer_consulta_especializada === true) {
                 // Atrito inline (não-bloqueante): leitor abre deliberadamente após ver aviso jurídico
                 html += `<div class="detalhe-section">
 <details class="passo-a-passo-atrito">
 <summary><h3 style="display:inline">👣 Passo a Passo</h3> <span class="atrito-hint">(clique para abrir — ler aviso acima primeiro)</span></summary>
+${atribuicaoPasso}
 ${passosHtml}
 </details>
 </div>`;
             } else {
                 html += `<div class="detalhe-section">
 <h3>👣 Passo a Passo</h3>
+${atribuicaoPasso}
 ${passosHtml}
 </div>`;
             }
@@ -1293,9 +1349,9 @@ ${passosHtml}
         if (cat.onde) {
             const canal = cat.canal_de_atendimento_oficial || cat.onde;
             html += `<div class="detalhe-section">
-<h3>📍 Onde Solicitar (canal oficial)</h3>
+<h3>📚 Fonte oficial deste conteúdo</h3>
 <p>${escapeHtml(canal)}</p>
-<p class="canal-aviso"><small>Este site não é o canal oficial — apenas orienta. O direito é peticionado/concedido pelo canal acima.</small></p>
+<p class="canal-aviso"><small>O NossoDireito apenas reproduz o que essa fonte publicou. O direito é peticionado/concedido somente pelo canal acima — este site não tem competência legal nem administrativa.</small></p>
 </div>`;
         }
         if (cat.dicas && cat.dicas.length) {
@@ -1304,6 +1360,7 @@ ${passosHtml}
             const hiddenDicas = cat.dicas.slice(DICAS_LIMIT);
             html += `<div class="detalhe-section">
 <h3>💡 Dicas Importantes</h3>
+${renderAtribuicao(cat, 'dicas')}
 ${visibleDicas.map((d) => `<div class="dica-item">${escapeHtml(d)}</div>`).join('')}
 ${hiddenDicas.length ? `<div class="dicas-hidden" id="dicasHidden_${cat.id}" style="display:none">${hiddenDicas.map((d) => `<div class="dica-item">${escapeHtml(d)}</div>`).join('')}</div>
 <button type="button" class="btn-ver-mais" id="dicasToggle_${cat.id}" aria-expanded="false" aria-controls="dicasHidden_${cat.id}">Mostrar mais ${hiddenDicas.length} dica${hiddenDicas.length > 1 ? 's' : ''} ▼</button>` : ''}
@@ -1404,6 +1461,9 @@ class="btn btn-sm btn-whatsapp" aria-label="Compartilhar no WhatsApp">
             const dataFmt = m ? `${m[3]}/${m[2]}/${m[1]}` : d;
             html += `<p class="detalhe-verificacao"><small>✓ Conteúdo verificado em <time datetime="${escapeHtml(d)}">${escapeHtml(dataFmt)}</time>. Sempre confirme com a fonte oficial antes de agir.</small></p>`;
         }
+        // M6: botão "Sugerir correção" → pré-preenche issue template "correcao.yml" via querystring
+        const correcaoUrl = `https://github.com/fabiotreze/nossodireito/issues/new?template=correcao.yml&direito_id=${encodeURIComponent(cat.id)}&title=${encodeURIComponent('[correção] ' + cat.titulo)}`;
+        html += `<p class="detalhe-sugerir-correcao"><a href="${correcaoUrl}" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline" aria-label="Sugerir correção para este direito">📝 Sugerir correção</a></p>`;
         html += `</article>`;
         dom.detalheContent.innerHTML = html;
         const exportDetalheBtn = document.getElementById('exportDetalhePdf');
@@ -2929,10 +2989,9 @@ Ver detalhes e passo a passo →
     ${aiResult ? renderAIResult(aiResult) : ''}
     ${aiResult ? renderHumanReviewButton() : ''}
 <div class="analysis-footer">
-<p>⚠️ <strong>Atenção:</strong> Esta análise é uma <strong>orientação preliminar</strong>
-baseada em correspondência de palavras-chave. <strong>Não substitui</strong> orientação
-profissional. Para confirmação, procure a <strong>Defensoria Pública</strong>,
-um advogado ou o <strong>CRAS</strong> da sua cidade.</p>
+<p>⚠️ <strong>Atenção:</strong> Esta análise é uma <strong>correspondência de palavras-chave</strong>
+com o glossário; <strong>não é parecer profissional</strong>. A confirmação cabe à
+<strong>Defensoria Pública</strong>, a um(a) advogado(a) ou ao <strong>CRAS</strong> da sua cidade.</p>
 </div>`;
         dom.analysisContent.innerHTML = html;
         dom.analysisContent.querySelectorAll('.analysis-see-more').forEach((btn) => {
@@ -3127,7 +3186,7 @@ Abrir passo a passo: ${escapeHtml(titleById[id] || id)}
 </button>
 ${renderAIDocsChecklist()}
 ${renderWeekPlan(priorityOrder, titleById)}
-<p class="analysis-ai-disclaimer"><strong>⚠️ Importante:</strong> esta sugestão de IA é informativa e <strong>não substitui</strong> orientação jurídica. Procure a <strong>Defensoria Pública</strong> ou o <strong>CRAS</strong> da sua cidade para confirmar elegibilidade.</p>`
+<p class="analysis-ai-disclaimer"><strong>⚠️ Importante:</strong> esta sugestão de IA é informativa, baseada em fontes oficiais já indexadas pelo glossário, e <strong>não substitui</strong> parecer profissional. A confirmação de elegibilidade cabe à <strong>Defensoria Pública</strong> ou ao <strong>CRAS</strong> da sua cidade.</p>`
             : '';
 
         return `

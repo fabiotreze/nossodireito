@@ -4,6 +4,8 @@
 VALIDATE SCHEMA — Validação de JSON Schema
 
 Valida data/direitos.json contra schemas/direitos.schema.json.
+Também valida que todas as URLs externas em data/direitos.json pertencem à
+allowlist de fontes oficiais declarada em data/fontes_oficiais.json (G1).
 
 PRIORIDADE: P1 (alto - prevenir estrutura divergente)
 ESFORÇO: 6h (já implementado!)
@@ -12,12 +14,15 @@ FREQUÊNCIA: Sempre que modificar dados
 USO:
     python scripts/validate_schema.py              # Validação completa
     python scripts/validate_schema.py --verbose    # Modo detalhado
+    python scripts/validate_schema.py --skip-allowlist  # Pula G1
 """
 
 import argparse
 import json
+import re
 import sys
 from pathlib import Path
+from urllib.parse import urlparse
 
 try:
     from jsonschema import Draft7Validator
@@ -121,6 +126,101 @@ def validate_json_schema(data_path: Path, schema_path: Path, verbose: bool = Fal
         return False
 
 
+# ──────────────────────────────────────────────────────────────────────────
+# G1: URL allowlist validator (consome data/fontes_oficiais.json)
+# ──────────────────────────────────────────────────────────────────────────
+
+URL_FIELD_HINTS = ("link", "url", "sefaz", "fonte")
+# Esquemas que não são fonte (tel:, mailto:, etc) — ignorados pelo validator
+_SKIP_SCHEMES = {"mailto", "tel", "sms", "javascript", ""}
+
+
+def _walk_urls(node, path=""):
+    """Generator: produz (json_path, url) para todo valor string que pareça URL externa."""
+    if isinstance(node, dict):
+        for key, value in node.items():
+            sub_path = f"{path}.{key}" if path else key
+            if isinstance(value, str) and any(h in key.lower() for h in URL_FIELD_HINTS):
+                if value.startswith(("http://", "https://")):
+                    yield sub_path, value
+            else:
+                yield from _walk_urls(value, sub_path)
+    elif isinstance(node, list):
+        for idx, item in enumerate(node):
+            yield from _walk_urls(item, f"{path}[{idx}]")
+
+
+def _compile_allowlist(allowlist_path: Path):
+    """Lê data/fontes_oficiais.json e retorna lista de regex compilados para host."""
+    with open(allowlist_path, "r", encoding="utf-8") as f:
+        data = json.load(f)
+    patterns = []
+    for entry in data.get("dominios", []):
+        padrao = entry["padrao"].strip().lower()
+        if padrao.startswith("*."):
+            # qualquer subdomínio (ou o próprio domínio raiz)
+            tail = re.escape(padrao[2:])
+            patterns.append(re.compile(rf"^([a-z0-9-]+\.)*{tail}$"))
+        else:
+            patterns.append(re.compile(rf"^{re.escape(padrao)}$"))
+    return patterns
+
+
+def validate_url_allowlist(data_path: Path, allowlist_path: Path, verbose: bool = False) -> bool:
+    """G1: valida que todo URL externo em direitos.json casa com a allowlist."""
+    print()
+    print("=" * 80)
+    print("🔒 G1 — Validação de Allowlist de Fontes Oficiais")
+    print("=" * 80)
+    print()
+    if not allowlist_path.exists():
+        print(f"❌ ERRO: {allowlist_path} não encontrado")
+        return False
+
+    patterns = _compile_allowlist(allowlist_path)
+    print(f"📋 Allowlist: {allowlist_path.name} ({len(patterns)} padrões)")
+
+    with open(data_path, "r", encoding="utf-8") as f:
+        data = json.load(f)
+
+    violations = []
+    seen_urls = set()
+    for json_path, url in _walk_urls(data):
+        try:
+            host = (urlparse(url).hostname or "").lower()
+        except ValueError:
+            violations.append((json_path, url, "URL inválida"))
+            continue
+        if not host or urlparse(url).scheme in _SKIP_SCHEMES:
+            continue
+        seen_urls.add(host)
+        if not any(p.match(host) for p in patterns):
+            violations.append((json_path, url, host))
+
+    print(f"🌐 URLs externas únicas encontradas: {len(seen_urls)} hosts")
+
+    if not violations:
+        print("✅ Todas as URLs estão dentro da allowlist (.gov.br/.jus.br/.def.br/.leg.br/.mp.br/icd.who.int/...)")
+        return True
+
+    print()
+    print(f"❌ {len(violations)} URL(s) FORA da allowlist:")
+    print()
+    for jpath, url, host in violations[:50]:
+        print(f"   • {jpath}")
+        print(f"     URL : {url}")
+        print(f"     Host: {host}")
+        print()
+    if len(violations) > 50 and not verbose:
+        print(f"   ... e mais {len(violations) - 50} violação(ões). Use --verbose para ver tudo.")
+    elif verbose and len(violations) > 50:
+        for jpath, url, host in violations[50:]:
+            print(f"   • {jpath}\n     URL : {url}\n     Host: {host}\n")
+    print()
+    print("💡 Adicione o domínio em data/fontes_oficiais.json (com justificativa) ou troque a URL por fonte oficial.")
+    return False
+
+
 def main():
     """CLI principal"""
     parser = argparse.ArgumentParser(
@@ -132,6 +232,11 @@ def main():
         action="store_true",
         help="Mostrar erros detalhados"
     )
+    parser.add_argument(
+        "--skip-allowlist",
+        action="store_true",
+        help="Pula a validação G1 de allowlist de fontes oficiais"
+    )
 
     args = parser.parse_args()
 
@@ -139,6 +244,7 @@ def main():
     root = Path(__file__).parent.parent
     data_path = root / "data" / "direitos.json"
     schema_path = root / "schemas" / "direitos.schema.json"
+    allowlist_path = root / "data" / "fontes_oficiais.json"
 
     # Verificar arquivos
     if not data_path.exists():
@@ -151,9 +257,13 @@ def main():
         return 1
 
     # Validar
-    success = validate_json_schema(data_path, schema_path, verbose=args.verbose)
+    schema_ok = validate_json_schema(data_path, schema_path, verbose=args.verbose)
 
-    return 0 if success else 1
+    allowlist_ok = True
+    if not args.skip_allowlist:
+        allowlist_ok = validate_url_allowlist(data_path, allowlist_path, verbose=args.verbose)
+
+    return 0 if (schema_ok and allowlist_ok) else 1
 
 
 if __name__ == "__main__":
