@@ -137,7 +137,7 @@ const server = http.createServer(async (req, res) => {
   }
 
   // ── Health check endpoint (lib/infra-handlers.js) ──
-  if (req.url === "/healthz" || req.url === "/health") {
+  if (req.url === "/health") {
     healthHandler(req, res);
     return;
   }
