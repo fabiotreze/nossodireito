@@ -3513,15 +3513,16 @@ ${renderWeekPlan(priorityOrder, titleById)}
     function renderHumanReviewButton() {
         return `<div class="analysis-human-review" role="region" aria-labelledby="humanReviewTitle">
 <h4 id="humanReviewTitle">⚖️ Direito à revisão humana (LGPD Art. 20)</h4>
-<p>Você tem o direito de solicitar a revisão desta análise automatizada por uma pessoa.</p>
+<p>Você pode pedir que uma pessoa revise como a <strong>IA processou seu documento</strong> nesta ferramenta (CIDs detectados, datas, direitos sugeridos).</p>
+<p class="human-review-scope"><small>ℹ️ <strong>Escopo:</strong> este canal trata apenas do <strong>funcionamento automatizado do site</strong>. Não é para questionar leis, direitos ou conteúdo do catálogo — esses vêm de fontes oficiais (gov.br) e dúvidas jurídicas devem ser levadas à Defensoria Pública ou advogado.</small></p>
 <button class="btn btn-outline human-review-btn" type="button"
   aria-describedby="humanReviewTitle">
   📋 Pedir revisão humana
 </button>
 <div class="human-review-info" style="display:none;" aria-live="polite">
-<p>Para solicitar revisão humana desta análise, envie um e-mail para
+<p>Envie um e-mail para
 <a href="mailto:dpo@fabiotreze.com?subject=Revisão humana — Art. 20 LGPD">dpo@fabiotreze.com</a>
-com o assunto <strong>"Revisão humana — Art. 20 LGPD"</strong>.</p>
+com o assunto <strong>"Revisão humana — Art. 20 LGPD"</strong> descrevendo o que a IA processou de forma incorreta (ex.: CID errado, data confundida, direito sugerido sem base no texto).</p>
 <p>Prazo de resposta: até 15 dias corridos.</p>
 <p><small>Nenhum dado pessoal é enviado automaticamente. Você decide o que incluir no e-mail.</small></p>
 </div>
