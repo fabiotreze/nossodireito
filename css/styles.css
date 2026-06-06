@@ -1254,6 +1254,11 @@ html.high-contrast ::selection {
 .section {
     padding: 64px 0;
     background-color: var(--surface);
+    /* v1.43.16: cancela o padding-top de 64px do snap area, para que
+       scrollIntoView (que respeita scroll-padding-top: 132px do html)
+       posicione o h2 da seção em ~y=132, alinhado com como Refer\u00eancias
+       posicionam seus tabpanels. Sem isto, o h2 cairia em y=196 (132 + 64). */
+    scroll-margin-top: -64px;
 }
 
 .section-alt {
