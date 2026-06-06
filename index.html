@@ -482,8 +482,13 @@
       }
 
       /* Link "Aviso" — fundo âmbar suave + texto escuro p/ garantir contraste em navbar branca (WCAG AA). */
+      /* v1.43.23: removido `margin-left: auto` em todas as larguras para evitar
+         que o Aviso se desloque do menu sob zoom de browser (acessibilidade) ou
+         viewports estreitos. O badge agora flui imediatamente após "Transparência",
+         mantendo coesão visual mesmo quando a barra precisa quebrar em duas linhas.
+         A separação visual é garantida pelo fundo âmbar próprio + margem extra. */
       .nav-links .nav-aviso-item {
-        margin-left: auto;
+        margin-left: 4px;
       }
       .nav-links .nav-aviso {
         color: #664d03;
@@ -498,6 +503,15 @@
         border-color: #ffc107;
         outline: 2px solid #ffc107;
         outline-offset: 1px;
+      }
+      /* Desktop amplo (>= 1200px sem zoom): aproveitar o espaço sobrando para
+         alinhar o Aviso à direita, preservando o aesthetic original. Em zoom
+         (que reduz o viewport efetivo) ou viewports menores, cai para o
+         fluxo natural acima e não se desloca do menu. */
+      @media (min-width: 1200px) {
+        .nav-links .nav-aviso-item {
+          margin-left: auto;
+        }
       }
       @media (max-width: 768px) {
         /* Em mobile (drawer) volta a fluir normalmente, sem alinhamento à direita. */
@@ -591,9 +605,9 @@
         }
       }
     </style>
-    <link rel="stylesheet" href="css/styles.css?v=1.43.22&rev=256.5" media="all" id="deferredCSS" />
+    <link rel="stylesheet" href="css/styles.css?v=1.43.23&rev=257" media="all" id="deferredCSS" />
     <noscript>
-      <link rel="stylesheet" href="css/styles.css?v=1.43.22&rev=256.5" />
+      <link rel="stylesheet" href="css/styles.css?v=1.43.23&rev=257" />
     </noscript>
     <script type="application/ld+json">
       {
@@ -2647,7 +2661,7 @@
     </div>
 
     <!-- Anonymizer compartilhado (Node + Browser) — DEVE carregar ANTES de app.js -->
-    <script src="shared/anonymizer.js?v=1.43.22&rev=256.5" defer></script>
-    <script src="js/app.js?v=1.43.22&rev=256.5" defer></script>
+    <script src="shared/anonymizer.js?v=1.43.23&rev=257" defer></script>
+    <script src="js/app.js?v=1.43.23&rev=257" defer></script>
   </body>
 </html>

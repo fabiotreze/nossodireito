@@ -3513,6 +3513,16 @@ html.high-contrast .valor-destaque {
     font-size: 1rem;
 }
 
+.analysis-human-review .human-review-scope {
+    margin: 8px 0 4px;
+    padding: 8px 12px;
+    background: #eff6ff;
+    border-left: 3px solid #3b82f6;
+    border-radius: var(--radius-sm);
+    color: #1e3a8a;
+    line-height: 1.45;
+}
+
 .analysis-human-review .human-review-btn {
     margin-top: 8px;
 }
