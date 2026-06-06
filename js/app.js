@@ -852,13 +852,19 @@
                 dom.menuToggle.setAttribute('aria-label', 'Abrir menu');
 
                 /* v1.43.7 — Anchor scroll offset fix.
-                 * Sections como #consultar/#categorias têm padding-top: 64px,
-                 * fazendo o h2 aterrissar a ~196px do topo (132px scroll-padding + 64px
-                 * padding). Refs (#links etc.) usam o div interno da tab e funcionam OK.
-                 * Aqui interceptamos para posicionar o h2 ~80px do topo (navbar + gap). */
+                /* v1.43.16 — Comportamento unificado de anchor scroll.
+                 * TODOS os anchors do nav (incluindo Início, Consultar, Categorias)
+                 * agora usam scrollIntoView com block:'start'. O browser respeita
+                 * scroll-padding-top: 132px do <html>, alinhando o alvo de forma
+                 * CONSISTENTE com o submenu Referências (que sempre funcionou bem).
+                 *
+                 * Para alvos dentro de tabpanels ocultos (Apoio→#instituicoes,
+                 * Aviso→#disclaimerInline, e os subitens de Referências), a
+                 * ativação da tab + scroll é feita em setupReferenciasTabs via rAF
+                 * para esperar o layout do painel recém-revelado. Aqui apenas
+                 * abrimos passagem (return) para o handler global tratar. */
                 const href = link.getAttribute('href');
                 if (!href || !href.startsWith('#') || href.length < 2) return;
-                /* Links de Refs e Aviso têm handlers próprios — não interferir. */
                 const REF_HASHES = new Set(['#links', '#classificacao', '#orgaos-estaduais', '#instituicoes', '#transparencia', '#compromissoAtualizacao', '#disclaimerInline']);
                 if (REF_HASHES.has(href)) return;
                 const target = document.querySelector(href);
@@ -868,10 +874,7 @@
                 if (href === '#inicio') {
                     window.scrollTo({ top: 0, behavior: reduced ? 'auto' : 'smooth' });
                 } else {
-                    const heading = target.querySelector('h2') || target;
-                    const rect = heading.getBoundingClientRect();
-                    const top = window.scrollY + rect.top - 80; /* 64 navbar + 16 gap */
-                    window.scrollTo({ top: Math.max(0, top), behavior: reduced ? 'auto' : 'smooth' });
+                    target.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'start' });
                 }
                 if (history.replaceState) history.replaceState(null, '', href);
             });
@@ -3922,38 +3925,9 @@ com o assunto <strong>"Revisão humana — Art. 20 LGPD"</strong>.</p>
         document.addEventListener('ai-consent-changed', render);
         render();
     }
-    // v1.18.0 — Link "Aviso" no menu: garante scroll na 1a clicada
-    // (sem isso, com lazy content abaixo, o browser as vezes mede altura errada).
-    function setupNavAvisoScroll() {
-        document.querySelectorAll('a.nav-aviso[href="#disclaimerInline"]').forEach((link) => {
-            link.addEventListener('click', (e) => {
-                const target = document.getElementById('disclaimerInline');
-                if (!target) return;
-                e.preventDefault();
-                // Fecha drawer mobile se aberto
-                const drawer = document.getElementById('navLinks');
-                const toggle = document.getElementById('menuToggle');
-                if (drawer && drawer.classList.contains('open')) {
-                    drawer.classList.remove('open');
-                    if (toggle) toggle.setAttribute('aria-expanded', 'false');
-                }
-                // Garante que a tab "Fontes & Aviso" da Central de Referências esteja ativa
-                // (caso contrário o #disclaimerInline ficaria dentro de um tabpanel hidden).
-                activateReferenciasTabByHash('#transparencia');
-                // Atualiza hash sem disparar scroll nativo, depois faz scroll suave preciso
-                if (history.replaceState) history.replaceState(null, '', '#disclaimerInline');
-                // v1.43.15: aguarda 2 frames para o browser fazer o layout do painel
-                // recém-revelado (tab estava hidden), senão scrollIntoView mede a
-                // posição errada e o usuário cai no meio da página.
-                const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-                requestAnimationFrame(() => {
-                    requestAnimationFrame(() => {
-                        target.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'start' });
-                    });
-                });
-            });
-        });
-    }
+    // v1.43.16 — Consolidado em setupReferenciasTabs (doc-level handler).
+    // Mantida apenas para compatibilidade (no-op).
+    function setupNavAvisoScroll() { /* deprecated v1.43.16 */ }
 
     // ---------- Central de Referências (tabs ARIA) ----------
     // Mapa: hash → tab id. Cobre anchors antigas para preservar compatibilidade.
@@ -4039,14 +4013,42 @@ com o assunto <strong>"Revisão humana — Art. 20 LGPD"</strong>.</p>
         // Initial sync (caso a página abra direto em /#orgaos-estaduais etc.)
         syncFromHash();
 
-        // Clique em qualquer link [href="#<panelId>"] do submenu/footer → ativa tab + scrolla
+        // v1.43.16: handler unificado para QUALQUER link cujo href esteja em
+        // REFERENCIAS_HASH_MAP (Apoio top-level, Aviso top-level, todos os
+        // subitens do submenu Referências, links do footer, etc.).
+        //
+        // Fluxo: e.preventDefault → fecha drawer mobile → ativa a tab correta
+        // → atualiza hash → aguarda 2 frames (rAF duplo) para o layout do
+        // painel recém-revelado ser computado → scrollIntoView (que respeita
+        // scroll-padding-top: 132px do <html>, alinhando consistentemente com
+        // todos os outros anchors do nav).
         document.addEventListener('click', (e) => {
             const link = e.target instanceof Element ? e.target.closest('a[href^="#"]') : null;
             if (!link) return;
             const hash = link.getAttribute('href');
             if (!hash || !(hash in REFERENCIAS_HASH_MAP)) return;
-            // Deixa o scroll nativo do anchor agir, mas garante a tab ativa antes
+            const target = document.querySelector(hash);
+            if (!target) return;
+            e.preventDefault();
+            // Fecha drawer mobile do nav, se aberto
+            const drawer = document.getElementById('navLinks');
+            const toggle = document.getElementById('menuToggle');
+            if (drawer && drawer.classList.contains('open')) {
+                drawer.classList.remove('open');
+                if (toggle) {
+                    toggle.classList.remove('open');
+                    toggle.setAttribute('aria-expanded', 'false');
+                    toggle.setAttribute('aria-label', 'Abrir menu');
+                }
+            }
             activateReferenciasTabByHash(hash);
+            if (history.replaceState) history.replaceState(null, '', hash);
+            const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
+                    target.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'start' });
+                });
+            });
         });
     }
 
