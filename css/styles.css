@@ -1385,35 +1385,30 @@ html.high-contrast ::selection {
     color: var(--text-muted);
 }
 
-/* ---------- Card Grid (Categorias) ---------- */
+/* ---------- Card Grid (Categorias) \u2014 padr\u00e3o visual \u00fanico (\u00edcone + t\u00edtulo) ---------- */
 .card-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 16px;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 10px;
 }
 
 .category-card {
     background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 16px 18px;
+    border-radius: 12px;
+    padding: 12px 14px;
     cursor: pointer;
-    transition: border-color var(--transition), box-shadow var(--transition), transform var(--transition);
+    transition: border-color var(--transition), background var(--transition);
     text-align: left;
-    display: grid;
-    grid-template-columns: auto 1fr;
-    grid-template-areas:
-        "icon title"
-        ".    desc";
-    column-gap: 12px;
-    row-gap: 4px;
+    display: flex;
     align-items: center;
+    gap: 10px;
+    min-height: 52px;
 }
 
 .category-card:hover {
     border-color: var(--primary);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
-    transform: translateY(-2px);
+    background: var(--surface-hover, #f8fafc);
 }
 
 .category-card:focus-visible {
@@ -1422,41 +1417,26 @@ html.high-contrast ::selection {
 }
 
 .category-icon {
-    grid-area: icon;
-    font-size: 1.75rem;
-    margin-bottom: 0;
-    display: inline-block;
+    font-size: 1.4rem;
     line-height: 1;
+    flex-shrink: 0;
 }
 
 .category-card h3 {
-    grid-area: title;
-    font-size: 1.02rem;
-    font-weight: 700;
-    margin-bottom: 0;
+    font-size: 0.95rem;
+    font-weight: 600;
+    margin: 0;
     line-height: 1.3;
 }
 
+/* Resumo n\u00e3o aparece mais nos cards (limpa ru\u00eddo visual). Fica acess\u00edvel apenas via detalhe. */
 .category-card p {
-    grid-area: desc;
-    font-size: 0.88rem;
-    color: var(--text-muted);
-    line-height: 1.45;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    margin: 0;
+    display: none;
 }
 
 @media (prefers-reduced-motion: reduce) {
     .category-card {
         transition: none;
-    }
-
-    .category-card:hover {
-        transform: none;
     }
 }
 
@@ -3959,107 +3939,63 @@ html.high-contrast .disclaimer-alert {
     color: #fff;
 }
 
-/* ---------- Trilhas (tablist como cards mobile-first) ---------- */
+/* ---------- Trilhas (chips de filtro \u2014 padr\u00e3o visual \u00fanico com category-card) ---------- */
 .trilha-tabs {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    display: flex;
+    flex-wrap: wrap;
     gap: 8px;
     margin: 16px 0 20px;
-}
-
-@media (min-width: 600px) {
-    .trilha-tabs {
-        grid-template-columns: repeat(3, 1fr);
-    }
-}
-
-@media (min-width: 960px) {
-    .trilha-tabs {
-        grid-template-columns: repeat(4, 1fr);
-    }
 }
 
 .trilha-tab {
     appearance: none;
     background: var(--surface);
-    border: 2px solid var(--border);
-    border-radius: 12px;
-    padding: 10px 14px;
-    min-height: 56px;
-    width: 100%;
-    text-align: left;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 8px 14px;
     color: var(--text);
     cursor: pointer;
-    transition: background var(--transition), border-color var(--transition), color var(--transition), transform var(--transition), box-shadow var(--transition);
-    display: grid;
-    grid-template-columns: 32px 1fr auto;
+    transition: background var(--transition), border-color var(--transition), color var(--transition);
+    display: inline-flex;
     align-items: center;
-    column-gap: 10px;
+    gap: 8px;
     font: inherit;
+    font-size: 0.92rem;
+    font-weight: 600;
+    line-height: 1.2;
+    white-space: nowrap;
 }
 
 .trilha-tab__icon {
-    font-size: 1.4rem;
+    font-size: 1.1rem;
     line-height: 1;
-    width: 32px;
-    height: 32px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.trilha-tab__body {
-    display: flex;
-    flex-direction: column;
-    gap: 1px;
-    min-width: 0;
 }
 
 .trilha-tab__label {
-    font-size: 1rem; /* 16px */
-    font-weight: 700;
-    line-height: 1.2;
+    font-weight: 600;
 }
 
-.trilha-tab__desc {
-    font-size: 0.8rem;
-    font-weight: 400;
-    color: var(--text-muted, #475569);
-    line-height: 1.3;
-    /* Esconde descrição em viewport apertado para reduzir altura dos quadros */
-    display: none;
-}
-
-@media (min-width: 960px) {
-    .trilha-tab__desc {
-        display: block;
-    }
-}
-
+/* Mant\u00e9m count para a11y mas escondido visualmente (label j\u00e1 \u00e9 claro) */
 .trilha-tab__count {
-    font-size: 0.9rem;
-    font-weight: 700;
-    /* WCAG AA: #1e3a8a on #dbeafe = ~10:1 (was --primary on --primary-light = ~2:1) */
-    color: #1e3a8a;
-    background: #dbeafe;
-    border-radius: 999px;
-    padding: 4px 10px;
-    min-width: 32px;
-    text-align: center;
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
 }
 
-@media (prefers-color-scheme: dark) {
-    .trilha-tab__count {
-        /* WCAG AA: #dbeafe on #1e3a8a = ~10:1 */
-        color: #dbeafe;
-        background: #1e3a8a;
-    }
-}
+/* Descri\u00e7\u00e3o e body removidos visualmente; mantidos no DOM apenas para SR se houver */
+.trilha-tab__body,
+.trilha-tab__desc { display: contents; }
+.trilha-tab__desc { display: none; }
 
 .trilha-tab:hover {
     border-color: var(--primary);
-    transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(30, 64, 175, 0.12);
+    background: var(--surface-hover, #f8fafc);
 }
 
 .trilha-tab[aria-selected="true"] {
@@ -4068,27 +4004,13 @@ html.high-contrast .disclaimer-alert {
     color: #fff;
 }
 
-.trilha-tab[aria-selected="true"] .trilha-tab__desc {
-    color: rgba(255, 255, 255, 0.92);
-}
-
-.trilha-tab[aria-selected="true"] .trilha-tab__count {
-    background: rgba(255, 255, 255, 0.2);
-    color: #fff;
-}
-
 .trilha-tab:focus-visible {
     outline: 3px solid var(--accent, #059669);
-    outline-offset: 3px;
+    outline-offset: 2px;
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .trilha-tab {
-        transition: none;
-    }
-    .trilha-tab:hover {
-        transform: none;
-    }
+    .trilha-tab { transition: none; }
 }
 
 /* ---------- Cores por Trilha (visual cue quando filtro está ativo) ---------- */
@@ -4098,19 +4020,11 @@ html.high-contrast .disclaimer-alert {
    Trilha 'todas' não pinta — visual neutro para evitar arco-íris de 42 cards.
    Cores atendem WCAG AA: borda + leve tinge no ícone (não usa cor como único
    meio de transmitir informação, há também título da trilha + filtro de cards). */
+/* ---------- Cores por Trilha (visual cue sutil quando filtro est\u00e1 ativo) ---------- */
+/* Borda esquerda colorida indica afinidade com trilha selecionada. \u00cdcone NO\u0303 ganha
+   tinge (mant\u00e9m padr\u00e3o visual \u00fanico). Trilha 'todas' n\u00e3o pinta. */
 .card-grid[data-active-trilha] .category-card {
-    border-left: 4px solid var(--trilha-color, var(--primary));
-}
-
-.card-grid[data-active-trilha] .category-icon {
-    background: var(--trilha-tint, rgba(30, 64, 175, 0.08));
-    border-radius: 10px;
-    padding: 6px;
-    width: 44px;
-    height: 44px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
+    border-left: 3px solid var(--trilha-color, var(--primary));
 }
 
 .card-grid[data-active-trilha="renda"]     { --trilha-color: #15803d; --trilha-tint: rgba(21, 128, 61, 0.10); } /* verde — dinheiro */
@@ -4120,10 +4034,10 @@ html.high-contrast .disclaimer-alert {
 .card-grid[data-active-trilha="mobilidade"] { --trilha-color: #c2410c; --trilha-tint: rgba(194, 65, 12, 0.10); } /* laranja — transporte */
 .card-grid[data-active-trilha="cidadania"] { --trilha-color: #1e40af; --trilha-tint: rgba(30, 64, 175, 0.10); } /* azul — justiça */
 
-/* Hover: borda esquerda mais grossa para reforçar afinidade */
+/* Hover: borda esquerda mais grossa para refor\u00e7ar afinidade */
 .card-grid[data-active-trilha] .category-card:hover {
     border-color: var(--trilha-color, var(--primary));
-    border-left-width: 6px;
+    border-left-width: 5px;
 }
 
 /* Dark mode: cores levemente mais claras para contraste em fundo escuro */
@@ -4139,10 +4053,6 @@ html.high-contrast .disclaimer-alert {
 /* High-contrast mode: respeita o modo de alto contraste do site */
 html.high-contrast .card-grid[data-active-trilha] .category-card {
     border-left-color: var(--primary);
-}
-html.high-contrast .card-grid[data-active-trilha] .category-icon {
-    background: transparent;
-    padding: 0;
 }
 
 /* ---------- Responsivo ---------- */

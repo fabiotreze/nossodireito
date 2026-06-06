@@ -1058,9 +1058,8 @@
 aria-label="Ver detalhes sobre ${escapeHtml(cat.titulo)}"
 data-id="${cat.id}"
 data-trilha="${escapeHtml(getTrilhaId(cat.id))}">
-<span class="category-icon">${cat.icone}</span>
+<span class="category-icon" aria-hidden="true">${cat.icone}</span>
 <h3>${escapeHtml(cat.titulo)}</h3>
-<p>${escapeHtml(cat.resumo)}</p>
 </div>`
             )
             .join('');
@@ -1085,9 +1084,9 @@ data-trilha="${escapeHtml(getTrilhaId(cat.id))}">
     // (issue UX: usuário não percebia que os botões eram filtros quando o
     // default mostrava apenas uma trilha).
     const TRILHAS = [
-        { id: 'todas', label: 'Todas as categorias', icone: '📋', descricao: 'Lista completa dos 42 direitos', ids: null },
+        { id: 'todas', label: 'Todas', icone: '📋', descricao: 'Lista completa dos 42 direitos', ids: null },
         {
-            id: 'renda', label: 'Renda & Benefícios', icone: '💰',
+            id: 'renda', label: 'Renda', icone: '💰',
             descricao: 'BPC, auxílios, isenções e saques especiais',
             ids: ['bpc', 'auxilio_inclusao', 'bolsa_familia', 'fgts', 'saque_fgts_doenca_grave', 'pensao_zika', 'tarifa_social_energia', 'isencao_ir'],
         },
@@ -1102,17 +1101,17 @@ data-trilha="${escapeHtml(getTrilhaId(cat.id))}">
             ids: ['educacao', 'prouni_fies_sisu'],
         },
         {
-            id: 'trabalho', label: 'Trabalho & Aposentadoria', icone: '💼',
+            id: 'trabalho', label: 'Trabalho', icone: '💼',
             descricao: 'Cota PcD, horário especial e aposentadoria especial',
             ids: ['trabalho', 'cota_emprego_pcd_empresa', 'horario_especial_servidor_pcd', 'aposentadoria_especial_pcd'],
         },
         {
-            id: 'mobilidade', label: 'Mobilidade & Transporte', icone: '🚌',
+            id: 'mobilidade', label: 'Mobilidade', icone: '🚌',
             descricao: 'Transporte, estacionamento, IPVA e turismo acessível',
             ids: ['transporte', 'estacionamento_especial', 'isencoes_tributarias', 'turismo_acessivel', 'moradia'],
         },
         {
-            id: 'cidadania', label: 'Direitos & Cidadania', icone: '⚖️',
+            id: 'cidadania', label: 'Cidadania', icone: '⚖️',
             descricao: 'CIPTEA, atendimento prioritário, capacidade legal e acessibilidade',
             ids: ['ciptea', 'atendimento_prioritario', 'prioridade_judicial', 'capacidade_legal', 'curatela_decisao_apoiada', 'crimes_contra_pcd', 'protecao_social', 'politica_nacional_cuidados', 'meia_entrada', 'acessibilidade_arquitetonica', 'acessibilidade_digital', 'esporte_paralimpico'],
         },
@@ -1140,10 +1139,7 @@ aria-controls="categoryGrid"
 data-trilha="${t.id}"
 tabindex="${i === 0 ? '0' : '-1'}">
 <span class="trilha-tab__icon" aria-hidden="true">${t.icone}</span>
-<span class="trilha-tab__body">
 <span class="trilha-tab__label">${escapeHtml(t.label)}</span>
-${t.descricao ? `<span class="trilha-tab__desc">${escapeHtml(t.descricao)}</span>` : ''}
-</span>
 <span class="trilha-tab__count" aria-label="${counts[t.id]} direitos">${counts[t.id]}</span>
 </button>`)
             .join('');
