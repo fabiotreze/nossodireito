@@ -23,38 +23,43 @@ const projectRoot = path.resolve(__dirname, '..');
 
 const PROHIBITED_PATTERNS = [
   // Imperativos diretos
-  { regex: /\bprocure\b/gi, category: 'imperativo', severity: 'high' },
-  { regex: /\bagende\b/gi, category: 'imperativo', severity: 'high' },
-  { regex: /\bsolicite\b/gi, category: 'imperativo', severity: 'high' },
-  { regex: /\bpeça\b/gi, category: 'imperativo', severity: 'high' },
-  { regex: /\benvie\b/gi, category: 'imperativo', severity: 'high' },
-  { regex: /\bdirig(a-se|ir-se)\b/gi, category: 'imperativo', severity: 'high' },
-  { regex: /\bcompaреça\b/gi, category: 'imperativo', severity: 'high' },
-  { regex: /\bvá\b/gi, category: 'imperativo', severity: 'high' },
-  { regex: /\bvai\b/gi, category: 'imperativo', severity: 'medium' }, // contexto: "vai para"
-  { regex: /\bclique\b/gi, category: 'imperativo', severity: 'medium' },
-  { regex: /\bfaça\b/gi, category: 'imperativo', severity: 'high' },
-  { regex: /\bdescubra\b/gi, category: 'imperativo', severity: 'medium' },
+  // NOTA: Usamos lookaround Unicode-aware (?<![a-zA-ZÀ-ÿ]) ao invés de \b
+  // porque \b em JS não trata acentos corretamente ("\bvá\b" casa com "vários").
+  { regex: /(?<![a-zA-ZÀ-ÿ])procure(?![a-zA-ZÀ-ÿ])/gi, category: 'imperativo', severity: 'high' },
+  { regex: /(?<![a-zA-ZÀ-ÿ])agende(?![a-zA-ZÀ-ÿ])/gi, category: 'imperativo', severity: 'high' },
+  { regex: /(?<![a-zA-ZÀ-ÿ])solicite(?![a-zA-ZÀ-ÿ])/gi, category: 'imperativo', severity: 'high' },
+  { regex: /(?<![a-zA-ZÀ-ÿ])peça(?![a-zA-ZÀ-ÿ])/gi, category: 'imperativo', severity: 'high' },
+  { regex: /(?<![a-zA-ZÀ-ÿ])envie(?![a-zA-ZÀ-ÿ])/gi, category: 'imperativo', severity: 'high' },
+  { regex: /(?<![a-zA-ZÀ-ÿ])dirij[ae]-se(?![a-zA-ZÀ-ÿ])/gi, category: 'imperativo', severity: 'high' },
+  { regex: /(?<![a-zA-ZÀ-ÿ])compareça(?![a-zA-ZÀ-ÿ])/gi, category: 'imperativo', severity: 'high' },
+  // "vá" como verbo imperativo (não confundir com "válido", "vários")
+  { regex: /(?<![a-zA-ZÀ-ÿ])vá\s+(?:à|ao|aos|às|para|até)\s+/gi, category: 'imperativo', severity: 'high' },
+  { regex: /(?<![a-zA-ZÀ-ÿ])clique(?![a-zA-ZÀ-ÿ])/gi, category: 'imperativo', severity: 'medium' },
+  { regex: /(?<![a-zA-ZÀ-ÿ])faça(?![a-zA-ZÀ-ÿ])/gi, category: 'imperativo', severity: 'high' },
+  { regex: /(?<![a-zA-ZÀ-ÿ])descubra(?![a-zA-ZÀ-ÿ])/gi, category: 'imperativo', severity: 'medium' },
 
   // Sugestões e recomendações
-  { regex: /\brecomend(amos|a|amos|aram|adas?|ar|ação)\b/gi, category: 'sugestão', severity: 'high' },
-  { regex: /\bsugeri(mos|mos|r|riam|do)\b/gi, category: 'sugestão', severity: 'high' },
-  { regex: /\bindic(amos|a|ação)\b/gi, category: 'sugestão', severity: 'high' },
-  { regex: /\baconselhamos?\b/gi, category: 'sugestão', severity: 'high' },
-  { regex: /\bdeveria?\b/gi, category: 'sugestão', severity: 'medium' },
-  { regex: /\bdevem\b/gi, category: 'sugestão', severity: 'medium' },
+  { regex: /(?<![a-zA-ZÀ-ÿ])recomend(amos|a|aram|adas?|ar|ação)(?![a-zA-ZÀ-ÿ])/gi, category: 'sugestão', severity: 'high' },
+  { regex: /(?<![a-zA-ZÀ-ÿ])sugeri(mos|r|riam|do)(?![a-zA-ZÀ-ÿ])/gi, category: 'sugestão', severity: 'high' },
+  // "indicamos / indicação" prescritivo — EXCETO "indicação médica/clínica/CID/etc" (factual)
+  { regex: /(?<![a-zA-ZÀ-ÿ])indicamos(?![a-zA-ZÀ-ÿ])/gi, category: 'sugestão', severity: 'high' },
+  { regex: /(?<![a-zA-ZÀ-ÿ])indicação(?!\s+(?:médica|clínica|cirúrgica|do\s+CID|de\s+reabilitação|do\s+médico|terapêutica|prescritiva|de\s+cota))(?![a-zA-ZÀ-ÿ])/gi, category: 'sugestão', severity: 'high' },
+  { regex: /(?<![a-zA-ZÀ-ÿ])aconselhamos?(?![a-zA-ZÀ-ÿ])/gi, category: 'sugestão', severity: 'high' },
+  { regex: /(?<![a-zA-ZÀ-ÿ])deveria?(?![a-zA-ZÀ-ÿ])/gi, category: 'sugestão', severity: 'medium' },
+  { regex: /(?<![a-zA-ZÀ-ÿ])devem(?![a-zA-ZÀ-ÿ])/gi, category: 'sugestão', severity: 'medium' },
 
   // Promessas
-  { regex: /\bvocê terá\b/gi, category: 'promessa', severity: 'high' },
-  { regex: /\bvocê tem direito\b/gi, category: 'promessa', severity: 'high' },
-  { regex: /\bterá acesso\b/gi, category: 'promessa', severity: 'high' },
-  { regex: /\bgarantia\b/gi, category: 'promessa', severity: 'medium' },
-  { regex: /\bassegurada?\b/gi, category: 'promessa', severity: 'medium' },
-  { regex: /\bvocê vai conseguir\b/gi, category: 'promessa', severity: 'high' },
+  { regex: /(?<![a-zA-ZÀ-ÿ])você terá(?![a-zA-ZÀ-ÿ])/gi, category: 'promessa', severity: 'high' },
+  { regex: /(?<![a-zA-ZÀ-ÿ])você tem direito(?![a-zA-ZÀ-ÿ])/gi, category: 'promessa', severity: 'high' },
+  { regex: /(?<![a-zA-ZÀ-ÿ])terá acesso(?![a-zA-ZÀ-ÿ])/gi, category: 'promessa', severity: 'high' },
+  // "garantia" — somente em frases promissoras, não em "garantia legal", "garantia constitucional"
+  { regex: /(?<![a-zA-ZÀ-ÿ])garantia\s+de\s+(?!cumprimento|isonomia|origem|fábrica|qualidade)/gi, category: 'promessa', severity: 'medium' },
+  { regex: /(?<![a-zA-ZÀ-ÿ])assegurada?(?![a-zA-ZÀ-ÿ])/gi, category: 'promessa', severity: 'medium' },
+  { regex: /(?<![a-zA-ZÀ-ÿ])você vai conseguir(?![a-zA-ZÀ-ÿ])/gi, category: 'promessa', severity: 'high' },
 
   // Contexto jurídico (palavras perigosas sem source)
-  { regex: /\bprecisa de\b/gi, category: 'prescritivo', severity: 'medium' },
-  { regex: /\bobrigat(ório|ória|oriamente)\b/gi, category: 'prescritivo', severity: 'medium' },
+  { regex: /(?<![a-zA-ZÀ-ÿ])precisa de(?![a-zA-ZÀ-ÿ])/gi, category: 'prescritivo', severity: 'medium' },
+  { regex: /(?<![a-zA-ZÀ-ÿ])obrigat(ório|ória|oriamente)(?![a-zA-ZÀ-ÿ])/gi, category: 'prescritivo', severity: 'medium' },
 ];
 
 function scanFile(filePath) {
@@ -76,12 +81,25 @@ function scanFile(filePath) {
         const lineStart = content.lastIndexOf('\n', match.index) + 1;
         const lineEnd = content.indexOf('\n', match.index);
         const line = content.substring(lineStart, lineEnd === -1 ? content.length : lineEnd);
+        const lineTrimmed = line.trim();
+
+        // SKIP: linhas que são URLs, slugs, ou referências técnicas
+        if (
+          lineTrimmed.includes('"url"') ||
+          lineTrimmed.includes('"urls"') ||
+          lineTrimmed.includes('"slug"') ||
+          lineTrimmed.includes('"id"') ||
+          lineTrimmed.includes('http://') ||
+          lineTrimmed.includes('https://')
+        ) {
+          continue;
+        }
 
         findings.push({
           file: filePath.replace(projectRoot, '.'),
           line: lineNum,
           match: match[0],
-          lineContent: line.trim().substring(0, 100),
+          lineContent: lineTrimmed.substring(0, 100),
           category,
           severity,
         });
