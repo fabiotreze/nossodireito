@@ -482,7 +482,7 @@
       }
 
       /* Link "Aviso" — fundo âmbar suave + texto escuro p/ garantir contraste em navbar branca (WCAG AA). */
-      /* v1.43.28: removido `margin-left: auto` em todas as larguras para evitar
+      /* v1.43.29: removido `margin-left: auto` em todas as larguras para evitar
          que o Aviso se desloque do menu sob zoom de browser (acessibilidade) ou
          viewports estreitos. O badge agora flui imediatamente após "Transparência",
          mantendo coesão visual mesmo quando a barra precisa quebrar em duas linhas.
@@ -605,9 +605,9 @@
         }
       }
     </style>
-    <link rel="stylesheet" href="css/styles.css?v=1.43.28&rev=262" media="all" id="deferredCSS" />
+    <link rel="stylesheet" href="css/styles.css?v=1.43.29&rev=263" media="all" id="deferredCSS" />
     <noscript>
-      <link rel="stylesheet" href="css/styles.css?v=1.43.28&rev=262" />
+      <link rel="stylesheet" href="css/styles.css?v=1.43.29&rev=263" />
     </noscript>
     <script type="application/ld+json">
       {
@@ -1504,6 +1504,7 @@
             <li><a href="#classificacao" data-ref-target="#classificacao" aria-label="Classificação CID-10/11">🏥 CID</a></li>
             <li><a href="#orgaos-estaduais" data-ref-target="#orgaos-estaduais" aria-label="Órgãos estaduais por UF">🏢 Estados</a></li>
             <li><a href="#transparencia" data-ref-target="#transparencia" aria-label="Transparência e fontes consultadas">📚 Transparência</a></li>
+            <li><a href="/historico-aceite.html" aria-label="Meu aceite — histórico e revogação (LGPD)" title="Meu aceite: consulte, exporte ou revogue o aceite dos Termos e da Privacidade">🛡️ Meu aceite</a></li>
             <li class="nav-aviso-item">
               <a href="#disclaimerInline" class="nav-aviso" aria-label="Aviso Legal e Isenção de Responsabilidade" title="Aviso legal: conteúdo educacional, não substitui orientação profissional">⚠️ Aviso</a>
             </li>
@@ -1800,7 +1801,7 @@
                 </button>
               </div>
             </div>
-            <!-- v1.43.28 — Escopo das ações WhatsApp/PDF (pattern .action-scope-info) -->
+            <!-- v1.43.29 — Escopo das ações WhatsApp/PDF (pattern .action-scope-info) -->
             <p class="action-scope-info action-scope-info--compact" role="note">
               ℹ️ <strong>Escopo:</strong> os botões geram texto/PDF <strong>no seu próprio dispositivo</strong> para você compartilhar manualmente. Nada é enviado a servidor. Não é protocolo, não é petição, não tem valor oficial.
             </p>
@@ -1918,7 +1919,7 @@
                   ✕ Fechar
                 </button>
               </div>
-              <!-- v1.43.28 — Escopo das ações WhatsApp/PDF da análise (pattern .action-scope-info) -->
+              <!-- v1.43.29 — Escopo das ações WhatsApp/PDF da análise (pattern .action-scope-info) -->
               <p class="action-scope-info action-scope-info--compact" role="note">
                 ℹ️ <strong>Escopo:</strong> WhatsApp e PDF exportam o resumo desta análise <strong>localmente</strong> para você compartilhar com pessoa de confiança, advogado ou Defensoria. O documento gerado tem caráter <strong>orientativo</strong>, não protocolar.
               </p>
@@ -2342,7 +2343,7 @@
           SLA de resposta: até 15 dias corridos
         </address>
         <p>
-          <a href="docs/ENCARREGADO.md">Ato de designação completo</a> ·
+          <a href="https://github.com/fabiotreze/nossodireito/blob/main/docs/ENCARREGADO.md" target="_blank" rel="noopener noreferrer">Ato de designação completo</a> ·
           <a href="https://github.com/fabiotreze/nossodireito/blob/main/docs/LGPD-COMPLIANCE.md" target="_blank" rel="noopener noreferrer">Política de privacidade</a>
         </p>
       </div>
@@ -2670,14 +2671,14 @@
       </div>
     </div>
 
-    <!-- v1.43.28 — Banner de aceite de Termos/Privacidade (não-bloqueante).
+    <!-- v1.43.29 — Banner de aceite de Termos/Privacidade (não-bloqueante).
          Aparece apenas se localStorage.tos_version_accepted !== TOS_VERSION_CURRENT.
          Estado vive 100% no navegador (chaves: tos_version_accepted, tos_accepted_at, tos_hash).
          Nada enviado a servidor. LGPD-safe. Auditável em /historico-aceite.html. -->
     <div id="tosAcceptBanner" role="region" aria-label="Aceite de Termos de Uso e Privacidade" aria-live="polite">
       <div class="tos-banner-inner">
         <p class="tos-banner-text">
-          <strong>📋 Termos atualizados (v1.43.28).</strong>
+          <strong>📋 Termos atualizados (v1.43.29).</strong>
           Ao continuar usando o NossoDireito, você confirma ter lido os
           <a href="/termos-de-uso.html">Termos de Uso</a> e a
           <a href="/privacidade.html">Política de Privacidade</a>.
@@ -2691,15 +2692,15 @@
       </div>
     </div>
 
-    <!-- v1.43.28 — Toast de saída para links externos (informativo, não bloqueia) -->
+    <!-- v1.43.29 — Toast de saída para links externos (informativo, não bloqueia) -->
     <div id="externalExitToast" role="status" aria-live="polite"></div>
 
-    <!-- v1.43.28 — Lógica de aceite + exit-toast (CSP-safe: arquivo externo).
+    <!-- v1.43.29 — Lógica de aceite + exit-toast (CSP-safe: arquivo externo).
          Carrega antes do app.js para que o banner apareça o mais cedo possível. -->
-    <script src="js/tos-banner.js?v=1.43.28&rev=262" defer></script>
+    <script src="js/tos-banner.js?v=1.43.29&rev=263" defer></script>
 
     <!-- Anonymizer compartilhado (Node + Browser) — DEVE carregar ANTES de app.js -->
-    <script src="shared/anonymizer.js?v=1.43.28&rev=262" defer></script>
-    <script src="js/app.js?v=1.43.28&rev=262" defer></script>
+    <script src="shared/anonymizer.js?v=1.43.29&rev=263" defer></script>
+    <script src="js/app.js?v=1.43.29&rev=263" defer></script>
   </body>
 </html>
