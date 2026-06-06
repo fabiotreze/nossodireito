@@ -5452,3 +5452,146 @@ html.high-contrast .card-grid[data-active-trilha] .category-card {
    diretos na .nav-links, no mesmo padrão pill das tabs internas. Toda a
    classe .nav-submenu* foi removida deste arquivo e do index.html. */
 
+/* ============================================================================
+   v1.43.24 — Banner de aceite de Termos/Privacidade (não-bloqueante)
+   + Toast de saída para links externos (gov.br / outros domínios)
+   Decisão: aceite ativo via banner sticky no rodapé. Não usa modal.
+   LGPD-safe: nada enviado a servidor; estado vive apenas no localStorage.
+   ============================================================================ */
+#tosAcceptBanner {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 90;
+    background: #ffffff;
+    border-top: 3px solid var(--primary, #1e40af);
+    box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.12);
+    padding: 14px 20px;
+    display: none; /* só aparece via JS quando não há aceite válido */
+    animation: tosBannerSlideIn 0.25s ease-out;
+}
+#tosAcceptBanner.tos-show { display: block; }
+@media (prefers-color-scheme: dark) {
+    #tosAcceptBanner {
+        background: #0f172a;
+        border-top-color: #60a5fa;
+        box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.5);
+    }
+}
+@keyframes tosBannerSlideIn {
+    from { transform: translateY(100%); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+    #tosAcceptBanner { animation: none; }
+}
+.tos-banner-inner {
+    max-width: 1180px;
+    margin: 0 auto;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px 18px;
+    justify-content: space-between;
+}
+.tos-banner-text {
+    flex: 1 1 360px;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    color: #1e293b;
+    margin: 0;
+}
+@media (prefers-color-scheme: dark) {
+    .tos-banner-text { color: #f1f5f9; }
+}
+.tos-banner-text strong { color: var(--primary-dark, #1e3a8a); }
+@media (prefers-color-scheme: dark) {
+    .tos-banner-text strong { color: #93c5fd; }
+}
+.tos-banner-text a {
+    color: var(--primary, #1e40af);
+    text-decoration: underline;
+}
+.tos-banner-text a:hover { text-decoration: none; }
+.tos-banner-actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+.tos-banner-actions button {
+    font: inherit;
+    cursor: pointer;
+    border-radius: 6px;
+    padding: 9px 16px;
+    border: 1px solid transparent;
+    font-weight: 600;
+    font-size: 0.92rem;
+    transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+.tos-banner-actions .tos-btn-accept {
+    background: var(--primary, #1e40af);
+    color: #ffffff;
+    border-color: var(--primary, #1e40af);
+}
+.tos-banner-actions .tos-btn-accept:hover {
+    background: var(--primary-dark, #1e3a8a);
+    border-color: var(--primary-dark, #1e3a8a);
+}
+.tos-banner-actions .tos-btn-link {
+    background: transparent;
+    color: var(--primary, #1e40af);
+    border-color: var(--primary, #1e40af);
+}
+.tos-banner-actions .tos-btn-link:hover {
+    background: #eff6ff;
+}
+@media (prefers-color-scheme: dark) {
+    .tos-banner-actions .tos-btn-link:hover { background: #1e3a8a33; }
+}
+.tos-banner-actions button:focus-visible {
+    outline: 2px solid #fbbf24;
+    outline-offset: 2px;
+}
+@media (max-width: 600px) {
+    #tosAcceptBanner { padding: 12px 14px; }
+    .tos-banner-text { font-size: 0.9rem; flex-basis: 100%; }
+    .tos-banner-actions { width: 100%; justify-content: flex-end; }
+    .tos-banner-actions button { flex: 1 1 auto; min-width: 130px; }
+}
+
+/* Toast de saída para links externos (gov.br, planalto, etc.)
+   Aparece por ~3s após clique em link externo. Não bloqueia. */
+#externalExitToast {
+    position: fixed;
+    left: 50%;
+    bottom: 20px;
+    transform: translateX(-50%) translateY(20px);
+    z-index: 95;
+    background: #1e293b;
+    color: #f1f5f9;
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    line-height: 1.4;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+    max-width: calc(100vw - 32px);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s, transform 0.2s;
+}
+#externalExitToast.exit-toast-show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+#externalExitToast .exit-toast-icon { margin-right: 6px; }
+#externalExitToast strong { color: #fbbf24; }
+@media (prefers-reduced-motion: reduce) {
+    #externalExitToast { transition: opacity 0.01s; }
+}
+/* Quando o banner de aceite está visível, sobe o toast para não sobrepor */
+#tosAcceptBanner.tos-show ~ #externalExitToast,
+body.tos-banner-visible #externalExitToast {
+    bottom: 110px;
+}
+
