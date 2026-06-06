@@ -86,13 +86,14 @@ textarea:focus {
 }
 
 html {
-    /* v1.43.17: scroll-padding-top reduzido de 132px → 80px.
-       A navbar sticky tem altura de 64px; reservamos 16px de folga visual.
-       Combinado com .section { scroll-margin-top: -64px } (compensa o
-       padding-top: 64px da seção), o h2 da seção alvo aterrissa em y=80
-       — apenas 16px abaixo da borda inferior da navbar. Antes (132px),
-       aparecia uma faixa de 68px de cor de fundo entre navbar e h2,
-       especialmente notável em #categorias e #referencias (.section-alt). */
+    /* v1.43.18: abordagem natural sem hacks.
+       - navbar sticky = 64px
+       - scroll-padding-top = 80px (16px de folga abaixo da navbar)
+       - .section padding-top = 40px (respiro natural acima do h2)
+       → ao clicar #consultar/#categorias/etc: top da section aterrissa em y=80,
+         h2 fica em y=120 (40px de respiro acima dele, 56px abaixo da navbar)
+       → tabpanels de Referências e #disclaimerInline herdam o mesmo offset
+       → ZERO scroll-margin-top hacks: comportamento previsível em toda página */
     scroll-behavior: smooth;
     scroll-padding-top: 80px;
     font-size: 16px;
@@ -100,7 +101,7 @@ html {
 
 @media (max-width: 600px) {
     html {
-        scroll-padding-top: 96px;
+        scroll-padding-top: 80px;
     }
 }
 
@@ -1259,14 +1260,12 @@ html.high-contrast ::selection {
 
 /* ---------- Sections ---------- */
 .section {
-    padding: 64px 0;
+    /* v1.43.18: padding reduzido de 64px → 40px para diminuir o gap entre
+       seções adjacentes (antes: 128px total, agora: 80px). Sem scroll-margin
+       hack — o browser usa scroll-padding-top: 80px do <html> e aterrissa
+       naturalmente no topo da seção + 40px de respiro até o h2. */
+    padding: 40px 0;
     background-color: var(--surface);
-    /* v1.43.17: scroll-margin-top: -64px compensa o padding-top: 64px da
-       própria seção. Combinado com scroll-padding-top: 80px (no html),
-       scrollIntoView({block:'start'}) faz o h2 da seção aterrissar em y=80
-       — 16px de folga abaixo da navbar sticky de 64px. Sem isto, o h2
-       cairia em y=144 (80 + 64 de padding). */
-    scroll-margin-top: -64px;
 }
 
 .section-alt {
@@ -4345,7 +4344,7 @@ html.high-contrast .card-grid[data-active-trilha] .category-card {
     }
 
     .section {
-        padding: 40px 0;
+        padding: 32px 0;
     }
 
     .section h2 {

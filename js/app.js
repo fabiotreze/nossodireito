@@ -851,13 +851,11 @@
                 dom.menuToggle.setAttribute('aria-expanded', 'false');
                 dom.menuToggle.setAttribute('aria-label', 'Abrir menu');
 
-                /* v1.43.7 — Anchor scroll offset fix.
-                /* v1.43.16 — Comportamento unificado de anchor scroll.
-                /* v1.43.17 — Reduzido scroll-padding-top de 132px → 80px (CSS).
-                 * TODOS os anchors do nav (incluindo Início, Consultar, Categorias)
-                 * usam scrollIntoView com block:'start'. O browser respeita
-                 * scroll-padding-top: 80px do <html>, alinhando o alvo a 16px
-                 * abaixo da navbar (64px) de forma CONSISTENTE em toda a página.
+                /* v1.43.18 — Anchor scroll natural (sem hacks).
+                 * scroll-padding-top: 80px (CSS html) + .section padding 40px 0
+                 * fazem o h2 da seção alvo aterrissar em y=120 (40px de respiro
+                 * acima dele, 56px abaixo da navbar). Tabpanels de Referências
+                 * e #disclaimerInline herdam o mesmo offset de 80px naturalmente.
                  *
                  * Para alvos dentro de tabpanels ocultos (Apoio→#instituicoes,
                  * Aviso→#disclaimerInline, e os subitens de Referências), a
