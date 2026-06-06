@@ -666,9 +666,6 @@
             analysisContent: $('#analysisContent'),
             closeAnalysis: $('#closeAnalysis'),
             exportPdf: $('#exportPdf'),
-            fontesLegislacao: $('#fontesLegislacao'),
-            fontesServicos: $('#fontesServicos'),
-            fontesNormativas: $('#fontesNormativas'),
             instituicoesGrid: $('#instituicoesGrid'),
             orgaosEstaduaisGrid: $('#orgaosEstaduaisGrid'),
             classificacaoGrid: $('#classificacaoGrid'),
@@ -822,7 +819,10 @@
                     target.setAttribute('tabindex', '-1');
                 }
                 target.focus({ preventScroll: false });
-                target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                // v1.43.22 — block:'start' (não 'center') para alinhar com o restante
+                // da nav. 'center' levava o destino para o meio da tela, contradizendo
+                // o scroll-padding-top: 80px do html.
+                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
             });
         });
     }
@@ -1957,39 +1957,9 @@ ${getPendingLegalReviews(cat.id).length ? '<span class="search-result-badge sear
         if (transLastUpdateText) {
             transLastUpdateText.textContent = formatDate(jsonMeta.ultima_atualizacao);
         }
-        const legislacao = fontesData.filter((f) => f.tipo === 'legislacao');
-        const servicos = fontesData.filter((f) => f.tipo === 'servico');
-        const normativas = fontesData.filter((f) => f.tipo === 'normativa');
-        const renderFonte = (f) => {
-            const tipoIcon = f.tipo === 'legislacao' ? '📜' : f.tipo === 'servico' ? '🌐' : '📋';
-            const artigos = f.artigos_referenciados
-                ? `<div class="fonte-artigos">Artigos: ${f.artigos_referenciados.map(a => escapeHtml(a)).join(', ')}</div>`
-                : '';
-            return `
-<div class="fonte-item">
-<span class="fonte-icon">${tipoIcon}</span>
-<div class="fonte-info">
-<div class="fonte-nome">${escapeHtml(f.nome)}</div>
-<div class="fonte-orgao">${escapeHtml(f.orgao)}</div>
-${artigos}
-</div>
-<div class="fonte-data">Consultado<br>${formatDate(f.consultado_em)}</div>
-<div class="fonte-link">
-${isSafeUrl(f.url) ? `<a href="${escapeHtml(f.url)}" target="_blank" rel="noopener noreferrer">Abrir ↗</a>` : ''}
-</div>
-</div>`;
-        };
-        if (dom.fontesLegislacao) {
-            dom.fontesLegislacao.innerHTML = legislacao.map(renderFonte).join('');
-        }
-        if (dom.fontesServicos) {
-            dom.fontesServicos.innerHTML = servicos.map(renderFonte).join('');
-        }
-        if (dom.fontesNormativas) {
-            dom.fontesNormativas.innerHTML = normativas.length
-                ? normativas.map(renderFonte).join('')
-                : '<p style="color:var(--text-light);font-size:0.9rem;">Nenhuma normativa adicional no momento.</p>';
-        }
+        // v1.43.22: listas (legislacao/servicos/normativas) removidas da aba Transparência.
+        // Conteúdo migrou para a aba 🔗 Sites Oficiais (catálogo público com filtros).
+        // Transparência ficou só com governança (metadados + aviso + LGPD + DPO).
     }
     function renderDocsChecklist() {
         if (!docsMestreData || !direitosData || !dom.docsChecklist) return;
@@ -2137,8 +2107,11 @@ Acessar site ↗
         if (!fontesData || !direitosData || !dom.linksGrid) return;
         const seen = new Set();
         const links = [];
+        // v1.43.22: cat\u00e1logo unificado \u2014 inclui todas as fontes com URL v\u00e1lida
+        // (servi\u00e7os, legisla\u00e7\u00e3o, normativas, programas, portais, refer\u00eancias).
+        // Filtro de seguran\u00e7a: isSafeUrl j\u00e1 \u00e9 aplicado depois no render.
         fontesData
-            .filter((f) => f.tipo === 'servico')
+            .filter((f) => typeof f.url === 'string' && f.url.length > 0)
             .forEach((f) => {
                 if (!seen.has(f.url)) {
                     seen.add(f.url);
@@ -2264,6 +2237,12 @@ Acessar site ↗
             'Sudeste': ['ES', 'MG', 'RJ', 'SP'],
             'Sul': ['PR', 'RS', 'SC'],
         };
+        // v1.43.22 — UF → slug de região para data-regiao no card (cor da badge).
+        const ufToRegiaoSlug = {};
+        for (const [nome, ufs] of Object.entries(regioes)) {
+            const slug = nome.toLowerCase().replace(/\s+/g, '-');
+            ufs.forEach((uf) => { ufToRegiaoSlug[uf] = slug; });
+        }
         let activeFilter = 'todos';
         function renderGrid(filter) {
             const filtered = filter === 'todos'
@@ -2279,8 +2258,9 @@ Acessar site ↗
             dom.orgaosEstaduaisGrid.innerHTML = filtered
                 .map((org) => {
                     const urlSafe = isSafeUrl(org.url);
+                    const regiaoSlug = ufToRegiaoSlug[org.uf] || '';
                     return `
-<div class="orgao-card">
+<div class="orgao-card"${regiaoSlug ? ` data-regiao="${escapeHtml(regiaoSlug)}"` : ''}>
 <span class="orgao-uf-badge">${escapeHtml(org.uf)}</span>
 <span class="orgao-nome">${escapeHtml(org.nome)}</span>
 ${urlSafe ? `<a href="${escapeHtml(org.url)}" class="btn btn-sm btn-outline orgao-link" target="_blank" rel="noopener noreferrer">
@@ -4125,45 +4105,17 @@ com o assunto <strong>"Revisão humana — Art. 20 LGPD"</strong>.</p>
         });
     }
 
-    // ---------- Submenu "Referências ▾" no header ----------
-    function setupNavSubmenu() {
-        const detailsList = document.querySelectorAll('details[data-nav-submenu]');
-        if (!detailsList.length) return;
-
-        detailsList.forEach((details) => {
-            // Fecha ao clicar em um link interno (UX esperada)
-            details.querySelectorAll('a').forEach((a) => {
-                a.addEventListener('click', () => {
-                    details.open = false;
-                });
-            });
-            // Esc fecha o submenu e devolve foco ao summary
-            details.addEventListener('keydown', (e) => {
-                if (e.key === 'Escape' && details.open) {
-                    details.open = false;
-                    const summary = details.querySelector('summary');
-                    if (summary) summary.focus();
-                }
-            });
-        });
-
-        // Click fora → fecha todos os submenus abertos
-        document.addEventListener('click', (e) => {
-            detailsList.forEach((details) => {
-                if (!details.open) return;
-                if (!details.contains(e.target)) details.open = false;
-            });
-        });
-    }
+    // v1.43.22 — setupNavSubmenu REMOVIDO. O <details> "Referências ▾" foi
+    // substituído por links diretos no header (pills). Não há mais submenu
+    // a controlar (abertura, esc, click fora, fechamento ao navegar).
 
     if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', () => { init(); setupNavAvisoScroll(); setupAIConsentManager(); setupAIConsentQuickActions(); setupReferenciasTabs(); setupNavSubmenu(); });
+        document.addEventListener('DOMContentLoaded', () => { init(); setupNavAvisoScroll(); setupAIConsentManager(); setupAIConsentQuickActions(); setupReferenciasTabs(); });
     } else {
         init();
         setupNavAvisoScroll();
         setupAIConsentManager();
         setupAIConsentQuickActions();
         setupReferenciasTabs();
-        setupNavSubmenu();
     }
 })();

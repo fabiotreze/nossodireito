@@ -1,6 +1,6 @@
 # Princípios de uso de IA no NossoDireito
 
-**Versão:** 1.43.21
+**Versão:** 1.43.22
 **Última revisão:** 2026-06-06
 
 Este documento descreve como a ferramenta opcional de análise por IA do NossoDireito se alinha aos

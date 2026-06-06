@@ -96,32 +96,11 @@
         }
       }
 
-      html {
-        scroll-behavior: smooth;
-        /* Compensa navbar (64px) + faixa legal sticky */
-        scroll-padding-top: 132px;
-        font-size: 16px;
-      }
-
-      /* Defesa para âncoras críticas mesmo com navbar variável. */
-      :target,
-      #disclaimerInline,
-      [id^="benefit-"],
-      section[id] {
-        scroll-margin-top: 132px;
-      }
-
-      @media (max-width: 600px) {
-        html {
-          scroll-padding-top: 148px;
-        }
-        :target,
-        #disclaimerInline,
-        [id^="benefit-"],
-        section[id] {
-          scroll-margin-top: 148px;
-        }
-      }
+      /* v1.43.22 — scroll-padding-top e scroll-margin-top consolidados em
+         css/styles.css (linha ~98, 80px natural sem hacks). Bloco inline
+         antigo removido por sobrescrever só o padding mas deixar margin
+         132px ativo, causando offset duplicado (~212px) em #consultar e
+         #categorias — issue reportado 2026-06-06. */
 
       body {
         font-family: var(--font);
@@ -464,16 +443,42 @@
       .nav-links {
         display: flex;
         list-style: none;
-        gap: 2px;
+        gap: 6px;
+        flex-wrap: wrap;
+        align-items: center;
       }
 
+      /* v1.43.22 — pills no header (mesmo padrão visual de .referencias-tab).
+         Substitui o dropdown "Referências ▾" por links diretos em linha única. */
       .nav-links a {
-        display: block;
-        padding: 6px 10px;
-        border-radius: 8px;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 8px 14px;
+        border: 1px solid var(--border);
+        border-radius: 999px;
         font-size: 0.875rem;
         font-weight: 500;
         text-decoration: none;
+        color: var(--text);
+        background: var(--surface);
+        line-height: 1.2;
+        min-height: 36px;
+        white-space: nowrap;
+        transition: background-color var(--transition), border-color var(--transition), color var(--transition);
+      }
+
+      .nav-links a:hover,
+      .nav-links a:focus-visible {
+        border-color: var(--primary);
+        color: var(--primary);
+      }
+
+      .nav-links a.active,
+      .nav-links a[aria-current="page"] {
+        background: var(--primary);
+        border-color: var(--primary);
+        color: #fff;
       }
 
       /* Link "Aviso" — fundo âmbar suave + texto escuro p/ garantir contraste em navbar branca (WCAG AA). */
@@ -483,13 +488,14 @@
       .nav-links .nav-aviso {
         color: #664d03;
         background: #fff3cd;
-        border: 1px solid #ffc107;
+        border-color: #ffc107;
         font-weight: 600;
       }
       .nav-links .nav-aviso:hover,
       .nav-links .nav-aviso:focus {
         background: #ffe69c;
         color: #533c01;
+        border-color: #ffc107;
         outline: 2px solid #ffc107;
         outline-offset: 1px;
       }
@@ -585,9 +591,9 @@
         }
       }
     </style>
-    <link rel="stylesheet" href="css/styles.css?v=1.43.21&rev=256.0" media="all" id="deferredCSS" />
+    <link rel="stylesheet" href="css/styles.css?v=1.43.22&rev=256.5" media="all" id="deferredCSS" />
     <noscript>
-      <link rel="stylesheet" href="css/styles.css?v=1.43.21&rev=256.0" />
+      <link rel="stylesheet" href="css/styles.css?v=1.43.22&rev=256.5" />
     </noscript>
     <script type="application/ld+json">
       {
@@ -1480,23 +1486,10 @@
             <li><a href="#consultar">Consultar</a></li>
             <li><a href="#categorias">Categorias</a></li>
             <li><a href="#instituicoes" data-ref-target="#instituicoes" class="nav-link-apoio" aria-label="Apoio: Defensoria, ONGs e profissionais que atendem famílias com PcD">🤝 Apoio</a></li>
-            <li class="nav-submenu">
-              <details class="nav-submenu-details" data-nav-submenu>
-                <summary
-                  class="nav-submenu-summary"
-                  aria-haspopup="true"
-                  data-nav-submenu-toggle
-                >
-                  Referências <span class="nav-submenu-caret" aria-hidden="true">▾</span>
-                </summary>
-                <ul class="nav-submenu-list" role="list">
-                  <li><a href="#links" data-ref-target="#links">🔗 Sites Oficiais</a></li>
-                  <li><a href="#classificacao" data-ref-target="#classificacao">🏥 CID-10/11</a></li>
-                  <li><a href="#orgaos-estaduais" data-ref-target="#orgaos-estaduais">🏢 Estados</a></li>
-                  <li><a href="#transparencia" data-ref-target="#transparencia">📚 Transparência</a></li>
-                </ul>
-              </details>
-            </li>
+            <li><a href="#links" data-ref-target="#links" aria-label="Sites oficiais (.gov.br) consultados">🔗 Sites</a></li>
+            <li><a href="#classificacao" data-ref-target="#classificacao" aria-label="Classificação CID-10/11">🏥 CID</a></li>
+            <li><a href="#orgaos-estaduais" data-ref-target="#orgaos-estaduais" aria-label="Órgãos estaduais por UF">🏢 Estados</a></li>
+            <li><a href="#transparencia" data-ref-target="#transparencia" aria-label="Transparência e fontes consultadas">📚 Transparência</a></li>
             <li class="nav-aviso-item">
               <a href="#disclaimerInline" class="nav-aviso" aria-label="Aviso Legal e Isenção de Responsabilidade" title="Aviso legal: conteúdo educacional, não substitui orientação profissional">⚠️ Aviso</a>
             </li>
@@ -2026,8 +2019,8 @@
           >
             <h3 class="referencias-panel-title">🔗 Sites Oficiais do Governo</h3>
             <p class="section-desc">
-              Todos os links abaixo são de sites oficiais do governo brasileiro. Gerados automaticamente a partir da base
-              de dados.
+              Catálogo unificado: leis (Planalto), serviços, portais e normativas — todos de fontes oficiais
+              do governo brasileiro. Use os filtros por órgão para navegar.
             </p>
             <div class="links-filter-bar" role="group" aria-label="Filtrar por órgão">
               <button type="button" class="links-filter-btn active" data-filter="todos" aria-pressed="true">Todos</button
@@ -2154,12 +2147,9 @@
               <span class="tmeta-label">Versão dos dados</span><span class="tmeta-value" id="transVersion"></span>
             </div>
           </div>
-          <h3 class="trans-subtitle">📜 Legislação Consultada</h3>
-          <div id="fontesLegislacao" class="fontes-list"></div>
-          <h3 class="trans-subtitle">🏛️ Serviços e Portais Oficiais</h3>
-          <div id="fontesServicos" class="fontes-list"></div>
-          <h3 class="trans-subtitle">📋 Normativas</h3>
-          <div id="fontesNormativas" class="fontes-list"></div>
+          <!-- v1.43.22: listas (Legislação, Serviços, Normativas) removidas daqui.
+               Conteúdo já disponível na aba 🔗 Sites Oficiais com filtros por categoria.
+               Transparência agora foca em governança: metadados, compromisso, aviso, LGPD, DPO. -->
           <div class="transparency-note">
             <h3 id="compromissoAtualizacao" style="margin-top: 0; font-size: 1rem; color: var(--text)">
               📅 Compromisso com a Atualização
@@ -2389,10 +2379,11 @@
       </div>
     </footer>
 
-    <!-- Aviso legal (LGPD + isenção). Movido do topo para o rodapé para não competir com a CTA inicial. -->
-    <div
+    <!-- Aviso legal (LGPD + isenção). Movido do topo para o rodapé para não competir com a CTA inicial.
+         v1.43.22: trocado <div role="note"> por <aside> para criar landmark complementary
+         (axe-core region rule: All page content should be contained by landmarks). -->
+    <aside
       id="legalBanner"
-      role="note"
       aria-label="Aviso legal e isenção de responsabilidade"
       style="
         background: #fff8e1;
@@ -2410,7 +2401,7 @@
       <a href="#disclaimerInline" style="color: #664d03; text-decoration: underline; font-weight: 600"
         >Ler aviso completo →</a
       >
-    </div>
+    </aside>
     <button id="backToTop" type="button" class="back-to-top" aria-label="Voltar ao topo" title="Voltar ao topo">
       ↑
     </button>
@@ -2656,7 +2647,7 @@
     </div>
 
     <!-- Anonymizer compartilhado (Node + Browser) — DEVE carregar ANTES de app.js -->
-    <script src="shared/anonymizer.js?v=1.43.21&rev=256.0" defer></script>
-    <script src="js/app.js?v=1.43.21&rev=256.0" defer></script>
+    <script src="shared/anonymizer.js?v=1.43.22&rev=256.5" defer></script>
+    <script src="js/app.js?v=1.43.22&rev=256.5" defer></script>
   </body>
 </html>

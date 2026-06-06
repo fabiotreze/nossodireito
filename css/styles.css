@@ -3968,6 +3968,28 @@ html.high-contrast .valor-destaque {
     color: #fff;
 }
 
+/* v1.43.22 — Filtros por região com cores correspondentes ao badge UF do card.
+   Estado idle: borda e texto da cor da região (sinal visual sem ruído).
+   Estado active: fundo cheio + texto branco (mesmo hex do .orgao-uf-badge).
+   Contraste AA garantido (≥ 4.5:1 com #fff) — ver bloco .orgao-uf-badge. */
+.orgao-filter-btn[data-filter="Norte"]        { color: #0f766e; border-color: #0f766e; }
+.orgao-filter-btn[data-filter="Nordeste"]     { color: #b45309; border-color: #b45309; }
+.orgao-filter-btn[data-filter="Centro-Oeste"] { color: #854d0e; border-color: #854d0e; }
+.orgao-filter-btn[data-filter="Sudeste"]      { color: #1e40af; border-color: #1e40af; }
+.orgao-filter-btn[data-filter="Sul"]          { color: #6d28d9; border-color: #6d28d9; }
+
+.orgao-filter-btn[data-filter="Norte"]:hover        { background: rgba(15, 118, 110, 0.08); }
+.orgao-filter-btn[data-filter="Nordeste"]:hover     { background: rgba(180, 83, 9, 0.08); }
+.orgao-filter-btn[data-filter="Centro-Oeste"]:hover { background: rgba(133, 77, 14, 0.08); }
+.orgao-filter-btn[data-filter="Sudeste"]:hover      { background: rgba(30, 64, 175, 0.08); }
+.orgao-filter-btn[data-filter="Sul"]:hover          { background: rgba(109, 40, 217, 0.08); }
+
+.orgao-filter-btn[data-filter="Norte"].active        { background: #0f766e; border-color: #0f766e; color: #fff; }
+.orgao-filter-btn[data-filter="Nordeste"].active     { background: #b45309; border-color: #b45309; color: #fff; }
+.orgao-filter-btn[data-filter="Centro-Oeste"].active { background: #854d0e; border-color: #854d0e; color: #fff; }
+.orgao-filter-btn[data-filter="Sudeste"].active      { background: #1e40af; border-color: #1e40af; color: #fff; }
+.orgao-filter-btn[data-filter="Sul"].active          { background: #6d28d9; border-color: #6d28d9; color: #fff; }
+
 .orgaos-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -4005,6 +4027,21 @@ html.high-contrast .valor-destaque {
     letter-spacing: 0.5px;
     flex-shrink: 0;
 }
+
+/* v1.43.22 — Badge UF colorida por região do Brasil.
+   Sinal visual imediato da região sem novo componente (mapa SVG).
+   Cores escolhidas garantindo contraste AA com texto #fff (≥ 4.5:1):
+   - Norte (teal-700 #0f766e):   contraste 5.86:1
+   - Nordeste (amber-700 #b45309): contraste 4.62:1
+   - Centro-Oeste (yellow-800 #854d0e): contraste 7.21:1
+   - Sudeste (blue-800 #1e40af): contraste 8.59:1 (padrão atual mantido)
+   - Sul (violet-700 #6d28d9):   contraste 7.16:1
+   Fallback (.orgao-uf-badge sem data-regiao) mantém var(--primary). */
+.orgao-card[data-regiao="norte"] .orgao-uf-badge { background: #0f766e; }
+.orgao-card[data-regiao="nordeste"] .orgao-uf-badge { background: #b45309; }
+.orgao-card[data-regiao="centro-oeste"] .orgao-uf-badge { background: #854d0e; }
+.orgao-card[data-regiao="sudeste"] .orgao-uf-badge { background: #1e40af; }
+.orgao-card[data-regiao="sul"] .orgao-uf-badge { background: #6d28d9; }
 
 .orgao-nome {
     flex: 1;
@@ -5400,107 +5437,8 @@ html.high-contrast .card-grid[data-active-trilha] .category-card {
     }
 }
 
-/* ---------- Submenu "Referências ▾" no header ---------- */
-.nav-submenu {
-    position: relative;
-}
-
-.nav-submenu-details {
-    /* Reset visual de <details> para integrar à navbar */
-}
-
-.nav-submenu-summary {
-    list-style: none;
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    padding: 10px 12px;
-    border-radius: var(--radius-sm);
-    font-size: 0.875rem;
-    font-weight: 500;
-    color: var(--text-muted);
-    transition: background-color var(--transition), color var(--transition);
-    user-select: none;
-    white-space: nowrap;
-}
-
-.nav-submenu-summary::-webkit-details-marker { display: none; }
-.nav-submenu-summary::marker { content: ""; }
-
-.nav-submenu-summary:hover,
-.nav-submenu-details[open] > .nav-submenu-summary {
-    color: var(--primary);
-    background: var(--surface-hover);
-}
-
-.nav-submenu-summary:focus-visible {
-    outline: 2px solid var(--primary);
-    outline-offset: 2px;
-}
-
-.nav-submenu-caret {
-    font-size: 0.7em;
-    transition: transform var(--transition);
-}
-
-.nav-submenu-details[open] .nav-submenu-caret {
-    transform: rotate(180deg);
-}
-
-.nav-submenu-list {
-    list-style: none;
-    margin: 0;
-    padding: 6px;
-    position: absolute;
-    top: calc(100% + 4px);
-    right: 0;
-    min-width: 220px;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-md, 8px);
-    box-shadow: var(--shadow-md, 0 8px 24px rgba(0,0,0,0.12));
-    z-index: 100;
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-}
-
-.nav-submenu-list a {
-    display: block;
-    padding: 10px 14px;
-    border-radius: var(--radius-sm);
-    font-size: 0.9rem;
-    color: var(--text);
-    white-space: nowrap;
-}
-
-.nav-submenu-list a:hover,
-.nav-submenu-list a:focus-visible {
-    background: var(--surface-hover);
-    color: var(--primary);
-    text-decoration: none;
-}
-
-@media (max-width: 768px) {
-    /* No drawer mobile, submenu vira inline (sem flutuar). */
-    .nav-submenu-list {
-        position: static;
-        box-shadow: none;
-        border: none;
-        background: transparent;
-        padding: 4px 0 4px 16px;
-        margin-top: 4px;
-    }
-    .nav-submenu-list a {
-        padding: 10px 16px;
-        font-size: 1rem;
-    }
-    .nav-submenu-summary {
-        padding: 12px 16px;
-        font-size: 1rem;
-        width: 100%;
-        justify-content: space-between;
-    }
-}
+/* v1.43.22 — submenu "Referências ▾" do header REMOVIDO.
+   Os 4 atalhos (Sites/CID/Estados/Transparência) foram promovidos a links
+   diretos na .nav-links, no mesmo padrão pill das tabs internas. Toda a
+   classe .nav-submenu* foi removida deste arquivo e do index.html. */
 

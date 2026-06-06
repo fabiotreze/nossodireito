@@ -91,3 +91,6 @@ terraform/*.tfplan
 
 # Lighthouse CI outputs (local runs)
 .lighthouseci/
+
+# Output do scanner local (regenerado a cada `node scripts/security_audit.mjs`)
+security_audit_results.json
