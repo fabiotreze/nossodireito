@@ -162,7 +162,6 @@ input,
 [role="button"],
 .category-card,
 .search-result-item,
-.upload-zone,
 .inst-card {
     touch-action: manipulation;
 }
@@ -674,7 +673,6 @@ html.high-contrast .inst-card,
 html.high-contrast .orgao-card,
 html.high-contrast .analysis-match,
 html.high-contrast .file-item,
-html.high-contrast .fonte-item,
 html.high-contrast .tmeta-item,
 html.high-contrast .doc-master-item {
     background: #0a0a0a;
@@ -721,11 +719,6 @@ html.high-contrast .analysis-legend {
 html.high-contrast .analysis-match-bar {
     background: #0a0a0a;
     border-color: #fbbf24;
-}
-
-html.high-contrast .upload-zone {
-    border-color: #fbbf24;
-    background: #0a0a0a;
 }
 
 html.high-contrast .orgao-filter-btn.active,
@@ -2180,39 +2173,6 @@ html.high-contrast .valor-destaque {
     }
 }
 
-.upload-zone {
-    max-width: 600px;
-    margin: 0 auto 20px;
-    padding: 40px 24px;
-    border: 2px dashed var(--border);
-    border-radius: var(--radius);
-    text-align: center;
-    cursor: pointer;
-    transition: border-color var(--transition), background-color var(--transition), box-shadow var(--transition);
-    background: var(--surface);
-}
-
-.upload-zone:hover,
-.upload-zone.drag-over {
-    border-color: var(--primary);
-    background: var(--surface-hover);
-}
-
-.upload-zone.drag-over {
-    border-style: solid;
-    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15);
-}
-
-.upload-icon {
-    font-size: 3rem;
-    margin-bottom: 12px;
-}
-
-.upload-text {
-    font-size: 1rem;
-    margin-bottom: 4px;
-}
-
 .upload-hint {
     font-size: 0.875rem;
     color: var(--text-light);
@@ -2629,43 +2589,11 @@ html.high-contrast .valor-destaque {
     color: var(--text-muted);
 }
 
-.analysis-ai-practical-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    margin-bottom: 10px;
-}
-
-.analysis-ai-practical-grid>div {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
-    padding: 10px;
-}
-
-.analysis-ai-chip-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-    margin-top: 8px;
-}
-
 .analysis-ai-practical-next {
     background: var(--surface);
     border: 1px dashed var(--border);
     border-radius: var(--radius-sm);
     padding: 10px;
-}
-
-.analysis-ai-actions {
-    margin-top: 8px;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-}
-
-.analysis-ai-actions .btn {
-    min-height: 36px;
 }
 
 /* v1.43.26 — Tier 3: mini-cards inline para sugestões da IA (desambiguação).
@@ -2980,14 +2908,6 @@ html.high-contrast .valor-destaque {
 }
 
 @media (max-width: 768px) {
-    .analysis-ai-practical-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .analysis-ai-actions .btn {
-        width: 100%;
-    }
-
     .analysis-week-plan-actions .btn {
         width: 100%;
     }
@@ -3100,27 +3020,6 @@ html.high-contrast .valor-destaque {
     margin: 0;
 }
 
-/* Botão global de análise */
-.btn-analyze-global {
-    display: block;
-    width: 100%;
-    max-width: 600px;
-    margin: 20px auto 24px;
-    padding: 14px 24px;
-    font-size: 1.05rem;
-    font-weight: 700;
-    text-align: center;
-    border: none;
-    border-radius: var(--radius-sm);
-    cursor: pointer;
-    transition: opacity var(--transition), background-color var(--transition);
-}
-
-.btn-analyze-global:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-}
-
 /* Variante AI: destacada com gradient primary→accent + sombra.
    Usada no botão "Analisar com IA" para diferenciar visualmente
    do botão de análise local (.btn-primary sólido). */
@@ -3155,25 +3054,6 @@ html.high-contrast .valor-destaque {
     .btn-ai:active:not(:disabled) {
         transform: none;
     }
-}
-
-.upload-privacy {
-    max-width: 600px;
-    margin: 0 auto 32px;
-    padding: 12px 16px;
-    background: var(--surface-alt);
-    border-radius: var(--radius-sm);
-    font-size: 0.875rem;
-    color: var(--text-muted);
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    flex-wrap: wrap;
-}
-
-.upload-privacy p {
-    flex: 1;
-    min-width: 200px;
 }
 
 .btn-danger {
@@ -4290,86 +4170,6 @@ html.high-contrast .valor-destaque {
     color: var(--primary);
 }
 
-.trans-subtitle {
-    font-size: 1.15rem;
-    font-weight: 700;
-    margin: 24px 0 12px;
-}
-
-.fontes-list {
-    margin-bottom: 16px;
-}
-
-.fonte-item {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 12px 16px;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
-    margin-bottom: 6px;
-    transition: border-color var(--transition);
-}
-
-.fonte-item:hover {
-    border-color: var(--primary);
-}
-
-.fonte-icon {
-    font-size: 1.3rem;
-    flex-shrink: 0;
-}
-
-.fonte-info {
-    flex: 1;
-    min-width: 0;
-}
-
-.fonte-nome {
-    font-weight: 600;
-    font-size: 0.9rem;
-}
-
-.fonte-orgao {
-    font-size: 0.875rem;
-    color: var(--text-muted);
-}
-
-.fonte-artigos {
-    font-size: 0.8rem;
-    color: var(--text-light);
-    margin-top: 2px;
-}
-
-.fonte-data {
-    font-size: 0.8rem;
-    color: var(--text-light);
-    text-align: right;
-    flex-shrink: 0;
-}
-
-.fonte-link {
-    flex-shrink: 0;
-}
-
-.fonte-link a {
-    display: inline-block;
-    padding: 4px 10px;
-    font-size: 0.875rem;
-    border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
-    color: var(--primary);
-    transition: background-color var(--transition), border-color var(--transition), color var(--transition);
-}
-
-.fonte-link a:hover {
-    background: var(--primary);
-    border-color: var(--primary);
-    color: #fff;
-    text-decoration: none;
-}
-
 .transparency-note {
     margin-top: 24px;
     padding: 16px;
@@ -4573,11 +4373,6 @@ html.high-contrast .disclaimer-alert {
     white-space: nowrap;
     border: 0;
 }
-
-/* Descri\u00e7\u00e3o e body removidos visualmente; mantidos no DOM apenas para SR se houver */
-.trilha-tab__body,
-.trilha-tab__desc { display: contents; }
-.trilha-tab__desc { display: none; }
 
 .trilha-tab:hover {
     border-color: var(--primary);
@@ -4790,7 +4585,6 @@ html.high-contrast .card-grid[data-active-trilha] .category-card {
     #searchResults,
     #uploadZone,
     #deleteAllFiles,
-    .btn-analyze-global,
     .consulta-actions,
     .consulta-privacy-details,
     .inst-filter,
@@ -4896,8 +4690,7 @@ html.high-contrast .card-grid[data-active-trilha] .category-card {
     body.printing-analysis .analysis-loading,
     body.printing-analysis .analysis-see-more,
     body.printing-analysis .btn-view,
-    body.printing-analysis .btn-delete,
-    body.printing-analysis .btn-analyze-global {
+    body.printing-analysis .btn-delete {
         display: none !important;
     }
 
