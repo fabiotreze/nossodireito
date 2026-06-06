@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-06-06T10:28:23.581Z",
+  "timestamp": "2026-06-06T10:56:56.272Z",
   "checks": [
     {
       "name": "npm audit",
@@ -11,19 +11,15 @@
     },
     {
       "name": "Padrões inseguros",
-      "status": "ALERTA",
+      "status": "OK",
       "findings": [
         {
           "file": "./js/app.js",
           "pattern": "innerHTML direct assignment",
-          "severity": "ALTO",
-          "count": 33
-        },
-        {
-          "file": "./js/app.js",
-          "pattern": "Open redirect risk",
-          "severity": "ALTO",
-          "count": 2
+          "severity": "INFO",
+          "count": 33,
+          "safe": 33,
+          "unsafe": 0
         }
       ]
     },
@@ -34,12 +30,12 @@
     },
     {
       "name": "Headers de segurança",
-      "status": "PARCIAL",
+      "status": "OK",
       "headers": {
         "Content-Security-Policy": true,
-        "X-Content-Type-Options": false,
-        "X-Frame-Options": false,
-        "Strict-Transport-Security": false
+        "X-Content-Type-Options": true,
+        "X-Frame-Options": true,
+        "Strict-Transport-Security": true
       }
     },
     {
@@ -48,8 +44,8 @@
     },
     {
       "name": "Inline scripts",
-      "status": "ALERTA",
-      "count": 12
+      "status": "OK",
+      "message": "11 blocos JSON-LD (structured data, não executável)"
     }
   ]
 }
