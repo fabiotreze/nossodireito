@@ -2130,44 +2130,50 @@ Acessar site ↗
         const hostMatches = (host, suffix) =>
             host === suffix || host.endsWith('.' + suffix);
         
-        // Categorizar links por domínio/órgão
+        // v1.43.37: classificação combina host + primeiro segmento de path.
+        // Portais consolidados em www.gov.br/<orgao>/... antes caíam no balde
+        // "Gov.BR" — agora vão para INSS/Saúde/MDS/MEC quando aplicável.
         const categorias = {
-            'Planalto': ['planalto.gov.br'],
-            'INSS': ['inss.gov.br'],
-            'MDS': ['mds.gov.br'],
-            'Saúde': ['saude.gov.br', 'ans.gov.br', 'anvisa.gov.br'],
-            'OMS': ['who.int'],
-            'Conselhos': ['cfm.org.br', 'cfp.org.br'],
-            'Gov.BR': [],  // genérico, pega resto dos .gov.br
+            'Planalto':  { hosts: ['planalto.gov.br'], paths: [] },
+            'INSS':      { hosts: ['inss.gov.br'],     paths: ['/inss'] },
+            'MDS':       { hosts: ['mds.gov.br'],      paths: ['/mds'] },
+            'MEC':       { hosts: ['mec.gov.br'],      paths: ['/mec', '/inep', '/fnde'] },
+            'Saúde':     { hosts: ['saude.gov.br', 'ans.gov.br', 'anvisa.gov.br'], paths: ['/saude', '/ans', '/anvisa'] },
+            'OMS':       { hosts: ['who.int'],         paths: [] },
+            'Conselhos': { hosts: ['cfm.org.br', 'cfp.org.br'], paths: [] },
+            'Gov.BR':    { hosts: [], paths: [] },  // balde genérico
         };
-        
-        function classifyLink(domain) {
-            for (const [cat, domains] of Object.entries(categorias)) {
-                if (domains.some(d => hostMatches(domain, d))) {
-                    return cat;
-                }
+
+        function classifyLink(host, pathname) {
+            for (const [cat, { hosts }] of Object.entries(categorias)) {
+                if (hosts.some((h) => hostMatches(host, h))) return cat;
             }
-            if (hostMatches(domain, 'gov.br') || domain.endsWith('.gov.br')) {
+            if (host === 'gov.br' || host.endsWith('.gov.br')) {
+                const firstSeg = '/' + ((pathname || '').split('/').filter(Boolean)[0] || '');
+                for (const [cat, { paths }] of Object.entries(categorias)) {
+                    if (paths.some((p) => firstSeg === p)) return cat;
+                }
                 return 'Gov.BR';
             }
             return 'Outros';
         }
-        
+
+        function parseHostPath(url) {
+            try {
+                const u = new URL(url, window.location.origin);
+                if (u.protocol === 'tel:') return { host: 'tel', pathname: '' };
+                return { host: u.hostname.replace(/^www\./, ''), pathname: u.pathname || '' };
+            } catch {
+                return { host: '', pathname: '' };
+            }
+        }
+
         function renderGrid(filter) {
             const filtered = filter === 'todos'
                 ? links
                 : links.filter((lk) => {
-                    const domain = (() => {
-                        let parsedUrl = null;
-                        try { parsedUrl = new URL(lk.url, window.location.origin); }
-                        catch { return ''; }
-                        if (parsedUrl?.protocol === 'tel:') {
-                            return 'tel';
-                        }
-                        try { return new URL(lk.url).hostname.replace(/^www\./, ''); }
-                        catch { return ''; }
-                    })();
-                    return classifyLink(domain) === filter;
+                    const { host, pathname } = parseHostPath(lk.url);
+                    return classifyLink(host, pathname) === filter;
                 });
             
             if (filtered.length === 0) {
@@ -2191,11 +2197,12 @@ Acessar site ↗
                         : hostMatches(domain, 'cfm.org.br') ? '👨‍⚕️'
                             : hostMatches(domain, 'cfp.org.br') ? '🧠'
                                 : hostMatches(domain, 'who.int') ? '🌐'
-                                    : (hostMatches(domain, 'gov.br') || domain.endsWith('.gov.br')) ? '🏛️'
+                                    : hostMatches(domain, 'mec.gov.br') ? '🎓'
                                         : hostMatches(domain, 'inss.gov.br') ? '📋'
                                             : hostMatches(domain, 'mds.gov.br') ? '🏠'
                                                 : hostMatches(domain, 'saude.gov.br') ? '⚕️'
-                                                    : '🔗';
+                                                    : (hostMatches(domain, 'gov.br') || domain.endsWith('.gov.br')) ? '🏛️'
+                                                        : '🔗';
                     return `
 <a href="${escapeHtml(lk.url)}" class="link-card" target="_blank" rel="noopener noreferrer">
 <span class="link-icon">${icon}</span>
