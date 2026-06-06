@@ -17,9 +17,9 @@
 [![gitleaks](https://github.com/fabiotreze/nossodireito/actions/workflows/gitleaks.yml/badge.svg)](https://github.com/fabiotreze/nossodireito/actions/workflows/gitleaks.yml)
 [![npm audit](https://img.shields.io/badge/npm%20audit-0%20vulnerabilities-brightgreen?style=flat-square&logo=npm)](package.json)
 
-**Recebeu um laudo? Vem que a gente te ajuda.**
+**Catálogo público de direitos PcD com referências às fontes oficiais brasileiras.**
 
-Guia gratuito, sem fins lucrativos, com direitos, benefícios e passo a passo para famílias de pessoas com deficiência (PcD) no Brasil.
+Reunimos leis, portarias e canais oficiais (.gov.br, Planalto, INSS, Ministério da Saúde) em um só lugar — você parte daqui e vai direto à fonte. Não interpretamos a lei, não orientamos casos individuais.
 
 🌐 **[nossodireito.fabiotreze.com](https://nossodireito.fabiotreze.com)**
 
@@ -35,11 +35,13 @@ Arquitetura atualizada (incluindo Mermaid e referências Terraform): [docs/ARCHI
 
 ## Descrição
 
-NossoDireito é um guia gratuito para famílias de pessoas com deficiência no Brasil,
-com conteúdo baseado em fontes oficiais e foco em linguagem simples.
+NossoDireito é um catálogo público que reúne referências a fontes oficiais brasileiras sobre direitos
+de pessoas com deficiência. Cada conteúdo cita explicitamente a base legal e o canal oficial — o
+usuário lê direto da fonte. Não interpretamos a lei, não orientamos casos individuais, não prestamos
+serviços jurídicos.
 
 <!-- ABOUT-EN:START -->
-**NossoDireito — Rights Portal for People with Disabilities.** Regional project — interface and content in Portuguese (pt-BR) for Brazilian citizens. Web portal with **42 rights categories**, official-source references, keyword-based document analysis, accessibility tools (VLibras sign language, TTS, high contrast, font scaling), and encrypted client-side storage via Web Crypto API (AES-GCM-256). **Zero personal data collection (LGPD compliant).** CI quality gates: CodeQL, gitleaks, Quality Gate (`scripts/validate_all.py`), Lighthouse (perf/seo/a11y/bp) and axe-core WCAG 2.1 AA in 3 browser engines (chromium/firefox/webkit). Deployed to Azure App Service (region `brazilsouth`) via ZIP deploy; Terraform (azurerm remote state) for infrastructure replication.
+**NossoDireito — Public Catalog of Rights for People with Disabilities in Brazil.** Regional project — interface and content in Portuguese (pt-BR) for Brazilian citizens. Public catalog that **references official sources** (.gov.br, Planalto, INSS, Ministry of Health) across **42 rights categories**, with keyword-based document analysis, accessibility tools (VLibras sign language, TTS, high contrast, font scaling), and encrypted client-side storage via Web Crypto API (AES-GCM-256). Does not interpret law, does not advise on individual cases. **Zero personal data collection (LGPD compliant).** CI quality gates: CodeQL, gitleaks, Quality Gate (`scripts/validate_all.py`), Lighthouse (perf/seo/a11y/bp) and axe-core WCAG 2.1 AA in 3 browser engines (chromium/firefox/webkit). Deployed to Azure App Service (region `brazilsouth`) via ZIP deploy; Terraform (azurerm remote state) for infrastructure replication.
 <!-- ABOUT-EN:END -->
 
 ## Quick Start
@@ -95,8 +97,8 @@ npm run test:js
 
 ## Aviso Legal
 
-Este projeto é informativo e não substitui orientação jurídica ou médica.
-Sempre confirme requisitos e regras nas fontes oficiais.
+Este projeto é um catálogo público informativo e não substitui orientação jurídica, médica ou social.
+Sempre confirme requisitos e regras nas fontes oficiais linkadas em cada direito.
 
 ## Licença
 
