@@ -1,5 +1,5 @@
 {
-  "versao": "1.43.18",
+  "versao": "1.43.20",
   "ultima_atualizacao": "2026-06-05",
   "aviso": "Informações compiladas de fontes oficiais do governo brasileiro (gov.br). Podem estar desatualizadas. Verifique sempre as fontes originais.",
   "fontes": [
@@ -1133,7 +1133,7 @@
         "Ação contra condomínio que nega acessibilidade"
       ],
       "url": "https://www.dpu.def.br/",
-      "como_acessar": "Procure a Defensoria Pública do seu estado. Não precisa de advogado — é gratuito.",
+      "como_acessar": "A Defensoria Pública está disponível do seu estado. Não requer advogado — é gratuito.",
       "categorias": [
         "bpc",
         "ciptea",
@@ -1161,7 +1161,7 @@
         "Programas sociais municipais"
       ],
       "url": "https://aplicacoes.mds.gov.br/sagi/mops/",
-      "como_acessar": "Procure o CRAS mais próximo da sua residência. Basta ir com documentos pessoais.",
+      "como_acessar": "O CRAS está disponível mais próximo da sua residência. Basta ir com documentos pessoais.",
       "categorias": [
         "bpc",
         "auxilio_inclusao",
@@ -1199,7 +1199,7 @@
         "Fiscalização de acessibilidade em condomínios e espaços coletivos"
       ],
       "url": "https://www.cnmp.mp.br/portal/",
-      "como_acessar": "Procure o Ministério Público do seu estado. Denúncias podem ser feitas presencialmente ou pelo site.",
+      "como_acessar": "O Ministério Público está disponível do seu estado. Denúncias podem ser feitas presencialmente ou pelo site.",
       "categorias": [
         "educacao",
         "trabalho",
@@ -1218,7 +1218,7 @@
         "Encaminhamento para serviços de saúde"
       ],
       "url": "https://www.gov.br/mdh/pt-br/navegue-por-temas/crianca-e-adolescente",
-      "como_acessar": "Procure o Conselho Tutelar do seu bairro ou município. Funciona inclusive aos finais de semana.",
+      "como_acessar": "O Conselho Tutelar está disponível do seu bairro ou município. Funciona inclusive aos finais de semana.",
       "categorias": [
         "educacao",
         "sus_terapias"
@@ -1235,7 +1235,7 @@
         "Palestras e capacitação"
       ],
       "url": "https://www.dpu.def.br/",
-      "como_acessar": "Procure a Defensoria Pública da União (DPU) ou do seu estado para orientação jurídica gratuita sobre direitos de PcD.",
+      "como_acessar": "A Defensoria Pública da União está disponível (DPU) ou do seu estado para orientação jurídica gratuita sobre direitos de PcD.",
       "categorias": [
         "bpc",
         "plano_saude",
@@ -1254,7 +1254,7 @@
         "Orientação às famílias"
       ],
       "url": "https://www.gov.br/mds/pt-br/acoes-e-programas/suas/servicos",
-      "como_acessar": "Procure o CRAS mais próximo para encaminhamento a serviços de atendimento especial. Rede APAE presente em mais de 2.000 municípios.",
+      "como_acessar": "O CRAS está disponível mais próximo para encaminhamento a serviços de atendimento especial. Rede APAE presente em mais de 2.000 municípios.",
       "categorias": [
         "educacao",
         "sus_terapias",
@@ -1295,7 +1295,7 @@
         "Capacitação profissional"
       ],
       "url": "https://www.gov.br/mdh/pt-br/navegue-por-temas/pessoa-com-deficiencia",
-      "como_acessar": "Procure o CRAS ou CREAS mais próximo para encaminhamento a serviços especializados em deficiência intelectual e TEA.",
+      "como_acessar": "O CRAS está disponível ou CREAS mais próximo para encaminhamento a serviços especializados em deficiência intelectual e TEA.",
       "categorias": [
         "ciptea",
         "sus_terapias",
@@ -1330,7 +1330,7 @@
         "Reclamação contra condomínio por cobranças discriminatórias"
       ],
       "url": "https://www.procon.sp.gov.br/",
-      "como_acessar": "Procure o Procon do seu estado ou município. Muitos aceitam reclamações online.",
+      "como_acessar": "O Procon está disponível do seu estado ou município. Muitos aceitam reclamações online.",
       "categorias": [
         "plano_saude",
         "moradia"
@@ -1348,7 +1348,7 @@
         "Advocacia por políticas públicas"
       ],
       "url": "https://www.gov.br/mdh/pt-br/navegue-por-temas/pessoa-com-deficiencia",
-      "como_acessar": "Procure a Secretaria de Direitos da Pessoa com Deficiência do seu estado ou o CRAS/CREAS mais próximo para orientação sobre inclusão de pessoas autistas.",
+      "como_acessar": "A Secretaria de Direitos da Pessoa com Deficiência do seu estado ou o CRAS está disponível/CREAS mais próximo para orientação sobre inclusão de pessoas autistas.",
       "categorias": [
         "ciptea",
         "educacao",
@@ -1368,7 +1368,7 @@
         "Validação de prescrição eletrônica"
       ],
       "url": "https://datasus.saude.gov.br/",
-      "como_acessar": "Use o CNES/DATASUS para verificar profissionais e estabelecimentos de saúde cadastrados, ou procure o CRM do seu estado para validar o registro médico.",
+      "como_acessar": "Use o CNES/DATASUS para verificar profissionais e estabelecimentos de saúde cadastrados, ou via CRM do seu estado para validar o registro médico.",
       "categorias": [
         "bpc",
         "ciptea",
@@ -1388,7 +1388,7 @@
         "Verificação de habilitação profissional"
       ],
       "url": "https://datasus.saude.gov.br/",
-      "como_acessar": "Use o CNES/DATASUS para verificar profissionais de saúde cadastrados, ou procure o CRP do seu estado para validar o registro do psicólogo.",
+      "como_acessar": "Use o CNES/DATASUS para verificar profissionais de saúde cadastrados, ou via CRP do seu estado para validar o registro do psicólogo.",
       "categorias": [
         "sus_terapias",
         "plano_saude",
@@ -2071,7 +2071,7 @@
         "Acompanhar o andamento pelo protocolo fornecido e aguardar retorno oficial"
       ],
       "dicas": [
-        "Mesmo que a renda familiar ultrapasse 1/4 do SM, peça — o INSS analisa caso a caso considerando gastos com saúde e medicamentos",
+        "Mesmo que a renda familiar ultrapasse 1/4 do SM, o requerimento pode ser feito — o INSS analisa caso a caso considerando gastos com saúde e medicamentos",
         "Se negado, você pode recorrer administrativamente ou judicialmente (Defensoria Pública ajuda gratuitamente)",
         "O BPC é revisado a cada 2 anos — mantenha o CadÚnico sempre atualizado",
         "O beneficiário de BPC pode trabalhar e receber o Auxílio-Inclusão (meio salário mínimo — Lei 14.176/2021) ao mesmo tempo",
@@ -2413,7 +2413,7 @@
         "Se seus direitos forem negados, denuncie pelo Disque 100 (24h, gratuito) ou WhatsApp (61) 99611-0100",
         "No ENEM, PcD pode solicitar recursos de acessibilidade: prova ampliada, Libras, intérprete, ledor, tempo adicional, sala especial",
         "NAPNE (Núcleo de Atendimento às Pessoas com Necessidades Específicas) — presente nos Institutos Federais para apoio à educação profissional inclusiva",
-        "Mediador escolar: crianças com autismo ou deficiência têm direito a um profissional de apoio na escola. A escola é que paga — escola particular NÃO pode cobrar extra da família. Se recusarem, procure o Conselho Tutelar ou o Ministério Público."
+        "Mediador escolar: crianças com autismo ou deficiência têm direito a um profissional de apoio na escola. A escola é que paga — escola particular NÃO pode cobrar extra da família. Se recusarem, o atendimento é feito em o Conselho Tutelar ou o Ministério Público."
       ],
       "valor": "Gratuito (educação pública) / Sem cobrança extra (educação particular)",
       "onde": "Escola + Secretaria de Educação do seu município",
@@ -2587,21 +2587,21 @@
       "passo_a_passo": [
         "O médico prescreve o tratamento necessário (ABA, fono, TO, psicologia etc.)",
         "Solicitar autorização ao plano de saúde (geralmente pelo app ou site do plano)",
-        "Se negado, peça a negativa POR ESCRITO",
+        "Se negado, a negativa pode ser obtida por escrito",
         "Com a negativa em mãos, reclame na ANS (ans.gov.br ou 0800 701 9656)",
-        "Se não resolver, procure a Defensoria Pública ou o Procon",
+        "Se não resolver, o atendimento é feito em a Defensoria Pública ou o Procon",
         "Acompanhar o andamento pelo protocolo fornecido e aguardar retorno oficial"
       ],
       "dicas": [
         "O plano NÃO pode limitar número de sessões de terapia quando há indicação médica",
         "Negar tratamento prescrito por médico é infração à Lei 9.656/1998",
-        "Sempre peça a negativa POR ESCRITO — é sua prova para reclamação",
+        "Sempre a negativa pode ser obtida por escrito — é sua prova para reclamação",
         "A ANS tem prazo de 5 dias úteis para resolver reclamações urgentes",
         "Muitas vezes, apenas registrar reclamação na ANS faz o plano liberar o tratamento",
         "Se seus direitos forem negados, denuncie pelo Disque 100 (24h, gratuito) ou WhatsApp (61) 99611-0100",
         "Para reclamações ou denúncias contra órgãos federais, use a plataforma Fala.BR (falabr.cgu.gov.br)",
         "Cuidado em casa (Home Care): o plano de saúde deve cobrir quando o médico prescrever. Não podem limitar os dias. Se negarem, denuncie à ANS.",
-        "Terapia ABA para autismo: o plano de saúde DEVE cobrir SEM LIMITE de sessões quando prescrita por médico. Se negarem, peça a negativa por escrito e ligue para a ANS: 0800 701 9656."
+        "Terapia ABA para autismo: o plano de saúde DEVE cobrir SEM LIMITE de sessões quando prescrita por médico. Se negarem, a negativa pode ser obtida por escrito e ligue para a ANS: 0800 701 9656."
       ],
       "valor": "Coberto pelo plano de saúde",
       "onde": "Operadora do plano → ANS → Defensoria Pública",
@@ -2792,8 +2792,8 @@
         "Realizar o Cartão SUS (se ainda não tiver)",
         "Solicitar encaminhamento para o CER (Centro Especializado em Reabilitação) ou CAPS (Centro de Atenção Psicossocial)",
         "Aguardar agendamento para avaliação multiprofissional",
-        "Para medicamentos básicos (12 indicações), vá à Farmácia Popular com receita médica — desde fev/2025 são 100% gratuitos",
-        "Para medicamentos especializados (CEAF): peça ao médico o preenchimento do formulário LME e entregar na farmácia estadual de referência",
+        "Para medicamentos básicos (12 indicações), a retirada é feita na Farmácia Popular com receita médica — desde fev/2025 são 100% gratuitos",
+        "Para medicamentos especializados (CEAF): o médico preenche o formulário LME que é entregue na farmácia estadual de referência",
         "Para fraldas geriátricas (PcD de qualquer idade): apresente laudo médico com CID + receita na Farmácia Popular",
         "Acompanhar o andamento pelo protocolo fornecido e aguardar retorno oficial"
       ],
@@ -2805,7 +2805,7 @@
         "Para acessar o CEAF: médico preenche o LME (Laudo de Medicamentos Especializados) → entrega na farmácia estadual de referência → avaliação técnica → dispensação",
         "Consulte a RENAME (Relação Nacional de Medicamentos Essenciais) para verificar se o medicamento está na lista do SUS: gov.br/saude/pt-br/composicao/sectics/rename",
         "O CAPS (Centro de Atenção Psicossocial) oferece atendimento de saúde mental gratuito e pode dispensar medicamentos psiquiátricos diretamente",
-        "Se a fila de espera for muito longa, procure a Defensoria Pública para garantir o atendimento",
+        "Se a fila de espera for muito longa, o atendimento é feito em a Defensoria Pública para garantir o atendimento",
         "Alguns municípios têm CER (Centro Especializado em Reabilitação) com equipe completa: fono, TO, psicólogo, fisioterapeuta",
         "Medicamentos não disponíveis no SUS podem ser solicitados judicialmente — a Defensoria Pública ajuda gratuitamente"
       ],
@@ -3102,7 +3102,7 @@
         "Obter o laudo médico no modelo exigido",
         "Enviar a documentação pelos Correios ou presencialmente",
         "Aguardar a carteirinha do Passe Livre (enviada pelos Correios)",
-        "Para transporte municipal, procure a empresa de transporte local ou a prefeitura",
+        "Para transporte municipal, o canal de acesso é a empresa de transporte local ou a prefeitura",
         "Acompanhar o andamento pelo protocolo fornecido e aguardar retorno oficial"
       ],
       "dicas": [
@@ -3273,7 +3273,7 @@
       "id": "trabalho",
       "titulo": "Trabalho — Cotas e Proteções",
       "icone": "💼",
-      "resumo": "Empresas com 100+ funcionários devem reservar de 2% a 5% das vagas para PcD. Há proteções contra demissão arbitrária.",
+      "resumo": "Empresas com 100+ funcionários são obrigadas a reservar de 2% a 5% das vagas para PcD. Há proteções contra demissão arbitrária.",
       "base_legal": [
         {
           "lei": "Lei 8.213/1991",
@@ -3330,7 +3330,7 @@
         "Se seus direitos forem negados, denuncie pelo Disque 100 (24h, gratuito) ou WhatsApp (61) 99611-0100",
         "Em concursos públicos FEDERAIS, até 20% das vagas são reservadas para PcD (Lei 8.112/90, Art. 5º, § 2º)",
         "O Ministério do Trabalho e Emprego publica guias sobre contratação e fiscalização de cotas PcD",
-        "Jornada reduzida: servidor público federal com deficiência (ou com filho PcD) pode trabalhar menos horas SEM perder salário. Precisa de laudo da junta médica oficial. Para CLT, verifique a convenção do seu sindicato."
+        "Jornada reduzida: servidor público federal com deficiência (ou com filho PcD) pode trabalhar menos horas SEM perder salário. requer laudo da junta médica oficial. Para CLT, verifique a convenção do seu sindicato."
       ],
       "valor": "Salário conforme a vaga + proteções legais",
       "onde": "SINE / Sites de emprego / SRTE",
@@ -3690,7 +3690,7 @@
         "Solicitar a adaptação por ESCRITO ao síndico ou administradora do condomínio",
         "Cite a Lei 13.146/2015, Art. 58, §1º (o condomínio não pode impedir adaptações de acessibilidade)",
         "Se o condomínio negar, registre a recusa por escrito e denuncie à Defensoria Pública ou ao Ministério Público",
-        "Para vagas reservadas: solicite em assembleia ou diretamente ao síndico, com base na NBR 9050 (mínimo 2% das vagas)",
+        "Para vagas reservadas: é necessário solicitar em assembleia ou diretamente ao síndico, com base na NBR 9050 (mínimo 2% das vagas)",
         "Para programas habitacionais (Minha Casa Minha Vida): inscreva-se no CadÚnico e procurar a prefeitura"
       ],
       "dicas": [
@@ -3702,8 +3702,8 @@
         "Síndico pode ser responsabilizado pessoalmente se descumprir a lei de acessibilidade",
         "Inquilino (locatário) PcD também tem direito a adaptações — o proprietário não pode recusar",
         "Se seus direitos forem negados, denuncie pelo Disque 100 (24h, gratuito) ou WhatsApp (61) 99611-0100",
-        "No Minha Casa, Minha Vida, unidades para PcD devem seguir diretrizes de acessibilidade: portas largas, barras de apoio, banheiro adaptado — consulte gov.br/cidades",
-        "Quitação do financiamento da casa: se a pessoa que financiou ficar com invalidez permanente, o seguro do financiamento paga o que falta. Procure o banco (Caixa) com o laudo médico. Se negarem, vá à Defensoria Pública."
+        "No Minha Casa, Minha Vida, unidades para PcD são obrigadas a seguir diretrizes de acessibilidade: portas largas, barras de apoio, banheiro adaptado — consulte gov.br/cidades",
+        "Quitação do financiamento da casa: se a pessoa que financiou ficar com invalidez permanente, o seguro do financiamento paga o que falta. O(a) banco (Caixa) recebe o laudo médico. Em caso de negativa, a Defensoria Pública oferece atendimento jurídico."
       ],
       "valor": "Sem custo para solicitar adaptações (custo da obra pode ser do morador PcD). Programas habitacionais: subsídio do governo.",
       "onde": "Síndico/Administradora → Defensoria Pública ou MP (se negado) / Prefeitura (programas habitacionais)",
@@ -3915,12 +3915,12 @@
         "4. Preencher o requerimento online de isenção de IPI (e IOF, se aplicável)",
         "5. Anexar todos os documentos digitalizados (laudo, CNH, RG/CPF)",
         "6. Aguardar análise da Receita Federal (~3 dias úteis; acompanhe pelo SISEN)",
-        "7. Com a isenção de IPI aprovada, solicite a isenção de ICMS na SEFAZ do seu estado",
-        "8. Após comprar o veículo com as isenções, solicite a isenção de IPVA na SEFAZ do estado",
-        "9. Para IPTU: procure a Secretaria de Fazenda ou Finanças do seu município com laudo médico e comprovante de propriedade"
+        "7. Com a isenção de IPI aprovada, é necessário solicitar isenção de ICMS na SEFAZ do seu estado",
+        "8. Após comprar o veículo com as isenções, é necessário solicitar isenção de IPVA na SEFAZ do estado",
+        "9. Para IPTU: o canal de acesso é a Secretaria de Fazenda ou Finanças do seu município com laudo médico e comprovante de propriedade"
       ],
       "dicas": [
-        "SOLICITE AS ISENÇÕES ANTES DE COMPRAR O VEÍCULO (IPI e IOF precisam ser aprovadas antes da compra)",
+        "Para solicitar AS ISENÇÕES ANTES DE COMPRAR O VEÍCULO (IPI e IOF precisam ser aprovadas antes da compra)",
         "IPI: válida até 31/12/2026, renovável a cada 3 anos (Lei 14.287/2021). O Programa Mover (Lei 14.902/2024) altera regime de IPI veicular — isenção para PcD continua vigente; verifique regras no SISEN",
         "IOF: uso ÚNICO na vida — vale apenas para PcD condutor, motor até 127 HP",
         "ICMS: limite de valor ~R$ 120.000 (Convênio CONFAZ) — NÃO é o mesmo limite do IPI (R$ 200.000)",
@@ -4560,12 +4560,12 @@
         "Documento de identidade (RG ou CPF)"
       ],
       "passo_a_passo": [
-        "Dirigir-se ao local e identificar a fila prioritária (sinalização laranja ou azul)",
+        "Atendimento disponível em local e identificar a fila prioritária (sinalização laranja ou azul)",
         "Apresentar documento comprobatório ao atendente se solicitado",
-        "Caso não exista fila preferencial, solicite atendimento prioritário ao responsável",
+        "Caso não exista fila preferencial, é necessário solicitar atendimento prioritário ao responsável",
         "Em caso de recusa, exija o livro de reclamações e denuncie ao Procon",
         "Denúncias podem ser feitas pelo site/app Consumidor.gov.br",
-        "Para assistência jurídica gratuita: procure a Defensoria Pública do seu estado (presencial ou online)",
+        "Para assistência jurídica gratuita: o canal de acesso é a Defensoria Pública do seu estado (presencial ou online)",
         "Defensoria atende demandas como: negativa de benefícios, discriminação, acessibilidade, ações contra INSS, planos de saúde, etc.",
         "Agendamento geralmente online pelo site da Defensoria do seu estado ou presencial"
       ],
@@ -4579,7 +4579,7 @@
         "Requisito de renda varia por estado (geralmente até 3 salários mínimos, mas defensoria pode atender PcD independente de renda)",
         "Para reclamações ou denúncias contra órgãos federais, use a plataforma Fala.BR (falabr.cgu.gov.br)",
         "Cordão de girassol: a fita com desenhos de girassóis é o símbolo oficial para quem tem deficiência que não se vê (autismo, epilepsia, fibromialgia e outras). Quem usa o cordão tem prioridade em filas e atendimentos — não precisam pedir laudo na hora.",
-        "Novo RG (CIN): você pode pedir para colocar o símbolo de deficiência no seu documento de identidade. É de graça e ajuda a comprovar o direito à prioridade. Vá ao posto de identificação do seu estado com o laudo médico."
+        "Novo RG (CIN): você pode pedir para colocar o símbolo de deficiência no seu documento de identidade. É de graça e ajuda a comprovar o direito à prioridade. O local de atendimento é posto de identificação do seu estado com o laudo médico."
       ],
       "valor": "Gratuito — direito garantido por lei",
       "onde": "Aplicável em todos os estabelecimentos: bancos, repartições, hospitais, supermercados, shoppings, etc.",
@@ -4778,8 +4778,8 @@
       "requisitos": [
         "Laudo médico atestando mobilidade reduzida ou deficiência física",
         "Veículo próprio ou de terceiro (o credenciamento é pessoal, não do veículo)",
-        "Estabelecimentos devem reservar 2% das vagas para PcD (mínimo 1 vaga)",
-        "Vagas devem estar próximas à entrada e ser sinalizadas no piso e vertical",
+        "Estabelecimentos são obrigados a reservar 2% das vagas para PcD (mínimo 1 vaga)",
+        "Vagas são obrigadas a estar próximas à entrada e ser sinalizadas no piso e vertical",
         "Declaração de renda familiar (se aplicável)"
       ],
       "documentos": [
@@ -4803,7 +4803,7 @@
         "Em São Paulo, credencial também isenta de rodízio municipal",
         "Estabelecimentos sem vagas PcD podem ser denunciados ao Ministério Público ou Procon",
         "Validade do cartão varia por município (geralmente 2-5 anos) — renovar antes do vencimento",
-        "O Cartão DEFIS (credencial para estacionamento) é emitido pelo SENATRAN ou secretaria de trânsito do município — em SP, solicite pelo SP156 (portal 156 da Prefeitura)",
+        "O Cartão DEFIS (credencial para estacionamento) é emitido pelo SENATRAN ou secretaria de trânsito do município — em SP, é necessário solicitar pelo SP156 (portal 156 da Prefeitura)",
         "Com o Cartão DEFIS, você pode estacionar em vagas de Zona Azul GRATUITAMENTE por período determinado em muitas cidades",
         "A credencial de estacionamento PcD vale em TODO o território nacional — leve ao viajar"
       ],
@@ -4982,7 +4982,7 @@
         "Comparecer à perícia com todos os laudos e exames",
         "Perito avaliará grau de deficiência (leve, moderada ou grave)",
         "INSS calculará tempo de contribuição necessário e concederá aposentadoria se atingido",
-        "Se negado, recorra administrativamente (dentro de 30 dias) ou judicialmente com advogado/Defensoria"
+        "Se negado, é possível recorrer administrativamente (dentro de 30 dias) ou judicialmente com advogado/Defensoria"
       ],
       "dicas": [
         "Mesmo que sua deficiência seja recente, pode solicitar perícia retroativa — INSS analisa histórico",
@@ -5343,7 +5343,7 @@
         "Instituições como APAE, AMA e Jô Clemente podem ajudar na aquisição de equipamentos",
         "Alguns softwares assistivos são gratuitos: NVDA (leitor de tela), DOSVOX, BrailleFácil",
         "Lei garante fornecimento gratuito de tecnologia assistiva pelo SUS — exija se necessário",
-        "Sites e apps do governo devem seguir o eMAG (Modelo de Acessibilidade em Governo Eletrônico) e a ABNT NBR 17225 — se não forem acessíveis, denuncie pelo Fala.BR"
+        "Sites e apps do governo são obrigados a seguir o eMAG (Modelo de Acessibilidade em Governo Eletrônico) e a ABNT NBR 17225 — em caso de não conformidade, a denúncia é registrada pelo Fala.BR"
       ],
       "valor": "Varia conforme produto — cadeiras motorizadas: R$ 5.000-30.000 | Softwares: R$ 500-5.000 | Próteses: R$ 3.000-50.000",
       "onde": "Bancos credenciados BNDES, CRAS, UBS, instituições especializadas (APAE, AMA, Jô Clemente)",
@@ -5513,7 +5513,7 @@
         "Laudo médico atestando a deficiência (original ou cópia autenticada)"
       ],
       "passo_a_passo": [
-        "Na bilheteria ou plataforma online, solicite meia-entrada PcD",
+        "Na bilheteria ou plataforma online, é necessário solicitar meia-entrada PcD",
         "Apresentar documento de identificação + comprovante da deficiência",
         "Se necessitar acompanhante, informe e apresentar documentação",
         "Estabelecimento deve conceder desconto de 50% no valor do ingresso inteiro",
@@ -5521,9 +5521,9 @@
         "Denuncie ao Procon ou Ministério Público se houver discriminação"
       ],
       "dicas": [
-        "Lei garante que 40% dos ingressos devem estar disponíveis para venda como meia-entrada — não podem alegar 'esgotado'",
+        "Lei garante que 40% dos ingressos são disponibilizados para venda como meia-entrada — estabelecimentos não podem alegar 'esgotado'",
         "Acompanhante tem direito à meia quando comprovada necessidade (pode ser atestado no laudo médico)",
-        "Plataformas online de venda devem oferecer opção de meia-entrada PcD",
+        "Plataformas online de venda são obrigadas a oferecer opção de meia-entrada PcD",
         "Recusa em conceder meia-entrada é discriminação — pode gerar multa ao estabelecimento",
         "Vale para cinemas, teatros, shows, museus, circos, eventos esportivos e culturais",
         "Não confundir com meia-entrada estudantil (são benefícios diferentes)",
@@ -6478,7 +6478,7 @@
         "Quem era beneficiário do BPC nos últimos 5 anos também pode solicitar",
         "A concessão pode ser automática desde 2022 (Lei 14.441) — verifique pelo Meu INSS",
         "Se seus direitos forem negados, denuncie pelo Disque 100 (24h, gratuito) ou WhatsApp (61) 99611-0100",
-        "Solicite o Auxílio-Inclusão pelo app Meu INSS (meu.inss.gov.br) ou na agência INSS mais próxima — ligue 135 para agendar"
+        "é necessário solicitar Auxílio-Inclusão pelo app Meu INSS (meu.inss.gov.br) ou na agência INSS mais próxima — ligue 135 para agendar"
       ],
       "valor": "Meio salário mínimo por mês (R$ 810,50 em 2026)",
       "onde": "Meu INSS (site/app) / Central 135 / Agências do INSS",
@@ -6639,7 +6639,7 @@
       ],
       "passo_a_passo": [
         "Procurar o CRAS mais próximo da sua residência — é a porta de entrada para todos os serviços",
-        "No CRAS: faça o CadÚnico, receba orientação sobre benefícios e seja encaminhado para outros serviços",
+        "No CRAS: é realizado o CadÚnico, ofertada orientação sobre benefícios e encaminhamento para outros serviços",
         "Se houver violação de direitos, negligência ou situação de risco: será encaminhado ao CREAS",
         "PcD com dependência funcional (18-59 anos): pode ser encaminhado ao Centro-Dia de Referência",
         "PcD em situação de acolhimento institucional: pode ser encaminhado à Residência Inclusiva",
@@ -7311,11 +7311,11 @@
       ],
       "dicas": [
         "Toda edificação nova (pública ou privada de uso coletivo) DEVE ser acessível desde o projeto — é obrigação legal, não favor",
-        "Edificações existentes devem ser adaptadas progressivamente — a falta de acessibilidade é infração (Art. 56 da LBI)",
+        "Edificações existentes são adaptadas progressivamente conforme exigência legal — a falta de acessibilidade é infração (Art. 56 da LBI)",
         "Banheiro acessível DEVE existir em todo estabelecimento de uso público — shopping, restaurante, cinema, hospital, escola",
-        "Rampas devem ter inclinação máxima de 8,33% (conforme NBR 9050) e corrimãos dos dois lados",
-        "Elevadores são obrigatórios em edificações com mais de um pavimento de uso público",
-        "Piso tátil (direcional e alerta) é obrigatório em calçadas e espaços públicos",
+        "Rampas são obrigadas a ter inclinação máxima de 8,33% (conforme NBR 9050) e corrimãos dos dois lados",
+        "Elevadores são exigido(s) por lei em edificações com mais de um pavimento de uso público",
+        "Piso tátil (direcional e alerta) é exigido(s) por lei em calçadas e espaços públicos",
         "Denuncie barreiras pelo Disque 100, Fala.BR (falabr.cgu.gov.br), ou diretamente ao MP",
         "Sempre verifique se o site termina em .gov.br antes de fornecer dados pessoais"
       ],
@@ -7479,7 +7479,7 @@
       "requisitos": [
         "Ser pessoa com deficiência que necessita de apoio para atos da vida civil",
         "Para TDA: indicar ao menos 2 apoiadores de confiança",
-        "Para Curatela: decisão judicial é obrigatória — não pode ser imposta sem processo"
+        "Para Curatela: decisão judicial é exigido(s) por lei — não pode ser imposta sem processo"
       ],
       "documentos": [
         "Documento de identidade (RG) e CPF da pessoa curatelada e do curador/apoiador",
@@ -7488,7 +7488,7 @@
         "Petição inicial (para ação de curatela ou TDA, via Defensoria ou advogado)"
       ],
       "passo_a_passo": [
-        "Avalie se a pessoa realmente precisa de curatela ou se a Tomada de Decisão Apoiada (TDA) é suficiente — prefira sempre a TDA",
+        "Avalie se a pessoa realmente requer curatela ou se a Tomada de Decisão Apoiada (TDA) é suficiente — prefira sempre a TDA",
         "Para TDA: a própria pessoa escolhe 2 apoiadores de confiança e apresenta pedido ao juiz com advogado ou Defensoria",
         "Para Curatela: um familiar ou o Ministério Público ingressa com ação judicial de interdição (última opção)",
         "O juiz realizará entrevista pessoal com a pessoa com deficiência — obrigatório (não pode ser decidido só com laudo)",
@@ -7829,7 +7829,7 @@
       "id": "acessibilidade_digital",
       "titulo": "Acessibilidade Digital — Comunicação, Libras e Tecnologias",
       "icone": "💻",
-      "resumo": "Sites governamentais e de empresas devem ser acessíveis (eMAG/WCAG). PcD tem direito a intérprete de Libras em serviços públicos, legendas em TV, formatos acessíveis e planos telefônicos com desconto.",
+      "resumo": "Sites governamentais e de empresas são obrigados por lei a ser acessíveis (eMAG/WCAG). PcD tem direito a intérprete de Libras em serviços públicos, legendas em TV, formatos acessíveis e planos telefônicos com desconto.",
       "base_legal": [
         {
           "lei": "Lei 13.146/2015 (Estatuto da Pessoa com Deficiência)",
@@ -7863,11 +7863,11 @@
         "Solicitação formal ao órgão público (protocolo por escrito)"
       ],
       "passo_a_passo": [
-        "Para intérprete de Libras em serviço público: solicite por escrito ao órgão com antecedência mínima de 5 dias úteis",
-        "Para acessibilidade em site governamental: envie reclamação pelo Fala.BR informando a URL e a barreira encontrada",
+        "Para intérprete de Libras em serviço público: é necessário solicitar por escrito ao órgão com antecedência mínima de 5 dias úteis",
+        "Para acessibilidade em site governamental: a reclamação é registrada pelo Fala.BR informando a URL e a barreira encontrada",
         "Para legendas/audiodescrição em TV: registre reclamação na ANATEL (ligando 1331 ou pelo site)",
-        "Para plano telefônico acessível: procure a operadora e solicitar o plano com desconto para PcD (Resolução ANATEL 667/2016)",
-        "Para publicações em formato acessível (Braille, áudio, texto digital): solicite à editora ou biblioteca pública",
+        "Para plano telefônico acessível: o canal de acesso é a operadora e solicitar o plano com desconto para PcD (Resolução ANATEL 667/2016)",
+        "Para publicações em formato acessível (Braille, áudio, texto digital): é necessário solicitar à editora ou biblioteca pública",
         "Acompanhar o protocolo da solicitação e, se não atendido, acione o MP ou Defensoria"
       ],
       "dicas": [
@@ -7876,9 +7876,9 @@
         "Canais de TV aberta são obrigados a ter legendagem oculta (closed caption) e audiodescrição progressiva",
         "Pessoas surdas têm direito a videochamada com intérprete em órgãos públicos (Central de Libras)",
         "A ANATEL obriga operadoras a oferecer planos acessíveis com desconto para PcD",
-        "Aplicativos bancários devem ser acessíveis — se não forem, registre reclamação no Banco Central",
+        "Aplicativos bancários são obrigados a ser acessíveis — caso contrário, a reclamação é registrada no Banco Central",
         "Sempre verifique se o site termina em .gov.br antes de fornecer dados pessoais",
-        "Plano de celular para surdos: as operadoras (Claro, Vivo, TIM, Oi) são obrigadas a oferecer planos com mais internet e preço menor para quem tem deficiência auditiva. Vá à loja com o laudo audiológico.",
+        "Plano de celular para surdos: as operadoras (Claro, Vivo, TIM, Oi) são obrigadas a oferecer planos com mais internet e preço menor para quem tem deficiência auditiva. O atendimento é feito nas lojas mediante apresentação do laudo audiológico.",
         "Internet com desconto: a ANATEL obriga operadoras a oferecer condições especiais de internet para PcD. Quem tem baixa visão pode pedir a fatura em Braille ou digital acessível."
       ],
       "valor": "Direito gratuito — interpretação em Libras, legendas e acessibilidade digital são obrigações do prestador de serviço.",
@@ -8062,8 +8062,8 @@
         "A UBS encaminhará ao Centro Especializado em Reabilitação (CER) mais próximo — são 4 modalidades: auditiva, física, intelectual e visual",
         "No CER, será feita avaliação multidisciplinar (fisioterapia, fonoaudiologia, terapia ocupacional, psicologia, etc.)",
         "Se necessário, será prescrita órtese, prótese ou meio auxiliar de locomoção (cadeira de rodas, muleta, andador) — tudo GRATUITO pelo SUS",
-        "Para intervenção precoce (crianças 0-3 anos): solicite encaminhamento direto ao serviço de estimulação precoce",
-        "Para reabilitação profissional: procure a agência do INSS e solicitar inclusão no Programa de Reabilitação Profissional"
+        "Para intervenção precoce (crianças 0-3 anos): é necessário solicitar encaminhamento direto ao serviço de estimulação precoce",
+        "Para reabilitação profissional: o canal de acesso é a agência do INSS e solicitar inclusão no Programa de Reabilitação Profissional"
       ],
       "dicas": [
         "O SUS fornece GRATUITAMENTE: cadeira de rodas, próteses auditivas (aparelho auditivo), próteses de membro, órteses, coletes, bengalas, andadores, muletas",
@@ -8071,7 +8071,7 @@
         "CERs (Centros Especializados em Reabilitação) existem em todos os estados — consulte no CNES (cnes2.datasus.gov.br)",
         "Crianças com risco de atraso no desenvolvimento têm direito a estimulação precoce IMEDIATA — não espere diagnóstico definitivo",
         "A reabilitação profissional do INSS inclui cursos, capacitação e até equipamentos para nova atividade laboral",
-        "Se o SUS negar órtese ou prótese prescrita, peça a negativa POR ESCRITO e procure a Defensoria — há jurisprudência consolidada",
+        "Se o SUS negar órtese ou prótese prescrita, a negativa pode ser obtida por escrito e via Defensoria — há jurisprudência consolidada",
         "Sempre verifique se o site termina em .gov.br antes de fornecer dados pessoais"
       ],
       "valor": "Gratuito pelo SUS — órteses, próteses, reabilitação e terapias. Reabilitação profissional pelo INSS também gratuita.",
@@ -8245,7 +8245,7 @@
         "Procurar o CRAS do seu município com documentos da pessoa cuidada",
         "Solicitar inclusão da família no CadÚnico (NIS) — gratuito",
         "Solicitar avaliação do PAIF (Proteção e Atendimento Integral à Família) para mapear rede de apoio",
-        "Em caso de violência, sobrecarga ou risco, solicite encaminhamento ao CREAS (PAEFI)",
+        "Em caso de violência, sobrecarga ou risco, é necessário solicitar encaminhamento ao CREAS (PAEFI)",
         "Acessar Centro-Dia, SCFV (Serviço de Convivência) ou Residência Inclusiva conforme necessidade",
         "Acompanhar ações da Política Nacional de Cuidados no Observatório Novo Viver sem Limite"
       ],
@@ -8437,7 +8437,7 @@
         "Negativa do órgão pode ser combatida via mandado de segurança ou ação na Justiça Federal — STJ e TRFs têm jurisprudência consolidada favorável (REsp 1.953.180/STJ)",
         "Servidor PcD próprio: também tem direito ao Art. 98 §2º (mesmas garantias)",
         "Em caso de TEA, anexar CIPTEA (Lei 13.977/2020) fortalece o pedido",
-        "Sindicatos dos servidores oferecem assessoria jurídica gratuita — procure o seu"
+        "Sindicatos dos servidores oferecem assessoria jurídica gratuita — via seu"
       ],
       "valor": "Redução de jornada SEM perda salarial — economicamente equivale ao aumento líquido do tempo livre proporcional à redução concedida (frequentemente 25-50% da jornada).",
       "onde": "RH do órgão público (federal: SIASS); para estados/municípios, consultar Procuradoria/RH do ente respectivo",
@@ -8611,7 +8611,7 @@
         "Em caso de descumprimento da cota, denuncie ao Ministério Público do Trabalho (MPT)"
       ],
       "dicas": [
-        "Salário, jornada e benefícios DEVEM ser iguais aos dos demais empregados — vedação à discriminação (CLT Art. 461 + LBI Art. 4º)",
+        "Salário, jornada e benefícios SÃO OBRIGADOS POR LEI A ser iguais aos dos demais empregados — vedação à discriminação (CLT Art. 461 + LBI Art. 4º)",
         "Aprendiz PcD não conta para a cota — é contratação distinta (Lei 10.097/2000)",
         "Empresa que dispensa PcD sem substituir comete infração — sujeita a multa por trabalhador faltante (Portaria MTE)",
         "MPT pode firmar TAC (Termo de Ajustamento de Conduta) com cronograma de contratações",
@@ -8990,7 +8990,7 @@
         "Procurar a UBS e solicitar encaminhamento à equipe multiprofissional (fono, TO, fisio) e ao CER",
         "No CER, será feita avaliação para indicar o recurso de CAA mais adequado (prancha baixa/alta tecnologia)",
         "Para via educacional, matricule em escola pública e solicitar AEE — a Sala de Recursos Multifuncionais (SRM) recebe tablets via PDDE Acessibilidade",
-        "Receber o equipamento e treinamento; familiares e cuidadores devem ser capacitados",
+        "Receber o equipamento e treinamento; familiares e cuidadores são capacitados conjuntamente",
         "Acompanhar revisões periódicas (a evolução muda a necessidade do recurso)",
         "Se o CER demorar ou negar, acione Defensoria/Ministério Público com base na LBI Art. 18 e 28"
       ],
@@ -8998,7 +8998,7 @@
         "ARASAAC — banco internacional gratuito de pictogramas com licença Creative Commons, usado em CAA por todo o mundo (busque 'ARASAAC' em buscadores)",
         "PNLD Acessível distribui livros didáticos em Braille, Libras e audiolivro para alunos PcD da rede pública (FNDE)",
         "A escola pública é OBRIGADA a oferecer o AEE no contraturno — não pode condicionar matrícula à existência do serviço",
-        "Cuidadores familiares têm direito a participar da capacitação para uso da CAA — peça isso ao CER",
+        "Cuidadores familiares têm direito a participar da capacitação para uso da CAA — a solicitação é feita junto ao CER",
         "Apps gratuitos de CAA disponíveis em loja de aplicativos podem ser usados em qualquer tablet/celular (Android/iOS)",
         "Plano de saúde também é obrigado a custear terapias e equipamentos prescritos (Lei 9.656/98 + Lei 12.764/12 + Lei 13.830/19)"
       ],
@@ -9335,7 +9335,7 @@
         "A avaliação é GRATUITA e obrigatória para aposentadoria pela LC 142/2013",
         "Leve TODOS os laudos médicos antigos e recentes — quanto mais documentação, melhor a avaliação",
         "Se o INSS negar ou classificar grau menor que o esperado, é possível recorrer administrativamente em até 30 dias",
-        "Em caso de negativa indevida, procure a Defensoria Pública da União (DPU) — atendimento gratuito",
+        "Em caso de negativa indevida, o atendimento é feito em a Defensoria Pública da União (DPU) — atendimento gratuito",
         "A classificação influencia diretamente o tempo de contribuição exigido na aposentadoria"
       ],
       "valor": "Gratuito",
@@ -9523,9 +9523,9 @@
       "dicas": [
         "O serviço é GRATUITO e inclui transporte, alimentação e materiais durante o programa",
         "Empresas com 100+ empregados têm cota de PcD (Lei 8.213/91, Art. 93) — reabilitados contam para a cota",
-        "Se o empregador recusar reintegração pós-reabilitação, procure o Ministério Público do Trabalho (MPT)",
+        "Se o empregador recusar reintegração pós-reabilitação, via Ministério Público do Trabalho (MPT)",
         "Próteses, órteses e cadeiras de rodas podem ser fornecidas pelo INSS sem custo durante o programa",
-        "Em caso de negativa, recorra administrativamente em até 30 dias ou procure a DPU"
+        "Em caso de negativa, é possível recorrer administrativamente em até 30 dias ou via DPU"
       ],
       "valor": "Gratuito (inclui transporte, alimentação e materiais)",
       "onde": "Agências do INSS, Centros de Referência Profissional e Meu INSS",
@@ -9617,14 +9617,14 @@
         "Comparecer à perícia médica do INSS para avaliação",
         "Aguardar a análise e o reconhecimento do direito",
         "Em caso de deferimento, a pensão é vitalícia, mensal e cumulativa com outros benefícios",
-        "Para a indenização adicional (Lei 12.190/2010), faça pedido separado pela mesma via"
+        "Para a indenização adicional (Lei 12.190/2010), o pedido é feito separadamente pela mesma via"
       ],
       "dicas": [
         "A pensão é VITALÍCIA e CUMULATIVA com aposentadoria, BPC e outros benefícios",
         "Não exige contribuição prévia ao INSS — é benefício de natureza indenizatória",
         "A Lei 12.190/2010 garantiu indenização adicional única — verifique se já recebeu",
         "Os valores são reajustados periodicamente por leis específicas",
-        "Procure a Associação Brasileira dos Portadores da Síndrome da Talidomida (ABPST) para apoio jurídico"
+        "O(a) Associação Brasileira dos Portadores da Síndrome da Talidomida (ABPST) para apoio jurídico"
       ],
       "valor": "Pensão mensal vitalícia (valor proporcional ao grau de deficiência) + indenização adicional única (Lei 12.190/2010)",
       "onde": "Meu INSS (app ou meu.inss.gov.br) e agências do INSS",
@@ -9719,7 +9719,7 @@
         "A pensão é VITALÍCIA e CUMULATIVA com aposentadoria, BPC e outros benefícios",
         "Hospitais-colônia ativos no Brasil até 1986: Itanhenga (ES), Padre Bento (SP), Marituba (PA) entre outros",
         "Movimento de Reintegração das Pessoas Atingidas pela Hanseníase (MORHAN) oferece apoio para a comprovação",
-        "Em caso de negativa, procure a Defensoria Pública da União (DPU) — atendimento gratuito",
+        "Em caso de negativa, o atendimento é feito em a Defensoria Pública da União (DPU) — atendimento gratuito",
         "Familiares de pessoas já falecidas que foram isoladas têm direito à pensão por morte (dependentes habilitados)"
       ],
       "valor": "Pensão mensal vitalícia fixada em lei (atualizada periodicamente)",
@@ -9831,7 +9831,7 @@
       "dicas": [
         "Comece o planejamento ANTES da crise — converse com o CRAS enquanto os pais ainda têm condições, para construir vínculo e plano sucessório",
         "Mantenha o BPC ativo: o benefício continua sendo recebido pela pessoa acolhida e custeia parte do serviço",
-        "Procure também ONGs especializadas como AMA (SP), Lar Escola São Francisco, APAEs e Instituto Jô Clemente — algumas oferecem programas próprios complementares ao SUAS",
+        "Existem também ONGs especializadas como AMA (SP), Lar Escola São Francisco, APAEs e Instituto Jô Clemente — algumas oferecem programas próprios complementares ao SUAS",
         "Documentação do diagnóstico/laudo deve estar SEMPRE atualizada (≤ 2 anos) para acelerar o processo",
         "Defensoria Pública atua gratuitamente em casos de negativa ou demora — Lei 13.146/2015 Art. 79 garante prioridade processual para PcD"
       ],
