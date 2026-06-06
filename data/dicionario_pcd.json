@@ -1747,7 +1747,7 @@
       "descricao": "Documento médico obrigatório na maioria dos benefícios PcD. Deve conter: CID-10 ou CID-11, descrição funcional, data e assinatura do profissional.",
       "validade": "Geralmente 12 meses (verificar por benefício)",
       "categorias_que_exigem": 23,
-      "dica": "Solicite ao médico que inclua o CID, a descrição detalhada da limitação funcional e se o impedimento é de longo prazo (≥2 anos)."
+      "dica": "O laudo costuma incluir o CID, a descrição detalhada da limitação funcional e a informação sobre o caráter de longo prazo do impedimento (≥2 anos)."
     },
     {
       "id": "cadúnico",
