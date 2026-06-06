@@ -1130,7 +1130,7 @@ html.high-contrast ::selection {
 .hero {
     background: linear-gradient(135deg, #1e3a8a, #1e40af);
     color: #fff;
-    padding: 80px 0 40px;
+    padding: 56px 0 36px;
 }
 
 .hero-grid {
@@ -2015,6 +2015,39 @@ html.high-contrast .valor-destaque {
     margin: 0;
 }
 
+.docs-checklist-collapsible {
+    margin-bottom: 1.25rem;
+    border: 1px solid var(--border, #e5e7eb);
+    border-radius: 10px;
+    padding: 12px 16px;
+    background: var(--surface);
+}
+
+.docs-checklist-collapsible summary {
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 1.02rem;
+    padding: 4px 0;
+}
+
+.docs-checklist-collapsible .docs-checklist-title {
+    margin: 12px 0 8px;
+    font-size: 1.05rem;
+    text-align: left;
+}
+
+.docs-checklist-intro {
+    margin: 0 0 14px;
+    color: var(--text-muted);
+    text-align: left;
+    max-width: none;
+    font-size: 0.98rem;
+}
+
+.docs-checklist-actions-top {
+    margin-top: 0.75rem;
+}
+
 /* ---------- Links Grid (Sites Oficiais) ---------- */
 /* Mobile-first: lista compacta vertical (1 coluna).
    Desktop ≥ 768px: grid 2 colunas. ≥ 1100px: 3 colunas.
@@ -2089,6 +2122,39 @@ html.high-contrast .valor-destaque {
     .link-domain {
         display: none;
     }
+}
+
+/* ---------- Links Filter Bar ---------- */
+.links-filter-bar {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 24px;
+}
+
+.links-filter-btn {
+    padding: 6px 16px;
+    min-height: 44px;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    background: transparent;
+    color: var(--text);
+    cursor: pointer;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: background-color var(--transition), border-color var(--transition), color var(--transition);
+}
+
+.links-filter-btn:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+}
+
+.links-filter-btn.active {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: #fff;
 }
 
 /* ---------- Footer ---------- */
@@ -4303,7 +4369,7 @@ html.high-contrast .card-grid[data-active-trilha] .category-card {
     }
 
     .hero {
-        padding: 40px 0 32px;
+        padding: 28px 0 24px;
     }
 
     .hero-grid {

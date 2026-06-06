@@ -585,9 +585,9 @@
         }
       }
     </style>
-    <link rel="stylesheet" href="css/styles.css?v=1.43.18&rev=256.0" media="all" id="deferredCSS" />
+    <link rel="stylesheet" href="css/styles.css?v=1.43.19&rev=256.0" media="all" id="deferredCSS" />
     <noscript>
-      <link rel="stylesheet" href="css/styles.css?v=1.43.18&rev=256.0" />
+      <link rel="stylesheet" href="css/styles.css?v=1.43.19&rev=256.0" />
     </noscript>
     <script type="application/ld+json">
       {
@@ -1493,7 +1493,7 @@
                   <li><a href="#links" data-ref-target="#links">🔗 Sites Oficiais</a></li>
                   <li><a href="#classificacao" data-ref-target="#classificacao">🏥 CID-10/11</a></li>
                   <li><a href="#orgaos-estaduais" data-ref-target="#orgaos-estaduais">🏢 Estados</a></li>
-                  <li><a href="#transparencia" data-ref-target="#transparencia">📚 Fontes</a></li>
+                  <li><a href="#transparencia" data-ref-target="#transparencia">📚 Transparência</a></li>
                 </ul>
               </details>
             </li>
@@ -1726,7 +1726,7 @@
             <div class="hero-actions">
               <a href="#consultar" class="btn btn-lg btn-white"> 🔍 Consultar catálogo </a
               ><a href="#categorias" class="btn btn-lg btn-outline-white"> 📋 Ver categorias </a
-              ><a href="#referencias" class="btn btn-lg btn-outline-white"> 📚 Fontes oficiais </a>
+              ><a href="#links" class="btn btn-lg btn-outline-white"> 📚 Sites oficiais </a>
             </div>
             <div class="hero-legal-highlight" role="note" aria-label="Aviso importante">
               <p>
@@ -1764,18 +1764,17 @@
 
           <!-- v1.43.18: lista de docs movida para o topo da seção Consultar, acima dos filtros.
                Antes ficava abaixo de #analysisResults e era difícil de descobrir. -->
-          <details class="docs-checklist-collapsible" style="margin-bottom: 1.5rem; border: 1px solid var(--border, #e5e7eb); border-radius: 8px; padding: 12px 16px; background: var(--surface);">
-            <summary style="cursor: pointer; font-weight: 600; font-size: 1.05rem; padding: 4px 0;">
-              📚 Não sabe por onde começar? Veja a lista de documentos comuns
+          <details class="docs-checklist-collapsible">
+            <summary>
+              📚 Guia rápido de documentos por direito
             </summary>
-            <h3 class="docs-checklist-title" style="margin: 12px 0 8px; font-size: 1.05rem;">
-              📚 Documentos comuns × direitos onde são exigidos
+            <h3 class="docs-checklist-title">
+              Documentos comuns x direitos onde podem ser exigidos
             </h3>
-            <p class="section-desc" style="margin: 0 0 16px; color: var(--text-light);">
-              Tabela cruzada para consulta rápida. Cada documento mostra em quais das 42 categorias
-              de direitos pode ser pedido.
+            <p class="section-desc docs-checklist-intro">
+              Selecione um direito no filtro abaixo para ver apenas os documentos mais prováveis para aquele caso.
             </p>
-            <div class="docs-checklist-actions-bar" style="margin-top: 1rem;">
+            <div class="docs-checklist-actions-bar docs-checklist-actions-top">
               <div style="display: flex; gap: 8px; margin-left: auto;">
                 <button
                   id="shareDocsWhatsApp"
@@ -1956,10 +1955,10 @@
               role="tab"
               class="referencias-tab"
               id="referenciasTab-links"
-              aria-selected="false"
+              aria-selected="true"
               aria-controls="links"
               data-target="#links"
-              tabindex="-1"
+              tabindex="0"
             >🔗 <span>Sites Oficiais</span></button
             ><button
               type="button"
@@ -1996,11 +1995,11 @@
               role="tab"
               class="referencias-tab"
               id="referenciasTab-transparencia"
-              aria-selected="true"
+              aria-selected="false"
               aria-controls="transparencia"
               data-target="#transparencia"
-              tabindex="0"
-            >📚 <span>Fontes &amp; Aviso</span></button>
+              tabindex="-1"
+            >📚 <span>Transparência &amp; Aviso</span></button>
           </div>
 
           <div
@@ -2008,13 +2007,22 @@
             id="links"
             role="tabpanel"
             aria-labelledby="referenciasTab-links"
-            hidden
           >
             <h3 class="referencias-panel-title">🔗 Sites Oficiais do Governo</h3>
             <p class="section-desc">
               Todos os links abaixo são de sites oficiais do governo brasileiro. Gerados automaticamente a partir da base
               de dados.
             </p>
+            <div class="links-filter-bar" role="group" aria-label="Filtrar por órgão">
+              <button type="button" class="links-filter-btn active" data-filter="todos" aria-pressed="true">Todos</button
+              ><button type="button" class="links-filter-btn" data-filter="Planalto" aria-pressed="false">📜 Planalto</button
+              ><button type="button" class="links-filter-btn" data-filter="INSS" aria-pressed="false">📋 INSS</button
+              ><button type="button" class="links-filter-btn" data-filter="Saúde" aria-pressed="false">⚕️ Saúde</button
+              ><button type="button" class="links-filter-btn" data-filter="Gov.BR" aria-pressed="false">🏛️ Gov.BR</button
+              ><button type="button" class="links-filter-btn" data-filter="Conselhos" aria-pressed="false">👥 Conselhos</button
+              ><button type="button" class="links-filter-btn" data-filter="OMS" aria-pressed="false">🌐 OMS</button
+              ><button type="button" class="links-filter-btn" data-filter="Outros" aria-pressed="false">🔗 Outros</button>
+            </div>
             <div id="linksGrid" class="links-grid"></div>
           </div>
 
@@ -2095,6 +2103,7 @@
             id="transparencia"
             role="tabpanel"
             aria-labelledby="referenciasTab-transparencia"
+            hidden
           >
             <h3 class="referencias-panel-title">🔍 Transparência e Fontes Oficiais</h3>
           <p class="section-desc">
@@ -2631,7 +2640,7 @@
     </div>
 
     <!-- Anonymizer compartilhado (Node + Browser) — DEVE carregar ANTES de app.js -->
-    <script src="shared/anonymizer.js?v=1.43.18&rev=256.0" defer></script>
-    <script src="js/app.js?v=1.43.18&rev=256.0" defer></script>
+    <script src="shared/anonymizer.js?v=1.43.19&rev=256.0" defer></script>
+    <script src="js/app.js?v=1.43.19&rev=256.0" defer></script>
   </body>
 </html>

@@ -870,12 +870,17 @@
                 if (!target) return;
                 e.preventDefault();
                 const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-                if (href === '#inicio') {
-                    window.scrollTo({ top: 0, behavior: reduced ? 'auto' : 'smooth' });
-                } else {
-                    target.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'start' });
-                }
                 if (history.replaceState) history.replaceState(null, '', href);
+                // Garante layout estável após fechar drawer mobile antes do scroll.
+                requestAnimationFrame(() => {
+                    requestAnimationFrame(() => {
+                        if (href === '#inicio') {
+                            window.scrollTo({ top: 0, behavior: reduced ? 'auto' : 'smooth' });
+                        } else {
+                            target.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'start' });
+                        }
+                    });
+                });
             });
         });
         const sections = $$('section[id]');
@@ -2148,41 +2153,98 @@ Acessar site ↗
                 }
             });
         });
-        // Helper: match exato de host ou subdomínio (evita CodeQL
-        // js/incomplete-url-substring-sanitization — substring 'cfm.org'
-        // poderia casar com 'evil.com/cfm.org/path').
+        // Helper: match exato de host ou subdomínio
         const hostMatches = (host, suffix) =>
             host === suffix || host.endsWith('.' + suffix);
-        dom.linksGrid.innerHTML = links
-            .filter((lk) => isSafeUrl(lk.url))
-            .map((lk) => {
-                // Detecta esquema via URL API (não via startsWith em string
-                // lowercased) — evita CodeQL js/incomplete-url-scheme-check.
-                let parsedUrl = null;
-                try { parsedUrl = new URL(lk.url, window.location.origin); }
-                catch { /* tel:/blob:/mailto: já filtrados por isSafeUrl */ }
-                const isTel = parsedUrl?.protocol === 'tel:';
-                const domain = (() => {
-                    if (isTel) return (parsedUrl.pathname || lk.url.replace(/^tel:/i, ''));
-                    try { return new URL(lk.url).hostname.replace(/^www\./, ''); }
-                    catch { return ''; }
-                })();
-                const icon = isTel ? '📞'
-                    : hostMatches(domain, 'cfm.org.br') ? '👨‍⚕️'
-                        : hostMatches(domain, 'cfp.org.br') ? '🧠'
-                            : hostMatches(domain, 'who.int') ? '🌐'
-                                : (hostMatches(domain, 'gov.br') || domain.endsWith('.gov.br')) ? '🏛️'
-                                    : hostMatches(domain, 'inss.gov.br') ? '📋'
-                                        : hostMatches(domain, 'mds.gov.br') ? '🏠'
-                                            : '🔗';
-                return `
+        
+        // Categorizar links por domínio/órgão
+        const categorias = {
+            'Planalto': ['planalto.gov.br'],
+            'INSS': ['inss.gov.br'],
+            'MDS': ['mds.gov.br'],
+            'Saúde': ['saude.gov.br', 'ans.gov.br', 'anvisa.gov.br'],
+            'OMS': ['who.int'],
+            'Conselhos': ['cfm.org.br', 'cfp.org.br'],
+            'Gov.BR': [],  // genérico, pega resto dos .gov.br
+        };
+        
+        function classifyLink(domain) {
+            for (const [cat, domains] of Object.entries(categorias)) {
+                if (domains.some(d => hostMatches(domain, d))) {
+                    return cat;
+                }
+            }
+            if (hostMatches(domain, 'gov.br') || domain.endsWith('.gov.br')) {
+                return 'Gov.BR';
+            }
+            return 'Outros';
+        }
+        
+        function renderGrid(filter) {
+            const filtered = filter === 'todos'
+                ? links
+                : links.filter((lk) => {
+                    const domain = (() => {
+                        let parsedUrl = null;
+                        try { parsedUrl = new URL(lk.url, window.location.origin); }
+                        catch { return ''; }
+                        if (parsedUrl?.protocol === 'tel:') {
+                            return 'tel';
+                        }
+                        try { return new URL(lk.url).hostname.replace(/^www\./, ''); }
+                        catch { return ''; }
+                    })();
+                    return classifyLink(domain) === filter;
+                });
+            
+            if (filtered.length === 0) {
+                dom.linksGrid.innerHTML = '<p style="text-align:center;color:var(--text-muted);">Nenhum link nesta categoria.</p>';
+                return;
+            }
+            
+            dom.linksGrid.innerHTML = filtered
+                .filter((lk) => isSafeUrl(lk.url))
+                .map((lk) => {
+                    let parsedUrl = null;
+                    try { parsedUrl = new URL(lk.url, window.location.origin); }
+                    catch { /* te l:/blob:/mailto: já filtrados */ }
+                    const isTel = parsedUrl?.protocol === 'tel:';
+                    const domain = (() => {
+                        if (isTel) return (parsedUrl.pathname || lk.url.replace(/^tel:/i, ''));
+                        try { return new URL(lk.url).hostname.replace(/^www\./, ''); }
+                        catch { return ''; }
+                    })();
+                    const icon = isTel ? '📞'
+                        : hostMatches(domain, 'cfm.org.br') ? '👨‍⚕️'
+                            : hostMatches(domain, 'cfp.org.br') ? '🧠'
+                                : hostMatches(domain, 'who.int') ? '🌐'
+                                    : (hostMatches(domain, 'gov.br') || domain.endsWith('.gov.br')) ? '🏛️'
+                                        : hostMatches(domain, 'inss.gov.br') ? '📋'
+                                            : hostMatches(domain, 'mds.gov.br') ? '🏠'
+                                                : hostMatches(domain, 'saude.gov.br') ? '⚕️'
+                                                    : '🔗';
+                    return `
 <a href="${escapeHtml(lk.url)}" class="link-card" target="_blank" rel="noopener noreferrer">
 <span class="link-icon">${icon}</span>
 <span class="link-title">${escapeHtml(lk.titulo)}</span>
 <span class="link-domain">${escapeHtml(domain)}</span>
 </a>`;
-            })
-            .join('');
+                })
+                .join('');
+        }
+        
+        renderGrid('todos');
+        document.querySelectorAll('.links-filter-btn').forEach((btn) => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.links-filter-btn').forEach((b) => {
+                    b.classList.remove('active');
+                    b.setAttribute('aria-pressed', 'false');
+                });
+                btn.classList.add('active');
+                btn.setAttribute('aria-pressed', 'true');
+                renderGrid(btn.dataset.filter);
+            });
+        });
     }
     function renderHeroStats() {
         if (!direitosData || !fontesData) return;
@@ -4019,7 +4081,7 @@ com o assunto <strong>"Revisão humana — Art. 20 LGPD"</strong>.</p>
         // Fluxo: e.preventDefault → fecha drawer mobile → ativa a tab correta
         // → atualiza hash → aguarda 2 frames (rAF duplo) para o layout do
         // painel recém-revelado ser computado → scrollIntoView (que respeita
-        // scroll-padding-top: 132px do <html>, alinhando consistentemente com
+        // scroll-padding-top: 80px do <html>, alinhando consistentemente com
         // todos os outros anchors do nav).
         document.addEventListener('click', (e) => {
             const link = e.target instanceof Element ? e.target.closest('a[href^="#"]') : null;
