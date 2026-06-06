@@ -3154,12 +3154,20 @@ com o catálogo; <strong>não é parecer profissional</strong>. A confirmação 
     function renderAIPracticalSummary(ai, localResults) {
         const aiRights = Array.isArray(ai?.direitos_sugeridos) ? ai.direitos_sugeridos : [];
         const localIds = new Set((Array.isArray(localResults) ? localResults : []).map((r) => r?.category?.id).filter(Boolean));
-        const aiIds = [];
+
+        // v1.43.26 — Tier 3: dedup mantendo metadados (justificativa, confianca)
+        // para alimentar mini-cards inline (desambiguação de sugestões IA).
+        const aiSuggestionsById = new Map();
         aiRights.forEach((r) => {
             const catId = String(r?.categoria_id || '').trim();
-            if (!catId || aiIds.includes(catId)) return;
-            aiIds.push(catId);
+            if (!catId || aiSuggestionsById.has(catId)) return;
+            aiSuggestionsById.set(catId, {
+                id: catId,
+                justificativa: String(r?.justificativa || '').trim(),
+                confianca: String(r?.confianca || 'media').trim().toLowerCase(),
+            });
         });
+        const aiIds = Array.from(aiSuggestionsById.keys());
         const reinforced = aiIds.filter((id) => localIds.has(id));
         const newFromAI = aiIds.filter((id) => !localIds.has(id));
         const localTop = (Array.isArray(localResults) ? localResults : [])
@@ -3170,58 +3178,86 @@ com o catálogo; <strong>não é parecer profissional</strong>. A confirmação 
             .filter((id, idx, arr) => arr.indexOf(id) === idx)
             .slice(0, 3);
 
+        const catById = {};
         const titleById = {};
         if (Array.isArray(direitosData)) {
             direitosData.forEach((cat) => {
-                if (cat?.id) titleById[cat.id] = cat?.titulo || cat.id;
+                if (cat?.id) {
+                    catById[cat.id] = cat;
+                    titleById[cat.id] = cat?.titulo || cat.id;
+                }
             });
         }
 
-        const renderIdList = (ids, emptyText) => {
-            if (!ids.length) return `<p class="analysis-hint">${emptyText}</p>`;
-            return `<div class="analysis-ai-chip-list">${ids
-                .map((id) => `<span class="kw-tag mid">${escapeHtml(titleById[id] || id)}</span>`)
-                .join('')}</div>`;
+        // v1.43.26 — Tier 3: mini-card inline com justificativa literal da IA
+        // (resolve ambiguidade entre múltiplas sugestões competindo).
+        const confiancaLabel = (c) => c === 'alta' ? 'Alta confiança' : c === 'baixa' ? 'Baixa confiança' : 'Média confiança';
+        const renderSuggestionCard = (id, variant) => {
+            const cat = catById[id];
+            const titulo = cat?.titulo || titleById[id] || id;
+            const icone = cat?.icone || '📌';
+            const resumo = cat?.resumo || '';
+            const sug = aiSuggestionsById.get(id) || {};
+            const confianca = sug.confianca || 'media';
+            const justificativa = sug.justificativa || '';
+            const variantClass = variant === 'reinforced' ? 'analysis-ai-suggestion-card--reinforced' : 'analysis-ai-suggestion-card--new';
+            const variantLabel = variant === 'reinforced' ? '✅ Confirmado' : '🆕 Novo';
+            return `
+<article class="analysis-ai-suggestion-card ${variantClass}" data-cat-id="${escapeHtml(id)}">
+  <header class="analysis-ai-suggestion-card__header">
+    <span class="analysis-ai-suggestion-card__icon" aria-hidden="true">${icone}</span>
+    <div class="analysis-ai-suggestion-card__title">
+      <h4>${escapeHtml(titulo)}</h4>
+      <div class="analysis-ai-suggestion-card__badges">
+        <span class="analysis-ai-suggestion-card__variant">${variantLabel}</span>
+        <span class="analysis-ai-suggestion-card__confianca analysis-ai-suggestion-card__confianca--${escapeHtml(confianca)}" aria-label="${confiancaLabel(confianca)}">${confiancaLabel(confianca)}</span>
+      </div>
+    </div>
+  </header>
+  ${resumo ? `<p class="analysis-ai-suggestion-card__resumo">${escapeHtml(resumo)}</p>` : ''}
+  ${justificativa ? `
+  <blockquote class="analysis-ai-suggestion-card__quote" aria-label="Trecho citado do documento que motivou a sugestão">
+    <span class="analysis-ai-suggestion-card__quote-label">💬 Trecho do documento citado pela IA:</span>
+    <span class="analysis-ai-suggestion-card__quote-text">"${escapeHtml(justificativa)}"</span>
+  </blockquote>` : ''}
+  <div class="analysis-ai-suggestion-card__actions">
+    <button class="btn btn-sm btn-primary analysis-jump-category" data-id="${escapeHtml(id)}" type="button">
+      Abrir passo a passo →
+    </button>
+  </div>
+</article>`;
         };
 
-        const actionsHtml = priorityOrder.length
-            ? `<div class="analysis-ai-actions">${priorityOrder
-                .map((id) => `
-<button class="btn btn-sm btn-primary analysis-jump-category" data-id="${escapeHtml(id)}" type="button">
-Abrir passo a passo: ${escapeHtml(titleById[id] || id)}
-</button>`)
-                .join('')}</div>`
-            : `<p class="analysis-hint">Nenhuma ação adicional sugerida no momento.</p>`;
+        const renderSuggestionGroup = (ids, variant, emptyText) => {
+            if (!ids.length) return `<p class="analysis-hint">${emptyText}</p>`;
+            return `<div class="analysis-ai-suggestion-list">${ids.map((id) => renderSuggestionCard(id, variant)).join('')}</div>`;
+        };
 
         const weekPlanHtml = priorityOrder.length
             ? `
-<button class="btn btn-sm btn-secondary analysis-generate-week-plan" type="button" aria-expanded="false">
-🗓️ Gerar plano de 7 dias
-</button>
-${renderAIDocsChecklist()}
-${renderWeekPlan(priorityOrder, titleById)}
-<p class="analysis-ai-disclaimer"><strong>⚠️ Importante:</strong> esta sugestão de IA é informativa, baseada em fontes oficiais já indexadas pelo catálogo, e <strong>não substitui</strong> parecer profissional. A confirmação de elegibilidade cabe à <strong>Defensoria Pública</strong> (CF Art. 134) ou ao <strong>CRAS</strong> (Lei 8.742/1993) da sua cidade.</p>`
+<div class="analysis-ai-practical-next">
+  <button class="btn btn-sm btn-secondary analysis-generate-week-plan" type="button" aria-expanded="false">
+    🗓️ Gerar plano de 7 dias
+  </button>
+  ${renderAIDocsChecklist()}
+  ${renderWeekPlan(priorityOrder, titleById)}
+  <p class="analysis-ai-disclaimer"><strong>⚠️ Importante:</strong> esta sugestão de IA é informativa, baseada em fontes oficiais já indexadas pelo catálogo, e <strong>não substitui</strong> parecer profissional. A confirmação de elegibilidade cabe à <strong>Defensoria Pública</strong> (CF Art. 134) ou ao <strong>CRAS</strong> (Lei 8.742/1993) da sua cidade.</p>
+</div>`
             : '';
 
         return `
 <div class="analysis-ai-practical" role="region" aria-label="Resumo prático do que mudou com IA">
   <h3>🎯 O que mudou com IA</h3>
-  <p class="analysis-ai-practical-intro">Resumo para decisão rápida no dia a dia, combinando análise local e IA.</p>
-  <div class="analysis-ai-practical-grid">
-    <div>
-      <strong>✅ Direitos confirmados pela IA</strong>
-      ${renderIdList(reinforced, 'A IA não trouxe confirmações adicionais sobre os direitos já detectados localmente.')}
-    </div>
-    <div>
-      <strong>🆕 Novos direitos sugeridos pela IA</strong>
-      ${renderIdList(newFromAI, 'A IA não sugeriu novos direitos além dos já detectados localmente.')}
-    </div>
+  <p class="analysis-ai-practical-intro">Cada sugestão da IA mostra o <strong>trecho literal do seu documento</strong> que motivou a indicação — ajuda você a comparar e escolher antes de abrir o passo a passo.</p>
+  <div class="analysis-ai-practical-section">
+    <strong class="analysis-ai-practical-section__label">✅ Direitos confirmados pela IA (já detectados localmente)</strong>
+    ${renderSuggestionGroup(reinforced, 'reinforced', 'A IA não trouxe confirmações adicionais sobre os direitos já detectados localmente.')}
   </div>
-  <div class="analysis-ai-practical-next">
-    <strong>📌 Próximas ações sugeridas</strong>
-    ${actionsHtml}
-        ${weekPlanHtml}
+  <div class="analysis-ai-practical-section">
+    <strong class="analysis-ai-practical-section__label">🆕 Novos direitos sugeridos pela IA</strong>
+    ${renderSuggestionGroup(newFromAI, 'new', 'A IA não sugeriu novos direitos além dos já detectados localmente.')}
   </div>
+  ${weekPlanHtml}
 </div>`;
     }
     // ── Análise IA: consentimento LGPD + chamada ao backend + renderização ──
