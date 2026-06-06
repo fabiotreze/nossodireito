@@ -1557,9 +1557,11 @@ style="margin-top:16px;display:inline-block">
                 });
             }
         }
-        dom.detalheSection.scrollIntoView({ behavior: 'smooth' });
+        // v1.43.12: scroll para a seção #detalhe (não para o topo absoluto da
+        // página). v1.43.5 introduziu um window.scrollTo({top:0}) que sobrescrevia
+        // o scrollIntoView e levava o usuário ao hero ao abrir um direito.
         const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        window.scrollTo({ top: 0, behavior: reduced ? 'auto' : 'smooth' });
+        dom.detalheSection.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'start' });
         const h2 = dom.detalheSection.querySelector('h2');
         if (h2) { h2.setAttribute('tabindex', '-1'); h2.focus({ preventScroll: true }); }
     }
