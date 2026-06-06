@@ -1,6 +1,6 @@
 # Runbook de Operações
 
-**Versão:** 1.43.35
+**Versão:** 1.43.36
 
 ## Escopo
 
