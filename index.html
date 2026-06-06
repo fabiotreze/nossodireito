@@ -585,9 +585,9 @@
         }
       }
     </style>
-    <link rel="stylesheet" href="css/styles.css?v=1.43.10&rev=256.0" media="all" id="deferredCSS" />
+    <link rel="stylesheet" href="css/styles.css?v=1.43.11&rev=256.0" media="all" id="deferredCSS" />
     <noscript>
-      <link rel="stylesheet" href="css/styles.css?v=1.43.10&rev=256.0" />
+      <link rel="stylesheet" href="css/styles.css?v=1.43.11&rev=256.0" />
     </noscript>
     <script type="application/ld+json">
       {
@@ -675,7 +675,7 @@
             "position": 2,
             "name": "Reunir documentação e laudo médico",
             "text": "Obtenha laudo médico atualizado com CID da deficiência e descrição funcional. Reúna documentos pessoais, comprovante de residência e de renda de todos os membros da família.",
-            "url": "https://nossodireito.fabiotreze.com/#documentos"
+            "url": "https://nossodireito.fabiotreze.com/#consultar"
           },
           {
             "@type": "HowToStep",
@@ -1477,9 +1477,8 @@
           </button>
           <ul class="nav-links" id="navLinks" role="list">
             <li><a href="#inicio" class="active">Início</a></li>
-            <li><a href="#busca">Buscar</a></li>
+            <li><a href="#consultar">Consultar</a></li>
             <li><a href="#categorias">Categorias</a></li>
-            <li><a href="#documentos">Documentos</a></li>
             <li class="nav-submenu">
               <details class="nav-submenu-details" data-nav-submenu>
                 <summary
@@ -1725,7 +1724,7 @@
               médicos ou sociais.</strong> Cada direito traz sua base legal e o link oficial — você lê direto da fonte.
             </p>
             <div class="hero-actions">
-              <a href="#busca" class="btn btn-lg btn-white"> 🔍 Buscar no catálogo </a
+              <a href="#consultar" class="btn btn-lg btn-white"> 🔍 Consultar catálogo </a
               ><a href="#categorias" class="btn btn-lg btn-outline-white"> 📋 Ver categorias </a
               ><a href="#referencias" class="btn btn-lg btn-outline-white"> 📚 Fontes oficiais </a>
             </div>
@@ -1756,124 +1755,95 @@
           </div>
         </div>
       </section>
-      <section class="section" id="busca">
+      <section class="section" id="consultar">
         <div class="container">
-          <h2>🔍 O que você precisa saber?</h2>
+          <h2>🔍 Consultar o catálogo</h2>
           <p class="section-desc">
-            Digite palavras como: <em>BPC</em>, <em>saúde</em>, <em>escola</em>, <em>transporte</em>, <em>trabalho</em>,
-            <em>TEA</em>, <em>IPVA</em>, <em>moradia</em>, <em>CRAS</em>, <em>FGTS</em>, <em>CID</em>,
-            <em>Libras</em>...
+            Digite palavras-chave (BPC, escola, IPVA, CID...) ou <strong>📎 anexe um laudo</strong> para identificar direitos relacionados.
           </p>
-          <div class="search-box">
+          <div class="consulta-bar">
             <label for="searchInput" class="sr-only">Buscar direitos</label>
             <input
               type="search"
               id="searchInput"
               class="search-input"
               maxlength="200"
-              placeholder="Ex: BPC, saúde, escola, trabalho, IPVA..."
+              placeholder="Ex: BPC, saúde, escola, IPVA, FGTS, CID..."
               autocomplete="off"
             />
-            <button id="searchBtn" class="btn btn-primary" type="button" aria-label="Buscar">Buscar</button>
-          </div>
-          <div id="searchResults" class="search-results" aria-live="polite"></div>
-        </div>
-      </section>
-      <section class="section section-alt" id="categorias">
-        <div class="container">
-          <h2>📋 Categorias de direitos</h2>
-          <p class="section-desc">
-            Todas as 42 categorias listadas abaixo. <strong>Use os botões por área</strong> para filtrar e focar no que
-            importa para você — cada categoria traz passo a passo e base legal.
-          </p>
-          <div
-            id="trilhaTabs"
-            class="trilha-tabs trilha-tabs--cards"
-            role="tablist"
-            aria-label="Filtrar categorias por área"
-          ></div>
-          <div id="categoryGrid" class="card-grid" role="tabpanel" aria-labelledby="trilhaTab-todas"></div>
-        </div>
-      </section>
-      <section class="section" id="detalhe" style="display: none">
-        <div class="container">
-          <button id="voltarBtn" class="btn btn-outline btn-sm" type="button">← Voltar às categorias</button>
-          <div id="detalheContent" aria-live="polite"></div>
-        </div>
-      </section>
-      <section class="section" id="documentos">
-        <div class="container">
-          <h2>📎 Análise de Documentos</h2>
-          <p class="section-desc">
-            Faça upload do seu laudo ou documento para identificar seus direitos. A análise é 100% local — o arquivo é
-            <strong>criptografado, analisado e descartado automaticamente</strong>.
-          </p>
-          <div id="docsUploadArea" class="docs-upload-area">
-            <div
-              class="upload-zone"
-              id="uploadZone"
-              role="button"
-              tabindex="0"
-              aria-label="Clique ou arraste arquivos para enviar"
-            >
-              <div class="upload-icon">📄</div>
-              <p class="upload-text">Arraste arquivos aqui ou <strong>clique para selecionar</strong></p>
-              <p class="upload-hint">PDF, JPG ou PNG · Máx. 5MB por arquivo · Até 5 arquivos</p>
-            </div>
             <input
               type="file"
               id="fileInput"
               multiple
               accept=".pdf,.jpg,.jpeg,.png"
               class="sr-only"
-              aria-label="Selecionar arquivos para análise (PDF, JPG ou PNG)"
+              aria-label="Selecionar arquivos para análise (PDF, JPG ou PNG, máx. 5MB, até 5 arquivos)"
             />
+            <button
+              type="button"
+              id="uploadZone"
+              class="btn btn-outline btn-attach"
+              aria-label="Anexar laudo ou documento (PDF, JPG, PNG · máx. 5MB · até 5 arquivos · também aceita arrastar)"
+            >
+              📎 <span class="btn-attach__label">Anexar</span>
+            </button>
+            <button id="searchBtn" class="btn btn-primary" type="button" aria-label="Buscar">
+              🔍 <span class="btn-attach__label">Buscar</span>
+            </button>
+          </div>
+
+          <!-- Área de documentos: aparece somente quando há arquivos anexados -->
+          <div id="docsUploadArea" class="docs-upload-area" hidden>
             <div id="fileList" class="file-list" aria-live="polite"></div>
-            <button id="analyzeSelected" class="btn btn-primary btn-analyze-global" type="button" disabled>
-              🔍 Enviar para análise local
-            </button>
-            <button id="analyzeWithAI" class="btn btn-ai btn-analyze-global" type="button" disabled
-                    aria-describedby="aiAnalysisHint">
-              🧠 Analisar com IA (servidor)
-            </button>
-            <p id="aiAnalysisHint" class="upload-hint" style="margin-top:6px;">
-              💡 A análise com IA envia o <strong>texto anonimizado</strong> (sem nome, CPF, RG, endereço, telefone) para o
-              <strong>Azure OpenAI (gpt-4o-mini)</strong> em região Brasil. Requer seu consentimento explícito (LGPD Art. 7º I).
-            </p>
-            <div id="aiConsentQuickActions" class="ai-consent-quick-actions" role="region" aria-label="Gerenciamento rápido de consentimento de IA">
-              <div class="ai-consent-quick-header">
-                <p class="ai-consent-quick-title">
-                  ⚖️ Consentimento de IA (LGPD Art. 8º §5)
-                </p>
-                <span id="aiConsentQuickStatus" class="ai-consent-status-badge" aria-live="polite">Verificando status...</span>
-              </div>
-              <p class="ai-consent-quick-text">
-                Você pode revogar a qualquer momento. Se não houver consentimento salvo,
-                a solicitação aparecerá antes da próxima análise com IA.
-              </p>
-              <div class="ai-consent-quick-actions-row">
-                <button
-                  id="aiConsentRevokeQuick"
-                  class="btn btn-consent-revoke btn-consent-quick"
-                  type="button"
-                  aria-describedby="aiConsentQuickStatus"
-                  disabled
-                >
-                  🔒 Nenhum consentimento ativo
-                </button>
-              </div>
-            </div>
-            <div class="upload-privacy">
-              <p>
-                🔒 <strong>Consulta pontual:</strong> seus arquivos são criptografados (AES-256), analisados localmente
-                e <strong>descartados automaticamente após a análise</strong>. Nenhum arquivo é enviado para servidores.
-                Arquivos não analisados expiram em 15 minutos.
-              </p>
+            <div class="consulta-actions">
+              <button id="analyzeSelected" class="btn btn-primary" type="button" disabled>
+                🔍 Analisar localmente
+              </button>
+              <button id="analyzeWithAI" class="btn btn-ai" type="button" disabled
+                      aria-describedby="aiAnalysisHint">
+                🧠 Analisar com IA
+              </button>
               <button id="deleteAllFiles" class="btn btn-sm btn-danger" type="button" style="display: none">
-                🗑️ Apagar todos os arquivos
+                🗑️ Apagar todos
               </button>
             </div>
+            <details class="consulta-privacy-details">
+              <summary>🔒 Privacidade, criptografia e consentimento (LGPD)</summary>
+              <p id="aiAnalysisHint" class="upload-hint">
+                💡 <strong>Análise local:</strong> arquivos criptografados (AES-256), analisados no seu navegador
+                e descartados após uso. Arquivos não analisados expiram em 15 minutos.
+              </p>
+              <p class="upload-hint">
+                💡 <strong>Análise com IA:</strong> envia o texto <strong>anonimizado</strong> (sem nome, CPF, RG,
+                endereço, telefone) para o <strong>Azure OpenAI (gpt-4o-mini)</strong> em região Brasil. Requer
+                consentimento explícito (LGPD Art. 7º I).
+              </p>
+              <div id="aiConsentQuickActions" class="ai-consent-quick-actions" role="region" aria-label="Gerenciamento rápido de consentimento de IA">
+                <div class="ai-consent-quick-header">
+                  <p class="ai-consent-quick-title">⚖️ Consentimento de IA (LGPD Art. 8º §5)</p>
+                  <span id="aiConsentQuickStatus" class="ai-consent-status-badge" aria-live="polite">Verificando status...</span>
+                </div>
+                <p class="ai-consent-quick-text">
+                  Você pode revogar a qualquer momento. Se não houver consentimento salvo,
+                  a solicitação aparecerá antes da próxima análise com IA.
+                </p>
+                <div class="ai-consent-quick-actions-row">
+                  <button
+                    id="aiConsentRevokeQuick"
+                    class="btn btn-consent-revoke btn-consent-quick"
+                    type="button"
+                    aria-describedby="aiConsentQuickStatus"
+                    disabled
+                  >
+                    🔒 Nenhum consentimento ativo
+                  </button>
+                </div>
+              </div>
+            </details>
           </div>
+
+          <!-- Resultados unificados -->
+          <div id="searchResults" class="search-results" aria-live="polite"></div>
           <div
             id="analysisResults"
             class="analysis-results"
@@ -1909,12 +1879,13 @@
             </div>
             <div id="analysisContent"></div>
           </div>
+
           <details class="docs-checklist-collapsible" style="margin-top: 2rem; border-top: 1px solid var(--border, #e5e7eb); padding-top: 1rem;">
-            <summary style="cursor: pointer; font-weight: 600; font-size: 1.1rem; padding: 8px 0;">
-              📋 Documentos Necessários por Direito (clique para ver lista completa)
+            <summary style="cursor: pointer; font-weight: 600; font-size: 1.05rem; padding: 8px 0;">
+              📋 Documentos por direito (lista completa)
             </summary>
             <div class="docs-checklist-actions-bar" style="margin-top: 1rem;">
-              <h3 class="docs-checklist-title">📋 Documentos Necessários por Direito</h3>
+              <h3 class="docs-checklist-title">📋 Documentos por direito</h3>
               <div style="display: flex; gap: 8px">
                 <button
                   id="shareDocsWhatsApp"
@@ -1934,11 +1905,33 @@
               </div>
             </div>
             <p class="section-desc" style="margin-bottom: 16px">
-              Com base nas categorias de direitos, estes são os documentos que você pode precisar. Marque os que já tem em
-              mãos.
+              Com base nas categorias de direitos, estes são os documentos que você pode precisar.
+              Marque os que já tem em mãos.
             </p>
             <div id="docsChecklist" class="docs-checklist"></div>
           </details>
+        </div>
+      </section>
+      <section class="section section-alt" id="categorias">
+        <div class="container">
+          <h2>📋 Categorias de direitos</h2>
+          <p class="section-desc">
+            Todas as 42 categorias listadas abaixo. <strong>Use os botões por área</strong> para filtrar e focar no que
+            importa para você — cada categoria traz passo a passo e base legal.
+          </p>
+          <div
+            id="trilhaTabs"
+            class="trilha-tabs trilha-tabs--cards"
+            role="tablist"
+            aria-label="Filtrar categorias por área"
+          ></div>
+          <div id="categoryGrid" class="card-grid" role="tabpanel" aria-labelledby="trilhaTab-todas"></div>
+        </div>
+      </section>
+      <section class="section" id="detalhe" style="display: none">
+        <div class="container">
+          <button id="voltarBtn" class="btn btn-outline btn-sm" type="button">← Voltar às categorias</button>
+          <div id="detalheContent" aria-live="polite"></div>
         </div>
       </section>
       <section class="section section-alt" id="referencias" aria-labelledby="referenciasTitle">
@@ -2633,7 +2626,7 @@
     </div>
 
     <!-- Anonymizer compartilhado (Node + Browser) — DEVE carregar ANTES de app.js -->
-    <script src="shared/anonymizer.js?v=1.43.10&rev=256.0" defer></script>
-    <script src="js/app.js?v=1.43.10&rev=256.0" defer></script>
+    <script src="shared/anonymizer.js?v=1.43.11&rev=256.0" defer></script>
+    <script src="js/app.js?v=1.43.11&rev=256.0" defer></script>
   </body>
 </html>
