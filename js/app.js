@@ -3942,7 +3942,15 @@ com o assunto <strong>"Revisão humana — Art. 20 LGPD"</strong>.</p>
                 activateReferenciasTabByHash('#transparencia');
                 // Atualiza hash sem disparar scroll nativo, depois faz scroll suave preciso
                 if (history.replaceState) history.replaceState(null, '', '#disclaimerInline');
-                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                // v1.43.15: aguarda 2 frames para o browser fazer o layout do painel
+                // recém-revelado (tab estava hidden), senão scrollIntoView mede a
+                // posição errada e o usuário cai no meio da página.
+                const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+                requestAnimationFrame(() => {
+                    requestAnimationFrame(() => {
+                        target.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'start' });
+                    });
+                });
             });
         });
     }

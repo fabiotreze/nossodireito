@@ -585,9 +585,9 @@
         }
       }
     </style>
-    <link rel="stylesheet" href="css/styles.css?v=1.43.14&rev=256.0" media="all" id="deferredCSS" />
+    <link rel="stylesheet" href="css/styles.css?v=1.43.15&rev=256.0" media="all" id="deferredCSS" />
     <noscript>
-      <link rel="stylesheet" href="css/styles.css?v=1.43.14&rev=256.0" />
+      <link rel="stylesheet" href="css/styles.css?v=1.43.15&rev=256.0" />
     </noscript>
     <script type="application/ld+json">
       {
@@ -1882,32 +1882,34 @@
 
           <details class="docs-checklist-collapsible" style="margin-top: 2rem; border-top: 1px solid var(--border, #e5e7eb); padding-top: 1rem;">
             <summary style="cursor: pointer; font-weight: 600; font-size: 1.05rem; padding: 8px 0;">
-              📋 Documentos por direito (lista completa)
+              📚 Lista de referência: documentos comuns e em quais direitos são exigidos
             </summary>
+            <h3 class="docs-checklist-title" style="margin: 12px 0 8px; font-size: 1.05rem;">
+              📚 Documentos comuns × direitos onde são exigidos
+            </h3>
+            <p class="section-desc" style="margin: 0 0 16px; color: var(--text-light);">
+              Tabela cruzada para consulta rápida. Cada documento mostra em quais das 42 categorias
+              de direitos pode ser pedido. Use se ainda não sabe por onde começar a reunir papelada.
+            </p>
             <div class="docs-checklist-actions-bar" style="margin-top: 1rem;">
-              <h3 class="docs-checklist-title">📋 Documentos por direito</h3>
-              <div style="display: flex; gap: 8px">
+              <div style="display: flex; gap: 8px; margin-left: auto;">
                 <button
                   id="shareDocsWhatsApp"
                   class="btn btn-sm btn-whatsapp"
                   type="button"
-                  aria-label="Compartilhar documentos no WhatsApp"
+                  aria-label="Compartilhar lista de documentos no WhatsApp"
                 >
                   📲 WhatsApp</button
                 ><button
                   id="exportDocsChecklistPdf"
                   class="btn btn-sm btn-outline"
                   type="button"
-                  aria-label="Salvar documentos como PDF"
+                  aria-label="Salvar lista de documentos como PDF"
                 >
                   📥 Salvar PDF
                 </button>
               </div>
             </div>
-            <p class="section-desc" style="margin-bottom: 16px">
-              Com base nas categorias de direitos, estes são os documentos que você pode precisar.
-              Marque os que já tem em mãos.
-            </p>
             <div id="docsChecklist" class="docs-checklist"></div>
           </details>
         </div>
@@ -2626,7 +2628,7 @@
     </div>
 
     <!-- Anonymizer compartilhado (Node + Browser) — DEVE carregar ANTES de app.js -->
-    <script src="shared/anonymizer.js?v=1.43.14&rev=256.0" defer></script>
-    <script src="js/app.js?v=1.43.14&rev=256.0" defer></script>
+    <script src="shared/anonymizer.js?v=1.43.15&rev=256.0" defer></script>
+    <script src="js/app.js?v=1.43.15&rev=256.0" defer></script>
   </body>
 </html>

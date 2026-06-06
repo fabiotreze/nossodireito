@@ -4051,6 +4051,9 @@ html.high-contrast .valor-destaque {
     padding: 1.5rem;
     margin-top: 2rem;
     line-height: 1.7;
+    /* v1.43.15: garante que o alvo do anchor #disclaimerInline pare abaixo
+       da navbar fixa (64px) com folga visual ao ser focado via scrollIntoView. */
+    scroll-margin-top: 80px;
 }
 
 .disclaimer-title {

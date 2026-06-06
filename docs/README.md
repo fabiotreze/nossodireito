@@ -1,6 +1,6 @@
 # Índice da Documentação
 
-**Versão:** 1.43.14
+**Versão:** 1.43.15
 
 ## Documentos Principais
 
