@@ -1,5 +1,5 @@
 {
-  "versao": "1.43.11",
+  "versao": "1.43.15",
   "ultima_atualizacao": "2026-06-05",
   "aviso": "Informações compiladas de fontes oficiais do governo brasileiro (gov.br). Podem estar desatualizadas. Verifique sempre as fontes originais.",
   "fontes": [
@@ -957,7 +957,7 @@
         "protecao_social",
         "acessibilidade_arquitetonica"
       ],
-      "dica": "Se mora de aluguel sem conta no nome, peça declaração do proprietário com firma reconhecida"
+      "dica": "Quando o comprovante de residência não está no nome do(a) beneficiário(a), uma declaração do(a) proprietário(a) com firma reconhecida costuma ser aceita."
     },
     {
       "id": "laudo_medico",
@@ -992,7 +992,7 @@
         "capacidade_legal",
         "acessibilidade_digital"
       ],
-      "dica": "Guarde SEMPRE o original. Faça várias cópias autenticadas. O laudo é seu documento mais importante."
+      "dica": "O laudo médico original costuma ser exigido por vários órgãos. Cópias autenticadas são aceitas na maioria dos processos."
     },
     {
       "id": "nis",
@@ -1016,7 +1016,7 @@
         "prouni_fies_sisu",
         "bolsa_familia"
       ],
-      "dica": "Quem não tem renda formal pode fazer declaração de próprio punho"
+      "dica": "Quem não tem renda formal pode apresentar declaração de próprio punho."
     },
     {
       "id": "foto_3x4",
@@ -1035,7 +1035,7 @@
         "sus_terapias",
         "reabilitacao"
       ],
-      "dica": "Se não tiver, faça na UBS mais próxima levando RG e comprovante de residência"
+      "dica": "O Cartão SUS pode ser obtido em qualquer UBS levando RG e comprovante de residência."
     },
     {
       "id": "carteirinha_plano",
@@ -1044,7 +1044,7 @@
       "categorias": [
         "plano_saude"
       ],
-      "dica": "Tenha sempre uma foto no celular para emergências"
+      "dica": "Uma foto da carteirinha no celular costuma ser aceita em emergências."
     },
     {
       "id": "prescricao_medica",
@@ -1055,7 +1055,7 @@
         "sus_terapias",
         "reabilitacao"
       ],
-      "dica": "Peça ao médico que detalhe: tipo de terapia, quantidade de sessões por semana e justificativa"
+      "dica": "Para receitas de terapia, o laudo geralmente precisa conter: tipo de terapia, quantidade de sessões por semana e justificativa clínica."
     },
     {
       "id": "ctps",
@@ -1087,7 +1087,7 @@
       "categorias": [
         "moradia"
       ],
-      "dica": "Solicite uma cópia ao síndico ou à administradora. Se a convenção proibir adaptações de acessibilidade, ela é NULA nesse ponto (Art. 58 da LBI)."
+      "dica": "A convenção pode ser solicitada ao(à) síndico(a) ou à administradora. Cláusulas que proíbam adaptações de acessibilidade são nulas (Art. 58 da LBI)."
     },
     {
       "id": "comprovante_deficiencia",
@@ -1116,7 +1116,7 @@
       "categorias": [
         "tarifa_social_energia"
       ],
-      "dica": "Exija que o médico especifique o nome do equipamento, potência aproximada e justificativa clínica para uso contínuo. Lista oficial de equipamentos elegíveis está disponível no site da ANEEL."
+      "dica": "Para tarifa social com base em equipamento médico, a prescrição costuma precisar conter: nome do equipamento, potência aproximada e justificativa clínica para uso contínuo. A lista oficial de equipamentos elegíveis está disponível no site da ANEEL."
     }
   ],
   "instituicoes_apoio": [

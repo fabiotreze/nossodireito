@@ -1557,9 +1557,11 @@ style="margin-top:16px;display:inline-block">
                 });
             }
         }
-        dom.detalheSection.scrollIntoView({ behavior: 'smooth' });
+        // v1.43.12: scroll para a seção #detalhe (não para o topo absoluto da
+        // página). v1.43.5 introduziu um window.scrollTo({top:0}) que sobrescrevia
+        // o scrollIntoView e levava o usuário ao hero ao abrir um direito.
         const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        window.scrollTo({ top: 0, behavior: reduced ? 'auto' : 'smooth' });
+        dom.detalheSection.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'start' });
         const h2 = dom.detalheSection.querySelector('h2');
         if (h2) { h2.setAttribute('tabindex', '-1'); h2.focus({ preventScroll: true }); }
     }
@@ -1984,42 +1986,90 @@ ${isSafeUrl(f.url) ? `<a href="${escapeHtml(f.url)}" target="_blank" rel="noopen
     }
     function renderDocsChecklist() {
         if (!docsMestreData || !direitosData || !dom.docsChecklist) return;
-        const saved = localGet('docs_checklist') || {};
         const catNameMap = {};
         direitosData.forEach((c) => {
             catNameMap[c.id] = c.titulo.split('—')[0].trim();
         });
-        dom.docsChecklist.innerHTML = docsMestreData
-            .map((doc) => {
-                const checked = saved[doc.id] ? 'checked' : '';
-                const catTags = (doc.categorias || [])
-                    .map((cid) => `<span class="doc-cat-tag">${escapeHtml(catNameMap[cid] || cid)}</span>`)
-                    .join('');
-                return `
-<div class="doc-master-item">
-<label class="doc-master-header">
-<input type="checkbox" data-doc-id="${doc.id}" ${checked}>
-<div class="doc-master-info">
-<div class="doc-master-name">${escapeHtml(doc.nome)}</div>
-<div class="doc-master-desc">${escapeHtml(doc.descricao)}</div>
-<div class="doc-master-categories">${catTags}</div>
-</div>
-</label>
-${doc.dica ? `<div class="doc-master-dica">💡 ${escapeHtml(doc.dica)}</div>` : ''}
-</div>`;
-            })
-            .join('');
-        dom.docsChecklist.querySelectorAll('input[type="checkbox"]').forEach((cb) => {
-            cb.addEventListener('change', () => {
-                const state = localGet('docs_checklist') || {};
-                if (cb.checked) {
-                    state[cb.dataset.docId] = true;
-                } else {
-                    delete state[cb.dataset.docId];
-                }
-                localSet('docs_checklist', state);
+        // Coleta direitos únicos referenciados em documentos_mestre (com contagem)
+        const direitoCount = new Map();
+        docsMestreData.forEach((doc) => {
+            (doc.categorias || []).forEach((cid) => {
+                direitoCount.set(cid, (direitoCount.get(cid) || 0) + 1);
             });
         });
+        const direitosOrdenados = [...direitoCount.entries()]
+            .map(([id, count]) => ({ id, name: catNameMap[id] || id, count }))
+            .sort((a, b) => a.name.localeCompare(b.name, 'pt-BR'));
+
+        // Renderiza filtro + lista (estrutura preservada para acessibilidade)
+        const filterId = 'docsChecklistFilter';
+        const filterHtml = `
+<div class="docs-checklist-filter">
+<label for="${filterId}" class="docs-checklist-filter-label">Mostrar documentos para:</label>
+<select id="${filterId}" class="docs-checklist-filter-select" aria-label="Filtrar documentos por direito">
+<option value="__all__">Todos os direitos (${docsMestreData.length} documentos)</option>
+${direitosOrdenados.map((d) => `<option value="${escapeHtml(d.id)}">${escapeHtml(d.name)} (${d.count})</option>`).join('')}
+</select>
+<span class="docs-checklist-count" id="docsChecklistCount" aria-live="polite"></span>
+</div>
+<div class="docs-checklist-list" id="docsChecklistList"></div>`;
+        dom.docsChecklist.innerHTML = filterHtml;
+        const listEl = document.getElementById('docsChecklistList');
+        const countEl = document.getElementById('docsChecklistCount');
+        const selectEl = document.getElementById(filterId);
+
+        function renderItems(filter) {
+            const saved = localGet('docs_checklist') || {};
+            const filtered = filter === '__all__'
+                ? docsMestreData
+                : docsMestreData.filter((doc) => (doc.categorias || []).includes(filter));
+            if (countEl) {
+                countEl.textContent = filter === '__all__'
+                    ? ''
+                    : `${filtered.length} documento${filtered.length === 1 ? '' : 's'} para este direito`;
+            }
+            listEl.innerHTML = filtered.map((doc) => {
+                const checked = saved[doc.id] ? 'checked' : '';
+                const catTags = (doc.categorias || [])
+                    .slice(0, 6)
+                    .map((cid) => `<span class="doc-cat-tag">${escapeHtml(catNameMap[cid] || cid)}</span>`)
+                    .join('');
+                const moreTags = (doc.categorias || []).length > 6
+                    ? `<span class="doc-cat-tag doc-cat-tag--more" title="${escapeHtml((doc.categorias || []).slice(6).map(c => catNameMap[c] || c).join(', '))}">+${(doc.categorias || []).length - 6}</span>`
+                    : '';
+                return `
+<article class="doc-master-item">
+<label class="doc-master-header">
+<input type="checkbox" data-doc-id="${doc.id}" ${checked} aria-label="Marcar ${escapeHtml(doc.nome)} como providenciado">
+<div class="doc-master-info">
+<h4 class="doc-master-name">${escapeHtml(doc.nome)}</h4>
+<p class="doc-master-desc">${escapeHtml(doc.descricao)}</p>
+</div>
+</label>
+<div class="doc-master-meta">
+<div class="doc-master-categories" aria-label="Direitos que utilizam este documento">${catTags}${moreTags}</div>
+${doc.dica ? `<p class="doc-master-dica"><span aria-hidden="true">💡</span> <span class="sr-only">Observação:</span> ${escapeHtml(doc.dica)}</p>` : ''}
+</div>
+</article>`;
+            }).join('');
+            // Re-attach checkbox handlers em items recém-renderizados
+            listEl.querySelectorAll('input[type="checkbox"]').forEach((cb) => {
+                cb.addEventListener('change', () => {
+                    const state = localGet('docs_checklist') || {};
+                    if (cb.checked) {
+                        state[cb.dataset.docId] = true;
+                    } else {
+                        delete state[cb.dataset.docId];
+                    }
+                    localSet('docs_checklist', state);
+                });
+            });
+        }
+
+        renderItems('__all__');
+        if (selectEl) {
+            selectEl.addEventListener('change', () => renderItems(selectEl.value));
+        }
     }
     function renderInstituicoes() {
         if (!instituicoesData || !direitosData || !dom.instituicoesGrid) return;
@@ -3892,7 +3942,15 @@ com o assunto <strong>"Revisão humana — Art. 20 LGPD"</strong>.</p>
                 activateReferenciasTabByHash('#transparencia');
                 // Atualiza hash sem disparar scroll nativo, depois faz scroll suave preciso
                 if (history.replaceState) history.replaceState(null, '', '#disclaimerInline');
-                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                // v1.43.15: aguarda 2 frames para o browser fazer o layout do painel
+                // recém-revelado (tab estava hidden), senão scrollIntoView mede a
+                // posição errada e o usuário cai no meio da página.
+                const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+                requestAnimationFrame(() => {
+                    requestAnimationFrame(() => {
+                        target.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'start' });
+                    });
+                });
             });
         });
     }

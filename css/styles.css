@@ -1029,6 +1029,33 @@ html.high-contrast ::selection {
     margin-left: auto;
 }
 
+/* Apoio: refor\u00e7o visual leve (n\u00e3o invasivo, mant\u00e9m hierarquia do nav).
+   Cor verde da bordinha indica acolhimento/cuidado. */
+.nav-link-apoio {
+    position: relative;
+}
+
+.nav-link-apoio::after {
+    content: "";
+    position: absolute;
+    left: 12px;
+    right: 12px;
+    bottom: 6px;
+    height: 2px;
+    background: var(--success, #16a34a);
+    border-radius: 1px;
+    opacity: 0.65;
+}
+
+@media (max-width: 768px) {
+    .nav-link-apoio::after {
+        left: 16px;
+        right: auto;
+        width: 28px;
+        bottom: 8px;
+    }
+}
+
 /* Hamburger */
 .menu-toggle {
     display: none;
@@ -1976,53 +2003,94 @@ html.high-contrast .valor-destaque {
     margin: 0;
 }
 
-/* ---------- Links Grid ---------- */
+/* ---------- Links Grid (Sites Oficiais) ---------- */
+/* Mobile-first: lista compacta vertical (1 coluna).
+   Desktop ≥ 768px: grid 2 colunas. ≥ 1100px: 3 colunas.
+   Tile horizontal (icon à esquerda) para densidade alta sem perder leitura. */
 .links-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-    gap: 16px;
+    grid-template-columns: 1fr;
+    gap: 8px;
+}
+
+@media (min-width: 768px) {
+    .links-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+}
+
+@media (min-width: 1100px) {
+    .links-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
 }
 
 .link-card {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
-    gap: 8px;
-    padding: 20px;
+    gap: 12px;
+    padding: 12px 14px;
+    min-height: 56px;
     background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: var(--radius);
-    text-align: center;
+    border-radius: var(--radius-sm);
+    text-align: left;
     transition: border-color var(--transition), box-shadow var(--transition), transform var(--transition);
 }
 
 .link-card:hover {
     border-color: var(--primary);
-    box-shadow: var(--shadow-md);
+    box-shadow: var(--shadow-sm);
     text-decoration: none;
-    transform: translateY(-2px);
+    transform: translateY(-1px);
 }
 
 .link-icon {
-    font-size: 2rem;
+    font-size: 1.5rem;
+    flex-shrink: 0;
+    line-height: 1;
 }
 
 .link-title {
     font-weight: 600;
-    font-size: 0.95rem;
+    font-size: 0.92rem;
+    line-height: 1.3;
     color: var(--text);
+    flex: 1;
+    min-width: 0;
+    word-break: break-word;
 }
 
 .link-domain {
-    font-size: 0.875rem;
+    font-size: 0.78rem;
     color: var(--text-light);
+    flex-shrink: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 130px;
+}
+
+@media (max-width: 480px) {
+    .link-domain {
+        display: none;
+    }
 }
 
 /* ---------- Footer ---------- */
 
 /* ---------- Upload Zone ---------- */
 .docs-upload-area {
+    max-width: 720px;
+    margin: 0 auto;
     animation: slideReveal 0.4s ease-out;
+}
+
+.docs-upload-area .file-list,
+.docs-upload-area .ai-consent-quick-actions {
+    max-width: 100%;
 }
 
 @keyframes slideReveal {
@@ -2897,12 +2965,71 @@ html.high-contrast .valor-destaque {
     margin: 0 auto;
 }
 
+/* Filtro por direito (v1.43.12) */
+.docs-checklist-filter {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    padding: 12px 14px;
+    margin-bottom: 16px;
+    background: var(--surface-alt, #f8fafc);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+}
+
+.docs-checklist-filter-label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text);
+    flex-shrink: 0;
+}
+
+.docs-checklist-filter-select {
+    flex: 1;
+    min-width: 200px;
+    padding: 8px 12px;
+    font-size: 0.9rem;
+    font-family: var(--font);
+    color: var(--text);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+}
+
+.docs-checklist-filter-select:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+}
+
+.docs-checklist-count {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    flex-basis: 100%;
+}
+
+.docs-checklist-count:empty {
+    display: none;
+}
+
+.docs-checklist-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
 .doc-master-item {
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: var(--radius-sm);
-    margin-bottom: 8px;
     overflow: hidden;
+    transition: border-color var(--transition), box-shadow var(--transition);
+}
+
+.doc-master-item:hover {
+    border-color: var(--primary-light, #93c5fd);
 }
 
 .doc-master-header {
@@ -2934,42 +3061,60 @@ html.high-contrast .valor-destaque {
 
 .doc-master-info {
     flex: 1;
+    min-width: 0;
 }
 
 .doc-master-name {
     font-weight: 600;
-    font-size: 0.95rem;
-    margin-bottom: 2px;
+    font-size: 1rem;
+    line-height: 1.3;
+    margin: 0 0 4px;
+    color: var(--text);
 }
 
 .doc-master-desc {
     font-size: 0.875rem;
     color: var(--text-muted);
+    line-height: 1.45;
+    margin: 0;
+}
+
+.doc-master-meta {
+    padding: 0 16px 12px 48px;
 }
 
 .doc-master-categories {
     display: flex;
     flex-wrap: wrap;
     gap: 4px;
-    margin-top: 6px;
+    margin-bottom: 8px;
 }
 
 .doc-cat-tag {
     display: inline-block;
     padding: 2px 8px;
-    font-size: 0.75rem;
+    font-size: 0.72rem;
     background: var(--primary);
     color: #fff;
     border-radius: 12px;
     font-weight: 600;
+    letter-spacing: 0.01em;
+}
+
+.doc-cat-tag--more {
+    background: var(--text-light, #94a3b8);
+    cursor: help;
 }
 
 .doc-master-dica {
-    padding: 8px 16px 12px 48px;
-    font-size: 0.875rem;
-    color: var(--text-muted);
-    background: var(--surface-alt);
-    border-top: 1px solid var(--border);
+    margin: 8px 0 0;
+    padding: 8px 12px;
+    font-size: 0.85rem;
+    color: var(--text);
+    background: var(--info-bg, #fef3c7);
+    border-left: 3px solid var(--warning, #f59e0b);
+    border-radius: 4px;
+    line-height: 1.5;
 }
 
 /* ---------- Document Analysis ---------- */
@@ -3906,6 +4051,9 @@ html.high-contrast .valor-destaque {
     padding: 1.5rem;
     margin-top: 2rem;
     line-height: 1.7;
+    /* v1.43.15: garante que o alvo do anchor #disclaimerInline pare abaixo
+       da navbar fixa (64px) com folga visual ao ser focado via scrollIntoView. */
+    scroll-margin-top: 80px;
 }
 
 .disclaimer-title {
