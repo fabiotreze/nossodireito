@@ -41,6 +41,7 @@ const checks = [
   ["docs/SECURITY-LGPD.md", /\*\*Versão:\*\*\s*([0-9]+\.[0-9]+\.[0-9]+)/, "docs/SECURITY-LGPD.md header"],
   ["GOVERNANCE.md", /\*\*Versão:\*\*\s*([0-9]+\.[0-9]+\.[0-9]+)/, "GOVERNANCE.md header"],
   ["SECURITY_AUDIT.md", /Auditoria de Segurança v([0-9]+\.[0-9]+\.[0-9]+)/, "SECURITY_AUDIT.md title"],
+  ["js/tos-banner.js", /var\s+TOS_VERSION\s*=\s*['"]([0-9]+\.[0-9]+\.[0-9]+)['"]/, "js/tos-banner.js TOS_VERSION"],
 ];
 
 // index.html tem 3 cache-busters (?v=X.Y.Z). Validamos todos.

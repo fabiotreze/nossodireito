@@ -1,12 +1,19 @@
-/* NossoDireito v1.43.24 — Termos de Uso/Privacidade banner + Exit toast
+/* NossoDireito v1.43.31 — Termos de Uso/Privacidade banner + Exit toast
  * Não-bloqueante. Estado 100% local (localStorage). Nada enviado a servidor.
- * LGPD-safe: sem PII; auditável em /historico-aceite.html.
+ * LGPD-safe: sem PII; auditvel em /historico-aceite.html.
  * CSP-friendly: arquivo externo, sem inline script.
+ *
+ * TOS_VERSION abaixo é SINCRONIZADA com package.json#version e validada por
+ * scripts/check_version_sync.mjs. Bumpar essa string força re-aceite a TODOS
+ * os usuários. Bumpe SEMPRE que o texto dos Termos for materialmente alterado
+ * (nome do controlador, finalidades, base legal, retencão etc.). Bumps por
+ * fix puramente técnico também são aceitáveis pois mantêm a UI consistente
+ * com o cabecçalho "Termos atualizados (v...)" do banner.
  */
 (function () {
     'use strict';
 
-    var TOS_VERSION = '1.43.24';
+    var TOS_VERSION = '1.43.31';
     var KEY_VERSION = 'tos_version_accepted';
     var KEY_AT = 'tos_accepted_at';
     var KEY_HASH = 'tos_hash';
