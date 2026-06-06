@@ -1150,7 +1150,7 @@ ${t.descricao ? `<span class="trilha-tab__desc">${escapeHtml(t.descricao)}</span
 
         const tabs = dom.trilhaTabs.querySelectorAll('.trilha-tab');
         tabs.forEach((tab) => {
-            tab.addEventListener('click', () => selectTrilha(tab.dataset.trilha));
+            tab.addEventListener('click', () => selectTrilha(tab.dataset.trilha, { scrollIntoView: true }));
             tab.addEventListener('keydown', (e) => {
                 if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft' && e.key !== 'Home' && e.key !== 'End') return;
                 e.preventDefault();
@@ -1162,7 +1162,7 @@ ${t.descricao ? `<span class="trilha-tab__desc">${escapeHtml(t.descricao)}</span
                 else if (e.key === 'Home') next = 0;
                 else if (e.key === 'End') next = arr.length - 1;
                 arr[next].focus();
-                selectTrilha(arr[next].dataset.trilha);
+                selectTrilha(arr[next].dataset.trilha, { scrollIntoView: true });
             });
         });
 
@@ -1173,7 +1173,7 @@ ${t.descricao ? `<span class="trilha-tab__desc">${escapeHtml(t.descricao)}</span
         selectTrilha(TRILHAS[0].id);
     }
 
-    function selectTrilha(trilhaId) {
+    function selectTrilha(trilhaId, opts = {}) {
         if (!dom.trilhaTabs || !dom.categoryGrid) return;
         dom.trilhaTabs.querySelectorAll('.trilha-tab').forEach((tab) => {
             const active = tab.dataset.trilha === trilhaId;
@@ -1193,6 +1193,16 @@ ${t.descricao ? `<span class="trilha-tab__desc">${escapeHtml(t.descricao)}</span
             const show = trilhaId === 'todas' || card.dataset.trilha === trilhaId;
             card.style.display = show ? '' : 'none';
         });
+        // UX: ao clicar num filtro, rola o grid para o topo da viewport
+        // (abaixo do header sticky ~80px) para que os cards filtrados sejam
+        // imediatamente visíveis. Sem isso, com 7 trilha-tabs ocupando ~140px,
+        // os cards ficam fora da viewport e o usuário não vê feedback do filtro.
+        if (opts.scrollIntoView) {
+            const rect = dom.categoryGrid.getBoundingClientRect();
+            const targetY = window.scrollY + rect.top - 80;
+            const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            window.scrollTo({ top: targetY, behavior: reduceMotion ? 'auto' : 'smooth' });
+        }
     }
 
     function getPendingLegalReviews(catId) {
