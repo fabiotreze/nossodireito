@@ -789,8 +789,8 @@
             if (urlQ && dom.searchInput) {
                 dom.searchInput.value = urlQ;
                 dom.searchInput.dispatchEvent(new Event('input'));
-                const busca = document.getElementById('busca');
-                if (busca) busca.scrollIntoView({ behavior: 'smooth' });
+                const consultar = document.getElementById('consultar');
+                if (consultar) consultar.scrollIntoView({ behavior: 'smooth' });
             }
         } catch (_qErr) { /* ignore invalid URL params */ }
         setInterval(async () => {
@@ -852,7 +852,7 @@
                 dom.menuToggle.setAttribute('aria-label', 'Abrir menu');
 
                 /* v1.43.7 — Anchor scroll offset fix.
-                 * Sections como #busca/#categorias/#documentos têm padding-top: 64px,
+                 * Sections como #consultar/#categorias têm padding-top: 64px,
                  * fazendo o h2 aterrissar a ~196px do topo (132px scroll-padding + 64px
                  * padding). Refs (#links etc.) usam o div interno da tab e funcionam OK.
                  * Aqui interceptamos para posicionar o h2 ~80px do topo (navbar + gap). */
@@ -2236,16 +2236,16 @@ No Brasil, a maioria dos laudos ainda usa CID-10. O sistema aceita ambas as codi
     }
     function revealDocsUpload() {
         const area = document.getElementById('docsUploadArea');
-        if (area) area.style.display = '';
+        if (!area) return;
+        // hidden attribute (preferred) ou fallback display:none legado
+        if (area.hasAttribute('hidden')) area.removeAttribute('hidden');
+        if (area.style.display === 'none') area.style.display = '';
     }
     (function setupDocsReveal() {
         const heroBtn = document.getElementById('heroDocsBtn');
         if (heroBtn) {
             heroBtn.addEventListener('click', revealDocsUpload);
         }
-        document.querySelectorAll('a[href="#documentos"]').forEach(link => {
-            link.addEventListener('click', revealDocsUpload);
-        });
     })();
     function setupUpload() {
         if (!dom.uploadZone || !dom.fileInput || !dom.deleteAllFiles) return;
@@ -2259,6 +2259,7 @@ No Brasil, a maioria dos laudos ainda usa CID-10. O sistema aceita ambas as codi
         dom.fileInput.addEventListener('change', async (e) => {
             await handleFiles(e.target.files);
             e.target.value = '';
+            revealDocsUpload();
         });
         dom.uploadZone.addEventListener('dragover', (e) => {
             e.preventDefault();
@@ -2271,6 +2272,7 @@ No Brasil, a maioria dos laudos ainda usa CID-10. O sistema aceita ambas as codi
             e.preventDefault();
             dom.uploadZone.classList.remove('drag-over');
             await handleFiles(e.dataTransfer.files);
+            revealDocsUpload();
         });
         dom.deleteAllFiles.addEventListener('click', () => {
             confirmAction('Tem certeza? Todos os arquivos serão removidos permanentemente do seu navegador.', async () => {
@@ -2325,11 +2327,16 @@ No Brasil, a maioria dos laudos ainda usa CID-10. O sistema aceita ambas as codi
     async function renderFileList() {
         try {
             const files = await getAllFiles();
+            const area = document.getElementById('docsUploadArea');
             if (files.length === 0) {
                 dom.fileList.innerHTML = '';
                 dom.deleteAllFiles.style.display = 'none';
+                // Esconde área de upload quando não há arquivos (mantém UI limpa)
+                if (area && !area.hasAttribute('hidden')) area.setAttribute('hidden', '');
                 return;
             }
+            // Garante área visível quando há arquivos
+            if (area && area.hasAttribute('hidden')) area.removeAttribute('hidden');
             dom.deleteAllFiles.style.display = '';
             dom.fileList.innerHTML = files
                 .map((f) => {
@@ -2453,7 +2460,7 @@ No Brasil, a maioria dos laudos ainda usa CID-10. O sistema aceita ambas as codi
         const exportDocsChecklistBtn = document.getElementById('exportDocsChecklistPdf');
         if (exportDocsChecklistBtn) {
             exportDocsChecklistBtn.addEventListener('click', () => {
-                const container = document.querySelector('#documentos > .container');
+                const container = document.querySelector('#consultar > .container');
                 if (container) {
                     container.setAttribute('data-print-date', new Date().toLocaleDateString('pt-BR'));
                 }
@@ -2819,7 +2826,7 @@ ${errors.length ? `<div class="analysis-errors-summary">
 ${errors.map((e) => `<p class="analysis-hint">· ${escapeHtml(e.name)}: ${escapeHtml(e.reason)}</p>`).join('')}
 </div>` : ''}
 <p class="analysis-hint">💡 Navegue pelas <a href="#categorias">categorias</a> para encontrar
-seus direitos manualmente, ou use a <a href="#busca">busca</a>.</p>
+seus direitos manualmente, ou use a <a href="#consultar">busca</a>.</p>
 </div>`;
             return;
         }
