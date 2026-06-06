@@ -321,7 +321,11 @@ function runAudit() {
   const indexPath = path.join(projectRoot, 'index.html');
   if (fs.existsSync(indexPath)) {
     const rawContent = fs.readFileSync(indexPath, 'utf-8');
-    // Stripa comentários HTML para evitar falsos positivos em texto descritivo
+    // Strip HTML comments to reduce false positives. Regex-based stripping is
+    // acceptable here because the input is our own committed index.html (trusted)
+    // and this is a dev audit tool, not a sanitizer for untrusted input.
+    // codeql[js/incomplete-multi-character-sanitization] dev-only audit on trusted local file
+    // codeql[js/bad-tag-filter] dev-only audit on trusted local file
     const indexContent = rawContent.replace(/<!--[\s\S]*?-->/g, '');
 
     const allScripts = indexContent.match(/<script[^>]*>/g) || [];
@@ -364,6 +368,7 @@ function runAudit() {
 
   console.log(`Críticos: ${criticalCount}`);
   console.log(`Altos: ${highCount}`);
+  console.log(`Médios: ${mediumCount}`);
   console.log(`Alertas: ${alertCount}`);
   console.log(`Ok: ${findings.checks.filter((c) => c.status === 'OK').length}\n`);
 

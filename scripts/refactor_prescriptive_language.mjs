@@ -98,16 +98,18 @@ class RefactoringEngine {
   refactorFile(filePath) {
     console.log(`\n📄 Processing: ${filePath}`);
 
-    if (!fs.existsSync(filePath)) {
-      console.log(`  ❌ File not found`);
+    // Read directly: avoids TOCTOU race condition (exists→read window).
+    // ENOENT propagates to caller and is counted as an error.
+    let content;
+    try {
+      content = fs.readFileSync(filePath, 'utf-8');
+    } catch (err) {
+      console.log(`  ❌ Read failed: ${err.code || err.message}`);
       this.stats.errors++;
       return;
     }
-
-    let content = fs.readFileSync(filePath, 'utf-8');
     const originalContent = content;
 
-    let lineNum = 1;
     const lines = content.split('\n');
 
     // Apply transformations line by line for better tracking
