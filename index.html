@@ -448,37 +448,25 @@
         align-items: center;
       }
 
-      /* v1.43.22 — pills no header (mesmo padrão visual de .referencias-tab).
-         Substitui o dropdown "Referências ▾" por links diretos em linha única. */
+      /* v1.43.36 — critical CSS sincronizado com css/styles.css L1009 (post PR #313).
+         Antes: tinha valores obsoletos (border-radius 999px, padding 8px 14px,
+         font-size 0.875rem, min-height 36px, border 1px sólida) que sobreviviam
+         no primeiro paint até o styles.css carregar, causando "flash of old style".
+         Agora ecoa exatamente o steady-state — primeiro paint = paint final. */
       .nav-links a {
         display: inline-flex;
         align-items: center;
         gap: 6px;
-        padding: 8px 14px;
-        border: 1px solid var(--border);
-        border-radius: 999px;
-        font-size: 0.875rem;
+        padding: 10px 16px;
+        border-radius: 8px;
+        font-size: 0.95rem;
         font-weight: 500;
         text-decoration: none;
         color: var(--text);
-        background: var(--surface);
+        background: transparent;
         line-height: 1.2;
-        min-height: 36px;
+        min-height: 40px;
         white-space: nowrap;
-        transition: background-color var(--transition), border-color var(--transition), color var(--transition);
-      }
-
-      .nav-links a:hover,
-      .nav-links a:focus-visible {
-        border-color: var(--primary);
-        color: var(--primary);
-      }
-
-      .nav-links a.active,
-      .nav-links a[aria-current="page"] {
-        background: var(--primary);
-        border-color: var(--primary);
-        color: #fff;
       }
 
       .menu-toggle {
@@ -566,9 +554,9 @@
         }
       }
     </style>
-    <link rel="stylesheet" href="css/styles.css?v=1.43.35&rev=269" media="all" id="deferredCSS" />
+    <link rel="stylesheet" href="css/styles.css?v=1.43.36&rev=270" media="all" id="deferredCSS" />
     <noscript>
-      <link rel="stylesheet" href="css/styles.css?v=1.43.35&rev=269" />
+      <link rel="stylesheet" href="css/styles.css?v=1.43.36&rev=270" />
     </noscript>
     <script type="application/ld+json">
       {
@@ -1759,7 +1747,7 @@
                 </button>
               </div>
             </div>
-            <!-- v1.43.35 — Escopo das ações WhatsApp/PDF (pattern .action-scope-info) -->
+            <!-- v1.43.36 — Escopo das ações WhatsApp/PDF (pattern .action-scope-info) -->
             <p class="action-scope-info action-scope-info--compact" role="note">
               ℹ️ <strong>Escopo:</strong> os botões geram texto/PDF <strong>no seu próprio dispositivo</strong> para você compartilhar manualmente. Nada é enviado a servidor. Não é protocolo, não é petição, não tem valor oficial.
             </p>
@@ -1877,7 +1865,7 @@
                   ✕ Fechar
                 </button>
               </div>
-              <!-- v1.43.35 — Escopo das ações WhatsApp/PDF da análise (pattern .action-scope-info) -->
+              <!-- v1.43.36 — Escopo das ações WhatsApp/PDF da análise (pattern .action-scope-info) -->
               <p class="action-scope-info action-scope-info--compact" role="note">
                 ℹ️ <strong>Escopo:</strong> WhatsApp e PDF exportam o resumo desta análise <strong>localmente</strong> para você compartilhar com pessoa de confiança, advogado ou Defensoria. O documento gerado tem caráter <strong>orientativo</strong>, não protocolar.
               </p>
@@ -2629,14 +2617,14 @@
       </div>
     </div>
 
-    <!-- v1.43.35 — Banner de aceite de Termos/Privacidade (não-bloqueante).
+    <!-- v1.43.36 — Banner de aceite de Termos/Privacidade (não-bloqueante).
          Aparece apenas se localStorage.tos_version_accepted !== TOS_VERSION_CURRENT.
          Estado vive 100% no navegador (chaves: tos_version_accepted, tos_accepted_at, tos_hash).
          Nada enviado a servidor. LGPD-safe. Auditável em /historico-aceite.html. -->
     <div id="tosAcceptBanner" role="region" aria-label="Aceite de Termos de Uso e Privacidade" aria-live="polite">
       <div class="tos-banner-inner">
         <p class="tos-banner-text">
-          <strong>📋 Termos atualizados (v1.43.35).</strong>
+          <strong>📋 Termos atualizados (v1.43.36).</strong>
           Ao continuar usando o NossoDireito, você confirma ter lido os
           <a href="/termos-de-uso.html">Termos de Uso</a> e a
           <a href="/privacidade.html">Política de Privacidade</a>.
@@ -2650,15 +2638,15 @@
       </div>
     </div>
 
-    <!-- v1.43.35 — Toast de saída para links externos (informativo, não bloqueia) -->
+    <!-- v1.43.36 — Toast de saída para links externos (informativo, não bloqueia) -->
     <div id="externalExitToast" role="status" aria-live="polite"></div>
 
-    <!-- v1.43.35 — Lógica de aceite + exit-toast (CSP-safe: arquivo externo).
+    <!-- v1.43.36 — Lógica de aceite + exit-toast (CSP-safe: arquivo externo).
          Carrega antes do app.js para que o banner apareça o mais cedo possível. -->
-    <script src="js/tos-banner.js?v=1.43.35&rev=269" defer></script>
+    <script src="js/tos-banner.js?v=1.43.36&rev=270" defer></script>
 
     <!-- Anonymizer compartilhado (Node + Browser) — DEVE carregar ANTES de app.js -->
-    <script src="shared/anonymizer.js?v=1.43.35&rev=269" defer></script>
-    <script src="js/app.js?v=1.43.35&rev=269" defer></script>
+    <script src="shared/anonymizer.js?v=1.43.36&rev=270" defer></script>
+    <script src="js/app.js?v=1.43.36&rev=270" defer></script>
   </body>
 </html>

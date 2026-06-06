@@ -1,4 +1,4 @@
-/* NossoDireito v1.43.35 — Termos de Uso/Privacidade banner + Exit toast
+/* NossoDireito v1.43.36 — Termos de Uso/Privacidade banner + Exit toast
  * Não-bloqueante. Estado 100% local (localStorage). Nada enviado a servidor.
  * LGPD-safe: sem PII; auditvel em /historico-aceite.html.
  * CSP-friendly: arquivo externo, sem inline script.
@@ -13,7 +13,7 @@
 (function () {
     'use strict';
 
-    var TOS_VERSION = '1.43.35';
+    var TOS_VERSION = '1.43.36';
     var KEY_VERSION = 'tos_version_accepted';
     var KEY_AT = 'tos_accepted_at';
     var KEY_HASH = 'tos_hash';
