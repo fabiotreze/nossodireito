@@ -481,45 +481,6 @@
         color: #fff;
       }
 
-      /* Link "Aviso" — fundo âmbar suave + texto escuro p/ garantir contraste em navbar branca (WCAG AA). */
-      /* v1.43.31: removido `margin-left: auto` em todas as larguras para evitar
-         que o Aviso se desloque do menu sob zoom de browser (acessibilidade) ou
-         viewports estreitos. O badge agora flui imediatamente após "Transparência",
-         mantendo coesão visual mesmo quando a barra precisa quebrar em duas linhas.
-         A separação visual é garantida pelo fundo âmbar próprio + margem extra. */
-      .nav-links .nav-aviso-item {
-        margin-left: 4px;
-      }
-      .nav-links .nav-aviso {
-        color: #664d03;
-        background: #fff3cd;
-        border-color: #ffc107;
-        font-weight: 600;
-      }
-      .nav-links .nav-aviso:hover,
-      .nav-links .nav-aviso:focus {
-        background: #ffe69c;
-        color: #533c01;
-        border-color: #ffc107;
-        outline: 2px solid #ffc107;
-        outline-offset: 1px;
-      }
-      /* Desktop amplo (>= 1200px sem zoom): aproveitar o espaço sobrando para
-         alinhar o Aviso à direita, preservando o aesthetic original. Em zoom
-         (que reduz o viewport efetivo) ou viewports menores, cai para o
-         fluxo natural acima e não se desloca do menu. */
-      @media (min-width: 1200px) {
-        .nav-links .nav-aviso-item {
-          margin-left: auto;
-        }
-      }
-      @media (max-width: 768px) {
-        /* Em mobile (drawer) volta a fluir normalmente, sem alinhamento à direita. */
-        .nav-links .nav-aviso-item {
-          margin-left: 0;
-        }
-      }
-
       .menu-toggle {
         display: none;
       }
@@ -605,9 +566,9 @@
         }
       }
     </style>
-    <link rel="stylesheet" href="css/styles.css?v=1.43.31&rev=265" media="all" id="deferredCSS" />
+    <link rel="stylesheet" href="css/styles.css?v=1.43.32&rev=266" media="all" id="deferredCSS" />
     <noscript>
-      <link rel="stylesheet" href="css/styles.css?v=1.43.31&rev=265" />
+      <link rel="stylesheet" href="css/styles.css?v=1.43.32&rev=266" />
     </noscript>
     <script type="application/ld+json">
       {
@@ -1505,9 +1466,6 @@
             <li><a href="#orgaos-estaduais" data-ref-target="#orgaos-estaduais" aria-label="Órgãos estaduais por UF">🏢 Estados</a></li>
             <li><a href="#transparencia" data-ref-target="#transparencia" aria-label="Transparência e fontes consultadas">📚 Transparência</a></li>
             <li><a href="/historico-aceite.html" aria-label="Meu aceite — histórico e revogação (LGPD)" title="Meu aceite: consulte, exporte ou revogue o aceite dos Termos e da Privacidade">🛡️ Meu aceite</a></li>
-            <li class="nav-aviso-item">
-              <a href="#disclaimerInline" class="nav-aviso" aria-label="Aviso Legal e Isenção de Responsabilidade" title="Aviso legal: conteúdo educacional, não substitui orientação profissional">⚠️ Aviso</a>
-            </li>
           </ul>
         </div>
       </nav>
@@ -1801,7 +1759,7 @@
                 </button>
               </div>
             </div>
-            <!-- v1.43.31 — Escopo das ações WhatsApp/PDF (pattern .action-scope-info) -->
+            <!-- v1.43.32 — Escopo das ações WhatsApp/PDF (pattern .action-scope-info) -->
             <p class="action-scope-info action-scope-info--compact" role="note">
               ℹ️ <strong>Escopo:</strong> os botões geram texto/PDF <strong>no seu próprio dispositivo</strong> para você compartilhar manualmente. Nada é enviado a servidor. Não é protocolo, não é petição, não tem valor oficial.
             </p>
@@ -1919,7 +1877,7 @@
                   ✕ Fechar
                 </button>
               </div>
-              <!-- v1.43.31 — Escopo das ações WhatsApp/PDF da análise (pattern .action-scope-info) -->
+              <!-- v1.43.32 — Escopo das ações WhatsApp/PDF da análise (pattern .action-scope-info) -->
               <p class="action-scope-info action-scope-info--compact" role="note">
                 ℹ️ <strong>Escopo:</strong> WhatsApp e PDF exportam o resumo desta análise <strong>localmente</strong> para você compartilhar com pessoa de confiança, advogado ou Defensoria. O documento gerado tem caráter <strong>orientativo</strong>, não protocolar.
               </p>
@@ -2671,14 +2629,14 @@
       </div>
     </div>
 
-    <!-- v1.43.31 — Banner de aceite de Termos/Privacidade (não-bloqueante).
+    <!-- v1.43.32 — Banner de aceite de Termos/Privacidade (não-bloqueante).
          Aparece apenas se localStorage.tos_version_accepted !== TOS_VERSION_CURRENT.
          Estado vive 100% no navegador (chaves: tos_version_accepted, tos_accepted_at, tos_hash).
          Nada enviado a servidor. LGPD-safe. Auditável em /historico-aceite.html. -->
     <div id="tosAcceptBanner" role="region" aria-label="Aceite de Termos de Uso e Privacidade" aria-live="polite">
       <div class="tos-banner-inner">
         <p class="tos-banner-text">
-          <strong>📋 Termos atualizados (v1.43.31).</strong>
+          <strong>📋 Termos atualizados (v1.43.32).</strong>
           Ao continuar usando o NossoDireito, você confirma ter lido os
           <a href="/termos-de-uso.html">Termos de Uso</a> e a
           <a href="/privacidade.html">Política de Privacidade</a>.
@@ -2692,15 +2650,15 @@
       </div>
     </div>
 
-    <!-- v1.43.31 — Toast de saída para links externos (informativo, não bloqueia) -->
+    <!-- v1.43.32 — Toast de saída para links externos (informativo, não bloqueia) -->
     <div id="externalExitToast" role="status" aria-live="polite"></div>
 
-    <!-- v1.43.31 — Lógica de aceite + exit-toast (CSP-safe: arquivo externo).
+    <!-- v1.43.32 — Lógica de aceite + exit-toast (CSP-safe: arquivo externo).
          Carrega antes do app.js para que o banner apareça o mais cedo possível. -->
-    <script src="js/tos-banner.js?v=1.43.31&rev=265" defer></script>
+    <script src="js/tos-banner.js?v=1.43.32&rev=266" defer></script>
 
     <!-- Anonymizer compartilhado (Node + Browser) — DEVE carregar ANTES de app.js -->
-    <script src="shared/anonymizer.js?v=1.43.31&rev=265" defer></script>
-    <script src="js/app.js?v=1.43.31&rev=265" defer></script>
+    <script src="shared/anonymizer.js?v=1.43.32&rev=266" defer></script>
+    <script src="js/app.js?v=1.43.32&rev=266" defer></script>
   </body>
 </html>

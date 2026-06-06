@@ -985,10 +985,6 @@ html.high-contrast ::selection {
 .navbar .container {
     display: flex;
     align-items: center;
-    /* Sem justify-content: nav-links fluem após a brand; .nav-aviso-item usa
-       margin-left: auto para empurrar 'Aviso' até a borda direita. Isso
-       mantém 'Início' próximo da brand (alinhado verticalmente com o título
-       do hero) independentemente da quantidade de itens no menu. */
     gap: 24px;
     height: 64px;
 }
@@ -1031,10 +1027,6 @@ html.high-contrast ::selection {
     color: var(--primary);
     background: var(--surface-hover);
     text-decoration: none;
-}
-
-.nav-aviso-item {
-    margin-left: auto;
 }
 
 /* Apoio: refor\u00e7o visual leve (n\u00e3o invasivo, mant\u00e9m hierarquia do nav).
@@ -4727,11 +4719,6 @@ html.high-contrast .card-grid[data-active-trilha] .category-card {
     .nav-links a {
         padding: 12px 16px;
         font-size: 1rem;
-    }
-
-    /* Reset do empurrão lateral do Aviso no mobile (drawer é coluna). */
-    .nav-aviso-item {
-        margin-left: 0;
     }
 
     /* Grid 1 col */
