@@ -1,6 +1,6 @@
 # Índice da Documentação
 
-**Versão:** 1.43.20
+**Versão:** 1.43.21
 
 ## Documentos Principais
 
@@ -8,6 +8,7 @@
 - [Operações](OPERATIONS.md)
 - [Segurança e LGPD](SECURITY-LGPD.md)
 - [LGPD — Checklist Auditável](LGPD-COMPLIANCE.md)
+- [Princípios de uso de IA](AI-PRINCIPLES.md)
 - [Scripts de Dados e Enriquecimento](DATA-ENRICHMENT.md)
 
 ## Diagramas

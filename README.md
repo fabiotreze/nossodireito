@@ -70,6 +70,7 @@ Acesse: http://localhost:8080
 - Runbook de operação: [docs/OPERATIONS.md](docs/OPERATIONS.md)
 - Arquitetura e infraestrutura: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)
 - Segurança e LGPD: [docs/SECURITY-LGPD.md](docs/SECURITY-LGPD.md)
+- Princípios de uso de IA: [docs/AI-PRINCIPLES.md](docs/AI-PRINCIPLES.md) (alinhado a [Microsoft Learn](https://learn.microsoft.com/en-gb/principles-for-ai-generated-content))
 - Índice completo de docs: [docs/README.md](docs/README.md)
 
 ## Qualidade
