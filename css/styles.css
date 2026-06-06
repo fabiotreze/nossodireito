@@ -86,14 +86,21 @@ textarea:focus {
 }
 
 html {
+    /* v1.43.17: scroll-padding-top reduzido de 132px → 80px.
+       A navbar sticky tem altura de 64px; reservamos 16px de folga visual.
+       Combinado com .section { scroll-margin-top: -64px } (compensa o
+       padding-top: 64px da seção), o h2 da seção alvo aterrissa em y=80
+       — apenas 16px abaixo da borda inferior da navbar. Antes (132px),
+       aparecia uma faixa de 68px de cor de fundo entre navbar e h2,
+       especialmente notável em #categorias e #referencias (.section-alt). */
     scroll-behavior: smooth;
-    scroll-padding-top: 132px;
+    scroll-padding-top: 80px;
     font-size: 16px;
 }
 
 @media (max-width: 600px) {
     html {
-        scroll-padding-top: 148px;
+        scroll-padding-top: 96px;
     }
 }
 
@@ -1254,10 +1261,11 @@ html.high-contrast ::selection {
 .section {
     padding: 64px 0;
     background-color: var(--surface);
-    /* v1.43.16: cancela o padding-top de 64px do snap area, para que
-       scrollIntoView (que respeita scroll-padding-top: 132px do html)
-       posicione o h2 da seção em ~y=132, alinhado com como Refer\u00eancias
-       posicionam seus tabpanels. Sem isto, o h2 cairia em y=196 (132 + 64). */
+    /* v1.43.17: scroll-margin-top: -64px compensa o padding-top: 64px da
+       própria seção. Combinado com scroll-padding-top: 80px (no html),
+       scrollIntoView({block:'start'}) faz o h2 da seção aterrissar em y=80
+       — 16px de folga abaixo da navbar sticky de 64px. Sem isto, o h2
+       cairia em y=144 (80 + 64 de padding). */
     scroll-margin-top: -64px;
 }
 
@@ -4056,9 +4064,9 @@ html.high-contrast .valor-destaque {
     padding: 1.5rem;
     margin-top: 2rem;
     line-height: 1.7;
-    /* v1.43.15: garante que o alvo do anchor #disclaimerInline pare abaixo
-       da navbar fixa (64px) com folga visual ao ser focado via scrollIntoView. */
-    scroll-margin-top: 80px;
+    /* v1.43.17: removido scroll-margin-top: 80px (redundante com novo
+       scroll-padding-top: 80px do html). O disclaimer agora aterrissa em
+       y=80 como qualquer outro alvo, consistente com sections e panels. */
 }
 
 .disclaimer-title {
