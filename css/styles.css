@@ -3263,6 +3263,56 @@ html.high-contrast .valor-destaque {
     color: var(--text-light) !important;
 }
 
+/* ── AI disclosure banner (MS Learn AI principles, Princípio 1: Transparência) ── */
+.ai-disclosure-banner {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin: 12px 0 16px;
+    padding: 12px 14px;
+    background: var(--info-bg, #e8f0fe);
+    border-left: 4px solid var(--info, #1a73e8);
+    border-radius: var(--radius-sm);
+    font-size: 0.875rem;
+    line-height: 1.45;
+    color: var(--text);
+}
+
+.ai-disclosure-banner[hidden] {
+    display: none;
+}
+
+.ai-disclosure-banner .ai-disclosure-icon {
+    flex: 0 0 auto;
+    font-size: 1.1rem;
+    line-height: 1.2;
+}
+
+.ai-disclosure-banner .ai-disclosure-text {
+    flex: 1 1 auto;
+}
+
+.ai-disclosure-banner a {
+    color: var(--info, #1a73e8);
+    text-decoration: underline;
+}
+
+.ai-disclosure-banner code {
+    padding: 1px 4px;
+    background: rgba(0, 0, 0, 0.05);
+    border-radius: 3px;
+    font-size: 0.85em;
+}
+
+/* PDF impresso: manter banner visível e em alto contraste */
+@media print {
+    .ai-disclosure-banner {
+        background: #f5f5f5 !important;
+        border-left: 4px solid #000 !important;
+        color: #000 !important;
+    }
+}
+
 .analysis-match-list {
     display: flex;
     flex-direction: column;

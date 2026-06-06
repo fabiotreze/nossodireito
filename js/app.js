@@ -2561,7 +2561,13 @@ No Brasil, a maioria dos laudos ainda usa CID-10. O sistema aceita ambas as codi
                 const analysisTitle = document.querySelector('.analysis-results h3')?.textContent || 'Análise';
                 const matches = document.querySelectorAll('.analysis-match');
                 const matchList = Array.from(matches).map((m, i) => `${i + 1}. ${m.querySelector('.analysis-match-title h4')?.textContent || 'Direito'}`).join('\n');
-                const text = `*${analysisTitle}*\n\n${matchList}\n\nVeja mais em: ${window.location.origin}`;
+                // Princípio 1 (Transparência) — incluir disclosure quando IA foi usada na análise compartilhada.
+                const aiBanner = document.getElementById('aiDisclosureBanner');
+                const aiUsed = aiBanner && !aiBanner.hidden;
+                const aiFooter = aiUsed
+                    ? '\n\n🤖 Conteúdo gerado por IA (Azure OpenAI gpt-4o-mini, Brasil Sul) — confirme no .gov.br.'
+                    : '';
+                const text = `*${analysisTitle}*\n\n${matchList}\n\nVeja mais em: ${window.location.origin}${aiFooter}`;
                 const url = `https://wa.me/?text=${encodeURIComponent(text)}`;
                 const win = window.open(url, '_blank', 'noopener,noreferrer');
                 if (!win) {
@@ -2923,6 +2929,12 @@ para encontrar seus direitos manualmente.
             .sort((a, b) => b.score - a.score);
     }
     function renderAnalysisResults(results, fileNames, hasPdf, errors = [], aiResult = null, aiAttempted = false) {
+        // Princípio 1 (Transparência) — https://learn.microsoft.com/en-gb/principles-for-ai-generated-content
+        // Banner persistente quando IA foi efetivamente usada (aiResult presente).
+        const aiBanner = document.getElementById('aiDisclosureBanner');
+        if (aiBanner) {
+            aiBanner.hidden = !aiResult;
+        }
         const names = Array.isArray(fileNames) ? fileNames : [fileNames];
         const fileCount = names.length;
         const filesLabel = fileCount === 1

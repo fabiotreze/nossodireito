@@ -90,6 +90,10 @@ O produto deve manter, de forma destacada e acessível:
    (`docs/LGPD-COMPLIANCE.md`) e para o aviso completo.
 4. Linguagem conservadora ao citar leis: preferir remissão ao texto vigente e
    à regulamentação aplicável, evitando interpretações categóricas.
+5. **Conteúdo gerado por IA marcado explicitamente** no resultado da análise
+   opcional, no PDF exportado e em qualquer compartilhamento — conforme
+   [Princípios de uso de IA](AI-PRINCIPLES.md) (alinhados ao Microsoft Learn:
+   [Principles for AI-generated content](https://learn.microsoft.com/en-gb/principles-for-ai-generated-content)).
 
 ## 8. Segurança técnica relacionada (resumo)
 
