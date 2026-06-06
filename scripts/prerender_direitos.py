@@ -356,6 +356,10 @@ def render_page(cat: dict, meta: dict) -> str:
 def render_sitemap(slugs: list[str], lastmod: str) -> str:
     urls = [
         (BASE_URL + "/", "1.0", "weekly"),
+        # Páginas legais (v1.43.24) — Termos e Privacidade têm prioridade média
+        # e mudam com baixa frequência. /historico-aceite é noindex (não entra).
+        (f"{BASE_URL}/termos-de-uso.html", "0.5", "yearly"),
+        (f"{BASE_URL}/privacidade.html", "0.5", "yearly"),
     ]
     for slug in slugs:
         urls.append((f"{BASE_URL}/direitos/{slug}/", "0.8", "monthly"))

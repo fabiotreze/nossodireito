@@ -11,6 +11,18 @@
     <priority>1.0</priority>
   </url>
   <url>
+    <loc>https://nossodireito.fabiotreze.com/termos-de-uso.html</loc>
+    <lastmod>2026-06-06</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://nossodireito.fabiotreze.com/privacidade.html</loc>
+    <lastmod>2026-06-06</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
     <loc>https://nossodireito.fabiotreze.com/direitos/bpc/</loc>
     <lastmod>2026-06-06</lastmod>
     <changefreq>monthly</changefreq>

@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Meu aceite — Histórico e revogação | NossoDireito</title>
+  <meta name="description" content="Consulte, exporte ou revogue seu aceite dos Termos de Uso e da Política de Privacidade do NossoDireito. Atende ao Art. 9º da LGPD." />
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="canonical" href="https://nossodireito.fabiotreze.com/historico-aceite.html" />
+  <meta name="theme-color" content="#1e3a8a" />
+  <link rel="icon" type="image/x-icon" href="/images/favicon.ico" />
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{--primary:#1e40af;--primary-dark:#1e3a8a;--text:#1e293b;--muted:#64748b;--surface:#fff;--surface-2:#f8fafc;--border:#e2e8f0;--success:#059669;--danger:#dc2626}
+    @media (prefers-color-scheme:dark){:root{--primary:#60a5fa;--primary-dark:#3b82f6;--text:#f1f5f9;--muted:#94a3b8;--surface:#0f172a;--surface-2:#1e293b;--border:#334155}}
+    html{font-size:16px}
+    body{font-family:"Segoe UI",system-ui,-apple-system,sans-serif;color:var(--text);background:var(--surface);line-height:1.6;-webkit-font-smoothing:antialiased}
+    .container{max-width:780px;margin:0 auto;padding:0 20px}
+    .skip-link{position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden}
+    .skip-link:focus{position:fixed;left:1rem;top:1rem;width:auto;height:auto;background:var(--primary-dark);color:#fff;padding:.75rem 1rem;border-radius:6px;z-index:100;text-decoration:none}
+    header.topbar{background:var(--primary-dark);color:#fff;padding:1rem 0;margin-bottom:1.5rem}
+    header.topbar a{color:#fff;text-decoration:none;font-weight:700;font-size:1.05rem}
+    header.topbar a:hover{text-decoration:underline}
+    main{padding-bottom:3rem}
+    nav.breadcrumb{font-size:.9rem;color:var(--muted);margin-bottom:1rem}
+    nav.breadcrumb a{color:var(--primary);text-decoration:underline}
+    h1{font-size:1.7rem;color:var(--primary-dark);margin-bottom:.5rem}
+    .intro{margin:1rem 0 1.5rem;color:var(--text)}
+    .card{background:var(--surface-2);border:1px solid var(--border);border-radius:8px;padding:1.2rem 1.4rem;margin:1rem 0}
+    .card h2{font-size:1.1rem;color:var(--primary-dark);margin-bottom:.8rem;padding-bottom:.4rem;border-bottom:1px solid var(--border)}
+    .status-line{display:flex;flex-wrap:wrap;gap:.4rem 1rem;margin:.5rem 0;font-size:.95rem}
+    .status-line dt{color:var(--muted);font-weight:600;min-width:140px}
+    .status-line dd{margin:0;flex:1;min-width:200px;word-break:break-word}
+    .status-line dd code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.85rem;background:var(--surface);padding:2px 6px;border-radius:4px;border:1px solid var(--border)}
+    .status-badge{display:inline-block;padding:2px 10px;border-radius:12px;font-size:.8rem;font-weight:600}
+    .status-ok{background:#dcfce7;color:#166534}
+    .status-pending{background:#fef3c7;color:#78350f}
+    .status-revoked{background:#fee2e2;color:#991b1b}
+    @media (prefers-color-scheme:dark){
+      .status-ok{background:#14532d;color:#bbf7d0}
+      .status-pending{background:#451a03;color:#fde68a}
+      .status-revoked{background:#7f1d1d;color:#fecaca}
+    }
+    .actions{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:1rem}
+    button{font:inherit;cursor:pointer;border-radius:6px;padding:.6rem 1.1rem;border:1px solid var(--border);background:var(--surface);color:var(--text);transition:background .15s,border-color .15s}
+    button:hover{background:var(--border)}
+    button:focus-visible{outline:2px solid var(--primary);outline-offset:2px}
+    button.primary{background:var(--primary);color:#fff;border-color:var(--primary)}
+    button.primary:hover{background:var(--primary-dark)}
+    button.danger{background:var(--surface);color:var(--danger);border-color:var(--danger)}
+    button.danger:hover{background:#fee2e2;color:#991b1b}
+    .empty{padding:1.5rem;text-align:center;color:var(--muted);background:var(--surface-2);border:1px dashed var(--border);border-radius:8px}
+    .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);padding:.75rem 1.2rem;background:var(--primary-dark);color:#fff;border-radius:6px;font-size:.95rem;opacity:0;transition:opacity .2s;pointer-events:none;z-index:100}
+    .toast.show{opacity:1}
+    .toast.error{background:var(--danger)}
+    footer{text-align:center;padding:2rem 1rem;border-top:1px solid var(--border);font-size:.85rem;color:var(--muted);margin-top:3rem}
+    footer a{color:var(--primary)}
+    .legal-ref{font-size:.85rem;color:var(--muted);margin-top:.5rem;font-style:italic}
+    pre{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:.8rem;overflow-x:auto;font-size:.85rem;margin-top:.6rem}
+  </style>
+</head>
+<body>
+  <a href="#mainContent" class="skip-link">Ir para o conteúdo</a>
+  <header class="topbar" role="banner">
+    <div class="container">
+      <a href="/" aria-label="Voltar para a página inicial do NossoDireito">← NossoDireito</a>
+    </div>
+  </header>
+
+  <main id="mainContent" class="container" role="main">
+    <nav class="breadcrumb" aria-label="Trilha de navegação">
+      <a href="/">Início</a> &raquo; Meu aceite
+    </nav>
+
+    <h1>Meu aceite — histórico e revogação</h1>
+    <p class="intro">
+      Esta página mostra o que está armazenado <strong>no seu navegador</strong> sobre seu aceite dos Termos de Uso e da Política de Privacidade do NossoDireito. Nada disso é enviado a servidores — fica só aqui no seu dispositivo.
+    </p>
+    <p class="legal-ref">
+      Atende ao <strong>Art. 9º da LGPD</strong> (acesso facilitado à informação sobre tratamento) e ao <strong>Art. 18, II, V, VI, IX</strong> (acesso, portabilidade, eliminação e revogação do consentimento).
+    </p>
+
+    <div class="card" id="cardStatus" aria-live="polite">
+      <h2>Status atual</h2>
+      <div id="statusContent">
+        <p class="empty">Carregando…</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Ações</h2>
+      <div class="actions">
+        <button type="button" class="primary" id="btnExport">📥 Exportar como JSON</button>
+        <button type="button" class="danger" id="btnRevoke">🗑️ Revogar aceite</button>
+        <button type="button" id="btnReload">🔄 Recarregar status</button>
+      </div>
+      <p class="legal-ref" style="margin-top:.8rem">
+        Revogar = apagar do localStorage. No próximo acesso ao site, o banner de aceite reaparecerá.
+      </p>
+    </div>
+
+    <div class="card">
+      <h2>Como verificar manualmente</h2>
+      <p>Você também pode inspecionar diretamente pelo console do navegador (F12 → Application → Local Storage → este domínio). Procure pelas chaves:</p>
+      <ul style="padding-left:1.4rem">
+        <li><code>tos_version_accepted</code></li>
+        <li><code>tos_accepted_at</code></li>
+        <li><code>tos_hash</code></li>
+      </ul>
+      <p style="margin-top:.6rem">Nenhuma outra chave é gravada pela aplicação.</p>
+    </div>
+
+    <div class="card">
+      <h2>Documentos relacionados</h2>
+      <ul style="padding-left:1.4rem">
+        <li><a href="/termos-de-uso.html">Termos de Uso</a></li>
+        <li><a href="/privacidade.html">Política de Privacidade</a></li>
+        <li>Dúvidas LGPD: <a href="mailto:dpo@fabiotreze.com">dpo@fabiotreze.com</a></li>
+      </ul>
+    </div>
+  </main>
+
+  <footer role="contentinfo">
+    <div class="container">
+      <p>NossoDireito v1.43.24 &middot; <a href="/">Início</a></p>
+    </div>
+  </footer>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    (function () {
+      'use strict';
+      const KEYS = ['tos_version_accepted', 'tos_accepted_at', 'tos_hash'];
+      const statusEl = document.getElementById('statusContent');
+      const toastEl = document.getElementById('toast');
+      let toastTimer = null;
+
+      function escapeHtml(s) {
+        return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+      }
+
+      function showToast(msg, isError) {
+        toastEl.textContent = msg;
+        toastEl.classList.toggle('error', !!isError);
+        toastEl.classList.add('show');
+        if (toastTimer) clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => toastEl.classList.remove('show'), 3000);
+      }
+
+      function readState() {
+        const state = {};
+        let hasAny = false;
+        try {
+          for (const k of KEYS) {
+            const v = localStorage.getItem(k);
+            state[k] = v;
+            if (v !== null) hasAny = true;
+          }
+        } catch (e) {
+          return { error: 'localStorage indisponível: ' + e.message };
+        }
+        return { state, hasAny };
+      }
+
+      function formatDate(iso) {
+        if (!iso) return '—';
+        try {
+          const d = new Date(iso);
+          if (isNaN(d.getTime())) return iso;
+          return d.toLocaleString('pt-BR', { dateStyle: 'long', timeStyle: 'short' });
+        } catch (e) {
+          return iso;
+        }
+      }
+
+      function render() {
+        const result = readState();
+        if (result.error) {
+          statusEl.innerHTML = '<p class="empty">⚠️ ' + escapeHtml(result.error) + '</p>';
+          return;
+        }
+        if (!result.hasAny) {
+          statusEl.innerHTML = '<p class="empty">📭 Nenhum aceite registrado neste navegador. <br><br>Acesse a <a href="/">página inicial</a> e use o banner de aceite que aparecerá no rodapé.</p>';
+          return;
+        }
+        const s = result.state;
+        const html = [
+          '<dl class="status-line"><dt>Status</dt><dd><span class="status-badge status-ok">✓ Aceito</span></dd></dl>',
+          '<dl class="status-line"><dt>Versão aceita</dt><dd><code>' + escapeHtml(s.tos_version_accepted || '—') + '</code></dd></dl>',
+          '<dl class="status-line"><dt>Data/hora</dt><dd>' + escapeHtml(formatDate(s.tos_accepted_at)) + '</dd></dl>',
+          '<dl class="status-line"><dt>Hash do texto (SHA-256)</dt><dd><code>' + escapeHtml(s.tos_hash || '—') + '</code></dd></dl>'
+        ].join('');
+        statusEl.innerHTML = html;
+      }
+
+      function exportJson() {
+        const result = readState();
+        if (result.error || !result.hasAny) {
+          showToast('Nada para exportar', true);
+          return;
+        }
+        const payload = {
+          generated_at: new Date().toISOString(),
+          domain: window.location.hostname,
+          source: 'NossoDireito — /historico-aceite.html',
+          state: result.state
+        };
+        try {
+          const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = 'nossodireito-aceite-' + new Date().toISOString().slice(0, 10) + '.json';
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+          showToast('Arquivo exportado');
+        } catch (e) {
+          showToast('Erro ao exportar: ' + e.message, true);
+        }
+      }
+
+      function revoke() {
+        const confirmed = window.confirm(
+          'Confirma a revogação do aceite?\n\n' +
+          '• Os registros locais serão apagados.\n' +
+          '• No próximo acesso à página inicial, o banner de aceite reaparecerá.\n' +
+          '• Esta ação não envia notificação a servidor (não há servidor — tudo é local).'
+        );
+        if (!confirmed) return;
+        try {
+          for (const k of KEYS) localStorage.removeItem(k);
+          showToast('Aceite revogado');
+          render();
+        } catch (e) {
+          showToast('Erro ao revogar: ' + e.message, true);
+        }
+      }
+
+      document.getElementById('btnExport').addEventListener('click', exportJson);
+      document.getElementById('btnRevoke').addEventListener('click', revoke);
+      document.getElementById('btnReload').addEventListener('click', () => { render(); showToast('Status atualizado'); });
+
+      render();
+    })();
+  </script>
+</body>
+</html>
