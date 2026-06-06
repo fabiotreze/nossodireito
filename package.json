@@ -7,6 +7,8 @@
     "start": "node server.js",
     "test": "python -m pytest tests/ -v --tb=short --ignore=tests/test_browser.py",
     "test:js": "node --test tests/*.test.mjs",
+    "test:e2e": "node tests/e2e.mjs",
+    "test:a11y": "node tests/a11y.mjs",
     "validate": "python scripts/validate_all.py --quick",
     "check:docs": "node scripts/check_doc_links.mjs && node scripts/check_docs_truth.mjs",
     "security:headers": "bash scripts/security_headers_check.sh",
