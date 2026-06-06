@@ -92,3 +92,11 @@
 # Chicken-and-egg: arquivos novos referenciados antes de existirem em main.
 # Após merge do PR, o link funciona. Lychee não acessa branch atual via GitHub.
 ^https?://github\.com/fabiotreze/nossodireito/blob/main/docs/
+
+# === Raiz www.gov.br/ — timeout intermitente do runner GitHub ===
+# Detectado no PR #301 (06/jun/2026): https://www.gov.br/ → TIMEOUT
+# (cacheado por 7d). O URL específico /pessoa-com-deficiencia continua
+# sendo validado. A raiz é referenciada apenas em <a href> de label
+# decorativa ("[.gov.br](https://www.gov.br)") e no schema.org provider.url.
+# Não há valor em fail-fast por um endpoint que tem 403 anti-bot conhecido.
+^https?://(www\.)?gov\.br/?$

@@ -366,32 +366,43 @@ const server = http.createServer(async (req, res) => {
   const acceptsGzip = acceptEncoding.includes("gzip");
   const canCompress = COMPRESSIBLE.has(ext);
 
-  // Try pre-compressed siblings first (fastest path)
+  // Try pre-compressed siblings first (fastest path).
+  // Auto-heal: ignore stale siblings whose mtime is older than the source file
+  // (avoids serving outdated content when scripts/precompress_static.mjs was
+  // not re-run after editing the source — falls back to on-the-fly Brotli q4).
   let precompressedPath = null;
   let precompressedEncoding = null;
   if (canCompress) {
-    if (acceptsBr) {
-      const candidate = `${fullPath}.br`;
+    let sourceMtimeMs = 0;
+    try {
+      sourceMtimeMs = (await fsPromises.stat(fullPath)).mtimeMs;
+    } catch {
+      /* source missing — let later code handle */
+    }
+    const tryCandidate = async (ext) => {
+      const candidate = `${fullPath}.${ext}`;
       try {
         const st = await fsPromises.stat(candidate);
-        if (st.isFile()) {
-          precompressedPath = candidate;
-          precompressedEncoding = "br";
+        if (st.isFile() && st.mtimeMs >= sourceMtimeMs) {
+          return candidate;
         }
       } catch {
         /* sibling missing — fall through */
       }
+      return null;
+    };
+    if (acceptsBr) {
+      const found = await tryCandidate("br");
+      if (found) {
+        precompressedPath = found;
+        precompressedEncoding = "br";
+      }
     }
     if (!precompressedPath && acceptsGzip) {
-      const candidate = `${fullPath}.gz`;
-      try {
-        const st = await fsPromises.stat(candidate);
-        if (st.isFile()) {
-          precompressedPath = candidate;
-          precompressedEncoding = "gzip";
-        }
-      } catch {
-        /* sibling missing — fall through */
+      const found = await tryCandidate("gz");
+      if (found) {
+        precompressedPath = found;
+        precompressedEncoding = "gzip";
       }
     }
   }
