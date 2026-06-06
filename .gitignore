@@ -88,3 +88,6 @@ terraform/*.tfplan
 # Pre-compressed static siblings (gerados por scripts/precompress_static.mjs no deploy)
 *.br
 *.gz
+
+# Lighthouse CI outputs (local runs)
+.lighthouseci/
