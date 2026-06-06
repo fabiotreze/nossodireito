@@ -9,6 +9,7 @@ permissions:
   contents: read
   actions: read
   issues: write
+  pull-requests: read
 
 jobs:
   watchdog:
@@ -27,18 +28,44 @@ jobs:
       - name: Checkout
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.0
 
-      - name: Evaluate CI/Deploy failures (last 24h)
+      - name: Evaluate CI/Deploy failures (last 24h, deduped by branch)
         id: incidents
         uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
         with:
           script: |
+            // Dedup logic (#299 fix):
+            // Reduz ruído de commits intermediários em PRs que depois passam.
+            // Para cada (workflow, branch) só consideramos a run MAIS RECENTE
+            // dentro da janela de 24h. Só reportamos se ela for failure E
+            // (branch == default OR PR aberta para a branch).
             const now = Date.now();
             const sinceMs = now - 24 * 60 * 60 * 1000;
             const owner = context.repo.owner;
             const repo = context.repo.repo;
             const workflows = ['quality-gate.yml', 'deploy.yml'];
 
-            let failures = [];
+            const repoMeta = await github.rest.repos.get({ owner, repo });
+            const defaultBranch = repoMeta.data.default_branch;
+
+            // Cache PR-status por branch para evitar N chamadas duplicadas.
+            const openPrByBranch = new Map();
+            async function hasOpenPr(branch) {
+              if (openPrByBranch.has(branch)) return openPrByBranch.get(branch);
+              const prs = await github.rest.pulls.list({
+                owner,
+                repo,
+                state: 'open',
+                head: `${owner}:${branch}`,
+                per_page: 1,
+              });
+              const has = prs.data.length > 0;
+              openPrByBranch.set(branch, has);
+              return has;
+            }
+
+            // 1) Coleta runs recentes por workflow, agrupa por branch e
+            //    mantém apenas a mais recente de cada (workflow, branch).
+            const latestByKey = new Map(); // key: `${wf}::${branch}` → run
             for (const wf of workflows) {
               const runs = await github.paginate(github.rest.actions.listWorkflowRuns, {
                 owner,
@@ -49,20 +76,47 @@ jobs:
               for (const run of runs) {
                 const created = new Date(run.created_at).getTime();
                 if (created < sinceMs) continue;
-                if (run.conclusion === 'failure' || run.conclusion === 'timed_out') {
-                  failures.push({
+                const branch = run.head_branch || '(detached)';
+                const key = `${wf}::${branch}`;
+                const prev = latestByKey.get(key);
+                if (!prev || new Date(prev.created_at).getTime() < created) {
+                  latestByKey.set(key, {
                     workflow: wf,
                     run_number: run.run_number,
                     conclusion: run.conclusion,
                     url: run.html_url,
                     created_at: run.created_at,
+                    head_branch: branch,
+                    event: run.event,
                   });
                 }
               }
             }
 
+            // 2) Filtra: só reporta failure/timed_out atual em (main) ou em
+            //    branches com PR aberta.
+            const failures = [];
+            const skipped = [];
+            for (const run of latestByKey.values()) {
+              const isFail = run.conclusion === 'failure' || run.conclusion === 'timed_out';
+              if (!isFail) continue;
+              if (run.head_branch === defaultBranch) {
+                failures.push({ ...run, reason: 'main (regression)' });
+                continue;
+              }
+              const open = await hasOpenPr(run.head_branch);
+              if (open) {
+                failures.push({ ...run, reason: 'open PR' });
+              } else {
+                skipped.push({ ...run, reason: 'no open PR (likely merged/closed)' });
+              }
+            }
+
             core.setOutput('count', String(failures.length));
             core.setOutput('json', JSON.stringify(failures));
+            core.setOutput('skipped_count', String(skipped.length));
+            core.setOutput('skipped_json', JSON.stringify(skipped));
+            core.info(`Reported failures: ${failures.length}; skipped (stale/merged): ${skipped.length}`);
 
       - name: Setup Python for optional GSC check
         if: ${{ env.GSC_PROPERTY_URL != '' && (env.GSC_OAUTH_REFRESH_TOKEN != '' || env.GSC_SERVICE_ACCOUNT_JSON != '') }}
@@ -141,9 +195,9 @@ jobs:
             body += `- Status GSC monitor: ${gscCode === '3' ? 'queda detectada' : gscCode === '2' ? 'não configurado' : 'ok'}\n\n`;
 
             if (incidents.length) {
-              body += '### Falhas detectadas\n';
+              body += '### Falhas detectadas (dedup por branch, apenas main ou PRs abertas)\n';
               for (const f of incidents) {
-                body += `- ${f.workflow} #${f.run_number} (${f.conclusion}) — ${f.url}\n`;
+                body += `- ${f.workflow} #${f.run_number} (${f.conclusion}) — branch \`${f.head_branch}\` — _${f.reason}_ — ${f.url}\n`;
               }
               body += '\n';
             }
@@ -190,7 +244,8 @@ jobs:
       - name: Summary
         run: |
           echo "## SEO Pilot Watchdog" >> "$GITHUB_STEP_SUMMARY"
-          echo "- CI/Deploy failures (24h): ${{ steps.incidents.outputs.count }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "- CI/Deploy failures reported (24h, deduped): ${{ steps.incidents.outputs.count }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "- Skipped (stale/merged PR branches): ${{ steps.incidents.outputs.skipped_count }}" >> "$GITHUB_STEP_SUMMARY"
           if [ "${{ steps.gsc.outputs.exit_code || steps.gsc_missing.outputs.exit_code }}" = "2" ]; then
             echo "- GSC monitor: not configured (missing secrets)" >> "$GITHUB_STEP_SUMMARY"
           elif [ "${{ steps.gsc.outputs.exit_code || steps.gsc_missing.outputs.exit_code }}" = "3" ]; then
