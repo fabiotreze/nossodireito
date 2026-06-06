@@ -853,10 +853,11 @@
 
                 /* v1.43.7 — Anchor scroll offset fix.
                 /* v1.43.16 — Comportamento unificado de anchor scroll.
+                /* v1.43.17 — Reduzido scroll-padding-top de 132px → 80px (CSS).
                  * TODOS os anchors do nav (incluindo Início, Consultar, Categorias)
-                 * agora usam scrollIntoView com block:'start'. O browser respeita
-                 * scroll-padding-top: 132px do <html>, alinhando o alvo de forma
-                 * CONSISTENTE com o submenu Referências (que sempre funcionou bem).
+                 * usam scrollIntoView com block:'start'. O browser respeita
+                 * scroll-padding-top: 80px do <html>, alinhando o alvo a 16px
+                 * abaixo da navbar (64px) de forma CONSISTENTE em toda a página.
                  *
                  * Para alvos dentro de tabpanels ocultos (Apoio→#instituicoes,
                  * Aviso→#disclaimerInline, e os subitens de Referências), a
