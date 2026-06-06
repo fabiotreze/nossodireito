@@ -10,6 +10,8 @@
  *   5. Disclaimer "catálogo público" aparece
  *   6. Voltar (history back) volta para home
  *   7. URL deep-link (#direito/bpc) renderiza direto a página de detalhe
+ *   8. Nav desktop: anchors clicam, pill style v1.43.33, scroll preciso
+ *   9. Nav mobile drawer: abre/fecha + items full-width (regression v1.43.33)
  *
  * NÃO testa IA (precisa backend node + chave OpenAI).
  *
@@ -101,7 +103,7 @@ async function withConsoleCapture(page) {
 }
 
 async function testHomeLoads(page, baseUrl) {
-    console.log('\n[1/7] Home carrega sem erros de console');
+    console.log('\n[1/9] Home carrega sem erros de console');
     const errors = await withConsoleCapture(page);
     await page.goto(baseUrl + '/', { waitUntil: 'networkidle', timeout: 20000 });
     const title = await page.title();
@@ -114,7 +116,7 @@ async function testHomeLoads(page, baseUrl) {
 }
 
 async function testTrilhasRender(page) {
-    console.log('\n[2/7] Trilhas (tabs) renderizam');
+    console.log('\n[2/9] Trilhas (tabs) renderizam');
     const trilhas = await page.locator('.trilha-tab').count();
     record('trilhas count >= 6', trilhas >= 6, `found=${trilhas}`);
 
@@ -125,7 +127,7 @@ async function testTrilhasRender(page) {
 }
 
 async function testSearch(page) {
-    console.log('\n[3/7] Busca por "BPC"');
+    console.log('\n[3/9] Busca por "BPC"');
     const input = page.locator('#searchInput');
     await input.fill('BPC');
     // Aguarda debounce + render
@@ -141,7 +143,7 @@ async function testSearch(page) {
 }
 
 async function testDetailNavigation(page, baseUrl) {
-    console.log('\n[4/7] Click em card abre detalhe');
+    console.log('\n[4/9] Click em card abre detalhe');
     // Limpa busca para voltar ao grid
     await page.locator('#searchInput').fill('');
     await page.waitForTimeout(400);
@@ -166,7 +168,7 @@ async function testDetailNavigation(page, baseUrl) {
 }
 
 async function testBackNavigation(page) {
-    console.log('\n[5/7] History back retorna para home');
+    console.log('\n[5/9] History back retorna para home');
     await page.goBack({ waitUntil: 'networkidle' });
     await page.waitForTimeout(400);
 
@@ -178,7 +180,7 @@ async function testBackNavigation(page) {
 }
 
 async function testDeepLink(page, baseUrl) {
-    console.log('\n[6/7] Deep-link #direito/bpc renderiza direto');
+    console.log('\n[6/9] Deep-link #direito/bpc renderiza direto');
     await page.goto(baseUrl + '/#direito/bpc', { waitUntil: 'networkidle' });
     await page.waitForTimeout(800);
 
@@ -190,13 +192,136 @@ async function testDeepLink(page, baseUrl) {
 }
 
 async function testKeyboardAccessibility(page, baseUrl) {
-    console.log('\n[7/7] Skip link + foco visível');
+    console.log('\n[7/9] Skip link + foco visível');
     await page.goto(baseUrl + '/', { waitUntil: 'networkidle' });
     // Pressiona Tab — primeiro foco deve ser skip link
     await page.keyboard.press('Tab');
     const focused = await page.evaluate(() => document.activeElement?.tagName + '#' + document.activeElement?.id);
     record('primeiro Tab foca em elemento válido', /A|BUTTON|INPUT/.test(focused.split('#')[0]),
         `focused=${focused}`);
+}
+
+async function testNavDesktopAnchors(page, baseUrl) {
+    console.log('\n[8/9] Nav desktop: anchors + scroll preciso + tap target');
+    await page.setViewportSize({ width: 1366, height: 800 });
+    await page.goto(baseUrl + '/', { waitUntil: 'networkidle' });
+
+    // Estilo computado do pill (regression do refactor v1.43.33).
+    const aStyle = await page.evaluate(() => {
+        const a = document.querySelector('.nav-links a:not(.active)');
+        if (!a) return null;
+        const s = getComputedStyle(a);
+        return {
+            display: s.display,
+            minHeight: parseFloat(s.minHeight),
+            fontSize: parseFloat(s.fontSize),
+            paddingTop: parseFloat(s.paddingTop),
+        };
+    });
+    record('nav pill: inline-flex',
+        aStyle && /inline-flex/.test(aStyle.display),
+        aStyle ? `display=${aStyle.display}` : 'no anchor');
+    record('nav pill: min-height >= 40px (tap target)',
+        aStyle && aStyle.minHeight >= 40, `minHeight=${aStyle?.minHeight}`);
+    record('nav pill: font-size >= 15px',
+        aStyle && aStyle.fontSize >= 15, `fontSize=${aStyle?.fontSize}`);
+
+    // Cobertura: cada item do nav clica → URL atualiza para o anchor esperado.
+    const targets = ['#consultar', '#categorias', '#instituicoes', '#links',
+                     '#classificacao', '#orgaos-estaduais', '#transparencia'];
+    let allOk = true;
+    const failedTargets = [];
+    for (const t of targets) {
+        const link = page.locator(`.nav-links a[href="${t}"]`);
+        const count = await link.count();
+        if (count === 0) {
+            allOk = false;
+            failedTargets.push(`${t}=missing`);
+            continue;
+        }
+        await link.first().click();
+        // Anchor handler de v1.43.7 faz scrollTo({top: y, behavior: 'smooth'}).
+        await page.waitForTimeout(450);
+        const hash = await page.evaluate(() => location.hash);
+        if (hash !== t) {
+            allOk = false;
+            failedTargets.push(`${t}→${hash}`);
+        }
+        // Scroll plausível (> 0 px, < height total). Não checamos posição exata
+        // por causa do header sticky + reduced-motion.
+        const scrollY = await page.evaluate(() => window.scrollY);
+        if (scrollY < 50) {
+            allOk = false;
+            failedTargets.push(`${t}=scrollY=${scrollY}`);
+        }
+    }
+    record(`nav clicks: ${targets.length} anchors`, allOk,
+        allOk ? `${targets.length}/${targets.length} OK` : failedTargets.join(' | '));
+
+    // Início volta ao topo.
+    await page.locator('.nav-links a[href="#inicio"]').first().click();
+    await page.waitForTimeout(400);
+    const topY = await page.evaluate(() => window.scrollY);
+    record('nav: #inicio scrolla ao topo', topY < 50, `scrollY=${topY}`);
+}
+
+async function testNavMobileDrawer(page, baseUrl) {
+    console.log('\n[9/9] Nav mobile: drawer abre, items full-width, fecha ao clicar');
+    await page.setViewportSize({ width: 380, height: 800 });
+    await page.goto(baseUrl + '/', { waitUntil: 'networkidle' });
+
+    // Estado inicial: drawer fechado, links escondidos via transform.
+    const initiallyClosed = await page.evaluate(() => {
+        const ul = document.querySelector('.nav-links');
+        return ul && !ul.classList.contains('open');
+    });
+    record('drawer inicia fechado', initiallyClosed);
+
+    // Toggle abre drawer.
+    await page.locator('#menuToggle').click();
+    await page.waitForTimeout(350);
+    const opened = await page.evaluate(() => {
+        const ul = document.querySelector('.nav-links');
+        return ul && ul.classList.contains('open');
+    });
+    record('toggle abre drawer', opened);
+
+    // Regression v1.43.33: items devem ocupar full-width (li=100%, a=display:flex).
+    const widths = await page.evaluate(() => {
+        const a = document.querySelector('.nav-links a');
+        const li = a && a.parentElement;
+        if (!a || !li) return null;
+        const ul = li.parentElement;
+        const sA = getComputedStyle(a), sLi = getComputedStyle(li), sUl = getComputedStyle(ul);
+        return {
+            aWidth: parseFloat(sA.width),
+            liWidth: parseFloat(sLi.width),
+            ulInnerWidth: parseFloat(sUl.width) - parseFloat(sUl.paddingLeft) - parseFloat(sUl.paddingRight),
+            aDisplay: sA.display,
+            aJustify: sA.justifyContent,
+            ulAlign: sUl.alignItems,
+        };
+    });
+    const fullWidthOk = widths
+        && widths.aWidth >= widths.ulInnerWidth - 1
+        && widths.liWidth >= widths.ulInnerWidth - 1;
+    record('drawer items full-width', fullWidthOk,
+        widths ? `a=${widths.aWidth}px li=${widths.liWidth}px ul=${widths.ulInnerWidth}px` : 'no anchor');
+    record('drawer item display=flex',
+        widths && /flex/.test(widths.aDisplay), `display=${widths?.aDisplay}`);
+    record('drawer item justify=flex-start',
+        widths && widths.aJustify === 'flex-start', `justify=${widths?.aJustify}`);
+    record('drawer ul align=stretch',
+        widths && widths.ulAlign === 'stretch', `align=${widths?.ulAlign}`);
+
+    // Click em link fecha drawer.
+    await page.locator('.nav-links a[href="#categorias"]').first().click();
+    await page.waitForTimeout(400);
+    const closedAfterClick = await page.evaluate(() => {
+        const ul = document.querySelector('.nav-links');
+        return ul && !ul.classList.contains('open');
+    });
+    record('clique em link fecha drawer', closedAfterClick);
 }
 
 async function main() {
@@ -217,6 +342,8 @@ async function main() {
         await testBackNavigation(page);
         await testDeepLink(page, baseUrl);
         await testKeyboardAccessibility(page, baseUrl);
+        await testNavDesktopAnchors(page, baseUrl);
+        await testNavMobileDrawer(page, baseUrl);
     } catch (e) {
         console.error('\n⚠️  Test runner crashed:', e.message);
         results.push({ name: 'runner', ok: false, detail: e.message });
