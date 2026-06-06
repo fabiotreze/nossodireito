@@ -1,0 +1,46 @@
+{
+  "timestamp": "2026-06-06T10:32:37.760Z",
+  "checks": [
+    {
+      "name": "robots.txt",
+      "status": "PROBLEMAS",
+      "content": "# robots.txt — NossoDireito\n# https://nossodireito.fabiotreze.com\n\nUser-agent: *\nAllow: /\nAllow: /data/direitos.json\nAllow: /data/matching_engine.json\n\n# Arquivos de desenvolvimento e infraestrutura\nD"
+    },
+    {
+      "name": "Meta robots tags",
+      "status": "OK"
+    },
+    {
+      "name": "Canonical tags",
+      "status": "PRESENTE",
+      "count": 1
+    },
+    {
+      "name": "Pré-renderização",
+      "status": "PRESENTE",
+      "count": 42,
+      "recommendation": "Usar canonical ou remover duplicação"
+    },
+    {
+      "name": "Redirects",
+      "status": "OK"
+    },
+    {
+      "name": "Sitemap",
+      "status": "OK",
+      "count": 43
+    }
+  ],
+  "issues": [
+    {
+      "type": "CRÍTICO",
+      "issue": "robots.txt bloqueando tudo (Disallow: /)",
+      "evidence": "Disallow: / encontrado"
+    },
+    {
+      "type": "ALTO",
+      "issue": "Possível duplicação de conteúdo",
+      "evidence": "42 páginas pré-renderizadas + index.html renderiza tudo via JS"
+    }
+  ]
+}
