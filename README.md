@@ -69,6 +69,13 @@ Acesse: http://localhost:8080
 - Princípios de uso de IA: [docs/AI-PRINCIPLES.md](docs/AI-PRINCIPLES.md) (alinhado a [Microsoft Learn](https://learn.microsoft.com/en-gb/principles-for-ai-generated-content))
 - Índice completo de docs: [docs/README.md](docs/README.md)
 
+### Health & observabilidade
+
+- Health-check público: `curl -s https://nossodireito.fabiotreze.com/health | jq` (200 OK + versão + estado da IA).
+- Dashboard público: [status.html](status.html) (faz `GET /health` do browser do usuário, sem persistência).
+- Logs e métricas: Log Analytics `log-nossodireito-br` (retenção 180 dias — Marco Civil Art. 13).
+- Alertas: 4 metric + 2 KQL → action group `ag-nossodireito-email`. Detalhes em [docs/OPERATIONS.md#alertas](docs/OPERATIONS.md#alertas).
+
 ## Qualidade
 
 Pipeline principal de qualidade no CI:

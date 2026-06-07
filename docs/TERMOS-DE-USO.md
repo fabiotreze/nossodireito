@@ -1,7 +1,7 @@
 # Termos de Uso — NossoDireito
 
-**Última atualização:** 2026-06-05
-**Versão:** 1.42.0
+**Última atualização:** 2026-06-06
+**Versão:** 2026-06-06 (alinhada com `TOS_VERSION` em [js/tos-banner.js](../js/tos-banner.js))
 
 ## 1. Natureza do serviço
 
