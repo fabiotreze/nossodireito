@@ -221,6 +221,103 @@ def validate_url_allowlist(data_path: Path, allowlist_path: Path, verbose: bool 
     return False
 
 
+# ──────────────────────────────────────────────────────────────────────────
+# G2: Coerência entre `aplicabilidade` e (`cids_relacionados`, `aplicavel_a_todas_deficiencias`)
+# ──────────────────────────────────────────────────────────────────────────
+#
+# Regras determinísticas espelham scripts/classify_aplicabilidade.py:
+#   - condicao_medica          : exige cids_relacionados ≥ 1
+#   - publico_fechado          : exige cids_relacionados ≥ 1 E aplicavel_a_todas_deficiencias=False
+#   - documento_administrativo : exige cids_relacionados=[] E aplicavel_a_todas_deficiencias=True
+#   - servico_universal        : exige aplicavel_a_todas_deficiencias=True
+#
+# Previne regressão silenciosa: edits manuais em data/direitos.json não podem
+# invalidar a convenção do enum sem disparar erro de schema.
+
+_APLICAB_RULES = {
+    "condicao_medica": {
+        "cids_min": 1,
+        "todas_must_be": None,  # qualquer valor é aceitável
+        "msg_cids": "exige `cids_relacionados` ≥ 1 (direito restrito por CIDs específicos).",
+    },
+    "publico_fechado": {
+        "cids_min": 1,
+        "todas_must_be": False,
+        "msg_cids": "exige `cids_relacionados` ≥ 1 (CID público da OMS para o grupo legal específico).",
+    },
+    "documento_administrativo": {
+        "cids_max": 0,
+        "todas_must_be": True,
+        "msg_cids": "exige `cids_relacionados` vazio (é documento, não condição médica).",
+    },
+    "servico_universal": {
+        "todas_must_be": True,
+        "msg_cids": None,
+    },
+}
+
+
+def validate_aplicabilidade_coherence(data_path: Path, verbose: bool = False) -> bool:
+    """G2: valida coerência semântica do enum `aplicabilidade` com cids+flag universal."""
+    print()
+    print("=" * 80)
+    print("🧭 G2 — Coerência `aplicabilidade` × `cids_relacionados` × `aplicavel_a_todas_deficiencias`")
+    print("=" * 80)
+    print()
+
+    with open(data_path, "r", encoding="utf-8") as f:
+        data = json.load(f)
+
+    cats = data.get("categorias") or data
+    items = list(cats.items()) if isinstance(cats, dict) else [
+        (c.get("id") or c.get("slug") or "?", c) for c in cats
+    ]
+
+    violations = []
+    for slug, cat in items:
+        apl = cat.get("aplicabilidade")
+        if apl is None:
+            violations.append((slug, "aplicabilidade ausente — rode scripts/classify_aplicabilidade.py"))
+            continue
+        rule = _APLICAB_RULES.get(apl)
+        if rule is None:
+            violations.append((slug, f"aplicabilidade='{apl}' fora do enum (válidos: {list(_APLICAB_RULES)})"))
+            continue
+
+        cids = cat.get("cids_relacionados") or []
+        todas = cat.get("aplicavel_a_todas_deficiencias")
+
+        if "cids_min" in rule and len(cids) < rule["cids_min"]:
+            violations.append((slug, f"aplicabilidade='{apl}' {rule['msg_cids']} (atual: {len(cids)})"))
+        if "cids_max" in rule and len(cids) > rule["cids_max"]:
+            violations.append((slug, f"aplicabilidade='{apl}' {rule['msg_cids']} (atual: {len(cids)})"))
+        if rule["todas_must_be"] is not None and todas is not rule["todas_must_be"]:
+            violations.append((
+                slug,
+                f"aplicabilidade='{apl}' exige `aplicavel_a_todas_deficiencias`={rule['todas_must_be']} (atual: {todas})",
+            ))
+
+    print(f"📊 Categorias inspecionadas: {len(items)}")
+
+    if not violations:
+        print("✅ Todas as categorias são coerentes com o enum `aplicabilidade`.")
+        return True
+
+    print()
+    print(f"❌ {len(violations)} categoria(s) com incoerência:")
+    print()
+    for slug, msg in violations[:50]:
+        print(f"   • {slug}: {msg}")
+    if len(violations) > 50 and not verbose:
+        print(f"   ... e mais {len(violations) - 50}. Use --verbose para ver tudo.")
+    elif verbose and len(violations) > 50:
+        for slug, msg in violations[50:]:
+            print(f"   • {slug}: {msg}")
+    print()
+    print("💡 Re-rode `python scripts/classify_aplicabilidade.py` ou ajuste manualmente.")
+    return False
+
+
 def main():
     """CLI principal"""
     parser = argparse.ArgumentParser(
@@ -236,6 +333,11 @@ def main():
         "--skip-allowlist",
         action="store_true",
         help="Pula a validação G1 de allowlist de fontes oficiais"
+    )
+    parser.add_argument(
+        "--skip-aplicabilidade",
+        action="store_true",
+        help="Pula a validação G2 de coerência do enum `aplicabilidade`"
     )
 
     args = parser.parse_args()
@@ -263,7 +365,11 @@ def main():
     if not args.skip_allowlist:
         allowlist_ok = validate_url_allowlist(data_path, allowlist_path, verbose=args.verbose)
 
-    return 0 if (schema_ok and allowlist_ok) else 1
+    aplicab_ok = True
+    if not args.skip_aplicabilidade:
+        aplicab_ok = validate_aplicabilidade_coherence(data_path, verbose=args.verbose)
+
+    return 0 if (schema_ok and allowlist_ok and aplicab_ok) else 1
 
 
 if __name__ == "__main__":
