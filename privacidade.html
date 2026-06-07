@@ -143,7 +143,7 @@
             <tr><th>Categoria</th><th>Dado</th><th>Quando</th><th>Onde fica</th></tr>
           </thead>
           <tbody>
-            <tr><td>Navegação</td><td>IP anonimizado, user-agent, URL acessada</td><td>Toda requisição</td><td>Log de servidor (Azure App Service), 30 dias</td></tr>
+            <tr><td>Navegação</td><td>IP da edge Cloudflare (não o seu IP de origem), user-agent, URL acessada</td><td>Toda requisição</td><td>Log de servidor (Azure App Service → Log Analytics), 180 dias (Marco Civil)</td></tr>
             <tr><td>Aceite de termos</td><td>Versão aceita, timestamp, hash do texto</td><td>Ao clicar "Li e concordo"</td><td><strong>Apenas no seu navegador (localStorage)</strong> — nada enviado a servidor</td></tr>
             <tr><td>Análise por IA</td><td>Texto do laudo (CIDs, datas, sintomas)</td><td>Você anexa documento opcionalmente</td><td>Anonimizado no browser (sem CPF/nome/RG); enviado ao Azure OpenAI Brasil Sul; <strong>não armazenado</strong> após resposta</td></tr>
             <tr><td>Contato voluntário</td><td>E-mail e mensagem que você nos envia</td><td>Você escreve para dpo@fabiotreze.com</td><td>Caixa do mantenedor, retido apenas pelo tempo da tratativa</td></tr>
@@ -166,7 +166,7 @@
           3.1. Cada categoria de dado é tratada com base em fundamento legal específico:
         </p>
         <ul>
-          <li><strong>Logs de navegação:</strong> legítimo interesse (Art. 7º, IX) para segurança e auditoria, sem dado identificável.</li>
+          <li><strong>Logs de navegação:</strong> cumprimento de obrigação legal (Art. 7º, II — boa prática Marco Civil) c/c legítimo interesse (Art. 7º, IX) para segurança e auditoria. O IP registrado é da edge Cloudflare, não do usuário final.</li>
           <li><strong>Aceite de Termos:</strong> consentimento (Art. 7º, I), registrado localmente sem envio ao servidor.</li>
           <li><strong>Análise por IA:</strong> consentimento específico (Art. 7º, I) — você decide se anexa ou não o documento; cada análise exige nova ação.</li>
           <li><strong>Contato por e-mail:</strong> consentimento (Art. 7º, I) ao escrever para o DPO.</li>
@@ -253,14 +253,14 @@
           7.1. Períodos de retenção:
         </p>
         <ul>
-          <li>Logs de servidor anonimizados: <strong>30 dias</strong>;</li>
+          <li>Logs de servidor (IP da edge Cloudflare, user-agent, URL): <strong>180 dias</strong> (Marco Civil + boa prática de auditoria);</li>
           <li>Texto enviado à IA: <strong>não retido</strong> (descartado após resposta);</li>
           <li>Aceite no localStorage: <strong>até você revogar</strong> (sob seu controle);</li>
           <li>Comunicações por e-mail: tempo da tratativa + 6 meses para auditoria.</li>
         </ul>
         <div class="clausula-simples">
           <strong>Em linguagem simples</strong>
-          Logs ficam 30 dias. Análise de IA não fica salva. Aceite fica até você apagar. E-mail só dura o tempo de resolver sua questão.
+          Logs do servidor ficam 180 dias (e o que fica registrado é o IP da Cloudflare, não o seu). Análise de IA não fica salva. Aceite fica até você apagar. E-mail só dura o tempo de resolver sua questão.
         </div>
       </div>
     </section>
