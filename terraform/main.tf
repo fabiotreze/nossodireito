@@ -118,12 +118,15 @@ resource "azurerm_key_vault_certificate" "wildcard" {
 }
 
 # --- Log Analytics Workspace (App Service diagnostics) ---
+# Retenção = 180 dias para atender ao Marco Civil da Internet
+# (Lei 12.965/2014, Art. 13: registros de acesso a aplicações de
+#  internet devem ser guardados por no mínimo 6 meses).
 resource "azurerm_log_analytics_workspace" "main" {
   name                = local.log_analytics_name
   location            = azurerm_resource_group.main.location
   resource_group_name = azurerm_resource_group.main.name
   sku                 = "PerGB2018"
-  retention_in_days   = 30
+  retention_in_days   = 180
 
   tags = local.tags
 }

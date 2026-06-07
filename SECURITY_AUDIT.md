@@ -1,10 +1,10 @@
-# 🔒 NossoDireito — Auditoria de Segurança v1.43.47
+# 🔒 NossoDireito — Auditoria de Segurança v1.43.48
 
-**Data**: 2026-05-19
+**Data**: 2026-06-07
 **Escopo**: Aplicação client-side (HTML5 + CSS3 + Vanilla JS) + servidor Node.js (`server.js`)
 **Domínio**: `nossodireito.fabiotreze.com` (HTTPS via Azure App Service + Key Vault PFX)
 **Classificação de dados**: Dados pessoais sensíveis de saúde (laudos médicos com CID)
-**Compliance**: LGPD (Lei 13.709/2018), WCAG 2.1 AAA, e-MAG
+**Compliance**: LGPD (Lei 13.709/2018), Marco Civil (Lei 12.965/2014), WCAG 2.1 AAA, e-MAG
 
 ---
 

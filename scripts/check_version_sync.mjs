@@ -44,6 +44,8 @@ const checks = [
   ["docs/SECURITY-LGPD.md", /\*\*Versão:\*\*\s*([0-9]+\.[0-9]+\.[0-9]+)/, "docs/SECURITY-LGPD.md header"],
   ["GOVERNANCE.md", /\*\*Versão:\*\*\s*([0-9]+\.[0-9]+\.[0-9]+)/, "GOVERNANCE.md header"],
   ["SECURITY_AUDIT.md", /Auditoria de Segurança v([0-9]+\.[0-9]+\.[0-9]+)/, "SECURITY_AUDIT.md title"],
+  ["docs/RIPD.md", /\*\*Versão:\*\*\s*([0-9]+\.[0-9]+\.[0-9]+)/, "docs/RIPD.md header"],
+  ["docs/REVISAO-HUMANA-IA.md", /\*\*Versão:\*\*\s*([0-9]+\.[0-9]+\.[0-9]+)/, "docs/REVISAO-HUMANA-IA.md header"],
 ];
 
 // index.html tem 3 cache-busters (?v=X.Y.Z). Validamos todos.
