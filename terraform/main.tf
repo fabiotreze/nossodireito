@@ -103,6 +103,12 @@ resource "azurerm_key_vault_access_policy" "web_rp" {
 }
 
 # --- Import PFX Certificate ---
+# IMPORTANTE: o PFX só precisa estar presente localmente na primeira
+# importação. Depois disso o cert vive no Key Vault e o estado do TF
+# mantém referência ao secret versionado. `try(filebase64(...))` evita
+# erro de "no file exists" em clones frescos / runs do CI que não
+# carregam o .pfx, e `ignore_changes = [certificate]` impede que o TF
+# tente sobrescrever o cert importado.
 resource "azurerm_key_vault_certificate" "wildcard" {
   count = var.enable_keyvault && var.pfx_file_path != "" ? 1 : 0
 
@@ -110,11 +116,18 @@ resource "azurerm_key_vault_certificate" "wildcard" {
   key_vault_id = azurerm_key_vault.main[0].id
 
   certificate {
-    contents = filebase64(var.pfx_file_path)
+    # try() + placeholder permite plan/apply em clones sem .pfx local.
+    # `ignore_changes = [certificate]` abaixo impede que o TF tente
+    # sobrescrever o cert real no KV com este placeholder.
+    contents = try(filebase64(var.pfx_file_path), "MA==")
     password = var.pfx_password
   }
 
   depends_on = [azurerm_key_vault_access_policy.deployer]
+
+  lifecycle {
+    ignore_changes = [certificate]
+  }
 }
 
 # --- Log Analytics Workspace (App Service diagnostics) ---

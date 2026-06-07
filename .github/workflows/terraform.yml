@@ -65,6 +65,7 @@ env:
   TF_VAR_enable_custom_domain: ${{ github.event.inputs.enable_custom_domain }}
   TF_VAR_enable_keyvault: ${{ github.event.inputs.enable_keyvault }}
   TF_VAR_user_object_id: ${{ secrets.USER_OBJECT_ID }}
+  TF_VAR_alert_email: ${{ secrets.ALERT_EMAIL }}
 
 concurrency:
   group: deploy-nossodireito
@@ -217,6 +218,38 @@ jobs:
           BINDING_COMPOSITE="${BASE}/providers/Microsoft.Web/sites/app-${PROJECT}/hostNameBindings/nossodireito.fabiotreze.com|${CERT_RES_ID}"
           import_if_missing "azurerm_app_service_certificate_binding.main[0]" \
             "$BINDING_COMPOSITE"
+
+          # ── Observability — Diagnostic Settings ──
+          # Formato do ID: <target_resource_id>|<diag_name>
+          APP_ID="${BASE}/providers/Microsoft.Web/sites/app-${PROJECT}"
+          KV_ID="${BASE}/providers/Microsoft.KeyVault/vaults/kv-${PROJECT}"
+          OAI_ID="${BASE}/providers/Microsoft.CognitiveServices/accounts/cog-${PROJECT}-openai"
+          REDIS_ID="${BASE}/providers/Microsoft.Cache/redis/redis-${PROJECT}"
+
+          import_if_missing "azurerm_monitor_diagnostic_setting.app_service" \
+            "${APP_ID}|diag-app-${PROJECT}"
+          import_if_missing "azurerm_monitor_diagnostic_setting.key_vault[0]" \
+            "${KV_ID}|diag-kv-${PROJECT}"
+          import_if_missing "azurerm_monitor_diagnostic_setting.openai[0]" \
+            "${OAI_ID}|diag-cog-${PROJECT}-openai"
+          import_if_missing "azurerm_monitor_diagnostic_setting.redis[0]" \
+            "${REDIS_ID}|diag-redis-${PROJECT}"
+
+          # ── Observability — Action Group + Metric Alerts + KQL Alerts ──
+          import_if_missing "azurerm_monitor_action_group.email[0]" \
+            "${BASE}/providers/Microsoft.Insights/actionGroups/ag-${PROJECT//-br/}-email"
+          import_if_missing "azurerm_monitor_metric_alert.http_5xx[0]" \
+            "${BASE}/providers/Microsoft.Insights/metricAlerts/alert-app-${PROJECT}-5xx"
+          import_if_missing "azurerm_monitor_metric_alert.health_check[0]" \
+            "${BASE}/providers/Microsoft.Insights/metricAlerts/alert-app-${PROJECT}-health"
+          import_if_missing "azurerm_monitor_metric_alert.response_time[0]" \
+            "${BASE}/providers/Microsoft.Insights/metricAlerts/alert-app-${PROJECT}-latency"
+          import_if_missing "azurerm_monitor_metric_alert.http_4xx_spike[0]" \
+            "${BASE}/providers/Microsoft.Insights/metricAlerts/alert-app-${PROJECT}-4xx"
+          import_if_missing "azurerm_monitor_scheduled_query_rules_alert_v2.cloudflare_bypass[0]" \
+            "${BASE}/providers/Microsoft.Insights/scheduledQueryRules/alert-cloudflare-bypass"
+          import_if_missing "azurerm_monitor_scheduled_query_rules_alert_v2.kv_denied_access[0]" \
+            "${BASE}/providers/Microsoft.Insights/scheduledQueryRules/alert-kv-denied-access"
 
           echo "── State atual ──"
           terraform state list 2>/dev/null || echo "(vazio)"
