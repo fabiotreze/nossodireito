@@ -2061,7 +2061,6 @@ ${doc.dica ? `<p class="doc-master-dica"><span class="sr-only">Observação:</sp
             }
             dom.instituicoesGrid.innerHTML = filtered
                 .map((inst) => {
-                    const tipoIcon = '';
                     const tipoLabel = inst.tipo === 'governamental' ? 'Governamental' : inst.tipo === 'ong' ? 'ONG' : 'Profissional';
                     const catTags = (inst.categorias || [])
                         .map((cid) => `<span class="inst-cat-tag">${escapeHtml(catNameMap[cid] || cid)}</span>`)
