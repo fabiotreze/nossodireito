@@ -2697,27 +2697,30 @@ para encontrar seus direitos manualmente.
 </div>`;
                 return;
             }
-            const medicalTerms = [
-                'laudo', 'atestado', 'receita médica', 'receita medica', 'diagnóstico', 'diagnostico',
-                'cid', 'crm', 'médico', 'medico', 'exame', 'prescrição', 'prescricao',
-                'relatório médico', 'relatorio medico', 'doença', 'doenca', 'deficiência', 'deficiencia',
-                'autismo', 'tea', 'psiquiatra', 'neurologista', 'fisioterapeuta', 'terapeuta',
-                'psicólogo', 'psicologo', 'fonoaudiólogo', 'fonoaudiologo', 'terapia ocupacional',
-                'transtorno', 'síndrome', 'sindrome', 'especialista', 'consulta médica', 'consulta medica',
-                'encaminhamento', 'habilitação', 'habilitacao', 'reabilitação', 'reabilitacao',
-                'paciente', 'prontuário', 'prontuario', 'anamnese', 'prognóstico', 'prognostico',
-                'comorbidade', 'terapêutico', 'terapeutico', 'clínico', 'clinico', 'neuropediatra'
-            ];
             const originalText = allText.join('\n');
-            const combinedTextLower = originalText.toLowerCase();
-            const foundMedical = medicalTerms.some(term => combinedTextLower.includes(term));
-            if (!foundMedical) {
+            // v1.43.38: gate multidimensional substitui o "1 palavra basta".
+            // Exige CRM/CRP/COFFITO/... OU CID válido + score >=5 de corroboração.
+            // Sem isso, texto não-clínico (boleto, bula, boletim escolar) entrava
+            // no matchRights e gerava sugestões de direitos sem fundamento.
+            const validation = (window.DocumentValidator && window.DocumentValidator.validate)
+                ? window.DocumentValidator.validate(originalText)
+                : { accepted: true, score: 0, signals: {}, reasons: [] };
+            if (!validation.accepted) {
+                const reasonsHtml = (validation.reasons || [])
+                    .map((r) => `<li>${escapeHtml(r)}</li>`)
+                    .join('');
                 dom.analysisContent.innerHTML = `
 <div class="analysis-error">
-<p>⚠️ O documento enviado não parece ser um laudo, atestado ou documento médico.</p>
-<p>Por favor, envie um documento relacionado à saúde (laudo, atestado, receita, diagnóstico, etc.) para análise dos direitos.</p>
+<p>⚠️ <strong>O arquivo não parece ser um laudo, atestado ou relatório médico.</strong></p>
+<p>Para evitar sugestões de direitos sem fundamento no documento, exigimos pelo menos um destes sinais antes de analisar:</p>
+<ul style="margin:6px 0 6px 22px;font-size:0.9rem;">
+  <li>Registro profissional: <strong>CRM</strong>, <strong>CRP</strong>, <strong>COFFITO</strong>, <strong>CRF</strong>, <strong>CREFITO</strong>, <strong>CRO</strong>, <strong>CRN</strong> ou <strong>CREFONO</strong>; OU</li>
+  <li>Código de diagnóstico válido: <strong>CID-10</strong> (ex.: F84.0, Q90) ou <strong>CID-11</strong> (ex.: 6A02.0); E</li>
+  <li>Termos clínicos contextuais (diagnóstico, anamnese, evolução clínica, prognóstico, etc.).</li>
+</ul>
+${reasonsHtml ? `<p style="font-size:0.85rem;color:var(--text-muted);margin-top:8px;"><strong>Detalhes:</strong></p><ul style="margin:4px 0 4px 22px;font-size:0.85rem;color:var(--text-muted);">${reasonsHtml}</ul>` : ''}
 <p style="font-size:0.85rem;margin-top:8px;">
-💡 <strong>Dica:</strong> Navegue pelas <a href=\"#categorias\">categorias</a> para encontrar seus direitos manualmente.
+💡 <strong>Dica:</strong> Navegue pelas <a href="#categorias">categorias</a> para encontrar seus direitos manualmente, sem precisar enviar documento.
 </p>
 </div>`;
                 for (const id of successIds) {
