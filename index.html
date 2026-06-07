@@ -554,9 +554,9 @@
         }
       }
     </style>
-    <link rel="stylesheet" href="css/styles.css?v=1.43.40&rev=274" media="all" id="deferredCSS" />
+    <link rel="stylesheet" href="css/styles.css?v=1.43.41&rev=275" media="all" id="deferredCSS" />
     <noscript>
-      <link rel="stylesheet" href="css/styles.css?v=1.43.40&rev=274" />
+      <link rel="stylesheet" href="css/styles.css?v=1.43.41&rev=275" />
     </noscript>
     <script type="application/ld+json">
       {
@@ -2248,6 +2248,31 @@
                   contatar o Encarregado para qualquer dúvida sobre proteção de dados.
                 </p>
               </details>
+              <!-- v1.43.41 — Painel simétrico de gestão de aceite (Termos + IA).
+                   Antes, só IA tinha gestão visível aqui; Termos só pelo banner que some após aceitar.
+                   Agora os dois consentimentos têm o mesmo padrão: badge de status + botão de revogar
+                   + link para auditoria completa em /historico-aceite.html. -->
+              <div id="tosConsentManager" class="ai-consent-manager">
+                <div class="ai-consent-manager-head">
+                  <p class="ai-consent-manager-title">
+                    📋 Aceite dos Termos &amp; Privacidade (obrigatório para uso)
+                  </p>
+                  <span id="tosConsentStatus" class="ai-consent-status-badge" aria-live="polite">Verificando status...</span>
+                </div>
+                <p class="ai-consent-manager-text">
+                  Aceite registrado apenas no seu navegador (sem envio a servidor). Apagar força o banner
+                  a reaparecer na próxima navegação.
+                </p>
+                <button
+                  id="tosConsentRevokeInline"
+                  type="button"
+                  class="btn btn-consent-revoke"
+                  aria-describedby="tosConsentStatus"
+                  disabled
+                >
+                  🔒 Nenhum aceite registrado
+                </button>
+              </div>
               <div id="aiConsentManager" class="ai-consent-manager">
                 <div class="ai-consent-manager-head">
                   <p class="ai-consent-manager-title">
@@ -2269,6 +2294,10 @@
                   🔒 Nenhum consentimento ativo
                 </button>
               </div>
+              <p class="ai-consent-manager-text" style="margin-top:.75rem;font-size:.88rem;">
+                📜 Auditoria completa, exportação JSON e revogação granular em
+                <a href="/historico-aceite.html"><strong>/historico-aceite.html</strong></a>.
+              </p>
             </div>
           </div>
         </div>
@@ -2642,7 +2671,7 @@
     <div id="tosAcceptBanner" role="region" aria-label="Aceite de Termos de Uso e Privacidade" aria-live="polite">
       <div class="tos-banner-inner">
         <p class="tos-banner-text">
-          <strong>📋 Termos atualizados (v1.43.36).</strong>
+          <strong>📋 Termos atualizados (v1.43.41).</strong>
           Ao continuar usando o NossoDireito, você confirma ter lido os
           <a href="/termos-de-uso.html">Termos de Uso</a> e a
           <a href="/privacidade.html">Política de Privacidade</a>.
@@ -2661,12 +2690,12 @@
 
     <!-- v1.43.36 — Lógica de aceite + exit-toast (CSP-safe: arquivo externo).
          Carrega antes do app.js para que o banner apareça o mais cedo possível. -->
-    <script src="js/tos-banner.js?v=1.43.40&rev=274" defer></script>
+    <script src="js/tos-banner.js?v=1.43.41&rev=275" defer></script>
 
     <!-- Anonymizer compartilhado (Node + Browser) — DEVE carregar ANTES de app.js -->
-    <script src="shared/anonymizer.js?v=1.43.40&rev=274" defer></script>
+    <script src="shared/anonymizer.js?v=1.43.41&rev=275" defer></script>
     <!-- Document validator (gate multidimensional: CRM/CID + corroboração) — ANTES de app.js -->
-    <script src="shared/document-validator.js?v=1.43.40&rev=274" defer></script>
-    <script src="js/app.js?v=1.43.40&rev=274" defer></script>
+    <script src="shared/document-validator.js?v=1.43.41&rev=275" defer></script>
+    <script src="js/app.js?v=1.43.41&rev=275" defer></script>
   </body>
 </html>

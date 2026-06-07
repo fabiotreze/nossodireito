@@ -42,6 +42,7 @@
       .status-revoked{background:#7f1d1d;color:#fecaca}
     }
     .actions{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:1rem}
+    .card-actions{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:1rem;padding-top:.8rem;border-top:1px dashed var(--border)}
     button{font:inherit;cursor:pointer;border-radius:6px;padding:.6rem 1.1rem;border:1px solid var(--border);background:var(--surface);color:var(--text);transition:background .15s,border-color .15s}
     button:hover{background:var(--border)}
     button:focus-visible{outline:2px solid var(--primary);outline-offset:2px}
@@ -85,12 +86,18 @@
       <div id="statusContent">
         <p class="empty">Carregando…</p>
       </div>
+      <div class="card-actions">
+        <button type="button" class="danger" id="btnRevoke">🗑️ Apagar aceite (forçar novo banner)</button>
+      </div>
     </div>
 
     <div class="card" id="cardAiStatus" aria-live="polite">
       <h2>🧠 Consentimento de análise por IA</h2>
       <div id="aiStatusContent">
         <p class="empty">Carregando…</p>
+      </div>
+      <div class="card-actions">
+        <button type="button" class="danger" id="btnRevokeAI">🗑️ Revogar consentimento de IA</button>
       </div>
       <p class="legal-ref" style="margin-top:.8rem">
         Consentimento opt-in (LGPD Art. 7º I + Art. 11 II "a"). Veja
@@ -100,15 +107,13 @@
     </div>
 
     <div class="card">
-      <h2>Ações</h2>
+      <h2>Ações gerais</h2>
       <div class="actions">
-        <button type="button" class="primary" id="btnExport">📥 Exportar como JSON</button>
-        <button type="button" class="danger" id="btnRevoke">🗑️ Revogar aceite (Termos)</button>
-        <button type="button" class="danger" id="btnRevokeAI">🧠 Revogar consentimento IA</button>
+        <button type="button" class="primary" id="btnExport">📥 Exportar tudo (JSON)</button>
         <button type="button" id="btnReload">🔄 Recarregar status</button>
       </div>
       <p class="legal-ref" style="margin-top:.8rem">
-        Revogar = apagar do localStorage. No próximo uso, o banner/modal correspondente reaparecerá.
+        Revogar = apagar do localStorage. Cada botão de revogação vive dentro do card correspondente acima.
       </p>
     </div>
 
@@ -136,14 +141,15 @@
 
   <footer role="contentinfo">
     <div class="container">
-      <p>NossoDireito v1.43.40 &middot; <a href="/">Início</a></p>
+      <p>NossoDireito v1.43.41 &middot; <a href="/">Início</a></p>
     </div>
   </footer>
 
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
-  <!-- v1.43.40 — extraído do inline para conformar CSP estrita (script-src 'self' sem 'unsafe-inline').
-       Estende v1.43.30 com card e revogação de consentimento IA (nd_ai_consent_v2). -->
-  <script src="js/historico-aceite.js?v=1.43.40&rev=274" defer></script>
+  <!-- v1.43.41 — botões de revogação movidos para dentro do card respectivo (UX);
+       card 'Ações gerais' agora só Exportar + Recarregar.
+       Estende v1.43.40 com card e revogação de consentimento IA (nd_ai_consent_v2). -->
+  <script src="js/historico-aceite.js?v=1.43.41&rev=275" defer></script>
 </body>
 </html>

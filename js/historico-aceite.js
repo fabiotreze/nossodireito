@@ -3,6 +3,8 @@
  * Extraído do <script> inline de historico-aceite.html para conformar com CSP estrita
  * (script-src 'self' sem 'unsafe-inline'). Sem inline, o IIFE nunca rodava e a página
  * ficava eternamente em "Carregando…".
+ * v1.43.41: botões de revogação movidos para dentro dos cards correspondentes (UX).
+ *           Card "Ações gerais" agora só exporta + recarrega (frase de ação clara).
  * Estado 100% local (localStorage). Zero PII, zero rede.
  */
 (function () {

@@ -1,4 +1,4 @@
-/* NossoDireito v1.43.40 — Termos de Uso/Privacidade banner + Exit toast
+/* NossoDireito v1.43.41 — Termos de Uso/Privacidade banner + Exit toast
  * Não-bloqueante. Estado 100% local (localStorage). Nada enviado a servidor.
  * LGPD-safe: sem PII; auditvel em /historico-aceite.html.
  * CSP-friendly: arquivo externo, sem inline script.
@@ -13,7 +13,7 @@
 (function () {
     'use strict';
 
-    var TOS_VERSION = '1.43.40';
+    var TOS_VERSION = '1.43.41';
     var KEY_VERSION = 'tos_version_accepted';
     var KEY_AT = 'tos_accepted_at';
     var KEY_HASH = 'tos_hash';
@@ -26,6 +26,9 @@
     }
     function safeSet(key, val) {
         try { localStorage.setItem(key, val); return true; } catch (e) { return false; }
+    }
+    function safeRemove(key) {
+        try { localStorage.removeItem(key); return true; } catch (e) { return false; }
     }
 
     async function sha256Hex(text) {
@@ -69,17 +72,79 @@
         safeSet(KEY_HASH, hash);
     }
 
-    function initBanner() {
-        if (!needsAcceptance()) return;
+    var _acceptBtnBound = false;
+    function bindAcceptButton() {
+        if (_acceptBtnBound) return;
         var btn = document.getElementById('tosBtnAccept');
-        if (btn) {
-            btn.addEventListener('click', async function () {
-                await recordAcceptance();
-                hideBanner();
-            });
-        }
+        if (!btn) return;
+        btn.addEventListener('click', async function () {
+            await recordAcceptance();
+            hideBanner();
+            try { document.dispatchEvent(new CustomEvent('tos-acceptance-changed')); } catch (e) { /* ignore */ }
+            setupTosConsentManagerRender();
+        });
+        _acceptBtnBound = true;
+    }
+
+    function initBanner() {
+        bindAcceptButton();
+        if (!needsAcceptance()) return;
         showBanner();
     }
+
+    // v1.43.41 — Painél permanente de gestão de aceite (simétrico ao #aiConsentManager).
+    // Mostra versão aceita + botão de revogar (apaga as 3 chaves → banner reaparece na próxima navegação).
+    // Exposto via window.revokeTosAcceptance() para reuso (ex.: /historico-aceite.html).
+    var _renderTos = null;
+    function setupTosConsentManagerRender() {
+        if (_renderTos) { _renderTos(); return; }
+        var btn = document.getElementById('tosConsentRevokeInline');
+        var status = document.getElementById('tosConsentStatus');
+        if (!btn || !status) return;
+        var animate = function () {
+            status.classList.remove('ai-consent-status-badge--updated');
+            void status.offsetWidth;
+            status.classList.add('ai-consent-status-badge--updated');
+            setTimeout(function () { status.classList.remove('ai-consent-status-badge--updated'); }, 260);
+        };
+        _renderTos = function () {
+            var saved = safeGet(KEY_VERSION);
+            status.classList.remove('ai-consent-status-badge--active', 'ai-consent-status-badge--inactive');
+            if (saved) {
+                var current = (saved === TOS_VERSION);
+                status.textContent = current
+                    ? ('Aceito v' + saved)
+                    : ('Aceito v' + saved + ' (atual v' + TOS_VERSION + ')');
+                status.classList.add('ai-consent-status-badge--active');
+                btn.disabled = false;
+                btn.textContent = '🔓 Apagar aceite (forçar novo banner)';
+            } else {
+                status.textContent = 'Não aceito ainda';
+                status.classList.add('ai-consent-status-badge--inactive');
+                btn.disabled = true;
+                btn.textContent = '🔒 Nenhum aceite registrado';
+            }
+            animate();
+        };
+        btn.addEventListener('click', function () {
+            var ok = window.revokeTosAcceptance && window.revokeTosAcceptance();
+            _renderTos();
+            if (ok) {
+                showBanner();
+            }
+        });
+        document.addEventListener('tos-acceptance-changed', _renderTos);
+        _renderTos();
+    }
+
+    window.revokeTosAcceptance = function () {
+        var r1 = safeRemove(KEY_VERSION);
+        var r2 = safeRemove(KEY_AT);
+        var r3 = safeRemove(KEY_HASH);
+        var ok = r1 && r2 && r3;
+        try { document.dispatchEvent(new CustomEvent('tos-acceptance-changed')); } catch (e) { /* ignore */ }
+        return ok;
+    };
 
     // --- Exit toast para links externos ---
     var toastEl = null;
@@ -135,6 +200,7 @@
     function init() {
         initBanner();
         initExitToast();
+        setupTosConsentManagerRender();
     }
 
     if (document.readyState === 'loading') {
