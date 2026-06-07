@@ -554,9 +554,9 @@
         }
       }
     </style>
-    <link rel="stylesheet" href="css/styles.css?v=1.43.43&rev=277" media="all" id="deferredCSS" />
+    <link rel="stylesheet" href="css/styles.css?v=1.43.48&rev=281" media="all" id="deferredCSS" />
     <noscript>
-      <link rel="stylesheet" href="css/styles.css?v=1.43.43&rev=277" />
+      <link rel="stylesheet" href="css/styles.css?v=1.43.48&rev=281" />
     </noscript>
     <script type="application/ld+json">
       {
@@ -1514,7 +1514,7 @@
       <!-- SEO: Conteúdo semântico pré-renderizado para indexação por buscadores.
              Visível via <details>, totalmente indexado (DOM estático). -->
       <details id="seo-content" class="seo-resumo">
-        <summary>📑 Resumo em texto — todos os direitos PcD (BPC, CIPTEA, Educação, Saúde, Cotas...)</summary>
+        <summary>Resumo em texto — todos os direitos PcD (BPC, CIPTEA, Educação, Saúde, Cotas...)</summary>
         <article>
           <h2>Direitos e Benefícios para Pessoas com Deficiência (PcD) no Brasil</h2>
           <p>
@@ -1678,9 +1678,9 @@
               médicos ou sociais.</strong> Cada direito traz sua base legal e o link oficial — você lê direto da fonte.
             </p>
             <div class="hero-actions">
-              <a href="#consultar" class="btn btn-lg btn-white"> 🔍 Consultar catálogo </a
-              ><a href="#categorias" class="btn btn-lg btn-outline-white"> 📋 Ver categorias </a
-              ><a href="#links" class="btn btn-lg btn-outline-white"> 📚 Sites oficiais </a>
+              <a href="#consultar" class="btn btn-lg btn-white"> Consultar catálogo </a
+              ><a href="#categorias" class="btn btn-lg btn-outline-white"> Ver categorias </a
+              ><a href="#links" class="btn btn-lg btn-outline-white"> Sites oficiais </a>
             </div>
             <div class="hero-legal-highlight" role="note" aria-label="Aviso importante">
               <p>
@@ -1711,48 +1711,10 @@
       </section>
       <section class="section" id="consultar">
         <div class="container">
-          <h2>🔍 Consultar o catálogo</h2>
+          <h2>Consultar o catálogo</h2>
           <p class="section-desc">
-            Digite palavras-chave (BPC, escola, IPVA, CID...) ou <strong>📎 anexe um laudo</strong> para identificar direitos relacionados.
+            Digite palavras-chave (BPC, escola, IPVA, CID...) ou <strong>anexe um laudo</strong> para identificar direitos relacionados.
           </p>
-
-          <!-- v1.43.18: lista de docs movida para o topo da seção Consultar, acima dos filtros.
-               Antes ficava abaixo de #analysisResults e era difícil de descobrir. -->
-          <details class="docs-checklist-collapsible">
-            <summary>
-              📚 Guia rápido de documentos por direito
-            </summary>
-            <h3 class="docs-checklist-title">
-              Documentos comuns x direitos onde podem ser exigidos
-            </h3>
-            <p class="section-desc docs-checklist-intro">
-              Selecione um direito no filtro abaixo para ver apenas os documentos mais prováveis para aquele caso.
-            </p>
-            <div class="docs-checklist-actions-bar docs-checklist-actions-top">
-              <div style="display: flex; gap: 8px; margin-left: auto;">
-                <button
-                  id="shareDocsWhatsApp"
-                  class="btn btn-sm btn-whatsapp"
-                  type="button"
-                  aria-label="Compartilhar lista de documentos no WhatsApp"
-                >
-                  📲 WhatsApp</button
-                ><button
-                  id="exportDocsChecklistPdf"
-                  class="btn btn-sm btn-outline"
-                  type="button"
-                  aria-label="Salvar lista de documentos como PDF"
-                >
-                  📥 Salvar PDF
-                </button>
-              </div>
-            </div>
-            <!-- v1.43.36 — Escopo das ações WhatsApp/PDF (pattern .action-scope-info) -->
-            <p class="action-scope-info action-scope-info--compact" role="note">
-              ℹ️ <strong>Escopo:</strong> os botões geram texto/PDF <strong>no seu próprio dispositivo</strong> para você compartilhar manualmente. Nada é enviado a servidor. Não é protocolo, não é petição, não tem valor oficial.
-            </p>
-            <div id="docsChecklist" class="docs-checklist"></div>
-          </details>
 
           <div class="consulta-bar">
             <label for="searchInput" class="sr-only">Buscar direitos</label>
@@ -1778,42 +1740,77 @@
               class="btn btn-outline btn-attach"
               aria-label="Anexar laudo ou documento (PDF, JPG, PNG · máx. 5MB · até 5 arquivos · também aceita arrastar)"
             >
-              📎 <span class="btn-attach__label">Anexar</span>
+              <span class="btn-attach__label">Anexar</span>
             </button>
             <button id="searchBtn" class="btn btn-primary" type="button" aria-label="Buscar">
-              🔍 <span class="btn-attach__label">Buscar</span>
+              <span class="btn-attach__label">Buscar</span>
             </button>
           </div>
+
+          <details class="docs-checklist-collapsible">
+            <summary>
+              Documentos por direito (opcional)
+            </summary>
+            <h3 class="docs-checklist-title">
+              Documentos comuns x direitos onde podem ser exigidos
+            </h3>
+            <p class="section-desc docs-checklist-intro">
+              Use esta lista apenas quando precisar preparar documentos para um direito específico.
+            </p>
+            <div class="docs-checklist-actions-bar docs-checklist-actions-top">
+              <div style="display: flex; gap: 8px; margin-left: auto;">
+                <button
+                  id="shareDocsWhatsApp"
+                  class="btn btn-sm btn-whatsapp"
+                  type="button"
+                  aria-label="Compartilhar lista de documentos no WhatsApp"
+                >
+                  WhatsApp</button
+                ><button
+                  id="exportDocsChecklistPdf"
+                  class="btn btn-sm btn-outline"
+                  type="button"
+                  aria-label="Salvar lista de documentos como PDF"
+                >
+                  Salvar PDF
+                </button>
+              </div>
+            </div>
+            <p class="action-scope-info action-scope-info--compact" role="note">
+              <strong>Escopo:</strong> os botões geram texto/PDF <strong>no seu próprio dispositivo</strong> para compartilhamento manual. Nada é enviado ao servidor. Não é protocolo, não é petição, não tem valor oficial.
+            </p>
+            <div id="docsChecklist" class="docs-checklist"></div>
+          </details>
 
           <!-- Área de documentos: aparece somente quando há arquivos anexados -->
           <div id="docsUploadArea" class="docs-upload-area" hidden>
             <div id="fileList" class="file-list" aria-live="polite"></div>
             <div class="consulta-actions">
               <button id="analyzeSelected" class="btn btn-primary" type="button" disabled>
-                🔍 Analisar localmente
+                Analisar localmente
               </button>
               <button id="analyzeWithAI" class="btn btn-ai" type="button" disabled
                       aria-describedby="aiAnalysisHint">
-                🧠 Analisar com IA
+                Analisar com IA
               </button>
               <button id="deleteAllFiles" class="btn btn-sm btn-danger" type="button" style="display: none">
-                🗑️ Apagar todos
+                Apagar todos
               </button>
             </div>
             <details class="consulta-privacy-details">
-              <summary>🔒 Privacidade, criptografia e consentimento (LGPD)</summary>
+              <summary>Privacidade, criptografia e consentimento (LGPD)</summary>
               <p id="aiAnalysisHint" class="upload-hint">
-                💡 <strong>Análise local:</strong> arquivos criptografados (AES-256), analisados no seu navegador
+                <strong>Análise local:</strong> arquivos criptografados (AES-256), analisados no seu navegador
                 e descartados após uso. Arquivos não analisados expiram em 15 minutos.
               </p>
               <p class="upload-hint">
-                💡 <strong>Análise com IA:</strong> envia o texto <strong>anonimizado</strong> (sem nome, CPF, RG,
+                <strong>Análise com IA:</strong> envia o texto <strong>anonimizado</strong> (sem nome, CPF, RG,
                 endereço, telefone) para o <strong>Azure OpenAI (gpt-4o-mini)</strong> em região Brasil. Requer
                 consentimento explícito (LGPD Art. 7º I).
               </p>
               <div id="aiConsentQuickActions" class="ai-consent-quick-actions" role="region" aria-label="Status de consentimento de IA">
                 <div class="ai-consent-quick-header">
-                  <p class="ai-consent-quick-title">⚖️ Consentimento de IA (LGPD Art. 8º §5)</p>
+                  <p class="ai-consent-quick-title">Consentimento de IA (LGPD Art. 8º §5)</p>
                   <span id="aiConsentQuickStatus" class="ai-consent-status-badge" aria-live="polite">Verificando status...</span>
                 </div>
                 <p class="ai-consent-quick-text">
@@ -1822,7 +1819,7 @@
                 </p>
                 <p class="ai-consent-quick-text" style="margin-top:.4rem;">
                   Para revogar ou auditar o consentimento, use o painel em
-                  <a href="#disclaimerInline">🔒 Aviso &gt; Privacidade e LGPD</a>
+                  <a href="#disclaimerInline">Aviso &gt; Privacidade e LGPD</a>
                   ou abra o <a href="/historico-aceite.html">histórico completo</a>.
                 </p>
               </div>
@@ -1840,7 +1837,7 @@
             aria-label="Resultados da análise de documentos"
           >
             <div class="analysis-header">
-              <h3>🔍 Análise do Documento</h3>
+              <h3>Análise do Documento</h3>
               <div class="analysis-header-actions">
                 <div style="display: flex; gap: 8px">
                   <button
@@ -1849,19 +1846,19 @@
                     type="button"
                     aria-label="Compartilhar no WhatsApp"
                   >
-                    📲 WhatsApp
+                      WhatsApp
                   </button>
                   <button id="exportPdf" class="btn btn-sm btn-outline" type="button" aria-label="Salvar como PDF">
-                    📥 Salvar PDF
+                      Salvar PDF
                   </button>
                 </div>
                 <button id="closeAnalysis" class="btn btn-sm btn-outline" type="button" aria-label="Fechar análise">
-                  ✕ Fechar
+                    Fechar
                 </button>
               </div>
               <!-- v1.43.36 — Escopo das ações WhatsApp/PDF da análise (pattern .action-scope-info) -->
               <p class="action-scope-info action-scope-info--compact" role="note">
-                ℹ️ <strong>Escopo:</strong> WhatsApp e PDF exportam o resumo desta análise <strong>localmente</strong> para você compartilhar com pessoa de confiança, advogado ou Defensoria. O documento gerado tem caráter <strong>orientativo</strong>, não protocolar.
+                <strong>Escopo:</strong> WhatsApp e PDF exportam o resumo desta análise <strong>localmente</strong> para você compartilhar com pessoa de confiança, advogado ou Defensoria. O documento gerado tem caráter <strong>orientativo</strong>, não protocolar.
               </p>
             </div>
             <div
@@ -1871,7 +1868,6 @@
               aria-label="Conteúdo gerado por inteligência artificial"
               hidden
             >
-              <span class="ai-disclosure-icon" aria-hidden="true">🤖</span>
               <span class="ai-disclosure-text">
                 <strong>Conteúdo gerado por IA</strong>
                 (Azure OpenAI <code>gpt-4o-mini</code>, Brasil Sul) —
@@ -1890,7 +1886,7 @@
       </section>
       <section class="section section-alt" id="categorias">
         <div class="container">
-          <h2>📋 Categorias de direitos</h2>
+          <h2>Categorias de direitos</h2>
           <p class="section-desc">
             Todas as 42 categorias listadas abaixo. <strong>Use os botões por área</strong> para filtrar e focar no que
             importa para você — cada categoria traz passo a passo e base legal.
@@ -1912,7 +1908,7 @@
       </section>
       <section class="section section-alt" id="referencias" aria-labelledby="referenciasTitle">
         <div class="container">
-          <h2 id="referenciasTitle">📚 Central de Referências</h2>
+          <h2 id="referenciasTitle">Central de Referências</h2>
           <p class="section-desc">
             Sites oficiais, classificação CID, órgãos estaduais, instituições de apoio e fontes consultadas — tudo em um só lugar, com abas para você ir direto ao ponto.
           </p>
@@ -1931,7 +1927,7 @@
               aria-controls="links"
               data-target="#links"
               tabindex="0"
-            >🔗 <span>Sites Oficiais</span></button
+            ><span>Sites Oficiais</span></button
             ><button
               type="button"
               role="tab"
@@ -1941,7 +1937,7 @@
               aria-controls="classificacao"
               data-target="#classificacao"
               tabindex="-1"
-            >🏥 <span>CID-10/11</span></button
+            ><span>CID-10/11</span></button
             ><button
               type="button"
               role="tab"
@@ -1951,7 +1947,7 @@
               aria-controls="orgaos-estaduais"
               data-target="#orgaos-estaduais"
               tabindex="-1"
-            >🏢 <span>Estados</span></button
+            ><span>Estados</span></button
             ><button
               type="button"
               role="tab"
@@ -1961,7 +1957,7 @@
               aria-controls="instituicoes"
               data-target="#instituicoes"
               tabindex="-1"
-            >🤝 <span>Instituições</span></button
+            ><span>Instituições</span></button
             ><button
               type="button"
               role="tab"
@@ -1971,7 +1967,7 @@
               aria-controls="transparencia"
               data-target="#transparencia"
               tabindex="-1"
-            >📚 <span>Transparência &amp; Aviso</span></button>
+            ><span>Transparência &amp; Aviso</span></button>
           </div>
 
           <div
@@ -1980,22 +1976,22 @@
             role="tabpanel"
             aria-labelledby="referenciasTab-links"
           >
-            <h3 class="referencias-panel-title">🔗 Sites Oficiais do Governo</h3>
+            <h3 class="referencias-panel-title">Sites Oficiais do Governo</h3>
             <p class="section-desc">
               Catálogo unificado: leis (Planalto), serviços, portais e normativas — todos de fontes oficiais
               do governo brasileiro. Use os filtros por órgão para navegar.
             </p>
             <div class="links-filter-bar" role="group" aria-label="Filtrar por órgão">
               <button type="button" class="links-filter-btn active" data-filter="todos" aria-pressed="true">Todos</button
-              ><button type="button" class="links-filter-btn" data-filter="Planalto" aria-pressed="false">📜 Planalto</button
-              ><button type="button" class="links-filter-btn" data-filter="INSS" aria-pressed="false">📋 INSS</button
-              ><button type="button" class="links-filter-btn" data-filter="Saúde" aria-pressed="false">⚕️ Saúde</button
-              ><button type="button" class="links-filter-btn" data-filter="MDS" aria-pressed="false">🏠 MDS</button
-              ><button type="button" class="links-filter-btn" data-filter="MEC" aria-pressed="false">🎓 MEC</button
-              ><button type="button" class="links-filter-btn" data-filter="Gov.BR" aria-pressed="false">🏛️ Gov.BR</button
-              ><button type="button" class="links-filter-btn" data-filter="Conselhos" aria-pressed="false">👥 Conselhos</button
-              ><button type="button" class="links-filter-btn" data-filter="OMS" aria-pressed="false">🌐 OMS</button
-              ><button type="button" class="links-filter-btn" data-filter="Outros" aria-pressed="false">🔗 Outros</button>
+              ><button type="button" class="links-filter-btn" data-filter="Planalto" aria-pressed="false">Planalto</button
+              ><button type="button" class="links-filter-btn" data-filter="INSS" aria-pressed="false">INSS</button
+              ><button type="button" class="links-filter-btn" data-filter="Saúde" aria-pressed="false">Saúde</button
+              ><button type="button" class="links-filter-btn" data-filter="MDS" aria-pressed="false">MDS</button
+              ><button type="button" class="links-filter-btn" data-filter="MEC" aria-pressed="false">MEC</button
+              ><button type="button" class="links-filter-btn" data-filter="Gov.BR" aria-pressed="false">Gov.BR</button
+              ><button type="button" class="links-filter-btn" data-filter="Conselhos" aria-pressed="false">Conselhos</button
+              ><button type="button" class="links-filter-btn" data-filter="OMS" aria-pressed="false">OMS</button
+              ><button type="button" class="links-filter-btn" data-filter="Outros" aria-pressed="false">Outros</button>
             </div>
             <div id="linksGrid" class="links-grid"></div>
           </div>
@@ -2007,14 +2003,14 @@
             aria-labelledby="referenciasTab-classificacao"
             hidden
           >
-            <h3 class="referencias-panel-title">🏥 Classificação de Deficiência — CID-10 / CID-11</h3>
+            <h3 class="referencias-panel-title">Classificação de Deficiência — CID-10 / CID-11</h3>
             <p class="section-desc">
               Tabela de referência com os códigos CID usados em laudos médicos para cada tipo de deficiência. O sistema
               identifica automaticamente estes códigos ao analisar seus documentos.
             </p>
             <div id="classificacaoGrid"></div>
             <div class="table-note" role="note" aria-label="Nota sobre a tabela de classificação de deficiência">
-              ℹ️ Esta tabela utiliza códigos CID-10 e CID-11 oficiais da OMS e critérios técnicos baseados na legislação
+              Esta tabela utiliza códigos CID-10 e CID-11 oficiais da OMS e critérios técnicos baseados na legislação
               brasileira. Consulte sempre as fontes oficiais para informações atualizadas:
               <a href="https://icd.who.int/" target="_blank" rel="noopener noreferrer">OMS ICD (site externo)</a>,
               <a href="https://www.gov.br/saude/pt-br" target="_blank" rel="noopener noreferrer"
@@ -2030,7 +2026,7 @@
             aria-labelledby="referenciasTab-orgaos-estaduais"
             hidden
           >
-            <h3 class="referencias-panel-title">🏢 Órgãos Estaduais de Apoio à Pessoa com Deficiência</h3>
+            <h3 class="referencias-panel-title">Órgãos Estaduais de Apoio à Pessoa com Deficiência</h3>
             <p class="section-desc">
               Secretarias e órgãos de cada estado brasileiro responsáveis por políticas públicas para pessoas com
               deficiência. Todos os links são de domínios oficiais
@@ -2055,7 +2051,7 @@
             aria-labelledby="referenciasTab-instituicoes"
             hidden
           >
-            <h3 class="referencias-panel-title">🤝 Instituições de Apoio</h3>
+            <h3 class="referencias-panel-title">Instituições de Apoio</h3>
             <p class="section-desc">
               Organizações governamentais e ONGs que oferecem suporte gratuito ou de baixo custo para famílias de pessoas
               com deficiência.
@@ -2063,10 +2059,10 @@
             <div class="inst-filter" role="group" aria-label="Filtrar por tipo de instituição">
               <button type="button" class="inst-filter-btn active" data-filter="todos" aria-pressed="true">Todos</button
               ><button type="button" class="inst-filter-btn" data-filter="governamental" aria-pressed="false">
-                🏛️ Governamental</button
-              ><button type="button" class="inst-filter-btn" data-filter="ong" aria-pressed="false">💚 ONGs</button
+                Governamental</button
+              ><button type="button" class="inst-filter-btn" data-filter="ong" aria-pressed="false">ONGs</button
               ><button type="button" class="inst-filter-btn" data-filter="profissional" aria-pressed="false">
-                ⚖️ Profissional
+                Profissional
               </button>
             </div>
             <div id="instituicoesGrid" class="instituicoes-grid"></div>
@@ -2079,7 +2075,7 @@
             aria-labelledby="referenciasTab-transparencia"
             hidden
           >
-            <h3 class="referencias-panel-title">🔍 Transparência e Fontes Oficiais</h3>
+            <h3 class="referencias-panel-title">Transparência e Fontes Oficiais</h3>
           <p class="section-desc">
             Todas as informações deste site são compiladas de <strong>fontes oficiais</strong>
             do governo brasileiro e organismos internacionais (OMS, ONU, INSS, Ministério da Saúde, ANS, entre outros).
@@ -2117,7 +2113,7 @@
                Transparência agora foca em governança: metadados, compromisso, aviso, LGPD, DPO. -->
           <div class="transparency-note">
             <h3 id="compromissoAtualizacao" style="margin-top: 0; font-size: 1rem; color: var(--text)">
-              📅 Compromisso com a Atualização
+              Compromisso com a Atualização
             </h3>
             <p>Este projeto realiza <strong>atualizações manuais</strong> periodicamente, revisando:</p>
             <ul style="margin: 0.5rem 0 1rem 1.5rem; line-height: 1.8">
@@ -2127,7 +2123,7 @@
             </ul>
             <p><strong>Última atualização:</strong><span id="transLastUpdateText">26 de fevereiro de 2026</span></p>
             <p style="margin-bottom: 0">
-              <strong>⚠️ Encontrou informação desatualizada ou imprecisa?</strong><br />
+              <strong>Encontrou informação desatualizada ou imprecisa?</strong><br />
               Entre em contato pelo e-mail
               <a href="mailto:38567767+fabiotreze@users.noreply.github.com" style="font-weight: 600"
                 >38567767+fabiotreze@users.noreply.github.com</a
@@ -2135,11 +2131,11 @@
             </p>
           </div>
           <div class="disclaimer-box" id="disclaimerInline">
-            <h3 class="disclaimer-title">⚠️ Aviso Importante — Limitações do Serviço</h3>
+            <h3 class="disclaimer-title">Aviso Importante — Limitações do Serviço</h3>
             <div class="disclaimer-alert" role="alert">
               <p class="disclaimer-intro">
-                <strong>📚 Este site É um catálogo público que reúne referências às fontes oficiais brasileiras.
-                ⚠️ NÃO É órgão público, não substitui profissional habilitado e não tem competência para conceder, negar ou peticionar direitos.</strong>
+                <strong>Este site é um catálogo público que reúne referências às fontes oficiais brasileiras.
+                Não é órgão público, não substitui profissional habilitado e não tem competência para conceder, negar ou peticionar direitos.</strong>
                 As informações aqui apresentadas são de caráter <em>educacional e informativo</em>, compiladas
                 de fontes públicas oficiais (leis, portarias, sites <code>.gov.br</code>, OMS quando adotada pelo Ministério da Saúde).
               </p>
@@ -2159,7 +2155,7 @@
               </p>
             </div>
             <div class="disclaimer-section">
-              <p class="disclaimer-subtitle">🏛️ A legislação brasileira prevê serviços oficiais que você pode acessar diretamente:</p>
+              <p class="disclaimer-subtitle">A legislação brasileira prevê serviços oficiais que você pode acessar diretamente:</p>
               <ul class="disclaimer-list">
                 <li>
                   <strong>Assistência jurídica gratuita:</strong>
@@ -2249,7 +2245,7 @@
               <div id="tosConsentManager" class="ai-consent-manager">
                 <div class="ai-consent-manager-head">
                   <p class="ai-consent-manager-title">
-                    📋 Aceite dos Termos &amp; Privacidade (obrigatório para uso)
+                    Aceite dos Termos &amp; Privacidade (obrigatório para uso)
                   </p>
                   <span id="tosConsentStatus" class="ai-consent-status-badge" aria-live="polite">Verificando status...</span>
                 </div>
@@ -2264,13 +2260,13 @@
                   aria-describedby="tosConsentStatus"
                   disabled
                 >
-                  🔒 Nenhum aceite registrado
+                  Nenhum aceite registrado
                 </button>
               </div>
               <div id="aiConsentManager" class="ai-consent-manager">
                 <div class="ai-consent-manager-head">
                   <p class="ai-consent-manager-title">
-                    🤖 Consentimento de análise por IA (opcional)
+                    Consentimento de análise por IA (opcional)
                   </p>
                   <span id="aiConsentStatus" class="ai-consent-status-badge" aria-live="polite">Verificando status...</span>
                 </div>
@@ -2285,11 +2281,11 @@
                   aria-describedby="aiConsentStatus"
                   disabled
                 >
-                  🔒 Nenhum consentimento ativo
+                  Nenhum consentimento ativo
                 </button>
               </div>
               <p class="ai-consent-manager-text" style="margin-top:.75rem;font-size:.88rem;">
-                📜 Auditoria completa, exportação JSON e revogação granular em
+                Auditoria completa, exportação JSON e revogação granular em
                 <a href="/historico-aceite.html"><strong>/historico-aceite.html</strong></a>.
               </p>
             </div>
@@ -2557,45 +2553,45 @@
          aria-labelledby="aiConsentTitle" aria-describedby="aiConsentBody"
          style="display:none;">
       <div class="modal-content ai-consent-modal-content">
-        <h2 id="aiConsentTitle" class="ai-consent-modal-title">🧠 Análise com Inteligência Artificial</h2>
+        <h2 id="aiConsentTitle" class="ai-consent-modal-title">Análise com Inteligência Artificial</h2>
         <div id="aiConsentBody" class="ai-consent-modal-body">
           <p><strong>O que será enviado:</strong></p>
           <ul style="margin:8px 0 16px 20px;">
-            <li>✅ Texto extraído do PDF, <strong>já anonimizado no seu navegador</strong></li>
-            <li>🚫 <strong>Removido antes do envio</strong>: nome, CPF, RG, e-mail, telefone, endereço, CEP, data de nascimento</li>
-            <li>📄 <strong>Não enviado</strong>: o arquivo PDF/imagem original (fica só no seu dispositivo)</li>
+            <li>Texto extraído do PDF, <strong>já anonimizado no seu navegador</strong></li>
+            <li><strong>Removido antes do envio</strong>: nome, CPF, RG, e-mail, telefone, endereço, CEP, data de nascimento</li>
+            <li><strong>Não enviado</strong>: o arquivo PDF/imagem original (fica só no seu dispositivo)</li>
           </ul>
           <p><strong>Para onde vai:</strong></p>
           <ul style="margin:8px 0 16px 20px;">
-            <li>🇧🇷 <strong>Azure OpenAI</strong> (modelo <code>gpt-4o-mini</code>) — região <strong>Brasil Sul</strong> (LGPD Art. 33)</li>
-            <li>🔐 Autenticação via <strong>Managed Identity</strong> (sem chaves de API expostas)</li>
-            <li>⏱️ <strong>Sem armazenamento</strong>: Microsoft DPA garante zero retenção de prompts/respostas</li>
-            <li>🚫 Sem treino: seus dados <strong>não</strong> alimentam modelos da Microsoft/OpenAI</li>
+            <li><strong>Azure OpenAI</strong> (modelo <code>gpt-4o-mini</code>) — região <strong>Brasil Sul</strong> (LGPD Art. 33)</li>
+            <li>Autenticação via <strong>Managed Identity</strong> (sem chaves de API expostas)</li>
+            <li><strong>Sem armazenamento</strong>: Microsoft DPA garante zero retenção de prompts/respostas</li>
+            <li>Sem treino: seus dados <strong>não</strong> alimentam modelos da Microsoft/OpenAI</li>
           </ul>
           <p><strong>O que você recebe:</strong></p>
           <ul style="margin:8px 0 16px 20px;">
-            <li>🏷️ CIDs detectados com descrição e confiança</li>
-            <li>📅 Datas relevantes com contexto</li>
-            <li>📊 Categorias de direitos sugeridas com justificativa</li>
-            <li>📝 Resumo orientativo (não substitui avaliação profissional)</li>
+            <li>CIDs detectados com descrição e confiança</li>
+            <li>Datas relevantes com contexto</li>
+            <li>Categorias de direitos sugeridas com justificativa</li>
+            <li>Resumo orientativo (não substitui avaliação profissional)</li>
           </ul>
           <p class="ai-consent-modal-note">
-            ⚖️ Base legal: <strong>consentimento</strong> (LGPD Art. 7º I). Você pode revogar a qualquer momento
+            Base legal: <strong>consentimento</strong> (LGPD Art. 7º I). Você pode revogar a qualquer momento
             limpando os dados do site. Esta análise é orientação preliminar — <strong>não substitui</strong>
             avaliação profissional.
           </p>
           <p class="ai-consent-modal-warning" role="note" style="background:var(--warn-bg,#fef3c7);color:var(--warn-text,#92400e);border-left:4px solid #f59e0b;padding:10px 12px;margin:12px 0;border-radius:6px;font-size:0.92rem;">
-            ⚠️ <strong>A IA pode errar.</strong> Conforme <a href="/termos-de-uso.html#secao-4" target="_blank" rel="noopener">Termos §4.3</a>:
+            <strong>A IA pode errar.</strong> Conforme <a href="/termos-de-uso.html#secao-4" target="_blank" rel="noopener">Termos §4.3</a>:
             CIDs incorretos, datas confundidas e direitos sugeridos sem fundamento no texto são possíveis.
             <strong>Confirme tudo nas fontes oficiais</strong> antes de qualquer decisão.
           </p>
           <p class="ai-consent-modal-art20" role="note" style="background:#eff6ff;color:#1e40af;border-left:4px solid #3b82f6;padding:10px 12px;margin:12px 0;border-radius:6px;font-size:0.92rem;">
-            🔄 <strong>Direito à revisão humana (LGPD Art. 20):</strong> se a IA errar (ex.: CID errado, direito sugerido sem base),
+            <strong>Direito à revisão humana (LGPD Art. 20):</strong> se a IA errar (ex.: CID errado, direito sugerido sem base),
             escreva para <a href="mailto:dpo@fabiotreze.com"><strong>dpo@fabiotreze.com</strong></a> solicitando revisão.
             Esse canal trata exclusivamente do funcionamento da IA — questões jurídicas devem ir a profissional habilitado.
           </p>
           <p class="ai-consent-modal-refs" style="font-size:0.85rem;color:var(--muted,#64748b);margin:8px 0 4px;">
-            📚 Leia antes de aceitar:
+            Leia antes de aceitar:
             <a href="/termos-de-uso.html#secao-4" target="_blank" rel="noopener">Termos §4 — Análise por IA</a> ·
             <a href="/privacidade.html#secao-6" target="_blank" rel="noopener">Privacidade §6 — Compartilhamento Azure</a> ·
             <a href="https://github.com/fabiotreze/nossodireito/blob/main/docs/AI-PRINCIPLES.md" target="_blank" rel="noopener noreferrer">AI-PRINCIPLES</a>
@@ -2610,7 +2606,7 @@
             </span>
           </label>
           <details class="ai-consent-plain-language">
-            <summary>🔤 Ler em linguagem simples</summary>
+            <summary>Ler em linguagem simples</summary>
             <div class="ai-consent-plain-text">
               <p><strong>O que acontece:</strong> Você pode colar um texto de laudo médico, atestado ou documento
               com informações de saúde. O sistema vai ler o texto para sugerir quais direitos você pode ter.</p>
@@ -2688,12 +2684,12 @@
 
     <!-- v1.43.36 — Lógica de aceite + exit-toast (CSP-safe: arquivo externo).
          Carrega antes do app.js para que o banner apareça o mais cedo possível. -->
-    <script src="js/tos-banner.js?v=1.43.43&rev=277" defer></script>
+    <script src="js/tos-banner.js?v=1.43.48&rev=281" defer></script>
 
     <!-- Anonymizer compartilhado (Node + Browser) — DEVE carregar ANTES de app.js -->
-    <script src="shared/anonymizer.js?v=1.43.43&rev=277" defer></script>
+    <script src="shared/anonymizer.js?v=1.43.48&rev=281" defer></script>
     <!-- Document validator (gate multidimensional: CRM/CID + corroboração) — ANTES de app.js -->
-    <script src="shared/document-validator.js?v=1.43.43&rev=277" defer></script>
-    <script src="js/app.js?v=1.43.43&rev=277" defer></script>
+    <script src="shared/document-validator.js?v=1.43.48&rev=281" defer></script>
+    <script src="js/app.js?v=1.43.48&rev=281" defer></script>
   </body>
 </html>

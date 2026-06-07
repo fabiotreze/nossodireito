@@ -26,13 +26,15 @@
     .container{max-width:880px;margin:0 auto;padding:0 20px}
     .skip-link{position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden}
     .skip-link:focus{position:fixed;left:1rem;top:1rem;width:auto;height:auto;background:var(--primary-dark);color:#fff;padding:.75rem 1rem;border-radius:6px;z-index:100;text-decoration:none}
-    header.topbar{background:var(--primary-dark);color:#fff;padding:1rem 0;margin-bottom:1.5rem;position:sticky;top:0;z-index:50}
-    header.topbar a{color:#fff;text-decoration:none;font-weight:700;font-size:1.05rem}
-    header.topbar a:hover{text-decoration:underline}
+    header.topbar{background:var(--primary-dark);color:#fff;padding:.85rem 0;margin-bottom:1.25rem}
+    .topbar-inner{display:flex;align-items:center;justify-content:space-between;gap:1rem}
+    .topbar-brand{color:#fff;text-decoration:none;font-weight:800;font-size:1.1rem;letter-spacing:.2px}
+    .topbar-brand:hover{text-decoration:underline}
+    .topbar-nav ul{list-style:none;display:flex;align-items:center;gap:.4rem;padding-left:0}
+    .topbar-nav a{display:inline-flex;align-items:center;min-height:40px;padding:.45rem .8rem;border-radius:8px;color:#fff;text-decoration:none;font-weight:600;font-size:.95rem;border:1px solid transparent}
+    .topbar-nav a:hover,.topbar-nav a:focus-visible{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.28);text-decoration:none}
+    .topbar-nav a[aria-current="page"]{background:#fff;color:var(--primary-dark);border-color:#fff}
     main{padding-bottom:3rem}
-    nav.breadcrumb{font-size:.9rem;color:var(--muted);margin-bottom:1rem}
-    nav.breadcrumb a{color:var(--primary);text-decoration:underline}
-    nav.breadcrumb a:hover{text-decoration:none}
     h1{font-size:1.85rem;color:var(--primary-dark);margin-bottom:.5rem;line-height:1.2}
     .meta-doc{font-size:.85rem;color:var(--muted);margin-bottom:1.5rem}
     .draft-banner{background:var(--warn-bg);border:2px solid var(--warn-border);color:var(--warn-text);padding:1rem 1.2rem;border-radius:6px;margin:1rem 0 2rem;font-size:.95rem;line-height:1.5}
@@ -59,21 +61,30 @@
     .data-table th{background:var(--surface-2);font-weight:600;color:var(--primary-dark)}
     footer{text-align:center;padding:2rem 1rem;border-top:1px solid var(--border);font-size:.85rem;color:var(--muted);margin-top:3rem}
     footer a{color:var(--primary)}
+    @media (max-width:640px){
+      .topbar-inner{flex-wrap:wrap}
+      .topbar-nav{width:100%}
+      .topbar-nav ul{width:100%;justify-content:flex-start;gap:.6rem}
+    }
   </style>
 </head>
 <body>
   <a href="#mainContent" class="skip-link">Ir para o conteúdo</a>
   <header class="topbar" role="banner">
-    <div class="container">
-      <a href="/" aria-label="Voltar para a página inicial do NossoDireito">← NossoDireito</a>
+    <div class="container topbar-inner">
+      <a class="topbar-brand" href="/" aria-label="Voltar para a página inicial do NossoDireito">NossoDireito</a>
+      <nav class="topbar-nav" aria-label="Navegação principal">
+        <ul>
+          <li><a href="/">Início</a></li>
+          <li><a href="/termos-de-uso.html">Termos</a></li>
+          <li><a href="/privacidade.html" aria-current="page">Privacidade</a></li>
+          <li><a href="/historico-aceite.html">Meu aceite</a></li>
+        </ul>
+      </nav>
     </div>
   </header>
 
   <main id="mainContent" class="container" role="main">
-    <nav class="breadcrumb" aria-label="Trilha de navegação">
-      <a href="/">Início</a> &raquo; Política de Privacidade
-    </nav>
-
     <h1>Política de Privacidade</h1>
     <p class="meta-doc">
       <strong>Versão:</strong> 1.43.24 &middot;
@@ -82,8 +93,8 @@
     </p>
 
     <div class="draft-banner" role="note" aria-labelledby="draftTitle">
-      <strong id="draftTitle">⚠️ Documento em revisão profissional pendente</strong>
-      Esta Política foi redigida com base na LGPD, no <a href="https://github.com/fabiotreze/nossodireito/blob/main/docs/RIPD.md" target="_blank" rel="noopener noreferrer">RIPD</a> técnico e em boas práticas, mas ainda <strong>não foi auditada por advogado especialista em proteção de dados</strong>. Estamos buscando revisão pro-bono. Se você é DPO certificado ou advogado da área e quer ajudar, escreva para <a href="mailto:dpo@fabiotreze.com">dpo@fabiotreze.com</a>.
+      <strong id="draftTitle">Política de Privacidade — versão pública aberta a melhoria</strong>
+      Esta Política foi redigida com base na LGPD, no <a href="https://github.com/fabiotreze/nossodireito/blob/main/docs/RIPD.md" target="_blank" rel="noopener noreferrer">RIPD</a> técnico e em boas práticas reconhecidas. Como o projeto é pessoal e sem fins econômicos, ainda buscamos revisão pro-bono por DPO certificado ou advogado especialista em proteção de dados. Se você atua na área e quer contribuir, escreva para <a href="mailto:dpo@fabiotreze.com">dpo@fabiotreze.com</a>.
     </div>
 
     <nav class="toc" aria-labelledby="tocTitle">

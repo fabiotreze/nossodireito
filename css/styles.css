@@ -768,23 +768,6 @@ html.high-contrast ::selection {
     text-align: center;
 }
 
-.toast-error {
-    background: var(--danger);
-}
-
-.toast-warning {
-    background: var(--warning);
-    color: #1e293b;
-}
-
-.toast-info {
-    background: var(--primary);
-}
-
-.toast-success {
-    background: var(--success);
-}
-
 /* ---------- Confirm Dialog ---------- */
 .confirm-dialog {
     max-width: 340px;
@@ -1415,11 +1398,6 @@ html.high-contrast ::selection {
     transform: translateX(4px);
 }
 
-.search-result-icon {
-    font-size: 2rem;
-    flex-shrink: 0;
-}
-
 .search-result-info h3 {
     font-size: 1rem;
     margin-bottom: 4px;
@@ -1514,7 +1492,7 @@ html.high-contrast ::selection {
     text-align: left;
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
     min-height: 52px;
 }
 
@@ -1529,9 +1507,7 @@ html.high-contrast ::selection {
 }
 
 .category-icon {
-    font-size: 1.4rem;
-    line-height: 1;
-    flex-shrink: 0;
+    display: none;
 }
 
 .category-card h3 {
@@ -2067,27 +2043,24 @@ html.high-contrast .valor-destaque {
     display: flex;
     flex-direction: row;
     align-items: center;
-    gap: 12px;
+    gap: 8px;
     padding: 12px 14px;
     min-height: 56px;
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: var(--radius-sm);
     text-align: left;
-    transition: border-color var(--transition), box-shadow var(--transition), transform var(--transition);
+    transition: border-color var(--transition), background var(--transition);
 }
 
 .link-card:hover {
     border-color: var(--primary);
-    box-shadow: var(--shadow-sm);
+    background: var(--surface-hover, #f8fafc);
     text-decoration: none;
-    transform: translateY(-1px);
 }
 
 .link-icon {
-    font-size: 1.5rem;
-    flex-shrink: 0;
-    line-height: 1;
+    display: none;
 }
 
 .link-title {
@@ -4317,8 +4290,7 @@ html.high-contrast .disclaimer-alert {
 }
 
 .trilha-tab__icon {
-    font-size: 1.1rem;
-    line-height: 1;
+    display: none;
 }
 
 .trilha-tab__label {
@@ -4359,10 +4331,15 @@ html.high-contrast .disclaimer-alert {
 .card-grid[data-active-trilha="mobilidade"] { --trilha-color: #c2410c; --trilha-tint: rgba(194, 65, 12, 0.10); } /* laranja — transporte */
 .card-grid[data-active-trilha="cidadania"] { --trilha-color: #1e40af; --trilha-tint: rgba(30, 64, 175, 0.10); } /* azul — justiça */
 
+/* Modo minimalista: evita arco-íris de trilhas e usa um único destaque neutro. */
+.card-grid[data-active-trilha] {
+    --trilha-color: var(--primary);
+}
+
 /* Hover: borda esquerda mais grossa para refor\u00e7ar afinidade */
 .card-grid[data-active-trilha] .category-card:hover {
     border-color: var(--trilha-color, var(--primary));
-    border-left-width: 5px;
+    border-left-width: 3px;
 }
 
 /* Dark mode: cores levemente mais claras para contraste em fundo escuro */

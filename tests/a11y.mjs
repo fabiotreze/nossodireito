@@ -102,6 +102,9 @@ const PAGES = [
     { name: 'direito-bpc', path: '/direitos/bpc/' },
     { name: 'direito-caa', path: '/direitos/caa_comunicacao_alternativa/' },
     { name: 'direito-educacao', path: '/direitos/educacao/' },
+    { name: 'termos-de-uso', path: '/termos-de-uso.html' },
+    { name: 'privacidade', path: '/privacidade.html' },
+    { name: 'historico-aceite', path: '/historico-aceite.html' },
 ];
 
 // Rules we are intentionally deferring (with justification). Empty for now.

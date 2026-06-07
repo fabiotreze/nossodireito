@@ -12,6 +12,7 @@
  *   7. URL deep-link (#direito/bpc) renderiza direto a página de detalhe
  *   8. Nav desktop: anchors clicam, pill style v1.43.33, scroll preciso
  *   9. Nav mobile drawer: abre/fecha + items full-width (regression v1.43.33)
+ *  10. Páginas legais carregam com navegação principal consistente
  *
  * NÃO testa IA (precisa backend node + chave OpenAI).
  *
@@ -324,6 +325,26 @@ async function testNavMobileDrawer(page, baseUrl) {
     record('clique em link fecha drawer', closedAfterClick);
 }
 
+async function testLegalPages(page, baseUrl) {
+    console.log('\n[10/10] Páginas legais: carregamento + navegação consistente');
+    const pages = [
+        { path: '/termos-de-uso.html', heading: /termos de uso/i },
+        { path: '/privacidade.html', heading: /pol[ií]tica de privacidade/i },
+        { path: '/historico-aceite.html', heading: /meu aceite|hist[oó]rico/i },
+    ];
+
+    for (const item of pages) {
+        await page.goto(baseUrl + item.path, { waitUntil: 'networkidle' });
+        await page.waitForTimeout(250);
+
+        const h1 = await page.locator('main h1').first().textContent().catch(() => '');
+        record(`legal ${item.path}: h1 esperado`, item.heading.test(h1 || ''), `h1="${(h1 || '').substring(0, 60)}"`);
+
+        const navCount = await page.locator('.topbar-nav a').count();
+        record(`legal ${item.path}: nav principal`, navCount >= 3, `links=${navCount}`);
+    }
+}
+
 async function main() {
     console.log('🎭 E2E smoke test (Playwright + Chromium)');
     console.log(`   soft_fail=${SOFT_FAIL}`);
@@ -344,6 +365,7 @@ async function main() {
         await testKeyboardAccessibility(page, baseUrl);
         await testNavDesktopAnchors(page, baseUrl);
         await testNavMobileDrawer(page, baseUrl);
+        await testLegalPages(page, baseUrl);
     } catch (e) {
         console.error('\n⚠️  Test runner crashed:', e.message);
         results.push({ name: 'runner', ok: false, detail: e.message });

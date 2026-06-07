@@ -1065,7 +1065,6 @@
 aria-label="Ver detalhes sobre ${escapeHtml(cat.titulo)}"
 data-id="${cat.id}"
 data-trilha="${escapeHtml(getTrilhaId(cat.id))}">
-<span class="category-icon" aria-hidden="true">${cat.icone}</span>
 <h3>${escapeHtml(cat.titulo)}</h3>
 </div>`
             )
@@ -1145,7 +1144,6 @@ aria-selected="${i === 0 ? 'true' : 'false'}"
 aria-controls="categoryGrid"
 data-trilha="${t.id}"
 tabindex="${i === 0 ? '0' : '-1'}">
-<span class="trilha-tab__icon" aria-hidden="true">${t.icone}</span>
 <span class="trilha-tab__label">${escapeHtml(t.label)}</span>
 <span class="trilha-tab__count" aria-label="${counts[t.id]} direitos">${counts[t.id]}</span>
 </button>`)
@@ -1262,9 +1260,9 @@ tabindex="${i === 0 ? '0' : '-1'}">
             ? new Date(cat.data_ultima_verificacao + 'T00:00:00Z').toLocaleDateString('pt-BR')
             : 'data não informada';
         if (primaria && primaria.lei) {
-            return `<p class="atribuicao-fonte"><small>📚 <strong>Reproduzido de:</strong> ${escapeHtml(primaria.lei)}${primaria.artigo ? ' — ' + escapeHtml(primaria.artigo) : ''}. Última consulta: ${escapeHtml(dataStr)}.</small></p>`;
+            return `<p class="atribuicao-fonte"><small><strong>Reproduzido de:</strong> ${escapeHtml(primaria.lei)}${primaria.artigo ? ' — ' + escapeHtml(primaria.artigo) : ''}. Última consulta: ${escapeHtml(dataStr)}.</small></p>`;
         }
-        return `<p class="atribuicao-fonte"><small>📚 <strong>Reproduzido das fontes oficiais</strong> listadas em "Base Legal" e "Fonte oficial deste conteúdo". Última consulta: ${escapeHtml(dataStr)}.</small></p>`;
+        return `<p class="atribuicao-fonte"><small><strong>Reproduzido das fontes oficiais</strong> listadas em "Base Legal" e "Fonte oficial deste conteúdo". Última consulta: ${escapeHtml(dataStr)}.</small></p>`;
     }
 
     /**
@@ -1287,7 +1285,7 @@ tabindex="${i === 0 ? '0' : '-1'}">
             { re: /\.leg\.br$/, label: '✓ fonte oficial', title: 'Poder Legislativo brasileiro' },
             { re: /\.mp\.br$/, label: '✓ fonte oficial', title: 'Ministério Público' },
             { re: /\.mil\.br$/, label: '✓ fonte oficial', title: 'Forças Armadas brasileiras' },
-            { re: /icd\.who\.int$|^www\.who\.int$/, label: '📋 fonte OMS', title: 'Organização Mundial da Saúde (adotada pelo Ministério da Saúde — Portaria GM/MS 1.405/2022)' },
+            { re: /icd\.who\.int$|^www\.who\.int$/, label: '✓ fonte OMS', title: 'Organização Mundial da Saúde (adotada pelo Ministério da Saúde — Portaria GM/MS 1.405/2022)' },
             { re: /\.gov\.br$/, label: '✓ fonte oficial', title: 'Governo brasileiro (.gov.br)' },
         ];
         for (const m of matches) {
@@ -1309,10 +1307,10 @@ tabindex="${i === 0 ? '0' : '-1'}">
         }
         let html = `
 <article>
-<h2>${cat.icone} ${escapeHtml(cat.titulo)}</h2>
+<h2>${escapeHtml(cat.titulo)}</h2>
 <p class="detalhe-resumo">${escapeHtml(cat.resumo)}</p>
 <aside class="banner-glossario" role="note" aria-label="Sobre este conteúdo">
-<p><strong>📚 Catálogo público de direitos PcD.</strong> Esta página <em>reúne referências</em> a fontes oficiais brasileiras (.gov.br, .jus.br, .def.br, .leg.br, .mp.br) e à Organização Mundial da Saúde (icd.who.int — adotada pelo Ministério da Saúde) listadas abaixo. <strong>Não verificamos em tempo real, não interpretamos a lei, não orientamos casos individuais.</strong> Confirme sempre na fonte oficial linkada.</p>
+<p><strong>Catálogo público de direitos PcD.</strong> Esta página <em>reúne referências</em> a fontes oficiais brasileiras (.gov.br, .jus.br, .def.br, .leg.br, .mp.br) e à Organização Mundial da Saúde (icd.who.int — adotada pelo Ministério da Saúde) listadas abaixo. <strong>Não verificamos em tempo real, não interpretamos a lei, não orientamos casos individuais.</strong> Confirme sempre na fonte oficial linkada.</p>
 </aside>`;
         if (cat.data_ultima_verificacao) {
             const STALENESS_DAYS = 180;
@@ -1336,19 +1334,19 @@ tabindex="${i === 0 ? '0' : '-1'}">
         }
         if (cat.valor) {
             html += `<div class="detalhe-section">
-<h3>💰 Valor citado pela fonte oficial</h3>
+<h3>Valor citado pela fonte oficial</h3>
 <span class="valor-destaque">${escapeHtml(cat.valor)}</span>
-<p class="valor-aviso"><small>⚠️ Valor publicado em fonte oficial — pode ter sido reajustado. Confirme na fonte linkada em "Base Legal" antes de tomar decisões.</small></p>
+<p class="valor-aviso"><small><strong>⚠️ Atenção:</strong> valor publicado em fonte oficial — pode ter sido reajustado. Confirme na fonte linkada em "Base Legal" antes de tomar decisões.</small></p>
 </div>`;
         }
         if (cat.base_legal && cat.base_legal.length) {
             html += `<div class="detalhe-section">
-<h3>📜 Base Legal</h3>
+<h3>Base Legal</h3>
 <div>${cat.base_legal
                     .map(
                         (l) =>
                             `<a class="legal-link" href="${escapeHtml(l.link)}" target="_blank" rel="noopener noreferrer">
-📄 ${escapeHtml(l.lei)}${l.artigo ? ' — ' + escapeHtml(l.artigo) : ''}
+${escapeHtml(l.lei)}${l.artigo ? ' — ' + escapeHtml(l.artigo) : ''}
 </a>${renderFonteBadge(l.link)}`
                     )
                     .join('')}</div>
@@ -1356,14 +1354,14 @@ tabindex="${i === 0 ? '0' : '-1'}">
         }
         if (cat.requisitos && cat.requisitos.length) {
             html += `<div class="detalhe-section">
-<h3>📋 Requisitos</h3>
+<h3>Requisitos</h3>
 ${renderAtribuicao(cat, 'requisitos')}
 <ul>${cat.requisitos.map((r) => `<li>${escapeHtml(r)}</li>`).join('')}</ul>
 </div>`;
         }
         if (cat.documentos && cat.documentos.length) {
             html += `<div class="detalhe-section">
-<h3>📄 Documentos Necessários</h3>
+<h3>Documentos Necessários</h3>
 ${renderAtribuicao(cat, 'documentos')}
 <ul>${cat.documentos.map((d) => `<li>${escapeHtml(d)}</li>`).join('')}</ul>
 </div>`;
@@ -1371,12 +1369,12 @@ ${renderAtribuicao(cat, 'documentos')}
         if (cat.passo_a_passo && cat.passo_a_passo.length) {
             const passosHtml = `<ol>${cat.passo_a_passo.map((p) => `<li>${escapeHtml(p)}</li>`).join('')}</ol>`;
             const atribuicaoPasso = renderAtribuicao(cat, 'passo-a-passo');
-            const procedimentoAviso = `<p class="procedimento-aviso"><small>⚠️ Este é o <strong>procedimento descrito pela fonte oficial</strong> linkada abaixo. NossoDireito apenas reproduz — não orienta seu caso. Confirme na fonte oficial antes de seguir qualquer etapa.</small></p>`;
+            const procedimentoAviso = `<p class="procedimento-aviso"><small><strong>⚠️ Atenção:</strong> este é o <strong>procedimento descrito pela fonte oficial</strong> linkada abaixo. NossoDireito apenas reproduz — não orienta seu caso. Confirme na fonte oficial antes de seguir qualquer etapa.</small></p>`;
             if (cat.requer_consulta_especializada === true) {
                 // Atrito inline (não-bloqueante): leitor abre deliberadamente após ver aviso jurídico
                 html += `<div class="detalhe-section">
 <details class="passo-a-passo-atrito">
-<summary><h3 style="display:inline">📋 Procedimento descrito pela fonte oficial</h3> <span class="atrito-hint">(clique para abrir — ler aviso acima primeiro)</span></summary>
+<summary><h3 style="display:inline">Procedimento descrito pela fonte oficial</h3> <span class="atrito-hint">(clique para abrir — ler aviso acima primeiro)</span></summary>
 ${atribuicaoPasso}
 ${procedimentoAviso}
 ${passosHtml}
@@ -1384,7 +1382,7 @@ ${passosHtml}
 </div>`;
             } else {
                 html += `<div class="detalhe-section">
-<h3>📋 Procedimento descrito pela fonte oficial</h3>
+<h3>Procedimento descrito pela fonte oficial</h3>
 ${atribuicaoPasso}
 ${procedimentoAviso}
 ${passosHtml}
@@ -1394,7 +1392,7 @@ ${passosHtml}
         if (cat.onde) {
             const canal = cat.canal_de_atendimento_oficial || cat.onde;
             html += `<div class="detalhe-section">
-<h3>📚 Fonte oficial deste conteúdo</h3>
+<h3>Fonte oficial deste conteúdo</h3>
 <p>${escapeHtml(canal)}</p>
 <p class="canal-aviso"><small>O NossoDireito apenas reproduz o que essa fonte publicou. O direito é peticionado/concedido somente pelo canal acima — este site não tem competência legal nem administrativa.</small></p>
 </div>`;
@@ -1404,16 +1402,16 @@ ${passosHtml}
             const visibleDicas = cat.dicas.slice(0, DICAS_LIMIT);
             const hiddenDicas = cat.dicas.slice(DICAS_LIMIT);
             html += `<div class="detalhe-section">
-<h3>📝 Observações citadas pela fonte oficial</h3>
+<h3>Observações citadas pela fonte oficial</h3>
 ${renderAtribuicao(cat, 'observações')}
-<p class="observacoes-aviso"><small>⚠️ Trechos reproduzidos da fonte oficial. NossoDireito não opina, não orienta e não garante aplicabilidade ao seu caso.</small></p>
+<p class="observacoes-aviso"><small><strong>⚠️ Atenção:</strong> trechos reproduzidos da fonte oficial. NossoDireito não opina, não orienta e não garante aplicabilidade ao seu caso.</small></p>
 ${visibleDicas.map((d) => `<div class="dica-item">${escapeHtml(d)}</div>`).join('')}
 ${hiddenDicas.length ? `<div class="dicas-hidden" id="dicasHidden_${cat.id}" style="display:none">${hiddenDicas.map((d) => `<div class="dica-item">${escapeHtml(d)}</div>`).join('')}</div>
 <button type="button" class="btn-ver-mais" id="dicasToggle_${cat.id}" aria-expanded="false" aria-controls="dicasHidden_${cat.id}">Mostrar mais ${hiddenDicas.length} observação${hiddenDicas.length > 1 ? 'es' : ''} ▼</button>` : ''}
 </div>`;
         }
         if (cat.ipva_estados && cat.ipva_estados.length) {
-            html += `<div class="detalhe-section"><h3>🚗 Isenção de IPVA por Estado</h3>
+            html += `<div class="detalhe-section"><h3>Isenção de IPVA por Estado</h3>
 <details><summary>Ver legislação dos ${cat.ipva_estados.length} estados</summary>
 <div class="table-wrapper"><table class="ipva-table">
 <thead><tr><th>UF</th><th>Lei</th><th>Art.</th><th>SEFAZ</th></tr></thead>
@@ -1422,7 +1420,7 @@ ${hiddenDicas.length ? `<div class="dicas-hidden" id="dicasHidden_${cat.id}" sty
         }
         if (cat.ipva_estados_detalhado && cat.ipva_estados_detalhado.length) {
             html += `<div class="detalhe-section">
-<h3>🚗 Consulta Detalhada - IPVA por Estado</h3>
+<h3>Consulta Detalhada — IPVA por Estado</h3>
 <p style="margin-bottom:12px;color:var(--text-muted)">
 Selecione seu estado para ver as condições específicas, limites de valor e legislação completa:
 </p>
@@ -1438,13 +1436,13 @@ ${cat.ipva_estados_detalhado.map(e =>
         }
         if (cat.links && cat.links.length) {
             html += `<div class="detalhe-section">
-<h3>🔗 Links Úteis</h3>
+<h3>Links Úteis</h3>
 <div>${cat.links
                     .filter((l) => isSafeUrl(l.url))
                     .map(
                         (l) =>
                             `<a class="legal-link" href="${escapeHtml(l.url)}" target="_blank" rel="noopener noreferrer">
-🌐 ${escapeHtml(l.titulo)}
+${escapeHtml(l.titulo)}
 </a>`
                     )
                     .join('')}</div>
@@ -1455,7 +1453,7 @@ ${cat.ipva_estados_detalhado.map(e =>
             const govbrUrl = cat.govbr_url || `https://www.gov.br/pt-br/servicos/${cat.govbr_servico_id}`;
             html += `<div class="detalhe-section" style="text-align:center">
 <a href="${escapeHtml(govbrUrl)}" target="_blank" rel="noopener noreferrer" class="btn-govbr${live ? ' live' : ''}">
-🇧🇷 ${live ? 'Serviço digital confirmado no gov.br' : 'Acessar serviço no gov.br'}
+${live ? 'Serviço digital confirmado no gov.br' : 'Acessar serviço no gov.br'}
 </a></div>`;
         }
         if (cat.tags && cat.tags.length) {
@@ -1464,16 +1462,16 @@ ${cat.tags.map((t) => `<span class="tag">${escapeHtml(t)}</span>`).join('')}
 </div>`;
         }
         const shareText = encodeURIComponent(
-            `${cat.icone} ${cat.titulo}\n${cat.resumo}\n\nVeja mais em: https://nossodireito.fabiotreze.com`
+            `${cat.titulo}\n${cat.resumo}\n\nVeja mais em: https://nossodireito.fabiotreze.com`
         );
         html += `<div class="detalhe-section" style="text-align:center;padding-top:8px;">
 <div style="display:inline-flex;gap:8px;">
 <a href="https://wa.me/?text=${shareText}" target="_blank" rel="noopener noreferrer"
 class="btn btn-sm btn-whatsapp" aria-label="Compartilhar no WhatsApp">
-📲 WhatsApp
+WhatsApp
 </a>
 <button id="exportDetalhePdf" class="btn btn-sm btn-outline" type="button" aria-label="Salvar direito como PDF">
-📥 Salvar PDF
+Salvar PDF
 </button>
 </div>
 </div>`;
@@ -1485,7 +1483,7 @@ class="btn btn-sm btn-whatsapp" aria-label="Compartilhar no WhatsApp">
         }
         // M6: botão "Sugerir correção" → pré-preenche issue template "correcao.yml" via querystring
         const correcaoUrl = `https://github.com/fabiotreze/nossodireito/issues/new?template=correcao.yml&direito_id=${encodeURIComponent(cat.id)}&title=${encodeURIComponent('[correção] ' + cat.titulo)}`;
-        html += `<p class="detalhe-sugerir-correcao"><a href="${correcaoUrl}" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline" aria-label="Sugerir correção para este direito">📝 Sugerir correção</a></p>`;
+        html += `<p class="detalhe-sugerir-correcao"><a href="${correcaoUrl}" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline" aria-label="Sugerir correção para este direito">Sugerir correção</a></p>`;
         html += `</article>`;
         dom.detalheContent.innerHTML = html;
         const exportDetalheBtn = document.getElementById('exportDetalhePdf');
@@ -1536,19 +1534,19 @@ class="btn btn-sm btn-whatsapp" aria-label="Compartilhar no WhatsApp">
 <div class="ipva-detail-card">
 <h4>${escapeHtml(estado.nome)} (${escapeHtml(estado.uf)})</h4>
 <div class="ipva-detail-row">
-<strong>📜 Legislação:</strong>
+<strong>Legislação:</strong>
 <span>${escapeHtml(estado.lei)}</span>
 </div>
 <div class="ipva-detail-row">
-<strong>📋 Artigo:</strong>
+<strong>Artigo:</strong>
 <span>${escapeHtml(estado.artigo)}</span>
 </div>
 <div class="ipva-detail-row">
-<strong>✅ Condições para Isenção:</strong>
+<strong>Condições para isenção:</strong>
 <span>${escapeHtml(estado.condicoes)}</span>
 </div>
 <div class="ipva-detail-row">
-<strong>💰 Limite de Valor:</strong>
+<strong>Limite de valor:</strong>
 <span>${escapeHtml(estado.limite_valor)}</span>
 </div>
 <a href="${escapeHtml(estado.sefaz)}"
@@ -1735,48 +1733,48 @@ style="margin-top:16px;display:inline-block">
             .map((cat) => ({ cat, score: 1 }))
             .sort((a, b) => a.cat.titulo.localeCompare(b.cat.titulo));
         const orgaoHtml = orgao && isSafeUrl(orgao.url)
-            ? `<p class="search-orgao">🏢 Órgão estadual (${escapeHtml(ufLabel)}): <a href="${escapeHtml(orgao.url)}" target="_blank" rel="noopener noreferrer"><strong>${escapeHtml(orgao.nome)}</strong> ↗</a></p>`
+            ? `<p class="search-orgao">Órgão estadual (${escapeHtml(ufLabel)}): <a href="${escapeHtml(orgao.url)}" target="_blank" rel="noopener noreferrer"><strong>${escapeHtml(orgao.nome)}</strong> ↗</a></p>`
             : orgao
-                ? `<p class="search-orgao">🏢 Órgão estadual (${escapeHtml(ufLabel)}): <strong>${escapeHtml(orgao.nome)}</strong></p>`
+                ? `<p class="search-orgao">Órgão estadual (${escapeHtml(ufLabel)}): <strong>${escapeHtml(orgao.nome)}</strong></p>`
                 : '';
         /* ── Portais estaduais (SEFAZ / DETRAN) ── */
         let portaisHtml = '';
         if (orgao && (orgao.sefaz || orgao.detran)) {
             const links = [];
             if (orgao.sefaz && isSafeUrl(orgao.sefaz))
-                links.push(`<a href="${escapeHtml(orgao.sefaz)}" target="_blank" rel="noopener noreferrer" class="legal-link">💰 SEFAZ/${escapeHtml(ufLabel)}</a>`);
+                links.push(`<a href="${escapeHtml(orgao.sefaz)}" target="_blank" rel="noopener noreferrer" class="legal-link">SEFAZ/${escapeHtml(ufLabel)}</a>`);
             if (orgao.detran && isSafeUrl(orgao.detran))
-                links.push(`<a href="${escapeHtml(orgao.detran)}" target="_blank" rel="noopener noreferrer" class="legal-link">🚗 DETRAN/${escapeHtml(ufLabel)}</a>`);
+                links.push(`<a href="${escapeHtml(orgao.detran)}" target="_blank" rel="noopener noreferrer" class="legal-link">DETRAN/${escapeHtml(ufLabel)}</a>`);
             portaisHtml = `<div class="search-portais" style="display:flex;gap:8px;flex-wrap:wrap;margin:8px 0;">${links.join('')}</div>`;
         }
         /* ── Benefícios destaque estaduais ── */
         let beneficiosHtml = '';
         if (orgao && orgao.beneficios_destaque && orgao.beneficios_destaque.length) {
             beneficiosHtml = `<details class="search-beneficios-estado" style="margin:8px 0;">
-<summary style="cursor:pointer;font-weight:600;">📋 Benefícios específicos — ${escapeHtml(ufLabel)}</summary>
+<summary style="cursor:pointer;font-weight:600;">Benefícios específicos — ${escapeHtml(ufLabel)}</summary>
 <ul style="margin:8px 0 0 16px;padding:0;list-style:none;">
-${orgao.beneficios_destaque.map(b => `<li style="padding:4px 0;">✅ ${escapeHtml(b)}</li>`).join('')}
+${orgao.beneficios_destaque.map(b => `<li style="padding:4px 0;">${escapeHtml(b)}</li>`).join('')}
 </ul>
 </details>`;
         }
         const filterNote = filteredCats
-            ? `<p class="search-hint">🔎 Mostrando <strong>${filteredCats.length}</strong> resultado(s) filtrado(s) para sua busca em <strong>${escapeHtml(nomeDisplay)}</strong>.</p>`
+            ? `<p class="search-hint">Mostrando <strong>${filteredCats.length}</strong> resultado(s) filtrado(s) para sua busca em <strong>${escapeHtml(nomeDisplay)}</strong>.</p>`
             : '';
         // Aviso honesto: identificamos o município pelo IBGE, mas ainda não
         // temos curadoria de órgãos municipais (prefeituras). Os direitos
         // federais valem; o estadual aparece via SEFAZ/DETRAN acima.
         const municipalNote = location.type === 'cidade'
-            ? `<p class="search-hint" style="color:var(--text-muted);font-style:italic;">ℹ️ Ainda não temos dados específicos da prefeitura de <strong>${escapeHtml(nomeDisplay)}</strong>. Os direitos federais valem aqui; consulte também os portais estaduais (${escapeHtml(ufLabel)}) acima.</p>`
+            ? `<p class="search-hint" style="color:var(--text-muted);font-style:italic;">Ainda não temos dados específicos da prefeitura de <strong>${escapeHtml(nomeDisplay)}</strong>. Os direitos federais valem aqui; consulte também os portais estaduais (${escapeHtml(ufLabel)}) acima.</p>`
             : '';
         dom.searchResults.innerHTML =
             `<div class="search-suggestion search-location">
-<p>📍 <strong>${escapeHtml(nomeDisplay)}</strong> ${location.type === 'cidade' ? `(${escapeHtml(ufLabel)})` : ''} — os direitos abaixo são <strong>federais</strong> e valem em todo o Brasil, incluindo na sua cidade/estado.</p>
+<p><strong>${escapeHtml(nomeDisplay)}</strong> ${location.type === 'cidade' ? `(${escapeHtml(ufLabel)})` : ''} — os direitos abaixo são <strong>federais</strong> e valem em todo o Brasil, incluindo na sua cidade/estado.</p>
 ${orgaoHtml}
 ${portaisHtml}
 ${beneficiosHtml}
 ${municipalNote}
 ${filterNote}
-<p class="search-hint">💡 Clique em qualquer direito para ver detalhes, documentos e passo a passo.</p>
+<p class="search-hint">Clique em qualquer direito para ver detalhes, documentos e passo a passo.</p>
 </div>` +
             renderSearchResults(cats, { showReviewBanner: Boolean(filteredCats) });
         bindSearchResultEvents();
@@ -1919,11 +1917,10 @@ ${filterNote}
             .map(
                 ({ cat }) => `
 <div class="search-result-item" data-id="${cat.id}" tabindex="0" role="button">
-<span class="search-result-icon">${cat.icone}</span>
 <div class="search-result-info">
 <h3>${escapeHtml(cat.titulo)}</h3>
 <p>${escapeHtml(cat.resumo)}</p>
-${getPendingLegalReviews(cat.id).length ? '<span class="search-result-badge search-result-badge--review">⚖️ Revisão jurídica</span>' : ''}
+${getPendingLegalReviews(cat.id).length ? '<span class="search-result-badge search-result-badge--review">Revisão jurídica</span>' : ''}
 </div>
 </div>`
             )
@@ -2025,7 +2022,7 @@ ${direitosOrdenados.map((d) => `<option value="${escapeHtml(d.id)}">${escapeHtml
 </label>
 <div class="doc-master-meta">
 <div class="doc-master-categories" aria-label="Direitos que utilizam este documento">${catTags}${moreTags}</div>
-${doc.dica ? `<p class="doc-master-dica"><span aria-hidden="true">💡</span> <span class="sr-only">Observação:</span> ${escapeHtml(doc.dica)}</p>` : ''}
+${doc.dica ? `<p class="doc-master-dica"><span class="sr-only">Observação:</span> ${escapeHtml(doc.dica)}</p>` : ''}
 </div>
 </article>`;
             }).join('');
@@ -2064,7 +2061,7 @@ ${doc.dica ? `<p class="doc-master-dica"><span aria-hidden="true">💡</span> <s
             }
             dom.instituicoesGrid.innerHTML = filtered
                 .map((inst) => {
-                    const tipoIcon = inst.tipo === 'governamental' ? '🏛️' : inst.tipo === 'ong' ? '💚' : '⚖️';
+                    const tipoIcon = '';
                     const tipoLabel = inst.tipo === 'governamental' ? 'Governamental' : inst.tipo === 'ong' ? 'ONG' : 'Profissional';
                     const catTags = (inst.categorias || [])
                         .map((cid) => `<span class="inst-cat-tag">${escapeHtml(catNameMap[cid] || cid)}</span>`)
@@ -2076,7 +2073,7 @@ ${doc.dica ? `<p class="doc-master-dica"><span aria-hidden="true">💡</span> <s
                     return `
 <div class="inst-card" data-tipo="${inst.tipo}">
 <div class="inst-header">
-<span class="inst-tipo-badge ${inst.tipo}">${tipoIcon} ${tipoLabel}</span>
+<span class="inst-tipo-badge ${inst.tipo}">${tipoLabel}</span>
 </div>
 <h3 class="inst-nome">${escapeHtml(inst.nome)}</h3>
 <p class="inst-desc">${escapeHtml(inst.descricao)}</p>
@@ -2193,19 +2190,8 @@ Acessar site ↗
                         try { return new URL(lk.url).hostname.replace(/^www\./, ''); }
                         catch { return ''; }
                     })();
-                    const icon = isTel ? '📞'
-                        : hostMatches(domain, 'cfm.org.br') ? '👨‍⚕️'
-                            : hostMatches(domain, 'cfp.org.br') ? '🧠'
-                                : hostMatches(domain, 'who.int') ? '🌐'
-                                    : hostMatches(domain, 'mec.gov.br') ? '🎓'
-                                        : hostMatches(domain, 'inss.gov.br') ? '📋'
-                                            : hostMatches(domain, 'mds.gov.br') ? '🏠'
-                                                : hostMatches(domain, 'saude.gov.br') ? '⚕️'
-                                                    : (hostMatches(domain, 'gov.br') || domain.endsWith('.gov.br')) ? '🏛️'
-                                                        : '🔗';
                     return `
 <a href="${escapeHtml(lk.url)}" class="link-card" target="_blank" rel="noopener noreferrer">
-<span class="link-icon">${icon}</span>
 <span class="link-title">${escapeHtml(lk.titulo)}</span>
 <span class="link-domain">${escapeHtml(domain)}</span>
 </a>`;
@@ -2316,7 +2302,7 @@ ${classificacaoData.map((c) => `
 </table>
 </div>
 <p class="classif-note">
-💡 <strong>Dica:</strong> A CID-11 (OMS 2022) está sendo adotada gradualmente.
+<strong>Observação:</strong> a CID-11 (OMS 2022) está sendo adotada gradualmente.
 No Brasil, a maioria dos laudos ainda usa CID-10. O sistema aceita ambas as codificações.
 </p>`;
     }
@@ -2441,25 +2427,25 @@ No Brasil, a maioria dos laudos ainda usa CID-10. O sistema aceita ambas as codi
             dom.deleteAllFiles.style.display = '';
             dom.fileList.innerHTML = files
                 .map((f) => {
-                    const icon = f.type === 'application/pdf' ? '📄' : '🖼️';
+                    const tipoLabel = f.type === 'application/pdf' ? 'PDF' : 'Imagem';
                     const date = new Date(f.addedAt).toLocaleDateString('pt-BR');
-                    const cryptoBadge = f.encrypted ? '<span class="crypto-badge" title="Criptografia AES-256-GCM">🔐</span>' : '';
+                    const cryptoBadge = f.encrypted ? '<span class="crypto-badge" title="Criptografia AES-256-GCM">criptografado</span>' : '';
                     const expiresStr = f.expiresAt
-                        ? `· ⏱️ ${formatTimeRemaining(f.expiresAt)}`
+                        ? `· expira em ${formatTimeRemaining(f.expiresAt)}`
                         : '';
                     return `
 <div class="file-item" data-file-id="${f.id}">
 <label class="file-item-checkbox" title="Selecionar para análise">
 <input type="checkbox" class="file-select-cb" data-id="${f.id}" checked>
 </label>
-<span class="file-item-icon">${icon}</span>
+<span class="file-item-icon" aria-hidden="true">${tipoLabel}</span>
 <div class="file-item-info">
 <div class="file-item-name" title="${escapeHtml(f.name)}">${cryptoBadge}${escapeHtml(f.name)}</div>
 <div class="file-item-meta">${formatBytes(f.size)} · Adicionado em ${date} ${expiresStr}</div>
 </div>
 <div class="file-item-actions">
-<button class="btn-view" title="Visualizar" data-id="${f.id}">👁️ Ver</button>
-<button class="btn-delete" title="Excluir" data-id="${f.id}">🗑️</button>
+<button class="btn-view" title="Visualizar" data-id="${f.id}">Ver</button>
+<button class="btn-delete" title="Excluir" data-id="${f.id}" aria-label="Excluir arquivo">Excluir</button>
 </div>
 </div>`;
                 })
@@ -2507,18 +2493,18 @@ No Brasil, a maioria dos laudos ainda usa CID-10. O sistema aceita ambas as codi
         if (btn) {
             btn.disabled = count === 0;
             btn.textContent = count === 0
-                ? '🔍 Enviar para análise local'
+                ? 'Enviar para análise local'
                 : count === 1
-                    ? '🔍 Analisar 1 arquivo'
-                    : `🔍 Analisar ${count} arquivos`;
+                    ? 'Analisar 1 arquivo'
+                    : `Analisar ${count} arquivos`;
         }
         if (btnAI) {
             btnAI.disabled = count === 0;
             btnAI.textContent = count === 0
-                ? '🧠 Analisar com IA (servidor)'
+                ? 'Analisar com IA (servidor)'
                 : count === 1
-                    ? '🧠 Analisar 1 arquivo com IA'
-                    : `🧠 Analisar ${count} arquivos com IA`;
+                    ? 'Analisar 1 arquivo com IA'
+                    : `Analisar ${count} arquivos com IA`;
         }
     }
     function setupAnalysis() {
@@ -2552,7 +2538,7 @@ No Brasil, a maioria dos laudos ainda usa CID-10. O sistema aceita ambas as codi
                 const aiBanner = document.getElementById('aiDisclosureBanner');
                 const aiUsed = aiBanner && !aiBanner.hidden;
                 const aiFooter = aiUsed
-                    ? '\n\n🤖 Conteúdo gerado por IA (Azure OpenAI gpt-4o-mini, Brasil Sul) — confirme no .gov.br.'
+                    ? '\n\nConteúdo gerado por IA (Azure OpenAI gpt-4o-mini, Brasil Sul) — confirme no .gov.br.'
                     : '';
                 const text = `*${analysisTitle}*\n\n${matchList}\n\nVeja mais em: ${window.location.origin}${aiFooter}`;
                 const url = `https://wa.me/?text=${encodeURIComponent(text)}`;
@@ -2585,14 +2571,14 @@ No Brasil, a maioria dos laudos ainda usa CID-10. O sistema aceita ambas as codi
         if (shareDocsBtn) {
             shareDocsBtn.addEventListener('click', () => {
                 const shareText = encodeURIComponent(
-                    `📄 Documentos Necessários por Direito - Lista Completa\n\n` +
-                    `📋 Lista organizada de 16 documentos essenciais para garantir direitos PcD:\n` +
+                    `Documentos necessários por direito — lista completa\n\n` +
+                    `Lista organizada de 16 documentos essenciais para garantir direitos PcD:\n` +
                     `• Laudos médicos\n` +
                     `• Documentos pessoais\n` +
                     `• Comprovantes de renda\n` +
                     `• E mais...\n\n` +
-                    `🔗 Confira a lista completa: https://nossodireito.fabiotreze.com\n\n` +
-                    `💡 100% gratuito | Zero coleta de dados | Baseado na legislação brasileira`
+                    `Confira a lista completa: https://nossodireito.fabiotreze.com\n\n` +
+                    `100% gratuito — zero coleta de dados — baseado na legislação brasileira`
                 );
                 const url = `https://wa.me/?text=${shareText}`;
                 const win = window.open(url, '_blank', 'noopener,noreferrer');
@@ -2623,11 +2609,11 @@ No Brasil, a maioria dos laudos ainda usa CID-10. O sistema aceita ambas as codi
         }
         if (analyzeBtn) {
             analyzeBtn.disabled = true;
-            analyzeBtn.textContent = '⏳ Analisando...';
+            analyzeBtn.textContent = 'Analisando...';
         }
         if (analyzeAIBtn) {
             analyzeAIBtn.disabled = true;
-            if (useAI) analyzeAIBtn.textContent = '⏳ Anonimizando + IA...';
+            if (useAI) analyzeAIBtn.textContent = 'Anonimizando e enviando para IA...';
         }
         dom.analysisResults.style.display = '';
         dom.analysisLoading.style.display = '';
@@ -2688,10 +2674,10 @@ No Brasil, a maioria dos laudos ainda usa CID-10. O sistema aceita ambas as codi
             if (allText.length === 0) {
                 dom.analysisContent.innerHTML = `
 <div class="analysis-error">
-<p>⚠️ Não foi possível analisar nenhum dos arquivos selecionados.</p>
+<p><strong>⚠️ Não foi possível analisar nenhum dos arquivos selecionados.</strong></p>
 ${errors.map((e) => `<p style=\"font-size:0.85rem;color:var(--text-muted);\">· ${escapeHtml(e.name)}: ${escapeHtml(e.reason)}</p>`).join('')}
 <p style="font-size:0.85rem;margin-top:8px;">
-💡 <strong>Dica:</strong> Navegue pelas <a href=\"#categorias\">categorias</a>
+Navegue pelas <a href=\"#categorias\">categorias</a>
 para encontrar seus direitos manualmente.
 </p>
 </div>`;
@@ -2711,16 +2697,16 @@ para encontrar seus direitos manualmente.
                     .join('');
                 dom.analysisContent.innerHTML = `
 <div class="analysis-error">
-<p>⚠️ <strong>O arquivo não parece ser um laudo, atestado ou relatório médico.</strong></p>
-<p>Para evitar sugestões de direitos sem fundamento no documento, exigimos pelo menos um destes sinais antes de analisar:</p>
-<ul style="margin:6px 0 6px 22px;font-size:0.9rem;">
-  <li>Registro profissional: <strong>CRM</strong>, <strong>CRP</strong>, <strong>COFFITO</strong>, <strong>CRF</strong>, <strong>CREFITO</strong>, <strong>CRO</strong>, <strong>CRN</strong> ou <strong>CREFONO</strong>; OU</li>
-  <li>Código de diagnóstico válido: <strong>CID-10</strong> (ex.: F84.0, Q90) ou <strong>CID-11</strong> (ex.: 6A02.0); E</li>
-  <li>Termos clínicos contextuais (diagnóstico, anamnese, evolução clínica, prognóstico, etc.).</li>
+<p><strong>⚠️ O arquivo não parece ser um laudo, atestado ou relatório médico.</strong></p>
+<p>Para evitar sugerir direitos que não têm a ver com o seu documento, precisamos identificar pelo menos um destes itens:</p>
+<ul style="margin:6px 0 6px 22px;font-size:0.95rem;">
+  <li>Registro de profissional de saúde (CRM, CRP, COFFITO, CRF, CREFITO, CRO, CRN ou CREFONO); <strong>OU</strong></li>
+  <li>Código de diagnóstico (CID-10, ex.: F84.0, Q90; ou CID-11, ex.: 6A02.0).</li>
 </ul>
-${reasonsHtml ? `<p style="font-size:0.85rem;color:var(--text-muted);margin-top:8px;"><strong>Detalhes:</strong></p><ul style="margin:4px 0 4px 22px;font-size:0.85rem;color:var(--text-muted);">${reasonsHtml}</ul>` : ''}
-<p style="font-size:0.85rem;margin-top:8px;">
-💡 <strong>Dica:</strong> Navegue pelas <a href="#categorias">categorias</a> para encontrar seus direitos manualmente, sem precisar enviar documento.
+<p style="font-size:0.9rem;">Também ajuda quando o documento usa termos clínicos como <em>diagnóstico</em>, <em>anamnese</em>, <em>evolução clínica</em> ou <em>prognóstico</em>.</p>
+${reasonsHtml ? `<details style="margin-top:8px;font-size:0.85rem;color:var(--text-muted);"><summary>Por que este arquivo foi recusado</summary><ul style="margin:4px 0 4px 22px;">${reasonsHtml}</ul></details>` : ''}
+<p style="font-size:0.9rem;margin-top:8px;">
+Navegue pelas <a href="#categorias">categorias</a> para encontrar seus direitos sem precisar enviar documento.
 </p>
 </div>`;
                 for (const id of successIds) {
@@ -2771,9 +2757,9 @@ ${reasonsHtml ? `<p style="font-size:0.85rem;color:var(--text-muted);margin-top:
             console.error('Erro na análise unificada:', err);
             dom.analysisContent.innerHTML = `
 <div class="analysis-error">
-<p>⚠️ Ocorreu um erro durante a análise.</p>
+<p><strong>⚠️ Ocorreu um erro durante a análise.</strong></p>
 <p style="font-size:0.85rem;margin-top:8px;">
-💡 <strong>Dica:</strong> Navegue pelas <a href=\"#categorias\">categorias</a>
+Navegue pelas <a href=\"#categorias\">categorias</a>
 para encontrar seus direitos manualmente.
 </p>
 </div>`;
@@ -2928,35 +2914,35 @@ para encontrar seus direitos manualmente.
         const names = Array.isArray(fileNames) ? fileNames : [fileNames];
         const fileCount = names.length;
         const filesLabel = fileCount === 1
-            ? `📄 Arquivo analisado: <strong>${escapeHtml(names[0])}</strong>`
-            : `📄 ${fileCount} arquivos analisados: ${names.map((n) => `<strong>${escapeHtml(n)}</strong>`).join(', ')}`;
+            ? `Arquivo analisado: <strong>${escapeHtml(names[0])}</strong>`
+            : `${fileCount} arquivos analisados: ${names.map((n) => `<strong>${escapeHtml(n)}</strong>`).join(', ')}`;
         if (results.length === 0) {
             dom.analysisContent.innerHTML = `
 <div class="analysis-empty">
 <p>${filesLabel}</p>
 <p>Não foram encontradas correspondências claras com as categorias de direitos.</p>
-${!hasPdf ? `<p class="analysis-hint">💡 Para imagens, a análise é limitada ao nome do arquivo.
+${!hasPdf ? `<p class="analysis-hint">Para imagens, a análise é limitada ao nome do arquivo.
 Faça upload do <strong>PDF do laudo</strong> para uma análise mais completa.</p>` : ''}
 ${errors.length ? `<div class="analysis-errors-summary">
-<p>⚠️ Alguns arquivos não puderam ser processados:</p>
+<p><strong>⚠️ Alguns arquivos não puderam ser processados:</strong></p>
 ${errors.map((e) => `<p class="analysis-hint">· ${escapeHtml(e.name)}: ${escapeHtml(e.reason)}</p>`).join('')}
 </div>` : ''}
-<p class="analysis-hint">💡 Navegue pelas <a href="#categorias">categorias</a> para encontrar
+<p class="analysis-hint">Navegue pelas <a href="#categorias">categorias</a> para encontrar
 seus direitos manualmente, ou use a <a href="#consultar">busca</a>.</p>
 </div>`;
             return;
         }
         const maxScore = results[0].score;
         const privacyLine = aiResult
-            ? '🔒 Análise local + IA opcional (texto anonimizado antes do envio).'
+            ? 'Análise local + IA opcional (texto anonimizado antes do envio).'
             : aiAttempted
-            ? '🔒 Análise local concluída. IA indisponível/sem consentimento, nenhum dado adicional enviado.'
-            : '🔒 Análise 100% local — nenhum dado foi enviado para servidores.';
+            ? 'Análise local concluída. IA indisponível ou sem consentimento — nenhum dado adicional foi enviado.'
+            : 'Análise 100% local — nenhum dado foi enviado para servidores.';
         let html = `
 <div class="analysis-file-info">
 <p>${filesLabel}</p>
     <p class="analysis-privacy">${privacyLine}</p>
-${errors.length ? `<p class="analysis-errors-inline">⚠️ ${errors.length} arquivo(s) com erro: ${errors.map((e) => escapeHtml(e.name)).join(', ')}</p>` : ''}
+${errors.length ? `<p class="analysis-errors-inline"><strong>⚠️ ${errors.length} arquivo(s) com erro:</strong> ${errors.map((e) => escapeHtml(e.name)).join(', ')}</p>` : ''}
 </div>
 <div class="analysis-legend" aria-label="Legenda da precisão">
 <span class="legend-badge high">Alta relevância</span>
@@ -2973,7 +2959,6 @@ ${errors.length ? `<p class="analysis-errors-inline">⚠️ ${errors.length} arq
             html += `
 <div class="analysis-match ${level}" data-cat-id="${category.id}" aria-label="${levelLabel}">
 <div class="analysis-match-header">
-<span class="analysis-match-icon">${category.icone}</span>
 <div class="analysis-match-title">
 <h4>${escapeHtml(category.titulo)}</h4>
 <span class="analysis-badge ${level}" aria-label="${levelLabel}">${levelLabel}</span>
@@ -3013,7 +2998,7 @@ Ver detalhes e passo a passo →
     ${aiResult ? renderAIResult(aiResult) : ''}
     ${aiResult ? renderHumanReviewButton() : ''}
 <div class="analysis-footer">
-<p>⚠️ <strong>Atenção:</strong> Esta análise é uma <strong>correspondência de palavras-chave</strong>
+<p><strong>⚠️ Atenção:</strong> esta análise é uma <strong>correspondência de palavras-chave</strong>
 com o catálogo; <strong>não é parecer profissional</strong>. A confirmação cabe à
 <strong>Defensoria Pública</strong> (CF Art. 134), a um(a) advogado(a) (Lei 8.906/1994) ou ao <strong>CRAS</strong> (Lei 8.742/1993) da sua cidade.</p>
 </div>`;
@@ -3155,10 +3140,10 @@ com o catálogo; <strong>não é parecer profissional</strong>. A confirmação 
     <li data-day="7"><label><input type="checkbox" class="analysis-week-plan-day" data-day="7" data-plan-key="${escapeHtml(safeKey)}" aria-label="Dia 7" ${checkbox(7)}><span class="analysis-week-plan-text"><strong>Revise</strong> resultados, pendências e planeje a próxima semana.</span></label></li>
   </ol>
   <div class="analysis-week-plan-actions">
-    <button class="btn btn-sm btn-outline analysis-week-plan-copy" type="button">📋 Copiar plano</button>
-    <button class="btn btn-sm btn-outline analysis-week-plan-reset" type="button">↺ Reiniciar</button>
+    <button class="btn btn-sm btn-outline analysis-week-plan-copy" type="button">Copiar plano</button>
+    <button class="btn btn-sm btn-outline analysis-week-plan-reset" type="button">Reiniciar</button>
   </div>
-  <p class="analysis-hint">💡 Dica: mantenha número de protocolo, data e órgão em uma checklist para acelerar retornos.</p>
+  <p class="analysis-hint">Mantenha número de protocolo, data e órgão em uma checklist para acelerar retornos.</p>
 </div>`;
     }
     function renderAIPracticalSummary(ai, localResults) {
@@ -3205,17 +3190,15 @@ com o catálogo; <strong>não é parecer profissional</strong>. A confirmação 
         const renderSuggestionCard = (id, variant) => {
             const cat = catById[id];
             const titulo = cat?.titulo || titleById[id] || id;
-            const icone = cat?.icone || '📌';
             const resumo = cat?.resumo || '';
             const sug = aiSuggestionsById.get(id) || {};
             const confianca = sug.confianca || 'media';
             const justificativa = sug.justificativa || '';
             const variantClass = variant === 'reinforced' ? 'analysis-ai-suggestion-card--reinforced' : 'analysis-ai-suggestion-card--new';
-            const variantLabel = variant === 'reinforced' ? '✅ Confirmado' : '🆕 Novo';
+            const variantLabel = variant === 'reinforced' ? 'Confirmado' : 'Novo';
             return `
 <article class="analysis-ai-suggestion-card ${variantClass}" data-cat-id="${escapeHtml(id)}">
   <header class="analysis-ai-suggestion-card__header">
-    <span class="analysis-ai-suggestion-card__icon" aria-hidden="true">${icone}</span>
     <div class="analysis-ai-suggestion-card__title">
       <h4>${escapeHtml(titulo)}</h4>
       <div class="analysis-ai-suggestion-card__badges">
@@ -3227,8 +3210,8 @@ com o catálogo; <strong>não é parecer profissional</strong>. A confirmação 
   ${resumo ? `<p class="analysis-ai-suggestion-card__resumo">${escapeHtml(resumo)}</p>` : ''}
   ${justificativa ? `
   <blockquote class="analysis-ai-suggestion-card__quote" aria-label="Trecho citado do documento que motivou a sugestão">
-    <span class="analysis-ai-suggestion-card__quote-label">💬 Trecho do documento citado pela IA:</span>
-    <span class="analysis-ai-suggestion-card__quote-text">"${escapeHtml(justificativa)}"</span>
+    <span class="analysis-ai-suggestion-card__quote-label">Trecho do documento citado pela IA:</span>
+    <span class="analysis-ai-suggestion-card__quote-text">“${escapeHtml(justificativa)}”</span>
   </blockquote>` : ''}
   <div class="analysis-ai-suggestion-card__actions">
     <button class="btn btn-sm btn-primary analysis-jump-category" data-id="${escapeHtml(id)}" type="button">
@@ -3247,7 +3230,7 @@ com o catálogo; <strong>não é parecer profissional</strong>. A confirmação 
             ? `
 <div class="analysis-ai-practical-next">
   <button class="btn btn-sm btn-secondary analysis-generate-week-plan" type="button" aria-expanded="false">
-    🗓️ Gerar plano de 7 dias
+    Gerar plano de 7 dias
   </button>
   ${renderAIDocsChecklist()}
   ${renderWeekPlan(priorityOrder, titleById)}
@@ -3257,14 +3240,14 @@ com o catálogo; <strong>não é parecer profissional</strong>. A confirmação 
 
         return `
 <div class="analysis-ai-practical" role="region" aria-label="Resumo prático do que mudou com IA">
-  <h3>🎯 O que mudou com IA</h3>
+  <h3>O que mudou com IA</h3>
   <p class="analysis-ai-practical-intro">Cada sugestão da IA mostra o <strong>trecho literal do seu documento</strong> que motivou a indicação — ajuda você a comparar e escolher antes de abrir o passo a passo.</p>
   <div class="analysis-ai-practical-section">
-    <strong class="analysis-ai-practical-section__label">✅ Direitos confirmados pela IA (já detectados localmente)</strong>
+    <strong class="analysis-ai-practical-section__label">Direitos confirmados pela IA (já detectados localmente)</strong>
     ${renderSuggestionGroup(reinforced, 'reinforced', 'A IA não trouxe confirmações adicionais sobre os direitos já detectados localmente.')}
   </div>
   <div class="analysis-ai-practical-section">
-    <strong class="analysis-ai-practical-section__label">🆕 Novos direitos sugeridos pela IA</strong>
+    <strong class="analysis-ai-practical-section__label">Novos direitos sugeridos pela IA</strong>
     ${renderSuggestionGroup(newFromAI, 'new', 'A IA não sugeriu novos direitos além dos já detectados localmente.')}
   </div>
   ${weekPlanHtml}
@@ -3411,12 +3394,12 @@ com o catálogo; <strong>não é parecer profissional</strong>. A confirmação 
         }).join('');
         return `
 <details class="analysis-ai-docs" role="group" aria-label="Documentos essenciais para pedir benefícios">
-  <summary>📁 Documentos essenciais (clique para abrir)</summary>
+  <summary>Documentos essenciais (clique para abrir)</summary>
   <ul>${items}</ul>
   <div class="analysis-ai-docs-actions">
-    <button class="btn btn-sm btn-outline analysis-ai-docs-reset" type="button">↺ Reiniciar lista</button>
+    <button class="btn btn-sm btn-outline analysis-ai-docs-reset" type="button">Reiniciar lista</button>
   </div>
-  <p class="analysis-hint">💡 Salvo no seu navegador (LGPD: nada é enviado). Reaproveite em todos os pedidos.</p>
+  <p class="analysis-hint">Salvo no seu navegador (LGPD: nada é enviado). Reaproveite em todos os pedidos.</p>
 </details>`;
     }
     function emitAIConsentChanged() {
@@ -3558,12 +3541,12 @@ com o catálogo; <strong>não é parecer profissional</strong>. A confirmação 
     // ── Revisão humana (LGPD Art. 20) ──
     function renderHumanReviewButton() {
         return `<div class="analysis-human-review" role="region" aria-labelledby="humanReviewTitle">
-<h4 id="humanReviewTitle">⚖️ Direito à revisão humana (LGPD Art. 20)</h4>
+<h4 id="humanReviewTitle">Direito à revisão humana (LGPD Art. 20)</h4>
 <p>Você pode pedir que uma pessoa revise como a <strong>IA processou seu documento</strong> nesta ferramenta (CIDs detectados, datas, direitos sugeridos).</p>
-<p class="human-review-scope"><small>ℹ️ <strong>Escopo:</strong> este canal trata apenas do <strong>funcionamento automatizado do site</strong>. Não é para questionar leis, direitos ou conteúdo do catálogo — esses vêm de fontes oficiais (gov.br) e dúvidas jurídicas devem ser levadas à Defensoria Pública ou advogado.</small></p>
+<p class="human-review-scope"><small><strong>Escopo:</strong> este canal trata apenas do <strong>funcionamento automatizado do site</strong>. Não é para questionar leis, direitos ou conteúdo do catálogo — esses vêm de fontes oficiais (gov.br) e dúvidas jurídicas devem ser levadas à Defensoria Pública ou advogado.</small></p>
 <button class="btn btn-outline human-review-btn" type="button"
   aria-describedby="humanReviewTitle">
-  📋 Pedir revisão humana
+  Pedir revisão humana
 </button>
 <div class="human-review-info" style="display:none;" aria-live="polite">
 <p>Envie um e-mail para
@@ -3600,7 +3583,7 @@ com o assunto <strong>"Revisão humana — Art. 20 LGPD"</strong> descrevendo o 
             ? datas.slice(0, 8).map((d) => {
                 const data = escapeHtml(d.data || '');
                 const ctx = escapeHtml(d.contexto || '');
-                return `<span class="kw-tag mid" title="${ctx}">📅 ${data}${ctx ? ' — ' + ctx : ''}</span>`;
+                return `<span class="kw-tag mid" title="${ctx}">${data}${ctx ? ' — ' + ctx : ''}</span>`;
             }).join(' ')
             : '<span class="analysis-hint">Nenhuma data relevante identificada.</span>';
         const diagBadges = diagnosticos.length
@@ -3616,25 +3599,25 @@ com o assunto <strong>"Revisão humana — Art. 20 LGPD"</strong> descrevendo o 
             : '<li class="analysis-hint">Nenhum direito sugerido pelo modelo.</li>';
         return `
 <div class="analysis-ai-section" style="margin-top:18px;padding:16px;border:1px solid #cfe2ff;background:#f5faff;border-radius:6px;">
-  <h3 style="margin-top:0;">🧠 Análise por IA (Azure OpenAI gpt-4o-mini — Brasil Sul)</h3>
+  <h3 style="margin-top:0;">Análise por IA (Azure OpenAI gpt-4o-mini — Brasil Sul)</h3>
   <p style="font-size:0.85rem;color:#555;margin:4px 0 12px;">
     Texto enviado de forma <strong>anonimizada</strong>. Confiança geral: <strong>${escapeHtml(confiancaGeral)}</strong>. Tokens: ${tokensIn}→${tokensOut}.
   </p>
-  ${resumo ? `<div style="background:#fff;padding:10px;border-left:3px solid #0d6efd;border-radius:4px;margin-bottom:12px;"><strong>📝 Resumo orientativo:</strong><br>${escapeHtml(resumo)}</div>` : ''}
+  ${resumo ? `<div style="background:#fff;padding:10px;border-left:3px solid #0d6efd;border-radius:4px;margin-bottom:12px;"><strong>Resumo orientativo:</strong><br>${escapeHtml(resumo)}</div>` : ''}
   <div style="margin-bottom:10px;">
-    <strong>🏷️ CIDs identificados:</strong><br>
+    <strong>CIDs identificados:</strong><br>
     ${cidBadges}
   </div>
   <div style="margin-bottom:10px;">
-    <strong>📅 Datas relevantes:</strong><br>
+    <strong>Datas relevantes:</strong><br>
     ${dateBadges}
   </div>
   <div style="margin-bottom:10px;">
-    <strong>🩺 Diagnósticos identificados:</strong>
+    <strong>Diagnósticos identificados:</strong>
     <ul style="margin:4px 0 0 20px;">${diagBadges}</ul>
   </div>
   <div style="margin-bottom:10px;">
-    <strong>⚖️ Direitos sugeridos:</strong>
+    <strong>Direitos sugeridos:</strong>
     <ul style="margin:4px 0 0 20px;">${direitosHtml}</ul>
   </div>
   <p style="font-size:0.8rem;color:#666;margin:10px 0 0;">
@@ -3939,14 +3922,12 @@ com o assunto <strong>"Revisão humana — Art. 20 LGPD"</strong> descrevendo o 
                 status.textContent = `Ativo - faltam ${consent.remainingDays} ${diaLabel}`;
                 status.classList.add('ai-consent-status-badge--active');
                 btn.disabled = false;
-                // 🔓 cadeado aberto = consentimento ativo (dados em uso), clicável
-                btn.textContent = '🔓 Revogar consentimento de IA';
+                btn.textContent = 'Revogar consentimento de IA';
             } else {
                 status.textContent = 'Nao armazenado';
                 status.classList.add('ai-consent-status-badge--inactive');
                 btn.disabled = true;
-                // 🔒 cadeado fechado = nenhum dado armazenado (trancado/seguro)
-                btn.textContent = '🔒 Nenhum consentimento ativo';
+                btn.textContent = 'Nenhum consentimento ativo';
             }
             animateStatusBadge();
         };

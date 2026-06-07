@@ -4,8 +4,8 @@
 > CD/ANPD nº 4/2023 para tratamentos que possam gerar riscos às
 > liberdades civis e aos direitos fundamentais dos titulares.
 
-**Versão:** 1.0  
-**Data:** 2026-05-31  
+**Versão:** 1.43.48  
+**Data:** 2026-06-07  
 **Controlador:** Fabio Rodrigues Vieira Costa  
 **Encarregado (DPO):** Fabio Rodrigues Vieira Costa — `dpo@fabiotreze.com`  
 **Portal:** [nossodireito.fabiotreze.com](https://nossodireito.fabiotreze.com)

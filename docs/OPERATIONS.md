@@ -1,12 +1,29 @@
 # Runbook de Operações
 
-**Versão:** 1.43.43
+**Versão:** 1.43.48
 
 ## Escopo
 
 - Runtime: Azure App Service (app-nossodireito-br)
 - Infra: Terraform em [terraform/](../terraform)
 - Qualidade: workflows em [.github/workflows/](../.github/workflows)
+
+## Logs
+
+- Log Analytics workspace `log-nossodireito-br` é a fonte canônica (retention 180 dias em [`terraform/main.tf`](../terraform/main.tf)).
+- Categorias coletadas em [`terraform/observability.tf`](../terraform/observability.tf): App Service (HTTP/Console/App/Audit/IPSecAudit/Platform), Key Vault (`AuditEvent`), Azure OpenAI (`Audit`, `RequestResponse`).
+- Filesystem logs do App Service (`az webapp log show`) duram 3 dias e servem só para troubleshooting curto.
+
+## Continuidade
+
+POC pessoal, sem RTO/RPO contratuais. O portal não persiste dados pessoais no servidor (processamento client-side, IndexedDB efêmero, TTL 15min), então perda do App Service não acarreta vazamento nem perda de dado do titular.
+
+| Camada | Estratégia | RPO | RTO |
+|--------|------------|-----|-----|
+| Código e conteúdo | Git no GitHub + clones locais | 0 | minutos (deploy automático no push) |
+| Infra | Terraform + `terraform.lock.hcl` versionado | 0 | 15-30 min para recriar o resource group |
+| Secrets | GitHub Secrets + Key Vault (HSM) | n/a | manual (rotação) |
+| Logs | Log Analytics, 180 dias | 0 | read-only |
 
 ## Rotina diária
 

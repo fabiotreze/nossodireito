@@ -2,11 +2,11 @@
 
 ## Versões Suportadas
 
-| Versão | Suportada | Notas                                   |
-|--------|-----------|-----------------------------------------|
-| 1.16.x | ✅        | Atual — banner legal + scorecard + gitleaks |
-| 1.15.x | ✅        | Override protobufjs (0 vulns)           |
-| < 1.15 | ❌        | Atualize — vulnerabilidades transitivas |
+| Versão | Suportada | Notas                                                                 |
+|--------|-----------|-----------------------------------------------------------------------|
+| 1.43.x | ✅        | Atual — IA Azure OpenAI + Managed Identity + Structured Outputs       |
+| 1.42.x | ✅        | Compatível (sem mudanças de segurança bloqueantes)                    |
+| < 1.42 | ❌        | Atualize — anonymizer/document-validator anteriores, sem enum no schema |
 
 > **Ambiente:** este projeto roda em **infra de desenvolvimento/POC** (App Service B1 single region).
 > Não é um ambiente de produção corporativo. Veja [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).
@@ -74,6 +74,10 @@ Sem `'unsafe-eval'` no CSP, o VLibras não carrega e o avatar de Libras não apa
 - **FTPS desabilitado**, SCM basic auth desabilitado
 - **Managed Identity** para acesso ao Key Vault (sem credenciais em código)
 - Secrets gerenciados via **GitHub Secrets** (ARM_*, PFX_BASE64)
+
+### Segredos: por que o PFX_PASSWORD vive no GitHub e não no Key Vault
+
+O `PFX_PASSWORD` permanece em GitHub Secret (não no Key Vault) por uma razão circular: ele é usado **uma única vez** durante `terraform apply` para importar o `.pfx` dentro do próprio Key Vault. Mover a senha para o KV antes do KV existir é um problema do tipo chicken-and-egg. Após o import, o certificado vive no KV com HSM e o App Service o consome via Managed Identity — a senha original deixa de ser necessária em runtime.
 
 ### CI/CD
 - **Quality Gate** automatizado (score mínimo 75/100) bloqueia deploys inseguros
