@@ -554,9 +554,9 @@
         }
       }
     </style>
-    <link rel="stylesheet" href="css/styles.css?v=1.43.42&rev=276" media="all" id="deferredCSS" />
+    <link rel="stylesheet" href="css/styles.css?v=1.43.43&rev=277" media="all" id="deferredCSS" />
     <noscript>
-      <link rel="stylesheet" href="css/styles.css?v=1.43.42&rev=276" />
+      <link rel="stylesheet" href="css/styles.css?v=1.43.43&rev=277" />
     </noscript>
     <script type="application/ld+json">
       {
@@ -1811,7 +1811,7 @@
                 endereço, telefone) para o <strong>Azure OpenAI (gpt-4o-mini)</strong> em região Brasil. Requer
                 consentimento explícito (LGPD Art. 7º I).
               </p>
-              <div id="aiConsentQuickActions" class="ai-consent-quick-actions" role="region" aria-label="Gerenciamento rápido de consentimento de IA">
+              <div id="aiConsentQuickActions" class="ai-consent-quick-actions" role="region" aria-label="Status de consentimento de IA">
                 <div class="ai-consent-quick-header">
                   <p class="ai-consent-quick-title">⚖️ Consentimento de IA (LGPD Art. 8º §5)</p>
                   <span id="aiConsentQuickStatus" class="ai-consent-status-badge" aria-live="polite">Verificando status...</span>
@@ -1820,17 +1820,11 @@
                   Você pode revogar a qualquer momento. Se não houver consentimento salvo,
                   a solicitação aparecerá antes da próxima análise com IA.
                 </p>
-                <div class="ai-consent-quick-actions-row">
-                  <button
-                    id="aiConsentRevokeQuick"
-                    class="btn btn-consent-revoke btn-consent-quick"
-                    type="button"
-                    aria-describedby="aiConsentQuickStatus"
-                    disabled
-                  >
-                    🔒 Nenhum consentimento ativo
-                  </button>
-                </div>
+                <p class="ai-consent-quick-text" style="margin-top:.4rem;">
+                  Para revogar ou auditar o consentimento, use o painel em
+                  <a href="#disclaimerInline">🔒 Aviso &gt; Privacidade e LGPD</a>
+                  ou abra o <a href="/historico-aceite.html">histórico completo</a>.
+                </p>
               </div>
             </details>
           </div>
@@ -2248,7 +2242,7 @@
                   contatar o Encarregado para qualquer dúvida sobre proteção de dados.
                 </p>
               </details>
-              <!-- v1.43.42 — Painel simétrico de gestão de aceite (Termos + IA).
+              <!-- v1.43.43 — Painel simétrico de gestão de aceite (Termos + IA).
                    Antes, só IA tinha gestão visível aqui; Termos só pelo banner que some após aceitar.
                    Agora os dois consentimentos têm o mesmo padrão: badge de status + botão de revogar
                    + link para auditoria completa em /historico-aceite.html. -->
@@ -2654,9 +2648,11 @@
             por definicao, o modal so abre quando nao ha consentimento salvo
             (getAIConsent retorna direto se ja existe). Mostrar "Revogar"
             aqui sugeria que havia algo armazenado quando nao havia.
-            Gerenciamento de revogacao vive nos paineis permanentes da
-            secao LGPD (#aiConsentRevokeQuick e #aiConsentRevokeInline),
-            ambos com cadeado dinamico refletindo o estado real.
+            Gerenciamento de revogacao vive no painel permanente da secao
+            LGPD (#aiConsentRevokeInline) e na pagina /historico-aceite.html.
+            O painel #aiConsentQuickActions na Consulta agora mostra so o
+            status (read-only) com link para o gerenciador central
+            (consolidacao v1.43.43, dedup pos-PR #323).
           -->
           <button id="aiConsentCancel" type="button" class="btn btn-secondary">Cancelar</button>
           <button id="aiConsentAccept" type="button" class="btn btn-primary">✅ Concordo e enviar</button>
@@ -2664,10 +2660,10 @@
       </div>
     </div>
 
-    <!-- v1.43.42 — Banner de aceite de Termos/Privacidade (não-bloqueante).
+    <!-- v1.43.43 — Banner de aceite de Termos/Privacidade (não-bloqueante).
          Aparece apenas se localStorage.tos_version_accepted !== TOS_VERSION (em js/tos-banner.js).
          TOS_VERSION = data ISO YYYY-MM-DD da última MUDANÇA MATERIAL (DESACOPLADO de package.json
-         desde v1.43.42 — ver GOVERNANCE.md § Versionamento de Termos).
+         desde v1.43.43 — ver GOVERNANCE.md § Versionamento de Termos).
          Estado vive 100% no navegador (chaves: tos_version_accepted, tos_accepted_at, tos_hash).
          Nada enviado a servidor. LGPD-safe. Auditável em /historico-aceite.html. -->
     <div id="tosAcceptBanner" role="region" aria-label="Aceite de Termos de Uso e Privacidade" aria-live="polite">
@@ -2692,12 +2688,12 @@
 
     <!-- v1.43.36 — Lógica de aceite + exit-toast (CSP-safe: arquivo externo).
          Carrega antes do app.js para que o banner apareça o mais cedo possível. -->
-    <script src="js/tos-banner.js?v=1.43.42&rev=276" defer></script>
+    <script src="js/tos-banner.js?v=1.43.43&rev=277" defer></script>
 
     <!-- Anonymizer compartilhado (Node + Browser) — DEVE carregar ANTES de app.js -->
-    <script src="shared/anonymizer.js?v=1.43.42&rev=276" defer></script>
+    <script src="shared/anonymizer.js?v=1.43.43&rev=277" defer></script>
     <!-- Document validator (gate multidimensional: CRM/CID + corroboração) — ANTES de app.js -->
-    <script src="shared/document-validator.js?v=1.43.42&rev=276" defer></script>
-    <script src="js/app.js?v=1.43.42&rev=276" defer></script>
+    <script src="shared/document-validator.js?v=1.43.43&rev=277" defer></script>
+    <script src="js/app.js?v=1.43.43&rev=277" defer></script>
   </body>
 </html>

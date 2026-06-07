@@ -4,7 +4,7 @@
 > confiável e sempre embasado em fontes oficiais do governo brasileiro.
 
 **Última revisão:** 2026-06-06
-**Versão:** 1.43.42
+**Versão:** 1.43.43
 
 ---
 
@@ -237,7 +237,7 @@ Categorias que podem ser adicionadas após pesquisa e validação:
 A versão canônica do site é definida em `package.json#version` e propagada automaticamente
 para os arquivos canônicos (validado por `scripts/check_version_sync.mjs`).
 
-### 8.2. Versionamento de Termos (`TOS_VERSION`) — desacoplado desde v1.43.42
+### 8.2. Versionamento de Termos (`TOS_VERSION`) — desacoplado desde v1.43.43
 
 **Por que desacoplar:** Acoplar `TOS_VERSION` ao `package.json#version` força um novo aceite
 a cada release (mesmo quando só mudou CSS ou foi um fix de digitação). Isso causa **consent
@@ -276,7 +276,7 @@ no texto de Termos de Uso ou Política de Privacidade.
 
 | Data (`TOS_VERSION`) | Mudança material | Issue/PR |
 |---------------------|------------------|----------|
-| `2026-06-06` | Baseline: política de desacoplamento de `package.json` e migração para formato ISO date. Primeiro re-aceite documenta a nova política de versionamento (sem mudança de finalidade, base legal, retenção ou compartilhamento). | PR #324 (v1.43.42) |
+| `2026-06-06` | Baseline: política de desacoplamento de `package.json` e migração para formato ISO date. Primeiro re-aceite documenta a nova política de versionamento (sem mudança de finalidade, base legal, retenção ou compartilhamento). | PR #324 (v1.43.43) |
 
 > Bumps futuros: adicionar linha aqui descrevendo a mudança material que motivou o bump.
 
