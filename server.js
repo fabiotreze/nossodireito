@@ -137,8 +137,23 @@ const server = http.createServer(async (req, res) => {
   }
 
   // ── Health check endpoint (lib/infra-handlers.js) ──
+  // Bypasses rate-limit because Azure App Service probes /health frequently;
+  // a 429 here would mark the app as unhealthy and trigger an unwanted swap.
   if (req.url === "/health") {
     healthHandler(req, res);
+    return;
+  }
+
+  // ── Rate limiting (CWE-770) ──
+  // Bucket global por janela, sem armazenar identificadores do request.
+  // Applied BEFORE scanner paths, /api/stats and /csp-report so a bot flooding
+  // those endpoints cannot bypass the limiter and exhaust resources.
+  if (await isRateLimitedAdaptive()) {
+    res.writeHead(429, {
+      "Content-Type": "text/plain",
+      "Retry-After": "60",
+    });
+    res.end("Too Many Requests");
     return;
   }
 
@@ -157,7 +172,24 @@ const server = http.createServer(async (req, res) => {
   }
 
   // ── CSP Violation Reports (Reporting API + report-uri) ──
+  // Accepts only the Content-Types defined by the spec:
+  //  - application/csp-report          (CSP2 report-uri)
+  //  - application/reports+json        (Reporting API v1)
+  //  - application/json                (some browsers/proxies normalize to this)
+  // Any other Content-Type is dropped with 415 so attackers cannot pipe
+  // arbitrary payloads into the [CSP-VIOLATION] log stream.
   if (req.url === "/csp-report" && req.method === "POST") {
+    const ct = String(req.headers["content-type"] || "").toLowerCase().split(";")[0].trim();
+    const ALLOWED_CSP_CT = new Set([
+      "application/csp-report",
+      "application/reports+json",
+      "application/json",
+    ]);
+    if (!ALLOWED_CSP_CT.has(ct)) {
+      res.writeHead(415, { "Content-Type": "text/plain" });
+      res.end("Unsupported Media Type");
+      return;
+    }
     let body = "";
     req.on("data", (chunk) => {
       body += chunk;
@@ -176,17 +208,6 @@ const server = http.createServer(async (req, res) => {
       res.writeHead(204);
       res.end();
     });
-    return;
-  }
-
-  // ── Rate limiting (CWE-770) ──
-  // Bucket global por janela, sem armazenar identificadores do request.
-  if (await isRateLimitedAdaptive()) {
-    res.writeHead(429, {
-      "Content-Type": "text/plain",
-      "Retry-After": "60",
-    });
-    res.end("Too Many Requests");
     return;
   }
 
