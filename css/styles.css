@@ -2220,16 +2220,6 @@ html.high-contrast .valor-destaque {
     line-height: 1.45;
 }
 
-.ai-consent-quick-actions-row {
-    display: flex;
-    justify-content: flex-end;
-}
-
-.btn-consent-quick {
-    min-width: 270px;
-    font-weight: 700;
-}
-
 .ai-consent-status-badge {
     display: inline-flex;
     align-items: center;
@@ -2495,15 +2485,6 @@ html.high-contrast .valor-destaque {
     .ai-consent-manager-head {
         align-items: flex-start;
         gap: 6px;
-    }
-
-    .ai-consent-quick-actions-row {
-        justify-content: stretch;
-    }
-
-    .btn-consent-quick {
-        width: 100%;
-        min-width: 0;
     }
 
     .ai-consent-modal-content {

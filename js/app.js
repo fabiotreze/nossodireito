@@ -3973,10 +3973,14 @@ com o assunto <strong>"Revisão humana — Art. 20 LGPD"</strong> descrevendo o 
         document.addEventListener('ai-consent-changed', render);
         render();
     }
-    function setupAIConsentQuickActions() {
-        const btn = document.getElementById('aiConsentRevokeQuick');
+    // v1.43.43 — Status informativo de consentimento IA no painel da Consulta.
+    // ANTES (v1.43.41): expunha botão duplicado de revogar (#aiConsentRevokeQuick),
+    // criando 3 caminhos para a mesma ação (aqui + #aiConsentManager + /historico-aceite).
+    // AGORA: badge somente-leitura + link contextual para o gerenciador central.
+    // Reduz fadiga de decisão e elimina divergência de cópia entre painéis.
+    function setupAIConsentQuickStatus() {
         const status = document.getElementById('aiConsentQuickStatus');
-        if (!btn || !status) return;
+        if (!status) return;
         const animateStatusBadge = () => {
             status.classList.remove('ai-consent-status-badge--updated');
             void status.offsetWidth;
@@ -3990,38 +3994,12 @@ com o assunto <strong>"Revisão humana — Art. 20 LGPD"</strong> descrevendo o 
                 const diaLabel = consent.remainingDays === 1 ? 'dia' : 'dias';
                 status.textContent = `Consentimento ativo - faltam ${consent.remainingDays} ${diaLabel}`;
                 status.classList.add('ai-consent-status-badge--active');
-                btn.disabled = false;
-                // 🔓 cadeado aberto = consentimento ativo (dados em uso), clicável
-                btn.textContent = '🔓 Revogar consentimento salvo';
             } else {
                 status.textContent = 'Nenhum consentimento salvo';
                 status.classList.add('ai-consent-status-badge--inactive');
-                btn.disabled = true;
-                // 🔒 cadeado fechado = nenhum dado armazenado (trancado/seguro)
-                btn.textContent = '🔒 Nenhum consentimento ativo';
             }
             animateStatusBadge();
         };
-        btn.addEventListener('click', () => {
-            const granted = getStoredAIConsent();
-            if (!granted) {
-                if (typeof showToast === 'function') {
-                    showToast('Nenhum consentimento salvo no momento. Ele será solicitado na próxima análise com IA.', 'info');
-                }
-                render();
-                return;
-            }
-            const ok = window.revokeAIConsent && window.revokeAIConsent();
-            if (typeof showToast === 'function') {
-                showToast(
-                    ok
-                        ? 'Consentimento de IA revogado. Será solicitado novamente na próxima análise.'
-                        : 'Não foi possível revogar (localStorage indisponível).',
-                    ok ? 'info' : 'warning'
-                );
-            }
-            render();
-        });
         document.addEventListener('ai-consent-changed', render);
         render();
     }
@@ -4157,12 +4135,12 @@ com o assunto <strong>"Revisão humana — Art. 20 LGPD"</strong> descrevendo o 
     // a controlar (abertura, esc, click fora, fechamento ao navegar).
 
     if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', () => { init(); setupNavAvisoScroll(); setupAIConsentManager(); setupAIConsentQuickActions(); setupReferenciasTabs(); });
+        document.addEventListener('DOMContentLoaded', () => { init(); setupNavAvisoScroll(); setupAIConsentManager(); setupAIConsentQuickStatus(); setupReferenciasTabs(); });
     } else {
         init();
         setupNavAvisoScroll();
         setupAIConsentManager();
-        setupAIConsentQuickActions();
+        setupAIConsentQuickStatus();
         setupReferenciasTabs();
     }
 })();
