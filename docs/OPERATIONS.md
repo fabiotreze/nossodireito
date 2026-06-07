@@ -10,9 +10,22 @@
 
 ## Logs
 
-- Log Analytics workspace `log-nossodireito-br` é a fonte canônica (retention 180 dias em [`terraform/main.tf`](../terraform/main.tf)).
-- Categorias coletadas em [`terraform/observability.tf`](../terraform/observability.tf): App Service (HTTP/Console/App/Audit/IPSecAudit/Platform), Key Vault (`AuditEvent`), Azure OpenAI (`Audit`, `RequestResponse`).
+- Log Analytics workspace `log-nossodireito-br` é a fonte canônica (retention 180 dias em [`terraform/main.tf`](../terraform/main.tf), conforme Marco Civil Art. 13).
+- Categorias coletadas em [`terraform/observability.tf`](../terraform/observability.tf): App Service (HTTP/Console/App/Audit/IPSecAudit/Platform), Key Vault (`AuditEvent`, `AzurePolicyEvaluationDetails`), Azure OpenAI (`Audit`, `RequestResponse`), Redis (`AllMetrics`).
 - Filesystem logs do App Service (`az webapp log show`) duram 3 dias e servem só para troubleshooting curto.
+
+## Alertas
+
+Action group `ag-nossodireito-email` → e-mail (secret `ALERT_EMAIL`).
+
+| Alerta | Tipo | Severidade | Condição |
+|--------|------|------------|----------|
+| `alert-app-nossodireito-br-5xx` | Metric | S1 | Http5xx > 0 em 5min |
+| `alert-app-nossodireito-br-health` | Metric | S0 | HealthCheckStatus < 100 (5min) |
+| `alert-app-nossodireito-br-latency` | Metric | S2 | HttpResponseTime médio > 5s (15min) |
+| `alert-app-nossodireito-br-4xx` | Metric | S3 | Http4xx > 50 em 5min |
+| `alert-cloudflare-bypass` | KQL | S2 | Requisição vinda de IP fora das faixas Cloudflare (15min) |
+| `alert-kv-denied-access` | KQL | S1 | Forbidden/Unauthorized no Key Vault (1h) |
 
 ## Continuidade
 

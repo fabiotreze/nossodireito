@@ -72,3 +72,101 @@ resource "azurerm_monitor_diagnostic_setting" "openai" {
 
   enabled_metric { category = "AllMetrics" }
 }
+
+# --- Redis: métricas do rate-limiter ------------------------------
+# SKU Basic C0 NÃO suporta categorias de log (ConnectedClientList exige Premium).
+# Para defesa-em-profundidade enviamos apenas métricas (CPU, conexões, ops/s,
+# evictions, cache hits) ao Log Analytics — sem PII, sem payload de chave.
+resource "azurerm_monitor_diagnostic_setting" "redis" {
+  count = var.enable_redis ? 1 : 0
+
+  name                       = "diag-${local.redis_name}"
+  target_resource_id         = azurerm_redis_cache.main[0].id
+  log_analytics_workspace_id = azurerm_log_analytics_workspace.main.id
+
+  enabled_metric { category = "AllMetrics" }
+}
+
+# ============================================================
+# Security Alerts — KQL scheduled query rules
+# ============================================================
+# Defesa-em-profundidade. App Service já tem ip_restriction permitindo
+# apenas faixas Cloudflare (ver main.tf), mas estes alertas servem como
+# sinal antecipado de:
+#   1. Bypass de Cloudflare (CIp fora das faixas conhecidas).
+#   2. Acesso negado a Key Vault (forbidden / unauthorized).
+# Sem custo adicional além de ingestion já incluído (PerGB2018 5GB grátis/mês).
+
+# --- Alerta: Cloudflare bypass (origem direta no App Service) ------
+resource "azurerm_monitor_scheduled_query_rules_alert_v2" "cloudflare_bypass" {
+  count               = var.alert_email != "" ? 1 : 0
+  name                = "alert-cloudflare-bypass"
+  resource_group_name = azurerm_resource_group.main.name
+  location            = azurerm_resource_group.main.location
+
+  evaluation_frequency = "PT15M"
+  window_duration      = "PT15M"
+  scopes               = [azurerm_log_analytics_workspace.main.id]
+  severity             = 2
+  description          = "Requisição chegou ao App Service vinda de IP fora das faixas Cloudflare. Indica possível bypass do proxy reverso."
+
+  criteria {
+    query = <<-KQL
+      let cf_ranges = dynamic(${jsonencode(local.cloudflare_ipv4_ranges)});
+      AppServiceHTTPLogs
+      | where TimeGenerated > ago(15m)
+      | where isnotempty(CIp)
+      | where not(ipv4_is_in_any_range(CIp, cf_ranges))
+      | summarize hits = count(), sample_uri = any(CsUriStem) by CIp
+      | where hits > 0
+    KQL
+
+    time_aggregation_method = "Count"
+    operator                = "GreaterThan"
+    threshold               = 0
+  }
+
+  auto_mitigation_enabled = true
+  action {
+    action_groups = [azurerm_monitor_action_group.email[0].id]
+  }
+
+  tags = local.tags
+}
+
+# --- Alerta: Key Vault — acesso negado / falha de autenticação -----
+resource "azurerm_monitor_scheduled_query_rules_alert_v2" "kv_denied_access" {
+  count               = var.enable_keyvault && var.alert_email != "" ? 1 : 0
+  name                = "alert-kv-denied-access"
+  resource_group_name = azurerm_resource_group.main.name
+  location            = azurerm_resource_group.main.location
+
+  evaluation_frequency = "PT15M"
+  window_duration      = "PT1H"
+  scopes               = [azurerm_log_analytics_workspace.main.id]
+  severity             = 1
+  description          = "Tentativas de acesso negadas (Forbidden/Unauthorized) ao Key Vault. Pode indicar credencial vazada ou identity drift."
+
+  criteria {
+    query = <<-KQL
+      AzureDiagnostics
+      | where TimeGenerated > ago(1h)
+      | where ResourceProvider == "MICROSOFT.KEYVAULT"
+      | where Category == "AuditEvent"
+      | where ResultSignature in ("Forbidden", "Unauthorized")
+      | summarize denials = count() by identity_claim_appid_g, CallerIPAddress
+      | where denials > 0
+    KQL
+
+    time_aggregation_method = "Count"
+    operator                = "GreaterThan"
+    threshold               = 0
+  }
+
+  auto_mitigation_enabled = true
+  action {
+    action_groups = [azurerm_monitor_action_group.email[0].id]
+  }
+
+  tags = local.tags
+}

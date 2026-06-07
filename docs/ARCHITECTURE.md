@@ -13,7 +13,7 @@ A plataforma roda em Azure App Service Linux (Node.js 22) com entrega via domini
 - Aplicacao: Azure App Service (`app-nossodireito-br`)
 - Runtime: Node.js 22 LTS
 - Regiao: Brazil South (`brazilsouth`)
-- Observabilidade: Azure Monitor platform metrics (App Service) + http logs do App Service (3d).
+- Observabilidade: Log Analytics Workspace `log-nossodireito-br` (180d, Marco Civil Art. 13) + 4 metric alerts + 2 KQL alerts.
 - Segredos: Azure Key Vault + Managed Identity
 - Cache/rate limit: Azure Cache for Redis (TLS 1.2)
 - Rede privada: VNet + subnets dedicadas + Private Endpoints
@@ -121,11 +121,21 @@ A SPA usa hash-routing internamente. O sitemap publicado atualmente lista apenas
 
 ## Observabilidade
 
-- Log Analytics Workspace: `log-nossodireito-br` (retencao `180` dias).
+- Log Analytics Workspace: `log-nossodireito-br` (PerGB2018, retenção `180` dias — Marco Civil Art. 13).
 - Diagnostic settings ativos (definidos em [terraform/observability.tf](../terraform/observability.tf)):
-  - App Service: `AppServiceHTTPLogs`, `AppServiceConsoleLogs`, `AppServiceAppLogs`, `AppServicePlatformLogs` + `AllMetrics`.
-  - Key Vault: `AuditEvent` + `AllMetrics` (count `var.enable_keyvault`).
-  - Azure OpenAI: `Audit`, `RequestResponse` + `AllMetrics` (count `var.enable_ai_openai`).
+  - App Service: `AppServiceHTTPLogs`, `AppServiceConsoleLogs`, `AppServiceAppLogs`, `AppServiceAuditLogs`, `AppServiceIPSecAuditLogs`, `AppServicePlatformLogs` + `AllMetrics`.
+  - Key Vault: `AuditEvent`, `AzurePolicyEvaluationDetails` + `AllMetrics` (count `var.enable_keyvault`).
+  - Azure OpenAI: `Audit`, `RequestResponse` (sem corpo de prompt/completion) + `AllMetrics` (count `var.enable_ai_openai`).
+  - Redis: `AllMetrics` apenas (SKU Basic não expõe categorias de log).
+- Action group: `ag-nossodireito-email` (destino: `fabiotreze@gmail.com`).
+- Alertas de métrica (severidades S0–S3):
+  - `alert-app-nossodireito-br-5xx` — Http5xx > 0 (S1).
+  - `alert-app-nossodireito-br-health` — HealthCheckStatus < 100 (S0).
+  - `alert-app-nossodireito-br-latency` — HttpResponseTime > 5s (S2).
+  - `alert-app-nossodireito-br-4xx` — Http4xx > 50 em 5min (S3).
+- Alertas KQL (defesa em profundidade):
+  - `alert-cloudflare-bypass` — requisições no App Service vindas de IP fora das faixas Cloudflare (S2).
+  - `alert-kv-denied-access` — tentativas de acesso negadas (Forbidden/Unauthorized) ao Key Vault (S1).
 
 ## Gates de Qualidade (CI/CD)
 
