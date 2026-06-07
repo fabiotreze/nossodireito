@@ -3,7 +3,7 @@
  * Extraído do <script> inline de historico-aceite.html para conformar com CSP estrita
  * (script-src 'self' sem 'unsafe-inline'). Sem inline, o IIFE nunca rodava e a página
  * ficava eternamente em "Carregando…".
- * v1.43.41: botões de revogação movidos para dentro dos cards correspondentes (UX).
+ * v1.43.42: botões de revogação movidos para dentro dos cards correspondentes (UX).
  *           Card "Ações gerais" agora só exporta + recarrega (frase de ação clara).
  * Estado 100% local (localStorage). Zero PII, zero rede.
  */
@@ -85,6 +85,14 @@
     }
   }
 
+  // v1.43.42 — TOS_VERSION é YYYY-MM-DD (data ISO). Mostrar como DD/MM/YYYY na UI.
+  function formatTosVersion(v) {
+    if (!v) return '—';
+    const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(v);
+    if (!m) return v;
+    return m[3] + '/' + m[2] + '/' + m[1];
+  }
+
   function render() {
     const result = readState();
     if (result.error) {
@@ -95,7 +103,7 @@
       const s = result.state;
       const html = [
         '<dl class="status-line"><dt>Status</dt><dd><span class="status-badge status-ok">✓ Aceito</span></dd></dl>',
-        '<dl class="status-line"><dt>Versão aceita</dt><dd><code>' + escapeHtml(s.tos_version_accepted || '—') + '</code></dd></dl>',
+        '<dl class="status-line"><dt>Versão aceita</dt><dd><code>' + escapeHtml(formatTosVersion(s.tos_version_accepted)) + '</code></dd></dl>',
         '<dl class="status-line"><dt>Data/hora</dt><dd>' + escapeHtml(formatDate(s.tos_accepted_at)) + '</dd></dl>',
         '<dl class="status-line"><dt>Hash do texto (SHA-256)</dt><dd><code>' + escapeHtml(s.tos_hash || '—') + '</code></dd></dl>'
       ].join('');

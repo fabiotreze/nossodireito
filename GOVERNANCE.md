@@ -3,8 +3,8 @@
 > Documento que define os critérios, fluxos e boas práticas para manter o portal atualizado,
 > confiável e sempre embasado em fontes oficiais do governo brasileiro.
 
-**Última revisão:** 2026-06-05
-**Versão:** 1.43.41
+**Última revisão:** 2026-06-06
+**Versão:** 1.43.42
 
 ---
 
@@ -224,6 +224,8 @@ Categorias que podem ser adicionadas após pesquisa e validação:
 
 ## 8. Versionamento
 
+### 8.1. Versão do site (`package.json`)
+
 | Tipo de mudança | Incremento | Exemplo |
 |----------------|------------|---------|
 | Correção de texto/link | PATCH | 1.0.0 → 1.0.1 |
@@ -231,6 +233,52 @@ Categorias que podem ser adicionadas após pesquisa e validação:
 | Reestruturação do JSON/app | MAJOR | 1.0.0 → 2.0.0 |
 | Atualização de valor (BPC) | PATCH | 1.0.0 → 1.0.1 |
 | Nova instituição | PATCH | 1.0.0 → 1.0.1 |
+
+A versão canônica do site é definida em `package.json#version` e propagada automaticamente
+para os arquivos canônicos (validado por `scripts/check_version_sync.mjs`).
+
+### 8.2. Versionamento de Termos (`TOS_VERSION`) — desacoplado desde v1.43.42
+
+**Por que desacoplar:** Acoplar `TOS_VERSION` ao `package.json#version` força um novo aceite
+a cada release (mesmo quando só mudou CSS ou foi um fix de digitação). Isso causa **consent
+fatigue** — usuários clicam "aceito" sem ler, esvaziando o valor jurídico do aceite.
+A LGPD (Lei 13.709/2018, Art. 8º §1º) **não** exige novo consentimento por mudança de UI;
+exige por mudança **material** no tratamento de dados.
+
+**Formato:** `YYYY-MM-DD` (ISO 8601), declarado em `js/tos-banner.js` como
+`var TOS_VERSION = '2026-06-06';`. Representa a data da última **mudança material**
+no texto de Termos de Uso ou Política de Privacidade.
+
+**Quando bumpar (mudança material — exige novo aceite):**
+- Finalidade do tratamento mudou (ex.: passar a usar dados para nova feature)
+- Base legal mudou (ex.: consentimento → legítimo interesse)
+- Controlador/DPO mudou (ex.: troca de responsável legal)
+- Retenção mudou (ex.: dados que ficavam 30 dias passam a ficar 1 ano)
+- Compartilhamento mudou (ex.: novo subprocessador, nova região, transferência internacional)
+- Política de IA mudou (ex.: novo provedor, novo modelo, nova categoria de dado tratado)
+- Direitos do titular mudaram (ex.: canal de revogação alterado)
+
+**Quando NÃO bumpar (mudança não-material — re-aceite seria abuso):**
+- Refatoração de CSS/HTML/JS sem mudança de comportamento
+- Bumps técnicos de site (novas features, correções de bugs)
+- Correção de digitação ou clarificação de texto que mantém o significado
+- Reorganização visual de cards/seções
+
+**Validação:** `scripts/check_version_sync.mjs` valida que `TOS_VERSION`:
+- Está no formato `YYYY-MM-DD`
+- Representa uma data válida
+- Não está no futuro
+
+**Auditoria do usuário:** O aceite fica em `localStorage` (`tos_version_accepted`,
+`tos_accepted_at`, `tos_hash`) e pode ser inspecionado/revogado em `/historico-aceite.html`.
+
+### 8.3. Histórico de versões dos Termos
+
+| Data (`TOS_VERSION`) | Mudança material | Issue/PR |
+|---------------------|------------------|----------|
+| `2026-06-06` | Baseline: política de desacoplamento de `package.json` e migração para formato ISO date. Primeiro re-aceite documenta a nova política de versionamento (sem mudança de finalidade, base legal, retenção ou compartilhamento). | PR #324 (v1.43.42) |
+
+> Bumps futuros: adicionar linha aqui descrevendo a mudança material que motivou o bump.
 
 ---
 
