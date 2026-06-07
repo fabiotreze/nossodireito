@@ -68,15 +68,18 @@ flowchart LR
 - Checagens de CI para testes e qualidade de conteúdo
 - Workflows de segurança do GitHub (CodeQL, gitleaks)
 - Validação do Terraform + checagens de policy no pipeline
-- **Sem telemetria de aplicação** — nenhum SDK de APM/observabilidade está instalado no servidor (decisão de 2026-06-05). Métricas operacionais usam Azure Monitor platform metrics (App Service) e http logs do App Service (3d).
+- **Sem APM client-side nem server-side** — nenhum SDK de APM (Application Insights, OpenTelemetry, Datadog, etc.) está instalado no servidor (decisão de 2026-06-05). Métricas operacionais usam apenas Azure Monitor (platform metrics nativas do App Service) e logs nativos do App Service exportados para Log Analytics.
+- **Observabilidade nativa Azure** (definida em `terraform/observability.tf`, aplicada em 2026-06-07):
+  - Log Analytics Workspace `log-nossodireito-br` com **retenção de 180 dias** (PerGB2018).
+  - Diagnostic settings ativos: App Service (HTTPLogs, ConsoleLogs, AppLogs, AuditLogs, IPSecAuditLogs, PlatformLogs), Key Vault (AuditEvent, AzurePolicyEvaluationDetails), Azure OpenAI (Audit, RequestResponse — sem corpo de prompt/completion).
 
 ## Marco Civil da Internet (Lei 12.965/2014)
 
-- **Art. 15:** O serviço é educacional e não opera com fins econômicos, não se enquadrando na hipótese do Art. 15 do Marco Civil. Ainda assim, mantemos para troubleshooting:
-  - **App Service http logs** (filesystem, retenção de 3 dias) com IPs anonimizados pela edge da Cloudflare.
-  - **Azure Monitor platform metrics** do plano (request count, response time, CPU/memory) — métricas agregadas sem PII.
-- **Art. 7º, VII:** Não fornecimento a terceiros de registros de conexão e
-  acesso sem consentimento livre, expresso e informado ou determinação judicial.
+- **Art. 15** (provedor de aplicações com fins econômicos): o serviço é educacional e sem fins econômicos, portanto não se enquadra na obrigação de guarda mínima de 6 meses do Art. 15.
+- **Art. 13** (boa prática + segurança): mantemos `AppServiceHTTPLogs` no Log Analytics com **retenção de 180 dias** para auditoria e resposta a incidentes. O IP registrado é o da **edge Cloudflare** (proxy reverso), não o IP de origem do usuário final. Demais campos: User-Agent, URL, status, bytes, latência.
+- **Azure Monitor platform metrics** do plano (request count, response time, CPU/memory) — métricas agregadas sem PII.
+- **Base legal LGPD:** Art. 7º, II (cumprimento de obrigação legal correlata — Marco Civil) c/c Art. 7º, IX (legítimo interesse para segurança).
+- **Art. 7º, VII Marco Civil:** Não fornecimento a terceiros de registros de conexão e acesso sem consentimento livre, expresso e informado ou determinação judicial.
 
 ## Referências normativas ANPD
 

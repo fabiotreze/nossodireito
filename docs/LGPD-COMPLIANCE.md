@@ -187,6 +187,10 @@ formulário de análise por IA. O tratamento é autorizado com base em
 **consentimento específico e destacado** (Art. 11, II, a) coletado via
 modal dedicado antes do envio. O RIPD documenta os riscos e mitigações.
 
-### Marco Civil da Internet (Lei 12.965/2014, Art. 15)
+### Marco Civil da Internet (Lei 12.965/2014)
 
-O serviço é educacional e não opera com fins econômicos, não se enquadrando na hipótese do Art. 15 do Marco Civil (que exige provedor de aplicações com fins econômicos). Ainda assim, mantém-se um mínimo operacional: http logs do App Service (3 dias) para troubleshooting, com IPs anonimizados pela edge Cloudflare.
+- **Art. 15** (provedor de aplicações com fins econômicos): o serviço é educacional e sem fins econômicos, portanto **não se enquadra** na obrigação de guarda de 6 meses do Art. 15.
+- **Art. 13** (provedor de conexão / acesso): por boa prática e para fins de segurança, auditoria e resposta a incidentes, mantemos registros de acesso à aplicação no Azure Monitor / Log Analytics Workspace `log-nossodireito-br` com **retenção de 180 dias** (categoria `AppServiceHTTPLogs`).
+- O servidor de aplicação vê apenas o **IP da edge Cloudflare** (proxy reverso), não o IP de origem do usuário final. Demais campos coletados: User-Agent, URL, status, bytes, tempo de resposta.
+- **Base legal LGPD:** Art. 7º, II (cumprimento de obrigação legal pelo operador) c/c Art. 7º, IX (legítimo interesse para segurança), considerando que o dado tratado (IP de edge Cloudflare + metadata HTTP) tem baixíssimo potencial de identificação direta do titular.
+- **Art. 7º, VII Marco Civil:** registros não são fornecidos a terceiros sem consentimento livre, expresso e informado ou determinação judicial.
