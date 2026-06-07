@@ -40,7 +40,7 @@ terraform/*.tfstate
 terraform/*.tfstate.*
 terraform/*.tfvars
 !terraform/*.tfvars.example
-terraform/.terraform.lock.hcl
+# terraform/.terraform.lock.hcl  ← committed on purpose (provider supply-chain pinning)
 terraform/crash.log
 terraform/.terraform.tfstate.lock.info
 *.tfplan
