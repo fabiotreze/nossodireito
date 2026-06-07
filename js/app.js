@@ -912,7 +912,7 @@
             updateSectionAlternation();
             history.pushState({ view: 'categorias' }, '', '#categorias');
             const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-            window.scrollTo({ top: 0, behavior: reduced ? 'auto' : 'smooth' });
+            dom.categoriasSection.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'start' });
             const h2 = dom.categoriasSection.querySelector('h2');
             if (h2) { h2.setAttribute('tabindex', '-1'); h2.focus({ preventScroll: true }); }
         });

@@ -2099,16 +2099,15 @@ html.high-contrast .valor-destaque {
 }
 
 .links-filter-btn {
-    padding: 6px 16px;
-    min-height: 44px;
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    background: transparent;
-    color: var(--text);
-    cursor: pointer;
+    padding: 8px 16px;
     font-size: 0.875rem;
-    font-weight: 500;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    color: var(--text-muted);
+    cursor: pointer;
     transition: background-color var(--transition), border-color var(--transition), color var(--transition);
+    font-weight: 500;
 }
 
 .links-filter-btn:hover {
@@ -2351,6 +2350,10 @@ html.high-contrast .valor-destaque {
 .ai-consent-sensitive input[type="checkbox"] {
     margin-top: 2px;
     flex-shrink: 0;
+    width: 22px;
+    height: 22px;
+    accent-color: var(--primary);
+    cursor: pointer;
 }
 
 .ai-consent-plain-language {
@@ -3973,16 +3976,15 @@ html.high-contrast .valor-destaque {
 }
 
 .orgao-filter-btn {
-    padding: 6px 16px;
-    min-height: 44px;
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    background: transparent;
-    color: var(--text);
-    cursor: pointer;
+    padding: 8px 16px;
     font-size: 0.875rem;
-    font-weight: 500;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    color: var(--text-muted);
+    cursor: pointer;
     transition: background-color var(--transition), border-color var(--transition), color var(--transition);
+    font-weight: 500;
 }
 
 .orgao-filter-btn:hover {
