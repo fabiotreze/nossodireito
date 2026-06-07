@@ -554,9 +554,9 @@
         }
       }
     </style>
-    <link rel="stylesheet" href="css/styles.css?v=1.43.38&rev=272" media="all" id="deferredCSS" />
+    <link rel="stylesheet" href="css/styles.css?v=1.43.39&rev=273" media="all" id="deferredCSS" />
     <noscript>
-      <link rel="stylesheet" href="css/styles.css?v=1.43.38&rev=272" />
+      <link rel="stylesheet" href="css/styles.css?v=1.43.39&rev=273" />
     </noscript>
     <script type="application/ld+json">
       {
@@ -2561,6 +2561,22 @@
             limpando os dados do site. Esta análise é orientação preliminar — <strong>não substitui</strong>
             avaliação profissional.
           </p>
+          <p class="ai-consent-modal-warning" role="note" style="background:var(--warn-bg,#fef3c7);color:var(--warn-text,#92400e);border-left:4px solid #f59e0b;padding:10px 12px;margin:12px 0;border-radius:6px;font-size:0.92rem;">
+            ⚠️ <strong>A IA pode errar.</strong> Conforme <a href="/termos-de-uso.html#secao-4" target="_blank" rel="noopener">Termos §4.3</a>:
+            CIDs incorretos, datas confundidas e direitos sugeridos sem fundamento no texto são possíveis.
+            <strong>Confirme tudo nas fontes oficiais</strong> antes de qualquer decisão.
+          </p>
+          <p class="ai-consent-modal-art20" role="note" style="background:#eff6ff;color:#1e40af;border-left:4px solid #3b82f6;padding:10px 12px;margin:12px 0;border-radius:6px;font-size:0.92rem;">
+            🔄 <strong>Direito à revisão humana (LGPD Art. 20):</strong> se a IA errar (ex.: CID errado, direito sugerido sem base),
+            escreva para <a href="mailto:dpo@fabiotreze.com"><strong>dpo@fabiotreze.com</strong></a> solicitando revisão.
+            Esse canal trata exclusivamente do funcionamento da IA — questões jurídicas devem ir a profissional habilitado.
+          </p>
+          <p class="ai-consent-modal-refs" style="font-size:0.85rem;color:var(--muted,#64748b);margin:8px 0 4px;">
+            📚 Leia antes de aceitar:
+            <a href="/termos-de-uso.html#secao-4" target="_blank" rel="noopener">Termos §4 — Análise por IA</a> ·
+            <a href="/privacidade.html#secao-6" target="_blank" rel="noopener">Privacidade §6 — Compartilhamento Azure</a> ·
+            <a href="https://github.com/fabiotreze/nossodireito/blob/main/docs/AI-PRINCIPLES.md" target="_blank" rel="noopener noreferrer">AI-PRINCIPLES</a>
+          </p>
           <label class="ai-consent-sensitive" id="aiConsentSensitiveLabel">
             <input type="checkbox" id="aiConsentSensitive" required />
             <span>
@@ -2645,12 +2661,12 @@
 
     <!-- v1.43.36 — Lógica de aceite + exit-toast (CSP-safe: arquivo externo).
          Carrega antes do app.js para que o banner apareça o mais cedo possível. -->
-    <script src="js/tos-banner.js?v=1.43.38&rev=272" defer></script>
+    <script src="js/tos-banner.js?v=1.43.39&rev=273" defer></script>
 
     <!-- Anonymizer compartilhado (Node + Browser) — DEVE carregar ANTES de app.js -->
-    <script src="shared/anonymizer.js?v=1.43.38&rev=272" defer></script>
+    <script src="shared/anonymizer.js?v=1.43.39&rev=273" defer></script>
     <!-- Document validator (gate multidimensional: CRM/CID + corroboração) — ANTES de app.js -->
-    <script src="shared/document-validator.js?v=1.43.38&rev=272" defer></script>
-    <script src="js/app.js?v=1.43.38&rev=272" defer></script>
+    <script src="shared/document-validator.js?v=1.43.39&rev=273" defer></script>
+    <script src="js/app.js?v=1.43.39&rev=273" defer></script>
   </body>
 </html>
