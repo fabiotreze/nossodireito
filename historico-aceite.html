@@ -81,21 +81,34 @@
     </p>
 
     <div class="card" id="cardStatus" aria-live="polite">
-      <h2>Status atual</h2>
+      <h2>📜 Status atual — Termos & Privacidade</h2>
       <div id="statusContent">
         <p class="empty">Carregando…</p>
       </div>
+    </div>
+
+    <div class="card" id="cardAiStatus" aria-live="polite">
+      <h2>🧠 Consentimento de análise por IA</h2>
+      <div id="aiStatusContent">
+        <p class="empty">Carregando…</p>
+      </div>
+      <p class="legal-ref" style="margin-top:.8rem">
+        Consentimento opt-in (LGPD Art. 7º I + Art. 11 II "a"). Veja
+        <a href="/termos-de-uso.html#secao-4">Termos §4</a> e
+        <a href="/privacidade.html#secao-6">Privacidade §6</a>.
+      </p>
     </div>
 
     <div class="card">
       <h2>Ações</h2>
       <div class="actions">
         <button type="button" class="primary" id="btnExport">📥 Exportar como JSON</button>
-        <button type="button" class="danger" id="btnRevoke">🗑️ Revogar aceite</button>
+        <button type="button" class="danger" id="btnRevoke">🗑️ Revogar aceite (Termos)</button>
+        <button type="button" class="danger" id="btnRevokeAI">🧠 Revogar consentimento IA</button>
         <button type="button" id="btnReload">🔄 Recarregar status</button>
       </div>
       <p class="legal-ref" style="margin-top:.8rem">
-        Revogar = apagar do localStorage. No próximo acesso ao site, o banner de aceite reaparecerá.
+        Revogar = apagar do localStorage. No próximo uso, o banner/modal correspondente reaparecerá.
       </p>
     </div>
 
@@ -103,9 +116,10 @@
       <h2>Como verificar manualmente</h2>
       <p>Você também pode inspecionar diretamente pelo console do navegador (F12 → Application → Local Storage → este domínio). Procure pelas chaves:</p>
       <ul style="padding-left:1.4rem">
-        <li><code>tos_version_accepted</code></li>
-        <li><code>tos_accepted_at</code></li>
-        <li><code>tos_hash</code></li>
+        <li><code>tos_version_accepted</code> — versão dos Termos aceita</li>
+        <li><code>tos_accepted_at</code> — data/hora ISO do aceite</li>
+        <li><code>tos_hash</code> — SHA-256 do texto aceito</li>
+        <li><code>nd_ai_consent_v2</code> — consentimento de análise por IA (JSON com <code>granted</code>, <code>sensitive</code>, <code>exp</code>)</li>
       </ul>
       <p style="margin-top:.6rem">Nenhuma outra chave é gravada pela aplicação.</p>
     </div>
@@ -122,14 +136,14 @@
 
   <footer role="contentinfo">
     <div class="container">
-      <p>NossoDireito v1.43.24 &middot; <a href="/">Início</a></p>
+      <p>NossoDireito v1.43.40 &middot; <a href="/">Início</a></p>
     </div>
   </footer>
 
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
-  <!-- v1.43.30 — extraído do inline para conformar CSP estrita (script-src 'self' sem 'unsafe-inline').
-       Antes, o IIFE inline era bloqueado pelo CSP em produção → render() nunca rodava → "Carregando…" eterno. -->
-  <script src="js/historico-aceite.js?v=1.43.30&rev=264" defer></script>
+  <!-- v1.43.40 — extraído do inline para conformar CSP estrita (script-src 'self' sem 'unsafe-inline').
+       Estende v1.43.30 com card e revogação de consentimento IA (nd_ai_consent_v2). -->
+  <script src="js/historico-aceite.js?v=1.43.40&rev=274" defer></script>
 </body>
 </html>
