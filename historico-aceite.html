@@ -18,12 +18,15 @@
     .container{max-width:780px;margin:0 auto;padding:0 20px}
     .skip-link{position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden}
     .skip-link:focus{position:fixed;left:1rem;top:1rem;width:auto;height:auto;background:var(--primary-dark);color:#fff;padding:.75rem 1rem;border-radius:6px;z-index:100;text-decoration:none}
-    header.topbar{background:var(--primary-dark);color:#fff;padding:1rem 0;margin-bottom:1.5rem}
-    header.topbar a{color:#fff;text-decoration:none;font-weight:700;font-size:1.05rem}
-    header.topbar a:hover{text-decoration:underline}
+    header.topbar{background:var(--primary-dark);color:#fff;padding:.85rem 0;margin-bottom:1.25rem}
+    .topbar-inner{display:flex;align-items:center;justify-content:space-between;gap:1rem}
+    .topbar-brand{color:#fff;text-decoration:none;font-weight:800;font-size:1.1rem;letter-spacing:.2px}
+    .topbar-brand:hover{text-decoration:underline}
+    .topbar-nav ul{list-style:none;display:flex;align-items:center;gap:.4rem}
+    .topbar-nav a{display:inline-flex;align-items:center;min-height:40px;padding:.45rem .8rem;border-radius:8px;color:#fff;text-decoration:none;font-weight:600;font-size:.95rem;border:1px solid transparent}
+    .topbar-nav a:hover,.topbar-nav a:focus-visible{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.28);text-decoration:none}
+    .topbar-nav a[aria-current="page"]{background:#fff;color:var(--primary-dark);border-color:#fff}
     main{padding-bottom:3rem}
-    nav.breadcrumb{font-size:.9rem;color:var(--muted);margin-bottom:1rem}
-    nav.breadcrumb a{color:var(--primary);text-decoration:underline}
     h1{font-size:1.7rem;color:var(--primary-dark);margin-bottom:.5rem}
     .intro{margin:1rem 0 1.5rem;color:var(--text)}
     .card{background:var(--surface-2);border:1px solid var(--border);border-radius:8px;padding:1.2rem 1.4rem;margin:1rem 0}
@@ -58,21 +61,30 @@
     footer a{color:var(--primary)}
     .legal-ref{font-size:.85rem;color:var(--muted);margin-top:.5rem;font-style:italic}
     pre{background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:.8rem;overflow-x:auto;font-size:.85rem;margin-top:.6rem}
+    @media (max-width:760px){
+      .topbar-inner{flex-wrap:wrap}
+      .topbar-nav{width:100%}
+      .topbar-nav ul{width:100%;justify-content:flex-start;gap:.6rem}
+    }
   </style>
 </head>
 <body>
   <a href="#mainContent" class="skip-link">Ir para o conteúdo</a>
   <header class="topbar" role="banner">
-    <div class="container">
-      <a href="/" aria-label="Voltar para a página inicial do NossoDireito">← NossoDireito</a>
+    <div class="container topbar-inner">
+      <a class="topbar-brand" href="/" aria-label="Voltar para a página inicial do NossoDireito">NossoDireito</a>
+      <nav class="topbar-nav" aria-label="Navegação principal">
+        <ul>
+          <li><a href="/">Início</a></li>
+          <li><a href="/termos-de-uso.html">Termos</a></li>
+          <li><a href="/privacidade.html">Privacidade</a></li>
+          <li><a href="/historico-aceite.html" aria-current="page">Meu aceite</a></li>
+        </ul>
+      </nav>
     </div>
   </header>
 
   <main id="mainContent" class="container" role="main">
-    <nav class="breadcrumb" aria-label="Trilha de navegação">
-      <a href="/">Início</a> &raquo; Meu aceite
-    </nav>
-
     <h1>Meu aceite — histórico e revogação</h1>
     <p class="intro">
       Esta página mostra o que está armazenado <strong>no seu navegador</strong> sobre seu aceite dos Termos de Uso e da Política de Privacidade do NossoDireito. Nada disso é enviado a servidores — fica só aqui no seu dispositivo.
