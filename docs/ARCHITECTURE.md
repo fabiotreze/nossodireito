@@ -119,6 +119,14 @@ A SPA usa hash-routing internamente. O sitemap publicado atualmente lista apenas
 - O Key Vault roda privado por padrao (`public_network_access_enabled=false`).
 - O segredo `redis-primary-key` permanece como referencia de app setting, mas por padrao nao e gerenciado via Terraform (`manage_redis_secret_with_terraform=false`) para evitar falha de data-plane em runners fora da VNet.
 
+## Observabilidade
+
+- Log Analytics Workspace: `log-nossodireito-br` (retencao `180` dias).
+- Diagnostic settings ativos (definidos em [terraform/observability.tf](../terraform/observability.tf)):
+  - App Service: `AppServiceHTTPLogs`, `AppServiceConsoleLogs`, `AppServiceAppLogs`, `AppServicePlatformLogs` + `AllMetrics`.
+  - Key Vault: `AuditEvent` + `AllMetrics` (count `var.enable_keyvault`).
+  - Azure OpenAI: `Audit`, `RequestResponse` + `AllMetrics` (count `var.enable_ai_openai`).
+
 ## Gates de Qualidade (CI/CD)
 
 Todo PR para `main` precisa passar nos checks abaixo (configurado em branch protection):
@@ -147,6 +155,7 @@ Thresholds atuais (Lighthouse): perf ≥ 0.85, a11y ≥ 0.90, best-practices ≥
 - [terraform/main.tf](../terraform/main.tf)
 - [terraform/openai-private-network.tf](../terraform/openai-private-network.tf)
 - [terraform/keyvault-redis-private-network.tf](../terraform/keyvault-redis-private-network.tf)
+- [terraform/observability.tf](../terraform/observability.tf)
 - [terraform/variables.tf](../terraform/variables.tf)
 - [terraform/outputs.tf](../terraform/outputs.tf)
 - [terraform/providers.tf](../terraform/providers.tf) — backend remoto `azurerm` (state em `stnossodireitobr/tfstate`)
