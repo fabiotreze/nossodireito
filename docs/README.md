@@ -13,8 +13,8 @@
 
 ## Diagramas
 
-- [Fluxo de IA E2E (.drawio)](diagrams/02-ia-flow.drawio)
-- [Replicação E2E (.drawio)](diagrams/03-replication.drawio)
+- [Fluxo de IA E2E (Mermaid)](diagrams/02-ia-flow.md)
+- [Replicação / Deploy E2E (Mermaid)](diagrams/03-replication.md)
 - [Arquitetura E2E (Mermaid no documento)](ARCHITECTURE.md)
 
 ## Referências de Infraestrutura

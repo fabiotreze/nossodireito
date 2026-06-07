@@ -1,7 +1,7 @@
 # Arquitetura Atual — NossoDireito
 
 **Versão:** 1.43.48
-**Atualizado:** 2026-06-05
+**Atualizado:** 2026-06-07
 
 ## Visao Geral
 
@@ -157,8 +157,8 @@ Thresholds atuais (Lighthouse): perf ≥ 0.85, a11y ≥ 0.90, best-practices ≥
 
 ## Diagramas
 
-- Fluxo de IA: [diagrams/02-ia-flow.drawio](diagrams/02-ia-flow.drawio)
-- Replicacao: [diagrams/03-replication.drawio](diagrams/03-replication.drawio)
+- Fluxo de IA: [diagrams/02-ia-flow.md](diagrams/02-ia-flow.md) (Mermaid sequence)
+- Replicacao / Deploy: [diagrams/03-replication.md](diagrams/03-replication.md) (Mermaid flowchart)
 
 ## Referencias de Infra (Terraform)
 
