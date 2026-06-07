@@ -14,8 +14,12 @@ Passos no Google Cloud Console ANTES de rodar este script:
   3. Application type: Desktop app
   4. Name: nossodireito-gsc-local
   5. Baixar o JSON do client (Download JSON)
-  6. Renomear para gsc_oauth_client.json e colocar na raiz do repo
-     (já está no .gitignore — não será commitado)
+  6. Renomear para gsc_oauth_client.json e colocar em UM destes locais
+     (procurados nesta ordem):
+       a. $XDG_CONFIG_HOME/nossodireito/gsc_oauth_client.json
+       b. ~/.config/nossodireito/gsc_oauth_client.json   (recomendado)
+       c. ./gsc_oauth_client.json                        (legacy, deprecated)
+     Garanta permissões 0600 no arquivo e 0700 no diretório.
 
 Uso:
   python3 scripts/gsc_get_refresh_token.py
@@ -31,12 +35,45 @@ Saída:
 from __future__ import annotations
 
 import json
+import os
 import subprocess
 import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-CLIENT_SECRETS_FILE = ROOT / "gsc_oauth_client.json"
+
+
+def resolve_client_secrets_file() -> Path:
+    """Find the OAuth client JSON.
+
+    Search order (most secure first):
+      1. $XDG_CONFIG_HOME/nossodireito/gsc_oauth_client.json
+      2. ~/.config/nossodireito/gsc_oauth_client.json
+      3. <repo>/gsc_oauth_client.json   (legacy; warns)
+    """
+    xdg = os.environ.get("XDG_CONFIG_HOME", "").strip()
+    candidates: list[Path] = []
+    if xdg:
+        candidates.append(Path(xdg) / "nossodireito" / "gsc_oauth_client.json")
+    candidates.append(Path.home() / ".config" / "nossodireito" / "gsc_oauth_client.json")
+    legacy = ROOT / "gsc_oauth_client.json"
+    candidates.append(legacy)
+
+    for path in candidates:
+        if path.is_file():
+            if path == legacy:
+                print(
+                    "WARN: usando gsc_oauth_client.json na raiz do repo (deprecated).\n"
+                    "  Mova para ~/.config/nossodireito/gsc_oauth_client.json com\n"
+                    "  permissões 0600 (arquivo) e 0700 (diretório).",
+                    file=sys.stderr,
+                )
+            return path
+    # Default to the recommended location for a clean error message below.
+    return Path.home() / ".config" / "nossodireito" / "gsc_oauth_client.json"
+
+
+CLIENT_SECRETS_FILE = resolve_client_secrets_file()
 SCOPES = ["https://www.googleapis.com/auth/webmasters.readonly"]
 REDIRECT_URI = "urn:ietf:wg:oauth:2.0:oob"
 
