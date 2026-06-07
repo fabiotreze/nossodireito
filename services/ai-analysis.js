@@ -94,7 +94,30 @@ const ANALYSIS_JSON_SCHEMA = {
           properties: {
             categoria_id: {
               type: "string",
-              description: "ID da categoria (ex: bpc_loas, ciptea, educacao)",
+              description: "ID exato da categoria do catálogo NossoDireito. Usar APENAS um destes valores.",
+              enum: [
+                "bpc",
+                "ciptea",
+                "educacao",
+                "plano_saude",
+                "sus_terapias",
+                "transporte",
+                "trabalho",
+                "fgts",
+                "moradia",
+                "isencoes_tributarias",
+                "atendimento_prioritario",
+                "estacionamento_especial",
+                "aposentadoria_especial_pcd",
+                "prioridade_judicial",
+                "tecnologia_assistiva",
+                "meia_entrada",
+                "prouni_fies_sisu",
+                "isencao_ir",
+                "bolsa_familia",
+                "tarifa_social_energia",
+                "auxilio_inclusao"
+              ],
             },
             justificativa: { type: "string", description: "Trecho LITERAL do texto (máx 80 caracteres) que motivou a menção desta categoria. Não opinar, não interpretar." },
             confianca: { type: "string", enum: ["alta", "media", "baixa"] },
@@ -135,10 +158,11 @@ const SYSTEM_PROMPT = [
   "10. NUNCA cite fontes fora de .gov.br, .jus.br, .def.br, .leg.br, .mp.br, .mil.br ou icd.who.int. Em dúvida, não cite.",
   "11. NUNCA mencione, recomende ou encaminhe a profissionais, órgãos, escritórios, ONGs ou serviços no resumo. O site é catálogo de referências, não agente de encaminhamento.",
   "",
-  "CATEGORIAS DISPONÍVEIS (use exatamente estes IDs):",
-  "bpc_loas, ciptea, educacao, terapias_plano, terapias_sus, transporte, trabalho,",
-  "fgts, habitacao, ipva, ir, prioridade_filas, tecnologia_assistiva, aposentadoria,",
-  "auxilio_inclusao, meia_entrada, cotas_pcd, isencao_ipi, passe_livre",
+  "CATEGORIAS DISPONÍVEIS (use exatamente estes IDs do catálogo NossoDireito):",
+  "bpc, ciptea, educacao, plano_saude, sus_terapias, transporte, trabalho,",
+  "fgts, moradia, isencoes_tributarias, atendimento_prioritario, estacionamento_especial,",
+  "aposentadoria_especial_pcd, prioridade_judicial, tecnologia_assistiva, meia_entrada,",
+  "prouni_fies_sisu, isencao_ir, bolsa_familia, tarifa_social_energia, auxilio_inclusao",
 ].join("\n");
 
 /**
