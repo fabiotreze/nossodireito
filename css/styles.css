@@ -2099,16 +2099,15 @@ html.high-contrast .valor-destaque {
 }
 
 .links-filter-btn {
-    padding: 6px 16px;
-    min-height: 44px;
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    background: transparent;
-    color: var(--text);
-    cursor: pointer;
+    padding: 8px 16px;
     font-size: 0.875rem;
-    font-weight: 500;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    color: var(--text-muted);
+    cursor: pointer;
     transition: background-color var(--transition), border-color var(--transition), color var(--transition);
+    font-weight: 500;
 }
 
 .links-filter-btn:hover {
@@ -2351,6 +2350,10 @@ html.high-contrast .valor-destaque {
 .ai-consent-sensitive input[type="checkbox"] {
     margin-top: 2px;
     flex-shrink: 0;
+    width: 22px;
+    height: 22px;
+    accent-color: var(--primary);
+    cursor: pointer;
 }
 
 .ai-consent-plain-language {
@@ -3973,16 +3976,15 @@ html.high-contrast .valor-destaque {
 }
 
 .orgao-filter-btn {
-    padding: 6px 16px;
-    min-height: 44px;
-    border: 1px solid var(--border);
-    border-radius: 20px;
-    background: transparent;
-    color: var(--text);
-    cursor: pointer;
+    padding: 8px 16px;
     font-size: 0.875rem;
-    font-weight: 500;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    color: var(--text-muted);
+    cursor: pointer;
     transition: background-color var(--transition), border-color var(--transition), color var(--transition);
+    font-weight: 500;
 }
 
 .orgao-filter-btn:hover {
@@ -5313,6 +5315,34 @@ html.high-contrast .card-grid[data-active-trilha] .category-card {
 
 .trilha-tab[aria-selected="true"],
 .referencias-tab[aria-selected="true"] {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: #fff;
+}
+
+/* v1.43.49 — Cores por trilha quando ativa.
+   Reaproveita a paleta de --trilha-color já usada em .card-grid[data-active-trilha=...].
+   Cada aba acende com a cor do seu domínio (renda=verde, saude=vermelho, etc.),
+   reforçando o vínculo visual entre filtro e cards filtrados.
+   'todas' mantém o azul --primary (sem domínio específico).
+   Contraste com #fff: todos ≥ 4.5:1 (mesmos hex já validados em .orgao-uf-badge). */
+.trilha-tab[data-trilha="renda"][aria-selected="true"]      { background: #15803d; border-color: #15803d; }
+.trilha-tab[data-trilha="saude"][aria-selected="true"]      { background: #b91c1c; border-color: #b91c1c; }
+.trilha-tab[data-trilha="educacao"][aria-selected="true"]   { background: #6d28d9; border-color: #6d28d9; }
+.trilha-tab[data-trilha="trabalho"][aria-selected="true"]   { background: #92400e; border-color: #92400e; }
+.trilha-tab[data-trilha="mobilidade"][aria-selected="true"] { background: #c2410c; border-color: #c2410c; }
+.trilha-tab[data-trilha="cidadania"][aria-selected="true"]  { background: #1e40af; border-color: #1e40af; }
+
+@media (prefers-color-scheme: dark) {
+    .trilha-tab[data-trilha="renda"][aria-selected="true"]      { background: #22c55e; border-color: #22c55e; color: #0f172a; }
+    .trilha-tab[data-trilha="saude"][aria-selected="true"]      { background: #f87171; border-color: #f87171; color: #0f172a; }
+    .trilha-tab[data-trilha="educacao"][aria-selected="true"]   { background: #a78bfa; border-color: #a78bfa; color: #0f172a; }
+    .trilha-tab[data-trilha="trabalho"][aria-selected="true"]   { background: #fbbf24; border-color: #fbbf24; color: #0f172a; }
+    .trilha-tab[data-trilha="mobilidade"][aria-selected="true"] { background: #fb923c; border-color: #fb923c; color: #0f172a; }
+    .trilha-tab[data-trilha="cidadania"][aria-selected="true"]  { background: #60a5fa; border-color: #60a5fa; color: #0f172a; }
+}
+
+html.high-contrast .trilha-tab[aria-selected="true"] {
     background: var(--primary);
     border-color: var(--primary);
     color: #fff;
