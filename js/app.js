@@ -1917,11 +1917,10 @@ ${filterNote}
             .map(
                 ({ cat }) => `
 <div class="search-result-item" data-id="${cat.id}" tabindex="0" role="button">
-<span class="search-result-icon">${cat.icone}</span>
 <div class="search-result-info">
 <h3>${escapeHtml(cat.titulo)}</h3>
 <p>${escapeHtml(cat.resumo)}</p>
-${getPendingLegalReviews(cat.id).length ? '<span class="search-result-badge search-result-badge--review">⚖️ Revisão jurídica</span>' : ''}
+${getPendingLegalReviews(cat.id).length ? '<span class="search-result-badge search-result-badge--review">Revisão jurídica</span>' : ''}
 </div>
 </div>`
             )
