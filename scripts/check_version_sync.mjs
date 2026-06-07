@@ -32,6 +32,9 @@ if (!CANONICAL || !/^\d+\.\d+\.\d+$/.test(CANONICAL)) {
 }
 
 // [arquivo, regex-com-captura, descrição]. A captura DEVE ser o número da versão.
+// NOTA: js/tos-banner.js TOS_VERSION foi DESACOPLADA em v1.43.42 — ela é
+// data ISO da última mudança material do texto dos Termos, não versão do site.
+// Validação separada abaixo (formato + não-futuro). Ver GOVERNANCE.md.
 const checks = [
   ["data/direitos.json", /"versao"\s*:\s*"([0-9]+\.[0-9]+\.[0-9]+)"/, 'data/direitos.json "versao"'],
   ["data/dicionario_pcd.json", /"versao"\s*:\s*"([0-9]+\.[0-9]+\.[0-9]+)"/, 'data/dicionario_pcd.json "versao"'],
@@ -41,7 +44,6 @@ const checks = [
   ["docs/SECURITY-LGPD.md", /\*\*Versão:\*\*\s*([0-9]+\.[0-9]+\.[0-9]+)/, "docs/SECURITY-LGPD.md header"],
   ["GOVERNANCE.md", /\*\*Versão:\*\*\s*([0-9]+\.[0-9]+\.[0-9]+)/, "GOVERNANCE.md header"],
   ["SECURITY_AUDIT.md", /Auditoria de Segurança v([0-9]+\.[0-9]+\.[0-9]+)/, "SECURITY_AUDIT.md title"],
-  ["js/tos-banner.js", /var\s+TOS_VERSION\s*=\s*['"]([0-9]+\.[0-9]+\.[0-9]+)['"]/, "js/tos-banner.js TOS_VERSION"],
 ];
 
 // index.html tem 3 cache-busters (?v=X.Y.Z). Validamos todos.
@@ -82,8 +84,33 @@ readmeVersions.forEach((v, i) => {
   }
 });
 
+// v1.43.42 — validação INDEPENDENTE de TOS_VERSION (data ISO, não-futuro).
+// Desacoplada de package.json desde v1.43.42 (re-aceite só quando texto material muda).
+const tosBanner = read("js/tos-banner.js");
+const tosMatch = tosBanner.match(/var\s+TOS_VERSION\s*=\s*['"]([^'"]+)['"]/);
+if (!tosMatch) {
+  drifts.push("  ✗ js/tos-banner.js: TOS_VERSION não encontrada");
+} else {
+  const tosVer = tosMatch[1];
+  const dateRx = /^(\d{4})-(\d{2})-(\d{2})$/;
+  const dm = tosVer.match(dateRx);
+  if (!dm) {
+    drifts.push(`  ✗ js/tos-banner.js TOS_VERSION: "${tosVer}" não é data ISO YYYY-MM-DD (política desde v1.43.42 — ver GOVERNANCE.md § Versionamento de Termos)`);
+  } else {
+    const tosDate = new Date(tosVer + "T00:00:00Z");
+    const today = new Date();
+    today.setUTCHours(23, 59, 59, 999);
+    if (isNaN(tosDate.getTime())) {
+      drifts.push(`  ✗ js/tos-banner.js TOS_VERSION: "${tosVer}" é data inválida`);
+    } else if (tosDate.getTime() > today.getTime()) {
+      drifts.push(`  ✗ js/tos-banner.js TOS_VERSION: "${tosVer}" é futura (não pode bumpar para o futuro)`);
+    }
+  }
+}
+
 if (drifts.length === 0) {
   console.log(`✓ versão sincronizada em todos os pontos (canonical: ${CANONICAL})`);
+  console.log(`✓ TOS_VERSION valida (data ISO da última mudança material — desacoplada de package.json desde v1.43.42)`);
   process.exit(0);
 }
 

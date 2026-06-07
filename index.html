@@ -554,9 +554,9 @@
         }
       }
     </style>
-    <link rel="stylesheet" href="css/styles.css?v=1.43.41&rev=275" media="all" id="deferredCSS" />
+    <link rel="stylesheet" href="css/styles.css?v=1.43.42&rev=276" media="all" id="deferredCSS" />
     <noscript>
-      <link rel="stylesheet" href="css/styles.css?v=1.43.41&rev=275" />
+      <link rel="stylesheet" href="css/styles.css?v=1.43.42&rev=276" />
     </noscript>
     <script type="application/ld+json">
       {
@@ -2248,7 +2248,7 @@
                   contatar o Encarregado para qualquer dúvida sobre proteção de dados.
                 </p>
               </details>
-              <!-- v1.43.41 — Painel simétrico de gestão de aceite (Termos + IA).
+              <!-- v1.43.42 — Painel simétrico de gestão de aceite (Termos + IA).
                    Antes, só IA tinha gestão visível aqui; Termos só pelo banner que some após aceitar.
                    Agora os dois consentimentos têm o mesmo padrão: badge de status + botão de revogar
                    + link para auditoria completa em /historico-aceite.html. -->
@@ -2664,14 +2664,16 @@
       </div>
     </div>
 
-    <!-- v1.43.36 — Banner de aceite de Termos/Privacidade (não-bloqueante).
-         Aparece apenas se localStorage.tos_version_accepted !== TOS_VERSION_CURRENT.
+    <!-- v1.43.42 — Banner de aceite de Termos/Privacidade (não-bloqueante).
+         Aparece apenas se localStorage.tos_version_accepted !== TOS_VERSION (em js/tos-banner.js).
+         TOS_VERSION = data ISO YYYY-MM-DD da última MUDANÇA MATERIAL (DESACOPLADO de package.json
+         desde v1.43.42 — ver GOVERNANCE.md § Versionamento de Termos).
          Estado vive 100% no navegador (chaves: tos_version_accepted, tos_accepted_at, tos_hash).
          Nada enviado a servidor. LGPD-safe. Auditável em /historico-aceite.html. -->
     <div id="tosAcceptBanner" role="region" aria-label="Aceite de Termos de Uso e Privacidade" aria-live="polite">
       <div class="tos-banner-inner">
         <p class="tos-banner-text">
-          <strong>📋 Termos atualizados (v1.43.41).</strong>
+          <strong>📋 Termos atualizados (06/06/2026).</strong>
           Ao continuar usando o NossoDireito, você confirma ter lido os
           <a href="/termos-de-uso.html">Termos de Uso</a> e a
           <a href="/privacidade.html">Política de Privacidade</a>.
@@ -2690,12 +2692,12 @@
 
     <!-- v1.43.36 — Lógica de aceite + exit-toast (CSP-safe: arquivo externo).
          Carrega antes do app.js para que o banner apareça o mais cedo possível. -->
-    <script src="js/tos-banner.js?v=1.43.41&rev=275" defer></script>
+    <script src="js/tos-banner.js?v=1.43.42&rev=276" defer></script>
 
     <!-- Anonymizer compartilhado (Node + Browser) — DEVE carregar ANTES de app.js -->
-    <script src="shared/anonymizer.js?v=1.43.41&rev=275" defer></script>
+    <script src="shared/anonymizer.js?v=1.43.42&rev=276" defer></script>
     <!-- Document validator (gate multidimensional: CRM/CID + corroboração) — ANTES de app.js -->
-    <script src="shared/document-validator.js?v=1.43.41&rev=275" defer></script>
-    <script src="js/app.js?v=1.43.41&rev=275" defer></script>
+    <script src="shared/document-validator.js?v=1.43.42&rev=276" defer></script>
+    <script src="js/app.js?v=1.43.42&rev=276" defer></script>
   </body>
 </html>

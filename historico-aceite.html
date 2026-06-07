@@ -121,7 +121,7 @@
       <h2>Como verificar manualmente</h2>
       <p>Você também pode inspecionar diretamente pelo console do navegador (F12 → Application → Local Storage → este domínio). Procure pelas chaves:</p>
       <ul style="padding-left:1.4rem">
-        <li><code>tos_version_accepted</code> — versão dos Termos aceita</li>
+        <li><code>tos_version_accepted</code> — data ISO (YYYY-MM-DD) da versão material aceita</li>
         <li><code>tos_accepted_at</code> — data/hora ISO do aceite</li>
         <li><code>tos_hash</code> — SHA-256 do texto aceito</li>
         <li><code>nd_ai_consent_v2</code> — consentimento de análise por IA (JSON com <code>granted</code>, <code>sensitive</code>, <code>exp</code>)</li>
@@ -141,15 +141,15 @@
 
   <footer role="contentinfo">
     <div class="container">
-      <p>NossoDireito v1.43.41 &middot; <a href="/">Início</a></p>
+      <p>NossoDireito v1.43.42 &middot; <a href="/">Início</a></p>
     </div>
   </footer>
 
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
-  <!-- v1.43.41 — botões de revogação movidos para dentro do card respectivo (UX);
+  <!-- v1.43.42 — botões de revogação movidos para dentro do card respectivo (UX);
        card 'Ações gerais' agora só Exportar + Recarregar.
        Estende v1.43.40 com card e revogação de consentimento IA (nd_ai_consent_v2). -->
-  <script src="js/historico-aceite.js?v=1.43.41&rev=275" defer></script>
+  <script src="js/historico-aceite.js?v=1.43.42&rev=276" defer></script>
 </body>
 </html>

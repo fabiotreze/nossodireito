@@ -1,19 +1,41 @@
-/* NossoDireito v1.43.41 — Termos de Uso/Privacidade banner + Exit toast
+/* NossoDireito v1.43.42 — Termos de Uso/Privacidade banner + Exit toast
  * Não-bloqueante. Estado 100% local (localStorage). Nada enviado a servidor.
- * LGPD-safe: sem PII; auditvel em /historico-aceite.html.
+ * LGPD-safe: sem PII; auditável em /historico-aceite.html.
  * CSP-friendly: arquivo externo, sem inline script.
  *
- * TOS_VERSION abaixo é SINCRONIZADA com package.json#version e validada por
- * scripts/check_version_sync.mjs. Bumpar essa string força re-aceite a TODOS
- * os usuários. Bumpe SEMPRE que o texto dos Termos for materialmente alterado
- * (nome do controlador, finalidades, base legal, retencão etc.). Bumps por
- * fix puramente técnico também são aceitáveis pois mantêm a UI consistente
- * com o cabecçalho "Termos atualizados (v...)" do banner.
+ * ────────────────────────────────────────────────────────────────────────────
+ * TOS_VERSION (formato YYYY-MM-DD) é a data da última MUDANÇA MATERIAL do texto
+ * dos Termos de Uso e/ou da Política de Privacidade. É DESACOPLADA de
+ * package.json#version desde v1.43.42 (antes: sincronizada — força­va re-aceite
+ * a cada bump de site, gerando consent fatigue e treinando o usuário a clicar
+ * sem ler, sem ganho jurídico).
+ *
+ * QUANDO BUMPAR TOS_VERSION (re-aceite obrigatório):
+ *   - Mudança de finalidade do tratamento de dados.
+ *   - Mudança da base legal (consentimento, legítimo interesse etc.).
+ *   - Mudança do controlador / DPO (nome ou contato).
+ *   - Mudança de retenção (prazo, política de descarte).
+ *   - Mudança de compartilhamento (novo subprocessador, nova transferência
+ *     internacional, nova região de processamento).
+ *   - Mudança de política de IA (novo provedor, novo modelo com perfil de risco
+ *     distinto, nova categoria de dados sensíveis).
+ *
+ * QUANDO NÃO BUMPAR (re-aceite NÃO é necessário):
+ *   - Refactor de CSS/HTML/JS sem mudança de texto material.
+ *   - Correções de digitação ou tradução sem mudança de sentido.
+ *   - Mudanças de copy ilustrativo (exemplos, ordenação).
+ *   - Bumps do site (package.json) por release técnico.
+ *
+ * Validado por scripts/check_version_sync.mjs (formato + não-futuro).
+ * Política completa em GOVERNANCE.md § "Versionamento de Termos".
+ * ────────────────────────────────────────────────────────────────────────────
  */
 (function () {
     'use strict';
 
-    var TOS_VERSION = '1.43.41';
+    // YYYY-MM-DD — data da última mudança material do texto dos Termos/Privacidade.
+    // Bumpar SOMENTE conforme política em GOVERNANCE.md (NÃO seguir package.json).
+    var TOS_VERSION = '2026-06-06';
     var KEY_VERSION = 'tos_version_accepted';
     var KEY_AT = 'tos_accepted_at';
     var KEY_HASH = 'tos_hash';
@@ -29,6 +51,14 @@
     }
     function safeRemove(key) {
         try { localStorage.removeItem(key); return true; } catch (e) { return false; }
+    }
+
+    // Format a TOS_VERSION (YYYY-MM-DD) for UI display: "06/06/2026".
+    function formatTosDateBR(iso) {
+        if (!iso || typeof iso !== 'string') return iso || '—';
+        var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso);
+        if (!m) return iso;
+        return m[3] + '/' + m[2] + '/' + m[1];
     }
 
     async function sha256Hex(text) {
@@ -92,7 +122,7 @@
         showBanner();
     }
 
-    // v1.43.41 — Painél permanente de gestão de aceite (simétrico ao #aiConsentManager).
+    // v1.43.42 — Painél permanente de gestão de aceite (simétrico ao #aiConsentManager).
     // Mostra versão aceita + botão de revogar (apaga as 3 chaves → banner reaparece na próxima navegação).
     // Exposto via window.revokeTosAcceptance() para reuso (ex.: /historico-aceite.html).
     var _renderTos = null;
@@ -113,8 +143,8 @@
             if (saved) {
                 var current = (saved === TOS_VERSION);
                 status.textContent = current
-                    ? ('Aceito v' + saved)
-                    : ('Aceito v' + saved + ' (atual v' + TOS_VERSION + ')');
+                    ? ('Aceito em ' + formatTosDateBR(saved))
+                    : ('Aceito ' + formatTosDateBR(saved) + ' (atual ' + formatTosDateBR(TOS_VERSION) + ')');
                 status.classList.add('ai-consent-status-badge--active');
                 btn.disabled = false;
                 btn.textContent = '🔓 Apagar aceite (forçar novo banner)';
