@@ -65,6 +65,7 @@ validation_legal_report.json
 audit_dicas_report.json
 audit_dead_urls_report.json
 audit_coverage_report.json
+audit_prescriptive_language.json
 data/discovery_report.json
 data/discovery_report.md
 screenshots/
