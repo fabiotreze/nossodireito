@@ -2,11 +2,11 @@
 
 ## Versões Suportadas
 
-| Versão | Suportada | Notas                                   |
-|--------|-----------|-----------------------------------------|
-| 1.16.x | ✅        | Atual — banner legal + scorecard + gitleaks |
-| 1.15.x | ✅        | Override protobufjs (0 vulns)           |
-| < 1.15 | ❌        | Atualize — vulnerabilidades transitivas |
+| Versão | Suportada | Notas                                                                 |
+|--------|-----------|-----------------------------------------------------------------------|
+| 1.43.x | ✅        | Atual — IA Azure OpenAI + Managed Identity + Structured Outputs       |
+| 1.42.x | ✅        | Compatível (sem mudanças de segurança bloqueantes)                    |
+| < 1.42 | ❌        | Atualize — anonymizer/document-validator anteriores, sem enum no schema |
 
 > **Ambiente:** este projeto roda em **infra de desenvolvimento/POC** (App Service B1 single region).
 > Não é um ambiente de produção corporativo. Veja [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).
