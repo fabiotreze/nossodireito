@@ -11,6 +11,8 @@ on:
     paths:
       - "index.html"
       - "index.min.html"
+      - "historico-aceite.html"
+      - "privacidade.html"
       - "server.js"
       - "package.json"
       - "css/**"
@@ -19,6 +21,8 @@ on:
       - "images/**"
       - "robots.txt"
       - "sitemap.xml"
+      - "status.html"
+      - "termos-de-uso.html"
       - "direitos/**"
       - "scripts/**"
       - ".github/workflows/deploy.yml"
@@ -170,6 +174,14 @@ jobs:
           echo "📦 site.zip: ${SIZE} bytes (HEAD + node_modules)"
           unzip -l site.zip | tail -3
 
+      - name: Validar status page no stage
+        run: |
+          test -f /tmp/site_stage/status.html
+          grep -F 'href="images/favicon.ico"' /tmp/site_stage/status.html >/dev/null
+          grep -F 'fetch("/health"' /tmp/site_stage/status.html >/dev/null
+          grep -F '<h1>Status operacional</h1>' /tmp/site_stage/status.html >/dev/null
+          echo "✅ status.html validado no stage (arquivo + favicon + fetch /health)."
+
       - name: Verificar infraestrutura
         id: infra_check
         run: |
@@ -209,6 +221,7 @@ jobs:
           # Validação BLOQUEANTE é o estado do App Service via Management API.
           HEALTH_URL: "https://nossodireito.fabiotreze.com/health"
           ROOT_URL: "https://nossodireito.fabiotreze.com/"
+          STATUS_URL: "https://nossodireito.fabiotreze.com/status.html"
           UA: "Mozilla/5.0 (compatible; GitHubActions-HealthCheck/1.0)"
         run: |
           echo "⏳ Aguardando estabilização do App Service..."
@@ -258,6 +271,33 @@ jobs:
           echo "🌐 Root via CDN → HTTP ${CD_STATUS} (informativo)"
           if [ "$CD_STATUS" != "200" ]; then
             echo "::warning::Probe root retornou ${CD_STATUS} via CDN — ver nota acima."
+          fi
+
+          STATUS_HTTP=$(curl -s -o /tmp/status_page.html -w "%{http_code}" \
+            --connect-timeout 10 --max-time 20 \
+            -A "$UA" \
+            -H "Cache-Control: no-cache" -H "Pragma: no-cache" \
+            "$STATUS_URL" || true)
+          echo "📄 /status.html via CDN → HTTP ${STATUS_HTTP}"
+          if [ "$STATUS_HTTP" = "200" ]; then
+            grep -F 'href="images/favicon.ico"' /tmp/status_page.html >/dev/null || {
+              echo "::error::/status.html publicada sem referência esperada ao favicon."
+              exit 1
+            }
+            grep -F '<h1>Status operacional</h1>' /tmp/status_page.html >/dev/null || {
+              echo "::error::/status.html publicada sem heading esperado."
+              exit 1
+            }
+            grep -F 'fetch("/health"' /tmp/status_page.html >/dev/null || {
+              echo "::error::/status.html publicada sem smoke marker do /health."
+              exit 1
+            }
+            echo "✅ /status.html publicada e smoke-check aprovada."
+          elif [ "$STATUS_HTTP" = "403" ] || [ "$STATUS_HTTP" = "503" ]; then
+            echo "::warning::Probe /status.html retornou ${STATUS_HTTP} via CDN — provável filtro Cloudflare para IPs de runner. Smoke check remota não pôde ser confirmada, mas a validação do stage já passou."
+          else
+            echo "::error::/status.html retornou HTTP ${STATUS_HTTP} via CDN."
+            exit 1
           fi
 
           # ── 3. BLOQUEANTE: Azure domain DEVE retornar 403 (Access Restriction) ──
