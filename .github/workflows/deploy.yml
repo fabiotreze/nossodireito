@@ -177,10 +177,12 @@ jobs:
       - name: Validar status page no stage
         run: |
           test -f /tmp/site_stage/status.html
+          test -f /tmp/site_stage/js/status-page.js
           grep -F 'href="images/favicon.ico"' /tmp/site_stage/status.html >/dev/null
-          grep -F 'fetch("/health"' /tmp/site_stage/status.html >/dev/null
+          grep -F 'src="js/status-page.js"' /tmp/site_stage/status.html >/dev/null
+          grep -F 'fetch("/health"' /tmp/site_stage/js/status-page.js >/dev/null
           grep -F '<h1>Status operacional</h1>' /tmp/site_stage/status.html >/dev/null
-          echo "✅ status.html validado no stage (arquivo + favicon + fetch /health)."
+          echo "✅ status.html validado no stage (arquivo + script externo + favicon + fetch /health)."
 
       - name: Verificar infraestrutura
         id: infra_check
@@ -284,12 +286,12 @@ jobs:
               echo "::error::/status.html publicada sem referência esperada ao favicon."
               exit 1
             }
-            grep -F '<h1>Status operacional</h1>' /tmp/status_page.html >/dev/null || {
-              echo "::error::/status.html publicada sem heading esperado."
+            grep -F 'src="js/status-page.js"' /tmp/status_page.html >/dev/null || {
+              echo "::error::/status.html publicada sem script externo esperado."
               exit 1
             }
-            grep -F 'fetch("/health"' /tmp/status_page.html >/dev/null || {
-              echo "::error::/status.html publicada sem smoke marker do /health."
+            grep -F '<h1>Status operacional</h1>' /tmp/status_page.html >/dev/null || {
+              echo "::error::/status.html publicada sem heading esperado."
               exit 1
             }
             echo "✅ /status.html publicada e smoke-check aprovada."
