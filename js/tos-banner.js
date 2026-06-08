@@ -168,6 +168,10 @@
     }
 
     window.revokeTosAcceptance = function () {
+        var hadAny = !!(safeGet(KEY_VERSION) || safeGet(KEY_AT) || safeGet(KEY_HASH));
+        if (!hadAny) {
+            return false;
+        }
         var r1 = safeRemove(KEY_VERSION);
         var r2 = safeRemove(KEY_AT);
         var r3 = safeRemove(KEY_HASH);
