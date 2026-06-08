@@ -103,6 +103,7 @@ npm run test:js
 
 Este projeto é um catálogo público informativo e não substitui orientação jurídica, médica ou social.
 Sempre confirme requisitos e regras nas fontes oficiais linkadas em cada direito.
+Avisos complementares de natureza do projeto e marcas: [NOTICE](NOTICE).
 
 ## Licença
 
