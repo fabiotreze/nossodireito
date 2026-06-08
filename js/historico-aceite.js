@@ -176,6 +176,15 @@
   }
 
   function revoke() {
+    const result = readState();
+    if (result.error) {
+      showToast('Erro ao revogar: ' + result.error, true);
+      return;
+    }
+    if (!result.hasAny) {
+      showToast('Nada para revogar (aceite de Termos/Privacidade não registrado)', true);
+      return;
+    }
     const confirmed = window.confirm(
       'Confirma a revogação do aceite dos Termos?\n\n' +
       '• Os registros locais serão apagados (tos_version_accepted, tos_accepted_at, tos_hash).\n' +

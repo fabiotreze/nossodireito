@@ -106,4 +106,11 @@ Sempre confirme requisitos e regras nas fontes oficiais linkadas em cada direito
 
 ## Licença
 
-[MIT](LICENSE)
+Código-fonte sob licença [MIT](LICENSE).
+
+## Licença de Conteúdo
+
+Conteúdo editorial e informativo (incluindo textos das páginas e documentação em linguagem natural) sob
+[Creative Commons Attribution 4.0 International (CC BY 4.0)](LICENSE-CONTENT).
+
+Ao reutilizar esse conteúdo, faça atribuição adequada ao projeto NossoDireito e indique eventuais alterações.
