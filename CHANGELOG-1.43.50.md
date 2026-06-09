@@ -49,7 +49,7 @@
 
 ## 📚 Documentação Nova
 
-### [docs/BRANDING.md](../docs/BRANDING.md)
+### [docs/BRANDING.md](docs/BRANDING.md)
 Guia completo de customização de branding para forks. Inclui:
 - Quick Start para setup
 - Opções de customização (interativa, manual, CI/CD)
@@ -58,7 +58,7 @@ Guia completo de customização de branding para forks. Inclui:
 - Deploy com branding customizado
 - FAQ
 
-### [docs/ANALYSIS_PERSISTENCE.md](../docs/ANALYSIS_PERSISTENCE.md)
+### [docs/ANALYSIS_PERSISTENCE.md](docs/ANALYSIS_PERSISTENCE.md)
 Documentação técnica do cache de análise. Inclui:
 - Como funciona (arquitetura)
 - Privacidade & segurança
@@ -161,8 +161,8 @@ bash scripts/setup-branding.sh
 
 ## 📞 Suporte
 
-- **Dúvidas sobre branding?** → [docs/BRANDING.md](../docs/BRANDING.md)
-- **Problemas com cache?** → [docs/ANALYSIS_PERSISTENCE.md](../docs/ANALYSIS_PERSISTENCE.md)
+- **Dúvidas sobre branding?** → [docs/BRANDING.md](docs/BRANDING.md)
+- **Problemas com cache?** → [docs/ANALYSIS_PERSISTENCE.md](docs/ANALYSIS_PERSISTENCE.md)
 - **Encontrou bug?** → [GitHub Issues](https://github.com/fabiotreze/nossodireito/issues)
 
 ---
