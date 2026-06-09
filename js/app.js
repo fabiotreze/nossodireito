@@ -909,6 +909,7 @@
         if (dom.voltarBtn) dom.voltarBtn.addEventListener('click', () => {
             dom.detalheSection.style.display = 'none';
             dom.categoriasSection.style.display = '';
+            dom.analysisResults.style.display = 'none';
             updateSectionAlternation();
             history.pushState({ view: 'categorias' }, '', '#categorias');
             const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -916,12 +917,33 @@
             const h2 = dom.categoriasSection.querySelector('h2');
             if (h2) { h2.setAttribute('tabindex', '-1'); h2.focus({ preventScroll: true }); }
         });
-        window.addEventListener('popstate', (e) => {
+        window.addEventListener('popstate', async (e) => {
             if (e.state && e.state.view === 'detalhe' && e.state.id) {
                 showDetalhe(e.state.id, true);
+            } else if (e.state && e.state.view === 'analysis') {
+                // Recuperar análise do cache ao voltar
+                if (typeof window.ANALYSIS_CACHE !== 'undefined') {
+                    const cached = await window.ANALYSIS_CACHE.retrieve();
+                    if (cached && dom.analysisResults) {
+                        dom.analysisResults.style.display = '';
+                        if (dom.categoriasSection) dom.categoriasSection.style.display = 'none';
+                        renderAnalysisResults(cached.results, cached.fileNames, cached.hasPdf, cached.errors, cached.aiResult, cached.aiAttempted);
+                        const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+                        dom.analysisResults.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'start' });
+                        return;
+                    }
+                }
+                // Fallback: ir para categorias se não houver cache
+                if (dom.detalheSection && dom.categoriasSection) {
+                    dom.detalheSection.style.display = 'none';
+                    dom.categoriasSection.style.display = '';
+                    dom.analysisResults.style.display = 'none';
+                    updateSectionAlternation();
+                }
             } else if (dom.detalheSection && dom.categoriasSection) {
                 dom.detalheSection.style.display = 'none';
                 dom.categoriasSection.style.display = '';
+                if (dom.analysisResults) dom.analysisResults.style.display = 'none';
                 updateSectionAlternation();
             }
         });
@@ -2904,6 +2926,17 @@ para encontrar seus direitos manualmente.
             .sort((a, b) => b.score - a.score);
     }
     function renderAnalysisResults(results, fileNames, hasPdf, errors = [], aiResult = null, aiAttempted = false) {
+        // Cache análise para recuperação ao voltar
+        if (typeof window.ANALYSIS_CACHE !== 'undefined') {
+            window.ANALYSIS_CACHE.save({
+                results,
+                fileNames,
+                hasPdf,
+                errors,
+                aiResult,
+                aiAttempted
+            }).catch(err => console.warn('Falha ao cachear análise:', err));
+        }
         // Princípio 1 (Transparência) — https://learn.microsoft.com/en-gb/principles-for-ai-generated-content
         // Banner persistente quando IA foi efetivamente usada (aiResult presente).
         const aiBanner = document.getElementById('aiDisclosureBanner');
@@ -2937,6 +2970,8 @@ seus direitos manualmente, ou use a <a href="#consultar">busca</a>.</p>
             : aiAttempted
             ? 'Análise local concluída. IA indisponível ou sem consentimento — nenhum dado adicional foi enviado.'
             : 'Análise 100% local — nenhum dado foi enviado para servidores.';
+        // Adicionar state à navegação para recuperação de análise
+        if (history.pushState) history.pushState({ view: 'analysis' }, '', '#analise');
         let html = `
 <div class="analysis-file-info">
 <p>${filesLabel}</p>
