@@ -1,0 +1,36 @@
+{
+  "branding": {
+    "organizationName": "NossoDireito",
+    "organizationSlug": "nossodireito",
+    "tagline": "Catálogo público de direitos PcD",
+    "websiteUrl": "https://nossodireito.fabiotreze.com",
+    "siteName": "NossoDireito",
+    "copyrightNotice": "NossoDireito — Projeto sem fins lucrativos",
+    "printHeader": "NossoDireito — ",
+    "printFooterUrl": "nossodireito.fabiotreze.com"
+  },
+  "contact": {
+    "email": "contato@nossodireito.com.br",
+    "dpo": "dpo@nossodireito.com.br",
+    "supportPhone": "+55 11 3000-0000"
+  },
+  "design": {
+    "primaryColor": "#1e40af",
+    "primaryColorDark": "#1e3a8a",
+    "logo": {
+      "light": "/images/nossodireito-400.webp",
+      "dark": "/images/nossodireito-400.webp",
+      "favicon": "/images/favicon.ico"
+    }
+  },
+  "legal": {
+    "legalName": "NossoDireito",
+    "year": 2026,
+    "termsUrl": "/termos-de-uso.html",
+    "privacyUrl": "/privacidade.html"
+  },
+  "seo": {
+    "siteTitle": "Direitos PcD 2026 — BPC, CIPTEA, Escola | NossoDireito",
+    "siteDescription": "Catálogo público de direitos PcD com referências às fontes oficiais brasileiras: BPC/LOAS, CIPTEA, escola inclusiva, plano de saúde, FGTS e mais. Você lê direto do .gov.br/Planalto/INSS/MS."
+  }
+}

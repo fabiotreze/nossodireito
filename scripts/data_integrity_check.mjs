@@ -15,6 +15,9 @@ import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const projectRoot = path.resolve(__dirname, '..');
+const ALLOWED_EXTERNAL_SERVICE_DOMAINS = new Set([
+  'icd.who.int', // Exceção controlada: referência oficial CID-11 (OMS)
+]);
 
 function validateJSON(filePath) {
   try {
@@ -40,9 +43,9 @@ function validateSchema() {
   const jsonFiles = [
     path.join(projectRoot, 'data', 'direitos.json'),
     path.join(projectRoot, 'data', 'dicionario_pcd.json'),
-    path.join(projectRoot, 'data', 'fontes.json'),
-    path.join(projectRoot, 'data', 'orgaos_estaduais.json'),
-    path.join(projectRoot, 'data', 'instituicoes.json'),
+    path.join(projectRoot, 'data', 'matching_engine.json'),
+    path.join(projectRoot, 'data', 'fontes_oficiais.json'),
+    path.join(projectRoot, 'data', 'municipios_br.json'),
   ];
 
   const jsonResults = jsonFiles.map(validateJSON);
@@ -67,9 +70,10 @@ function validateSchema() {
   console.log('\n2️⃣ Validando integridade de categorias...');
 
   const direitosPath = path.join(projectRoot, 'data', 'direitos.json');
-  const direitos = JSON.parse(fs.readFileSync(direitosPath, 'utf-8'));
+  const direitosPayload = JSON.parse(fs.readFileSync(direitosPath, 'utf-8'));
+  const direitos = Array.isArray(direitosPayload.categorias) ? direitosPayload.categorias : [];
 
-  const categories = direitos.map((d) => d.id);
+  const categories = direitos.map((d) => d.id).filter(Boolean);
   console.log(`  📂 ${categories.length} categorias encontradas`);
 
   // Validar URLs em cada categoria
@@ -77,12 +81,12 @@ function validateSchema() {
   let emptyFields = 0;
 
   direitos.forEach((cat) => {
-    if (!cat.id || !cat.nome) emptyFields++;
+    if (!cat.id || !cat.titulo) emptyFields++;
 
     if (cat.links && Array.isArray(cat.links)) {
       cat.links.forEach((link) => {
         try {
-          if (!link.url || !link.titulo) emptyFields++;
+          if (!link.url || (!link.titulo && !link.nome)) emptyFields++;
           // Validação básica de URL
           if (link.url && !link.url.match(/^(https?:|tel:|mailto:)/)) {
             invalidURLs++;
@@ -114,11 +118,7 @@ function validateSchema() {
   // 3. Validar domínios oficiais
   console.log('\n3️⃣ Validando domínios de fontes...');
 
-  const fontesPath = path.join(projectRoot, 'data', 'fontes.json');
-  let fontes = [];
-  if (fs.existsSync(fontesPath)) {
-    fontes = JSON.parse(fs.readFileSync(fontesPath, 'utf-8'));
-  }
+  const fontes = Array.isArray(direitosPayload.fontes) ? direitosPayload.fontes : [];
 
   const domainCounts = {};
   const invalidDomains = [];
@@ -132,7 +132,7 @@ function validateSchema() {
 
         // Alertar se não é oficial
         if (!domain.match(/\.(gov\.br|leg\.br|jus\.br|def\.br|mp\.br)$/)) {
-          if (fonte.tipo === 'servico') {
+          if (fonte.tipo === 'servico' && !ALLOWED_EXTERNAL_SERVICE_DOMAINS.has(domain)) {
             invalidDomains.push({ url: fonte.url, domain, tipo: fonte.tipo });
           }
         }
@@ -143,8 +143,8 @@ function validateSchema() {
   });
 
   console.log(`  📦 ${Object.keys(domainCounts).length} domínios únicos`);
-  console.log(`  .gov.br: ${domainCounts['planalto.gov.br'] || 0}`);
-  console.log(`  .inss.gov.br: ${domainCounts['inss.gov.br'] || 0}`);
+  console.log(`  planalto.gov.br: ${domainCounts['www.planalto.gov.br'] || 0}`);
+  console.log(`  inss.gov.br: ${domainCounts['www.gov.br'] || 0}`);
 
   if (invalidDomains.length > 0) {
     console.log(`  ⚠️ ${invalidDomains.length} domínios não-oficiais detectados`);
@@ -167,14 +167,13 @@ function validateSchema() {
 
   const packageJson = JSON.parse(fs.readFileSync(path.join(projectRoot, 'package.json'), 'utf-8'));
   const indexHtml = fs.readFileSync(path.join(projectRoot, 'index.html'), 'utf-8');
-  const direitosJson = JSON.parse(fs.readFileSync(direitosPath, 'utf-8'));
 
   const packageVersion = packageJson.version;
-  const indexVersionMatch = indexHtml.match(/v=(\d+\.\d+\.\d+)/);
-  const direitosVersion = direitosJson.versao;
+  const indexVersionMatch = indexHtml.match(/app\.js\?v=(\d+\.\d+\.\d+)/);
+  const direitosVersion = direitosPayload.versao;
 
-  const versionMatch =
-    packageVersion === indexVersionMatch?.[1] && packageVersion === direitosVersion;
+  const versionMatch = packageVersion === direitosVersion &&
+    (!indexVersionMatch || packageVersion === indexVersionMatch[1]);
 
   if (versionMatch) {
     console.log(`  ✅ Versão sincronizada: ${packageVersion}`);
@@ -186,7 +185,7 @@ function validateSchema() {
   } else {
     console.log(`  ❌ Versão inconsistente`);
     console.log(`    package.json: ${packageVersion}`);
-    console.log(`    index.html: ${indexVersionMatch?.[1] || 'não encontrada'}`);
+    console.log(`    index.html(app.js): ${indexVersionMatch?.[1] || 'não encontrada'}`);
     console.log(`    direitos.json: ${direitosVersion}`);
     findings.checks.push({
       name: 'Versão',

@@ -49,6 +49,12 @@
 # Esporte/Bolsa Atleta retorna 401 a clientes sem cookie/sessão.
 ^https?://(www\.)?gov\.br/esporte/
 
+# === www.gov.br/saude timeout intermitente em runner ===
+# Detectado no PR #347: /saude/pt-br retornou TIMEOUT no lychee,
+# apesar de disponibilidade normal via navegador. Mantemos validação
+# de fontes legais por validate_legal_sources.py no Quality Gate.
+^https?://(www\.)?gov\.br/saude/pt-br/?$
+
 # === Sites estaduais/municipais gov.br — instabilidade crônica do datacenter ===
 # Detectado em 2026-05-31 (PR #243): timeouts, connection reset, TLS chain
 # incompleta (ICP-Brasil sem intermediário) ou WAF anti-bot por faixa de IP.

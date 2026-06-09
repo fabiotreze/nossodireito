@@ -48,6 +48,14 @@ terraform/.terraform.tfstate.lock.info
 
 # Temporary
 *.tmp
+
+# Temporary diagnostics (Google Search Console, etc.)
+# These are local analysis files that should not be committed
+_temp/
+*.diagnostic.*
+
+# Local validator outputs
+data_integrity_check.json
 *.log
 temp_*
 _temp_*
@@ -61,6 +69,7 @@ htmlcov/
 # Generated reports (re-created by scripts)
 quality_report.json
 validation_report.json
+validation_live_urls.json
 validation_legal_report.json
 audit_dicas_report.json
 audit_dead_urls_report.json
