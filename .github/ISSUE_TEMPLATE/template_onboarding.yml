@@ -1,0 +1,108 @@
+name: 🚀 Template onboarding
+description: Checklist para preparar um repositório criado a partir do template antes do primeiro deploy
+labels: [template, onboarding]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use esta issue para reunir tudo que precisa ser solicitado e configurado antes do primeiro deploy do repositório criado via template.
+  - type: input
+    id: repo_name
+    attributes:
+      label: Nome do novo repositório
+      placeholder: ex. direitos-pcd-minha-org
+    validations:
+      required: true
+  - type: dropdown
+    id: visibility
+    attributes:
+      label: Visibilidade do repositório
+      options:
+        - public
+        - private
+    validations:
+      required: true
+  - type: input
+    id: organization_name
+    attributes:
+      label: Nome da organização / marca
+      placeholder: ex. Minha Organização
+    validations:
+      required: true
+  - type: input
+    id: website_url
+    attributes:
+      label: URL do site
+      placeholder: https://exemplo.org.br
+    validations:
+      required: true
+  - type: input
+    id: contact_email
+    attributes:
+      label: Email de contato
+      placeholder: contato@exemplo.org.br
+    validations:
+      required: true
+  - type: input
+    id: dpo_email
+    attributes:
+      label: Email do encarregado / DPO
+      placeholder: dpo@exemplo.org.br
+    validations:
+      required: true
+  - type: textarea
+    id: branding_assets
+    attributes:
+      label: Branding que precisa estar disponível
+      description: Informe os nomes/caminhos dos arquivos que serão enviados para images/
+      placeholder: |
+        - logo claro
+        - logo escuro
+        - favicon
+        - apple-touch-icon
+    validations:
+      required: true
+  - type: input
+    id: arm_client_id
+    attributes:
+      label: ARM_CLIENT_ID
+      description: Client ID do app registration usado no deploy OIDC
+      placeholder: 00000000-0000-0000-0000-000000000000
+    validations:
+      required: true
+  - type: input
+    id: arm_tenant_id
+    attributes:
+      label: ARM_TENANT_ID
+      placeholder: 00000000-0000-0000-0000-000000000000
+    validations:
+      required: true
+  - type: input
+    id: arm_subscription_id
+    attributes:
+      label: ARM_SUBSCRIPTION_ID
+      placeholder: 00000000-0000-0000-0000-000000000000
+    validations:
+      required: true
+  - type: dropdown
+    id: seo_prerender_mode
+    attributes:
+      label: SEO_PRERENDER_MODE
+      options:
+        - prerender
+        - home-only
+    validations:
+      required: true
+  - type: checkboxes
+    id: actions_ready
+    attributes:
+      label: Preparação do repositório
+      options:
+        - label: Actions habilitado no repositório
+          required: true
+        - label: Secrets ARM_CLIENT_ID, ARM_TENANT_ID e ARM_SUBSCRIPTION_ID disponíveis para cadastrar
+          required: true
+        - label: Responsável pelo primeiro deploy definido
+          required: true
+        - label: Branding e textos institucionais disponíveis para editar config.json
+          required: true

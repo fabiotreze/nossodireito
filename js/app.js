@@ -3293,6 +3293,15 @@ com o catálogo; <strong>não é parecer profissional</strong>. A confirmação 
     const AI_CONSENT_KEY = 'nd_ai_consent_v2';
     const AI_CONSENT_TTL_MS = 30 * 24 * 60 * 60 * 1000; // 30 dias
     const WEEK_PLAN_STORAGE_KEY = 'nd_ai_week_plan_v1';
+    let storageWriteWarningShown = false;
+
+    function notifyStorageWriteFailure() {
+        if (storageWriteWarningShown) return;
+        storageWriteWarningShown = true;
+        if (typeof showToast === 'function') {
+            showToast('Não foi possível salvar no navegador. Algumas preferências não serão persistidas.', 'warning');
+        }
+    }
 
     function getStoredWeekPlans() {
         try {
@@ -3335,7 +3344,7 @@ com o catálogo; <strong>não é parecer profissional</strong>. A confirmação 
             pruneStoredWeekPlans(allPlans);
             localStorage.setItem(WEEK_PLAN_STORAGE_KEY, JSON.stringify(allPlans));
         } catch {
-            // localStorage indisponível
+            notifyStorageWriteFailure();
         }
     }
 
@@ -3345,7 +3354,7 @@ com o catálogo; <strong>não é parecer profissional</strong>. A confirmação 
             allPlans[planKey] = {};
             localStorage.setItem(WEEK_PLAN_STORAGE_KEY, JSON.stringify(allPlans));
         } catch {
-            // localStorage indisponível
+            notifyStorageWriteFailure();
         }
     }
 
@@ -3415,10 +3424,16 @@ com o catálogo; <strong>não é parecer profissional</strong>. A confirmação 
             const cur = getDocsChecklistState();
             cur[id] = !!done;
             localStorage.setItem(DOCS_CHECKLIST_KEY, JSON.stringify(cur));
-        } catch { /* noop */ }
+        } catch {
+            notifyStorageWriteFailure();
+        }
     }
     function resetDocsChecklistState() {
-        try { localStorage.setItem(DOCS_CHECKLIST_KEY, '{}'); } catch { /* noop */ }
+        try {
+            localStorage.setItem(DOCS_CHECKLIST_KEY, '{}');
+        } catch {
+            notifyStorageWriteFailure();
+        }
     }
     function renderAIDocsChecklist() {
         const state = getDocsChecklistState();
@@ -3469,7 +3484,9 @@ com o catálogo; <strong>não é parecer profissional</strong>. A confirmação 
                 exp: Date.now() + AI_CONSENT_TTL_MS,
             }));
             emitAIConsentChanged();
-        } catch { /* localStorage indisponível — silencioso */ }
+        } catch {
+            notifyStorageWriteFailure();
+        }
     }
     function getAIConsent() {
         if (getStoredAIConsent()) return Promise.resolve(true);
