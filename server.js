@@ -40,6 +40,7 @@ const REDIS_HOSTNAME = process.env.REDIS_HOSTNAME || "";
 const REDIS_PORT = Number(process.env.REDIS_PORT || 6380);
 const REDIS_SECRET_NAME = process.env.REDIS_SECRET_NAME || "redis-primary-key";
 const KEY_VAULT_URI = process.env.KEY_VAULT_URI || "";
+const TRUST_PROXY_HEADERS = process.env.TRUST_PROXY_HEADERS === "true";
 
 const PORT = process.env.PORT || 8080;
 // Limite do body POST /api/analyze-document (CWE-400 — DoS por payload grande).
@@ -63,6 +64,14 @@ const analyticsTrack = (ua, urlPath) => analytics.track(ua, urlPath);
 const analyticsRotateIfNeeded = () => analytics.rotateIfNeeded();
 
 // ── Rate Limiting (lib/rate-limit.js) ──
+function sanitizeInfraErrorMessage(err) {
+  return String((err && err.message) || "unknown error")
+    .replace(/https?:\/\/\S+/gi, "[redacted-url]")
+    .replace(/[A-Za-z0-9.-]+\.vault\.azure\.net/gi, "[redacted-keyvault]")
+    .replace(/[A-Za-z0-9.-]+\.redis\.cache\.windows\.net/gi, "[redacted-redis-host]")
+    .slice(0, 200);
+}
+
 const rateLimiter = createRateLimiter({
   redisConfigured: redis.configured,
   getRedisClient: redis.getClient,
@@ -70,7 +79,7 @@ const rateLimiter = createRateLimiter({
   keySalt: process.env.RATE_LIMIT_KEY_SALT || "",
   onRedisError: (err) => {
     if (!redis.initError) redis.initError = err;
-    console.warn(`Redis rate limiting unavailable, falling back to memory: ${err.message}`);
+    console.warn(`Redis rate limiting unavailable, falling back to memory: ${sanitizeInfraErrorMessage(err)}`);
   },
 });
 const isRateLimitedAdaptive = (ip) => rateLimiter.check(ip);
@@ -151,10 +160,14 @@ const server = http.createServer(async (req, res) => {
   // Bucket global por janela, sem armazenar identificadores do request.
   // Applied BEFORE scanner paths, /api/stats and /csp-report so a bot flooding
   // those endpoints cannot bypass the limiter and exhaust resources.
-  const forwarded = Array.isArray(req.headers["x-forwarded-for"])
-    ? req.headers["x-forwarded-for"][0]
-    : String(req.headers["x-forwarded-for"] || "");
-  const clientIpRaw = String(req.headers["cf-connecting-ip"] || forwarded.split(",")[0] || req.socket.remoteAddress || "").trim();
+  const forwarded = TRUST_PROXY_HEADERS
+    ? (Array.isArray(req.headers["x-forwarded-for"])
+      ? req.headers["x-forwarded-for"][0]
+      : String(req.headers["x-forwarded-for"] || ""))
+    : "";
+  const proxyIp = TRUST_PROXY_HEADERS ? String(req.headers["cf-connecting-ip"] || "").trim() : "";
+  const socketIp = String(req.socket.remoteAddress || "").trim();
+  const clientIpRaw = String(proxyIp || forwarded.split(",")[0] || socketIp).trim();
   // Hash raw IP before passing to limiter, preserving privacy in downstream keys/logs.
   const clientKey = clientIpRaw
     ? crypto.createHash("sha256").update(clientIpRaw).digest("hex").slice(0, 24)
