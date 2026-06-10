@@ -1,0 +1,80 @@
+name: Emergency Maintenance Mode
+
+on:
+  workflow_dispatch:
+    inputs:
+      action:
+        description: 'Action to perform'
+        required: true
+        default: 'on'
+        type: choice
+        options:
+          - 'on'
+          - 'off'
+      timeout_seconds:
+        description: 'Retry-After timeout (seconds) — only used for "on"'
+        required: false
+        default: '300'
+
+permissions:
+  contents: read
+  id-token: write
+
+env:
+  AZURE_RESOURCE_GROUP: rg-nossodireito-br
+  AZURE_APP_SERVICE: app-nossodireito-br
+
+jobs:
+  maintenance:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Enable Maintenance Mode
+        if: ${{ github.event.inputs.action == 'on' }}
+        run: |
+          echo "[maintenance] Enabling maintenance mode..."
+          az webapp config appsettings set \
+            --resource-group "${{ env.AZURE_RESOURCE_GROUP }}" \
+            --name "${{ env.AZURE_APP_SERVICE }}" \
+            --settings \
+              MAINTENANCE_MODE=true \
+              MAINTENANCE_RETRY_AFTER="${{ github.event.inputs.timeout_seconds }}"
+          echo "[maintenance] ✓ Mode ON — retry-after=${{ github.event.inputs.timeout_seconds }}s"
+
+      - name: Disable Maintenance Mode
+        if: ${{ github.event.inputs.action == 'off' }}
+        run: |
+          echo "[maintenance] Disabling maintenance mode..."
+          az webapp config appsettings set \
+            --resource-group "${{ env.AZURE_RESOURCE_GROUP }}" \
+            --name "${{ env.AZURE_APP_SERVICE }}" \
+            --settings MAINTENANCE_MODE=false
+          echo "[maintenance] ✓ Mode OFF — service restored"
+
+      - name: Verify
+        run: |
+          CURRENT=$(az webapp config appsettings list \
+            --resource-group "${{ env.AZURE_RESOURCE_GROUP }}" \
+            --name "${{ env.AZURE_APP_SERVICE }}" \
+            --query "[?name=='MAINTENANCE_MODE'].value" -o tsv)
+          echo "[maintenance] Current MAINTENANCE_MODE: $CURRENT"
+
+      - name: Health Check
+        run: |
+          echo "[maintenance] Running health check..."
+          for i in {1..5}; do
+            STATUS=$(curl -s -o /dev/null -w "%{http_code}" https://nossodireito.fabiotreze.com/health)
+            echo "[maintenance] Health check attempt $i: $STATUS"
+            if [[ "$STATUS" == "200" ]]; then
+              echo "[maintenance] ✓ Service is responding"
+              exit 0
+            fi
+            sleep 2
+          done
+          echo "[maintenance] ⚠️ Health check not responding yet (expected during restart)"

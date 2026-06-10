@@ -70,6 +70,66 @@ POC pessoal, sem RTO/RPO contratuais. O portal não persiste dados pessoais no s
 4. Key Vault em modo privado:
    - `az keyvault show -n kv-nossodireito-br -g rg-nossodireito-br --query properties.publicNetworkAccess -o tsv`
 
+## Modo Manutenção de Emergência
+
+A aplicação suporta desligamento rápido de atendimento público sem novo deploy,
+usando apenas configuração do App Service.
+
+### Pré-requisito (já versionado)
+
+- Página de manutenção em [maintenance.html](../maintenance.html)
+- Toggle via variável de ambiente `MAINTENANCE_MODE`
+- Retry opcional via `MAINTENANCE_RETRY_AFTER` (segundos, padrão 300)
+
+### Ativar / Desativar — 3 formas
+
+#### 1. **Via GitHub Actions (recomendado — mais rápido)**
+
+```bash
+# Ativar manutenção (retry-after 600s)
+gh workflow run maintenance.yml -f action=on -f timeout_seconds=600
+
+# Desativar manutenção
+gh workflow run maintenance.yml -f action=off
+```
+
+Acompanhe a execução em `https://github.com/fabiotreze/nossodireito/actions`.
+
+#### 2. **Via script local (com Azure CLI)**
+
+```bash
+# Ativar (retry-after 600s)
+./scripts/maintenance-mode.sh on 600
+
+# Desativar
+./scripts/maintenance-mode.sh off
+```
+
+Pré-requisito: `az login` ativo.
+
+#### 3. **Via Azure Portal (fallback manual)**
+
+1. Azure Portal > App Services > `app-nossodireito-br`
+2. `Settings` > `Environment variables`
+3. Em `App settings`:
+   - Definir `MAINTENANCE_MODE=true`
+   - Opcional: `MAINTENANCE_RETRY_AFTER=300`
+4. Salvar
+
+### Comportamento durante manutenção
+
+- Rotas públicas: retornam `503` com página de manutenção
+- `/health`: permanece `200` (probes da plataforma não falham)
+- Header `Retry-After`: configurável (padrão 300s)
+- Cache: desativado (`no-store`)
+
+### Recomendação operacional
+
+- Usar GitHub Actions para qualquer emergência (sem dependência de CLI local)
+- Script local como backup se Actions ficar indisponível
+- Manter a página [maintenance.html](../maintenance.html) simples e estável
+- Não editar conteúdo durante incidente; usar a versão já publicada
+
 ## SEO Pilot
 
 - Controle de modo: variável `SEO_PRERENDER_MODE`
