@@ -9,6 +9,7 @@ on:
     branches:
       - main
     paths:
+      - "config.json"
       - "index.html"
       - "index.min.html"
       - "historico-aceite.html"
@@ -53,6 +54,9 @@ jobs:
     runs-on: ubuntu-latest
     name: Deploy to App Service
     env:
+      ARM_CLIENT_ID: ${{ secrets.ARM_CLIENT_ID }}
+      ARM_TENANT_ID: ${{ secrets.ARM_TENANT_ID }}
+      ARM_SUBSCRIPTION_ID: ${{ secrets.ARM_SUBSCRIPTION_ID }}
       SEO_PRERENDER_MODE: ${{ vars.SEO_PRERENDER_MODE || 'prerender' }}
     steps:
       - name: Checkout
@@ -67,6 +71,49 @@ jobs:
         uses: actions/setup-python@a309ff8b426b58ec0e2a45f0f869d46889d02405 # v6.2.0
         with:
           python-version: "3.11"
+
+      - name: Validar pré-requisitos do deploy
+        run: |
+          MISSING=0
+
+          if [ -z "${ARM_CLIENT_ID}" ]; then
+            echo "::error::Secret ausente: ARM_CLIENT_ID"
+            MISSING=1
+          fi
+
+          if [ -z "${ARM_TENANT_ID}" ]; then
+            echo "::error::Secret ausente: ARM_TENANT_ID"
+            MISSING=1
+          fi
+
+          if [ -z "${ARM_SUBSCRIPTION_ID}" ]; then
+            echo "::error::Secret ausente: ARM_SUBSCRIPTION_ID"
+            MISSING=1
+          fi
+
+          case "${SEO_PRERENDER_MODE}" in
+            home-only|prerender)
+              ;;
+            *)
+              echo "::error::Variable inválida: SEO_PRERENDER_MODE=${SEO_PRERENDER_MODE}. Use home-only ou prerender."
+              MISSING=1
+              ;;
+          esac
+
+          if [ "$MISSING" -ne 0 ]; then
+            {
+              echo "## Template Deploy Preflight"
+              echo ""
+              echo "Configuração obrigatória ausente ou inválida neste repositório:"
+              echo "- Secrets: ARM_CLIENT_ID, ARM_TENANT_ID, ARM_SUBSCRIPTION_ID"
+              echo "- Variable opcional com valor validado: SEO_PRERENDER_MODE=home-only|prerender"
+              echo ""
+              echo "Ajuste em Settings > Secrets and variables > Actions e rode o workflow novamente."
+            } >> "$GITHUB_STEP_SUMMARY"
+            exit 1
+          fi
+
+          echo "✅ Pré-requisitos do deploy validados."
 
       - name: Azure Login (OIDC)
         # Workload Identity Federation: o GitHub Actions emite um token OIDC

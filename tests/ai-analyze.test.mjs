@@ -192,6 +192,9 @@ test("ai-analyze rejeita PII residual (422)", async () => {
       JSON.stringify({ text: "Texto com PII vazando aaaaa." }),
     );
     assert.equal(res.status, 422);
+    const body = JSON.parse(res.body);
+    assert.equal(body.error, "Text contains residual PII after anonymization");
+    assert.equal(Object.prototype.hasOwnProperty.call(body, "found"), false);
   } finally {
     server.close();
   }

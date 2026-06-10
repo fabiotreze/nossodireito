@@ -13,6 +13,7 @@ const fs = require("node:fs");
 const fsPromises = require("node:fs/promises");
 const path = require("node:path");
 const zlib = require("node:zlib");
+const crypto = require("node:crypto");
 
 // ── Lib modules (Onda 7 — modularização) ──
 const { MIME, CACHE, COMPRESSIBLE } = require("./lib/mime");
@@ -65,6 +66,8 @@ const analyticsRotateIfNeeded = () => analytics.rotateIfNeeded();
 const rateLimiter = createRateLimiter({
   redisConfigured: redis.configured,
   getRedisClient: redis.getClient,
+  strategy: process.env.RATE_LIMIT_STRATEGY || "global",
+  keySalt: process.env.RATE_LIMIT_KEY_SALT || "",
   onRedisError: (err) => {
     if (!redis.initError) redis.initError = err;
     console.warn(`Redis rate limiting unavailable, falling back to memory: ${err.message}`);
@@ -148,7 +151,15 @@ const server = http.createServer(async (req, res) => {
   // Bucket global por janela, sem armazenar identificadores do request.
   // Applied BEFORE scanner paths, /api/stats and /csp-report so a bot flooding
   // those endpoints cannot bypass the limiter and exhaust resources.
-  if (await isRateLimitedAdaptive()) {
+  const forwarded = Array.isArray(req.headers["x-forwarded-for"])
+    ? req.headers["x-forwarded-for"][0]
+    : String(req.headers["x-forwarded-for"] || "");
+  const clientIpRaw = String(req.headers["cf-connecting-ip"] || forwarded.split(",")[0] || req.socket.remoteAddress || "").trim();
+  // Hash raw IP before passing to limiter, preserving privacy in downstream keys/logs.
+  const clientKey = clientIpRaw
+    ? crypto.createHash("sha256").update(clientIpRaw).digest("hex").slice(0, 24)
+    : "";
+  if (await isRateLimitedAdaptive(clientKey)) {
     res.writeHead(429, {
       "Content-Type": "text/plain",
       "Retry-After": "60",
@@ -393,6 +404,7 @@ const server = http.createServer(async (req, res) => {
   // not re-run after editing the source — falls back to on-the-fly Brotli q4).
   let precompressedPath = null;
   let precompressedEncoding = null;
+  let precompressedSize = 0;
   if (canCompress) {
     let sourceMtimeMs = 0;
     try {
@@ -405,6 +417,7 @@ const server = http.createServer(async (req, res) => {
       try {
         const st = await fsPromises.stat(candidate);
         if (st.isFile() && st.mtimeMs >= sourceMtimeMs) {
+          precompressedSize = st.size;
           return candidate;
         }
       } catch {
@@ -434,6 +447,9 @@ const server = http.createServer(async (req, res) => {
   if (precompressedEncoding) {
     headers["Content-Encoding"] = precompressedEncoding;
     headers["Vary"] = "Accept-Encoding";
+    if (precompressedSize > 0) {
+      headers["Content-Length"] = String(precompressedSize);
+    }
   } else if (useBrotli) {
     headers["Content-Encoding"] = "br";
     headers["Vary"] = "Accept-Encoding";

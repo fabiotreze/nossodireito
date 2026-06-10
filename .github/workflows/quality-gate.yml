@@ -73,6 +73,12 @@ jobs:
           echo "🔗 Validando links relativos em README.md e docs/..."
           node scripts/check_doc_links.mjs
 
+      # ── Template/onboarding guard (evita drift entre template, docs e CI) ──
+      - name: Validar fluxo de template e onboarding
+        run: |
+          echo "🧩 Validando fluxo de template, branding e onboarding via GitHub Web UI..."
+          node scripts/check_template_onboarding.mjs
+
       # ── Doc truth guard (preveniu drift PWA/master_compliance/legacy em 28/mai) ──
       - name: Validar verdade dos docs (sem features removidas)
         run: |

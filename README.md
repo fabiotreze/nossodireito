@@ -65,11 +65,14 @@ Fluxo recomendado: Use this template no GitHub.
 
 1. Clique em Use this template neste repositório.
 2. Crie seu novo repositório.
-3. Edite `config.json` direto no GitHub Web UI.
-4. Troque logo/favicon em `images/`.
-5. Faça deploy.
+3. Abra uma issue usando o template `Template onboarding` para levantar tudo que precisa ser solicitado antes do primeiro deploy.
+4. Edite `config.json` direto no GitHub Web UI.
+5. Troque logo/favicon em `images/`.
+6. Configure `Settings` > `Secrets and variables` > `Actions` no novo repositório.
+7. Rode o deploy pela aba `Actions`.
 
 Checklist rápido sem terminal: [.github/TEMPLATE_SETUP.md](.github/TEMPLATE_SETUP.md)
+Issue de onboarding: [.github/ISSUE_TEMPLATE/template_onboarding.yml](.github/ISSUE_TEMPLATE/template_onboarding.yml)
 
 Repositórios criados via template também recebem um guard de CI (`Template Branding Guard`) que falha se `config.json` continuar com valores padrão.
 
@@ -83,7 +86,7 @@ Acesse: http://localhost:8080
 - Arquitetura e infraestrutura: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)
 - Segurança e LGPD: [docs/SECURITY-LGPD.md](docs/SECURITY-LGPD.md)
 - Princípios de uso de IA: [docs/AI-PRINCIPLES.md](docs/AI-PRINCIPLES.md) (alinhado a [Microsoft Learn](https://learn.microsoft.com/en-gb/principles-for-ai-generated-content))
-- **Customização de Branding**: [docs/BRANDING.md](docs/BRANDING.md) — como forkear e customizar para sua marca
+- **Customização de Branding / Template**: [docs/BRANDING.md](docs/BRANDING.md) — fluxo de template e customização da sua marca via GitHub Web UI
 - **Análise Persistente**: [docs/ANALYSIS_PERSISTENCE.md](docs/ANALYSIS_PERSISTENCE.md) — cache de resultados de análise
 - Índice completo de docs: [docs/README.md](docs/README.md)
 

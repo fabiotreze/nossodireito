@@ -7,6 +7,7 @@
 - [Arquitetura](ARCHITECTURE.md)
 - [Operações](OPERATIONS.md)
 - [Segurança e LGPD](SECURITY-LGPD.md)
+- [Branding e Template](BRANDING.md)
 - [LGPD — Checklist Auditável](LGPD-COMPLIANCE.md)
 - [Princípios de uso de IA](AI-PRINCIPLES.md)
 - [Scripts de Dados e Enriquecimento](DATA-ENRICHMENT.md)

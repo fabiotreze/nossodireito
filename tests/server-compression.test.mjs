@@ -174,6 +174,7 @@ test("serves the pre-compressed .br sibling when client accepts br", async () =>
   const expected = await fsPromises.readFile(
     path.join(tempRoot, "data", "big.json.br"),
   );
+  assert.equal(Number(res.headers["content-length"]), expected.length);
   assert.deepEqual(Buffer.from(res.body), expected);
 });
 

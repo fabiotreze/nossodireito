@@ -39,6 +39,7 @@ const checks = [
   ["data/direitos.json", /"versao"\s*:\s*"([0-9]+\.[0-9]+\.[0-9]+)"/, 'data/direitos.json "versao"'],
   ["data/dicionario_pcd.json", /"versao"\s*:\s*"([0-9]+\.[0-9]+\.[0-9]+)"/, 'data/dicionario_pcd.json "versao"'],
   ["docs/README.md", /\*\*Versão:\*\*\s*([0-9]+\.[0-9]+\.[0-9]+)/, "docs/README.md header"],
+  ["docs/BRANDING.md", /\*\*Versão:\*\*\s*([0-9]+\.[0-9]+\.[0-9]+)/, "docs/BRANDING.md header"],
   ["docs/ARCHITECTURE.md", /\*\*Versão:\*\*\s*([0-9]+\.[0-9]+\.[0-9]+)/, "docs/ARCHITECTURE.md header"],
   ["docs/OPERATIONS.md", /\*\*Versão:\*\*\s*([0-9]+\.[0-9]+\.[0-9]+)/, "docs/OPERATIONS.md header"],
   ["docs/SECURITY-LGPD.md", /\*\*Versão:\*\*\s*([0-9]+\.[0-9]+\.[0-9]+)/, "docs/SECURITY-LGPD.md header"],
@@ -118,5 +119,5 @@ if (drifts.length === 0) {
 
 console.error(`✗ drift de versão detectado (canonical em package.json: ${CANONICAL}):`);
 drifts.forEach((d) => console.error(d));
-console.error("\nDica: bumpe os arquivos divergentes para alinhar com package.json#version.");
+console.error("\nDica: bumpe os arquivos divergentes para alinhar com package.json#version, incluindo docs versionados como docs/BRANDING.md.");
 process.exit(1);
