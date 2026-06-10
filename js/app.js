@@ -3298,9 +3298,7 @@ com o catálogo; <strong>não é parecer profissional</strong>. A confirmação 
     function notifyStorageWriteFailure() {
         if (storageWriteWarningShown) return;
         storageWriteWarningShown = true;
-        if (typeof showToast === 'function') {
-            showToast('Não foi possível salvar no navegador. Algumas preferências não serão persistidas.', 'warning');
-        }
+        showToast('Não foi possível salvar no navegador. Algumas preferências não serão persistidas.', 'warning');
     }
 
     function getStoredWeekPlans() {
