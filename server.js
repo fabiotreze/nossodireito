@@ -41,6 +41,8 @@ const REDIS_PORT = Number(process.env.REDIS_PORT || 6380);
 const REDIS_SECRET_NAME = process.env.REDIS_SECRET_NAME || "redis-primary-key";
 const KEY_VAULT_URI = process.env.KEY_VAULT_URI || "";
 const TRUST_PROXY_HEADERS = process.env.TRUST_PROXY_HEADERS === "true";
+const MAINTENANCE_MODE = process.env.MAINTENANCE_MODE === "true";
+const MAINTENANCE_RETRY_AFTER = Number(process.env.MAINTENANCE_RETRY_AFTER || 300);
 
 const PORT = process.env.PORT || 8080;
 // Limite do body POST /api/analyze-document (CWE-400 — DoS por payload grande).
@@ -112,6 +114,13 @@ const SCANNER_PATH_RE = /^\/(\.env|\.git|__env|application\.(yml|properties)|con
 
 // Cache package.json version at startup (avoid readFileSync on every health check)
 const PKG_VERSION = JSON.parse(fs.readFileSync(path.join(__dirname, "package.json"), "utf8")).version;
+const MAINTENANCE_PAGE_PATH = path.join(__dirname, "maintenance.html");
+let MAINTENANCE_HTML = "<!doctype html><html lang=\"pt-BR\"><meta charset=\"utf-8\"><title>Manutenção</title><body><h1>Serviço em manutenção</h1><p>Tente novamente em instantes.</p></body></html>";
+try {
+  MAINTENANCE_HTML = fs.readFileSync(MAINTENANCE_PAGE_PATH, "utf8");
+} catch {
+  // fallback inline para nunca quebrar resposta 503 de manutenção
+}
 
 // ── Infra Handlers (lib/infra-handlers.js) ──
 const healthHandler = createHealthHandler({
@@ -153,6 +162,24 @@ const server = http.createServer(async (req, res) => {
   // a 429 here would mark the app as unhealthy and trigger an unwanted swap.
   if (req.url === "/health") {
     healthHandler(req, res);
+    return;
+  }
+
+  // ── Emergency Maintenance Mode ──
+  // Toggle via App Service setting MAINTENANCE_MODE=true (no deploy needed).
+  // Keeps /health available so platform probes remain green.
+  if (MAINTENANCE_MODE) {
+    res.writeHead(503, {
+      "Content-Type": "text/html; charset=utf-8",
+      "Cache-Control": "no-store",
+      "Retry-After": String(Number.isFinite(MAINTENANCE_RETRY_AFTER) ? MAINTENANCE_RETRY_AFTER : 300),
+      ...SECURITY_HEADERS,
+    });
+    if (req.method === "HEAD") {
+      res.end();
+      return;
+    }
+    res.end(MAINTENANCE_HTML);
     return;
   }
 

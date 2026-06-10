@@ -23,6 +23,7 @@ on:
       - "robots.txt"
       - "sitemap.xml"
       - "status.html"
+      - "maintenance.html"
       - "termos-de-uso.html"
       - "direitos/**"
       - "scripts/**"
