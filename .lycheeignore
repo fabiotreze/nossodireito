@@ -60,8 +60,10 @@
 # incompleta (ICP-Brasil sem intermediário) ou WAF anti-bot por faixa de IP.
 # Mesmos URLs respondem normal em navegador residencial. Conteúdo validado
 # por validate_legal_sources.py (path independente de HTTP-ping).
-^https?://(www\.)?detran\.(ac|am|ba|ce|df|mt|rn|ro|rs|to)\.gov\.br/
-^https?://(www\.)?sefaz\.(ac|ma|rs|se|to)\.gov\.br/
+# Atualizado em 2026-06-15 (issue #351): +detran.pa, +sefaz.ba, +sefaz.pi,
+# +defensoria.mg.def.br (TIMEOUT / SSL cert ICP-Brasil / HTTP/2 inválido).
+^https?://(www\.)?detran\.(ac|am|ba|ce|df|mt|pa|rn|ro|rs|to)\.gov\.br/
+^https?://(www\.)?sefaz\.(ac|ba|ma|pi|rs|se|to)\.gov\.br/
 ^https?://sistemas1\.sefaz\.ma\.gov\.br/
 ^https?://internet\.sefaz\.es\.gov\.br/
 ^https?://(www\.)?sefa\.pa\.gov\.br/
@@ -73,6 +75,7 @@
 ^https?://assistenciasocial\.se\.gov\.br/
 ^https?://seas\.portal\.ap\.gov\.br/
 ^https?://secdef\.al\.gov\.br/
+^https?://(www\.)?defensoria\.mg\.def\.br/
 ^https?://seciju\.to\.gov\.br/
 ^https?://sepd\.df\.gov\.br/
 ^https?://portaldatransparencia\.gov\.br/convenios/
