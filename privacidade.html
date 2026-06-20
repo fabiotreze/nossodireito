@@ -144,8 +144,11 @@
           </thead>
           <tbody>
             <tr><td>Navegação</td><td>IP da edge Cloudflare (não o seu IP de origem), user-agent, URL acessada</td><td>Toda requisição</td><td>Log de servidor (Azure App Service → Log Analytics), 180 dias (Marco Civil)</td></tr>
-            <tr><td>Aceite de termos</td><td>Versão aceita, timestamp, hash do texto</td><td>Ao clicar "Li e concordo"</td><td><strong>Apenas no seu navegador (localStorage)</strong> — nada enviado a servidor</td></tr>
-            <tr><td>Análise por IA</td><td>Texto do laudo (CIDs, datas, sintomas)</td><td>Você anexa documento opcionalmente</td><td>Anonimizado no browser (sem CPF/nome/RG); enviado ao Azure OpenAI Brasil Sul; <strong>não armazenado</strong> após resposta</td></tr>
+            <tr><td>Contadores agregados</td><td>Página acessada sem query string, tipo de dispositivo amplo e hora do acesso</td><td>Ao carregar páginas HTML</td><td>Apenas em memória no servidor; sem IP, cookie, sessão ou identificador; histórico agregado de até 30 dias</td></tr>
+            <tr><td>Aceite e preferências locais</td><td>Versões aceitas, timestamps, hash do texto, consentimento de IA, checklist, plano semanal e preferências de acessibilidade</td><td>Ao usar recursos opcionais</td><td><strong>Apenas no seu navegador (localStorage/IndexedDB)</strong> — nada enviado a servidor</td></tr>
+            <tr><td>Documentos e análise local</td><td>Arquivos anexados, texto extraído, nomes de arquivo e resultado da análise</td><td>Você anexa documento opcionalmente</td><td>Apenas no seu navegador; documentos criptografados expiram em 15 minutos e resultados ficam em cache local por até 30 minutos</td></tr>
+            <tr><td>Análise por IA</td><td>Texto do laudo anonimizado (CIDs, datas, sintomas)</td><td>Você anexa documento e consente com IA opcionalmente</td><td>Anonimizado no browser e reanonimizado no servidor; enviado ao Azure OpenAI Brasil Sul; <strong>não retido</strong> após resposta</td></tr>
+            <tr><td>Relatórios técnicos de segurança</td><td>Diretiva CSP violada, URL bloqueada e URL do documento reportada pelo navegador</td><td>Quando o navegador reporta violação de CSP</td><td>Log técnico de servidor para investigação de segurança</td></tr>
             <tr><td>Contato voluntário</td><td>E-mail e mensagem que você nos envia</td><td>Você escreve para dpo@fabiotreze.com</td><td>Caixa do mantenedor, retido apenas pelo tempo da tratativa</td></tr>
           </tbody>
         </table>
@@ -154,7 +157,7 @@
         </p>
         <div class="clausula-simples">
           <strong>Em linguagem simples</strong>
-          Não pedimos cadastro, não criamos conta, não pedimos CPF. Só fica registrado no servidor que alguém (de algum IP) acessou alguma página. Se você usar a IA, o texto do laudo passa por lá <strong>já sem CPF/nome</strong> (a gente tira antes de enviar), e o resultado <strong>não fica salvo</strong>.
+          Não pedimos cadastro, não criamos conta, não pedimos CPF. O servidor mantém logs técnicos de acesso e contadores agregados sem identificar visitantes. Se você usar a IA, o texto do laudo passa por lá <strong>já sem CPF/nome</strong> (a gente tira antes de enviar), e o conteúdo <strong>não fica salvo no servidor</strong>.
         </div>
       </div>
     </section>
@@ -167,8 +170,9 @@
         </p>
         <ul>
           <li><strong>Logs de navegação:</strong> cumprimento de obrigação legal (Art. 7º, II — boa prática Marco Civil) c/c legítimo interesse (Art. 7º, IX) para segurança e auditoria. O IP registrado é da edge Cloudflare, não do usuário final.</li>
-          <li><strong>Aceite de Termos:</strong> consentimento (Art. 7º, I), registrado localmente sem envio ao servidor.</li>
+          <li><strong>Aceite de Termos e preferências locais:</strong> consentimento (Art. 7º, I) e execução de escolhas do usuário, registrados localmente sem envio ao servidor.</li>
           <li><strong>Análise por IA:</strong> consentimento específico (Art. 7º, I) — você decide se anexa ou não o documento; cada análise exige nova ação.</li>
+          <li><strong>Relatórios técnicos de segurança:</strong> legítimo interesse (Art. 7º, IX) para proteger a Plataforma e investigar violações de CSP.</li>
           <li><strong>Contato por e-mail:</strong> consentimento (Art. 7º, I) ao escrever para o DPO.</li>
         </ul>
         <div class="clausula-simples">
@@ -187,6 +191,7 @@
         <ul>
           <li>Operação técnica da Plataforma (servir páginas, prevenir abuso, auditar incidentes);</li>
           <li>Análise opcional de documentos por IA (identificação de CIDs/datas/direitos potenciais);</li>
+          <li>Persistência local de preferências, consentimentos, checklists e resultados temporários para melhorar a experiência no mesmo dispositivo;</li>
           <li>Cumprimento de obrigações legais (LGPD, Marco Civil);</li>
           <li>Atendimento a solicitações do titular.</li>
         </ul>
@@ -204,25 +209,29 @@
       <h2>5. Cookies e armazenamento local (localStorage)</h2>
       <div class="clausula">
         <p class="clausula-formal">
-          5.1. A Plataforma <strong>não usa cookies de rastreamento, analytics, publicidade ou redes sociais</strong>. Não há Google Analytics, Meta Pixel, Hotjar ou similares.
+          5.1. A Plataforma <strong>não usa cookies de rastreamento, analytics de terceiros, publicidade ou redes sociais</strong>. Não há Google Analytics, Meta Pixel, Hotjar ou similares. Usamos apenas contadores agregados em memória no servidor, sem IP, cookie, sessão ou identificador por visitante.
         </p>
         <p class="clausula-formal">
-          5.2. Usamos exclusivamente <code>localStorage</code> (armazenamento local no seu navegador) para:
+          5.2. Usamos <code>localStorage</code> e <code>IndexedDB</code> (armazenamento local no seu navegador) para:
         </p>
         <ul>
           <li><code>tos_version_accepted</code> — data ISO da última mudança material dos Termos que você aceitou (ex.: <code>2026-06-06</code>);</li>
           <li><code>tos_accepted_at</code> — data/hora do aceite (ISO 8601);</li>
           <li><code>tos_hash</code> — hash SHA-256 do texto aceito (prova de integridade).</li>
+          <li><code>nd_ai_consent_v2</code> — consentimento opcional para IA, com expiração de 30 dias;</li>
+          <li>Preferências de acessibilidade, checklists e plano semanal, todos locais e revogáveis pelo próprio navegador;</li>
+          <li>Documentos em <code>IndexedDB</code>, criptografados com Web Crypto API, com TTL de 15 minutos;</li>
+          <li>Último resultado de análise em <code>IndexedDB</code>, com TTL de 30 minutos, para evitar perda acidental ao navegar.</li>
         </ul>
         <p class="clausula-formal">
-          5.3. Esses dados <strong>nunca são enviados a nenhum servidor</strong>. Ficam apenas no seu navegador, por dispositivo. Limpar o cache, mudar de navegador ou usar aba anônima exige novo aceite.
+          5.3. Esses dados locais <strong>nunca são enviados a nenhum servidor</strong>, exceto quando você escolhe usar a análise por IA: nesse caso, somente o texto anonimizado é transmitido. O restante fica apenas no seu navegador, por dispositivo. Limpar o cache, mudar de navegador ou usar aba anônima exige novo aceite.
         </p>
         <p class="clausula-formal">
           5.4. Você pode <strong>auditar e revogar</strong> seu aceite a qualquer momento em <a href="/historico-aceite.html">/historico-aceite.html</a>.
         </p>
         <div class="clausula-simples">
           <strong>Em linguagem simples</strong>
-          Não rastreamos você. A única coisa que guardamos é <strong>no seu próprio navegador</strong>: qual versão dos termos você leu e quando. Você pode ver e apagar em /historico-aceite.html.
+          Não rastreamos você por outros sites. Guardamos no seu próprio navegador seus aceites, preferências e, se você usar documentos, arquivos temporários criptografados e resultados temporários. Você pode ver e apagar os aceites em /historico-aceite.html e limpar o restante pelo próprio navegador ou pelos botões da interface.
         </div>
       </div>
     </section>
@@ -254,13 +263,17 @@
         </p>
         <ul>
           <li>Logs de servidor (IP da edge Cloudflare, user-agent, URL): <strong>180 dias</strong> (Marco Civil + boa prática de auditoria);</li>
+          <li>Contadores agregados em memória: dia corrente + histórico agregado de até <strong>30 dias</strong>, sem identificador;</li>
           <li>Texto enviado à IA: <strong>não retido</strong> (descartado após resposta);</li>
-          <li>Aceite no localStorage: <strong>até você revogar</strong> (sob seu controle);</li>
+          <li>Documentos no navegador: <strong>15 minutos</strong> ou até descarte automático após análise;</li>
+          <li>Cache local do último resultado: até <strong>30 minutos</strong>;</li>
+          <li>Aceites e preferências no localStorage: <strong>até você revogar</strong> ou limpar o navegador (sob seu controle);</li>
+          <li>Relatórios técnicos de CSP: retidos junto aos logs técnicos de servidor;</li>
           <li>Comunicações por e-mail: tempo da tratativa + 6 meses para auditoria.</li>
         </ul>
         <div class="clausula-simples">
           <strong>Em linguagem simples</strong>
-          Logs do servidor ficam 180 dias (e o que fica registrado é o IP da Cloudflare, não o seu). Análise de IA não fica salva. Aceite fica até você apagar. E-mail só dura o tempo de resolver sua questão.
+          Logs do servidor ficam 180 dias (e o que fica registrado é o IP da Cloudflare, não o seu). Documentos e resultados ficam só no seu navegador por pouco tempo. Análise de IA não fica salva no servidor. Aceites ficam até você apagar. E-mail só dura o tempo de resolver sua questão.
         </div>
       </div>
     </section>

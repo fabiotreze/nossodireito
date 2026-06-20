@@ -863,6 +863,155 @@
       ]
     },
     {
+      "id": "fibromialgia_dor_cronica",
+      "nome": "Fibromialgia e Dor Crônica Incapacitante",
+      "sinonimos": [
+        "fibromialgia",
+        "dor crônica",
+        "dor cronica",
+        "síndrome dolorosa crônica",
+        "sindrome dolorosa cronica",
+        "dor generalizada crônica",
+        "dor generalizada cronica"
+      ],
+      "cid10": [
+        "M79.7"
+      ],
+      "cid11": [
+        "MG30.01"
+      ],
+      "descricao": "Condição de dor crônica que pode gerar impedimento de longo prazo e limitação funcional. O diagnóstico isolado não garante enquadramento como PcD; a avaliação depende de funcionalidade, barreiras e documentação clínica.",
+      "niveis": [
+        "Sem limitação funcional relevante documentada",
+        "Com limitação funcional persistente",
+        "Com impedimento de longo prazo e barreiras à participação social"
+      ],
+      "leis_especificas": [
+        "Lei 13.146/2015 (LBI) — Art. 2º: impedimento de longo prazo + barreiras",
+        "Lei 14.624/2023 (Cordão de Girassol — deficiências ocultas)"
+      ],
+      "beneficios_elegiveis": [
+        "atendimento_prioritario",
+        "certificado_pcd_inss",
+        "plano_saude",
+        "protecao_social",
+        "reabilitacao",
+        "sus_terapias",
+        "trabalho"
+      ],
+      "keywords_busca": [
+        "fibromialgia",
+        "M79.7",
+        "MG30.01",
+        "dor crônica",
+        "dor cronica",
+        "dor generalizada",
+        "fadiga crônica",
+        "fadiga cronica",
+        "deficiência oculta",
+        "deficiencia oculta",
+        "cordão de girassol",
+        "cordao de girassol",
+        "avaliação biopsicossocial"
+      ]
+    },
+    {
+      "id": "doenca_autoimune_lupus",
+      "nome": "Lúpus e Doenças Autoimunes com Limitação Funcional",
+      "sinonimos": [
+        "lúpus",
+        "lupus",
+        "lúpus eritematoso sistêmico",
+        "lupus eritematoso sistemico",
+        "doença autoimune",
+        "doenca autoimune"
+      ],
+      "cid10": [
+        "M32",
+        "M32.1",
+        "M32.8",
+        "M32.9"
+      ],
+      "cid11": [],
+      "descricao": "Doenças autoimunes podem causar limitações funcionais permanentes ou de longa duração. O enquadramento como PcD depende da avaliação do impedimento, das barreiras e dos efeitos concretos na participação social.",
+      "niveis": [
+        "Sem limitação funcional relevante documentada",
+        "Com limitação funcional persistente",
+        "Com impedimento de longo prazo e necessidade de adaptações"
+      ],
+      "leis_especificas": [
+        "Lei 13.146/2015 (LBI) — Art. 2º: avaliação biopsicossocial",
+        "Lei 14.624/2023 (Cordão de Girassol — deficiências ocultas)"
+      ],
+      "beneficios_elegiveis": [
+        "atendimento_prioritario",
+        "certificado_pcd_inss",
+        "plano_saude",
+        "protecao_social",
+        "reabilitacao",
+        "sus_terapias",
+        "trabalho"
+      ],
+      "keywords_busca": [
+        "lúpus",
+        "lupus",
+        "M32",
+        "doença autoimune",
+        "doenca autoimune",
+        "limitação funcional",
+        "limitacao funcional",
+        "deficiência oculta",
+        "deficiencia oculta",
+        "cordão de girassol",
+        "avaliação biopsicossocial"
+      ]
+    },
+    {
+      "id": "doencas_raras_cronicas",
+      "nome": "Doenças Raras ou Crônicas Potencialmente Incapacitantes",
+      "sinonimos": [
+        "doença rara",
+        "doenca rara",
+        "doenças raras",
+        "doencas raras",
+        "doença crônica incapacitante",
+        "doenca cronica incapacitante"
+      ],
+      "cid10": [],
+      "cid11": [],
+      "descricao": "Grupo amplo de condições que podem exigir cuidado contínuo e, em alguns casos, configurar deficiência quando houver impedimento de longo prazo. A análise deve considerar laudo, funcionalidade e barreiras, não apenas o nome da doença.",
+      "niveis": [
+        "Condição em acompanhamento sem impedimento funcional documentado",
+        "Condição crônica com limitação funcional",
+        "Condição rara/crônica com impedimento de longo prazo"
+      ],
+      "leis_especificas": [
+        "Lei 13.146/2015 (LBI) — Art. 2º",
+        "Portaria GM/MS 199/2014 (Política Nacional de Atenção Integral às Pessoas com Doenças Raras)"
+      ],
+      "beneficios_elegiveis": [
+        "certificado_pcd_inss",
+        "plano_saude",
+        "protecao_social",
+        "reabilitacao",
+        "sus_terapias",
+        "tecnologia_assistiva"
+      ],
+      "keywords_busca": [
+        "doença rara",
+        "doenca rara",
+        "doenças raras",
+        "doencas raras",
+        "doença crônica",
+        "doenca cronica",
+        "condição rara",
+        "condicao rara",
+        "Portaria 199/2014",
+        "cuidado contínuo",
+        "avaliação biopsicossocial"
+      ]
+    },
+    {
       "id": "deficiencia_fala",
       "nome": "Deficiência de Fala/Linguagem",
       "sinonimos": [

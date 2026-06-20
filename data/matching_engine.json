@@ -2551,6 +2551,77 @@
       ],
       "weight": 4
     },
+    "m79.7": {
+      "cats": [
+        "sus_terapias",
+        "plano_saude",
+        "atendimento_prioritario",
+        "certificado_pcd_inss"
+      ],
+      "weight": 4
+    },
+    "mg30.01": {
+      "cats": [
+        "sus_terapias",
+        "plano_saude",
+        "atendimento_prioritario",
+        "certificado_pcd_inss"
+      ],
+      "weight": 4
+    },
+    "fibromialgia": {
+      "cats": [
+        "sus_terapias",
+        "plano_saude",
+        "atendimento_prioritario",
+        "certificado_pcd_inss"
+      ],
+      "weight": 5
+    },
+    "dor crônica": {
+      "cats": [
+        "sus_terapias",
+        "plano_saude",
+        "reabilitacao"
+      ],
+      "weight": 4
+    },
+    "dor cronica": {
+      "cats": [
+        "sus_terapias",
+        "plano_saude",
+        "reabilitacao"
+      ],
+      "weight": 4
+    },
+    "deficiência oculta": {
+      "cats": [
+        "atendimento_prioritario",
+        "certificado_pcd_inss",
+        "acessibilidade_arquitetonica"
+      ],
+      "weight": 5
+    },
+    "deficiencia oculta": {
+      "cats": [
+        "atendimento_prioritario",
+        "certificado_pcd_inss",
+        "acessibilidade_arquitetonica"
+      ],
+      "weight": 5
+    },
+    "cordão de girassol": {
+      "cats": [
+        "atendimento_prioritario"
+      ],
+      "weight": 7
+    },
+    "cordao de girassol": {
+      "cats": [
+        "atendimento_prioritario"
+      ],
+      "weight": 7
+    },
     "cefaleia crônica": {
       "cats": [
         "sus_terapias",
@@ -5160,9 +5231,75 @@
     },
     "doença rara": {
       "cats": [
-        "sus_terapias"
+        "sus_terapias",
+        "plano_saude",
+        "certificado_pcd_inss"
       ],
       "weight": 8
+    },
+    "doenca rara": {
+      "cats": [
+        "sus_terapias",
+        "plano_saude",
+        "certificado_pcd_inss"
+      ],
+      "weight": 8
+    },
+    "doenças raras": {
+      "cats": [
+        "sus_terapias",
+        "plano_saude",
+        "certificado_pcd_inss"
+      ],
+      "weight": 8
+    },
+    "doencas raras": {
+      "cats": [
+        "sus_terapias",
+        "plano_saude",
+        "certificado_pcd_inss"
+      ],
+      "weight": 8
+    },
+    "m32": {
+      "cats": [
+        "sus_terapias",
+        "plano_saude",
+        "certificado_pcd_inss"
+      ],
+      "weight": 4
+    },
+    "lúpus": {
+      "cats": [
+        "sus_terapias",
+        "plano_saude",
+        "certificado_pcd_inss"
+      ],
+      "weight": 5
+    },
+    "lupus": {
+      "cats": [
+        "sus_terapias",
+        "plano_saude",
+        "certificado_pcd_inss"
+      ],
+      "weight": 5
+    },
+    "doença autoimune": {
+      "cats": [
+        "sus_terapias",
+        "plano_saude",
+        "certificado_pcd_inss"
+      ],
+      "weight": 4
+    },
+    "doenca autoimune": {
+      "cats": [
+        "sus_terapias",
+        "plano_saude",
+        "certificado_pcd_inss"
+      ],
+      "weight": 4
     },
     "epilepsia refratária": {
       "cats": [
