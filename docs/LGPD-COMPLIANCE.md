@@ -17,15 +17,17 @@ aqui.
   permanecem em território nacional).
 - Operação por pessoa natural com finalidade não econômica
   (LGPD Art. 4º, I), sem comercialização de dados.
-- Sem coleta de dados pessoais por padrão. Análise por IA é estritamente opt-in.
+- Sem cadastro ou identificadores diretos por padrão. Análise por IA é estritamente opt-in.
 
 ## 2. Bases legais utilizadas
 
 | Tratamento | Base legal | Referência |
 |------------|------------|------------|
-| Navegação geral, leitura de conteúdo | Não há tratamento de dado pessoal | LGPD Art. 5º I (não aplicável) |
+| Navegação geral, leitura de conteúdo | Legítimo interesse e segurança operacional para logs técnicos | LGPD Art. 7º, IX |
 | Análise opcional de documento por IA | Consentimento livre, informado e específico | LGPD Art. 7º, I e Art. 8º |
 | Anonimização técnica antes do envio à IA | Anonimização (não é dado pessoal) | LGPD Art. 12 |
+| Armazenamento local de aceites, preferências e cache temporário | Consentimento/execução de escolha do usuário | LGPD Art. 7º, I |
+| Relatórios técnicos de CSP | Legítimo interesse para segurança | LGPD Art. 7º, IX |
 
 ## 3. Direitos do titular (Art. 18)
 
@@ -59,9 +61,12 @@ Operacionalmente:
 
 | Fluxo | Dado | Coleta | Armazenamento | Retenção | Compartilhamento |
 |-------|------|--------|---------------|----------|------------------|
-| Navegação | Nenhum dado pessoal | Não | Não | Não | Não |
-| Análise IA opcional | Texto anonimizado pelo navegador | Servidor recebe e repassa à IA | Azure OpenAI (Brasil) | Sem retenção de prompt/conteúdo | Azure OpenAI no tenant do operador |
+| Navegação | IP da edge Cloudflare, user-agent, URL, método, status e metadados HTTP | Logs técnicos do App Service | Azure Log Analytics (Brasil) | 180 dias | Não, salvo obrigação legal/judicial |
+| Contadores agregados | Página sem query string, tipo amplo de dispositivo, hora | Servidor agrega HTML page views | Memória do processo Node.js | Dia corrente + histórico agregado de até 30 dias | Não |
+| Análise local de documentos | Arquivo, nome do arquivo, texto extraído e resultado local | Navegador do usuário | IndexedDB/localStorage no dispositivo | Documentos: 15 min; resultado: 30 min | Não |
+| Análise IA opcional | Texto anonimizado pelo navegador e reanonimizado pelo servidor | Servidor recebe e repassa à IA | Azure OpenAI (Brasil) | Sem retenção de prompt/conteúdo | Azure OpenAI no tenant do operador |
 | Rate limit | Bucket global sem identificador por cliente | Cache Redis privado | Azure (Brasil) | TTL curto operacional | Não |
+| Relatórios CSP | Diretiva violada, URL bloqueada, URL do documento | Navegador envia report técnico | Logs técnicos do servidor | Retenção dos logs técnicos | Não |
 
 Notas:
 
@@ -74,9 +79,11 @@ Notas:
 - Sem cookies de marketing.
 - Sem ferramentas de tracking de terceiros.
 - Sem fingerprinting.
-- Armazenamento local (Web Storage) usado apenas para preferências do próprio
-  usuário e para registrar a decisão de consentimento de IA, com chave
-  versionada e revogável.
+- Contadores agregados próprios em memória não usam IP, cookie, sessão ou
+  identificador por visitante.
+- Armazenamento local (Web Storage/IndexedDB) usado para preferências do
+  próprio usuário, consentimentos, documentos temporários criptografados e
+  cache temporário de resultados, com chaves versionadas e revogáveis.
 
 ## 7. Disclaimer e termos informativos
 
@@ -127,7 +134,8 @@ Marque cada item ao final de cada revisão recorrente da postura LGPD.
 ### 9.2 Tratamento de dados
 
 - [x] Sem cookies de tracking.
-- [x] Sem coleta de dado pessoal por padrão.
+- [x] Sem cadastro ou identificadores diretos por padrão.
+- [x] Logs técnicos, contadores agregados e armazenamento local documentados.
 - [x] Sem telemetria de aplicação (nenhum SDK de APM/observabilidade emite envelopes a partir do servidor).
 - [x] Rejeição automática de payloads com PII evidente na análise por IA.
 - [x] Anonimização do texto antes do envio à IA.

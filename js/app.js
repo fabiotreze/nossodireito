@@ -2599,7 +2599,7 @@ No Brasil, a maioria dos laudos ainda usa CID-10. O sistema aceita ambas as codi
                     `• Comprovantes de renda\n` +
                     `• E mais...\n\n` +
                     `Confira a lista completa: https://nossodireito.fabiotreze.com\n\n` +
-                    `100% gratuito — zero coleta de dados — baseado na legislação brasileira`
+                    `100% gratuito — sem cadastro nem tracking — baseado na legislação brasileira`
                 );
                 const url = `https://wa.me/?text=${shareText}`;
                 const win = window.open(url, '_blank', 'noopener,noreferrer');

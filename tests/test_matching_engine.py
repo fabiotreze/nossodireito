@@ -99,6 +99,11 @@ class TestMatchingPrecision:
         ("estacionamento", "estacionamento_especial"),
         ("tarifa social energia", "tarifa_social_energia"),
         ("bolsa família", "bolsa_familia"),
+        ("fibromialgia", "sus_terapias"),
+        ("dor crônica", "reabilitacao"),
+        ("lúpus", "sus_terapias"),
+        ("doença rara", "sus_terapias"),
+        ("cordão de girassol", "atendimento_prioritario"),
     ]
 
     @staticmethod

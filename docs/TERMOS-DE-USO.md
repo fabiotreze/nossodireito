@@ -23,14 +23,15 @@ Qualquer alteração nessa allowlist exige PR público com justificativa.
 
 - **Não há verificação em tempo real** das fontes. A frequência de atualização manual está descrita em `data[i].data_ultima_verificacao` para cada direito; após 180 dias o site exibe banner de "conteúdo possivelmente desatualizado".
 - **Não há aconselhamento personalizado.** O conteúdo é genérico — sua situação concreta pode ter peculiaridades que mudam o resultado.
+- **Diagnóstico não é direito automático.** Condições como TEA, TDAH, fibromialgia, lúpus, doenças raras ou dor crônica podem exigir análise de funcionalidade, barreiras e documentação clínica. O enquadramento como PcD depende da avaliação aplicável ao caso concreto, não apenas do nome da doença ou do CID.
 - **A legislação muda.** Confirme sempre na fonte oficial citada antes de tomar qualquer decisão.
 - **O recurso de IA (quando habilitado)** é uma sugestão informativa baseada apenas nas fontes já indexadas pelo catálogo e nas regras descritas em [`services/ai-analysis.js`](../services/ai-analysis.js); não dá parecer jurídico.
 
 ## 4. Privacidade
 
-- **Nenhum dado pessoal é coletado pelo site.** Não há cadastro, cookies de rastreamento, fingerprinting ou telemetria de aplicação (Application Insights e SDKs equivalentes foram removidos em 2026-06-05).
-- Documentos PDF eventualmente analisados pelo usuário **são processados localmente no navegador** — não são transmitidos.
-- Preferências (Meus Documentos, checklists) ficam em `localStorage`/`IndexedDB` no dispositivo do usuário e podem ser apagadas a qualquer momento via "Limpar dados do navegador".
+- **Não há cadastro, cookies de rastreamento, fingerprinting ou perfilamento individual.** Logs técnicos de acesso, contadores agregados, armazenamento local e análise por IA opcional seguem a Política de Privacidade.
+- Documentos PDF eventualmente analisados pelo usuário **são processados localmente no navegador**; se a análise por IA for acionada, somente o texto anonimizado é enviado após consentimento específico.
+- Preferências, Meus Documentos, checklists e cache temporário de resultados ficam em `localStorage`/`IndexedDB` no dispositivo do usuário e podem ser apagados a qualquer momento via interface ou "Limpar dados do navegador".
 - Detalhes em [`docs/SECURITY-LGPD.md`](SECURITY-LGPD.md).
 
 ## 5. Aceite (browse-wrap)

@@ -25,10 +25,11 @@ Se você encontrar uma vulnerabilidade de segurança neste projeto, por favor re
 ## Práticas de Segurança
 
 ### Dados do Usuário
-- **Zero coleta de dados pessoais** — nenhum dado identificável é armazenado
+- **Minimização de dados** — sem cadastro, sem CPF/RG/nome obrigatório e sem perfil individual
 - Todo processamento de conteúdo ocorre **localmente no navegador** do usuário
-- **Nenhum cookie** de rastreamento, analytics ou fingerprinting
-- **Sem telemetria de aplicação:** nenhum SDK de APM/observabilidade emite envelopes a partir do servidor (Application Insights removido em 2026-06-05). Métricas operacionais usam Azure Monitor platform metrics (App Service) e http logs do App Service (3d). Zero PII.
+- **Nenhum cookie** de rastreamento, analytics de terceiros ou fingerprinting
+- **Armazenamento local transparente:** documentos criptografados no IndexedDB expiram em 15 minutos; cache local do último resultado expira em 30 minutos.
+- **Sem telemetria de aplicação:** nenhum SDK de APM/observabilidade emite envelopes a partir do servidor (Application Insights removido em 2026-06-05). Métricas operacionais usam contadores agregados em memória, Azure Monitor platform metrics (App Service), http logs do App Service (180d) e relatórios técnicos de CSP. Zero corpo de documento em logs.
 - Conformidade voluntária com LGPD (Lei 13.709/2018) — Art. 4º, I (não aplicabilidade para pessoa natural sem fins econômicos)
 
 ### Criptografia

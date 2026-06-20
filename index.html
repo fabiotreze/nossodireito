@@ -2145,6 +2145,12 @@
                 <strong>Sempre procure um profissional qualificado antes de tomar decisões sobre seus direitos.</strong>
               </p>
               <p style="margin-top: 0.75rem; font-size: 0.92rem">
+                <strong>Diagnóstico não é direito automático:</strong> condições como TEA, TDAH, fibromialgia,
+                lúpus, doenças raras ou dor crônica podem exigir análise de funcionalidade, barreiras e
+                documentação clínica. O enquadramento como PcD depende da avaliação aplicável ao caso concreto,
+                não apenas do nome da doença ou do CID.
+              </p>
+              <p style="margin-top: 0.75rem; font-size: 0.92rem">
                 <strong>Isenção de responsabilidade:</strong> este é um projeto pessoal, independente, sem fins
                 lucrativos, mantido em ambiente de <strong>desenvolvimento/POC</strong>. O autor e mantenedores
                 <strong>não se responsabilizam</strong> por decisões tomadas com base no conteúdo aqui apresentado, nem
@@ -2194,22 +2200,23 @@
             >
               <p class="disclaimer-subtitle">🔒 Privacidade e LGPD</p>
               <p style="margin-bottom: 0">
-                Este site <strong>não coleta dados pessoais dos usuários</strong>. Não utilizamos cookies de
-                rastreamento, não solicitamos cadastro e não armazenamos informações identificáveis.
+                Este site <strong>não solicita cadastro nem identificadores diretos</strong>. Não utilizamos cookies de
+                rastreamento, publicidade ou perfilamento, e não armazenamos cadastro de usuários.
               </p>
               <ul style="margin: 0.5rem 0 0 0; font-size: 0.9rem; padding-left: 1.5em">
-                <li>Nenhum documento é transmitido pela internet — análise 100% local no navegador</li>
-                <li>"Meus Documentos", checklists e preferências ficam no localStorage/IndexedDB do seu dispositivo</li>
+                <li>Documentos ficam criptografados no IndexedDB do seu dispositivo e expiram em 15 minutos</li>
+                <li>Análise com IA é opcional: só o texto anonimizado é enviado após consentimento específico</li>
+                <li>"Meus Documentos", checklists, preferências e cache temporário de resultados ficam no localStorage/IndexedDB do seu dispositivo</li>
                 <li>VLibras (Gov.br) carrega bibliotecas externas sem envio dos seus dados</li>
                 <li>
                   <strong>Sem telemetria de aplicação:</strong> não usamos Application Insights nem nenhum SDK de
                   APM/observabilidade no servidor (decisão de 2026-06-05). Métricas operacionais limitam-se a
-                  contadores agregados da plataforma Azure (App Service) e a http logs de acesso retidos por 3 dias
-                  (método + path + status, sem corpo nem identificadores).
+                  contadores agregados sem identificador, métricas da plataforma Azure (App Service) e http logs de
+                  acesso retidos por 180 dias (IP da edge Cloudflare, método, path, status, sem corpo).
                 </li>
               </ul>
               <p style="margin: 0.5rem 0 0 0; font-size: 0.9rem">
-                Todas as consultas são processadas <em>localmente no seu navegador</em>. Em conformidade voluntária com
+                As consultas padrão são processadas <em>localmente no seu navegador</em>. Em conformidade voluntária com
                 a <strong>Lei Geral de Proteção de Dados (Lei 13.709/2018)</strong>, garantimos que sua privacidade é
                 preservada.
               </p>
@@ -2233,8 +2240,8 @@
                   <a href="mailto:dpo@fabiotreze.com">dpo@fabiotreze.com</a>
                 </p>
                 <p style="margin: 0.25rem 0 0 0; font-size: 0.85rem; color: #555;">
-                  Como o site não coleta dados pessoais por padrão, a maioria dos direitos acima se aplica
-                  apenas quando você opta pela análise por IA (consentimento explícito). Mesmo assim, você pode
+                  Como o site não solicita cadastro nem identificadores diretos, a maioria dos direitos acima se aplica
+                  principalmente quando você opta pela análise por IA ou envia e-mail ao Encarregado. Mesmo assim, você pode
                   contatar o Encarregado para qualquer dúvida sobre proteção de dados.
                 </p>
               </details>
