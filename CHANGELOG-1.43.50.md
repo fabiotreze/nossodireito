@@ -116,9 +116,10 @@ bash scripts/setup-branding.sh
 
 ## 🔒 Segurança
 
-✅ **Nenhuma mudança na LGPD**
+✅ **Sem nova coleta de dados pessoais no servidor**
 - Dados de análise continuam armazenados localmente
-- Nada novo é enviado a servidores
+- Nada novo é enviado a servidores além do fluxo de IA opcional já existente
+- Introduzido cache local temporário de resultado de análise (TTL 30 min, IndexedDB)
 - `config.json` é público (apenas branding)
 
 ---

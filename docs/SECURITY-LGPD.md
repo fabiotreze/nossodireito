@@ -140,7 +140,7 @@ flowchart TD
   octet-stream e qualquer outro tipo são bloqueados na entrada.
 - **Sem disco no servidor:** o handler processa em memória e responde,
   sem `fs.write`, sem fila, sem banco de dados.
-- **Sem logs com conteúdo:** o servidor não registra texto enviado nem resposta da IA. Não há SDK de telemetria de aplicação; somente os http logs do App Service (3d) capturam linha de acesso (método + path + status).
+- **Sem logs com conteúdo:** o servidor não registra texto enviado nem resposta da IA. Não há SDK de telemetria de aplicação; somente os http logs do App Service (180d) capturam linha de acesso (método + path + status). Relatórios técnicos de CSP são minimizados para origin + pathname (sem query/fragment) antes de irem para log.
 - **Anti-vazamento por IA:** Azure OpenAI no portal está com **data
   retention zero** (sem retenção de prompts para abuse monitoring),
   configuração aprovada pela MS quando solicitada.

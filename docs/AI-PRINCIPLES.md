@@ -99,11 +99,11 @@ do usuário será reapresentado**.
 
 Em linguagem simples (também disponível dentro do modal de consentimento):
 
-- A IA é **opcional** — você precisa marcar duas caixas (consentimento + dados sensíveis) antes de cada uso.
+- A IA é **opcional** — você precisa marcar duas caixas (consentimento + dados sensíveis) no primeiro uso; se marcar "lembrar por 30 dias", o consentimento fica válido nesse período no mesmo navegador.
 - O texto vai para um computador da Microsoft no **Brasil** (Azure OpenAI, região Brasil Sul).
 - O texto é **lido**, processado e a resposta volta. Nada fica armazenado.
 - Seus dados **não treinam** modelos da Microsoft nem da OpenAI.
-- Você pode **revogar o consentimento** a qualquer momento limpando os dados do site, e pedir
+- Você pode **revogar o consentimento** a qualquer momento no painel de consentimento da própria interface ou em `/historico-aceite.html`, e pedir
   **revisão humana** de qualquer resposta da IA (botão dentro do resultado, conforme LGPD Art. 20).
 - A análise é **orientação preliminar** — não substitui Defensoria Pública, advogado(a) ou CRAS.
 

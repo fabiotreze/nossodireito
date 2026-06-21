@@ -250,10 +250,21 @@ const server = http.createServer(async (req, res) => {
       try {
         const report = JSON.parse(body);
         const violation = report["csp-report"] || report.body || report;
+        const sanitizeUriForLog = (value) => {
+          if (!value || typeof value !== "string") return "";
+          // Preserve only origin + pathname to avoid storing query/fragment in logs.
+          try {
+            const u = new URL(value);
+            return `${u.origin}${u.pathname}`.slice(0, 512);
+          } catch {
+            // Fallback for non-absolute values like "inline" or "data".
+            return value.split("?")[0].split("#")[0].slice(0, 512);
+          }
+        };
         console.warn("[CSP-VIOLATION]", JSON.stringify({
-          blockedUri: violation["blocked-uri"] || violation.blockedURL || "",
+          blockedUri: sanitizeUriForLog(violation["blocked-uri"] || violation.blockedURL || ""),
           directive: violation["violated-directive"] || violation.effectiveDirective || "",
-          documentUri: violation["document-uri"] || violation.documentURL || "",
+          documentUri: sanitizeUriForLog(violation["document-uri"] || violation.documentURL || ""),
         }));
       } catch { /* ignore malformed reports */ }
       res.writeHead(204);

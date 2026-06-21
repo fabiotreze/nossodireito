@@ -65,7 +65,7 @@ O tratamento NÃO se enquadra como agente de pequeno porte porque:
 | R1 | Azure OpenAI com `publicNetworkAccess=Disabled` + Private Endpoint | ✅ Implementado |
 | R1 | Sem retenção de prompt/resposta (configuração Azure OpenAI) | ✅ Implementado |
 | R2 | Disclaimers visíveis: "não substitui orientação profissional" | ✅ Implementado |
-| R2 | Botão "Pedir revisão humana" (Art. 20 LGPD) | 🔲 Planejado (v1.38) |
+| R2 | Botão "Pedir revisão humana" (Art. 20 LGPD) | ✅ Implementado |
 | R3 | TLS 1.2 mínimo, HSTS, certificado gerenciado | ✅ Implementado |
 | R4 | Managed Identity, sem credenciais embutidas, RBAC mínimo | ✅ Implementado |
 | R4 | Key Vault com Private Endpoint, soft-delete (7d) e purge-protection ATIVA | ✅ Implementado |
