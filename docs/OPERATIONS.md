@@ -59,6 +59,33 @@ POC pessoal, sem RTO/RPO contratuais. O portal não persiste dados pessoais no s
 - Smoke pós deploy:
   - `curl -s https://nossodireito.fabiotreze.com/health | jq`
 
+## GitHub Actions: quando roda cada workflow
+
+Objetivo operacional: automação por padrão e uso manual apenas em ações sensíveis.
+
+| Workflow | Automático | Manual | Uso recomendado |
+|--------|------------|--------|-----------------|
+| `quality-gate.yml` | PR para `main` e chamado pelo deploy | Sim | Qualidade obrigatória antes de merge/deploy |
+| `deploy.yml` | Push em `main` (com paths relevantes) | Não | Deploy contínuo da aplicação |
+| `codeql.yml` | PR, push em `main`, semanal | Não | Segurança estática |
+| `gitleaks.yml` | PR, push em `main`, semanal | Sim | Vazamento de segredos |
+| `dependency-review.yml` | PR de dependências | Não | CVE/licenças em atualização de deps |
+| `link-check.yml` | PR de conteúdo + semanal | Sim | Saúde de links externos |
+| `content-freshness.yml` | Semanal | Sim | Drift editorial e fontes oficiais |
+| `scorecard.yml` | Semanal + evento de branch protection | Sim | Postura de supply chain |
+| `lighthouse.yml` | PR + semanal | Sim | Baseline de perf/a11y/seo/bp |
+| `accessibility.yml` | PR + semanal | Sim | Acessibilidade WCAG (axe-core) |
+| `seo-pilot-watchdog.yml` | Diário | Sim | Alertas de regressão SEO/CI |
+| `dependabot-auto-merge.yml` | PR do Dependabot | Não | Auto-merge controlado |
+| `maintenance.yml` | Não | Sim | Emergência operacional (ligar/desligar manutenção) |
+| `terraform.yml` | Plan semanal | Sim (`apply`/`destroy`) | Infra: detectar drift automático, mudança destrutiva manual |
+
+Regras simples:
+
+1. Dia a dia: não acionar nada manualmente, apenas acompanhar status em Actions.
+2. Manual só em exceção: incidentes (`maintenance.yml`) e infraestrutura (`terraform.yml` apply/destroy).
+3. Segurança e qualidade continuam automáticas para manter excelência sem aumentar risco.
+
 ## Incidentes
 
 1. Estado do app:
