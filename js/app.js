@@ -3463,6 +3463,9 @@ com o catálogo; <strong>não é parecer profissional</strong>. A confirmação 
             }
             const remainingMs = expTs - Date.now();
             if (remainingMs <= 0) {
+                // Expirado: remove o registro local para evitar estado stale
+                // e manter o comportamento alinhado ao TTL de 30 dias.
+                try { localStorage.removeItem(AI_CONSENT_KEY); } catch (_) { }
                 return { granted: false, remainingDays: 0, exp: expTs };
             }
             const remainingDays = Math.max(1, Math.ceil(remainingMs / 86400000));

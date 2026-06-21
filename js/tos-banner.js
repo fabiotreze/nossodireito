@@ -35,7 +35,7 @@
 
     // YYYY-MM-DD — data da última mudança material do texto dos Termos/Privacidade.
     // Bumpar SOMENTE conforme política em GOVERNANCE.md (NÃO seguir package.json).
-    var TOS_VERSION = '2026-06-06';
+    var TOS_VERSION = '2026-06-21';
     var KEY_VERSION = 'tos_version_accepted';
     var KEY_AT = 'tos_accepted_at';
     var KEY_HASH = 'tos_hash';
@@ -59,6 +59,23 @@
         var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso);
         if (!m) return iso;
         return m[3] + '/' + m[2] + '/' + m[1];
+    }
+
+    function formatDateTimeBR(iso) {
+        if (!iso || typeof iso !== 'string') return '—';
+        try {
+            var d = new Date(iso);
+            if (isNaN(d.getTime())) return iso;
+            return d.toLocaleString('pt-BR', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+            });
+        } catch (e) {
+            return iso;
+        }
     }
 
     async function sha256Hex(text) {
@@ -139,12 +156,13 @@
         };
         _renderTos = function () {
             var saved = safeGet(KEY_VERSION);
+            var acceptedAt = safeGet(KEY_AT);
             status.classList.remove('ai-consent-status-badge--active', 'ai-consent-status-badge--inactive');
             if (saved) {
                 var current = (saved === TOS_VERSION);
                 status.textContent = current
-                    ? ('Aceito em ' + formatTosDateBR(saved))
-                    : ('Aceito ' + formatTosDateBR(saved) + ' (atual ' + formatTosDateBR(TOS_VERSION) + ')');
+                    ? ('Aceite ativo (v' + formatTosDateBR(saved) + ') · registrado em ' + formatDateTimeBR(acceptedAt))
+                    : ('Aceite antigo (v' + formatTosDateBR(saved) + ') · atual v' + formatTosDateBR(TOS_VERSION));
                 status.classList.add('ai-consent-status-badge--active');
                 btn.disabled = false;
                 btn.textContent = '🔓 Apagar aceite (forçar novo banner)';
