@@ -12,8 +12,6 @@ on:
   schedule:
     - cron: "0 7 * * 1" # Segunda 07:00 UTC
   workflow_dispatch:
-  push:
-    branches: [main]
 
 permissions: read-all
 

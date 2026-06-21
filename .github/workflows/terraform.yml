@@ -24,6 +24,8 @@
 name: Terraform
 
 on:
+  schedule:
+    - cron: "0 8 * * 1" # Segunda 08:00 UTC: plan automático semanal (sem apply)
   workflow_dispatch:
     inputs:
       action:
@@ -62,8 +64,6 @@ env:
   # Terraform le TF_VAR_* automaticamente — sem necessidade de -var flags
   TF_VAR_subscription_id: ${{ secrets.ARM_SUBSCRIPTION_ID }}
   TF_VAR_pfx_password: ${{ secrets.TF_VAR_PFX_PASSWORD }}
-  TF_VAR_enable_custom_domain: ${{ github.event.inputs.enable_custom_domain }}
-  TF_VAR_enable_keyvault: ${{ github.event.inputs.enable_keyvault }}
   TF_VAR_user_object_id: ${{ secrets.USER_OBJECT_ID }}
   TF_VAR_alert_email: ${{ secrets.ALERT_EMAIL }}
 
@@ -83,9 +83,45 @@ jobs:
       - name: Checkout
         uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.0
 
+      - name: Resolve execution mode
+        id: mode
+        run: |
+          ACTION="${{ github.event_name == 'schedule' && 'plan' || github.event.inputs.action }}"
+          [ -z "$ACTION" ] && ACTION="plan"
+
+          if [ "${{ github.event_name }}" = "schedule" ]; then
+            ENABLE_CUSTOM_DOMAIN="true"
+            ENABLE_KEYVAULT="true"
+          else
+            ENABLE_CUSTOM_DOMAIN="${{ github.event.inputs.enable_custom_domain }}"
+            ENABLE_KEYVAULT="${{ github.event.inputs.enable_keyvault }}"
+            [ -z "$ENABLE_CUSTOM_DOMAIN" ] && ENABLE_CUSTOM_DOMAIN="true"
+            [ -z "$ENABLE_KEYVAULT" ] && ENABLE_KEYVAULT="true"
+          fi
+
+          echo "action=${ACTION}" >> "$GITHUB_OUTPUT"
+          echo "enable_custom_domain=${ENABLE_CUSTOM_DOMAIN}" >> "$GITHUB_OUTPUT"
+          echo "enable_keyvault=${ENABLE_KEYVAULT}" >> "$GITHUB_OUTPUT"
+
+          echo "TF_VAR_enable_custom_domain=${ENABLE_CUSTOM_DOMAIN}" >> "$GITHUB_ENV"
+          echo "TF_VAR_enable_keyvault=${ENABLE_KEYVAULT}" >> "$GITHUB_ENV"
+
+      - name: Execution summary
+        run: |
+          {
+            echo "## Terraform Run Mode"
+            echo ""
+            echo "- Event: ${{ github.event_name }}"
+            echo "- Action: ${{ steps.mode.outputs.action }}"
+            echo "- enable_custom_domain: ${{ steps.mode.outputs.enable_custom_domain }}"
+            echo "- enable_keyvault: ${{ steps.mode.outputs.enable_keyvault }}"
+            echo ""
+            echo "Schedule sempre executa somente plan (sem apply/destroy)."
+          } >> "$GITHUB_STEP_SUMMARY"
+
       # ── Decodificar certificado PFX ──
       - name: Decode PFX certificate
-        if: github.event.inputs.action != 'destroy'
+        if: steps.mode.outputs.action != 'destroy'
         run: |
           PFX="${{ secrets.PFX_BASE64 }}"
           if [ -n "$PFX" ]; then
@@ -122,7 +158,7 @@ jobs:
       # IMPORTANTE: Descobrir OIDs e exportar TF_VAR_* ANTES dos imports,
       # para que o count > 0 nas configurações condicionais.
       - name: Auto-import recursos existentes
-        if: github.event.inputs.action != 'destroy'
+        if: steps.mode.outputs.action != 'destroy'
         run: |
           import_if_missing() {
             local addr="$1"
@@ -288,7 +324,7 @@ jobs:
       # O RP precisa de acesso para ler o certificado do KV.
       # Usa az keyvault set-policy --spn que resolve o app ID internamente.
       - name: Grant Microsoft.Web RP access to Key Vault
-        if: github.event.inputs.action != 'destroy' && github.event.inputs.enable_keyvault == 'true'
+        if: steps.mode.outputs.action != 'destroy' && steps.mode.outputs.enable_keyvault == 'true'
         run: |
           # OIDC já logado no step "Azure Login (OIDC)"
 
@@ -325,7 +361,7 @@ jobs:
 
       # ── Garantir acesso do usu\u00e1rio ao Key Vault (se USER_OBJECT_ID fornecido) ──
       - name: Grant user access to Key Vault
-        if: github.event.inputs.action != 'destroy' && github.event.inputs.enable_keyvault == 'true'
+        if: steps.mode.outputs.action != 'destroy' && steps.mode.outputs.enable_keyvault == 'true'
         run: |
           USER_OID="${{ secrets.USER_OBJECT_ID }}"
           if [ -n "$USER_OID" ]; then
@@ -357,12 +393,12 @@ jobs:
 
       # ── Apply (manual) ──
       - name: Terraform Apply
-        if: github.event.inputs.action == 'apply'
+        if: steps.mode.outputs.action == 'apply'
         run: terraform apply -auto-approve tfplan
 
       # ── Aguardar estabilização do App Service após apply ──
       - name: Wait for App Service stabilization
-        if: github.event.inputs.action == 'apply'
+        if: steps.mode.outputs.action == 'apply'
         run: |
           echo "⏳ Aguardando 30s para SCM container estabilizar após apply..."
           sleep 30
@@ -372,13 +408,13 @@ jobs:
       # O binding de certificado SSL é gerenciado nativamente pelo Terraform
       # via azurerm_app_service_certificate_binding — não precisa de az rest.
       - name: Setup Node.js 22 LTS
-        if: github.event.inputs.action == 'apply'
+        if: steps.mode.outputs.action == 'apply'
         uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
         with:
           node-version: "22"
 
       - name: Deploy site to App Service
-        if: github.event.inputs.action == 'apply'
+        if: steps.mode.outputs.action == 'apply'
         run: |
           # OIDC já logado no step "Azure Login (OIDC)"
 
@@ -448,7 +484,7 @@ jobs:
           echo "✅ Deploy enviado."
 
       - name: Health check (com retries)
-        if: github.event.inputs.action == 'apply'
+        if: steps.mode.outputs.action == 'apply'
         run: |
           echo "⏳ Aguardando estabilização do deploy..."
           MAX_RETRIES=12
@@ -480,7 +516,7 @@ jobs:
 
       # ── Destroy (manual) ──
       - name: Terraform Destroy
-        if: github.event.inputs.action == 'destroy'
+        if: steps.mode.outputs.action == 'destroy'
         run: terraform destroy -auto-approve
 
       # State persistido remotamente em Azure Storage — sem upload/download de artifact.

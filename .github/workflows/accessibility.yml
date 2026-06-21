@@ -1,13 +1,13 @@
-# Accessibility (WCAG 2.1 AA) audit via axe-core on every PR + push to main.
+# Accessibility (WCAG 2.1 AA) audit via axe-core em PR + baseline semanal.
 # Fails on serious/critical violations. Moderate/minor are reported but non-blocking.
 
 name: Accessibility (axe-core)
 
 on:
-  push:
-    branches: [main]
   pull_request:
     branches: [main]
+  schedule:
+    - cron: "0 10 * * 1" # Segunda 10:00 UTC
   workflow_dispatch:
 
 concurrency:
