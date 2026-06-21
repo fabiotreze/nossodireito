@@ -40,15 +40,20 @@ Ao continuar a navegar no `https://nossodireito.fabiotreze.com` (ou em qualquer 
 
 ## 6. Limitação de responsabilidade
 
-O autor, mantenedores e contribuidores **não se responsabilizam** por:
+Na **máxima extensão permitida pela legislação aplicável**, o autor, mantenedores
+e contribuidores limitam responsabilidade por:
 
-- Decisões tomadas com base no conteúdo do site.
-- Desatualizações, erros, omissões, mudanças regulatórias supervenientes.
-- Indisponibilidade do serviço.
-- Conteúdo de sites de terceiros referenciados (mesmo sendo oficiais).
+- Decisões tomadas com base no conteúdo do site sem validação em fonte oficial.
+- Desatualizações, erros, omissões e mudanças regulatórias supervenientes.
+- Indisponibilidade temporária do serviço por causas alheias ao controle do projeto.
+- Conteúdo de sites de terceiros referenciados (mesmo quando oficiais).
 - Resultados práticos (deferimento/indeferimento de benefícios, pareceres médicos, atendimentos).
 
-A responsabilidade do usuário pela validação independente com profissional habilitado é **integral**.
+Esta limitação **não exclui hipóteses de responsabilidade legal irrenunciável**,
+inclusive em caso de dolo ou culpa grave comprovados.
+
+O usuário deve validar informações relevantes com fonte oficial e profissional
+habilitado antes de tomar decisões jurídicas, previdenciárias, financeiras ou de saúde.
 
 ## 7. Sugestões de correção
 
