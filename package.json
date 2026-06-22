@@ -20,7 +20,7 @@
   "dependencies": {
     "@azure/identity": "^4.13.1",
     "@azure/keyvault-secrets": "^4.9.0",
-    "openai": "^6.42.0",
+    "openai": "^6.44.0",
     "redis": "^6.0.0"
   },
   "engines": {
