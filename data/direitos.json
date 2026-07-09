@@ -1536,7 +1536,7 @@
     },
     {
       "nome": "Comitê Paralímpico Brasileiro (CPB)",
-      "url": "https://www.gov.br/esporte/pt-br/acoes-e-programas",
+      "url": "https://www.gov.br/esporte/pt-br/acoes-e-programas-1",
       "descricao": "Programas federais de esporte paralímpico — Bolsa Atleta, Centros de Referência, modalidades adaptadas",
       "contato": "https://www.gov.br/esporte/pt-br",
       "id": "cpb",
@@ -6939,7 +6939,7 @@
       "links": [
         {
           "titulo": "Bolsa Atleta — Ministério do Esporte (gov.br)",
-          "url": "https://www.gov.br/esporte/pt-br/acoes-e-programas/ProgramaBolsaAtleta"
+          "url": "https://www.gov.br/esporte/pt-br/acoes-e-programas-1/programa-bolsa-atleta"
         },
         {
           "titulo": "Lei 10.891/2004 — Programa Bolsa-Atleta (planalto.gov.br)",
@@ -6947,7 +6947,7 @@
         },
         {
           "titulo": "Esporte Paralímpico — Ministério do Esporte (gov.br)",
-          "url": "https://www.gov.br/esporte/pt-br/acoes-e-programas"
+          "url": "https://www.gov.br/esporte/pt-br/acoes-e-programas-1"
         },
         {
           "titulo": "Novo Viver sem Limite — Plano Nacional PcD",
@@ -6955,7 +6955,7 @@
         },
         {
           "titulo": "Programa Bolsa Atleta — Ministério do Esporte (gov.br)",
-          "url": "https://www.gov.br/esporte/pt-br/acoes-e-programas/ProgramaBolsaAtleta"
+          "url": "https://www.gov.br/esporte/pt-br/acoes-e-programas-1/programa-bolsa-atleta"
         }
       ],
       "tags": [
