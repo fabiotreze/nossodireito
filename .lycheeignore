@@ -109,3 +109,23 @@
 # decorativa ("[.gov.br](https://www.gov.br)") e no schema.org provider.url.
 # Não há valor em fail-fast por um endpoint que tem 403 anti-bot conhecido.
 ^https?://(www\.)?gov\.br/?$
+
+# === Defeso eleitoral 2026 + IP-block de datacenter (issues #367, #371, #372) ===
+# Atualizado em 2026-07-09. Durante o defeso eleitoral 2026 (02/jul–25/out),
+# portais federais entram em "Conteúdo Restrito" (confirmado no MDS: páginas de
+# auxílio-inclusão, BPC na Escola, CRAS e centro-dia respondem 404/login no bot
+# mas servem conteúdo normal em navegador). Somam-se hosts federais/estaduais
+# que bloqueiam faixas de IP de datacenter (timeout/503) ou têm cadeia TLS
+# ICP-Brasil incompleta (SSL not trusted) no runner GitHub Actions.
+# Confirmado: todos respondem normal de IP residencial. Conteúdo legal validado
+# por validate_legal_sources.py / validate_sources.py no Quality Gate (path
+# independente de HTTP-ping). Revisar após o período eleitoral (out/2026).
+^https?://bvsms\.saude\.gov\.br/
+^https?://(www\.)?gov\.br/mds/pt-br/
+^https?://(www\.)?gov\.br/mdh/pt-br/
+^https?://(www\.)?gov\.br/saude/pt-br/
+^https?://(www\.)?gov\.br/trabalho-e-emprego/
+^https?://(www\.)?rj\.gov\.br/
+^https?://(www\.)?sefaz\.pb\.gov\.br/
+^https?://setrabes\.rr\.gov\.br/
+^https?://(www\.)?cnmp\.mp\.br/
