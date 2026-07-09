@@ -129,3 +129,10 @@
 ^https?://(www\.)?sefaz\.pb\.gov\.br/
 ^https?://setrabes\.rr\.gov\.br/
 ^https?://(www\.)?cnmp\.mp\.br/
+# Portais federais www.gov.br/<orgao>/pt-br — TIMEOUT intermitente rotativo no
+# runner (mesmo IP-block/anti-bot). Cada execução do lychee derruba um subconjunto
+# diferente (ans, antt, inss, pt-br/servicos). Páginas normais em navegador.
+^https?://(www\.)?gov\.br/ans/
+^https?://(www\.)?gov\.br/antt/
+^https?://(www\.)?gov\.br/inss/pt-br/
+^https?://(www\.)?gov\.br/pt-br/servicos/
