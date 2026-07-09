@@ -298,7 +298,7 @@ jobs:
 
       # ── tflint (provider-aware lint, deprecated args, SKU validation) ──
       - name: Setup tflint
-        uses: terraform-linters/setup-tflint@b480b8fcdaa6f2c577f8e4fa799e89e756bb7c93 # v6.2.2
+        uses: terraform-linters/setup-tflint@6e1e0642c0289bd619021bf6b34e3c08ed1e005a # v6.3.0
         with:
           tflint_version: v0.55.1
 
@@ -313,7 +313,7 @@ jobs:
       # ── checkov (security/compliance: LGPD, CIS, NIST) ──
       # Skips documentados em .checkov.yaml
       - name: checkov
-        uses: bridgecrewio/checkov-action@fa9edf8f0a491c59a924ea6accd5bdcf07752cff # v12
+        uses: bridgecrewio/checkov-action@a7683e7b72a04503521247973281ec8142e1ac1f # v12
         with:
           directory: terraform/
           config_file: .checkov.yaml
