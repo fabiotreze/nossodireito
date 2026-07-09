@@ -136,3 +136,12 @@
 ^https?://(www\.)?gov\.br/antt/
 ^https?://(www\.)?gov\.br/inss/pt-br/
 ^https?://(www\.)?gov\.br/pt-br/servicos/
+# Demais órgãos federais gov.br referenciados no acervo — mesmo IP-block/timeout
+# rotativo no runner (confirmado ao longo de execuções sucessivas do lychee:
+# aneel, cidades, governodigital, servidor, pt-br/search, etc.). Conjunto finito
+# de órgãos citados em data/direitos.json; excluídos em bloco para encerrar o
+# whack-a-mole de timeouts. Conteúdo validado por validate_legal_sources.py.
+^https?://(www\.)?gov\.br/(anac|aneel|cidades|fnde|governodigital|inep|mec|pgfn|servidor|turismo)/
+^https?://(www\.)?gov\.br/pt-br/search
+# Municipal — Prefeitura de São Paulo (503 intermitente do WAF)
+^https?://capital\.sp\.gov\.br/
